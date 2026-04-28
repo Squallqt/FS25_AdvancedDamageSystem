@@ -38,6 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="신규 차량 수리에 보증을 적용합니다(최대 20시간 운행 또는 12개월). OEM 부품 교체 시에만 비용이 면제됩니다."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="AI 과부하 및 과열 제어"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="활성화 시 AI 작업자가 엔진 과부하 또는 과열을 방지하기 위해 부하를 줄입니다."/>
+        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
         <text name="ads_debugMode_label" text="디버그 모드"/>
         <text name="ads_debugMode_tooltip" text="디버그 패널 및 콘솔의 상세 디버그 로그 활성 여부를 설정합니다."/>
         <text name="ads_warningMessages_label" text="경고 메시지"/>

@@ -31,6 +31,8 @@ local function buildPendingConfigFromAdsConfig()
         enableWarningMessages = ADS_Config.CORE.ENABLE_WARNING_MESSAGES,
         systemStressGlobalMultiplier = ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER,
         aiOverloadControl = ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL,
+        aiWorkerTargetStress = ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS,
+        aiWorkerMinSpeed = ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED,
 
         instantInspection = ADS_Config.MAINTENANCE.INSTANT_INSPECTION,
         parkVehicle = ADS_Config.MAINTENANCE.PARK_VEHICLE,
@@ -279,6 +281,8 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
     ADS_Config.CORE.ENABLE_WARNING_MESSAGES = pending.enableWarningMessages
     ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER = pending.systemStressGlobalMultiplier
     ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = pending.aiOverloadControl
+    ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = pending.aiWorkerTargetStress
+    ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED = pending.aiWorkerMinSpeed
 
     ADS_Config.MAINTENANCE.INSTANT_INSPECTION = pending.instantInspection
     ADS_Config.MAINTENANCE.PARK_VEHICLE = pending.parkVehicle
@@ -602,6 +606,20 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
         g_i18n:getText("ads_aiOverloadAndOverheatControl_label"),
         g_i18n:getText("ads_aiOverloadAndOverheatControl_tooltip")
     )
+    page.ads_aiWorkerTargetStress = ADS_InGameSettings:addMultiTextOption(
+        page,
+        "onAiWorkerTargetStressChanged",
+        ADS_InGameSettings.steps.aiWorkerTargetStress.texts,
+        g_i18n:getText("ads_aiWorkerTargetStress_label"),
+        g_i18n:getText("ads_aiWorkerTargetStress_tooltip")
+    )
+    page.ads_aiWorkerMinSpeed = ADS_InGameSettings:addMultiTextOption(
+        page,
+        "onAiWorkerMinSpeedChanged",
+        ADS_InGameSettings.steps.aiWorkerMinSpeed.texts,
+        g_i18n:getText("ads_aiWorkerMinSpeed_label"),
+        g_i18n:getText("ads_aiWorkerMinSpeed_tooltip")
+    )
 
     deleteElementById("subTitlePrefab")
     deleteElementById("binaryPrefab")
@@ -771,6 +789,8 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     setIndex(currentPage.ads_cloggingSpeed, steps.cloggingSpeed.values, pending.cloggingSpeed)
     setIndex(currentPage.ads_fieldInspectionDuration, steps.fieldInspectionDuration.values, pending.fieldInspectionDuration)
     setIndex(currentPage.ads_lubricationReducePerDay, steps.lubricationReducePerDay.values, pending.lubricationReducePerDay)
+    setIndex(currentPage.ads_aiWorkerTargetStress, steps.aiWorkerTargetStress.values, pending.aiWorkerTargetStress)
+    setIndex(currentPage.ads_aiWorkerMinSpeed, steps.aiWorkerMinSpeed.values, pending.aiWorkerMinSpeed)
     
     if tutorialOption ~= nil then
         tutorialOption:setIsChecked(pending.tutorialMode, false, false)
@@ -829,6 +849,8 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     currentPage.ads_fieldInspectionDuration:setDisabled(disableAll)
     currentPage.ads_lubricationReducePerDay:setDisabled(disableAll)
     currentPage.ads_aiOverloadAndOverheatControl:setDisabled(disableAll)
+    currentPage.ads_aiWorkerTargetStress:setDisabled(disableAll or not pending.aiOverloadControl)
+    currentPage.ads_aiWorkerMinSpeed:setDisabled(disableAll or not pending.aiOverloadControl)
     currentPage.ads_warningMessages:setDisabled(disableAll)
     currentPage.ads_debugMode:setDisabled(disableAll)
 
@@ -1070,6 +1092,18 @@ end
 
 function ADS_InGameSettings:onAiOverloadAndOverheatControlChanged(state)
     getPendingConfig().aiOverloadControl = (state == BinaryOptionElement.STATE_RIGHT)
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onAiWorkerTargetStressChanged(state)
+    getPendingConfig().aiWorkerTargetStress = ADS_InGameSettings.steps.aiWorkerTargetStress.values[state]
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onAiWorkerMinSpeedChanged(state)
+    getPendingConfig().aiWorkerMinSpeed = ADS_InGameSettings.steps.aiWorkerMinSpeed.values[state]
     ADS_InGameSettings.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
@@ -1439,6 +1473,22 @@ function ADS_InGameSettings:generateAllSteps()
         end
         self.steps.lubricationReducePerDay = data
     end
+
+    -- AI speed response target stress. Lower values react earlier and more aggressively.
+    self.steps.aiWorkerTargetStress = {
+        values = {0.4, 0.3, 0.2, 0.1},
+        texts = {
+            g_i18n:getText("ads_aiWorkerTargetStress_relaxed"),
+            g_i18n:getText("ads_aiWorkerTargetStress_balanced"),
+            g_i18n:getText("ads_aiWorkerTargetStress_sensitive"),
+            g_i18n:getText("ads_aiWorkerTargetStress_verySensitive"),
+        }
+    }
+
+    -- AI minimum cruise speed: 3 km/h to 10 km/h.
+    self.steps.aiWorkerMinSpeed = createSteps(3, 8, 1, function(v)
+        return string.format("%d km/h", v)
+    end)
 
     self.steps.generated = true
 end

@@ -38,6 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Obejmuje naprawy nowych pojazdów gwarancją (do 20 godzin pracy lub 12 miesięcy). Bezpłatnie pokrywane są wyłącznie części OEM."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Sterowanie przeciążeniem i przegrzewaniem pracownika zatrudnionego (AI)."/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Jeśli włączone, pracownik AI zmniejsza obciążenie, aby zapobiec przeciążeniu silnika lub przegrzaniu."/>
+        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
         <text name="ads_debugMode_label" text="Tryb debugowania"/>
         <text name="ads_debugMode_tooltip" text="Włącz lub wyłącz panel debugowania oraz rozbudowane logowanie debugowania w konsoli."/>
         <text name="ads_warningMessages_label" text="Komunikaty ostrzegawcze"/>

@@ -38,6 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Garanciális fedezetet biztosít az új járművek javítására (20 üzemóráig vagy 12 hónapig). Csak a gyári (OEM) alkatrészek költségét fedezi."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="AI túlterhelés- és hővédelem"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Ha engedélyezve van, az AI munkás visszaveszi a terhelést, hogy megelőzze a motor túlterhelését vagy túlmelegedését."/>
+        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
         <text name="ads_debugMode_label" text="Hibakereső mód"/>
         <text name="ads_debugMode_tooltip" text="Engedélyezi a debug panelt és a részletes naplózást a konzolban."/>
         <text name="ads_warningMessages_label" text="Figyelmeztető üzenetek"/>
