@@ -1225,10 +1225,15 @@ function ADS_InGameSettings:addButtonOption(inGameMenuSettingsFrame, onClickCall
         local buttonTitleProfile = getSettingsProfile("fs25_settingsMultiTextOptionTitle")
         buttonTitle:loadProfile(buttonTitleProfile, true)
         bitMap:addElement(buttonTitle)
+    elseif buttonTitle.applyProfile ~= nil then
+        buttonTitle:applyProfile("fs25_settingsMultiTextOptionTitle")
     end
 
     buttonTitle:setText(title)
     buttonTitle.id = nil
+    if buttonTitle.setDisabled ~= nil then
+        buttonTitle:setDisabled(false)
+    end
 
     local buttonTooltip = button:getDescendantByName("ignore")
     if buttonTooltip == nil then
