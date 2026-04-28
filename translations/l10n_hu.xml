@@ -1,7 +1,7 @@
 <l10n>
     <texts>
         <text name="ads_settings_title" text="ADS BEÁLLÍTÁSOK"/>
-        <text name="ads_settings_admin_required" text="ADS settings require administrator permissions in multiplayer."/>
+        <text name="ads_settings_admin_required" text="Az ADS beállításaihoz rendszergazdai jogosultság szükséges többjátékos módban."/>
         <text name="ads_maintenancePrice_label" text="Karbantartási költség szorzó"/>
         <text name="ads_maintenancePrice_tooltip" text="Módosítja a műhelyszolgáltatások költségét, beleértve az átvizsgálásokat, javításokat és a generáljavításokat. A magasabb érték drágábbá teszi a szervizelést."/>
         <text name="ads_maintenanceDuration_label" text="Karbantartási idő szorzó"/>
@@ -14,22 +14,22 @@
         <text name="ads_engineMaxHeat_tooltip" text="A motor által maximális terhelés mellett generált alapvető hőmennyiség. A magasabb értékek gyorsabb melegedést okoznak."/>
         <text name="ads_cloggingSpeed_label" text="Eltömődési sebesség"/>
         <text name="ads_cloggingSpeed_tooltip" text="Beállítja, milyen gyorsan tömődik el a hűtő és a légbeszívó porban, pelyvában vagy terményben végzett munka során. 100%-nál az eltömődés nagyjából a szervizintervallum egyharmada alatt következik be."/>
-        <text name="ads_fieldInspectionDuration_label" text="Inspection Duration"/>
-        <text name="ads_fieldInspectionDuration_tooltip" text="Sets how long a pre-shift field inspection takes, in real seconds."/>
-        <text name="ads_lubricationReducePerDay_label" text="Lubrication Drying Rate"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Sets how much lubrication dries out over one in-game day. At 0%, lubrication does not dry out over time."/>
+        <text name="ads_fieldInspectionDuration_label" text="Átvizsgálás időtartama"/>
+        <text name="ads_fieldInspectionDuration_tooltip" text="Beállítja, mennyi ideig tart egy műszak előtti terepi átvizsgálás valós másodpercekben."/>
+        <text name="ads_lubricationReducePerDay_label" text="Kenőanyag száradási üteme"/>
+        <text name="ads_lubricationReducePerDay_tooltip" text="Beállítja, mennyit szárad a kenés egy játéknap alatt. 0%-nál a kenőanyag idővel nem szárad ki."/>
         <text name="ads_ws_header_title" text="Műhely"/>
-        <text name="ads_settings_section_service_wear" text="Service and Wear"/>
-        <text name="ads_settings_section_thermal_model" text="Thermal Model"/>
-        <text name="ads_settings_section_battery_alternator" text="Battery and Alternator"/>
-        <text name="ads_settings_section_preshift_maintenance" text="Pre-shift Maintenance"/>
-        <text name="ads_settings_section_other" text="Other"/>
-        <text name="ads_dealerWorkshopAvailable_label" text="Dealer Workshop 24/7"/>
-        <text name="ads_dealerWorkshopAvailable_tooltip" text="Keeps the dealer workshop available at any time of day."/>
-        <text name="ads_mobileWorkshopAvailable_label" text="Mobile Workshop 24/7"/>
-        <text name="ads_mobileWorkshopAvailable_tooltip" text="Keeps the mobile workshop available at any time of day."/>
-        <text name="ads_ownWorkshopAvailable_label" text="Owned Workshop 24/7"/>
-        <text name="ads_ownWorkshopAvailable_tooltip" text="Keeps your owned workshop available at any time of day."/>
+        <text name="ads_settings_section_service_wear" text="Szerviz és kopás"/>
+        <text name="ads_settings_section_thermal_model" text="Hőmodell"/>
+        <text name="ads_settings_section_battery_alternator" text="Akkumulátor és generátor"/>
+        <text name="ads_settings_section_preshift_maintenance" text="Műszak előtti karbantartás"/>
+        <text name="ads_settings_section_other" text="Egyéb"/>
+        <text name="ads_dealerWorkshopAvailable_label" text="Kereskedői műhely 24/7"/>
+        <text name="ads_dealerWorkshopAvailable_tooltip" text="A kereskedői műhely a nap bármely szakában elérhető marad."/>
+        <text name="ads_mobileWorkshopAvailable_label" text="Mobil műhely 24/7"/>
+        <text name="ads_mobileWorkshopAvailable_tooltip" text="A mobil műhely a nap bármely szakában elérhető marad."/>
+        <text name="ads_ownWorkshopAvailable_label" text="Saját műhely 24/7"/>
+        <text name="ads_ownWorkshopAvailable_tooltip" text="A saját műhelyed a nap bármely szakában elérhető marad."/>
         <text name="ads_instantInspection_label" text="Azonnali átvizsgálás"/>
         <text name="ads_instantInspection_tooltip" text="Ha engedélyezve van, minden átvizsgálás azonnal befejeződik (nem telik az idő). Megjegyzés: a 'Szemrevételezés' opció ilyenkor nem elérhető."/>
         <text name="ads_parkVehicle_label" text="Jármű parkoltatása szerviz alatt"/>
@@ -38,14 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Garanciális fedezetet biztosít az új járművek javítására (20 üzemóráig vagy 12 hónapig). Csak a gyári (OEM) alkatrészek költségét fedezi."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="AI túlterhelés- és hővédelem"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Ha engedélyezve van, az AI munkás visszaveszi a terhelést, hogy megelőzze a motor túlterhelését vagy túlmelegedését."/>
-        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
-        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
-        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
-        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
-        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
-        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
-        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
-        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
+        <text name="ads_aiWorkerTargetStress_label" text="AI sebességreakció"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Szabályozza, milyen korán reagál az AI munkás a túlterhelésre és a túlmelegedésre. A magasabb értékek kevésbé érzékenyek és később reagálnak, az alacsonyabb értékek érzékenyebbek és hamarabb lassítanak."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Laza"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Kiegyensúlyozott"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Érzékeny"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Nagyon érzékeny"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="AI minimális sebessége"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Beállítja a legalacsonyabb tempomatsebességet, ameddig az AI munkás lelassíthat a túlterhelés vagy túlmelegedés elkerülése érdekében."/>
         <text name="ads_debugMode_label" text="Hibakereső mód"/>
         <text name="ads_debugMode_tooltip" text="Engedélyezi a debug panelt és a részletes naplózást a konzolban."/>
         <text name="ads_warningMessages_label" text="Figyelmeztető üzenetek"/>
@@ -59,7 +59,7 @@
         <text name="ads_batteryCapacity_label" text="Akkumulátor kapacitás"/>
         <text name="ads_thermalSensitivity_label" text="Hőérzékenység"/>
         <text name="ads_option_off" text="Ki"/>
-        <text name="ads_option_none" text="None"/>
+        <text name="ads_option_none" text="Nincs"/>
         <text name="ads_serviceInterval_tooltip" text="Beállítja az alapvető szervizintervallumot üzemórában. A tényleges intervallum függ a márkától, a kortól és az előző karbantartás minőségétől."/>
         <text name="ads_vehicleLifespan_tooltip" text="Beállítja a jármű alapvető élettartamát üzemórában, amely után az állapota eléri a 0%-ot. Minél közelebb van ez az érték a nullához, annál megbízhatatlanabbá válik a gép."/>
         <text name="ads_downtimeWear_tooltip" text="Beállítja a használaton kívüli gép elhasználódási sebességét az alapérték százalékában. Például 5% esetén egy 100 órás élettartamú gép rendszerei kb. 20 óra állás után veszítenek 1% állapotot. Megjegyzés: fedél alatt tárolva ez a kopás szünetel."/>
@@ -67,17 +67,17 @@
         <text name="ads_mobileWorkshopRestrictions_tooltip" text="Ha engedélyezve van, a mobil műhelyben elvégezhető feladatok köre függ a jármű szerelhetőségétől."/>
         <text name="ads_systemStressRate_tooltip" text="Meghatározza, milyen gyorsan halmozódik fel a stressz a rendszerekben túlterhelés, túlmelegedés vagy kerékcsúszás során. A stressz közvetlenül növeli a meghibásodás esélyét."/>
         <text name="ads_batteryCapacity_tooltip" text="Beállítja a maximális használható akkumulátorkapacitást. A 150 Ah körüli értékek a legrealisztikusabbak."/>
-        <text name="ads_alternatorMaxOutput_label" text="Alternator Max Output"/>
-        <text name="ads_alternatorMaxOutput_tooltip" text="Sets the maximum alternator output current. Higher values allow the alternator to recharge the battery faster."/>
-        <text name="ads_idleCurrent_label" text="Standby Current"/>
-        <text name="ads_idleCurrent_tooltip" text="Sets the battery drain current while the engine is stopped. For example, at 0.5 A a 15 Ah battery would take about 30 real hours to fully discharge, before temperature effects are applied."/>
+        <text name="ads_alternatorMaxOutput_label" text="Generátor max. áramerőssége"/>
+        <text name="ads_alternatorMaxOutput_tooltip" text="Beállítja a generátor maximális kimenő áramát. A magasabb értékek gyorsabb akkumulátortöltést tesznek lehetővé."/>
+        <text name="ads_idleCurrent_label" text="Nyugalmi áram"/>
+        <text name="ads_idleCurrent_tooltip" text="Beállítja az akkumulátor merülési áramát leállított motor mellett. Például 0,5 A esetén egy 15 Ah-s akkumulátor körülbelül 30 valós óra alatt merülne le teljesen, még a hőmérsékleti hatások figyelembevétele előtt."/>
         <text name="ads_thermalSensitivity_tooltip" text="Módosítja a hőmodell viselkedését. Magasabb beállításnál a motor és a váltó érzékenyebb lesz a terhelésre, a környezeti hőmérsékletre és a hűtő elkoszolódására."/>
-        <text name="ads_radiatorDirtInfluence_label" text="Radiator Dirt Influence"/>
-        <text name="ads_radiatorDirtInfluence_tooltip" text="Reduces radiator cooling capacity by this percentage at maximum dirt buildup."/>
-        <text name="ads_warmingBoostPower_label" text="Warm-up Acceleration"/>
-        <text name="ads_warmingBoostPower_tooltip" text="Artificially speeds up engine and transmission warm-up. Use Off for unmodified thermal behavior."/>
-        <text name="ads_coolingSlowdownPower_label" text="Cooling Slowdown"/>
-        <text name="ads_coolingSlowdownPower_tooltip" text="Artificially slows engine and transmission cooling after the vehicle is shut down. Use Off for unmodified cooling."/>
+        <text name="ads_radiatorDirtInfluence_label" text="Hűtő szennyeződésének hatása"/>
+        <text name="ads_radiatorDirtInfluence_tooltip" text="Ezzel a százalékkal csökkenti a hűtő hűtési teljesítményét maximális szennyeződés mellett."/>
+        <text name="ads_warmingBoostPower_label" text="Bemelegedés gyorsítása"/>
+        <text name="ads_warmingBoostPower_tooltip" text="Mesterségesen felgyorsítja a motor és a váltó bemelegedését. A Ki opcióval az eredeti hőviselkedés marad meg."/>
+        <text name="ads_coolingSlowdownPower_label" text="Hűlés lassítása"/>
+        <text name="ads_coolingSlowdownPower_tooltip" text="Mesterségesen lelassítja a motor és a váltó lehűlését a jármű leállítása után. A Ki opcióval az eredeti hűlési viselkedés marad meg."/>
         <text name="ads_thermal_none" text="Passzív"/>
         <text name="ads_thermal_mild" text="Enyhe"/>
         <text name="ads_thermal_default" text="Alapértelmezett"/>
@@ -421,7 +421,7 @@
         <text name="ads_spec_state_overdue" text="Lejárt"/>
         <text name="ads_spec_state_legendary" text="Legendás"/>
         <text name="ads_spec_state_premium" text="Prémium"/>
-        <text name="ads_spec_state_standart" text="Standard"/>
+        <text name="ads_spec_state_standart" text="Normál"/>
         <text name="ads_spec_state_budget" text="Költséghatékony"/>
         <text name="ads_spec_state_low" text="Alacsony"/>
         <text name="ads_spec_state_average" text="Átlagos"/>
@@ -435,11 +435,11 @@
         <text name="ads_spec_inspection_standard" text="Normál szerviz"/>
         <text name="ads_spec_inspection_complete" text="Teljes körű diagnosztika"/>
         <text name="ads_spec_maintenance_minimal" text="Minimális"/>
-        <text name="ads_spec_maintenance_standard" text="Standard"/>
+        <text name="ads_spec_maintenance_standard" text="Normál"/>
         <text name="ads_spec_maintenance_extended" text="Kiterjesztett"/>
         <text name="ads_spec_maintenance_preventive" text="Megelőző"/>
         <text name="ads_spec_overhaul_partial" text="Részleges"/>
-        <text name="ads_spec_overhaul_standard" text="Standard"/>
+        <text name="ads_spec_overhaul_standard" text="Normál"/>
         <text name="ads_spec_overhaul_full" text="Teljes"/>
         <text name="ads_spec_repair_type_fix" text="Gyorsjavítás"/>
         <text name="ads_spec_repair_type_replacement" text="Alkatrészcsere"/>
@@ -686,9 +686,9 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritikus túlterhelés! Azonnal csökkentse a gép terhelését!"/>
         <text name="ads_tutorialMode_label" text="Oktató mód"/>
         <text name="ads_tutorialMode_tooltip" text="Oktató tippeket jelenít meg játék közben. Többjátékos módban le van tiltva."/>
-        <text name="ads_tutorialResetTips_label" text="Reset tips"/>
-        <text name="ads_tutorialResetTips_text" text="Reset tips"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Reset tutorial tip history and show all tips again. Available only in singleplayer."/>
+        <text name="ads_tutorialResetTips_label" text="Tippek visszaállítása"/>
+        <text name="ads_tutorialResetTips_text" text="Tippek visszaállítása"/>
+        <text name="ads_tutorialResetTips_tooltip" text="Visszaállítja az oktatási tippek előzményeit, és újra megjeleníti az összes tippet. Csak egyjátékos módban érhető el."/>
         <text name="ads_tutorialResetConfirm_title" text="Oktató tippek visszaállítása?"/>
         <text name="ads_tutorialResetConfirm_message" text="Visszaállítsa az oktató tippek előzményeit, és mutassa meg őket újra?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Üdvözöl az Advanced Damage System"/>
@@ -697,8 +697,8 @@
         <text name="ads_tutorial_welcome_message" text="Ez a mod teljesen átdolgozza a járművek sérülési és karbantartási rendszerét a játékban. Sok változtatást tartalmaz, ezért időről időre oktató tippek jelennek majd meg. Ezek segítenek gyorsabban megérteni az új mechanikákat, elkerülni a gyakori hibákat, és megóvni a gépeidet a meghibásodástól.&#10;&#10;Ha szeretnéd, most rögtön kikapcsolhatod az oktató tippeket. Később bármikor visszakapcsolhatod őket a mod beállításai között, az Advanced Damage System résznél."/>
         <text name="ads_tutorial_service_due_soon_title" text="Időszakos karbantartás"/>
         <text name="ads_tutorial_service_due_soon_message" text="%s hamarosan karbantartásra szorul.&#10;&#10;Az ADS-ben a járművek rendszeres szervizelést igényelnek. Ha ezt halogatod, a meghibásodások kockázata jelentősen megnő.&#10;&#10;Látogass el a legközelebbi műhelybe, és válaszd a &quot;Maintenance&quot; lehetőséget. A karbantartási intervallum a mod beállításaiban módosítható."/>
-        <text name="ads_tutorial_service_interval_expired_title" text="Service Interval Expired"/>
-        <text name="ads_tutorial_service_interval_expired_message" text="%s has passed its service interval and needs maintenance.&#10;&#10;Head to a workshop as soon as possible and run the &quot;Maintenance&quot; procedure. Continuing to operate a vehicle with an overdue service interval greatly increases the risk of multiple failures."/>
+        <text name="ads_tutorial_service_interval_expired_title" text="Lejárt a szervizintervallum"/>
+        <text name="ads_tutorial_service_interval_expired_message" text="%s túllépte a szervizintervallumát, és karbantartásra van szüksége.&#10;&#10;Menj műhelybe, amint csak lehet, és indítsd el a &quot;Karbantartás&quot; folyamatot. Ha tovább használod a gépet lejárt szervizintervallummal, jelentősen nő a többszörös meghibásodások kockázata."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Szennyezett hűtő és légbeömlők"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="A jármű hűtője és légbeömlői erősen elszennyeződtek.&#10;&#10;A koszos hűtő nem tudja hatékonyan leadni a hőt, az eltömődött légbeömlők pedig korlátozhatják a motor levegőellátását. Ez teljesítménycsökkenést és magasabb üzemanyag-fogyasztást okoz.&#10;&#10;Megtisztíthatod őket a mosóállomáson vagy a boltban kapható Air Blower segítségével.&#10;&#10;A hűtő és a légbeömlők állapotát ellenőrzéssel vizsgálhatod meg: tartsd lenyomva az R billentyűt, miközben a járműre nézel."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Kenés szükséges"/>
@@ -707,8 +707,8 @@
         <text name="ads_tutorial_needs_repair_message" text="Úgy tűnik, valami nincs rendben a %s géppel. Elképzelhető, hogy valamelyik alkatrésze meghibásodott.&#10;&#10;Mindenképpen látogass el egy műhelybe és végezz ellenőrzést. Ne halogasd: a hiba tovább romolhat, és ezzel együtt a javítás költsége is nőni fog.&#10;&#10;Ha az ellenőrzés hibát igazol, a műhely javítási eljárásával szüntesd meg."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Nagyjavítás"/>
         <text name="ads_tutorial_needs_overhaul_message" text="Úgy tűnik, a %s gépen már látszik az idő múlása. Ideje elgondolkodni a cserén vagy egy nagyjavításon. Ez hosszú és megterhelő folyamat, de a legjobb módja annak, hogy második életet adj annak a kedvenc gépnek, amelyhez már úgy hozzánőttél. A beállításokban a jármű élettartamát is módosíthatod: minél nagyobb, annál lassabban kopnak a gépeid."/>
-        <text name="ads_tutorial_age_degradation_title" text="Age Degradation"/>
-        <text name="ads_tutorial_age_degradation_message" text="Did you know that vehicles in ADS gradually lose some of their original performance as they age?&#10;&#10;After roughly one third of a vehicle's lifespan, age degradation begins to slightly reduce key characteristics such as power, braking, and other systems. The older the vehicle gets, the stronger this effect becomes, and it is especially noticeable near the end of its lifespan.&#10;&#10;You can disable age degradation in the mod settings."/>
+        <text name="ads_tutorial_age_degradation_title" text="Öregedés miatti romlás"/>
+        <text name="ads_tutorial_age_degradation_message" text="Tudtad, hogy ADS-ben a járművek az öregedésükkel fokozatosan elveszítenek valamennyit eredeti teljesítményükből?&#10;&#10;A jármű élettartamának nagyjából egyharmada után az öregedés miatti romlás enyhén csökkenteni kezdi a fontos jellemzőket, például a teljesítményt, a fékhatást és más rendszereket. Minél idősebb a jármű, annál erősebbé válik ez a hatás, és különösen az élettartam vége felé lesz jól észrevehető.&#10;&#10;Az öregedés miatti romlás kikapcsolható a mod beállításaiban."/>
         <text name="ads_tutorial_needs_preventive_title" text="Meghibásodás közeleg"/>
         <text name="ads_tutorial_needs_preventive_message" text="Úgy tűnik, a %s egyik rendszere hamarosan meghibásodhat. A jó hír az, hogy ezt megelőzheted. A műhelyben elérhető egy különleges szolgáltatás: a megelőző karbantartás. Ez teljes műszaki ellenőrzést és a problémás alkatrészek megelőző javítását is tartalmazza."/>
         <text name="ads_tutorial_poor_consumables_title" text="Gyenge minőségű fogyóanyagok"/>
@@ -747,8 +747,8 @@
         <text name="ads_tutorial_cold_engine_message" text="Mindig melegítsd be a gépet, mielőtt munkába állítod. A motoron kívül sok más alkatrésznek is idő kell a felmelegedéshez: a hidraulikaolajnak, a CVT váltónak és még az üzemanyag hőmérsékletének is, különösen fagyos időben. A hideg gép használata több rendszerben is problémákat okozhat.&#10;&#10;Ha a motor hőmérséklete 50 fok fölött van, minden megfelelően bemelegedett, és a gép biztonságosan használható."/>
         <text name="ads_tutorial_pto_sharp_angle_title" text="Túl nagy TLT-szög"/>
         <text name="ads_tutorial_pto_sharp_angle_message" text="Vigyázz: a TLT szöge a géped és a munkagép között túl nagy. A kardántengely ilyenkor erős lüktetéssel dolgozik, nő a vibráció, és gyorsan emelkedik a kopás.&#10;&#10;Tartsd a szöget 30 fok alatt, és próbáld meg kikapcsolni a TLT-t szűk kanyarokban és fordulóknál."/>
-        <text name="ads_tutorial_overload_indicator_title" text="Overload Warning"/>
-        <text name="ads_tutorial_overload_indicator_message" text="%s is under heavy load. The warning indicator that just lit up on the dashboard is letting you know.&#10;&#10;The machine may not have enough power for the current task. Try reducing the load: limit your speed with cruise control, or ease off the throttle instead of running at full power."/>
+        <text name="ads_tutorial_overload_indicator_title" text="Túlterhelési figyelmeztetés"/>
+        <text name="ads_tutorial_overload_indicator_message" text="%s nagy terhelés alatt dolgozik. Erre figyelmeztet az imént felvillanó visszajelző a műszerfalon.&#10;&#10;Lehet, hogy a gépnek nincs elég teljesítménye az aktuális feladathoz. Próbáld csökkenteni a terhelést: korlátozd a sebességet tempomattal, vagy vedd vissza a gázt ahelyett, hogy teljes terhelésen dolgoznál."/>
         <text name="ads_tutorial_engine_overload_title" text="Motor túlterhelés"/>
         <text name="ads_tutorial_engine_overload_message" text="A motor óriási terhelés alatt áll. Lehet, hogy a feladat egyszerűen túl sok ennek a gépnek, és érdemes lenne erősebb járművet használni. Az is lehet, hogy elég csak lassítani és így csökkenteni a motor terhelését.&#10;&#10;Mindenesetre tartsd észben: az ilyen terhelés érezhetően növeli a kopást."/>
         <text name="ads_tutorial_lugging_title" text="Motor erőltetése alacsony fordulaton"/>

@@ -1,7 +1,7 @@
 <l10n>
     <texts>
         <text name="ads_settings_title" text="ADS 설정"/>
-        <text name="ads_settings_admin_required" text="ADS settings require administrator permissions in multiplayer."/>
+        <text name="ads_settings_admin_required" text="멀티플레이어에서는 ADS 설정을 변경하려면 관리자 권한이 필요합니다."/>
         <text name="ads_maintenancePrice_label" text="정비 비용 배율"/>
         <text name="ads_maintenancePrice_tooltip" text="점검, 수리 및 오버홀을 포함한 모든 정비소 서비스 비용을 조정합니다. 값이 클수록 모든 정비 활동 비용이 비싸집니다."/>
         <text name="ads_maintenanceDuration_label" text="정비 소요 시간 배율"/>
@@ -14,22 +14,22 @@
         <text name="ads_engineMaxHeat_tooltip" text="최대 부하 상태에서 엔진이 발생시키는 기본 발열량입니다. 값이 높을수록 엔진이 더 빨리 가열됩니다."/>
         <text name="ads_cloggingSpeed_label" text="이물질 축적 속도"/>
         <text name="ads_cloggingSpeed_tooltip" text="먼지나 왕겨, 작물 잔여물 속에서 작업할 때 라디에이터와 흡기구가 얼마나 빨리 막히는지를 조정합니다. 값이 높을수록 더 빨리 막힙니다. 100%일 때, 막힘 속도는 정비 주기의 약 1/3입니다."/>
-        <text name="ads_fieldInspectionDuration_label" text="Inspection Duration"/>
-        <text name="ads_fieldInspectionDuration_tooltip" text="Sets how long a pre-shift field inspection takes, in real seconds."/>
-        <text name="ads_lubricationReducePerDay_label" text="Lubrication Drying Rate"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Sets how much lubrication dries out over one in-game day. At 0%, lubrication does not dry out over time."/>
+        <text name="ads_fieldInspectionDuration_label" text="점검 소요 시간"/>
+        <text name="ads_fieldInspectionDuration_tooltip" text="작업 시작 전 현장 점검에 걸리는 시간을 실제 초 단위로 설정합니다."/>
+        <text name="ads_lubricationReducePerDay_label" text="윤활 건조 속도"/>
+        <text name="ads_lubricationReducePerDay_tooltip" text="게임 내 하루 동안 윤활이 얼마나 마르는지 설정합니다. 0%에서는 시간이 지나도 윤활이 마르지 않습니다."/>
         <text name="ads_ws_header_title" text="정비소"/>
-        <text name="ads_settings_section_service_wear" text="Service and Wear"/>
-        <text name="ads_settings_section_thermal_model" text="Thermal Model"/>
-        <text name="ads_settings_section_battery_alternator" text="Battery and Alternator"/>
-        <text name="ads_settings_section_preshift_maintenance" text="Pre-shift Maintenance"/>
-        <text name="ads_settings_section_other" text="Other"/>
-        <text name="ads_dealerWorkshopAvailable_label" text="Dealer Workshop 24/7"/>
-        <text name="ads_dealerWorkshopAvailable_tooltip" text="Keeps the dealer workshop available at any time of day."/>
-        <text name="ads_mobileWorkshopAvailable_label" text="Mobile Workshop 24/7"/>
-        <text name="ads_mobileWorkshopAvailable_tooltip" text="Keeps the mobile workshop available at any time of day."/>
-        <text name="ads_ownWorkshopAvailable_label" text="Owned Workshop 24/7"/>
-        <text name="ads_ownWorkshopAvailable_tooltip" text="Keeps your owned workshop available at any time of day."/>
+        <text name="ads_settings_section_service_wear" text="정비 및 마모"/>
+        <text name="ads_settings_section_thermal_model" text="열 모델"/>
+        <text name="ads_settings_section_battery_alternator" text="배터리 및 발전기"/>
+        <text name="ads_settings_section_preshift_maintenance" text="작업 전 점검"/>
+        <text name="ads_settings_section_other" text="기타"/>
+        <text name="ads_dealerWorkshopAvailable_label" text="판매점 정비소 24/7"/>
+        <text name="ads_dealerWorkshopAvailable_tooltip" text="판매점 정비소를 하루 종일 언제든 이용할 수 있게 합니다."/>
+        <text name="ads_mobileWorkshopAvailable_label" text="이동식 정비소 24/7"/>
+        <text name="ads_mobileWorkshopAvailable_tooltip" text="이동식 정비소를 하루 종일 언제든 이용할 수 있게 합니다."/>
+        <text name="ads_ownWorkshopAvailable_label" text="자가 정비소 24/7"/>
+        <text name="ads_ownWorkshopAvailable_tooltip" text="소유한 정비소를 하루 종일 언제든 이용할 수 있게 합니다."/>
         <text name="ads_instantInspection_label" text="즉시 점검"/>
         <text name="ads_instantInspection_tooltip" text="활성화 시 모든 점검이 시간 경과 없이 즉시 완료됩니다. 참고: 이 경우 '육안 점검' 옵션은 사용할 수 없습니다."/>
         <text name="ads_parkVehicle_label" text="정비 중 차량 주차"/>
@@ -38,14 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="신규 차량 수리에 보증을 적용합니다(최대 20시간 운행 또는 12개월). OEM 부품 교체 시에만 비용이 면제됩니다."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="AI 과부하 및 과열 제어"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="활성화 시 AI 작업자가 엔진 과부하 또는 과열을 방지하기 위해 부하를 줄입니다."/>
-        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
-        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
-        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
-        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
-        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
-        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
-        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
-        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
+        <text name="ads_aiWorkerTargetStress_label" text="AI 속도 반응"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="AI 작업자가 과부하와 과열에 얼마나 일찍 반응할지 조절합니다. 값이 높을수록 덜 민감해 더 늦게 반응하고, 값이 낮을수록 더 민감해 더 일찍 감속합니다."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="완만함"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="균형"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="민감"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="매우 민감"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="AI 최소 속도"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="AI 작업자가 과부하나 과열을 피하기 위해 감속할 때 사용할 수 있는 최저 크루즈 속도를 설정합니다."/>
         <text name="ads_debugMode_label" text="디버그 모드"/>
         <text name="ads_debugMode_tooltip" text="디버그 패널 및 콘솔의 상세 디버그 로그 활성 여부를 설정합니다."/>
         <text name="ads_warningMessages_label" text="경고 메시지"/>
@@ -59,7 +59,7 @@
         <text name="ads_batteryCapacity_label" text="배터리 용량"/>
         <text name="ads_thermalSensitivity_label" text="열 민감도"/>
         <text name="ads_option_off" text="꺼짐"/>
-        <text name="ads_option_none" text="None"/>
+        <text name="ads_option_none" text="없음"/>
         <text name="ads_serviceInterval_tooltip" text="정비가 필요한 기준 시간을 시간 단위로 설정합니다. 실제 주기는 차량 브랜드, 연식, 이전 정비 품질에 따라 달라집니다."/>
         <text name="ads_vehicleLifespan_tooltip" text="차량 상태가 0%에 도달하는 기준 수명을 시간 단위로 설정합니다. 상태가 0%에 가까워질수록 차량의 신뢰도가 떨어집니다."/>
         <text name="ads_downtimeWear_tooltip" text="차량이 유휴 상태일 때 발생하는 패시브 마모율을 기본 마모율(차량 수명)의 백분율로 설정합니다. 예: 수명이 100시간일 때 5%로 설정하면, 약 20시간의 유휴 시간마다 각 시스템의 상태가 1%씩 감소합니다. 참고: 차량이 지붕 아래에 보관된 동안에는 패시브 마모가 발생하지 않습니다."/>
@@ -67,17 +67,17 @@
         <text name="ads_mobileWorkshopRestrictions_tooltip" text="활성화 시 이동식 정비소에서 수행 가능한 작업 범위가 차량의 정비 용이성에 따라 달라집니다."/>
         <text name="ads_systemStressRate_tooltip" text="과부하, 과열, 휠 슬립 및 기타 가혹한 운행 조건에서 시스템 스트레스가 얼마나 빨리 쌓이는지 제어합니다. 스트레스는 고장 확률에 직접적인 영향을 줍니다."/>
         <text name="ads_batteryCapacity_tooltip" text="최대 사용 가능한 배터리 용량을 조정합니다. 150 Ah에 가까운 값이 현실적이지만, 이 수준에서는 배터리 방전 문제를 거의 겪지 않을 수 있습니다."/>
-        <text name="ads_alternatorMaxOutput_label" text="Alternator Max Output"/>
-        <text name="ads_alternatorMaxOutput_tooltip" text="Sets the maximum alternator output current. Higher values allow the alternator to recharge the battery faster."/>
-        <text name="ads_idleCurrent_label" text="Standby Current"/>
-        <text name="ads_idleCurrent_tooltip" text="Sets the battery drain current while the engine is stopped. For example, at 0.5 A a 15 Ah battery would take about 30 real hours to fully discharge, before temperature effects are applied."/>
+        <text name="ads_alternatorMaxOutput_label" text="발전기 최대 출력 전류"/>
+        <text name="ads_alternatorMaxOutput_tooltip" text="발전기의 최대 출력 전류를 설정합니다. 값이 높을수록 배터리를 더 빠르게 충전할 수 있습니다."/>
+        <text name="ads_idleCurrent_label" text="대기 전류"/>
+        <text name="ads_idleCurrent_tooltip" text="엔진이 꺼져 있을 때 배터리 방전 전류를 설정합니다. 예를 들어 0.5A라면 15Ah 배터리는 온도 영향을 제외하고 약 30시간의 실제 시간 후 완전히 방전됩니다."/>
         <text name="ads_thermalSensitivity_tooltip" text="열 모델 동작을 조정합니다. 설정이 높을수록 엔진과 변속기가 부하, 주변 온도, 라디에이터 오염에 더 민감하게 반응하여 동일 조건에서 더 많은 열을 발생시킵니다."/>
-        <text name="ads_radiatorDirtInfluence_label" text="Radiator Dirt Influence"/>
-        <text name="ads_radiatorDirtInfluence_tooltip" text="Reduces radiator cooling capacity by this percentage at maximum dirt buildup."/>
-        <text name="ads_warmingBoostPower_label" text="Warm-up Acceleration"/>
-        <text name="ads_warmingBoostPower_tooltip" text="Artificially speeds up engine and transmission warm-up. Use Off for unmodified thermal behavior."/>
-        <text name="ads_coolingSlowdownPower_label" text="Cooling Slowdown"/>
-        <text name="ads_coolingSlowdownPower_tooltip" text="Artificially slows engine and transmission cooling after the vehicle is shut down. Use Off for unmodified cooling."/>
+        <text name="ads_radiatorDirtInfluence_label" text="라디에이터 오염 영향"/>
+        <text name="ads_radiatorDirtInfluence_tooltip" text="오염이 최대치일 때 라디에이터의 냉각 성능을 이 비율만큼 감소시킵니다."/>
+        <text name="ads_warmingBoostPower_label" text="예열 가속"/>
+        <text name="ads_warmingBoostPower_tooltip" text="엔진과 변속기의 예열 속도를 인위적으로 높입니다. 원래의 열 거동을 유지하려면 끔을 사용하세요."/>
+        <text name="ads_coolingSlowdownPower_label" text="냉각 지연"/>
+        <text name="ads_coolingSlowdownPower_tooltip" text="차량을 끈 뒤 엔진과 변속기의 냉각 속도를 인위적으로 늦춥니다. 원래의 냉각 거동을 유지하려면 끔을 사용하세요."/>
         <text name="ads_thermal_none" text="패시브"/>
         <text name="ads_thermal_mild" text="완만함"/>
         <text name="ads_thermal_default" text="기본"/>
@@ -567,7 +567,7 @@
         <text name="ads_jumper_cables_auto_disconnected" text="한 차량이 움직이기 시작하여 점프 케이블이 자동으로 분리되었습니다"/>
         <text name="ads_jumper_cables_is_too_far" text="%s와(과) %s 사이가 너무 멉니다"/>
         <text name="input_ADS_FIELD_INSPECTION" text="차량 점검"/>
-        <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
+        <text name="input_ADS_CLOSE_NOTIFICATION" text="확인"/>
         <text name="ads_field_inspection_action" text="차량 점검하기"/>
         <text name="ads_field_inspection_hold_to_start" text="길게 눌러 점검 시작"/>
         <text name="ads_field_inspection_starting" text="점검 시작 중..."/>
@@ -686,9 +686,9 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="치명적 과부하! 즉시 차량의 부하를 줄이십시오."/>
         <text name="ads_tutorialMode_label" text="튜토리얼 모드"/>
         <text name="ads_tutorialMode_tooltip" text="게임 플레이 중 튜토리얼 팁을 표시합니다. 멀티플레이어에서는 비활성화됩니다."/>
-        <text name="ads_tutorialResetTips_label" text="Reset tips"/>
-        <text name="ads_tutorialResetTips_text" text="Reset tips"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Reset tutorial tip history and show all tips again. Available only in singleplayer."/>
+        <text name="ads_tutorialResetTips_label" text="팁 초기화"/>
+        <text name="ads_tutorialResetTips_text" text="팁 초기화"/>
+        <text name="ads_tutorialResetTips_tooltip" text="튜토리얼 팁 기록을 초기화하고 모든 팁을 다시 표시합니다. 싱글플레이에서만 사용할 수 있습니다."/>
         <text name="ads_tutorialResetConfirm_title" text="튜토리얼 팁을 초기화할까요?"/>
         <text name="ads_tutorialResetConfirm_message" text="튜토리얼 팁 기록을 초기화하고 모든 팁을 다시 표시할까요?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Advanced Damage System에 오신 것을 환영합니다"/>
@@ -697,8 +697,8 @@
         <text name="ads_tutorial_welcome_message" text="이 모드는 게임의 차량 손상 및 정비 시스템을 완전히 새롭게 바꿉니다. 변경 사항이 많기 때문에 튜토리얼 팁이 수시로 표시됩니다. 이 팁들은 새로운 메커니즘을 더 빨리 이해하고, 흔한 실수를 피하며, 기계가 고장 나지 않도록 도와줍니다.&#10;&#10;원하시면 지금 바로 튜토리얼 팁을 끌 수 있습니다. 이후에는 모드 설정의 Advanced Damage System 항목에서 언제든 다시 켤 수 있습니다."/>
         <text name="ads_tutorial_service_due_soon_title" text="정기 정비"/>
         <text name="ads_tutorial_service_due_soon_message" text="%s 차량은 곧 정비가 필요합니다.&#10;&#10;ADS에서는 차량이 정기적인 정비를 받아야 합니다. 이를 미루면 고장 위험이 크게 높아집니다.&#10;&#10;가장 가까운 정비소를 방문해 &quot;Maintenance&quot;를 선택하세요. 정비 주기는 모드 설정에서 조정할 수 있습니다."/>
-        <text name="ads_tutorial_service_interval_expired_title" text="Service Interval Expired"/>
-        <text name="ads_tutorial_service_interval_expired_message" text="%s has passed its service interval and needs maintenance.&#10;&#10;Head to a workshop as soon as possible and run the &quot;Maintenance&quot; procedure. Continuing to operate a vehicle with an overdue service interval greatly increases the risk of multiple failures."/>
+        <text name="ads_tutorial_service_interval_expired_title" text="정비 주기 초과"/>
+        <text name="ads_tutorial_service_interval_expired_message" text="%s의 정비 주기가 지났으며 정비가 필요합니다.&#10;&#10;가능한 한 빨리 정비소로 가서 &quot;정비&quot; 절차를 실행하세요. 정비 주기를 넘긴 차량을 계속 운행하면 여러 고장이 동시에 발생할 위험이 크게 높아집니다."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="라디에이터 및 흡기구 오염"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="차량의 라디에이터와 흡기구가 심하게 막힌 것 같습니다.&#10;&#10;라디에이터가 더러우면 열을 제대로 방출하지 못하고, 흡기구가 막히면 엔진으로 들어가는 공기 흐름이 제한될 수 있습니다. 그러면 출력이 떨어지고 연료 소비가 증가합니다.&#10;&#10;세차장에서 청소하거나 상점에서 구입한 Air Blower로 청소할 수 있습니다.&#10;&#10;라디에이터와 흡기구 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
         <text name="ads_tutorial_needs_lubrication_title" text="윤활 필요"/>
@@ -707,8 +707,8 @@
         <text name="ads_tutorial_needs_repair_message" text="%s 차량에 뭔가 문제가 있는 것 같습니다. 부품 하나가 고장 났을 수 있습니다.&#10;&#10;반드시 정비소를 방문해 점검을 받으세요. 미루지 마세요. 문제가 계속 악화될 수 있고, 그만큼 수리 비용도 올라갑니다.&#10;&#10;점검 결과 고장이 확인되면 정비소의 수리 절차를 통해 해결하세요."/>
         <text name="ads_tutorial_needs_overhaul_title" text="대정비"/>
         <text name="ads_tutorial_needs_overhaul_message" text="%s 차량이 꽤 노후해진 것 같습니다. 교체를 고려하거나 대정비를 할 때입니다. 시간도 오래 걸리고 힘든 작업이지만, 애착이 있는 이 차량에 두 번째 생명을 불어넣는 가장 좋은 방법입니다. 설정에서 차량 수명을 조정할 수도 있습니다. 수명이 길수록 차량 마모 속도는 더 느려집니다."/>
-        <text name="ads_tutorial_age_degradation_title" text="Age Degradation"/>
-        <text name="ads_tutorial_age_degradation_message" text="Did you know that vehicles in ADS gradually lose some of their original performance as they age?&#10;&#10;After roughly one third of a vehicle's lifespan, age degradation begins to slightly reduce key characteristics such as power, braking, and other systems. The older the vehicle gets, the stronger this effect becomes, and it is especially noticeable near the end of its lifespan.&#10;&#10;You can disable age degradation in the mod settings."/>
+        <text name="ads_tutorial_age_degradation_title" text="노후 성능 저하"/>
+        <text name="ads_tutorial_age_degradation_message" text="ADS에서는 차량이 오래될수록 원래 성능의 일부를 서서히 잃는다는 사실을 알고 계셨나요?&#10;&#10;차량 수명의 약 3분의 1이 지나면 노후화로 인해 출력, 제동 성능 및 기타 주요 시스템 성능이 조금씩 저하되기 시작합니다. 차량이 오래될수록 이 효과는 더 강해지며, 수명 말기에 특히 뚜렷하게 나타납니다.&#10;&#10;이 노후 성능 저하는 모드 설정에서 끌 수 있습니다."/>
         <text name="ads_tutorial_needs_preventive_title" text="고장 임박"/>
         <text name="ads_tutorial_needs_preventive_message" text="%s 차량의 시스템 중 하나가 곧 고장 날 것 같습니다. 다행히도 이를 미리 막을 수 있습니다. 이제 정비소에서 특별한 서비스인 예방 정비를 이용할 수 있습니다. 여기에는 전체 기술 점검과 문제 가능성이 있는 부품에 대한 예방 수리가 포함됩니다."/>
         <text name="ads_tutorial_poor_consumables_title" text="저품질 소모품"/>
@@ -747,8 +747,8 @@
         <text name="ads_tutorial_cold_engine_message" text="작업에 투입하기 전에 항상 차량을 예열하세요. 엔진뿐만 아니라 다른 여러 부품들도 예열 시간이 필요합니다. 유압 오일, CVT 변속기, 심지어 연료 온도까지도 그렇습니다. 특히 혹한기에는 더욱 그렇습니다. 차가운 상태로 차량을 운행하면 여러 시스템에 문제가 생길 수 있습니다.&#10;&#10;엔진 온도가 50도를 넘으면 모든 것이 충분히 예열된 것이며 차량을 안전하게 사용할 수 있습니다."/>
         <text name="ads_tutorial_pto_sharp_angle_title" text="PTO 각도 과다"/>
         <text name="ads_tutorial_pto_sharp_angle_message" text="주의하세요. 차량과 작업기 사이의 PTO 각도가 너무 큽니다. 프로펠러 샤프트가 강한 맥동과 함께 작동하기 시작하고, 진동이 증가하며 마모가 빠르게 쌓입니다.&#10;&#10;각도를 30도 이하로 유지하고, 급회전이나 두렁 끝 선회 시에는 가능하면 PTO를 해제하세요."/>
-        <text name="ads_tutorial_overload_indicator_title" text="Overload Warning"/>
-        <text name="ads_tutorial_overload_indicator_message" text="%s is under heavy load. The warning indicator that just lit up on the dashboard is letting you know.&#10;&#10;The machine may not have enough power for the current task. Try reducing the load: limit your speed with cruise control, or ease off the throttle instead of running at full power."/>
+        <text name="ads_tutorial_overload_indicator_title" text="과부하 경고"/>
+        <text name="ads_tutorial_overload_indicator_message" text="%s에 큰 부하가 걸리고 있습니다. 방금 계기판에 켜진 경고등이 이를 알려주고 있습니다.&#10;&#10;현재 작업에 필요한 힘이 이 기계에 부족할 수 있습니다. 부하를 줄여 보세요. 크루즈 컨트롤로 속도를 제한하거나, 최대 출력으로 계속 밀어붙이기보다는 스로틀을 조금 줄이세요."/>
         <text name="ads_tutorial_engine_overload_title" text="엔진 과부하"/>
         <text name="ads_tutorial_engine_overload_message" text="엔진이 엄청난 부담을 받고 있습니다. 지금 하고 있는 작업이 이 기계에게는 너무 벅찰 수도 있으니 더 강한 장비를 고려해야 할 수도 있습니다. 혹은 단순히 속도를 줄이는 것만으로도 엔진 부하를 낮출 수 있습니다.&#10;&#10;어쨌든 이런 부담 아래에서는 마모가 눈에 띄게 증가한다는 점을 꼭 기억하세요."/>
         <text name="ads_tutorial_lugging_title" text="저회전 고부하 운전"/>

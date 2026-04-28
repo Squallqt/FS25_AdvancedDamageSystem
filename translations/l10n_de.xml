@@ -38,14 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Aktiviert Garantieleistungen für Reparaturen an Neufahrzeugen (bis zu 20 Betriebsstunden oder 12 Monate). Nur OEM-Teile werden kostenlos übernommen."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="KI-Überlastungs- und Überhitzungskontrolle"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Der KI-Helfer reduziert die Motorlast bei drohender Überlastung oder Überhitzung."/>
-        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
-        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
-        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
-        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
-        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
-        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
-        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
-        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
+        <text name="ads_aiWorkerTargetStress_label" text="KI-Reaktion auf Last"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Steuert, wie frueh der KI-Helfer auf Ueberlastung und Ueberhitzung reagiert. Hoehere Werte sind weniger empfindlich und reagieren spaeter; niedrigere Werte sind empfindlicher und verlangsamen frueher."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Gelassen"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Ausgewogen"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Empfindlich"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Sehr empfindlich"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="Minimale KI-Geschwindigkeit"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Legt die niedrigste Tempomatgeschwindigkeit fest, die der KI-Helfer beim Verlangsamen zur Vermeidung von Ueberlastung oder Ueberhitzung verwenden darf."/>
         <text name="ads_debugMode_label" text="Debug-Modus"/>
         <text name="ads_debugMode_tooltip" text="Aktiviert oder deaktiviert das Debug-Panel und die umfangreiche Debug-Protokollierung in der Konsole."/>
         <text name="ads_warningMessages_label" text="Warnmeldungen"/>

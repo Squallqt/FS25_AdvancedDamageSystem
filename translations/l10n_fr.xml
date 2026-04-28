@@ -38,14 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Applique une garantie aux réparations des véhicules neufs (jusqu'à 20 heures de fonctionnement ou 12 mois). Seules les pièces OEM sont couvertes sans frais."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Contrôle surcharge/surchauffe IA"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Si activé, l'ouvrier IA réduit la charge pour éviter la surcharge moteur ou la surchauffe."/>
-        <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
-        <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
-        <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
-        <text name="ads_aiWorkerTargetStress_balanced" text="Balanced"/>
-        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensitive"/>
-        <text name="ads_aiWorkerTargetStress_verySensitive" text="Very Sensitive"/>
-        <text name="ads_aiWorkerMinSpeed_label" text="AI Minimum Speed"/>
-        <text name="ads_aiWorkerMinSpeed_tooltip" text="Sets the lowest AI worker cruise-control speed allowed while reducing speed to avoid overload or overheating."/>
+        <text name="ads_aiWorkerTargetStress_label" text="Reactivite de vitesse de l'IA"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Controle a quel moment l'ouvrier IA reagit a la surcharge et a la surchauffe. Des valeurs plus elevees sont moins sensibles et reagissent plus tard ; des valeurs plus faibles sont plus sensibles et ralentissent plus tot."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Detendue"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Equilibree"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensible"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Tres sensible"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="Vitesse minimale de l'IA"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Definit la vitesse minimale de regulateur que l'ouvrier IA est autorise a utiliser lorsqu'il ralentit pour eviter une surcharge ou une surchauffe."/>
         <text name="ads_debugMode_label" text="Mode débogage"/>
         <text name="ads_debugMode_tooltip" text="Active ou désactive le panneau de débogage et la journalisation de débogage étendue dans la console."/>
         <text name="ads_warningMessages_label" text="Messages d'avertissement"/>
