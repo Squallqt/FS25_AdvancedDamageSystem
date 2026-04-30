@@ -21,6 +21,16 @@ local function hasCVTAddon(vehicle)
     return hasActiveCVTAddon
 end
 
+local function getSpeedCooling(vehicle)
+    local C = ADS_Config.THERMAL
+    local speed = vehicle:getLastSpeed()
+    if speed > C.SPEED_COOLING_MIN_SPEED then
+        local speedRatio = math.min((speed - C.SPEED_COOLING_MIN_SPEED) / (C.SPEED_COOLING_MAX_SPEED - C.SPEED_COOLING_MIN_SPEED), 1.0)
+        return C.SPEED_COOLING_MAX_EFFECT * speedRatio
+    end
+    return 0
+end
+
 -- ==========================================================
 --                     MAIN
 -- ==========================================================
@@ -35,16 +45,8 @@ function ADS_Thermal:updateThermalSystems(dt)
     local isMotorStarted = self:getIsMotorStarted()
     local motorLoad = spec.dynamicMotorLoad or math.max(self:getMotorLoadPercentage(), 0.0)
     local motorRpm = self:getMotorRpmPercentage()
-    local speed = self:getLastSpeed()
     local dirt = spec.radiatorClogging
     local eviromentTemp = g_currentMission.environment.weather.forecast:getCurrentWeather().temperature
-
-    local speedCooling = 0
-    local C = ADS_Config.THERMAL
-    if speed > C.SPEED_COOLING_MIN_SPEED then
-        local speedRatio = math.min((speed - C.SPEED_COOLING_MIN_SPEED) / (C.SPEED_COOLING_MAX_SPEED - C.SPEED_COOLING_MIN_SPEED), 1.0)
-        speedCooling = C.SPEED_COOLING_MAX_EFFECT * speedRatio
-    end
 
     if (spec.engineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.engineTemperature = eviromentTemp end
     if (spec.rawEngineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawEngineTemperature = eviromentTemp end
@@ -54,14 +56,14 @@ function ADS_Thermal:updateThermalSystems(dt)
     end
 
     if not spec.isElectricVehicle then
-        self:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, speedCooling, eviromentTemp, dirt)
+        self:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, eviromentTemp, dirt)
     end
 
     if vehicleHaveCVT then
         if hasCVTAddon(self) then
             spec.rawTransmissionTemperature = self.spec_motorized.motorTemperature.value
         else
-            self:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, speed, speedCooling, eviromentTemp, dirt)
+            self:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
         end
     else
         spec.rawTransmissionTemperature = -99
@@ -104,37 +106,54 @@ end
 --                     ENGINE
 -- ==========================================================
 
-function ADS_Thermal:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, speedCooling, eviromentTemp, dirt)
+local function getEngineHeat(vehicle, spec, motorLoad, isMotorStarted)
+    local C = ADS_Config.THERMAL
+    if isMotorStarted == false then
+        return 0
+    end
+
+    local engineMaxHeat = C.ENGINE_MAX_HEAT + spec.extraEngineHeat
+    local warmBoost = spec.rawEngineTemperature < ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD and C.WARMING_BOOST_POWER or 1.0
+    local heat = (C.ENGINE_MIN_HEAT + math.clamp(motorLoad, 0.1, 1.0) * (engineMaxHeat - C.ENGINE_MIN_HEAT)) * warmBoost
+    return heat
+end
+
+local function getEngineCooling(vehicle, spec, eviromentTemp, dirt, isMotorStarted)
+    local C = ADS_Config.THERMAL
+    local deltaTemp = math.max(0, spec.rawEngineTemperature - eviromentTemp)
+    local convectionCooling = C.CONVECTION_FACTOR * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
+    local speedCooling = getSpeedCooling(vehicle)
+
+    if isMotorStarted == false then
+        if (spec.engineTemperature or -99) < C.PID_TARGET_TEMP then
+            return convectionCooling / C.COOLING_SLOWDOWN_POWER, 0, convectionCooling, speedCooling
+        else
+            return convectionCooling, 0, convectionCooling, speedCooling
+        end
+    end
+
+    local brokenFanModifier = 1.0
+    if spec.fanClutchHealth < 1.0 then
+        local speed = vehicle:getLastSpeed()
+        if speed < C.SPEED_COOLING_MIN_SPEED then
+            local speedK = 1 - speed / C.SPEED_COOLING_MIN_SPEED
+            brokenFanModifier = 1 - math.min(speedK * (1 - spec.fanClutchHealth), 0.5)
+        end
+    end
+
+    local dirtRadiatorMaxCooling = (C.ENGINE_RADIATOR_MAX_COOLING * spec.radiatorHealth) * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 3)) * brokenFanModifier
+    local radiatorCooling = math.max(dirtRadiatorMaxCooling * spec.thermostatState, C.ENGINE_RADIATOR_MIN_COOLING) * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
+    return (radiatorCooling + convectionCooling) * (1 + speedCooling), radiatorCooling, convectionCooling, speedCooling
+end
+
+function ADS_Thermal:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, eviromentTemp, dirt)
     local C = ADS_Config.THERMAL
     local heat, cooling = 0, 0
     local radiatorCooling, convectionCooling = 0, 0
+    local speedCooling = 0
 
-    local deltaTemp = math.max(0, spec.rawEngineTemperature - eviromentTemp)
-    convectionCooling = C.CONVECTION_FACTOR * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
-
-    if isMotorStarted then
-        local engineMaxHeat = C.ENGINE_MAX_HEAT + spec.extraEngineHeat
-        local warmBoost = spec.rawEngineTemperature < ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD and C.WARMING_BOOST_POWER or 1.0
-        heat = (C.ENGINE_MIN_HEAT + math.clamp(motorLoad, 0.1, 1.0) * (engineMaxHeat - C.ENGINE_MIN_HEAT)) * warmBoost
-
-        local brokenFanModifier = 1.0
-        if spec.fanClutchHealth < 1.0 then
-            local speed = self:getLastSpeed()
-            if speed < C.SPEED_COOLING_MIN_SPEED then
-                local speedK = 1 - speed / C.SPEED_COOLING_MIN_SPEED
-                brokenFanModifier = 1 - math.min(speedK * (1 - spec.fanClutchHealth), 0.5)
-            end
-        end
-        local dirtRadiatorMaxCooling = (C.ENGINE_RADIATOR_MAX_COOLING * spec.radiatorHealth) * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 3)) * brokenFanModifier
-        radiatorCooling = math.max(dirtRadiatorMaxCooling * spec.thermostatState, C.ENGINE_RADIATOR_MIN_COOLING) * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
-        cooling = (radiatorCooling + convectionCooling) * (1 + speedCooling)
-    else
-        if (spec.engineTemperature or -99) < C.PID_TARGET_TEMP then
-            cooling = convectionCooling / C.COOLING_SLOWDOWN_POWER
-        else
-            cooling = convectionCooling
-        end
-    end
+    heat = getEngineHeat(self, spec, motorLoad, isMotorStarted)
+    cooling, radiatorCooling, convectionCooling, speedCooling = getEngineCooling(self, spec, eviromentTemp, dirt, isMotorStarted)
 
     spec.rawEngineTemperature = spec.rawEngineTemperature + (heat - cooling) * (dt / 1000) * C.TEMPERATURE_CHANGE_SPEED
     spec.rawEngineTemperature = math.max(spec.rawEngineTemperature, eviromentTemp)
@@ -167,13 +186,9 @@ end
 --                     TRANSMISSION
 -- ==========================================================
 
-function ADS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, speed, speedCooling, eviromentTemp, dirt)
+local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, motorRpm)
     local C = ADS_Config.THERMAL
-    local heat, cooling = 0, 0
-    local radiatorCooling, convectionCooling = 0, 0
-    local motor = self:getMotor()
-
-    local dbg = spec.debugData.transmissionTemp
+    local motor = vehicle:getMotor()
 
     local loadFactor = math.clamp(motorLoad - motor.motorExternalTorque / motor.peakMotorTorque, C.TRANS_MIN_HEAT, 1.1)
     local slipFactor = 1.0
@@ -182,48 +197,76 @@ function ADS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, mo
     local cvtSlipActive = false
     local cvtSlipLocked = false
 
-    local deltaTemp = math.max(0, spec.rawTransmissionTemperature - eviromentTemp)
-    convectionCooling = C.CONVECTION_FACTOR * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
+    if isMotorStarted == false then
+        return 0, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked
+    end
 
-    if isMotorStarted then
-        local accelerationAxis = self.getAccelerationAxis ~= nil and (tonumber(self:getAccelerationAxis()) or 0) or 0
-        local cruiseControlAxis = self.getCruiseControlAxis ~= nil and (tonumber(self:getCruiseControlAxis()) or 0) or 0
+    local accelerationAxis = vehicle.getAccelerationAxis ~= nil and (tonumber(vehicle:getAccelerationAxis()) or 0) or 0
+    local cruiseControlAxis = vehicle.getCruiseControlAxis ~= nil and (tonumber(vehicle:getCruiseControlAxis()) or 0) or 0
 
-        if accelerationAxis > 0 or cruiseControlAxis > 0 then
-            accFactor = math.clamp(5 * motorRpm * math.clamp(motor.motorRotAccelerationSmoothed / motor.motorRotationAccelerationLimit, 0.0, 1.0), 1.0, 2.0)
-        end
+    if accelerationAxis > 0 or cruiseControlAxis > 0 then
+        accFactor = math.clamp(5 * motorRpm * math.clamp(motor.motorRotAccelerationSmoothed / motor.motorRotationAccelerationLimit, 0.0, 1.0), 1.0, 2.0)
+    end
 
-        -- slip effect from breakdown
-        if spec.activeEffects.CVT_SLIP_EFFECT ~= nil and spec.activeEffects.CVT_SLIP_EFFECT.value > 0 then
-            cvtSlipActive = true
-            local curSpeed = math.min(motor.vehicle:getLastSpeed() / (motor:getMaximumForwardSpeed() * 3.6), 1.0)
-            local minGearRatio, maxGearRatio = motor:getMinMaxGearRatio()
-            local isSliping = (1 - minGearRatio / math.max(motor.gearRatio, 0.01) <= 0.02) and curSpeed < 0.8
-            if isSliping then
-                cvtSlipLocked = true
-                slipFactor = slipFactor * 2.0
-            end
-        end
-
-        -- wheel slip
-        if spec.wheelSlipIntensity ~= nil and spec.wheelSlipIntensity > 0.05 then
-            wheelSlipFactor = math.min(wheelSlipFactor + ((spec.wheelSlipIntensity or 0) / 2) * (spec.avgTireGroundFrictionCoeff ^ 2), 1.4)
-        end
-
-        local maxHeat = C.TRANS_MAX_HEAT + spec.extraTransmissionHeat
-        local warmBoost = spec.rawTransmissionTemperature < ADS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD and C.WARMING_BOOST_POWER or 1.0
-        heat = C.TRANS_MIN_HEAT + (maxHeat - C.TRANS_MIN_HEAT) * loadFactor * slipFactor * accFactor * wheelSlipFactor * warmBoost
-        local dirtRadiatorMaxCooling = C.TRANS_RADIATOR_MAX_COOLING * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 3))
-
-        radiatorCooling = math.max(dirtRadiatorMaxCooling * spec.transmissionThermostatState, C.TRANS_RADIATOR_MIN_COOLING) * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
-        cooling = (radiatorCooling +  convectionCooling) * (1 + speedCooling)
-    else
-        if (spec.rawTransmissionTemperature or -99) < C.TRANS_PID_TARGET_TEMP then
-            cooling = convectionCooling / C.COOLING_SLOWDOWN_POWER
-        else
-            cooling = convectionCooling
+    -- slip effect from breakdown
+    if spec.activeEffects.CVT_SLIP_EFFECT ~= nil and spec.activeEffects.CVT_SLIP_EFFECT.value > 0 then
+        cvtSlipActive = true
+        local curSpeed = math.min(motor.vehicle:getLastSpeed() / (motor:getMaximumForwardSpeed() * 3.6), 1.0)
+        local minGearRatio, maxGearRatio = motor:getMinMaxGearRatio()
+        local isSliping = (1 - minGearRatio / math.max(motor.gearRatio, 0.01) <= 0.02) and curSpeed < 0.8
+        if isSliping then
+            cvtSlipLocked = true
+            slipFactor = slipFactor * 2.0
         end
     end
+
+    -- wheel slip
+    if spec.wheelSlipIntensity ~= nil and spec.wheelSlipIntensity > 0.05 then
+        wheelSlipFactor = math.min(wheelSlipFactor + ((spec.wheelSlipIntensity or 0) / 2) * (spec.avgTireGroundFrictionCoeff ^ 2), 1.4)
+    end
+
+    local maxHeat = C.TRANS_MAX_HEAT + spec.extraTransmissionHeat
+    local warmBoost = spec.rawTransmissionTemperature < ADS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD and C.WARMING_BOOST_POWER or 1.0
+    local heat = C.TRANS_MIN_HEAT + (maxHeat - C.TRANS_MIN_HEAT) * loadFactor * slipFactor * accFactor * wheelSlipFactor * warmBoost
+
+    return heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked
+end
+
+local function getTransmissionCooling(vehicle, spec, eviromentTemp, dirt, isMotorStarted)
+    local C = ADS_Config.THERMAL
+    local deltaTemp = math.max(0, spec.rawTransmissionTemperature - eviromentTemp)
+    local convectionCooling = C.CONVECTION_FACTOR * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
+    local speedCooling = getSpeedCooling(vehicle)
+
+    if isMotorStarted == false then
+        if (spec.rawTransmissionTemperature or -99) < C.TRANS_PID_TARGET_TEMP then
+            return convectionCooling / C.COOLING_SLOWDOWN_POWER, 0, convectionCooling, speedCooling
+        else
+            return convectionCooling, 0, convectionCooling, speedCooling
+        end
+    end
+
+    local dirtRadiatorMaxCooling = C.TRANS_RADIATOR_MAX_COOLING * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 3))
+    local radiatorCooling = math.max(dirtRadiatorMaxCooling * spec.transmissionThermostatState, C.TRANS_RADIATOR_MIN_COOLING) * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
+    return (radiatorCooling + convectionCooling) * (1 + speedCooling), radiatorCooling, convectionCooling, speedCooling
+end
+
+function ADS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
+    local C = ADS_Config.THERMAL
+    local heat, cooling = 0, 0
+    local radiatorCooling, convectionCooling = 0, 0
+    local speedCooling = 0
+    local loadFactor = 0
+    local slipFactor = 1.0
+    local wheelSlipFactor = 1.0
+    local accFactor = 1.0
+    local cvtSlipActive = false
+    local cvtSlipLocked = false
+
+    local dbg = spec.debugData.transmissionTemp
+
+    heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked = getTransmissionHeat(self, spec, isMotorStarted, motorLoad, motorRpm)
+    cooling, radiatorCooling, convectionCooling, speedCooling = getTransmissionCooling(self, spec, eviromentTemp, dirt, isMotorStarted)
 
     spec.rawTransmissionTemperature = spec.rawTransmissionTemperature + (heat - cooling) * (dt / 1000) * C.TEMPERATURE_CHANGE_SPEED
     spec.rawTransmissionTemperature = math.max(spec.rawTransmissionTemperature, eviromentTemp)
@@ -341,4 +384,3 @@ function ADS_Thermal.getNewTermostatState(dt, currentTemp, targetTemp, pidData, 
 
     return math.clamp(math.floor(newPos / stiction) * stiction, 0.0, maxOpening)
 end
-
