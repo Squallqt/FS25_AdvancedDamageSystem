@@ -1,6 +1,5 @@
 local adsInspectionVehicle = nil
 local adsInspectionActionId = nil
-
 local adsInspectionHoldVehicle = nil
 local adsInspectionHoldTime = 0
 local adsInspectionHoldThreshold = 600

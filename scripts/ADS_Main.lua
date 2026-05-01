@@ -17,10 +17,10 @@ source(g_currentModDirectory .. "gui/ADS_InGameMenuFrame.lua")
 source(g_currentModDirectory .. "gui/ADS_MaintenanceTwoOptionsDialog.lua")
 source(g_currentModDirectory .. "gui/ADS_MaintenanceThreeOptionsDialog.lua")
 source(g_currentModDirectory .. "gui/ADS_WelcomeDialog.lua")
+source(g_currentModDirectory .. "gui/ADS_SettingsPage.lua")
 source(g_currentModDirectory .. "scripts/ADS_Hud.lua")
 source(g_currentModDirectory .. "scripts/ADS_Telemetry.lua")
 source(g_currentModDirectory .. "scripts/ADS_PlayerInput.lua")
-source(g_currentModDirectory .. "scripts/ADS_InGameSettings.lua")
 source(g_currentModDirectory .. "events/ADS_VehicleChangeStatusEvent.lua")
 source(g_currentModDirectory .. "events/ADS_WorkshopChangeStatusEvent.lua")
 source(g_currentModDirectory .. "events/ADS_ServiceRequestEvent.lua")
@@ -39,30 +39,14 @@ function ADS_Main.loadGuiProfiles()
     end
 
     g_gui:loadProfiles(modDirectory .. "gui/guiProfiles.xml")
+
+    if g_overlayManager ~= nil
+        and (g_overlayManager.textureConfigs == nil or g_overlayManager.textureConfigs.ads_MenuIcon == nil) then
+        g_overlayManager:addTextureConfigFile(modDirectory .. "images/menuIcon.xml", "ads_MenuIcon")
+    end
+
     ADS_Main.guiProfilesLoaded = true
 end
-
--- Network hook: wrap every settings callback so changes made by an admin
--- client are automatically replicated to the dedicated server (and then
--- re-broadcast to all other clients via ADS_SettingsSyncEvent).
-do
-    local cbs = {
-        "onServiceWearChanged", "onConditionWearChanged", "onDowntimeWearChanged", "onGeneralWearEnabledChanged",
-        "onSystemStressRateChanged", "onInstantInspectionChanged", "onParkVehicleChanged", "onWarrantyEnabledChanged",
-        "onMaintenancePriceChanged", "onMaintenanceDurationChanged", "onWorkshopAvailableChanged", "onMobileWorkshopRestrictionsChanged",
-        "onWorkshopOpenHourChanged", "onWorkshopCloseHourChanged", "onThermalSensitivityChanged",
-        "onBatteryCapacityChanged", "onCloggingSpeedChanged", "onAiOverloadAndOverheatControlChanged", "onDebugModeChanged"
-    }
-    for _, name in ipairs(cbs) do
-        local orig = ADS_InGameSettings[name]
-        if orig ~= nil then
-            ADS_InGameSettings[name] = function(self, ...)
-                orig(self, ...)
-            end
-        end
-    end
-end
-
 
 local function log_dbg(...)
     if ADS_Config.DEBUG then
@@ -95,7 +79,7 @@ function ADS_Main.registerSpecializationToVehicles()
             vehicleType ~= "motorbike" and 
             vehicleType ~= "inlineWrapper" and 
             vehicleType ~= "locomotive" and 
-            vehicleType ~= "сonveyorBelt" and 
+            vehicleType ~= "conveyorBelt" and 
             vehicleType ~= "pickupConveyorBelt" and 
             vehicleType ~= "woodCrusherTrailermotorized" and 
             vehicleType ~= "baleWrapper" and 
@@ -433,16 +417,33 @@ function ADS_Main:evaluateWorkshopState()
         return self.isWorkshopOpen
     end
     local currentDayHour = g_currentMission.environment.dayTime / (60 * 60 * 1000)
-    return ADS_Config.WORKSHOP.ALWAYS_AVAILABLE
-        or (currentDayHour >= ADS_Config.WORKSHOP.OPEN_HOUR
+    return (currentDayHour >= ADS_Config.WORKSHOP.OPEN_HOUR
         and currentDayHour < ADS_Config.WORKSHOP.CLOSE_HOUR)
+end
+
+function ADS_Main:isWorkshopTypeAlwaysAvailable(workshopType)
+    local workshopConfig = ADS_Config.WORKSHOP
+
+    if workshopType == AdvancedDamageSystem.WORKSHOP.DEALER then
+        return workshopConfig.DEALER_ALWAYS_AVAILABLE == true
+    elseif workshopType == AdvancedDamageSystem.WORKSHOP.MOBILE then
+        return workshopConfig.MOBILE_ALWAYS_AVAILABLE == true
+    elseif workshopType == AdvancedDamageSystem.WORKSHOP.OWN then
+        return workshopConfig.OWN_ALWAYS_AVAILABLE == true
+    end
+
+    return false
+end
+
+function ADS_Main:isWorkshopTypeOpen(workshopType)
+    return self:isWorkshopTypeAlwaysAvailable(workshopType) or self.isWorkshopOpen == true
 end
 
 
 -- Re-evaluate and broadcast workshop state immediately (settings change).
-function ADS_Main:forceWorkshopUpdate()
+function ADS_Main:forceWorkshopUpdate(forceNotify)
     local isWorkshopOpen = self:evaluateWorkshopState()
-    if isWorkshopOpen ~= self.isWorkshopOpen then
+    if forceNotify or isWorkshopOpen ~= self.isWorkshopOpen then
         self.isWorkshopOpen = isWorkshopOpen
         if g_currentMission:getIsServer() then
             ADS_WorkshopChangeStatusEvent.send(self.isWorkshopOpen)
@@ -545,6 +546,7 @@ end
 function ADS_Main:loadMap()
     log_dbg("loadMap() called")
     ADS_Main.loadGuiProfiles()
+    ADS_SettingsPage.reset()
     self.shopMenuPageInstalled = false
     self.shopMenuFrame = nil
     ADS_Config.loadFromXMLFile()
@@ -556,6 +558,7 @@ function ADS_Main:deleteMap()
     self.shopMenuFrame = nil
     ADS_Main.guiProfilesLoaded = nil
     ADS_Config._loaded = nil
+    ADS_SettingsPage.reset()
 end
 
 addModEventListener(ADS_Main)

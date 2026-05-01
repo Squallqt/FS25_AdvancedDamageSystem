@@ -4,7 +4,7 @@ ADS_Config = {
     -- When true, the mod will print detailed information about its calculations,
     -- such as wear rates, breakdown checks, and temperature changes.
     -- Set to false for normal gameplay to avoid performance impact and console spam.
-    VER = 131,
+    VER = 135,
 
     DEBUG = false,
     TUTORIAL_MODE = true,
@@ -177,7 +177,7 @@ ADS_Config = {
             SERVICE_EXPIRED_MULTIPLIER = 2.0,
             WORKPROCESSS_IDLING_MULTIPLIER = 0.5,
             WET_CROP_FACTOR_MULTIPLIER = 1.0,
-            LUBRICATION_FACTOR_MULTIPLIER = 1.0
+            LUBRICATION_FACTOR_MULTIPLIER = 5.0
         },
 
         FUEL_FACTOR_DATA = {
@@ -201,6 +201,7 @@ ADS_Config = {
 
         CONCURRENT_BREAKDOWN_LIMIT_PER_VEHICLE = 15,
         ENABLE_WARNING_MESSAGES = true,
+
         AI_OVERLOAD_AND_OVERHEAT_CONTROL = true,
         AI_WORKER_PID = {
             MIN_SPEED = 3.0,
@@ -252,7 +253,9 @@ ADS_Config = {
     -- Controls workshop operating hours, which affects maintenance/repair completion times.
     -- ====================================================================================
     WORKSHOP = {
-        ALWAYS_AVAILABLE = false,
+        DEALER_ALWAYS_AVAILABLE = false,
+        MOBILE_ALWAYS_AVAILABLE = true,
+        OWN_ALWAYS_AVAILABLE = true,
         -- The hour of the day (0-23) when the workshop opens. Repairs will not progress before this time.
         OPEN_HOUR = 8,  -- (8 AM)
         -- The hour of the day (0-23) when the workshop closes. Repairs will pause at this time.
@@ -505,7 +508,7 @@ ADS_Config = {
         CLOGGING_SPEED = 1.0,
         CLEANING_SPEED = 0.05,
         AIR_INTAKE_BREAKDOWN_THRESHOLD = 0.5,
-        FIELD_INSPECTION_DURATION = 6000,
+        VISUAL_INSPECTION_DURATION = 6000,
         LUBRICATION_REDUCE_PER_DAY = 0.2,
         RAYCAST_DISTANCE = 2.0,
         JUMPER_CABLES_MAX_CONNECTION_DISTANCE = 12.0,
@@ -555,6 +558,7 @@ ADS_Config = {
         ALT_SURPLUS_CHARGE_HEADROOM_V = 0.3,  
         MAX_SYSTEM_VOLTAGE = 14.4,
         MIN_SYSTEM_VOLTAGE = 9.0,
+        IDLE_CURRENT_A = 0.5,
     },
 
     -- ====================================================================================
@@ -641,10 +645,12 @@ ADS_Config = {
     TUTORIAL_MESSAGES = {
         WELCOME = false,
         SERVICE_DUE_SOON = false,
+        SERVICE_INTERVAL_EXPIRED = false,
         RAD_OR_INTAKE_CLOGGED = false,
         NEEDS_LUBRICATION = false,
         NEEDS_REPAIR = false,
         NEEDS_OVERHAUL = false,
+        AGE_DEGRADATION = false,
         NEEDS_PREVENTIVE = false,
         POOR_CONSUMABLES = false,
         POOR_PARTS = false,
@@ -666,6 +672,7 @@ ADS_Config = {
         COLD_ENGINE = false,
         PTO_SHARP_ANGLE = false,
         WHEEL_SLIP = false,
+        OVERLOAD_INDICATOR = false,
         ENGINE_OVERLOAD = false,
         LUGGING = false,
     }
@@ -729,6 +736,8 @@ function ADS_Config.saveToXMLFile()
     setXMLBool (xmlFile, root .. ".GENERAL_WEAR_ENABLED",   ADS_Config.CORE.GENERAL_WEAR_ENABLED)
     setXMLBool (xmlFile, root .. ".ENABLE_WARNING_MESSAGES", ADS_Config.CORE.ENABLE_WARNING_MESSAGES)
     setXMLBool (xmlFile, root .. ".AI_OVERLOAD_CONTROL",    ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL)
+    setXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS", ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS)
+    setXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED",     ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED)
 
     -- MAINTENANCE
     setXMLBool (xmlFile, root .. ".INSTANT_INSPECTION",     ADS_Config.MAINTENANCE.INSTANT_INSPECTION)
@@ -738,7 +747,9 @@ function ADS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".TIME_MULTIPLIER",        ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER)
 
     -- WORKSHOP
-    setXMLBool (xmlFile, root .. ".ALWAYS_AVAILABLE",       ADS_Config.WORKSHOP.ALWAYS_AVAILABLE)
+    setXMLBool (xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE",       ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE)
+    setXMLBool (xmlFile, root .. ".MOBILE_ALWAYS_AVAILABLE",       ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE)
+    setXMLBool (xmlFile, root .. ".OWN_ALWAYS_AVAILABLE",          ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE)
     setXMLBool (xmlFile, root .. ".MOBILE_WORKSHOP_RESTRICTIONS_ENABLED", ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED)
     setXMLFloat(xmlFile, root .. ".OPEN_HOUR",              ADS_Config.WORKSHOP.OPEN_HOUR)
     setXMLFloat(xmlFile, root .. ".CLOSE_HOUR",             ADS_Config.WORKSHOP.CLOSE_HOUR)
@@ -747,12 +758,18 @@ function ADS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT",        ADS_Config.THERMAL.ENGINE_MAX_HEAT)
     setXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT",         ADS_Config.THERMAL.TRANS_MAX_HEAT)
     setXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE",     ADS_Config.THERMAL.MAX_DIRT_INFLUENCE)
+    setXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER",    ADS_Config.THERMAL.WARMING_BOOST_POWER)
+    setXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER", ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER)
 
     -- ELECTRICAL
     setXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR", ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR)
+    setXMLFloat(xmlFile, root .. ".ALT_MAX_OUTPUT",         ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT)
+    setXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A",         ADS_Config.ELECTRICAL.IDLE_CURRENT_A)
 
     -- FIELD CARE
     setXMLFloat(xmlFile, root .. ".CLOGGING_SPEED",         ADS_Config.FIELD_CARE.CLOGGING_SPEED)
+    setXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION", ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION)
+    setXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_DAY", ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY)
     setXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE",        ADS_Config.FIELD_CARE.RAYCAST_DISTANCE)
     setXMLFloat(xmlFile, root .. ".JUMPER_CABLES_MAX_CONNECTION_DISTANCE", ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE)
 
@@ -843,6 +860,12 @@ function ADS_Config.loadFromXMLFile()
     v = getXMLBool(xmlFile, root .. ".AI_OVERLOAD_CONTROL")
     if v ~= nil then ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = v end
 
+    v = getXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS")
+    if v ~= nil then ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = v end
+
+    v = getXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED")
+    if v ~= nil then ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED = v end
+
     -- MAINTENANCE
     v = getXMLBool(xmlFile, root .. ".INSTANT_INSPECTION")
     if v ~= nil then ADS_Config.MAINTENANCE.INSTANT_INSPECTION = v end
@@ -860,8 +883,19 @@ function ADS_Config.loadFromXMLFile()
     if v ~= nil then ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER = v end
 
     -- WORKSHOP
-    v = getXMLBool(xmlFile, root .. ".ALWAYS_AVAILABLE")
-    if v ~= nil then ADS_Config.WORKSHOP.ALWAYS_AVAILABLE = v end
+    v = getXMLBool(xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE")
+    if v ~= nil then
+        ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v
+    else
+        v = getXMLBool(xmlFile, root .. ".ALWAYS_AVAILABLE")
+        if v ~= nil then ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v end
+    end
+
+    v = getXMLBool(xmlFile, root .. ".MOBILE_ALWAYS_AVAILABLE")
+    if v ~= nil then ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE = v end
+
+    v = getXMLBool(xmlFile, root .. ".OWN_ALWAYS_AVAILABLE")
+    if v ~= nil then ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE = v end
 
     v = getXMLBool(xmlFile, root .. ".MOBILE_WORKSHOP_RESTRICTIONS_ENABLED")
     if v ~= nil then ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = v end
@@ -882,13 +916,31 @@ function ADS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE")
     if v ~= nil then ADS_Config.THERMAL.MAX_DIRT_INFLUENCE = v end
 
+    v = getXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER")
+    if v ~= nil then ADS_Config.THERMAL.WARMING_BOOST_POWER = v end
+
+    v = getXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER")
+    if v ~= nil then ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER = v end
+
     -- ELECTRICAL
     v = getXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR")
     if v ~= nil then ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = v end
 
+    v = getXMLFloat(xmlFile, root .. ".ALT_MAX_OUTPUT")
+    if v ~= nil then ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT = v end
+
+    v = getXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A")
+    if v ~= nil then ADS_Config.ELECTRICAL.IDLE_CURRENT_A = v end
+
     -- FIELD CARE
     v = getXMLFloat(xmlFile, root .. ".CLOGGING_SPEED")
     if v ~= nil then ADS_Config.FIELD_CARE.CLOGGING_SPEED = v end
+
+    v = getXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION")
+    if v ~= nil then ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = v end
+
+    v = getXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_DAY")
+    if v ~= nil then ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY = v end
 
     v = getXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE")
     if v ~= nil then

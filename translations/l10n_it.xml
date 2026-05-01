@@ -1,5 +1,7 @@
 <l10n>
     <texts>
+        <text name="ads_settings_title" text="ADS IMPOSTAZIONI"/>
+        <text name="ads_settings_admin_required" text="Le impostazioni ADS richiedono permessi di amministratore in multigiocatore."/>
         <text name="ads_maintenancePrice_label" text="Moltiplicatore costo manutenzione"/>
         <text name="ads_maintenancePrice_tooltip" text="Regola il costo di tutti i servizi dell'officina, comprese ispezioni, riparazioni e revisioni. Un valore piu alto rende tutte le attivita di manutenzione piu costose."/>
         <text name="ads_maintenanceDuration_label" text="Moltiplicatore durata manutenzione"/>
@@ -12,9 +14,22 @@
         <text name="ads_engineMaxHeat_tooltip" text="Il tasso base di calore generato dal motore al carico massimo. Valori piu alti fanno riscaldare il motore piu rapidamente."/>
         <text name="ads_cloggingSpeed_label" text="Velocita di intasamento"/>
         <text name="ads_cloggingSpeed_tooltip" text="Regola la velocita con cui radiatore e presa d'aria si intasano durante il lavoro in polvere, pula e residui colturali. Valori piu alti accelerano l'accumulo di intasamento. Al 100%, la velocita di intasamento corrisponde a circa un terzo dell'intervallo di manutenzione."/>
+        <text name="ads_fieldInspectionDuration_label" text="Durata ispezione"/>
+        <text name="ads_fieldInspectionDuration_tooltip" text="Imposta quanto dura un'ispezione sul campo pre-turno, in secondi reali."/>
+        <text name="ads_lubricationReducePerDay_label" text="Tasso di essiccazione lubrificazione"/>
+        <text name="ads_lubricationReducePerDay_tooltip" text="Imposta quanta lubrificazione si asciuga durante un giorno di gioco. A 0%, la lubrificazione non si asciuga col passare del tempo."/>
         <text name="ads_ws_header_title" text="Officina"/>
-        <text name="ads_workshopAvailable_label" text="Officina aperta 24/7"/>
-        <text name="ads_workshopAvailable_tooltip" text="Abilita o disabilita il funzionamento continuo dell'officina."/>
+        <text name="ads_settings_section_service_wear" text="Manutenzione e usura"/>
+        <text name="ads_settings_section_thermal_model" text="Modello termico"/>
+        <text name="ads_settings_section_battery_alternator" text="Batteria e alternatore"/>
+        <text name="ads_settings_section_preshift_maintenance" text="Manutenzione pre-turno"/>
+        <text name="ads_settings_section_other" text="Altro"/>
+        <text name="ads_dealerWorkshopAvailable_label" text="Officina concessionario 24/7"/>
+        <text name="ads_dealerWorkshopAvailable_tooltip" text="Mantiene l'officina del concessionario disponibile a qualsiasi ora del giorno."/>
+        <text name="ads_mobileWorkshopAvailable_label" text="Officina mobile 24/7"/>
+        <text name="ads_mobileWorkshopAvailable_tooltip" text="Mantiene l'officina mobile disponibile a qualsiasi ora del giorno."/>
+        <text name="ads_ownWorkshopAvailable_label" text="Officina propria 24/7"/>
+        <text name="ads_ownWorkshopAvailable_tooltip" text="Mantiene la tua officina disponibile a qualsiasi ora del giorno."/>
         <text name="ads_instantInspection_label" text="Ispezione istantanea"/>
         <text name="ads_instantInspection_tooltip" text="Se attivata, tutte le ispezioni vengono completate istantaneamente senza far passare tempo. Nota: l'opzione di ispezione visiva non sara disponibile."/>
         <text name="ads_parkVehicle_label" text="Parcheggia il veicolo durante la manutenzione"/>
@@ -23,6 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Applica la copertura in garanzia alle riparazioni dei veicoli nuovi fino a 20 ore di lavoro o 12 mesi. Solo i ricambi OEM sono coperti senza costi."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Controllo IA sovraccarico &amp; surriscaldamento"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Se attivato, l'operaio IA riduce il carico per evitare sovraccarico o surriscaldamento del motore."/>
+        <text name="ads_aiWorkerTargetStress_label" text="Reazione velocita IA"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Controlla con quanto anticipo l'operaio IA reagisce a sovraccarico e surriscaldamento. I valori piu alti sono meno sensibili e reagiscono piu tardi; i valori piu bassi sono piu sensibili e rallentano prima."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Rilassata"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Bilanciata"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Sensibile"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Molto sensibile"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="Velocita minima IA"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Imposta la velocita minima del cruise control che l'operaio IA puo usare mentre rallenta per evitare sovraccarico o surriscaldamento."/>
         <text name="ads_debugMode_label" text="Modalita debug"/>
         <text name="ads_debugMode_tooltip" text="Abilita o disabilita il pannello di debug e la registrazione estesa nella console."/>
         <text name="ads_warningMessages_label" text="Messaggi di avviso"/>
@@ -35,7 +58,8 @@
         <text name="ads_systemStressRate_label" text="Velocita accumulo stress di sistema"/>
         <text name="ads_batteryCapacity_label" text="Capacità della batteria"/>
         <text name="ads_thermalSensitivity_label" text="Sensibilita termica"/>
-        <text name="ads_option_off" text="Off"/>
+        <text name="ads_option_off" text="Disattivato"/>
+        <text name="ads_option_none" text="Nessuno"/>
         <text name="ads_serviceInterval_tooltip" text="Imposta l'intervallo di manutenzione di base in ore, oltre il quale e richiesta la manutenzione. L'intervallo reale dipende dalla marca del veicolo, dalla sua eta e dalla qualita delle manutenzioni precedenti."/>
         <text name="ads_vehicleLifespan_tooltip" text="Imposta la durata utile di base del veicolo in ore, oltre la quale la sua condizione raggiungera lo 0%. Piu la condizione si avvicina allo zero, piu il veicolo diventa inaffidabile."/>
         <text name="ads_downtimeWear_tooltip" text="Imposta la velocita di usura passiva quando il veicolo resta fermo, come percentuale dell'usura di base (Durata utile del veicolo). Ad esempio, 5% con la durata utile predefinita di 100 ore significa che ogni sistema perde circa l'1% di condizione dopo circa 20 ore di inattivita. Nota: l'usura passiva viene disattivata quando il veicolo e ricoverato al coperto."/>
@@ -43,7 +67,17 @@
         <text name="ads_mobileWorkshopRestrictions_tooltip" text="Quando attivata, la disponibilita delle diverse procedure nell'officina mobile dipende dalla manutenibilita del veicolo."/>
         <text name="ads_systemStressRate_tooltip" text="Determina la velocita con cui lo stress si accumula nei sistemi a causa di sovraccarico, surriscaldamento, slittamento e altre condizioni operative gravose. Lo stress influisce direttamente sulla probabilita di guasto: piu stress si accumula in un sistema, piu aumenta il rischio di rottura."/>
         <text name="ads_batteryCapacity_tooltip" text="Regola la capacità massima effettivamente utilizzabile della batteria. Valori vicini a 150 Ah sono più realistici, ma a quel livello difficilmente incontrerai problemi di scarica della batteria."/>
+        <text name="ads_alternatorMaxOutput_label" text="Corrente max alternatore"/>
+        <text name="ads_alternatorMaxOutput_tooltip" text="Imposta la corrente massima in uscita dell'alternatore. Valori piu alti permettono all'alternatore di ricaricare la batteria piu velocemente."/>
+        <text name="ads_idleCurrent_label" text="Corrente a riposo"/>
+        <text name="ads_idleCurrent_tooltip" text="Imposta la corrente di scarica della batteria a motore spento. Per esempio, con 0,5 A una batteria da 15 Ah impiegherebbe circa 30 ore reali a scaricarsi completamente, prima di considerare gli effetti della temperatura."/>
         <text name="ads_thermalSensitivity_tooltip" text="Regola il comportamento del modello termico. Impostazioni piu elevate rendono motore e trasmissione piu sensibili al carico, alla temperatura ambiente e all'imbrattamento del radiatore, generando piu calore nelle stesse condizioni."/>
+        <text name="ads_radiatorDirtInfluence_label" text="Influenza dello sporco sul radiatore"/>
+        <text name="ads_radiatorDirtInfluence_tooltip" text="Riduce la capacita di raffreddamento del radiatore di questa percentuale al massimo accumulo di sporco."/>
+        <text name="ads_warmingBoostPower_label" text="Accelerazione riscaldamento"/>
+        <text name="ads_warmingBoostPower_tooltip" text="Accelera artificialmente il riscaldamento di motore e trasmissione. Usa Disattivato per mantenere invariato il comportamento termico."/>
+        <text name="ads_coolingSlowdownPower_label" text="Rallentamento raffreddamento"/>
+        <text name="ads_coolingSlowdownPower_tooltip" text="Rallenta artificialmente il raffreddamento di motore e trasmissione dopo lo spegnimento del veicolo. Usa Disattivato per mantenere invariato il raffreddamento."/>
         <text name="ads_thermal_none" text="Passivo"/>
         <text name="ads_thermal_mild" text="Leggero"/>
         <text name="ads_thermal_default" text="Predefinito"/>
@@ -394,7 +428,7 @@
         <text name="ads_spec_state_high" text="Alto"/>
         <text name="ads_spec_state_workhorse" text="Instancabile"/>
         <text name="ads_spec_part_types_used" text="Usato"/>
-        <text name="ads_spec_part_types_aftermarket" text="Aftermarket"/>
+        <text name="ads_spec_part_types_aftermarket" text="Compatibile"/>
         <text name="ads_spec_part_types_oem" text="OEM"/>
         <text name="ads_spec_part_types_premium" text="Premium"/>
         <text name="ads_spec_inspection_visual" text="Visiva"/>
@@ -408,7 +442,7 @@
         <text name="ads_spec_overhaul_standard" text="Standard"/>
         <text name="ads_spec_overhaul_full" text="Completa"/>
         <text name="ads_spec_repair_type_fix" text="Provvisoria"/>
-        <text name="ads_spec_repair_type_replacement" text="Standard"/>
+        <text name="ads_spec_repair_type_replacement" text="Sostituzione"/>
         <text name="ads_spec_repair_type_advanced" text="Approfondita"/>
 
         <text name="ads_option_menu_option_one_title_inspection" text="Seleziona il tipo di ispezione"/>
@@ -533,6 +567,7 @@
         <text name="ads_jumper_cables_auto_disconnected" text="Cavi di avviamento scollegati perche uno dei veicoli ha iniziato a muoversi"/>
         <text name="ads_jumper_cables_is_too_far" text="%s e troppo lontano da %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Ispezione del veicolo"/>
+        <text name="input_ADS_CLOSE_NOTIFICATION" text="Chiudi"/>
         <text name="ads_field_inspection_action" text="Ispeziona il veicolo"/>
         <text name="ads_field_inspection_hold_to_start" text="Tieni premuto per avviare l'ispezione"/>
         <text name="ads_field_inspection_starting" text="Avvio dell'ispezione..."/>
@@ -553,7 +588,7 @@
         <text name="ads_inspection_air_filter" text="Filtro aria"/>
         <text name="ads_inspection_lubrication_level" text="Livello di lubrificazione"/>
         <text name="ads_inspection_no_suspicious_symptoms" text="Nessun sintomo sospetto rilevato"/>
-        <text name="ads_inspection_ok" text="OK"/>
+        <text name="ads_inspection_ok" text="Regolare"/>
         <text name="ads_inspection_status_slightly_low" text="Leggermente Basso"/>
         <text name="ads_inspection_status_low" text="Basso"/>
         <text name="ads_inspection_status_very_low" text="Molto Basso"/>
@@ -617,7 +652,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="La tensione del cingolo appare leggermente irregolare."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="Il cingolo appare allentato, con una tensione visibilmente irregolare."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="Il cingolo presenta un evidente cedimento, e la tensione appare gravemente compromessa."/>
-        <text name="ads_ingame_menu_title" text="Advanced Damage System"/>
+        <text name="ads_ingame_menu_title" text="Sistema Avanzato Danni"/>
         <text name="ads_ingame_menu_section_active" text="Veicoli ADS"/>
         <text name="ads_ingame_menu_section_service" text="In manutenzione"/>
         <text name="ads_ingame_menu_header_vehicle" text="Veicolo"/>
@@ -630,7 +665,7 @@
         <text name="ads_ingame_menu_header_last_inspection" text="Ispez."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Manut."/>
         <text name="ads_ingame_menu_header_cost" text="Gestione"/>
-        <text name="ads_ingame_menu_header_leasing_price" text="Leasing"/>
+        <text name="ads_ingame_menu_header_leasing_price" text="Noleggio"/>
         <text name="ads_ingame_menu_header_price" text="Valore"/>
         <text name="ads_ingame_menu_header_procedure" text="Proced."/>
         <text name="ads_ingame_menu_header_time_left" text="Rimasto"/>
@@ -650,6 +685,9 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Sovraccarico critico! Riduci immediatamente il carico sulla macchina."/>
         <text name="ads_tutorialMode_label" text="Modalità tutorial"/>
         <text name="ads_tutorialMode_tooltip" text="Mostra suggerimenti tutorial durante il gioco. Disattivata in multigiocatore."/>
+        <text name="ads_tutorialResetTips_label" text="Reimposta suggerimenti"/>
+        <text name="ads_tutorialResetTips_text" text="Reimposta suggerimenti"/>
+        <text name="ads_tutorialResetTips_tooltip" text="Reimposta la cronologia dei suggerimenti tutorial e li mostra tutti di nuovo. Disponibile solo in giocatore singolo."/>
         <text name="ads_tutorialResetConfirm_title" text="Reimpostare i suggerimenti tutorial?"/>
         <text name="ads_tutorialResetConfirm_message" text="Reimpostare la cronologia dei suggerimenti tutorial e mostrarli di nuovo tutti?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Benvenuto in Advanced Damage System"/>
@@ -658,6 +696,8 @@
         <text name="ads_tutorial_welcome_message" text="Questa mod rinnova completamente i sistemi di danni e manutenzione dei veicoli nel gioco. Ci sono molti cambiamenti, quindi di tanto in tanto compariranno suggerimenti tutorial. Ti aiuteranno a capire più rapidamente le nuove meccaniche, evitare gli errori più comuni e impedire che le tue macchine si guastino.&#10;&#10;Se vuoi, puoi disattivare subito i suggerimenti tutorial. Potrai sempre riattivarli più tardi nelle impostazioni della mod, nella sezione Advanced Damage System."/>
         <text name="ads_tutorial_service_due_soon_title" text="Manutenzione periodica"/>
         <text name="ads_tutorial_service_due_soon_message" text="%s avrà presto bisogno di manutenzione.&#10;&#10;In ADS, i veicoli richiedono assistenza regolare. Se la rimandi, il rischio di guasti aumenta sensibilmente.&#10;&#10;Visita l'officina più vicina e seleziona &quot;Maintenance&quot;. L'intervallo di manutenzione può essere regolato nelle impostazioni della mod."/>
+        <text name="ads_tutorial_service_interval_expired_title" text="Intervallo di servizio scaduto"/>
+        <text name="ads_tutorial_service_interval_expired_message" text="%s ha superato il suo intervallo di servizio e necessita di manutenzione.&#10;&#10;Vai in officina il prima possibile ed esegui la procedura di &quot;Manutenzione&quot;. Continuare a usare un veicolo con l'intervallo di servizio scaduto aumenta notevolmente il rischio di guasti multipli."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Radiatore e prese d'aria ostruiti"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Il radiatore e le prese d'aria del tuo veicolo sembrano essere fortemente ostruiti.&#10;&#10;Un radiatore sporco non riesce a dissipare il calore in modo efficiente, e prese d'aria ostruite possono limitare il flusso d'aria verso il motore. Questo riduce la potenza e aumenta il consumo di carburante.&#10;&#10;Puoi pulirli in una stazione di lavaggio o con l'Air Blower del negozio.&#10;&#10;Puoi controllare lo stato del radiatore e delle prese d'aria tramite l'ispezione: tieni premuto il tasto R mentre guardi il veicolo."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Lubrificazione necessaria"/>
@@ -666,6 +706,8 @@
         <text name="ads_tutorial_needs_repair_message" text="Sembra che qualcosa non vada nel tuo %s. Una delle sue parti potrebbe essersi guastata.&#10;&#10;Assicurati di andare in officina e fare un'ispezione. Non rimandare: il guasto potrebbe continuare a peggiorare e il costo della riparazione aumenterà di conseguenza.&#10;&#10;Se l'ispezione conferma un problema, risolvilo con la procedura di riparazione in officina."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Revisione generale"/>
         <text name="ads_tutorial_needs_overhaul_message" text="Sembra che il tuo %s stia mostrando la sua età. È il momento di pensare a una sostituzione o a una revisione generale. È un processo lungo e impegnativo, ma è il modo migliore per dare una seconda vita a quella macchina preferita a cui ti sei tanto affezionato. Puoi anche cambiare la durata utile nelle impostazioni: più è alta, più lentamente si consumeranno i tuoi veicoli."/>
+        <text name="ads_tutorial_age_degradation_title" text="Degrado dovuto all'eta"/>
+        <text name="ads_tutorial_age_degradation_message" text="Lo sapevi che in ADS i veicoli perdono gradualmente parte delle loro prestazioni originali con l'invecchiamento?&#10;&#10;Dopo circa un terzo della vita utile del veicolo, il degrado dovuto all'eta inizia a ridurre leggermente caratteristiche importanti come potenza, frenata e altri sistemi. Piu il veicolo invecchia, piu questo effetto si intensifica, ed e particolarmente evidente verso la fine della sua vita utile.&#10;&#10;Puoi disattivare il degrado dovuto all'eta nelle impostazioni della mod."/>
         <text name="ads_tutorial_needs_preventive_title" text="Guasto imminente"/>
         <text name="ads_tutorial_needs_preventive_message" text="Sembra che uno dei sistemi del tuo %s stia per guastarsi. La buona notizia è che puoi evitarlo. In officina è ora disponibile un servizio speciale: manutenzione preventiva. Include un controllo tecnico completo e riparazioni preventive di tutti i componenti a rischio."/>
         <text name="ads_tutorial_poor_consumables_title" text="Materiali di consumo di scarsa qualità"/>
@@ -704,6 +746,8 @@
         <text name="ads_tutorial_cold_engine_message" text="Scalda sempre la tua macchina prima di metterla al lavoro. Oltre al motore, anche molte altre parti hanno bisogno di tempo per andare in temperatura: l'olio idraulico, la trasmissione CVT e perfino il carburante, soprattutto con il gelo. Usare la macchina a freddo può causare problemi in più sistemi.&#10;&#10;Se la temperatura del motore supera i 50 gradi, tutto sarà sufficientemente caldo e la macchina potrà essere usata in sicurezza."/>
         <text name="ads_tutorial_pto_sharp_angle_title" text="Angolo PDF troppo accentuato"/>
         <text name="ads_tutorial_pto_sharp_angle_message" text="Attenzione: l'angolo della PDF tra la tua macchina e l'attrezzo è troppo grande. L'albero cardanico inizia a lavorare con forti pulsazioni, le vibrazioni aumentano e l'usura cresce rapidamente.&#10;&#10;Mantieni l'angolo sotto i 30 gradi e cerca di disinnestare la PDF durante le curve strette e le manovre di fine campo."/>
+        <text name="ads_tutorial_overload_indicator_title" text="Avviso di sovraccarico"/>
+        <text name="ads_tutorial_overload_indicator_message" text="%s sta lavorando sotto forte carico. La spia che si e appena accesa sul cruscotto te lo sta segnalando.&#10;&#10;La macchina potrebbe non avere abbastanza potenza per il lavoro attuale. Prova a ridurre il carico: limita la velocita con il cruise control oppure alleggerisci l'acceleratore invece di lavorare a piena potenza."/>
         <text name="ads_tutorial_engine_overload_title" text="Sovraccarico motore"/>
         <text name="ads_tutorial_engine_overload_message" text="Il motore è sottoposto a uno sforzo enorme. Può darsi che il lavoro che stai cercando di svolgere sia semplicemente troppo per questa macchina e che dovresti pensare a un mezzo più potente. Oppure potrebbe bastare rallentare e ridurre il carico sul motore.&#10;&#10;In ogni caso, tieni presente che l'usura aumenta in modo evidente sotto questo tipo di sforzo."/>
         <text name="ads_tutorial_lugging_title" text="Motore sotto sforzo a basso regime"/>

@@ -44,6 +44,8 @@ function ADS_Tutorial:getADSVehicle()
     local vehicle = g_localPlayer.getCurrentVehicle() 
     if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
         self.vehicle = vehicle
+    else
+        self.vehicle = nil
     end
 end
 
@@ -125,11 +127,26 @@ function ADS_Tutorial:update(dt)
                 sharpAngleThreshold = math.deg(sharpAngleThreshold)
             end
 
+            local serviceInterval = vehicle:getHoursSinceLastMaintenance() / vehicle:getMaintenanceInterval()
+
+            -- ==========================================================
+            -- STATE and STATUS
+            -- ==========================================================
+            if not messagedData.AGE_DEGRADATION and vehicle:getConditionLevel() < 0.66 then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_age_degradation_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_age_degradation_title"),
+                    true
+                )
+                messagedData.AGE_DEGRADATION = true
+                self.messageDowntime = downtimeAfterMessage
+
             -- ==========================================================
             -- SERVICE
             -- ==========================================================
             --- service due soon
-            if not messagedData.SERVICE_DUE_SOON and vehicle:getHoursSinceLastMaintenance() / vehicle:getMaintenanceInterval() >= 0.9 then
+            elseif not messagedData.SERVICE_DUE_SOON and (serviceInterval >= 0.9 and serviceInterval < 1.0) then
                 ADS_Hud.showNotification(
                     string.format(g_i18n:getText("ads_tutorial_service_due_soon_message"), vehicle:getFullName()),
                     0,
@@ -137,6 +154,17 @@ function ADS_Tutorial:update(dt)
                     true
                 )
                 messagedData.SERVICE_DUE_SOON = true
+                self.messageDowntime = downtimeAfterMessage
+
+            --- service interval expired
+            elseif not messagedData.SERVICE_INTERVAL_EXPIRED and serviceInterval >= 1.01 then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_service_interval_expired_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_service_interval_expired_title"),
+                    true
+                )
+                messagedData.SERVICE_INTERVAL_EXPIRED = true
                 self.messageDowntime = downtimeAfterMessage
 
             --- needs repair
@@ -291,6 +319,17 @@ function ADS_Tutorial:update(dt)
                 messagedData.COLD_ENGINE = true
                 self.messageDowntime = downtimeAfterMessage
 
+            --- overload indicator
+            elseif not messagedData.OVERLOAD_INDICATOR and isMotorStarted and vehicle:hasBreakdown('STRESS_OVERLOAD') then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_overload_indicator_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_overload_indicator_title"),
+                    true
+                )
+                messagedData.OVERLOAD_INDICATOR = true
+                self.messageDowntime = downtimeAfterMessage
+
             --- engine overload
             elseif not messagedData.ENGINE_OVERLOAD and isMotorStarted and spec.dynamicMotorLoad >= 1.15 and not spec.isElectricVehicle then
                 ADS_Hud.showNotification(
@@ -388,7 +427,8 @@ function ADS_Tutorial:update(dt)
                 and spec.systems.electrical.enabled
                 and not spec.isElectricVehicle
                 and spec.systems.electrical.crankingTimer ~= nil
-                and spec.systems.electrical.crankingTimer >= 9000 then
+                and spec.systems.electrical.crankingTimer >= 9000
+                and not vehicle:hasEffect("ENGINE_HARD_START_MODIFIER") then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_cranking_message"),
                     0,
@@ -403,7 +443,7 @@ function ADS_Tutorial:update(dt)
                 and spec.systems.electrical.enabled
                 and not isMotorStarted
                 and not spec.isCranking
-                and (tonumber(spec.systemVoltageV or 0) or 0) < 12.0 then
+                and vehicle:hasBreakdown('VOLTAGE_SAG') then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_battery_low_message"),
                     0,

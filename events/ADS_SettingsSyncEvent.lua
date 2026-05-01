@@ -24,19 +24,30 @@ function ADS_SettingsSyncEvent.new()
     self.enableWarningMessages     = ADS_Config.CORE.ENABLE_WARNING_MESSAGES
     self.systemStressGlobalMultiplier = ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER
     self.aiOverloadControl         = ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL
+    self.aiWorkerTargetStress      = ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS
+    self.aiWorkerMinSpeed          = ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED
     self.instantInspection         = ADS_Config.MAINTENANCE.INSTANT_INSPECTION
     self.parkVehicle               = ADS_Config.MAINTENANCE.PARK_VEHICLE
     self.warrantyEnabled           = ADS_Config.MAINTENANCE.WARRANTY_ENABLED
     self.globalPriceMultiplier     = ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER
     self.globalTimeMultiplier      = ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER
-    self.alwaysAvailable           = ADS_Config.WORKSHOP.ALWAYS_AVAILABLE
+    self.dealerAlwaysAvailable     = ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE
+    self.mobileAlwaysAvailable     = ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE
+    self.ownAlwaysAvailable        = ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE
     self.mobileWorkshopRestrictionsEnabled = ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED
     self.openHour                  = ADS_Config.WORKSHOP.OPEN_HOUR
     self.closeHour                 = ADS_Config.WORKSHOP.CLOSE_HOUR
     self.engineMaxHeat             = ADS_Config.THERMAL.ENGINE_MAX_HEAT
     self.transMaxHeat              = ADS_Config.THERMAL.TRANS_MAX_HEAT
+    self.maxDirtInfluence          = ADS_Config.THERMAL.MAX_DIRT_INFLUENCE
+    self.warmingBoostPower         = ADS_Config.THERMAL.WARMING_BOOST_POWER
+    self.coolingSlowdownPower      = ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER
     self.batteryUsableCapacityFactor = ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
+    self.alternatorMaxOutput       = ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT
+    self.idleCurrentA              = ADS_Config.ELECTRICAL.IDLE_CURRENT_A
     self.cloggingSpeed             = ADS_Config.FIELD_CARE.CLOGGING_SPEED
+    self.fieldInspectionDuration   = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
+    self.lubricationReducePerDay   = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY
     self.debugMode                 = ADS_Config.DEBUG
 
     return self
@@ -51,19 +62,30 @@ function ADS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteBool(streamId,    self.enableWarningMessages or false)
     streamWriteFloat32(streamId, self.systemStressGlobalMultiplier or 1.0)
     streamWriteBool(streamId,    self.aiOverloadControl      or false)
+    streamWriteFloat32(streamId, self.aiWorkerTargetStress   or 0.3)
+    streamWriteFloat32(streamId, self.aiWorkerMinSpeed       or 3.0)
     streamWriteBool(streamId,    self.instantInspection      or false)
     streamWriteBool(streamId,    self.parkVehicle            or false)
     streamWriteBool(streamId,    self.warrantyEnabled        or false)
     streamWriteFloat32(streamId, self.globalPriceMultiplier  or 1)
     streamWriteFloat32(streamId, self.globalTimeMultiplier   or 1)
-    streamWriteBool(streamId,    self.alwaysAvailable        or false)
+    streamWriteBool(streamId,    self.dealerAlwaysAvailable  or false)
+    streamWriteBool(streamId,    self.mobileAlwaysAvailable  or false)
+    streamWriteBool(streamId,    self.ownAlwaysAvailable     or false)
     streamWriteBool(streamId,    self.mobileWorkshopRestrictionsEnabled or false)
     streamWriteFloat32(streamId, self.openHour               or 8)
     streamWriteFloat32(streamId, self.closeHour              or 19)
     streamWriteFloat32(streamId, self.engineMaxHeat          or 1.05)
     streamWriteFloat32(streamId, self.transMaxHeat           or 1.05)
+    streamWriteFloat32(streamId, self.maxDirtInfluence       or 0.2)
+    streamWriteFloat32(streamId, self.warmingBoostPower      or 1.0)
+    streamWriteFloat32(streamId, self.coolingSlowdownPower   or 1.0)
     streamWriteFloat32(streamId, self.batteryUsableCapacityFactor or 0.1)
+    streamWriteFloat32(streamId, self.alternatorMaxOutput    or 100)
+    streamWriteFloat32(streamId, self.idleCurrentA           or 0.5)
     streamWriteFloat32(streamId, self.cloggingSpeed          or 1.0)
+    streamWriteFloat32(streamId, self.fieldInspectionDuration or 6000)
+    streamWriteFloat32(streamId, self.lubricationReducePerDay or 0.2)
     streamWriteBool(streamId,    self.debugMode              or false)
 end
 
@@ -76,19 +98,30 @@ function ADS_SettingsSyncEvent:readStream(streamId, connection)
     self.enableWarningMessages     = streamReadBool(streamId)
     self.systemStressGlobalMultiplier = streamReadFloat32(streamId)
     self.aiOverloadControl         = streamReadBool(streamId)
+    self.aiWorkerTargetStress      = streamReadFloat32(streamId)
+    self.aiWorkerMinSpeed          = streamReadFloat32(streamId)
     self.instantInspection         = streamReadBool(streamId)
     self.parkVehicle               = streamReadBool(streamId)
     self.warrantyEnabled           = streamReadBool(streamId)
     self.globalPriceMultiplier     = streamReadFloat32(streamId)
     self.globalTimeMultiplier      = streamReadFloat32(streamId)
-    self.alwaysAvailable           = streamReadBool(streamId)
+    self.dealerAlwaysAvailable     = streamReadBool(streamId)
+    self.mobileAlwaysAvailable     = streamReadBool(streamId)
+    self.ownAlwaysAvailable        = streamReadBool(streamId)
     self.mobileWorkshopRestrictionsEnabled = streamReadBool(streamId)
     self.openHour                  = streamReadFloat32(streamId)
     self.closeHour                 = streamReadFloat32(streamId)
     self.engineMaxHeat             = streamReadFloat32(streamId)
     self.transMaxHeat              = streamReadFloat32(streamId)
+    self.maxDirtInfluence          = streamReadFloat32(streamId)
+    self.warmingBoostPower         = streamReadFloat32(streamId)
+    self.coolingSlowdownPower      = streamReadFloat32(streamId)
     self.batteryUsableCapacityFactor = streamReadFloat32(streamId)
+    self.alternatorMaxOutput       = streamReadFloat32(streamId)
+    self.idleCurrentA              = streamReadFloat32(streamId)
     self.cloggingSpeed             = streamReadFloat32(streamId)
+    self.fieldInspectionDuration   = streamReadFloat32(streamId)
+    self.lubricationReducePerDay   = streamReadFloat32(streamId)
     self.debugMode                 = streamReadBool(streamId)
 
     self:run(connection)
@@ -110,19 +143,30 @@ local function applyConfig(event)
     ADS_Config.CORE.ENABLE_WARNING_MESSAGES                = event.enableWarningMessages
     ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER        = event.systemStressGlobalMultiplier
     ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL       = event.aiOverloadControl
+    ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS            = event.aiWorkerTargetStress
+    ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED                = event.aiWorkerMinSpeed
     ADS_Config.MAINTENANCE.INSTANT_INSPECTION               = event.instantInspection
     ADS_Config.MAINTENANCE.PARK_VEHICLE                     = event.parkVehicle
     ADS_Config.MAINTENANCE.WARRANTY_ENABLED                 = event.warrantyEnabled
     ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER  = event.globalPriceMultiplier
     ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER   = event.globalTimeMultiplier
-    ADS_Config.WORKSHOP.ALWAYS_AVAILABLE                    = event.alwaysAvailable
+    ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE             = event.dealerAlwaysAvailable
+    ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE             = event.mobileAlwaysAvailable
+    ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE                = event.ownAlwaysAvailable
     ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = event.mobileWorkshopRestrictionsEnabled
     ADS_Config.WORKSHOP.OPEN_HOUR                           = event.openHour
     ADS_Config.WORKSHOP.CLOSE_HOUR                          = event.closeHour
     ADS_Config.THERMAL.ENGINE_MAX_HEAT                      = event.engineMaxHeat
     ADS_Config.THERMAL.TRANS_MAX_HEAT                       = event.transMaxHeat
+    ADS_Config.THERMAL.MAX_DIRT_INFLUENCE                   = event.maxDirtInfluence
+    ADS_Config.THERMAL.WARMING_BOOST_POWER                  = event.warmingBoostPower
+    ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER               = event.coolingSlowdownPower
     ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR    = event.batteryUsableCapacityFactor
+    ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT                    = event.alternatorMaxOutput
+    ADS_Config.ELECTRICAL.IDLE_CURRENT_A                    = event.idleCurrentA
     ADS_Config.FIELD_CARE.CLOGGING_SPEED                    = event.cloggingSpeed
+    ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION         = event.fieldInspectionDuration
+    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY        = event.lubricationReducePerDay
     ADS_Config.DEBUG                                        = event.debugMode
 
     local newConfig = {
@@ -130,7 +174,7 @@ local function applyConfig(event)
         instantInspection = event.instantInspection
     }
 
-    ADS_InGameSettings.applyPendingConfigSideEffects(oldConfig, newConfig)
+    ADS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
 
     if math.abs((oldBatteryCapacityFactor or 0) - (event.batteryUsableCapacityFactor or 0)) > 0.0001
         and ADS_Main ~= nil and ADS_Main.vehicles ~= nil then
@@ -146,7 +190,7 @@ local function applyConfig(event)
         end
     end
 
-    ADS_Main:forceWorkshopUpdate()
+    ADS_Main:forceWorkshopUpdate(true)
 end
 
 

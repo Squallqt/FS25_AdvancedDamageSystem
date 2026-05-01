@@ -2976,6 +2976,19 @@ local function syncStarterCrankingSample(vehicle)
     end
 end
 
+local function playStarterCrankingEndSample(spec, pitchOffset)
+    local starterCrankingEndSample = spec ~= nil and spec.samples ~= nil and spec.samples.starterCrankingEnd or nil
+    if starterCrankingEndSample == nil then
+        return
+    end
+
+    g_soundManager:setSampleVolumeOffset(starterCrankingEndSample, 0)
+    if not g_soundManager:getIsSamplePlaying(starterCrankingEndSample) then
+        g_soundManager:setSamplePitchOffset(starterCrankingEndSample, pitchOffset or 0)
+        g_soundManager:playSample(starterCrankingEndSample)
+    end
+end
+
 -- ==========================================================
 -- SELF_DISAPPEARING_BREAKDOWN_EFFECT
 ADS_Breakdowns.EffectApplicators.SELF_DISAPPEARING_BREAKDOWN_EFFECT = {
@@ -5162,11 +5175,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
             effect.extraData.timer = math.max((effect.extraData.timer or 0) - dt, endFadeMs)
 
             if v.isClient and effect.extraData.status == 'PASSED' then
-                g_soundManager:setSampleVolumeOffset(spec.samples.starterCrankingEnd, 0)
-                if not g_soundManager:getIsSamplePlaying(spec.samples.starterCrankingEnd) then
-                    g_soundManager:setSamplePitchOffset(spec.samples.starterCrankingEnd, crankingPitchOffset)
-                    g_soundManager:playSample(spec.samples.starterCrankingEnd)
-                end
+                playStarterCrankingEndSample(spec, crankingPitchOffset)
             end
 
             -- starterCrankingEnd fade
@@ -5193,6 +5202,9 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
                 if v.isServer and tryStartMotor(dt, effect.value, rawEngineTemp, effect.extraData.preCrankVoltageV) then
                     effect.extraData.timer = motorStartDelay
                     effect.extraData.status = 'PASSED'
+                    if v.isClient then
+                        playStarterCrankingEndSample(spec, crankingPitchOffset)
+                    end
                     ADS_EffectSyncEvent.send(vehicle, handler.getEffectName(), "PASSED", motorStartDelay, 0, 0)
                 end
 

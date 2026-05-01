@@ -1,5 +1,7 @@
 <l10n>
     <texts>
+        <text name="ads_settings_title" text="ADS EINSTELLUNGEN"/>
+        <text name="ads_settings_admin_required" text="ADS-Einstellungen erfordern im Mehrspielermodus Administratorrechte."/>
         <text name="ads_maintenancePrice_label" text="Preis-Multiplikator für Wartung"/>
         <text name="ads_maintenancePrice_tooltip" text="Passt die Kosten für alle Werkstattleistungen an, einschließlich Inspektionen, Reparaturen und Generalüberholungen. Ein höherer Wert macht alle Wartungsarbeiten teurer."/>
         <text name="ads_maintenanceDuration_label" text="Dauer-Multiplikator für Wartung"/>
@@ -12,9 +14,22 @@
         <text name="ads_engineMaxHeat_tooltip" text="Die Basiswärmeerzeugung des Motors bei maximaler Last. Höhere Werte lassen den Motor schneller aufheizen."/>
         <text name="ads_cloggingSpeed_label" text="Verschmutzungstempo"/>
         <text name="ads_cloggingSpeed_tooltip" text="Regelt, wie schnell sich Kühler und Lufteinlass bei der Arbeit in Staub, Spreu und Ernteresten zusetzen. Höhere Werte beschleunigen die Verschmutzung. Bei 100 % entspricht die Verschmutzungsgeschwindigkeit ungefähr einem Drittel des Wartungsintervalls."/>
+        <text name="ads_fieldInspectionDuration_label" text="Dauer der Inspektion"/>
+        <text name="ads_fieldInspectionDuration_tooltip" text="Legt fest, wie lange eine Feldinspektion vor Schichtbeginn in Echtzeitsekunden dauert."/>
+        <text name="ads_lubricationReducePerDay_label" text="Austrocknungsrate der Schmierung"/>
+        <text name="ads_lubricationReducePerDay_tooltip" text="Legt fest, wie stark die Schmierung innerhalb eines Spieltags austrocknet. Bei 0 % trocknet die Schmierung mit der Zeit nicht aus."/>
         <text name="ads_ws_header_title" text="Werkstatt"/>
-        <text name="ads_workshopAvailable_label" text="Werkstatt 24/7 geöffnet"/>
-        <text name="ads_workshopAvailable_tooltip" text="Aktiviert oder deaktiviert den 24/7-Betrieb der Werkstatt."/>
+        <text name="ads_settings_section_service_wear" text="Wartung und Verschleiss"/>
+        <text name="ads_settings_section_thermal_model" text="Thermisches Modell"/>
+        <text name="ads_settings_section_battery_alternator" text="Batterie und Lichtmaschine"/>
+        <text name="ads_settings_section_preshift_maintenance" text="Wartung vor Schichtbeginn"/>
+        <text name="ads_settings_section_other" text="Sonstiges"/>
+        <text name="ads_dealerWorkshopAvailable_label" text="Haendlerwerkstatt 24/7"/>
+        <text name="ads_dealerWorkshopAvailable_tooltip" text="Haelt die Haendlerwerkstatt zu jeder Tageszeit verfuegbar."/>
+        <text name="ads_mobileWorkshopAvailable_label" text="Mobile Werkstatt 24/7"/>
+        <text name="ads_mobileWorkshopAvailable_tooltip" text="Haelt die mobile Werkstatt zu jeder Tageszeit verfuegbar."/>
+        <text name="ads_ownWorkshopAvailable_label" text="Eigene Werkstatt 24/7"/>
+        <text name="ads_ownWorkshopAvailable_tooltip" text="Haelt Ihre eigene Werkstatt zu jeder Tageszeit verfuegbar."/>
         <text name="ads_instantInspection_label" text="Sofortige Inspektion"/>
         <text name="ads_instantInspection_tooltip" text="Wenn aktiviert, werden alle Inspektionen sofort abgeschlossen (es vergeht keine Zeit). Hinweis: Die Inspektionsoption „Sichtprüfung“ ist dann nicht verfügbar."/>
         <text name="ads_parkVehicle_label" text="Fahrzeug während der Wartung parken"/>
@@ -23,6 +38,14 @@
         <text name="ads_warrantyEnabled_tooltip" text="Aktiviert Garantieleistungen für Reparaturen an Neufahrzeugen (bis zu 20 Betriebsstunden oder 12 Monate). Nur OEM-Teile werden kostenlos übernommen."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="KI-Überlastungs- und Überhitzungskontrolle"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Der KI-Helfer reduziert die Motorlast bei drohender Überlastung oder Überhitzung."/>
+        <text name="ads_aiWorkerTargetStress_label" text="KI-Reaktion auf Last"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Steuert, wie frueh der KI-Helfer auf Ueberlastung und Ueberhitzung reagiert. Hoehere Werte sind weniger empfindlich und reagieren spaeter; niedrigere Werte sind empfindlicher und verlangsamen frueher."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Gelassen"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Ausgewogen"/>
+        <text name="ads_aiWorkerTargetStress_sensitive" text="Empfindlich"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Sehr empfindlich"/>
+        <text name="ads_aiWorkerMinSpeed_label" text="Minimale KI-Geschwindigkeit"/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Legt die niedrigste Tempomatgeschwindigkeit fest, die der KI-Helfer beim Verlangsamen zur Vermeidung von Ueberlastung oder Ueberhitzung verwenden darf."/>
         <text name="ads_debugMode_label" text="Debug-Modus"/>
         <text name="ads_debugMode_tooltip" text="Aktiviert oder deaktiviert das Debug-Panel und die umfangreiche Debug-Protokollierung in der Konsole."/>
         <text name="ads_warningMessages_label" text="Warnmeldungen"/>
@@ -36,6 +59,7 @@
         <text name="ads_batteryCapacity_label" text="Batteriekapazität"/>
         <text name="ads_thermalSensitivity_label" text="Thermische Empfindlichkeit"/>
         <text name="ads_option_off" text="Aus"/>
+        <text name="ads_option_none" text="None"/>
         <text name="ads_serviceInterval_tooltip" text="Legt das grundlegende Wartungsintervall in Stunden fest, nach dem eine Wartung erforderlich ist. Das tatsächliche Intervall hängt von der Fahrzeugmarke, dem Alter und der Qualität früherer Wartungen ab."/>
         <text name="ads_vehicleLifespan_tooltip" text="Legt die grundlegende Fahrzeuglebensdauer in Stunden fest, nach der der Zustand 0 % erreicht. Je näher der Zustand an null liegt, desto unzuverlässiger wird das Fahrzeug."/>
         <text name="ads_downtimeWear_tooltip" text="Legt die Geschwindigkeit des passiven Verschleißes im Stillstand als Prozentsatz des Grundverschleißes fest (Fahrzeuglebensdauer). Beispiel: 5 % bei der Standard-Lebensdauer von 100 Stunden bedeuten, dass jedes System nach etwa 20 Stunden Stillstand rund 1 % Zustand verliert. Hinweis: Wird das Fahrzeug unter Dach gelagert, ist passiver Verschleiß deaktiviert."/>
@@ -43,7 +67,17 @@
         <text name="ads_mobileWorkshopRestrictions_tooltip" text="Wenn aktiviert, hängt die Verfügbarkeit verschiedener Arbeiten in der mobilen Werkstatt von der Wartungsfreundlichkeit des Fahrzeugs ab."/>
         <text name="ads_systemStressRate_tooltip" text="Bestimmt, wie schnell sich Stress in den Systemen durch Überlastung, Überhitzung, Schlupf und andere harte Betriebsbedingungen aufbaut. Stress beeinflusst die Wahrscheinlichkeit von Ausfällen direkt: Je mehr Stress sich in einem System ansammelt, desto wahrscheinlicher ist eine Panne."/>
         <text name="ads_batteryCapacity_tooltip" text="Passt die maximal nutzbare Batteriekapazität an. Werte nahe 150 Ah sind realistischer, allerdings treten bei diesem Niveau Entladeprobleme der Batterie kaum noch auf."/>
+        <text name="ads_alternatorMaxOutput_label" text="Max. Lichtmaschinenstrom"/>
+        <text name="ads_alternatorMaxOutput_tooltip" text="Legt den maximalen Ausgangsstrom der Lichtmaschine fest. Hoehere Werte erlauben es der Lichtmaschine, die Batterie schneller nachzuladen."/>
+        <text name="ads_idleCurrent_label" text="Ruhestrom"/>
+        <text name="ads_idleCurrent_tooltip" text="Legt den Entladestrom der Batterie bei abgestelltem Motor fest. Bei 0,5 A wuerde eine 15-Ah-Batterie zum Beispiel etwa 30 Echtzeitstunden bis zur vollstaendigen Entladung benoetigen, bevor Temperatureffekte beruecksichtigt werden."/>
         <text name="ads_thermalSensitivity_tooltip" text="Passt das Verhalten des thermischen Modells an. Höhere Einstellungen machen Motor und Getriebe empfindlicher gegenüber Last, Umgebungstemperatur und Kühlerverschmutzung und erzeugen unter gleichen Bedingungen mehr Wärme."/>
+        <text name="ads_radiatorDirtInfluence_label" text="Einfluss der Kuehler-Verschmutzung"/>
+        <text name="ads_radiatorDirtInfluence_tooltip" text="Verringert die Kuehlleistung des Kuehlers bei maximaler Verschmutzung um diesen Prozentsatz."/>
+        <text name="ads_warmingBoostPower_label" text="Beschleunigte Aufwaermung"/>
+        <text name="ads_warmingBoostPower_tooltip" text="Beschleunigt kuenstlich die Aufwaermung von Motor und Getriebe. Verwenden Sie Aus fuer unveraendertes thermisches Verhalten."/>
+        <text name="ads_coolingSlowdownPower_label" text="Verlangsamte Abkuehlung"/>
+        <text name="ads_coolingSlowdownPower_tooltip" text="Verlangsamt kuenstlich die Abkuehlung von Motor und Getriebe nach dem Abstellen des Fahrzeugs. Verwenden Sie Aus fuer unveraendertes Abkuehlverhalten."/>
         <text name="ads_thermal_none" text="Passiv"/>
         <text name="ads_thermal_mild" text="Leicht"/>
         <text name="ads_thermal_default" text="Standard"/>
@@ -526,6 +560,7 @@
         <text name="ads_jumper_cables_auto_disconnected" text="Starthilfekabel wurden getrennt, weil eines der Fahrzeuge losgefahren ist"/>
         <text name="ads_jumper_cables_is_too_far" text="%s ist zu weit von %s entfernt"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Fahrzeuginspektion"/>
+        <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
         <text name="ads_field_inspection_action" text="Fahrzeug inspizieren"/>
         <text name="ads_field_inspection_hold_to_start" text="Gedrückt halten, um die Inspektion zu starten"/>
         <text name="ads_field_inspection_starting" text="Inspektion wird gestartet..."/>
@@ -643,6 +678,9 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritische Überlastung! Verringern Sie sofort die Belastung der Maschine."/>
         <text name="ads_tutorialMode_label" text="Tutorial-Modus"/>
         <text name="ads_tutorialMode_tooltip" text="Zeigt Tutorial-Hinweise während des Spielens an. Im Mehrspielermodus deaktiviert."/>
+        <text name="ads_tutorialResetTips_label" text="Hinweise zuruecksetzen"/>
+        <text name="ads_tutorialResetTips_text" text="Hinweise zuruecksetzen"/>
+        <text name="ads_tutorialResetTips_tooltip" text="Setzt den Verlauf der Tutorial-Hinweise zurueck und zeigt alle Hinweise erneut an. Nur im Einzelspielermodus verfuegbar."/>
         <text name="ads_tutorialResetConfirm_title" text="Tutorial-Hinweise zurücksetzen?"/>
         <text name="ads_tutorialResetConfirm_message" text="Verlauf der Tutorial-Hinweise zurücksetzen und alle Hinweise erneut anzeigen?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Willkommen bei Advanced Damage System"/>
@@ -651,6 +689,8 @@
         <text name="ads_tutorial_welcome_message" text="Dieses Mod überarbeitet das Schadens- und Wartungssystem für Fahrzeuge im Spiel grundlegend. Es gibt viele Änderungen, deshalb werden von Zeit zu Zeit Tutorial-Hinweise eingeblendet. Sie helfen Ihnen, die neuen Mechaniken schneller zu verstehen, typische Fehler zu vermeiden und Ihre Maschinen vor Ausfällen zu bewahren.&#10;&#10;Wenn Sie möchten, können Sie die Tutorial-Hinweise jetzt direkt deaktivieren. Später lassen sie sich in den Mod-Einstellungen im Bereich Advanced Damage System jederzeit wieder einschalten."/>
         <text name="ads_tutorial_service_due_soon_title" text="Regelmäßige Wartung"/>
         <text name="ads_tutorial_service_due_soon_message" text="%s benötigt bald Wartung.&#10;&#10;In ADS brauchen Fahrzeuge regelmäßigen Service. Wenn Sie ihn zu lange hinauszögern, steigt das Pannenrisiko deutlich an.&#10;&#10;Besuchen Sie die nächste Werkstatt und wählen Sie &quot;Wartung&quot;. Das Wartungsintervall kann in den Mod-Einstellungen angepasst werden."/>
+        <text name="ads_tutorial_service_interval_expired_title" text="Wartungsintervall ueberschritten"/>
+        <text name="ads_tutorial_service_interval_expired_message" text="%s hat sein Wartungsintervall ueberschritten und braucht eine Wartung.&#10;&#10;Fahren Sie so schnell wie moeglich in eine Werkstatt und fuehren Sie die Massnahme &quot;Wartung&quot; durch. Wenn Sie ein Fahrzeug mit ueberfaelliger Wartung weiter einsetzen, steigt das Risiko fuer mehrere Ausfaelle deutlich an."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Kühler und Lufteinlässe verschmutzt"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Der Kühler und die Lufteinlässe Ihres Fahrzeugs scheinen stark verschmutzt zu sein.&#10;&#10;Ein verschmutzter Kühler kann Wärme schlechter abführen, und zugesetzte Lufteinlässe können die Luftzufuhr zum Motor einschränken. Das reduziert die Leistung und erhöht den Kraftstoffverbrauch.&#10;&#10;Reinigen können Sie beides an einer Waschstation oder mit dem Air Blower aus dem Shop.&#10;&#10;Den Zustand von Kühler und Lufteinlässen können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Schmierung erforderlich"/>
@@ -659,6 +699,8 @@
         <text name="ads_tutorial_needs_repair_message" text="Mit Ihrem %s stimmt offenbar etwas nicht. Möglicherweise ist eines der Bauteile ausgefallen.&#10;&#10;Besuchen Sie unbedingt eine Werkstatt und führen Sie eine Inspektion durch. Warten Sie nicht zu lange: Der Defekt kann sich verschlimmern, und damit steigen auch die späteren Reparaturkosten.&#10;&#10;Wenn die Inspektion einen Fehler bestätigt, beheben Sie ihn mit der Reparatur in der Werkstatt."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Generalüberholung"/>
         <text name="ads_tutorial_needs_overhaul_message" text="Ihr %s ist offenbar in die Jahre gekommen. Es wird Zeit, über einen Ersatz oder eine Generalüberholung nachzudenken. Das ist ein langer und aufwendiger Vorgang, kann Ihrer vertrauten Lieblingsmaschine aber ein zweites Leben schenken. Die Lebensdauer lässt sich übrigens in den Einstellungen anpassen: Je höher sie ist, desto langsamer verschleißen Ihre Fahrzeuge."/>
+        <text name="ads_tutorial_age_degradation_title" text="Altersbedingter Verschleiss"/>
+        <text name="ads_tutorial_age_degradation_message" text="Wussten Sie, dass Fahrzeuge in ADS mit zunehmendem Alter nach und nach einen Teil ihrer urspruenglichen Leistung verlieren?&#10;&#10;Nach etwa einem Drittel der Lebensdauer beginnt der altersbedingte Verschleiss, wichtige Eigenschaften wie Leistung, Bremswirkung und andere Systeme leicht zu verschlechtern. Je aelter das Fahrzeug wird, desto staerker faellt dieser Effekt aus, und besonders deutlich wird er gegen Ende der Lebensdauer.&#10;&#10;Sie koennen diesen altersbedingten Verschleiss in den Mod-Einstellungen deaktivieren."/>
         <text name="ads_tutorial_needs_preventive_title" text="Panne steht bevor"/>
         <text name="ads_tutorial_needs_preventive_message" text="Es sieht so aus, als würde eines der Systeme Ihres %s bald ausfallen. Die gute Nachricht: Sie können das verhindern. In der Werkstatt gibt es dafür eine besondere Leistung: vorbeugende Wartung. Sie umfasst eine vollständige technische Prüfung plus vorbeugende Reparaturen an allen problematischen Komponenten."/>
         <text name="ads_tutorial_poor_consumables_title" text="Minderwertige Verbrauchsmaterialien"/>
@@ -697,6 +739,8 @@
         <text name="ads_tutorial_cold_engine_message" text="Wärmen Sie Ihre Maschine immer auf, bevor Sie sie einsetzen. Nicht nur der Motor braucht Zeit auf Temperatur zu kommen, sondern auch viele andere Baugruppen: Hydrauliköl, das CVT-Getriebe und sogar der Kraftstoff, besonders bei Frost. Ein kalter Betrieb kann deshalb in mehreren Systemen Probleme verursachen.&#10;&#10;Liegt die Motortemperatur über 50 Grad, ist alles ausreichend warm und die Maschine kann bedenkenlos eingesetzt werden."/>
         <text name="ads_tutorial_pto_sharp_angle_title" text="Zapfwellenwinkel zu groß"/>
         <text name="ads_tutorial_pto_sharp_angle_message" text="Vorsicht: Der Zapfwellenwinkel zwischen Ihrer Maschine und dem Anbaugerät ist zu groß. Die Gelenkwelle läuft dann mit harten Impulsen, die Vibrationen nehmen zu und der Verschleiß steigt schnell an.&#10;&#10;Halten Sie den Winkel unter 30 Grad und schalten Sie die Zapfwelle bei scharfen Kurven und Wendemanövern möglichst aus."/>
+        <text name="ads_tutorial_overload_indicator_title" text="Ueberlastungswarnung"/>
+        <text name="ads_tutorial_overload_indicator_message" text="%s steht unter hoher Last. Darauf weist Sie die Warnleuchte hin, die gerade im Armaturenbrett aufgeleuchtet ist.&#10;&#10;Moeglicherweise hat die Maschine nicht genug Leistung fuer die aktuelle Arbeit. Versuchen Sie, die Last zu verringern: Begrenzen Sie Ihre Geschwindigkeit mit dem Tempomat oder nehmen Sie etwas Gas weg, statt mit voller Leistung zu fahren."/>
         <text name="ads_tutorial_engine_overload_title" text="Motorüberlastung"/>
         <text name="ads_tutorial_engine_overload_message" text="Der Motor steht unter enormer Belastung. Möglicherweise ist die aktuelle Arbeit einfach zu viel für diese Maschine, und Sie sollten über ein stärkeres Fahrzeug nachdenken. Vielleicht reicht es aber auch schon, langsamer zu fahren und damit die Last auf den Motor zu senken.&#10;&#10;Behalten Sie in jedem Fall im Hinterkopf: Unter solcher Belastung steigt der Verschleiß deutlich an."/>
         <text name="ads_tutorial_lugging_title" text="Motor im unteren Drehzahlbereich quälen"/>
