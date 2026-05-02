@@ -2,6 +2,8 @@
 
 [![Advanced Damage System Feature Showcase](https://img.youtube.com/vi/HV9-DvFaPSM/maxresdefault.jpg)](https://www.youtube.com/watch?v=HV9-DvFaPSM)
 
+▶️ [Watch ADS Feature Showcase on YouTube](https://www.youtube.com/watch?v=HV9-DvFaPSM)
+
 Advanced Damage System is a mod that completely reworks the standard vehicle damage and maintenance system in Farming Simulator 25. A machine's reliability now depends directly on how carefully and efficiently you use it: the harder you push your equipment and the worse you maintain it, the more often it will break down.
 
 Forget about one-click repairs. Maintenance now takes time, resources, and proper planning. You will need to manage wear, schedule repairs in advance, and organize your fleet so that breakdowns do not ruin the season.
