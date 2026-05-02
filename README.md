@@ -1,5 +1,7 @@
 # FS25_AdvancedDamageSystem
 
+[![Advanced Damage System Feature Showcase](https://img.youtube.com/vi/HV9-DvFaPSM/maxresdefault.jpg)](https://www.youtube.com/watch?v=HV9-DvFaPSM)
+
 Advanced Damage System is a mod that completely reworks the standard vehicle damage and maintenance system in Farming Simulator 25. A machine's reliability now depends directly on how carefully and efficiently you use it: the harder you push your equipment and the worse you maintain it, the more often it will break down.
 
 Forget about one-click repairs. Maintenance now takes time, resources, and proper planning. You will need to manage wear, schedule repairs in advance, and organize your fleet so that breakdowns do not ruin the season.
@@ -60,8 +62,6 @@ If you do not want to read the full guide at the bottom of this page but still w
 - **Pre-Operation Inspection:** Before heading to the field, vehicles need to be inspected and serviced at the start of each shift: greasing components, blowing out the radiator and air intakes, and carrying out other essential routine procedures.
 
   ... More information below in the guide
-
-Demonstration of some breakdown's effects: https://www.youtube.com/watch?v=NpnlvY25Xl0&list=PL73V6HaxZ69gRgpLGkHpb_k5Qh1w4ZtHa
 
 # Console Commands
 For testing and debugging, ADS includes console commands. Most commands require you to be inside a vehicle that supports this mod.
