@@ -115,9 +115,59 @@ AdvancedDamageSystem = {
     [2] = "ads_spec_overhaul_partial",
     [3] = "ads_spec_overhaul_full",
     },
+
+    TRANSMISSION_TYPES = {
+    MANUAL      = "manual",
+    MANUAL_POWERSHIFT = "manual_powershift",
+    AUTOMATIC   = "automatic",
+    POWERSHIFT  = "powershift",
+    VARIABLE    = "variable",
+    CVT         = "variable",
+    UNKNOWN     = "unknown",
+    [1] = "manual",
+    [2] = "manual_powershift",
+    [3] = "automatic",
+    [4] = "powershift",
+    [5] = "variable",
+    [6] = "unknown",
+    },
 }
 
 AdvancedDamageSystem.modDirectory = g_currentModDirectory
+
+function AdvancedDamageSystem.isFiniteNumber(value)
+    return type(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge
+end
+
+function AdvancedDamageSystem.sanitizeNumber(value, fallback, minValue, maxValue)
+    local sanitized = tonumber(value)
+    local safeFallback = tonumber(fallback)
+
+    if not AdvancedDamageSystem.isFiniteNumber(safeFallback) then
+        safeFallback = 0
+    end
+
+    if not AdvancedDamageSystem.isFiniteNumber(sanitized) then
+        sanitized = safeFallback
+    end
+
+    if minValue ~= nil then
+        local minNumber = tonumber(minValue)
+        if AdvancedDamageSystem.isFiniteNumber(minNumber) and sanitized < minNumber then
+            sanitized = minNumber
+        end
+    end
+
+    if maxValue ~= nil then
+        local maxNumber = tonumber(maxValue)
+        if AdvancedDamageSystem.isFiniteNumber(maxNumber) and sanitized > maxNumber then
+            sanitized = maxNumber
+        end
+    end
+
+    return sanitized
+end
+
 source(g_currentModDirectory .. "scripts/ADS_Thermal.lua")
 
 AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
@@ -307,6 +357,87 @@ local function hasCVTTransmission(vehicle)
     return motor ~= nil and motor.minForwardGearRatio ~= nil
 end
 
+local function getTransmissionNameFromXML(vehicle)
+    if vehicle == nil then
+        return nil
+    end
+
+    local motorConfigIndex = 1
+    if vehicle.configurations ~= nil and vehicle.configurations.motor ~= nil then
+        motorConfigIndex = math.max(tonumber(vehicle.configurations.motor) or 1, 1)
+    end
+
+    if vehicle.xmlFile ~= nil and vehicle.xmlFile.getValue ~= nil then
+        local key = string.format("vehicle.motorized.motorConfigurations.motorConfiguration(%d).transmission#name", motorConfigIndex - 1)
+        local name = vehicle.xmlFile:getValue(key)
+        if name ~= nil then
+            return tostring(name)
+        end
+    end
+
+    local storeItem = g_storeManager ~= nil and vehicle.configFileName ~= nil and g_storeManager:getItemByXMLFilename(vehicle.configFileName) or nil
+    if storeItem ~= nil and storeItem.specs ~= nil and type(storeItem.specs.transmission) == "table" then
+        return storeItem.specs.transmission[motorConfigIndex] or storeItem.specs.transmission[1]
+    end
+
+    return nil
+end
+
+local function getTransmissionType(vehicle)
+    local transmissionTypes = AdvancedDamageSystem.TRANSMISSION_TYPES
+    if vehicle == nil or vehicle.getMotor == nil then
+        return transmissionTypes.UNKNOWN
+    end
+
+    local motor = vehicle:getMotor()
+    if motor == nil then
+        return transmissionTypes.UNKNOWN
+    end
+
+    local transmissionName = getTransmissionNameFromXML(vehicle)
+    if transmissionName ~= nil then
+        local normalizedName = string.lower(tostring(transmissionName))
+        if string.find(normalizedName, "manual", 1, true) ~= nil
+            and (string.find(normalizedName, "powershift", 1, true) ~= nil
+            or string.find(normalizedName, "power shift", 1, true) ~= nil) then
+            return transmissionTypes.MANUAL_POWERSHIFT
+        elseif string.find(normalizedName, "powershift", 1, true) ~= nil
+            or string.find(normalizedName, "power shift", 1, true) ~= nil then
+            return transmissionTypes.POWERSHIFT
+        elseif string.find(normalizedName, "variable", 1, true) ~= nil
+            or string.find(normalizedName, "cvt", 1, true) ~= nil then
+            return transmissionTypes.VARIABLE
+        elseif string.find(normalizedName, "automatic", 1, true) ~= nil
+            or string.find(normalizedName, "auto", 1, true) ~= nil then
+            return transmissionTypes.AUTOMATIC
+        elseif string.find(normalizedName, "manual", 1, true) ~= nil then
+            return transmissionTypes.MANUAL
+        end
+    end
+
+    if motor.gearType == VehicleMotor.TRANSMISSION_TYPE.POWERSHIFT
+        or motor.groupType == VehicleMotor.TRANSMISSION_TYPE.POWERSHIFT then
+        if motor.forwardGears ~= nil or motor.backwardGears ~= nil then
+            return transmissionTypes.MANUAL_POWERSHIFT
+        end
+
+        return transmissionTypes.POWERSHIFT
+    end
+
+    if motor.minForwardGearRatio ~= nil then
+        return transmissionTypes.VARIABLE
+    end
+
+    if motor.forwardGears ~= nil or motor.backwardGears ~= nil then
+        return transmissionTypes.MANUAL
+    end
+
+    return transmissionTypes.UNKNOWN
+end
+
+AdvancedDamageSystem.getTransmissionType = getTransmissionType
+AdvancedDamageSystem.getTransmissionNameFromXML = getTransmissionNameFromXML
+
 local function hasCVTAddon(vehicle)
     local spec_CVTaddon = vehicle.spec_CVTaddon
     local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
@@ -444,7 +575,9 @@ local function serializeBreakdownsForDirtyCheck(breakdownsTable)
 end
 
 local function syncFloatChanged(a, b, epsilon)
-    return math.abs((tonumber(a) or 0) - (tonumber(b) or 0)) > (epsilon or 0)
+    local valueA = AdvancedDamageSystem.sanitizeNumber(a, 0)
+    local valueB = AdvancedDamageSystem.sanitizeNumber(b, 0)
+    return math.abs(valueA - valueB) > (epsilon or 0)
 end
 
 local function markStateDirty(vehicle, spec)
@@ -860,6 +993,7 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     SpecializationUtil.registerFunction(vehicleType, "updateSystemConditionAndStress", AdvancedDamageSystem.updateSystemConditionAndStress)
     SpecializationUtil.registerFunction(vehicleType, "updateEngineSystem", AdvancedDamageSystem.updateEngineSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateTransmissionSystem", AdvancedDamageSystem.updateTransmissionSystem)
+    SpecializationUtil.registerFunction(vehicleType, "getTransmissionType", AdvancedDamageSystem.getTransmissionType)
     SpecializationUtil.registerFunction(vehicleType, "updateHydraulicsSystem", AdvancedDamageSystem.updateHydraulicsSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateCoolingSystem", AdvancedDamageSystem.updateCoolingSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateElectricalSystem", AdvancedDamageSystem.updateElectricalSystem)
@@ -921,7 +1055,7 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     -- [Group 1] State
     streamWriteString(streamId, spec.currentState or "")
     streamWriteString(streamId, spec.plannedState or "")
-    streamWriteFloat32(streamId, spec.maintenanceTimer or 0)
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.maintenanceTimer, 0, 0))
 
     -- [Group 2] Service context
     streamWriteString(streamId, spec.serviceOptionOne or "")
@@ -930,32 +1064,32 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     streamWriteString(streamId, spec.workshopType or "")
 
     -- [Group 3] Telemetry
-    streamWriteFloat32(streamId, getSyncOperatingTime(self))
-    streamWriteFloat32(streamId, spec.realOperatingTime or getSyncOperatingTime(self))
-    streamWriteFloat32(streamId, spec._fuelUsageRaw or 0)
-    streamWriteFloat32(streamId, self:getMotorLoadPercentage() or 0)
-    streamWriteFloat32(streamId, spec.dynamicMotorLoad or 0)
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(getSyncOperatingTime(self), 0, 0))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.realOperatingTime, getSyncOperatingTime(self), 0))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(self:getMotorLoadPercentage(), 0, 0, 1.5))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
 
     -- [Group 4] Thermal
-    streamWriteFloat32(streamId, spec.rawEngineTemperature or -99)
-    streamWriteFloat32(streamId, spec.rawTransmissionTemperature or -99)
-    streamWriteFloat32(streamId, spec.thermostatState or 0)
-    streamWriteFloat32(streamId, spec.transmissionThermostatState or 0)
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature, 20, -80, 160))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature, 20, -80, 180))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0, 0, 1))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.transmissionThermostatState, 0, 0, 1))
 
     -- [Group 5] Electrical
-    streamWriteFloat32(streamId, spec.batterySoc or 1.0)
-    streamWriteFloat32(streamId, spec.batteryChargeAh or 0)
-    streamWriteFloat32(streamId, spec.batteryTerminalVoltageV or 0)
-    streamWriteFloat32(streamId, spec.systemVoltageV or 0)
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batterySoc, 1.0, 0, 1))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryTerminalVoltageV, 12.7, 0, 30))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.systemVoltageV, 12.7, 0, 30))
 
     -- [Group 6] Field care
-    streamWriteFloat32(streamId, math.max(spec.radiatorClogging or 0, 0))
-    streamWriteFloat32(streamId, math.max(spec.airIntakeClogging or 0, 0))
-    streamWriteFloat32(streamId, math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.radiatorClogging, 0, 0))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.airIntakeClogging, 0, 0))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
 
     -- [Group 7] Wear
-    streamWriteFloat32(streamId, spec.serviceLevel or 1.0)
-    streamWriteFloat32(streamId, spec.conditionLevel or 1.0)
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.serviceLevel, 1.0, 0.001))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.conditionLevel, 1.0, 0.001, 1.0))
     streamWriteString(streamId, ADS_Utils.serializeSystemsState(spec.systems))
 
     -- [Group 8] Breakdowns
@@ -963,8 +1097,8 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
 
     -- [Group 9] Service progress
     streamWriteInt32(streamId, spec.pendingProgressStepIndex or 0)
-    streamWriteFloat32(streamId, spec.pendingProgressTotalTime or 0)
-    streamWriteFloat32(streamId, spec.pendingProgressElapsedTime or 0)
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressTotalTime, 0, 0))
+    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressElapsedTime, 0, 0))
 
     -- [Group 10] Maintenance log (variable-length: count + entries)
     local logCount = spec.maintenanceLog and #spec.maintenanceLog or 0
@@ -983,7 +1117,7 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     -- [Group 1] State
     spec.currentState = streamReadString(streamId)
     spec.plannedState = streamReadString(streamId)
-    spec.maintenanceTimer = streamReadFloat32(streamId)
+    spec.maintenanceTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
 
     -- [Group 2] Service context
     spec.serviceOptionOne = streamReadString(streamId)
@@ -995,55 +1129,55 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     if spec.workshopType == "" then spec.workshopType = nil end
 
     -- [Group 3] Telemetry
-    self:setOperatingTime(streamReadFloat32(streamId), true)
-    spec.realOperatingTime = streamReadFloat32(streamId)
+    self:setOperatingTime(AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), currentOperatingTime, 0), true)
+    spec.realOperatingTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), currentOperatingTime, 0)
     if (spec.realOperatingTime == nil or spec.realOperatingTime <= 0) and currentOperatingTime > 0 then
         spec.realOperatingTime = currentOperatingTime
     end
-    local syncFuelRaw = streamReadFloat32(streamId)
+    local syncFuelRaw = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
     spec._fuelUsageRaw = syncFuelRaw
     spec.fuelUsage = syncFuelRaw
-    spec._netMotorLoad = streamReadFloat32(streamId)
-    spec._netDynamicMotorLoad = streamReadFloat32(streamId)
+    spec._netMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
+    spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec._netMotorLoad, 0, 1.5)
     spec.dynamicMotorLoad = spec._netDynamicMotorLoad
     if not self.isServer and self.spec_motorized ~= nil then
         self.spec_motorized.lastFuelUsage = syncFuelRaw
     end
 
     -- [Group 4] Thermal
-    local syncRawEngTemp = streamReadFloat32(streamId)
-    local syncRawTransTemp = streamReadFloat32(streamId)
+    local syncRawEngTemp = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 20, -80, 160)
+    local syncRawTransTemp = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), syncRawEngTemp, -80, 180)
     spec.rawEngineTemperature = syncRawEngTemp
     spec.rawTransmissionTemperature = syncRawTransTemp
     spec._netTargetEngineTemp = syncRawEngTemp
     spec._netTargetTransmissionTemp = syncRawTransTemp
     spec.engineTemperature = syncRawEngTemp
     spec.transmissionTemperature = syncRawTransTemp
-    spec.thermostatState = streamReadFloat32(streamId)
+    spec.thermostatState = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
     if spec.engTermPID ~= nil then
         spec.engTermPID.mechPos = spec.thermostatState
     end
-    spec.transmissionThermostatState = streamReadFloat32(streamId)
+    spec.transmissionThermostatState = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
     if spec.transTermPID ~= nil then
         spec.transTermPID.mechPos = spec.transmissionThermostatState
     end
 
     -- [Group 5] Electrical
-    spec.batterySoc = streamReadFloat32(streamId)
-    spec.batteryChargeAh = streamReadFloat32(streamId)
-    spec.batteryTerminalVoltageV = streamReadFloat32(streamId)
+    spec.batterySoc = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0, 1)
+    spec.batteryChargeAh = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
+    spec.batteryTerminalVoltageV = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 12.7, 0, 30)
     spec.rawBatteryTerminalVoltageV = spec.batteryTerminalVoltageV
-    spec.systemVoltageV = streamReadFloat32(streamId)
+    spec.systemVoltageV = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec.batteryTerminalVoltageV, 0, 30)
     spec.rawSystemVoltageV = spec.systemVoltageV
 
     -- [Group 6] Field care
-    spec.radiatorClogging = math.max(streamReadFloat32(streamId), 0)
-    spec.airIntakeClogging = math.max(streamReadFloat32(streamId), 0)
-    spec.lubricationLevel = math.clamp(streamReadFloat32(streamId), 0.0, 1.0)
+    spec.radiatorClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+    spec.airIntakeClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+    spec.lubricationLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
 
     -- [Group 7] Wear
-    spec.serviceLevel = streamReadFloat32(streamId)
-    spec.conditionLevel = streamReadFloat32(streamId)
+    spec.serviceLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.001)
+    spec.conditionLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.001, 1.0)
     local loadedSystems = ADS_Utils.deserializeSystemsState(streamReadString(streamId))
     for sysKey, sysData in pairs(loadedSystems) do
         if spec.systems[sysKey] ~= nil then
@@ -1058,8 +1192,8 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
 
     -- [Group 9] Service progress
     spec.pendingProgressStepIndex = streamReadInt32(streamId)
-    spec.pendingProgressTotalTime = streamReadFloat32(streamId)
-    spec.pendingProgressElapsedTime = streamReadFloat32(streamId)
+    spec.pendingProgressTotalTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+    spec.pendingProgressElapsedTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
 
     -- [Group 10] Maintenance log (variable-length)
     local logCount = streamReadUInt16(streamId)
@@ -1084,7 +1218,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_state) ~= 0) then
             streamWriteString(streamId, spec.currentState or "")
             streamWriteString(streamId, spec.plannedState or "")
-            streamWriteFloat32(streamId, spec.maintenanceTimer or 0)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.maintenanceTimer, 0, 0))
         end
 
         -- [2] Service context
@@ -1097,40 +1231,40 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
 
         -- [3] Telemetry
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_telemetry) ~= 0) then
-            streamWriteFloat32(streamId, getSyncOperatingTime(self))
-            streamWriteFloat32(streamId, spec.realOperatingTime or 0)
-            streamWriteFloat32(streamId, spec._fuelUsageRaw or 0)
-            streamWriteFloat32(streamId, self:getMotorLoadPercentage() or 0)
-            streamWriteFloat32(streamId, spec.dynamicMotorLoad or 0)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(getSyncOperatingTime(self), 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.realOperatingTime, 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(self:getMotorLoadPercentage(), 0, 0, 1.5))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
         end
 
         -- [4] Thermal
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_thermal) ~= 0) then
-            streamWriteFloat32(streamId, spec.rawEngineTemperature or -99)
-            streamWriteFloat32(streamId, spec.rawTransmissionTemperature or -99)
-            streamWriteFloat32(streamId, spec.thermostatState or 0)
-            streamWriteFloat32(streamId, spec.transmissionThermostatState or 0)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature, 20, -80, 160))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature, 20, -80, 180))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0, 0, 1))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.transmissionThermostatState, 0, 0, 1))
         end
 
         -- [5] Electrical
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_electrical) ~= 0) then
-            streamWriteFloat32(streamId, spec.batterySoc or 1.0)
-            streamWriteFloat32(streamId, spec.batteryChargeAh or 0)
-            streamWriteFloat32(streamId, spec.batteryTerminalVoltageV or 0)
-            streamWriteFloat32(streamId, spec.systemVoltageV or 0)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batterySoc, 1.0, 0, 1))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryTerminalVoltageV, 12.7, 0, 30))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.systemVoltageV, 12.7, 0, 30))
         end
 
         -- [6] Field care
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_fieldcare) ~= 0) then
-            streamWriteFloat32(streamId, math.max(spec.radiatorClogging or 0, 0))
-            streamWriteFloat32(streamId, math.max(spec.airIntakeClogging or 0, 0))
-            streamWriteFloat32(streamId, math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.radiatorClogging, 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.airIntakeClogging, 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
         end
 
         -- [7] Wear
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_wear) ~= 0) then
-            streamWriteFloat32(streamId, spec.serviceLevel or 1.0)
-            streamWriteFloat32(streamId, spec.conditionLevel or 1.0)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.serviceLevel, 1.0, 0.001))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.conditionLevel, 1.0, 0.001, 1.0))
             streamWriteString(streamId, ADS_Utils.serializeSystemsState(spec.systems))
         end
 
@@ -1142,8 +1276,8 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         -- [9] Service progress
         if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_serviceProgress) ~= 0) then
             streamWriteInt32(streamId, spec.pendingProgressStepIndex or 0)
-            streamWriteFloat32(streamId, spec.pendingProgressTotalTime or 0)
-            streamWriteFloat32(streamId, spec.pendingProgressElapsedTime or 0)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressTotalTime, 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressElapsedTime, 0, 0))
         end
     end
 end
@@ -1158,7 +1292,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
         if streamReadBool(streamId) then
             spec.currentState = streamReadString(streamId)
             spec.plannedState = streamReadString(streamId)
-            spec.maintenanceTimer = streamReadFloat32(streamId)
+            spec.maintenanceTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
         end
 
         -- [2] Service context
@@ -1174,30 +1308,30 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
 
         -- [3] Telemetry
         if streamReadBool(streamId) then
-            self:setOperatingTime(streamReadFloat32(streamId), true)
-            spec.realOperatingTime = streamReadFloat32(streamId)
+            self:setOperatingTime(AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), currentOperatingTime, 0), true)
+            spec.realOperatingTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), currentOperatingTime, 0)
             if (spec.realOperatingTime == nil or spec.realOperatingTime <= 0) and currentOperatingTime > 0 then
                 spec.realOperatingTime = currentOperatingTime
             end
-            spec._fuelUsageRaw = streamReadFloat32(streamId)
-            spec._netMotorLoad = streamReadFloat32(streamId)
-            spec._netDynamicMotorLoad = streamReadFloat32(streamId)
+            spec._fuelUsageRaw = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
+            spec._netMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
+            spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec._netMotorLoad, 0, 1.5)
             spec.dynamicMotorLoad = spec._netDynamicMotorLoad
         end
 
         -- [4] Thermal
         if streamReadBool(streamId) then
-            local syncRawEngTemp = streamReadFloat32(streamId)
-            local syncRawTransTemp = streamReadFloat32(streamId)
+            local syncRawEngTemp = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 20, -80, 160)
+            local syncRawTransTemp = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), syncRawEngTemp, -80, 180)
             spec.rawEngineTemperature = syncRawEngTemp
             spec.rawTransmissionTemperature = syncRawTransTemp
             spec._netTargetEngineTemp = syncRawEngTemp
             spec._netTargetTransmissionTemp = syncRawTransTemp
-            spec.thermostatState = streamReadFloat32(streamId)
+            spec.thermostatState = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
             if spec.engTermPID ~= nil then
                 spec.engTermPID.mechPos = spec.thermostatState
             end
-            spec.transmissionThermostatState = streamReadFloat32(streamId)
+            spec.transmissionThermostatState = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
             if spec.transTermPID ~= nil then
                 spec.transTermPID.mechPos = spec.transmissionThermostatState
             end
@@ -1205,25 +1339,25 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
 
         -- [5] Electrical
         if streamReadBool(streamId) then
-            spec.batterySoc = streamReadFloat32(streamId)
-            spec.batteryChargeAh = streamReadFloat32(streamId)
-            spec.batteryTerminalVoltageV = streamReadFloat32(streamId)
+            spec.batterySoc = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0, 1)
+            spec.batteryChargeAh = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
+            spec.batteryTerminalVoltageV = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 12.7, 0, 30)
             spec.rawBatteryTerminalVoltageV = spec.batteryTerminalVoltageV
-            spec.systemVoltageV = streamReadFloat32(streamId)
+            spec.systemVoltageV = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec.batteryTerminalVoltageV, 0, 30)
             spec.rawSystemVoltageV = spec.systemVoltageV
         end
 
         -- [6] Field care
         if streamReadBool(streamId) then
-            spec.radiatorClogging = math.max(streamReadFloat32(streamId), 0)
-            spec.airIntakeClogging = math.max(streamReadFloat32(streamId), 0)
-            spec.lubricationLevel = math.clamp(streamReadFloat32(streamId), 0.0, 1.0)
+            spec.radiatorClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            spec.airIntakeClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            spec.lubricationLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
         end
 
         -- [7] Wear
         if streamReadBool(streamId) then
-            spec.serviceLevel = streamReadFloat32(streamId)
-            spec.conditionLevel = streamReadFloat32(streamId)
+            spec.serviceLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.001)
+            spec.conditionLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.001, 1.0)
             local loadedSystems = ADS_Utils.deserializeSystemsState(streamReadString(streamId))
             for sysKey, sysData in pairs(loadedSystems) do
                 if spec.systems[sysKey] ~= nil then
@@ -1244,8 +1378,8 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
         -- [9] Service progress
         if streamReadBool(streamId) then
             spec.pendingProgressStepIndex = streamReadInt32(streamId)
-            spec.pendingProgressTotalTime = streamReadFloat32(streamId)
-            spec.pendingProgressElapsedTime = streamReadFloat32(streamId)
+            spec.pendingProgressTotalTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            spec.pendingProgressElapsedTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
         end
     end
 end
@@ -1273,18 +1407,18 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#breakdowns", breakdownString)
         xmlFile:setValue(key .. "#state", spec.currentState or AdvancedDamageSystem.STATUS.READY)
         xmlFile:setValue(key .. "#plannedState", spec.plannedState or AdvancedDamageSystem.STATUS.READY)
-        xmlFile:setValue(key .. "#maintenanceTimer", spec.maintenanceTimer or 0)
-        xmlFile:setValue(key .. "#engineTemperature", spec.engineTemperature or -99)
-        xmlFile:setValue(key .. "#transmissionTemperature", spec.transmissionTemperature or -99)
-        xmlFile:setValue(key .. "#batterySoc", spec.batterySoc or 1.0)
-        xmlFile:setValue(key .. "#batteryChargeAh", spec.batteryChargeAh or 0)
-        xmlFile:setValue(key .. "#batteryTempC", spec.batteryTempC or 0)
+        xmlFile:setValue(key .. "#maintenanceTimer", AdvancedDamageSystem.sanitizeNumber(spec.maintenanceTimer, 0, 0))
+        xmlFile:setValue(key .. "#engineTemperature", AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, 20, -80, 160))
+        xmlFile:setValue(key .. "#transmissionTemperature", AdvancedDamageSystem.sanitizeNumber(spec.transmissionTemperature, 20, -80, 180))
+        xmlFile:setValue(key .. "#batterySoc", AdvancedDamageSystem.sanitizeNumber(spec.batterySoc, 1.0, 0, 1))
+        xmlFile:setValue(key .. "#batteryChargeAh", AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
+        xmlFile:setValue(key .. "#batteryTempC", AdvancedDamageSystem.sanitizeNumber(spec.batteryTempC, 20, -80, 85))
         xmlFile:setValue(key .. "#radiatorClogging", math.max(spec.radiatorClogging or 0, 0))
         xmlFile:setValue(key .. "#airIntakeClogging", math.max(spec.airIntakeClogging or 0, 0))
         xmlFile:setValue(key .. "#lubricationLevel", math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#lastLubricationProcessedDay", spec.lastLubricationProcessedDay or 0)
-        xmlFile:setValue(key .. "#thermostatState", math.clamp(spec.thermostatState or 0.0, 0.0, 1.0))
-        xmlFile:setValue(key .. "#transmissionThermostatState", math.clamp(spec.transmissionThermostatState or 0.0, 0.0, 1.0))
+        xmlFile:setValue(key .. "#thermostatState", AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0.0, 0.0, 1.0))
+        xmlFile:setValue(key .. "#transmissionThermostatState", AdvancedDamageSystem.sanitizeNumber(spec.transmissionThermostatState, 0.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#lastInspPwr", spec.lastInspectedPower or 1)
         xmlFile:setValue(key .. "#lastInspBrk", spec.lastInspectedBrake or 1)
         xmlFile:setValue(key .. "#lastInspYld", spec.lastInspectedYieldReduction or 1)
@@ -1401,6 +1535,16 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.factorStats = createEmptyFactorStats(self.spec_AdvancedDamageSystem.systems)
     ensureFactorStats(self.spec_AdvancedDamageSystem, self)
 
+    --- engine consumptables
+    self.spec_AdvancedDamageSystem.motorOil = {
+        level = 1.0,
+        quality = 1.0,
+        contamination = 0.0
+    }
+    self.spec_AdvancedDamageSystem.oilFilterClogging = 0.0
+    self.spec_AdvancedDamageSystem.airFilterClogging = 0.0
+    self.spec_AdvancedDamageSystem.airIntakeClogging = 0.0
+
     self.spec_AdvancedDamageSystem.extraConditionWear = 0
     self.spec_AdvancedDamageSystem.extraServiceWear = 0
     self.spec_AdvancedDamageSystem.extraBreakdownProbability = 0
@@ -1436,7 +1580,6 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.startButtonUp = false
 
     self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
-    self.spec_AdvancedDamageSystem.airIntakeClogging = 0.0
     self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
     self.spec_AdvancedDamageSystem.lastLubricationDay = nil
     self.spec_AdvancedDamageSystem.lastLubricationProcessedDay = g_currentMission ~= nil
@@ -1837,11 +1980,11 @@ function AdvancedDamageSystem:onPostLoad(savegame)
 
         log_dbg("Attempting to load from key:", key)
 
-        spec.serviceLevel = savegame.xmlFile:getValue(key .. "#service", spec.serviceLevel)
-        spec.conditionLevel = savegame.xmlFile:getValue(key .. "#condition", spec.conditionLevel)
+        spec.serviceLevel = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#service", spec.serviceLevel), spec.serviceLevel or 1.0, 0.001)
+        spec.conditionLevel = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#condition", spec.conditionLevel), spec.conditionLevel or 1.0, 0.001, 1.0)
         spec.currentState = savegame.xmlFile:getValue(key .. "#state", spec.currentState)
         spec.plannedState = savegame.xmlFile:getValue(key .. "#plannedState", spec.plannedState)
-        spec.maintenanceTimer = savegame.xmlFile:getValue(key .. "#maintenanceTimer", spec.maintenanceTimer)
+        spec.maintenanceTimer = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#maintenanceTimer", spec.maintenanceTimer), spec.maintenanceTimer or 0, 0)
         
         local loadedRealOperatingTime = nil
         if savegame.xmlFile:hasProperty(key .. "#realOperatingTime") then
@@ -1851,7 +1994,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
             loadedRealOperatingTime = getXMLFloat(savegame.xmlFile.handle, key .. "#realOperatingTime")
         end
         if loadedRealOperatingTime ~= nil then
-            spec.realOperatingTime = loadedRealOperatingTime
+            spec.realOperatingTime = AdvancedDamageSystem.sanitizeNumber(loadedRealOperatingTime, currentOperatingTime, 0)
         else
             spec.realOperatingTime = currentOperatingTime
         end
@@ -1865,11 +2008,12 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         end
 
         -- Load Simple Variables
-        spec.engineTemperature = savegame.xmlFile:getValue(key .. "#engineTemperature", spec.engineTemperature)
-        spec.transmissionTemperature = savegame.xmlFile:getValue(key .. "#transmissionTemperature", spec.transmissionTemperature)
-        spec.batterySoc = math.clamp(savegame.xmlFile:getValue(key .. "#batterySoc", spec.batterySoc), 0, 1)
-        spec.batteryChargeAh = savegame.xmlFile:getValue(key .. "#batteryChargeAh", nil)
-        spec.batteryTempC = savegame.xmlFile:getValue(key .. "#batteryTempC", spec.batteryTempC)
+        spec.engineTemperature = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#engineTemperature", spec.engineTemperature), 20, -80, 160)
+        spec.transmissionTemperature = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionTemperature", spec.transmissionTemperature), spec.engineTemperature, -80, 180)
+        spec.batterySoc = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batterySoc", spec.batterySoc), 1.0, 0, 1)
+        local loadedBatteryChargeAh = savegame.xmlFile:getValue(key .. "#batteryChargeAh", spec.batteryChargeAh)
+        spec.batteryChargeAh = loadedBatteryChargeAh ~= nil and AdvancedDamageSystem.sanitizeNumber(loadedBatteryChargeAh, 0, 0, 10000) or nil
+        spec.batteryTempC = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batteryTempC", spec.batteryTempC), 20, -80, 85)
         spec.radiatorClogging = math.max(savegame.xmlFile:getValue(key .. "#radiatorClogging", spec.radiatorClogging), 0)
         spec.airIntakeClogging = math.max(savegame.xmlFile:getValue(key .. "#airIntakeClogging", spec.airIntakeClogging), 0)
         spec.lubricationLevel = math.clamp(savegame.xmlFile:getValue(key .. "#lubricationLevel", spec.lubricationLevel), 0.0, 1.0)
@@ -1877,8 +2021,8 @@ function AdvancedDamageSystem:onPostLoad(savegame)
             key .. "#lastLubricationProcessedDay",
             g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.currentDay or spec.lastLubricationProcessedDay or 0
         )
-        spec.thermostatState = math.clamp(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), 0.0, 1.0)
-        spec.transmissionThermostatState = math.clamp(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), 0.0, 1.0)
+        spec.thermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
+        spec.transmissionThermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
         if spec.engTermPID ~= nil then
             spec.engTermPID.mechPos = spec.thermostatState
         end
@@ -2503,7 +2647,7 @@ local function syncColdEngineEffect(vehicle)
     if spec == nil then return end
 
     if vehicle.isServer then
-        local engTemp = spec.rawEngineTemperature or spec.engineTemperature or -99
+        local engTemp = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
         local breakdownId = 'COLD_ENGINE'
 
         if engTemp <= -10 and not vehicle:hasBreakdown(breakdownId) then
@@ -2543,8 +2687,8 @@ end
 local function syncOverheatProtection(vehicle)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then return end
-    local rawEngineTemp =  spec.rawEngineTemperature or spec.engineTemperature or -99 
-    local rawTransmissionTemp = not hasCVTAddon(vehicle) and (spec.rawTransmissionTemperature or spec.transmissionTemperature or -99) or -99
+    local rawEngineTemp = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
+    local rawTransmissionTemp = not hasCVTAddon(vehicle) and AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180) or -99
 
     if vehicle.isServer and spec.year >= 2000 then
         local overheatProtectionId = 'OVERHEAT_PROTECTION'
@@ -2603,7 +2747,7 @@ local function syncVoltageSagEffect(vehicle, dt)
     local motorState = vehicle:getMotorState()
     local isCranking = spec.isCranking ~= nil and spec.isCranking
     local breakdownId = 'VOLTAGE_SAG'
-    local systemVoltageV = spec.rawSystemVoltageV or spec.systemVoltageV or 0
+    local systemVoltageV = AdvancedDamageSystem.sanitizeNumber(spec.rawSystemVoltageV or spec.systemVoltageV, 12.7, 0, 30)
     local isVoltageSagging = (motorState == 1 and systemVoltageV < 12.0 and not isCranking) or (motorState == 4 and systemVoltageV < 13.0)
     local clearToRemove = not isCranking
 
@@ -2826,7 +2970,7 @@ local function syncFuelConsumption(vehicle)
     -- Server: capture raw lastFuelUsage every frame for dirty-flag network sync.
     if vehicle.isServer and vehicle.spec_motorized ~= nil then
         if vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted() then
-            spec._fuelUsageRaw = vehicle.spec_motorized.lastFuelUsage or 0
+            spec._fuelUsageRaw = AdvancedDamageSystem.sanitizeNumber(vehicle.spec_motorized.lastFuelUsage, 0, 0, 10000)
         else
             spec._fuelUsageRaw = 0
         end
@@ -2834,11 +2978,11 @@ local function syncFuelConsumption(vehicle)
     -- Dedicated client: inject synced raw value into spec_motorized.lastFuelUsage
     -- so Motorized's own fuelUsageBuffer picks it up every frame (identical to DashboardLive).
     if vehicle.isClient and not vehicle.isServer and vehicle.spec_motorized ~= nil then
-        vehicle.spec_motorized.lastFuelUsage = spec._fuelUsageRaw or 0
+        vehicle.spec_motorized.lastFuelUsage = AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000)
     end
     -- Display: always read Motorized's own smoothed value (identical to dashboard gauge).
     if vehicle.isClient and vehicle.spec_motorized ~= nil then
-        spec.fuelUsage = vehicle.spec_motorized.lastFuelUsageDisplay or 0
+        spec.fuelUsage = AdvancedDamageSystem.sanitizeNumber(vehicle.spec_motorized.lastFuelUsageDisplay, 0, 0, 10000)
     end
 end
 
@@ -3369,7 +3513,7 @@ local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with dr
         return 0
     end
 
-    local motorLoad = vehicle:getMotorLoadPercentage()
+    local motorLoad = AdvancedDamageSystem.sanitizeNumber(vehicle:getMotorLoadPercentage(), 0, 0, 1.5)
     local dynamicMotorLoad = motorLoad
 
     if vehicle:getIsOnField() then
@@ -3387,13 +3531,16 @@ local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with dr
 
         if isWorking then
             local motor = vehicle:getMotor()
-            local peakPowerHp = (motor.peakMotorPower or 0) * 1.36
-            local avgAbsDiffAcc = tonumber(spec.avgAbsDiffAcc) or 0
-            dynamicMotorLoad = math.min(motorLoad + math.min(avgAbsDiffAcc / 3, 0.15) * ((spec.activeDraftEffectiveForceCap / peakPowerHp) / 0.15) ^ 2, 1.15)
+            local peakPowerHp = AdvancedDamageSystem.sanitizeNumber((motor.peakMotorPower or 0) * 1.36, 0, 0)
+            local avgAbsDiffAcc = AdvancedDamageSystem.sanitizeNumber(spec.avgAbsDiffAcc, 0, 0, 100)
+            if peakPowerHp > 0.001 then
+                local activeDraftEffectiveForceCap = AdvancedDamageSystem.sanitizeNumber(spec.activeDraftEffectiveForceCap, 0, 0, 1000000)
+                dynamicMotorLoad = math.min(motorLoad + math.min(avgAbsDiffAcc / 3, 0.15) * ((activeDraftEffectiveForceCap / peakPowerHp) / 0.15) ^ 2, 1.15)
+            end
         end
     end
 
-    spec.dynamicMotorLoad = dynamicMotorLoad or motorLoad
+    spec.dynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(dynamicMotorLoad, motorLoad, 0, 1.5)
 
     updateAvgDynamicMotorLoadWindow(spec, spec.dynamicMotorLoad or motorLoad, dt)
     updateAvgSpeedWindow(spec, vehicle:getLastSpeed(), dt)
@@ -3459,7 +3606,6 @@ local function updateStarterState(vehicle)
 
     spec.isCranking = isCranking
 end
-
 
 --- transmission
 local function updateWheelSlip(vehicle)
@@ -4079,7 +4225,7 @@ local function updateFuelState(vehicle, dt)
             end
         end
 
-        local currentFuelUsageLh = motorizedSpec.lastFuelUsage or 0
+        local currentFuelUsageLh = AdvancedDamageSystem.sanitizeNumber(motorizedSpec.lastFuelUsage, 0, 0, 10000)
 
         local missionInfo = g_currentMission ~= nil and g_currentMission.missionInfo or nil
         local usageFactor = 1.5
@@ -4120,7 +4266,7 @@ local function updateFuelState(vehicle, dt)
             end
         end
 
-        fuelState.temperature = math.max((spec.engineTemperature or 0) / 3.6, environmentTemp)
+        fuelState.temperature = math.max(AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, environmentTemp, -80, 160) / 3.6, environmentTemp)
 
         local idleSpeedThreshold = tonumber(ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_SPEED_THRESHOLD) or 0.5
         local idleLoadThreshold = tonumber(ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_LOAD_THRESHOLD) or 0.3
@@ -4293,8 +4439,8 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
     end
 
     local motorLoad = math.max(spec.dynamicMotorLoad or self:getMotorLoadPercentage() or 0, 0)
-    local rawEngineTemperature = spec.rawEngineTemperature or spec.engineTemperature or 0
-    local rawTransmissionTemperature = spec.rawTransmissionTemperature or spec.transmissionTemperature or -99
+    local rawEngineTemperature = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, 20, -80, 160)
+    local rawTransmissionTemperature = AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180)
     if rawTransmissionTemperature < 0 then
         rawTransmissionTemperature = rawEngineTemperature
     end
@@ -5457,6 +5603,305 @@ function AdvancedDamageSystem:updateWorkProcessSystem(dt)
         wetCropFactor = wetCropFactor,
         lubricationFactor = lubricationFactor
     })
+end
+
+-- ==========================================================
+--                  CONSUMABLES
+-- ==========================================================
+
+function AdvancedDamageSystem:updateEngineConsumables(dt)
+    local C = ADS_Config.CONSUMABLES
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil then
+        return
+    end
+
+    local motorTemp = spec.engineTemperature or 0
+    local motorLoad = spec.dynamicMotorLoad or self:getMotorLoadPercentage() or 0
+    local speed = self.getLastSpeed ~= nil and self:getLastSpeed() or 0
+    local dtMultiplier = ADS_Config.CORE.BASE_SERVICE_WEAR / (60 * 60 * 1000) * dt
+
+    local motorLoadFactor = ADS_Utils.calculateQuadraticMultiplier(motorLoad, C.MOTOR_OIL_OVERLOAD_THRESHOLD, false, 1.05)
+    local motorTempFactor = ADS_Utils.calculateQuadraticMultiplier(motorTemp, C.MOTOR_OIL_OVERHEAT_THRESHOLD, false, 120)
+    local engineWearFactor = ADS_Utils.calculateQuadraticMultiplier(spec.systems.engine.condition or 1.0, 0.66, true)
+
+    spec.motorOil.level = spec.motorOil.level - C.MOTOR_OIL_BURN_RATE * motorLoadFactor * motorTempFactor * engineWearFactor * dtMultiplier
+    spec.motorOil.quality = spec.motorOil.quality - C.MOTOR_OIL_QUALITY_DEGRADATION_RATE * motorLoadFactor * motorTempFactor * dtMultiplier
+
+
+end
+
+function AdvancedDamageSystem:updateRadiatorClogging(dt)
+    local C = ADS_Config.FIELD_CARE
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil then
+        return
+    end
+
+    if not spec.isVehicleNeedBlowOut then
+        spec.radiatorClogging = 0
+        return
+    end
+
+    if spec.debugData == nil then
+        spec.debugData = {}
+    end
+    if spec.debugData.radiator == nil then
+        spec.debugData.radiator = {
+            fieldFactor = 1.0,
+            dustFactor = 0.0,
+            debrisFactor = 0.0,
+            wetness = 0,
+            wetnessFactor = 1.0,
+            baseWetnessFactor = 1.0,
+            isOnField = false,
+            hasDust = false,
+            hasDebris = false,
+            totalMultiplier = 0.0
+        }
+    end
+    local dbg = spec.debugData.radiator
+
+    local dirtLevel = self:getDirtAmount()
+    local lastSpeed = self:getLastSpeed()
+    local washableSpec = self.spec_washable
+    local weather = g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather or nil
+    local wetness = weather ~= nil and weather:getGroundWetness() or 0
+    local baseWetnessFactor = math.max(1 - wetness, 0)
+    local wetnessFactor = math.max(baseWetnessFactor ^ 3, 0)
+    local isOnField = self:getIsOnField()
+    local hasDust = isOnField and spec.isImplementLowered and lastSpeed > 0.1
+    local hasDebris = spec.isHarvesting
+    local fieldFactor = 0.5
+    local dustFactor = hasDust and 1.0 or 0.0
+    local debrisFactor = hasDebris and 2.0 or 0.0
+
+    if washableSpec ~= nil then
+        fieldFactor = isOnField and (washableSpec.fieldMultiplier or 1.0) or 0.5
+    end
+
+    dbg.fieldFactor = fieldFactor
+    dbg.dustFactor = dustFactor
+    dbg.debrisFactor = debrisFactor
+    dbg.wetness = wetness
+    dbg.wetnessFactor = wetnessFactor
+    dbg.baseWetnessFactor = baseWetnessFactor
+    dbg.isOnField = isOnField
+    dbg.hasDust = hasDust
+    dbg.hasDebris = hasDebris
+    dbg.totalMultiplier = 0.0
+
+    if lastSpeed > 0.5 and spec.radiatorClogging < dirtLevel then
+        if washableSpec == nil then
+            return
+        end
+
+        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (ADS_Config.CORE.BASE_SERVICE_WEAR * 10)
+        local totalMultiplier = wetnessFactor * (fieldFactor + dustFactor + debrisFactor) * C.CLOGGING_SPEED
+        dbg.totalMultiplier = totalMultiplier
+
+        local change = dirtDuration * totalMultiplier * dt
+        spec.radiatorClogging = math.min(spec.radiatorClogging + change, dirtLevel)
+    else
+        if spec.radiatorClogging > dirtLevel then
+            spec.radiatorClogging = dirtLevel
+        end
+    end
+end
+
+function AdvancedDamageSystem:updateAirIntakeClogging(dt)
+    local C = ADS_Config.FIELD_CARE
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil then
+        return
+    end
+
+    if not spec.isVehicleNeedBlowOut then
+        spec.airIntakeClogging = 0
+        return
+    end
+
+    if spec.debugData == nil then
+        spec.debugData = {}
+    end
+    if spec.debugData.airIntake == nil then
+        spec.debugData.airIntake = {
+            fieldFactor = 1.0,
+            dustFactor = 0.0,
+            debrisFactor = 0.0,
+            wetness = 0,
+            wetnessFactor = 1.0,
+            baseWetnessFactor = 1.0,
+            isOnField = false,
+            hasDust = false,
+            hasDebris = false,
+            totalMultiplier = 0.0
+        }
+    end
+    local dbg = spec.debugData.airIntake
+
+    local dirtLevel = self:getDirtAmount()
+    local lastSpeed = self:getLastSpeed()
+    local washableSpec = self.spec_washable
+    local weather = g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather or nil
+    local wetness = weather ~= nil and weather:getGroundWetness() or 0
+    local baseWetnessFactor = math.max(1 - wetness, 0)
+    local wetnessFactor = baseWetnessFactor
+    local isOnField = self:getIsOnField()
+    local hasDust = isOnField and spec.isImplementLowered and lastSpeed > 0.1
+    local hasDebris = spec.isHarvesting
+    local fieldFactor = 1.0
+    local dustFactor = hasDust and 2.0 or 0.0
+    local debrisFactor = hasDebris and 1.0 or 0.0
+
+    if washableSpec ~= nil then
+        fieldFactor = isOnField and (washableSpec.fieldMultiplier or 2.0) or 1.0
+    end
+
+    dbg.fieldFactor = fieldFactor
+    dbg.dustFactor = dustFactor
+    dbg.debrisFactor = debrisFactor
+    dbg.wetness = wetness
+    dbg.wetnessFactor = wetnessFactor
+    dbg.baseWetnessFactor = baseWetnessFactor
+    dbg.isOnField = isOnField
+    dbg.hasDust = hasDust
+    dbg.hasDebris = hasDebris
+    dbg.totalMultiplier = 0.0
+
+    if lastSpeed > 0.5 and spec.airIntakeClogging < dirtLevel then
+        if washableSpec == nil then
+            return
+        end
+        
+        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (ADS_Config.CORE.BASE_SERVICE_WEAR * 10)
+        local totalMultiplier = wetnessFactor * (fieldFactor + dustFactor + debrisFactor) * C.CLOGGING_SPEED
+        dbg.totalMultiplier = totalMultiplier
+
+        local change = dirtDuration * totalMultiplier * dt
+        spec.airIntakeClogging = math.min(spec.airIntakeClogging + change, dirtLevel)
+    else
+        if spec.airIntakeClogging > dirtLevel then
+            spec.airIntakeClogging = dirtLevel
+        end
+    end
+end
+
+function AdvancedDamageSystem:cleanRadiatorAndAirIntake(dt)
+    local C = ADS_Config.FIELD_CARE
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil then
+        return
+    end
+
+    local prevRadiatorClogging = tonumber(spec.radiatorClogging) or 0
+    local prevAirIntakeClogging = tonumber(spec.airIntakeClogging) or 0
+    local cleaningDelta = (C.CLEANING_SPEED / 1000) * dt
+
+    spec.radiatorClogging = math.max(prevRadiatorClogging - cleaningDelta, 0)
+    spec.airIntakeClogging = math.max(prevAirIntakeClogging - cleaningDelta, 0)
+
+    --- tutorial message
+    if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED ~= nil and not ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED then
+        ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED = true
+    end
+
+    if self.isServer then
+        markFieldcareDirty(self, spec)
+    end
+end
+
+function AdvancedDamageSystem:updateLubricationLevel(dt)
+    local C = ADS_Config.FIELD_CARE
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil or not spec.isVehicleNeedLubricate then
+        return
+    end
+
+    local currentDay = g_currentMission.environment.currentDay
+    if spec.lastLubricationProcessedDay == nil then
+        spec.lastLubricationProcessedDay = currentDay
+        return
+    end
+
+    local lubricationReducePerDay = math.max(tonumber(C.LUBRICATION_REDUCE_PER_DAY) or 0, 0)
+    if currentDay > spec.lastLubricationProcessedDay and not self:getIsMotorStarted() then
+        if lubricationReducePerDay > 0 then
+            spec.lubricationLevel = math.max(spec.lubricationLevel - lubricationReducePerDay, 0)
+        end
+        spec.lastLubricationProcessedDay = currentDay
+    end
+end
+
+function AdvancedDamageSystem:lubricateVehicle()
+    local C = ADS_Config.FIELD_CARE
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil then
+        return
+    end
+
+    local prevLubricationLevel = tonumber(spec.lubricationLevel) or 0
+    spec.lubricationLevel = math.min(prevLubricationLevel + 0.2, 1.0)
+
+    --- tutorial message
+    if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then
+        ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION = true
+    end
+
+    if self.isServer then
+        markFieldcareDirty(self, spec)
+    end
+end
+
+function AdvancedDamageSystem:startFieldVisualInspectionProcess()
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil or spec.isExcludedVehicle then
+        return false
+    end
+
+    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+        if self.isClient and g_currentMission ~= nil then
+            g_currentMission:showBlinkingWarning(g_i18n:getText("ads_field_inspection_engine_must_be_stopped"), 2200)
+        end
+        return false
+    end
+
+    if self:getCurrentStatus() ~= AdvancedDamageSystem.STATUS.READY then
+        return false
+    end
+
+    local inspection = spec.fieldInspection
+    if inspection == nil then
+        return false
+    end
+
+    if inspection.isActive then
+        return false
+    end
+
+    inspection.isActive = true
+    inspection.elapsedTime = 0
+    inspection.duration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
+    inspection.startTime = g_time
+    inspection.targetVehicle = self
+    inspection.wasSoundStarted = false
+
+    local node = self.rootNode
+    if (node == nil or node == 0) and self.components ~= nil and self.components[1] ~= nil then
+        node = self.components[1].node
+    end
+    inspection.targetNode = node
+
+    if self.isClient and spec.samples ~= nil and spec.samples.inspection ~= nil then
+        g_soundManager:playSample(spec.samples.inspection)
+        inspection.wasSoundStarted = true
+    end
+
+    if self.isClient and ADS_Hud ~= nil then
+        ADS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), 0), inspection.duration)
+    end
+
+    return true
 end
 
 -- ==========================================================
@@ -7818,8 +8263,9 @@ function AdvancedDamageSystem.updateBatteryTemperatureC(vehicle, dtS, ambientC, 
 
     local cfg = ADS_Config.ELECTRICAL or {}
 
-    ambientC = ambientC or cfg.AMBIENT_DEFAULT_C or 15
-    engineC = engineC or ambientC
+    dtS = AdvancedDamageSystem.sanitizeNumber(dtS, 0, 0)
+    ambientC = AdvancedDamageSystem.sanitizeNumber(ambientC, cfg.AMBIENT_DEFAULT_C or 15, -80, 80)
+    engineC = AdvancedDamageSystem.sanitizeNumber(engineC, ambientC, -80, 160)
 
     -- thermal inertia (time constant, seconds)
     local tauS = math.max(cfg.BATTERY_THERMAL_TAU_S or 120, 1)
@@ -7837,9 +8283,10 @@ function AdvancedDamageSystem.updateBatteryTemperatureC(vehicle, dtS, ambientC, 
     local tempC = spec.batteryTempC or ambientC
 
     local rRef = math.max(cfg.RINT_REF_OHM or 0.005, 0.0001)
+    rintF = AdvancedDamageSystem.sanitizeNumber(rintF, 1.0, 0.1, 10.0)
     local rInt = rRef * rintF
 
-    local iA = math.max(iBatteryA or 0, 0)
+    local iA = AdvancedDamageSystem.sanitizeNumber(iBatteryA, 0, 0, 10000)
     local pJouleW = iA * iA * rInt
 
     local cTh = math.max(cfg.BATTERY_THERMAL_CAPACITY_J_PER_K or 18000, 100)
@@ -7849,7 +8296,7 @@ function AdvancedDamageSystem.updateBatteryTemperatureC(vehicle, dtS, ambientC, 
 
     -- 1st-order lag: T = T + (T_target - T) * alpha
     local alpha = 1 - math.exp(-dtS / tauS)
-    tempC = tempC + (targetC - tempC) * alpha
+    tempC = AdvancedDamageSystem.sanitizeNumber(tempC + (targetC - tempC) * alpha, ambientC, -80, 120)
     local dTJoule = targetJouleRiseC * alpha
 
     -- safety clamp
@@ -7885,16 +8332,18 @@ local function buildBatteryContext(vehicle, dtS)
     local environmentTemp = 15
     if g_currentMission ~= nil
         and g_currentMission.environment ~= nil
-        and g_currentMission.environment.weather ~= nil then
+        and g_currentMission.environment.weather ~= nil
+        and g_currentMission.environment.weather.forecast ~= nil then
         local weather = g_currentMission.environment.weather.forecast:getCurrentWeather()
-        environmentTemp = (weather ~= nil and weather.temperature) or 15
+        environmentTemp = AdvancedDamageSystem.sanitizeNumber(weather ~= nil and weather.temperature or nil, 15, -80, 80)
     end
 
+    spec.batteryTempC = AdvancedDamageSystem.sanitizeNumber(spec.batteryTempC, environmentTemp, -80, 85)
     local capF, rintF = getBatteryTempFactors(spec.batteryTempC)
-    local iLoads = calculateCurrentLoadAmps(vehicle, isMotorStarted, environmentTemp) or 0
+    local iLoads = AdvancedDamageSystem.sanitizeNumber(calculateCurrentLoadAmps(vehicle, isMotorStarted, environmentTemp), 0, 0, 10000)
 
-    local nominalCapacityAh = math.max(spec.batteryCapacityAh or 0, 1)
-    local batteryHealth = math.max(spec.batteryHealth or 0, 0.0001)
+    local nominalCapacityAh = AdvancedDamageSystem.sanitizeNumber(spec.batteryCapacityAh, ADS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY or 1, 1, 10000)
+    local batteryHealth = AdvancedDamageSystem.sanitizeNumber(spec.batteryHealth, 1.0, 0.0001, 1.0)
 
     local usableCapacityAh = math.max(
         nominalCapacityAh * capF * ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
@@ -7903,12 +8352,15 @@ local function buildBatteryContext(vehicle, dtS)
 
     local effectiveCapacityAh = math.max(usableCapacityAh * batteryHealth, 0.01)
 
-    local chargeAh = spec.batteryChargeAh
+    spec.batterySoc = AdvancedDamageSystem.sanitizeNumber(spec.batterySoc, 1.0, 0, 1)
+    local chargeAh = AdvancedDamageSystem.isFiniteNumber(tonumber(spec.batteryChargeAh)) and tonumber(spec.batteryChargeAh) or nil
     if chargeAh == nil then
-        chargeAh = math.clamp((spec.batterySoc or 1.0) * effectiveCapacityAh, 0, effectiveCapacityAh)
+        chargeAh = math.clamp(spec.batterySoc * effectiveCapacityAh, 0, effectiveCapacityAh)
+    else
+        chargeAh = AdvancedDamageSystem.sanitizeNumber(chargeAh, spec.batterySoc * effectiveCapacityAh, 0, effectiveCapacityAh)
     end
 
-    local soc = math.clamp(chargeAh / effectiveCapacityAh, 0, 1)
+    local soc = AdvancedDamageSystem.sanitizeNumber(chargeAh / effectiveCapacityAh, spec.batterySoc, 0, 1)
 
     local cfg = ADS_Config.ELECTRICAL or {}
     local rRef = math.max(cfg.RINT_REF_OHM or 0.005, 0.0001)
@@ -7916,7 +8368,7 @@ local function buildBatteryContext(vehicle, dtS)
     local healthRintMult = 1 + (1 - batteryHealth) * (maxHealthRintMult - 1)
     local rIntOhm = rRef * (rintF or 1) * healthRintMult
 
-    local iAltAvail = calculateAlternatorOutput(vehicle, isMotorStarted, iLoads) or 0
+    local iAltAvail = AdvancedDamageSystem.sanitizeNumber(calculateAlternatorOutput(vehicle, isMotorStarted, iLoads), 0, 0, 10000)
 
     local ocvV = getBatteryOpenCircuitVoltage(soc)
 
@@ -8174,21 +8626,33 @@ local function commitBatteryContext(vehicle, ctx, dt)
     local spec = ctx.spec
     local dbg = ensureBatteryDebugData(spec)
 
-    spec.batteryChargeAh = math.clamp(ctx.chargeAh or 0, 0, math.max(ctx.capacityAh or 0.01, 0.01))
-    spec.batterySoc = math.clamp(ctx.soc or 0, 0, 1)
-    spec.batteryOpenCircuitVoltageV = ctx.ocvV or getBatteryOpenCircuitVoltage(spec.batterySoc)
-    spec.rawBatteryTerminalVoltageV = ctx.rawBatteryTerminalVoltageV or spec.batteryOpenCircuitVoltageV
-    spec.rawSystemVoltageV = ctx.rawSystemVoltageV or spec.rawBatteryTerminalVoltageV
+    local capacityAh = AdvancedDamageSystem.sanitizeNumber(ctx.capacityAh, 0.01, 0.01, 10000)
+    spec.batteryChargeAh = AdvancedDamageSystem.sanitizeNumber(ctx.chargeAh, 0, 0, capacityAh)
+    spec.batterySoc = AdvancedDamageSystem.sanitizeNumber(ctx.soc, 0, 0, 1)
+    spec.batteryOpenCircuitVoltageV = AdvancedDamageSystem.sanitizeNumber(ctx.ocvV, getBatteryOpenCircuitVoltage(spec.batterySoc), 0, 30)
+    spec.rawBatteryTerminalVoltageV = AdvancedDamageSystem.sanitizeNumber(ctx.rawBatteryTerminalVoltageV, spec.batteryOpenCircuitVoltageV, 0, 30)
+    spec.rawSystemVoltageV = AdvancedDamageSystem.sanitizeNumber(ctx.rawSystemVoltageV, spec.rawBatteryTerminalVoltageV, 0, 30)
 
     local C = ADS_Config.ELECTRICAL or {}
-    local batteryVAlpha = math.min((dt or 0) / ((C.BATTERY_VOLTAGE_TAU_MS or 300) + (dt or 0)), 1)
-    local systemVAlpha = math.min((dt or 0) / ((C.SYSTEM_VOLTAGE_TAU_MS or 250) + (dt or 0)), 1)
+    local safeDt = AdvancedDamageSystem.sanitizeNumber(dt, 0, 0)
+    local batteryVAlpha = math.min(safeDt / ((C.BATTERY_VOLTAGE_TAU_MS or 300) + safeDt), 1)
+    local systemVAlpha = math.min(safeDt / ((C.SYSTEM_VOLTAGE_TAU_MS or 250) + safeDt), 1)
 
-    spec.batteryTerminalVoltageV = (spec.batteryTerminalVoltageV or spec.rawBatteryTerminalVoltageV)
-        + batteryVAlpha * (spec.rawBatteryTerminalVoltageV - (spec.batteryTerminalVoltageV or spec.rawBatteryTerminalVoltageV))
+    local currentBatteryTerminalV = AdvancedDamageSystem.sanitizeNumber(spec.batteryTerminalVoltageV, spec.rawBatteryTerminalVoltageV, 0, 30)
+    spec.batteryTerminalVoltageV = AdvancedDamageSystem.sanitizeNumber(
+        currentBatteryTerminalV + batteryVAlpha * (spec.rawBatteryTerminalVoltageV - currentBatteryTerminalV),
+        spec.rawBatteryTerminalVoltageV,
+        0,
+        30
+    )
 
-    spec.systemVoltageV = (spec.systemVoltageV or spec.rawSystemVoltageV)
-        + systemVAlpha * (spec.rawSystemVoltageV - (spec.systemVoltageV or spec.rawSystemVoltageV))
+    local currentSystemV = AdvancedDamageSystem.sanitizeNumber(spec.systemVoltageV, spec.rawSystemVoltageV, 0, 30)
+    spec.systemVoltageV = AdvancedDamageSystem.sanitizeNumber(
+        currentSystemV + systemVAlpha * (spec.rawSystemVoltageV - currentSystemV),
+        spec.rawSystemVoltageV,
+        0,
+        30
+    )
 
     dbg.soc = spec.batterySoc or 0
     dbg.chargeAh = spec.batteryChargeAh or 0
@@ -8291,7 +8755,7 @@ local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
         consumerCtx.vehicle,
         dtS,
         consumerCtx.environmentTemp,
-        consumerCtx.spec.rawEngineTemperature or consumerCtx.spec.engineTemperature,
+        AdvancedDamageSystem.sanitizeNumber(consumerCtx.spec.rawEngineTemperature or consumerCtx.spec.engineTemperature, consumerCtx.environmentTemp, -80, 160),
         consumerBatteryA,
         consumerCtx.rintF
     )
@@ -8299,7 +8763,7 @@ local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
         donorCtx.vehicle,
         dtS,
         donorCtx.environmentTemp,
-        donorCtx.spec.rawEngineTemperature or donorCtx.spec.engineTemperature,
+        AdvancedDamageSystem.sanitizeNumber(donorCtx.spec.rawEngineTemperature or donorCtx.spec.engineTemperature, donorCtx.environmentTemp, -80, 160),
         donorBatteryA,
         donorCtx.rintF
     )
@@ -8421,7 +8885,7 @@ function AdvancedDamageSystem:updateBatteryChargingModel(dt)
         return
     end
 
-    local dtS = math.max((dt or 0) / 1000, 0)
+    local dtS = math.max(AdvancedDamageSystem.sanitizeNumber(dt, 0, 0) / 1000, 0)
     if dtS <= 0 then
         return
     end
@@ -8523,40 +8987,43 @@ function AdvancedDamageSystem:updateBatteryChargingModel(dt)
         return
     end
 
-    local iBatteryA = math.abs((ctx.iAltAvail or 0) - (ctx.iLoads or 0))
+    local iBatteryA = math.abs(AdvancedDamageSystem.sanitizeNumber((ctx.iAltAvail or 0) - (ctx.iLoads or 0), 0, -10000, 10000))
     AdvancedDamageSystem.updateBatteryTemperatureC(
         self,
         dtS,
         ctx.environmentTemp,
-        spec.rawEngineTemperature or spec.engineTemperature,
+        AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, ctx.environmentTemp, -80, 160),
         iBatteryA,
         ctx.rintF
     )
 
-    local dAh = ((ctx.iAltAvail or 0) - (ctx.iLoads or 0)) * dtS / 3600
-    ctx.chargeAh = math.clamp((ctx.chargeAh or 0) + dAh, 0, math.max(ctx.capacityAh or 0.01, 0.01))
-    ctx.soc = math.clamp(ctx.chargeAh / math.max(ctx.capacityAh or 0.01, 0.01), 0, 1)
-    ctx.ocvV = getBatteryOpenCircuitVoltage(ctx.soc)
+    local capacityAh = AdvancedDamageSystem.sanitizeNumber(ctx.capacityAh, 0.01, 0.01, 10000)
+    local dAh = AdvancedDamageSystem.sanitizeNumber(((ctx.iAltAvail or 0) - (ctx.iLoads or 0)) * dtS / 3600, 0, -capacityAh, capacityAh)
+    ctx.chargeAh = AdvancedDamageSystem.sanitizeNumber((ctx.chargeAh or 0) + dAh, 0, 0, capacityAh)
+    ctx.soc = AdvancedDamageSystem.sanitizeNumber(ctx.chargeAh / capacityAh, 0, 0, 1)
+    ctx.ocvV = AdvancedDamageSystem.sanitizeNumber(getBatteryOpenCircuitVoltage(ctx.soc), 12.7, 0, 30)
 
     local cfg = ADS_Config.ELECTRICAL or {}
-    local health = math.clamp(spec.batteryHealth or 1, 0.0001, 1.0)
+    local health = AdvancedDamageSystem.sanitizeNumber(spec.batteryHealth, 1, 0.0001, 1.0)
     local rRef = math.max(cfg.RINT_REF_OHM or 0.005, 0.0001)
     local maxHealthRintMult = math.max(cfg.BATTERY_HEALTH_RINT_MAX_MULT or 3.0, 1.0)
     local healthRintMult = 1 + (1 - health) * (maxHealthRintMult - 1)
-    local rIntOhm = rRef * (ctx.rintF or 1) * healthRintMult
+    local rIntOhm = AdvancedDamageSystem.sanitizeNumber(rRef * (ctx.rintF or 1) * healthRintMult, rRef, 0.0001, 10)
 
     local isCranking = spec.isCranking ~= nil and spec.isCranking
 
     local batteryTerminalV, loadDropV, chargeRiseV, iDischargeA, iChargeA =
         getBatteryTerminalVoltage(ctx.ocvV, ctx.iAltAvail, ctx.iLoads, isCranking, rIntOhm)
+    batteryTerminalV = AdvancedDamageSystem.sanitizeNumber(batteryTerminalV, ctx.ocvV, 0, 30)
 
     local alternatorHealth = 1.0
     if spec.systems ~= nil and spec.systems.electrical ~= nil then
-        alternatorHealth = math.clamp(spec.alternatorHealth or 1.0, 0.0, 1.0)
+        alternatorHealth = AdvancedDamageSystem.sanitizeNumber(spec.alternatorHealth, 1.0, 0.0, 1.0)
     end
 
     local rawSystemV, regulatedV, deficitA, sagV, regulationHealth, healthDeficitMult, chargeHeadroomV =
         getSystemVoltage(ctx.isMotorStarted, batteryTerminalV, ctx.iAltAvail, ctx.iLoads, alternatorHealth)
+    rawSystemV = AdvancedDamageSystem.sanitizeNumber(rawSystemV, batteryTerminalV, 0, 30)
 
     ctx.rawBatteryTerminalVoltageV = batteryTerminalV
     ctx.rawSystemVoltageV = rawSystemV
@@ -8698,283 +9165,6 @@ function AdvancedDamageSystem:clearExternalPowerConnection(otherVehicle)
 end
 
 -- ==========================================================
---                  FIELD CARE MECHANICS
--- ==========================================================
-
-function AdvancedDamageSystem:updateRadiatorClogging(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
-    if spec == nil then
-        return
-    end
-
-    if not spec.isVehicleNeedBlowOut then
-        spec.radiatorClogging = 0
-        return
-    end
-
-    if spec.debugData == nil then
-        spec.debugData = {}
-    end
-    if spec.debugData.radiator == nil then
-        spec.debugData.radiator = {
-            fieldFactor = 1.0,
-            dustFactor = 0.0,
-            debrisFactor = 0.0,
-            wetness = 0,
-            wetnessFactor = 1.0,
-            baseWetnessFactor = 1.0,
-            isOnField = false,
-            hasDust = false,
-            hasDebris = false,
-            totalMultiplier = 0.0
-        }
-    end
-    local dbg = spec.debugData.radiator
-
-    local dirtLevel = self:getDirtAmount()
-    local lastSpeed = self:getLastSpeed()
-    local washableSpec = self.spec_washable
-    local weather = g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather or nil
-    local wetness = weather ~= nil and weather:getGroundWetness() or 0
-    local baseWetnessFactor = math.max(1 - wetness, 0)
-    local wetnessFactor = math.max(baseWetnessFactor ^ 3, 0)
-    local isOnField = self:getIsOnField()
-    local hasDust = isOnField and spec.isImplementLowered and lastSpeed > 0.1
-    local hasDebris = spec.isHarvesting
-    local fieldFactor = 0.5
-    local dustFactor = hasDust and 1.0 or 0.0
-    local debrisFactor = hasDebris and 2.0 or 0.0
-
-    if washableSpec ~= nil then
-        fieldFactor = isOnField and (washableSpec.fieldMultiplier or 1.0) or 0.5
-    end
-
-    dbg.fieldFactor = fieldFactor
-    dbg.dustFactor = dustFactor
-    dbg.debrisFactor = debrisFactor
-    dbg.wetness = wetness
-    dbg.wetnessFactor = wetnessFactor
-    dbg.baseWetnessFactor = baseWetnessFactor
-    dbg.isOnField = isOnField
-    dbg.hasDust = hasDust
-    dbg.hasDebris = hasDebris
-    dbg.totalMultiplier = 0.0
-
-    if lastSpeed > 0.5 and spec.radiatorClogging < dirtLevel then
-        if washableSpec == nil then
-            return
-        end
-
-        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (ADS_Config.CORE.BASE_SERVICE_WEAR * 10)
-        local totalMultiplier = wetnessFactor * (fieldFactor + dustFactor + debrisFactor) * C.CLOGGING_SPEED
-        dbg.totalMultiplier = totalMultiplier
-
-        local change = dirtDuration * totalMultiplier * dt
-        spec.radiatorClogging = math.min(spec.radiatorClogging + change, dirtLevel)
-    else
-        if spec.radiatorClogging > dirtLevel then
-            spec.radiatorClogging = dirtLevel
-        end
-    end
-end
-
-function AdvancedDamageSystem:updateAirIntakeClogging(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
-    if spec == nil then
-        return
-    end
-
-    if not spec.isVehicleNeedBlowOut then
-        spec.airIntakeClogging = 0
-        return
-    end
-
-    if spec.debugData == nil then
-        spec.debugData = {}
-    end
-    if spec.debugData.airIntake == nil then
-        spec.debugData.airIntake = {
-            fieldFactor = 1.0,
-            dustFactor = 0.0,
-            debrisFactor = 0.0,
-            wetness = 0,
-            wetnessFactor = 1.0,
-            baseWetnessFactor = 1.0,
-            isOnField = false,
-            hasDust = false,
-            hasDebris = false,
-            totalMultiplier = 0.0
-        }
-    end
-    local dbg = spec.debugData.airIntake
-
-    local dirtLevel = self:getDirtAmount()
-    local lastSpeed = self:getLastSpeed()
-    local washableSpec = self.spec_washable
-    local weather = g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather or nil
-    local wetness = weather ~= nil and weather:getGroundWetness() or 0
-    local baseWetnessFactor = math.max(1 - wetness, 0)
-    local wetnessFactor = baseWetnessFactor
-    local isOnField = self:getIsOnField()
-    local hasDust = isOnField and spec.isImplementLowered and lastSpeed > 0.1
-    local hasDebris = spec.isHarvesting
-    local fieldFactor = 1.0
-    local dustFactor = hasDust and 2.0 or 0.0
-    local debrisFactor = hasDebris and 1.0 or 0.0
-
-    if washableSpec ~= nil then
-        fieldFactor = isOnField and (washableSpec.fieldMultiplier or 2.0) or 1.0
-    end
-
-    dbg.fieldFactor = fieldFactor
-    dbg.dustFactor = dustFactor
-    dbg.debrisFactor = debrisFactor
-    dbg.wetness = wetness
-    dbg.wetnessFactor = wetnessFactor
-    dbg.baseWetnessFactor = baseWetnessFactor
-    dbg.isOnField = isOnField
-    dbg.hasDust = hasDust
-    dbg.hasDebris = hasDebris
-    dbg.totalMultiplier = 0.0
-
-    if lastSpeed > 0.5 and spec.airIntakeClogging < dirtLevel then
-        if washableSpec == nil then
-            return
-        end
-        
-        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (ADS_Config.CORE.BASE_SERVICE_WEAR * 10)
-        local totalMultiplier = wetnessFactor * (fieldFactor + dustFactor + debrisFactor) * C.CLOGGING_SPEED
-        dbg.totalMultiplier = totalMultiplier
-
-        local change = dirtDuration * totalMultiplier * dt
-        spec.airIntakeClogging = math.min(spec.airIntakeClogging + change, dirtLevel)
-    else
-        if spec.airIntakeClogging > dirtLevel then
-            spec.airIntakeClogging = dirtLevel
-        end
-    end
-end
-
-function AdvancedDamageSystem:cleanRadiatorAndAirIntake(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
-    if spec == nil then
-        return
-    end
-
-    local prevRadiatorClogging = tonumber(spec.radiatorClogging) or 0
-    local prevAirIntakeClogging = tonumber(spec.airIntakeClogging) or 0
-    local cleaningDelta = (C.CLEANING_SPEED / 1000) * dt
-
-    spec.radiatorClogging = math.max(prevRadiatorClogging - cleaningDelta, 0)
-    spec.airIntakeClogging = math.max(prevAirIntakeClogging - cleaningDelta, 0)
-
-    --- tutorial message
-    if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED ~= nil and not ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED then
-        ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED = true
-    end
-
-    if self.isServer then
-        markFieldcareDirty(self, spec)
-    end
-end
-
-function AdvancedDamageSystem:updateLubricationLevel(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or not spec.isVehicleNeedLubricate then
-        return
-    end
-
-    local currentDay = g_currentMission.environment.currentDay
-    if spec.lastLubricationProcessedDay == nil then
-        spec.lastLubricationProcessedDay = currentDay
-        return
-    end
-
-    local lubricationReducePerDay = math.max(tonumber(C.LUBRICATION_REDUCE_PER_DAY) or 0, 0)
-    if currentDay > spec.lastLubricationProcessedDay and not self:getIsMotorStarted() then
-        if lubricationReducePerDay > 0 then
-            spec.lubricationLevel = math.max(spec.lubricationLevel - lubricationReducePerDay, 0)
-        end
-        spec.lastLubricationProcessedDay = currentDay
-    end
-end
-
-function AdvancedDamageSystem:lubricateVehicle()
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
-    if spec == nil then
-        return
-    end
-
-    local prevLubricationLevel = tonumber(spec.lubricationLevel) or 0
-    spec.lubricationLevel = math.min(prevLubricationLevel + 0.2, 1.0)
-
-    --- tutorial message
-    if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then
-        ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION = true
-    end
-
-    if self.isServer then
-        markFieldcareDirty(self, spec)
-    end
-end
-
-function AdvancedDamageSystem:startFieldVisualInspectionProcess()
-    local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or spec.isExcludedVehicle then
-        return false
-    end
-
-    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
-        if self.isClient and g_currentMission ~= nil then
-            g_currentMission:showBlinkingWarning(g_i18n:getText("ads_field_inspection_engine_must_be_stopped"), 2200)
-        end
-        return false
-    end
-
-    if self:getCurrentStatus() ~= AdvancedDamageSystem.STATUS.READY then
-        return false
-    end
-
-    local inspection = spec.fieldInspection
-    if inspection == nil then
-        return false
-    end
-
-    if inspection.isActive then
-        return false
-    end
-
-    inspection.isActive = true
-    inspection.elapsedTime = 0
-    inspection.duration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
-    inspection.startTime = g_time
-    inspection.targetVehicle = self
-    inspection.wasSoundStarted = false
-
-    local node = self.rootNode
-    if (node == nil or node == 0) and self.components ~= nil and self.components[1] ~= nil then
-        node = self.components[1].node
-    end
-    inspection.targetNode = node
-
-    if self.isClient and spec.samples ~= nil and spec.samples.inspection ~= nil then
-        g_soundManager:playSample(spec.samples.inspection)
-        inspection.wasSoundStarted = true
-    end
-
-    if self.isClient and ADS_Hud ~= nil then
-        ADS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), 0), inspection.duration)
-    end
-
-    return true
-end
-
--- ==========================================================
 --                OVERWRITTEN FUNCTIONS
 -- ==========================================================
 
@@ -9017,7 +9207,7 @@ function AdvancedDamageSystem.updateMotorTemperature(self, superFunc, dt)
     else
         local spec_motorized = self.spec_motorized
         if spec_motorized ~= nil then
-            self.spec_motorized.motorTemperature.value = spec.engineTemperature or 0
+            self.spec_motorized.motorTemperature.value = AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, 20, -80, 160)
         end
     end
 end
@@ -10935,6 +11125,8 @@ function AdvancedDamageSystem.ConsoleCommands:getDebugVehicleInfo(rawArgs)
     print(string.format("Type/Category: %s/%s", vehicle.type.name, storeItem.categoryName))
     print(string.format("Property state: %s", vehicle.propertyState))
     print(string.format("Transmission: %s, %s, %s", motor.minForwardGearRatio, motor.gearType, motor.groupType))
+    print(string.format("ADS transmission type: %s", tostring(vehicle:getTransmissionType())))
+    print(string.format("XML/shop transmission name: %s", tostring(AdvancedDamageSystem.getTransmissionNameFromXML(vehicle))))
 
     local hasTurboBaseSound = false
     local hasTurboCurrentConfigSound = false

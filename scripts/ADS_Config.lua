@@ -248,6 +248,16 @@ ADS_Config = {
             CRITICAL_DEGREE = 5
         },
     },
+
+    CONSUMABLES = {
+        MOTOR_OIL_BURN_RATE = 0.03,
+        MOTOR_OIL_QUALITY_DEGRADATION_RATE = 1.0,
+        MOTOR_OIL_OVERLOAD_FACTOR = 1.2,
+        MOTOR_OIL_OVERHEAT_FACTOR = 1.5,
+        MOTOR_OIL_ENGINE_WEAR_FACTOR = 1.5,
+        MOTOR_OIL_OVERLOAD_THRESHOLD = 0.85,
+        MOTOR_OIL_OVERHEAT_THRESHOLD = 95,
+    },
     -- ====================================================================================
     -- WORKSHOP PARAMETERS
     -- Controls workshop operating hours, which affects maintenance/repair completion times.

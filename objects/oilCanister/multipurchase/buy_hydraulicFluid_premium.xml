@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="multipleItemPurchase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+    <storeData>
+        <name>ADS Hydraulic Fluid Premium</name>
+        <specs>
+            <capacity>10</capacity>
+            <fillTypes>ADS_HYDRAULIC_FLUID_PREMIUM</fillTypes>
+            <weight ignore="true"/>
+        </specs>
+        <functions>
+            <function>ADS service fluid, 10 l canister</function>
+        </functions>
+        <image>icon_ads.dds</image>
+        <price>95</price>
+        <allowLeasing>false</allowLeasing>
+        <canBeSold>false</canBeSold>
+        <rotation>0</rotation>
+        <brand>LIZARD</brand>
+        <category>pallets</category>
+        <showInStore>true</showInStore>
+        <financeCategory>OTHER</financeCategory>
+        <shopLoadingDelay initial="0.2" config="0.2"/>
+        <storeIconRendering>
+            <settings cameraXRot="-25" cameraYRot="35" />
+        </storeIconRendering>
+    </storeData>
+    <base>
+        <typeDesc>ADS Hydraulic Fluid Premium</typeDesc>
+        <filename>$data/objects/multiPurchaseItem/multiPurchaseItem.i3d</filename>
+        <size width="1.2" length="1.8" height="0.5"/>
+        <supportsPickUp>true</supportsPickUp>
+        <components>
+            <component centerOfMass="0 0 0" solverIterationCount="10" mass="5"/>
+        </components>
+    </base>
+    <fillUnit>
+        <fillUnitConfigurations>
+            <fillUnitConfiguration>
+                <fillUnits>
+                    <fillUnit fillTypes="ADS_HYDRAULIC_FLUID_PREMIUM" capacity="10" />
+                </fillUnits>
+            </fillUnitConfiguration>
+        </fillUnitConfigurations>
+    </fillUnit>
+    <multipleItemPurchase filename="objects/oilCanister/items/hydraulicFluid_premium.xml" isVehicle="true">
+        <offsets>
+            <offset amount="2" offset="0.16 0 0"/>
+            <offset amount="3" offset="0.16 0 -0.2"/>
+            <offset amount="5" offset="0.16 0 -0.4"/>
+            <offset amount="7" offset="0.16 0 -0.6"/>
+        </offsets>
+        <itemPositions>
+            <itemPosition position="0 0 0" rotation="0 0 0"/>
+            <itemPosition position="-0.281 0 0" rotation="0 0 0"/>
+            <itemPosition position="0 0 0.42" rotation="0 0 0"/>
+            <itemPosition position="-0.281 0 0.42" rotation="0 0 0"/>
+            <itemPosition position="0 0 0.84" rotation="0 0 0"/>
+            <itemPosition position="-0.281 0 0.84" rotation="0 0 0"/>
+            <itemPosition position="0 0 1.26" rotation="0 0 0"/>
+            <itemPosition position="-0.281 0 1.26" rotation="0 0 0"/>
+        </itemPositions>
+    </multipleItemPurchase>
+    <multipleItemPurchaseAmountConfigurations>
+        <multipleItemPurchaseAmountConfiguration name="1" price="0"/>
+        <multipleItemPurchaseAmountConfiguration name="2" price="95"/>
+        <multipleItemPurchaseAmountConfiguration name="3" price="190"/>
+        <multipleItemPurchaseAmountConfiguration name="4" price="285"/>
+        <multipleItemPurchaseAmountConfiguration name="5" price="380"/>
+        <multipleItemPurchaseAmountConfiguration name="6" price="475"/>
+        <multipleItemPurchaseAmountConfiguration name="7" price="570"/>
+        <multipleItemPurchaseAmountConfiguration name="8" price="665"/>
+    </multipleItemPurchaseAmountConfigurations>
+</vehicle>

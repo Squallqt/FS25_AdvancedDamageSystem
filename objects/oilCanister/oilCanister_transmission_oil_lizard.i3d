@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<i3D name="oilCanister.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11" />
+  </Asset>
+  <Files>
+    <File fileId="13" filename="labels/label_coolant_lizard.png" />
+    <File fileId="15" filename="labels/label_coolant_original.png" />
+    <File fileId="16" filename="labels/label_coolant_premium.png" />
+    <File fileId="17" filename="labels/label_hydraulic_fluid_lizard.png" />
+    <File fileId="18" filename="labels/label_hydraulic_fluid_original.png" />
+    <File fileId="19" filename="labels/label_hydraulic_fluid_premium.png" />
+    <File fileId="20" filename="labels/label_motor_oil_lizard.png" />
+    <File fileId="21" filename="labels/label_motor_oil_original.png" />
+    <File fileId="22" filename="labels/label_motor_oil_premium.png" />
+    <File fileId="23" filename="labels/label_transmission_oil_lizard.png" />
+    <File fileId="24" filename="labels/label_transmission_oil_original.png" />
+    <File fileId="25" filename="labels/label_transmission_oil_premium.png" />
+  </Files>
+  <Materials>
+    <Material name="lambert1" materialId="5" diffuseColor="0.494118 0.494118 0.494118 1"></Material>
+    <Material name="mat_body_coolant" materialId="6" diffuseColor="0.0117647 0.145098 0.392157 1" specularColor="0.0117647 1 0.392157"></Material>
+    <Material name="mat_body_hydraulic" materialId="7" diffuseColor="0.584314 0.364706 0.0235294 1" specularColor="0.584314 1 0.0235294"></Material>
+    <Material name="mat_body_motor_oil" materialId="8" diffuseColor="0.0117647 0.0117647 0.0117647 1" specularColor="0.0117647 1 0.0117647"></Material>
+    <Material name="mat_body_transmission" materialId="9" diffuseColor="0.196078 0.0117647 0.0117647 1" specularColor="0.196078 1 0.0117647"></Material>
+    <Material name="mat_cap_motor_oil" materialId="10" diffuseColor="0.760784 0.0156863 0.00392157 1" specularColor="0.760784 1 0.00392157"></Material>
+    <Material name="mat_label_coolant_lizard" materialId="11" specularColor="0.8 1 0.8">
+      <Texture fileId="13" />
+    </Material>
+    <Material name="mat_label_coolant_original" materialId="12" specularColor="0.8 1 0.8">
+      <Texture fileId="15" />
+    </Material>
+    <Material name="mat_label_coolant_premium" materialId="13" specularColor="0.8 1 0.8">
+      <Texture fileId="16" />
+    </Material>
+    <Material name="mat_label_hydraulic_lizard" materialId="14" specularColor="0.8 1 0.8">
+      <Texture fileId="17" />
+    </Material>
+    <Material name="mat_label_hydraulic_original" materialId="15" specularColor="0.8 1 0.8">
+      <Texture fileId="18" />
+    </Material>
+    <Material name="mat_label_hydraulic_premium" materialId="16" specularColor="0.8 1 0.8">
+      <Texture fileId="19" />
+    </Material>
+    <Material name="mat_label_motor_lizard" materialId="17" specularColor="0.8 1 0.8">
+      <Texture fileId="20" />
+    </Material>
+    <Material name="mat_label_motor_original" materialId="18" specularColor="0.8 1 0.8">
+      <Texture fileId="21" />
+    </Material>
+    <Material name="mat_label_motor_premium" materialId="19" specularColor="0.8 1 0.8">
+      <Texture fileId="22" />
+    </Material>
+    <Material name="mat_label_trans_lizard" materialId="20" specularColor="0.8 1 0.8">
+      <Texture fileId="23" />
+    </Material>
+    <Material name="mat_label_trans_original" materialId="21" specularColor="0.8 1 0.8">
+      <Texture fileId="24" />
+    </Material>
+    <Material name="mat_label_trans_premium" materialId="22" specularColor="0.8 1 0.8">
+      <Texture fileId="25" />
+    </Material>
+    <Material name="UnnamedMaterial" materialId="23" diffuseColor="1 1 1 1"></Material>
+  </Materials>
+  <Shapes externalShapesFile="oilCanister.i3d.shapes"></Shapes>
+  <Scene>
+    <Shape name="oilCanister" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ff983" clipDistance="65" nodeId="30" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="23">
+      <TransformGroup name="triggers" nodeId="31">
+        <Shape name="dynamicMountTrigger" translation="-0.00649741 0.078 -0.0213836" shapeId="2" kinematic="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x20000" clipDistance="100" nodeId="32" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5" />
+        <Shape name="fillTrigger" translation="0 0.184807 0" scale="0.5 1 0.5" shapeId="3" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x40000000" clipDistance="300" nodeId="33" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5" />
+      </TransformGroup>
+      <Shape name="Mesh_0" rotation="-180 90 -180" shapeId="4" objectMask="0xff00ff" nodeId="34" castsShadows="true" receiveShadows="true" buildNavMeshMask="0x8" materialIds="9,10,9,7,6">
+        <TransformGroup name="labels" objectMask="0xff00ff" nodeId="35">
+          <Shape name="canister_label_coolant_lizard" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="36" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="11" />
+          <Shape name="canister_label_coolant_original" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="37" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="12" />
+          <Shape name="canister_label_coolant_premium" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="38" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="13" />
+          <Shape name="canister_label_hydraulic_lizard" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="39" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="14" />
+          <Shape name="canister_label_hydraulic_original" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="40" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="15" />
+          <Shape name="canister_label_hydraulic_premium" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="41" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="16" />
+          <Shape name="canister_label_motor_lizard" rotation="8.14222e-13 -0 0" shapeId="5" objectMask="0xff00ff" nodeId="42" castsShadows="false" receiveShadows="true" buildNavMeshMask="0x8" materialIds="17" visibility="false" distanceBlending="false" />
+          <Shape name="canister_label_motor_original" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="43" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="18" />
+          <Shape name="canister_label_motor_premium" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="44" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="19" />
+          <Shape name="canister_label_trans_lizard" rotation="8.14222e-13 -0 0" shapeId="5" visibility="true" objectMask="0xff00ff" nodeId="45" castsShadows="true" receiveShadows="true" buildNavMeshMask="0x8" materialIds="20" />
+          <Shape name="canister_label_trans_original" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="46" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="21" />
+          <Shape name="canister_label_trans_premium" rotation="8.14222e-13 -0 0" shapeId="5" visibility="false" objectMask="0xff00ff" nodeId="47" castsShadows="false" receiveShadows="true" distanceBlending="false" buildNavMeshMask="0x8" materialIds="22" />
+        </TransformGroup>
+      </Shape>
+    </Shape>
+  </Scene>
+</i3D>

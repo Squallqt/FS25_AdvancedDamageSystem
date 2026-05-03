@@ -73,6 +73,7 @@ function ADS_Main.registerSpecializationToVehicles()
 		if vehicle ~= nil and 
             not string.find(string.lower(vehicleType), "handtool") and
             not string.find(string.lower(vehicleType), "pushable") and
+            not string.find(string.lower(vehicleType), "portable") and
             not string.find(vehicleType, "FS25_lsfmFarmEquipmentPack") and
             not string.find(vehicleType, "FS25_FillablePallet")  and
             not string.find(vehicleType, "FS25_ASM_FarmyardTrailerDolly")  and

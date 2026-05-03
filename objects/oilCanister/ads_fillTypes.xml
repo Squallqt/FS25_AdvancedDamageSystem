@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/fillTypes.xsd">
+    <fillTypes>
+        <fillType name="ADS_MOTOR_OIL_LIZARD" title="ADS Motor Oil Lizard" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.87" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="4,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_MOTOR_OIL_ORIGINAL" title="ADS Motor Oil Original" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.87" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="6,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_MOTOR_OIL_PREMIUM" title="ADS Motor Oil Premium" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.87" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="9" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_TRANSMISSION_OIL_LIZARD" title="ADS Transmission Oil Lizard" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.88" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="5,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_TRANSMISSION_OIL_ORIGINAL" title="ADS Transmission Oil Original" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.88" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="7,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_TRANSMISSION_OIL_PREMIUM" title="ADS Transmission Oil Premium" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.88" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="10" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_HYDRAULIC_FLUID_LIZARD" title="ADS Hydraulic Fluid Lizard" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.86" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_HYDRAULIC_FLUID_ORIGINAL" title="ADS Hydraulic Fluid Original" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.86" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="7" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_HYDRAULIC_FLUID_PREMIUM" title="ADS Hydraulic Fluid Premium" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="0.86" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="9,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_COOLANT_LIZARD" title="ADS Coolant Lizard" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="1.05" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="3,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_COOLANT_ORIGINAL" title="ADS Coolant Original" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="1.05" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="5,5" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+        <fillType name="ADS_COOLANT_PREMIUM" title="ADS Coolant Premium" showOnPriceTable="false" isPalletType="true" unitShort="$l10n_unit_literShort">
+            <physics massPerLiter="1.05" maxPhysicalSurfaceAngle="0" />
+            <economy pricePerLiter="8" />
+            <image hud="$dataS/menu/hud/fillTypes/hud_fill_oil_canola.png" />
+        </fillType>
+    </fillTypes>
+</map>

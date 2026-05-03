@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+    <storeData>
+        <name>ADS Hydraulic Fluid Canister</name>
+        <functions>
+            <function>Hydraulic service fluid</function>
+        </functions>
+        <specs>
+            <capacity>10</capacity>
+            <fillTypes>ADS_HYDRAULIC_FLUID_LIZARD ADS_HYDRAULIC_FLUID_ORIGINAL ADS_HYDRAULIC_FLUID_PREMIUM</fillTypes>
+        </specs>
+        <image>icon_ads.dds</image>
+        <price>50</price>
+        <allowLeasing>false</allowLeasing>
+        <canBeSold>true</canBeSold>
+        <rotation>0</rotation>
+        <brand>LIZARD</brand>
+        <category>pallets</category>
+        <financeCategory>OTHER</financeCategory>
+        <shopHeight>0.7</shopHeight>
+        <storeIconRendering>
+            <settings cameraXRot="-25" cameraYRot="35" />
+        </storeIconRendering>
+    </storeData>
+    <base>
+        <typeDesc>ADS Hydraulic Fluid Canister</typeDesc>
+        <filename>objects/oilCanister/oilCanister_hydraulic.i3d</filename>
+        <size width="0.35" length="0.25" height="0.5"/>
+        <input allowed="false"/>
+        <supportsPickUp>true</supportsPickUp>
+        <canBeReset>true</canBeReset>
+        <components>
+            <component centerOfMass="0 0.1 0" solverIterationCount="2" mass="12"/>
+        </components>
+    </base>
+    <fillUnit>
+        <fillUnitConfigurations title="Quality">
+            <fillUnitConfiguration name="Lizard" price="0">
+                <fillUnits removeVehicleIfEmpty="false">
+                    <fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="ADS_HYDRAULIC_FLUID_LIZARD" capacity="10" startFillType="ADS_HYDRAULIC_FLUID_LIZARD" startFillLevel="10" updateMass="false">
+                        <fillRootNode node="component1"/>
+                    </fillUnit>
+                </fillUnits>
+                <objectChange node="label_coolant_lizard" visibilityActive="false"/>
+                <objectChange node="label_coolant_original" visibilityActive="false"/>
+                <objectChange node="label_coolant_premium" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_lizard" visibilityActive="true"/>
+                <objectChange node="label_hydraulic_original" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_premium" visibilityActive="false"/>
+                <objectChange node="label_motor_lizard" visibilityActive="false"/>
+                <objectChange node="label_motor_original" visibilityActive="false"/>
+                <objectChange node="label_motor_premium" visibilityActive="false"/>
+                <objectChange node="label_trans_lizard" visibilityActive="false"/>
+                <objectChange node="label_trans_original" visibilityActive="false"/>
+                <objectChange node="label_trans_premium" visibilityActive="false"/>
+            </fillUnitConfiguration>
+            <fillUnitConfiguration name="Original" price="20">
+                <fillUnits removeVehicleIfEmpty="false">
+                    <fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="ADS_HYDRAULIC_FLUID_ORIGINAL" capacity="10" startFillType="ADS_HYDRAULIC_FLUID_ORIGINAL" startFillLevel="10" updateMass="false">
+                        <fillRootNode node="component1"/>
+                    </fillUnit>
+                </fillUnits>
+                <objectChange node="label_coolant_lizard" visibilityActive="false"/>
+                <objectChange node="label_coolant_original" visibilityActive="false"/>
+                <objectChange node="label_coolant_premium" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_lizard" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_original" visibilityActive="true"/>
+                <objectChange node="label_hydraulic_premium" visibilityActive="false"/>
+                <objectChange node="label_motor_lizard" visibilityActive="false"/>
+                <objectChange node="label_motor_original" visibilityActive="false"/>
+                <objectChange node="label_motor_premium" visibilityActive="false"/>
+                <objectChange node="label_trans_lizard" visibilityActive="false"/>
+                <objectChange node="label_trans_original" visibilityActive="false"/>
+                <objectChange node="label_trans_premium" visibilityActive="false"/>
+            </fillUnitConfiguration>
+            <fillUnitConfiguration name="Premium" price="45">
+                <fillUnits removeVehicleIfEmpty="false">
+                    <fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="ADS_HYDRAULIC_FLUID_PREMIUM" capacity="10" startFillType="ADS_HYDRAULIC_FLUID_PREMIUM" startFillLevel="10" updateMass="false">
+                        <fillRootNode node="component1"/>
+                    </fillUnit>
+                </fillUnits>
+                <objectChange node="label_coolant_lizard" visibilityActive="false"/>
+                <objectChange node="label_coolant_original" visibilityActive="false"/>
+                <objectChange node="label_coolant_premium" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_lizard" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_original" visibilityActive="false"/>
+                <objectChange node="label_hydraulic_premium" visibilityActive="true"/>
+                <objectChange node="label_motor_lizard" visibilityActive="false"/>
+                <objectChange node="label_motor_original" visibilityActive="false"/>
+                <objectChange node="label_motor_premium" visibilityActive="false"/>
+                <objectChange node="label_trans_lizard" visibilityActive="false"/>
+                <objectChange node="label_trans_original" visibilityActive="false"/>
+                <objectChange node="label_trans_premium" visibilityActive="false"/>
+            </fillUnitConfiguration>
+        </fillUnitConfigurations>
+    </fillUnit>
+    <fillTriggerVehicle triggerNode="fillTrigger" fillUnitIndex="1" litersPerSecond="5"/>
+    <dischargeable requiresTipOcclusionArea="false"/>
+    <dynamicMount triggerNode="dynamicMountTrigger" triggerForceAcceleration="4" additionalMountDistance="0.35" jointTransY="0.11"/>
+    <tensionBeltObject>
+        <meshNodes>
+            <meshNode node="canisterVisual"/>
+        </meshNodes>
+    </tensionBeltObject>
+    <i3dMappings>
+        <i3dMapping id="component1" node="0&gt;" />
+        <i3dMapping id="triggers" node="0&gt;0" />
+        <i3dMapping id="dynamicMountTrigger" node="0&gt;0|0" />
+        <i3dMapping id="fillTrigger" node="0&gt;0|1" />
+        <i3dMapping id="canisterVisual" node="0&gt;1" />
+        <i3dMapping id="labels" node="0&gt;1|0" />
+        <i3dMapping id="label_coolant_lizard" node="0&gt;1|0|0" />
+        <i3dMapping id="label_coolant_original" node="0&gt;1|0|1" />
+        <i3dMapping id="label_coolant_premium" node="0&gt;1|0|2" />
+        <i3dMapping id="label_hydraulic_lizard" node="0&gt;1|0|3" />
+        <i3dMapping id="label_hydraulic_original" node="0&gt;1|0|4" />
+        <i3dMapping id="label_hydraulic_premium" node="0&gt;1|0|5" />
+        <i3dMapping id="label_motor_lizard" node="0&gt;1|0|6" />
+        <i3dMapping id="label_motor_original" node="0&gt;1|0|7" />
+        <i3dMapping id="label_motor_premium" node="0&gt;1|0|8" />
+        <i3dMapping id="label_trans_lizard" node="0&gt;1|0|9" />
+        <i3dMapping id="label_trans_original" node="0&gt;1|0|10" />
+        <i3dMapping id="label_trans_premium" node="0&gt;1|0|11" />
+    </i3dMappings>
+</vehicle>

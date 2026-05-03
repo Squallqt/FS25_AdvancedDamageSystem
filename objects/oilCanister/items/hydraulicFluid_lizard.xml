@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+    <storeData>
+        <name>ADS Hydraulic Fluid Lizard Canister</name>
+        <functions>
+            <function>ADS service fluid, 10 l</function>
+        </functions>
+        <specs>
+            <capacity>10</capacity>
+            <fillTypes>ADS_HYDRAULIC_FLUID_LIZARD</fillTypes>
+        </specs>
+        <image>icon_ads.dds</image>
+        <price>50</price>
+        <allowLeasing>false</allowLeasing>
+        <canBeSold>true</canBeSold>
+        <rotation>0</rotation>
+        <brand>LIZARD</brand>
+        <category>pallets</category>
+        <showInStore>false</showInStore>
+        <financeCategory>OTHER</financeCategory>
+        <shopHeight>0.7</shopHeight>
+    </storeData>
+    <base>
+        <typeDesc>ADS Hydraulic Fluid Lizard Canister</typeDesc>
+        <filename>objects/oilCanister/oilCanister_hydraulic_fluid_lizard.i3d</filename>
+        <size width="0.35" length="0.25" height="0.5"/>
+        <input allowed="false"/>
+        <supportsPickUp>true</supportsPickUp>
+        <canBeReset>true</canBeReset>
+        <components>
+            <component centerOfMass="0 0.1 0" solverIterationCount="2" mass="12"/>
+        </components>
+    </base>
+    <fillUnit>
+        <fillUnitConfigurations>
+            <fillUnitConfiguration>
+                <fillUnits removeVehicleIfEmpty="false">
+                    <fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="ADS_HYDRAULIC_FLUID_LIZARD" capacity="10" startFillType="ADS_HYDRAULIC_FLUID_LIZARD" startFillLevel="10" updateMass="false">
+                        <fillRootNode node="component1"/>
+                    </fillUnit>
+                </fillUnits>
+            </fillUnitConfiguration>
+        </fillUnitConfigurations>
+    </fillUnit>
+    <fillTriggerVehicle triggerNode="fillTrigger" fillUnitIndex="1" litersPerSecond="5"/>
+    <dischargeable requiresTipOcclusionArea="false"/>
+    <dynamicMount triggerNode="dynamicMountTrigger" triggerForceAcceleration="4" additionalMountDistance="0.35" jointTransY="0.11"/>
+    <tensionBeltObject>
+        <meshNodes>
+            <meshNode node="canisterVisual"/>
+        </meshNodes>
+    </tensionBeltObject>
+    <i3dMappings>
+        <i3dMapping id="component1" node="0&gt;" />
+        <i3dMapping id="triggers" node="0&gt;0" />
+        <i3dMapping id="dynamicMountTrigger" node="0&gt;0|0" />
+        <i3dMapping id="fillTrigger" node="0&gt;0|1" />
+        <i3dMapping id="canisterVisual" node="0&gt;1" />
+    </i3dMappings>
+</vehicle>
