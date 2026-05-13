@@ -1,3 +1,16 @@
+> [!IMPORTANT]
+> ### Support the Project
+>
+> Advanced Damage System is a passion project, and I’m doing my best to make it more realistic, stable, and enjoyable for the FS25 community.
+>
+> If you like the mod and want to support its development, your donation would mean a lot. It helps me spend more time working on new features, fixes, and improvements instead of having to put the project aside for other work.
+> 
+> Thank you for helping keep ADS alive and growing.
+>
+> [Donate via DonationAlerts](https://www.donationalerts.com/r/id577) · [Donate via Coindrop](https://coindrop.to/id577)
+
+
+
 # FS25_AdvancedDamageSystem
 
 [![Advanced Damage System Feature Showcase](https://img.youtube.com/vi/HV9-DvFaPSM/maxresdefault.jpg)](https://www.youtube.com/watch?v=HV9-DvFaPSM)
