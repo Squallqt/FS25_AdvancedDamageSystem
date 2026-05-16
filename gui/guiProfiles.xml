@@ -7,6 +7,11 @@
         <Preset name="colorBalanceGreen" value="0.659 0.847 0.286 1"/>
     </Presets>
 
+    <!-- Header icon -->
+    <Profile name="ads_menuHeaderIcon" extends="fs25_menuHeaderIcon">
+        <imageSliceId value="ads_MenuIcon.menuIcon"/>
+    </Profile>
+
     <!-- Shared dialog backgrounds and blockers -->
     <Profile name="ads_dialogScreenBlocker" extends="baseReference" with="anchorStretchingYStretchingX pivotTopCenter">
         <size value="100% 100%"/>

@@ -122,7 +122,7 @@ local function buildVehicleRow(vehicle)
     )
     local isLeased = vehicle.propertyState == 3
     local leasingPriceValue = 0
-    local priceText = g_i18n:formatMoney(currentValue, 0, true, true)
+    local priceText = g_i18n:formatMoney(currentValue, 0, true, false)
     local priceValue = currentValue
     local lastInspectionDate = vehicle:getLastInspectionDate()
     local lastMaintenanceDate = vehicle:getLastMaintenanceDate()
@@ -165,9 +165,9 @@ local function buildVehicleRow(vehicle)
         lastInspectionValue = getDateSortValue(lastInspectionDate),
         lastMaintenance = ADS_Utils.formatTimeAgo(lastMaintenanceDate),
         lastMaintenanceValue = getDateSortValue(lastMaintenanceDate),
-        cost = g_i18n:formatMoney(totalCost, 0, true, true),
+        cost = g_i18n:formatMoney(totalCost, 0, true, false),
         costValue = totalCost,
-        leasingPrice = leasingPriceValue > 0 and g_i18n:formatMoney(leasingPriceValue, 0, true, true) or "-",
+        leasingPrice = leasingPriceValue > 0 and g_i18n:formatMoney(leasingPriceValue, 0, true, false) or "-",
         leasingPriceValue = leasingPriceValue,
         price = priceText,
         priceValue = priceValue
@@ -194,7 +194,7 @@ local function buildServiceRow(vehicle)
     baseRow.procedure = currentState ~= nil and g_i18n:getText(currentState) or ""
     baseRow.remainingTime = ADS_Utils.formatDuration(duration)
     baseRow.finishTime = ADS_Utils.formatFinishTime(finishTime, daysToAdd)
-    baseRow.serviceCost = g_i18n:formatMoney(pendingServicePrice or 0, 0, true, true)
+    baseRow.serviceCost = g_i18n:formatMoney(pendingServicePrice or 0, 0, true, false)
     baseRow.serviceCostValue = pendingServicePrice or 0
 
     return baseRow
@@ -207,7 +207,7 @@ local function buildOtherVehicleRow(vehicle)
     )
     local isLeased = vehicle.propertyState == 3
     local leasingPriceValue = 0
-    local priceText = g_i18n:formatMoney(currentValue, 0, true, true)
+    local priceText = g_i18n:formatMoney(currentValue, 0, true, false)
     local priceValue = currentValue
     local operatingHours = getVehicleOperatingHoursValue(vehicle)
     local damageAmount = tonumber(vehicle.getDamageAmount ~= nil and vehicle:getDamageAmount() or vehicle.damageAmount or 0) or 0
@@ -242,7 +242,7 @@ local function buildOtherVehicleRow(vehicle)
         lastMaintenanceValue = -1,
         cost = "-",
         costValue = -1,
-        leasingPrice = leasingPriceValue > 0 and g_i18n:formatMoney(leasingPriceValue, 0, true, true) or "-",
+        leasingPrice = leasingPriceValue > 0 and g_i18n:formatMoney(leasingPriceValue, 0, true, false) or "-",
         leasingPriceValue = leasingPriceValue,
         price = priceText,
         priceValue = priceValue
