@@ -46,27 +46,23 @@ function ADS_Leasing.getReturnBreakdown(vehicle)
         vehicle = vehicle,
         hasExtendedLeasing = ADS_Leasing.hasExtendedLeasing(),
         raw = {
-            depositReturn = 0,
             overdueMaintenance = 0,
             repair = 0,
             washing = 0
         },
         display = {
-            depositReturn = 0,
             overdueMaintenance = 0,
             repair = 0,
             washing = 0,
             total = 0
         },
         charge = {
-            depositReturn = 0,
             overdueMaintenance = 0,
             repair = 0,
             washing = 0,
             total = 0
         },
         rows = {
-            { label = "ads_sell_dialog_deposit_return", key = "depositReturn", value = 0 },
             { label = "ads_sell_dialog_overdue_maintenance_penalty", key = "overdueMaintenance", value = 0 },
             { label = "ads_sell_dialog_repair_penalty", key = "repair", value = 0 },
             { label = "ads_sell_dialog_washing_penalty", key = "washing", value = 0 }
@@ -80,9 +76,9 @@ function ADS_Leasing.getReturnBreakdown(vehicle)
     local ads = AdvancedDamageSystem
     local hasExtendedLeasing = ADS_Leasing.hasExtendedLeasing()
     local vehiclePrice = getNumber(vehicle.getPrice ~= nil and vehicle:getPrice(), 0)
-    local depositReturn = MathUtil.round(vehiclePrice * EconomyManager.DEFAULT_LEASING_DEPOSIT_FACTOR, 0)
+    local deposit = MathUtil.round(vehiclePrice * EconomyManager.DEFAULT_LEASING_DEPOSIT_FACTOR, 0)
     local dirtAmount = math.min(getNumber(vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount(), 0), 1)
-    local washingCost = depositReturn * 0.3 * dirtAmount
+    local washingCost = deposit * 0.3 * dirtAmount
     local serviceLevel = getNumber(vehicle.getServiceLevel ~= nil and vehicle:getServiceLevel(), ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD)
     local serviceExpiredThreshold = math.max(getNumber(ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD, 0), 0.0001)
     local overdueMaintenanceRatio = math.max(serviceExpiredThreshold - serviceLevel, 0) * (1 / serviceExpiredThreshold)
@@ -109,39 +105,32 @@ function ADS_Leasing.getReturnBreakdown(vehicle)
     )
 
     emptyResult.hasExtendedLeasing = hasExtendedLeasing
-    emptyResult.raw.depositReturn = depositReturn
     emptyResult.raw.overdueMaintenance = overdueMaintenanceCost
     emptyResult.raw.repair = repairCost
     emptyResult.raw.washing = washingCost
 
-    emptyResult.display.depositReturn = depositReturn
     emptyResult.display.overdueMaintenance = -overdueMaintenanceCost
     emptyResult.display.repair = -repairCost
     emptyResult.display.washing = -washingCost
-    emptyResult.display.total = emptyResult.display.depositReturn
-        + emptyResult.display.overdueMaintenance
+    emptyResult.display.total = emptyResult.display.overdueMaintenance
         + emptyResult.display.repair
         + emptyResult.display.washing
 
     if hasExtendedLeasing then
-        emptyResult.charge.depositReturn = 0
         emptyResult.charge.washing = 0
     else
-        emptyResult.charge.depositReturn = depositReturn
         emptyResult.charge.washing = -washingCost
     end
 
     emptyResult.charge.overdueMaintenance = -overdueMaintenanceCost
     emptyResult.charge.repair = -repairCost
-    emptyResult.charge.total = emptyResult.charge.depositReturn
-        + emptyResult.charge.overdueMaintenance
+    emptyResult.charge.total = emptyResult.charge.overdueMaintenance
         + emptyResult.charge.repair
         + emptyResult.charge.washing
 
-    emptyResult.rows[1].value = emptyResult.display.depositReturn
-    emptyResult.rows[2].value = emptyResult.display.overdueMaintenance
-    emptyResult.rows[3].value = emptyResult.display.repair
-    emptyResult.rows[4].value = emptyResult.display.washing
+    emptyResult.rows[1].value = emptyResult.display.overdueMaintenance
+    emptyResult.rows[2].value = emptyResult.display.repair
+    emptyResult.rows[3].value = emptyResult.display.washing
 
     return emptyResult
 end
@@ -197,7 +186,6 @@ function ADS_Leasing.onSellVehicleEventRun(self, overwrittenFunc, connection)
     end
 
     local changes = {
-        { value = breakdown.charge.depositReturn, moneyType = MoneyType.VEHICLE_RUNNING_COSTS },
         { value = breakdown.charge.overdueMaintenance, moneyType = MoneyType.VEHICLE_RUNNING_COSTS },
         { value = breakdown.charge.repair, moneyType = MoneyType.VEHICLE_RUNNING_COSTS },
         { value = breakdown.charge.washing, moneyType = MoneyType.VEHICLE_RUNNING_COSTS }

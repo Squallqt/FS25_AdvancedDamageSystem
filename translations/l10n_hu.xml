@@ -669,7 +669,6 @@
         <text name="ads_ingame_menu_empty_active" text="Nincs elérhető ADS jármű" />
         <text name="ads_ingame_menu_empty_service" text="Jelenleg nincs jármű szervizben" />
         <text name="ads_sell_dialog_costs_title" text="További költségek" />
-        <text name="ads_sell_dialog_deposit_return" text="Kaució visszatérítése" />
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Lejárt karbantartás" />
         <text name="ads_sell_dialog_repair_penalty" text="Javítás" />
         <text name="ads_sell_dialog_washing_penalty" text="Mosás" />

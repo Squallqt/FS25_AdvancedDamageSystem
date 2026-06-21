@@ -676,7 +676,6 @@
         <text name="ads_ingame_menu_empty_active" text="Nessun veicolo ADS"/>
         <text name="ads_ingame_menu_empty_service" text="Nessun veicolo in manutenzione"/>
         <text name="ads_sell_dialog_costs_title" text="Costi aggiuntivi"/>
-        <text name="ads_sell_dialog_deposit_return" text="Restituzione del deposito"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Manutenzione scaduta"/>
         <text name="ads_sell_dialog_repair_penalty" text="Riparazione"/>
         <text name="ads_sell_dialog_washing_penalty" text="Lavaggio"/>

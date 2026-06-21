@@ -669,7 +669,6 @@
         <text name="ads_ingame_menu_empty_active" text="Keine ADS-Fahrzeuge vorhanden"/>
         <text name="ads_ingame_menu_empty_service" text="Keine Fahrzeuge im Service"/>
         <text name="ads_sell_dialog_costs_title" text="Zusatzkosten"/>
-        <text name="ads_sell_dialog_deposit_return" text="Rückerstattung der Kaution"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Überfällige Wartung"/>
         <text name="ads_sell_dialog_repair_penalty" text="Reparatur"/>
         <text name="ads_sell_dialog_washing_penalty" text="Reinigung"/>

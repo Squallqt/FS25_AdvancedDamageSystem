@@ -677,7 +677,6 @@
         <text name="ads_ingame_menu_empty_active" text="ADS 차량이 없습니다"/>
         <text name="ads_ingame_menu_empty_service" text="현재 정비 중인 차량이 없습니다"/>
         <text name="ads_sell_dialog_costs_title" text="추가 비용"/>
-        <text name="ads_sell_dialog_deposit_return" text="보증금 반환"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="정비 기한 초과 위약금"/>
         <text name="ads_sell_dialog_repair_penalty" text="수리비 공제"/>
         <text name="ads_sell_dialog_washing_penalty" text="세척비 공제"/>
