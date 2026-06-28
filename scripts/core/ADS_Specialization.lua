@@ -4073,11 +4073,9 @@ local function updateImplementChainState(vehicle)
                 if output ~= nil and output.connectedInput ~= nil then
                     hasConnectedPto = true
 
-                    -- towed implements (trailer hitch) use a wide-angle PTO shaft by design
-                    local jd = parentObj.spec_attacherJoints ~= nil and
-                                parentObj.spec_attacherJoints.attacherJoints ~= nil and
-                                parentObj.spec_attacherJoints.attacherJoints[jointDescIndex]
-                    if jd ~= nil and jd.jointType == 3 then
+                    -- towed implements have support wheels in ground contact; they use
+                    -- wide-angle PTO shafts by design and must not trigger the sharp-angle penalty
+                    if getSupportWheelCount(childObj) > 0 then
                         ptoConnectionIsTrailerHitch = true
                     end
 
