@@ -487,7 +487,8 @@ local function raiseAllADSDirtyFlags(vehicle, spec)
         spec.adsDirtyFlag_fieldcare,
         spec.adsDirtyFlag_wear,
         spec.adsDirtyFlag_breakdowns,
-        spec.adsDirtyFlag_serviceProgress
+        spec.adsDirtyFlag_serviceProgress,
+        spec.adsDirtyFlag_tutorialData
     }
 
     for _, dirtyFlag in ipairs(dirtyFlags) do
@@ -816,6 +817,62 @@ local function markServiceProgressDirty(vehicle, spec)
             spec._lastSyncServiceProgress_elapsed = spec.pendingProgressElapsedTime
             spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
             spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
+            return true
+    end
+
+    return false
+end
+
+local function markTutorialDataDirty(vehicle, spec)
+    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_tutorialData) then
+        return false
+    end
+
+    local fuelState = spec.fuelState
+    local idleTimer  = fuelState ~= nil and (tonumber(fuelState.idleTimer)  or 0) or 0
+    local fuelLevel  = fuelState ~= nil and (tonumber(fuelState.level)      or 0) or 0
+    local luggingTimer    = tonumber(spec.luggingTutorialTimer)    or 0
+    local wheelSlip       = tonumber(spec.wheelSlipIntensity)      or 0
+    local wheelSlipTimer  = tonumber(spec.wheelSlipTutorialTimer)  or 0
+    local brakeState  = spec.chassisBrakeState
+    local hpMassRatio = brakeState ~= nil and (tonumber(brakeState.hpMassRatio) or 1000) or 1000
+    local steerState    = spec.chassisSteerState
+    local groundContact = steerState ~= nil and (steerState.groundContact or 0) > 0 or false
+    local isMoving      = steerState ~= nil and steerState.isMoving == true or false
+    local elecSys      = spec.systems ~= nil and spec.systems.electrical or nil
+    local crankingTimer = elecSys ~= nil and (tonumber(elecSys.crankingTimer) or 0) or 0
+    local liftedMass     = tonumber(spec.liftedMass)              or 0
+    local isPtoActive    = spec.isPtoActive    == true
+    local hasConnectedPto = spec.hasConnectedPto == true
+    local ptoAngle       = tonumber(spec.maxConnectedPtoAngleDeg) or 0
+
+    if syncFloatChanged(spec._lastSyncTutorial_idleTimer,       idleTimer,       1.0)   or
+       syncFloatChanged(spec._lastSyncTutorial_fuelLevel,       fuelLevel,       0.01)  or
+       syncFloatChanged(spec._lastSyncTutorial_luggingTimer,    luggingTimer,    100.0) or
+       syncFloatChanged(spec._lastSyncTutorial_wheelSlip,       wheelSlip,       0.05)  or
+       syncFloatChanged(spec._lastSyncTutorial_wheelSlipTimer,  wheelSlipTimer,  100.0) or
+       syncFloatChanged(spec._lastSyncTutorial_hpMassRatio,     hpMassRatio,     0.1)   or
+       spec._lastSyncTutorial_groundContact ~= groundContact                           or
+       spec._lastSyncTutorial_isMoving      ~= isMoving                                or
+       syncFloatChanged(spec._lastSyncTutorial_crankingTimer,   crankingTimer,   100.0) or
+       syncFloatChanged(spec._lastSyncTutorial_liftedMass,      liftedMass,      0.01)  or
+       spec._lastSyncTutorial_isPtoActive    ~= isPtoActive                            or
+       spec._lastSyncTutorial_hasConnectedPto ~= hasConnectedPto                       or
+       syncFloatChanged(spec._lastSyncTutorial_ptoAngle,        ptoAngle,        0.5) then
+            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_tutorialData)
+            spec._lastSyncTutorial_idleTimer       = idleTimer
+            spec._lastSyncTutorial_fuelLevel       = fuelLevel
+            spec._lastSyncTutorial_luggingTimer    = luggingTimer
+            spec._lastSyncTutorial_wheelSlip       = wheelSlip
+            spec._lastSyncTutorial_wheelSlipTimer  = wheelSlipTimer
+            spec._lastSyncTutorial_hpMassRatio     = hpMassRatio
+            spec._lastSyncTutorial_groundContact   = groundContact
+            spec._lastSyncTutorial_isMoving        = isMoving
+            spec._lastSyncTutorial_crankingTimer   = crankingTimer
+            spec._lastSyncTutorial_liftedMass      = liftedMass
+            spec._lastSyncTutorial_isPtoActive     = isPtoActive
+            spec._lastSyncTutorial_hasConnectedPto = hasConnectedPto
+            spec._lastSyncTutorial_ptoAngle        = ptoAngle
             return true
     end
 
@@ -1358,6 +1415,27 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressTotalTime, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressElapsedTime, 0, 0))
         end
+
+        -- [10] Tutorial data (MP clients only)
+        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_tutorialData) ~= 0) then
+            local fuelState = spec.fuelState
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.idleTimer or 0, 0, 0, 600))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.level or 0, 0, 0, 1))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.luggingTutorialTimer, 0, 0, 5000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 3))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipTutorialTimer, 0, 0, 3000))
+            local brakeState = spec.chassisBrakeState
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpMassRatio or 1000, 1000, 0, 10000))
+            local steerState = spec.chassisSteerState
+            streamWriteBool(streamId, steerState ~= nil and (steerState.groundContact or 0) > 0 or false)
+            streamWriteBool(streamId, steerState ~= nil and steerState.isMoving == true or false)
+            local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(elecSys ~= nil and elecSys.crankingTimer or 0, 0, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.liftedMass, 0, 0))
+            streamWriteBool(streamId, spec.isPtoActive == true)
+            streamWriteBool(streamId, spec.hasConnectedPto == true)
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.maxConnectedPtoAngleDeg, 0, 0, 180))
+        end
     end
 end
 
@@ -1459,6 +1537,42 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec.pendingProgressStepIndex = streamReadInt32(streamId)
             spec.pendingProgressTotalTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             spec.pendingProgressElapsedTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+        end
+
+        -- [10] Tutorial data (MP clients only)
+        if streamReadBool(streamId) then
+            local fuelState = spec.fuelState
+            if fuelState == nil then
+                fuelState = { level = 0, currentUsageRatio = 0, temperature = 0, idleTimer = 0 }
+                spec.fuelState = fuelState
+            end
+            fuelState.idleTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 600)
+            fuelState.level     = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
+            spec.luggingTutorialTimer   = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 5000)
+            spec.wheelSlipIntensity     = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 3)
+            spec.wheelSlipTutorialTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 3000)
+            local brakeState = spec.chassisBrakeState
+            if brakeState == nil then
+                brakeState = { pedal = 0, massRatio = 0, hpMassRatio = 1000, isBraking = false, isBrakingByAxis = false }
+                spec.chassisBrakeState = brakeState
+            end
+            brakeState.hpMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
+            local steerState = spec.chassisSteerState
+            if steerState == nil then
+                steerState = { prevPosition = nil, position = 0, deltaRate = 0, rateFactor = 0, groundContact = 0, isLowSpeedActive = false, isMoving = false }
+                spec.chassisSteerState = steerState
+            end
+            steerState.groundContact = streamReadBool(streamId) and 1 or 0
+            steerState.isMoving      = streamReadBool(streamId)
+            local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
+            local crankingTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
+            if elecSys ~= nil then
+                elecSys.crankingTimer = crankingTimer
+            end
+            spec.liftedMass           = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            spec.isPtoActive          = streamReadBool(streamId)
+            spec.hasConnectedPto      = streamReadBool(streamId)
+            spec.maxConnectedPtoAngleDeg = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 180)
         end
     end
 end
@@ -2052,6 +2166,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         self.spec_AdvancedDamageSystem.adsDirtyFlag_wear = self:getNextDirtyFlag()              -- [7] serviceLevel, conditionLevel, systems[...].condition, systems[...].stress
         self.spec_AdvancedDamageSystem.adsDirtyFlag_breakdowns = self:getNextDirtyFlag()        -- [8] activeBreakdowns
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceProgress = self:getNextDirtyFlag()   -- [9] pendingProgressElapsedTime, pendingProgressTotalTime, pendingProgressStepIndex
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_tutorialData = self:getNextDirtyFlag()        -- [10] tutorial-only data for MP clients
     end
 end
 
@@ -3428,6 +3543,7 @@ function AdvancedDamageSystem:adsUpdate(dt, isWorkshopOpen)
         markWearDirty(self, spec)
         markBreakdownsDirty(self, spec)
         markServiceProgressDirty(self, spec)
+        markTutorialDataDirty(self, spec)
     end
 end
 
