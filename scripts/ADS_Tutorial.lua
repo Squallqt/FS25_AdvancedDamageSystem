@@ -27,6 +27,7 @@ function ADS_Tutorial:showMessage(text, doPause, downtime)
 
         if disableTutorial then
             ADS_Config.TUTORIAL_MODE = false
+            ADS_Config.saveClientTutorialState()
         end
 
         if doPause then
@@ -56,11 +57,8 @@ end
 
 function ADS_Tutorial:update(dt)
     local mission = g_currentMission
-    local isSingleplayer = mission ~= nil
-        and mission.missionDynamicInfo ~= nil
-        and not mission.missionDynamicInfo.isMultiplayer
 
-    if not ADS_Config.TUTORIAL_MODE or not isSingleplayer or g_localPlayer == nil then
+    if not ADS_Config.TUTORIAL_MODE or g_localPlayer == nil then
         self.vehicle = nil
         self.timer = 0
         return
@@ -81,7 +79,8 @@ function ADS_Tutorial:update(dt)
 
 
     local messagedData = ADS_Config.TUTORIAL_MESSAGES
-    
+    local prevDowntime = self.messageDowntime
+
     if self.messageDowntime <= 0 then
 
         --- GLOBAL MESSAGES
@@ -103,6 +102,9 @@ function ADS_Tutorial:update(dt)
             local sharpAngleThreshold = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA.PTO_SHARP_ANGLE_FACTOR_THRESHOLD or 30
             local preventiveRiskSystem = nil
             local hasPoorPartsBreakdown = false
+            local localWeatherType = (g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather ~= nil)
+                and g_currentMission.environment.weather:getCurrentWeatherType()
+                or WeatherType.SUN
 
             if not messagedData.NEEDS_PREVENTIVE and spec.systems ~= nil then
                 for _, systemData in pairs(spec.systems) do
@@ -267,10 +269,10 @@ function ADS_Tutorial:update(dt)
             --- wet weather
             elseif not messagedData.WET_WEATHER
                 and (
-                    ADS_Main.currentWeather == WeatherType.RAIN
-                    or ADS_Main.currentWeather == WeatherType.SNOW
-                    or (WeatherType.HAIL ~= nil and ADS_Main.currentWeather == WeatherType.HAIL)
-                    or (WeatherType.HALL ~= nil and ADS_Main.currentWeather == WeatherType.HALL)
+                    localWeatherType == WeatherType.RAIN
+                    or localWeatherType == WeatherType.SNOW
+                    or (WeatherType.HAIL ~= nil and localWeatherType == WeatherType.HAIL)
+                    or (WeatherType.HALL ~= nil and localWeatherType == WeatherType.HALL)
                 ) then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_wet_weather_message"),
@@ -556,6 +558,10 @@ function ADS_Tutorial:update(dt)
                 self.messageDowntime = downtimeAfterMessage
             end
         end
+    end
+
+    if prevDowntime <= 0 and self.messageDowntime > 0 then
+        ADS_Config.saveClientTutorialState()
     end
 
 end

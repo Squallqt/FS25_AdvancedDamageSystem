@@ -706,6 +706,40 @@ function ADS_Config.resetTutorialMessages()
     end
 end
 
+function ADS_Config.saveClientTutorialState()
+    local folder = getUserProfileAppPath() .. "modsSettings"
+    createFolder(folder)
+    local path = folder .. "/AdvancedDamageSystem_tutorial.xml"
+    local xmlFile = createXMLFile("adsTutorialClient", path, "adsTutorial")
+    if xmlFile == nil or xmlFile == 0 then return end
+
+    setXMLBool(xmlFile, "adsTutorial.tutorialMode", ADS_Config.TUTORIAL_MODE)
+    for messageId, isShown in pairs(ADS_Config.TUTORIAL_MESSAGES) do
+        setXMLBool(xmlFile, string.format("adsTutorial.messages.%s", tostring(messageId)), isShown == true)
+    end
+    saveXMLFile(xmlFile)
+    delete(xmlFile)
+end
+
+function ADS_Config.loadClientTutorialState()
+    local path = getUserProfileAppPath() .. "modsSettings/AdvancedDamageSystem_tutorial.xml"
+    if not fileExists(path) then return end
+
+    local xmlFile = loadXMLFile("adsTutorialClient", path)
+    if xmlFile == nil or xmlFile == 0 then return end
+
+    local v = getXMLBool(xmlFile, "adsTutorial.tutorialMode")
+    if v ~= nil then ADS_Config.TUTORIAL_MODE = v end
+
+    for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
+        v = getXMLBool(xmlFile, string.format("adsTutorial.messages.%s", tostring(messageId)))
+        if v ~= nil then
+            ADS_Config.TUTORIAL_MESSAGES[messageId] = v
+        end
+    end
+    delete(xmlFile)
+end
+
 ADS_Config.savegameFile = "advancedDamageSystem.xml"
 
 local function log_dbg(...)

@@ -380,6 +380,7 @@ FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, 
 Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, function()
     log_dbg("Mission00.loadMission00Finished hook fired")
     ADS_Config.loadFromXMLFile()
+    ADS_Config.loadClientTutorialState()
 end)
 FSBaseMission.sendInitialClientState = Utils.appendedFunction(FSBaseMission.sendInitialClientState, function(_, connection)
     if g_server ~= nil then
@@ -552,6 +553,7 @@ function ADS_Main:loadMap()
     self.shopMenuPageInstalled = false
     self.shopMenuFrame = nil
     ADS_Config.loadFromXMLFile()
+    ADS_Config.loadClientTutorialState()
     self:tryRegisterShopMenuPage()
 end
 
