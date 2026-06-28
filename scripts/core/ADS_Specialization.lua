@@ -473,6 +473,69 @@ local function getIsExcludedFromADS(vehicle)
     return false
 end
 
+local function raiseAllADSDirtyFlags(vehicle, spec)
+    if not vehicle.isServer then
+        return
+    end
+
+    local dirtyFlags = {
+        spec.adsDirtyFlag_state,
+        spec.adsDirtyFlag_serviceContext,
+        spec.adsDirtyFlag_telemetry,
+        spec.adsDirtyFlag_thermal,
+        spec.adsDirtyFlag_electrical,
+        spec.adsDirtyFlag_fieldcare,
+        spec.adsDirtyFlag_wear,
+        spec.adsDirtyFlag_breakdowns,
+        spec.adsDirtyFlag_serviceProgress
+    }
+
+    for _, dirtyFlag in ipairs(dirtyFlags) do
+        if dirtyFlag ~= nil then
+            vehicle:raiseDirtyFlags(dirtyFlag)
+        end
+    end
+end
+
+function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
+    local spec = self.spec_AdvancedDamageSystem
+    if spec == nil then
+        return false, "unsupported"
+    end
+
+    if spec.isExcludedByDefault then
+        return false, "default"
+    end
+
+    local requestedValue = isExcluded == true
+    if spec.isExcludedByUser == requestedValue then
+        return false, "unchanged"
+    end
+
+    spec.isExcludedByUser = requestedValue
+    spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByUser
+
+    if spec.isExcludedVehicle then
+        spec.pendingSideNotifications = {}
+    end
+
+    self:recalculateAndApplyEffects()
+    raiseAllADSDirtyFlags(self, spec)
+
+    if self.isClient and ADS_Main ~= nil and ADS_Main.hud ~= nil
+            and g_localPlayer ~= nil and g_localPlayer.getCurrentVehicle ~= nil
+            and g_localPlayer:getCurrentVehicle() == self then
+        ADS_Main.hud:setVehicle(self)
+        ADS_Main.hud:setVisible(not spec.isExcludedVehicle, true)
+    end
+
+    if self.isServer and not noEventSend and ADS_VehicleExclusionEvent ~= nil then
+        ADS_VehicleExclusionEvent.sendToClients(self, spec.isExcludedByUser)
+    end
+
+    return true
+end
+
 local function getIsVehicleNeedLubticate(vehicle)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then
@@ -845,6 +908,7 @@ function AdvancedDamageSystem.initSpecialization()
     schema:setXMLSpecializationType("AdvancedDamageSystem")
 
     local baseKey = "vehicles.vehicle(?).AdvancedDamageSystem"
+    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#isExcludedByUser", "User-controlled ADS exclusion flag")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#service", "Service Level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#condition", "Condition Level")
     schemaSavegame:register(XMLValueType.STRING, baseKey .. "#breakdowns", "Active Breakdowns")
@@ -963,6 +1027,7 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     log_dbg("registerFunctions called for vehicleType:", vehicleType.name)
     SpecializationUtil.registerFunction(vehicleType, "adsUpdate", AdvancedDamageSystem.adsUpdate)
     SpecializationUtil.registerFunction(vehicleType, "updateVehicleStateSnapshot", AdvancedDamageSystem.updateVehicleStateSnapshot)
+    SpecializationUtil.registerFunction(vehicleType, "setADSUserExcluded", AdvancedDamageSystem.setADSUserExcluded)
     
     SpecializationUtil.registerFunction(vehicleType, "recalculateAndApplyEffects", AdvancedDamageSystem.recalculateAndApplyEffects)
     SpecializationUtil.registerFunction(vehicleType, "recalculateAndApplyIndicators", AdvancedDamageSystem.recalculateAndApplyIndicators)
@@ -1056,7 +1121,11 @@ end
 
 function AdvancedDamageSystem:onWriteStream(streamId, connection)
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or spec.isExcludedVehicle then return end
+    if spec == nil then return end
+
+    streamWriteBool(streamId, spec.isExcludedByUser == true)
+    streamWriteBool(streamId, spec.isExcludedVehicle == true)
+    if spec.isExcludedVehicle then return end
 
     -- [Group 1] State
     streamWriteString(streamId, spec.currentState or "")
@@ -1117,7 +1186,11 @@ end
 
 function AdvancedDamageSystem:onReadStream(streamId, connection)
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or spec.isExcludedVehicle then return end
+    if spec == nil then return end
+
+    spec.isExcludedByUser = streamReadBool(streamId)
+    spec.isExcludedVehicle = streamReadBool(streamId)
+    if spec.isExcludedVehicle then return end
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
 
     -- [Group 1] State
@@ -1396,7 +1469,8 @@ end
 function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
     log_dbg("saveToXMLFile called for vehicle:", self:getFullName(), "with key:", key)
     local spec = self.spec_AdvancedDamageSystem
-    if spec ~= nil and not spec.isExcludedVehicle then
+    if spec ~= nil and not spec.isExcludedByDefault then
+        xmlFile:setValue(key .. "#isExcludedByUser", spec.isExcludedByUser == true)
         local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
         local realOperatingTime = spec.realOperatingTime
         if (realOperatingTime == nil or realOperatingTime <= 0) and currentOperatingTime > 0 then
@@ -1513,6 +1587,8 @@ function AdvancedDamageSystem:onLoad(savegame)
     log_dbg("onLoad called for vehicle:", self:getFullName())
     
     self.spec_AdvancedDamageSystem.isExcludedVehicle = false
+    self.spec_AdvancedDamageSystem.isExcludedByDefault = false
+    self.spec_AdvancedDamageSystem.isExcludedByUser = false
     self.spec_AdvancedDamageSystem.isElectricVehicle = false
     self.spec_AdvancedDamageSystem.isVehicleNeedLubricate = false
     self.spec_AdvancedDamageSystem.isVehicleNeedBlowOut = false
@@ -1984,8 +2060,14 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     local spec = self.spec_AdvancedDamageSystem
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
 
-    spec.isExcludedVehicle = getIsExcludedFromADS(self)
-    if spec.isExcludedVehicle then return end
+    spec.isExcludedByDefault = getIsExcludedFromADS(self)
+    spec.isExcludedByUser = false
+    if savegame ~= nil then
+        local exclusionKey = savegame.key .. ".AdvancedDamageSystem#isExcludedByUser"
+        spec.isExcludedByUser = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(exclusionKey, false), false)
+    end
+    spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByUser
+    if spec.isExcludedByDefault then return end
 
     if spec ~= nil and savegame ~= nil then
         local key = savegame.key .. ".AdvancedDamageSystem"
@@ -2499,6 +2581,58 @@ function AdvancedDamageSystem:onLeaveVehicle(wasEntered)
 
     spec.lastBlinkingWarningMessage = ""
     spec.blinkingWarningTimer = 0
+
+    local hadStartInput = spec.startButtonDown or spec.startButtonHeld or spec.startButtonUp
+    spec.startButtonDown = false
+    spec.startButtonHeld = false
+    spec.startButtonUp = false
+
+    if hadStartInput then
+        ADS_StartButtonEvent.send(self, false, false, false)
+    end
+end
+
+function AdvancedDamageSystem.updateStartButtonActionEvents(self)
+    if not self.isClient or not self:getIsActiveForInput(true) then
+        return
+    end
+
+    local spec = self.spec_AdvancedDamageSystem
+    local motorizedSpec = self.spec_motorized
+    if spec == nil or motorizedSpec == nil or spec.startButtonActionEvents == nil then
+        return
+    end
+
+    local automaticMotorStartEnabled = g_currentMission ~= nil
+        and g_currentMission.missionInfo ~= nil
+        and g_currentMission.missionInfo.automaticMotorStartEnabled == true
+
+    for inputAction, actionEvent in pairs(spec.startButtonActionEvents) do
+        local actionEventId = actionEvent.actionEventId
+        local registeredEvent = actionEventId ~= nil
+            and g_inputBinding.events ~= nil
+            and g_inputBinding.events[actionEventId]
+            or nil
+
+        if registeredEvent ~= nil then
+            g_inputBinding:setActionEventActive(actionEventId, true)
+
+            if inputAction == InputAction.TOGGLE_MOTOR_STATE then
+                g_inputBinding:setActionEventTextVisibility(actionEventId, not automaticMotorStartEnabled)
+
+                local motorState = self:getMotorState()
+                if motorState == MotorState.STARTING or motorState == MotorState.ON then
+                    g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_VERY_LOW)
+                    g_inputBinding:setActionEventText(actionEventId, motorizedSpec.turnOffText)
+                else
+                    g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_VERY_HIGH)
+                    g_inputBinding:setActionEventText(actionEventId, motorizedSpec.turnOnText)
+                end
+            else
+                g_inputBinding:setActionEventTextVisibility(actionEventId, false)
+            end
+        end
+    end
 end
 
 function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)
@@ -2507,7 +2641,8 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
     end
 
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil then
+    local motorizedSpec = self.spec_motorized
+    if spec == nil or motorizedSpec == nil then
         return
     end
 
@@ -2523,6 +2658,13 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
     }
 
     for _, inputAction in ipairs(startInputActions) do
+        local motorizedActionEvent = motorizedSpec.actionEvents[inputAction]
+        if motorizedActionEvent ~= nil and motorizedActionEvent.actionEventId ~= nil then
+            g_inputBinding:removeActionEvent(motorizedActionEvent.actionEventId)
+        end
+        motorizedSpec.actionEvents[inputAction] = nil
+
+        -- One composite event owns both the vanilla action and the ADS held-state tracking.
         local _, actionEventId = self:addActionEvent(
             spec.startButtonActionEvents,
             inputAction,
@@ -2530,9 +2672,11 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
             ADS_Breakdowns.onStartButtonAction,
             true,
             true,
+            false,
             true,
-            true,
-            nil
+            nil,
+            nil,
+            true
         )
 
         if actionEventId ~= nil then
@@ -2540,6 +2684,8 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
             g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_VERY_LOW)
         end
     end
+
+    AdvancedDamageSystem.updateStartButtonActionEvents(self)
 end
 
 -- ==========================================================
@@ -3139,6 +3285,7 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     if spec.isExcludedVehicle then return end
 
     self:updateVehicleStateSnapshot(dt)
+    AdvancedDamageSystem.updateStartButtonActionEvents(self)
 
     spec.onUpdateTimer = spec.onUpdateTimer + dt
 
@@ -3467,6 +3614,15 @@ local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with dr
     end
 
     local motorLoad = AdvancedDamageSystem.sanitizeNumber(vehicle:getMotorLoadPercentage(), 0, 0, 1.5)
+    local hasMoreRealistic = g_modIsLoaded ~= nil and g_modIsLoaded["MoreRealistic"] == true
+
+    if hasMoreRealistic then
+        spec.dynamicMotorLoad = motorLoad
+        updateAvgDynamicMotorLoadWindow(spec, motorLoad, dt)
+        updateAvgSpeedWindow(spec, vehicle:getLastSpeed(), dt)
+        return
+    end
+
     local dynamicMotorLoad = motorLoad
 
     if vehicle:getIsOnField() then
@@ -4364,14 +4520,44 @@ end
 --                        AI WORKER
 -- ==========================================================
 
-function AdvancedDamageSystem:resetAiWorkerCruiseControlState()
+local function getIsSoilSamplingActive(vehicle)
+    local visited = {}
+
+    local function visit(object)
+        if object == nil or visited[object] then
+            return false
+        end
+        visited[object] = true
+
+        local soilSamplerSpec = object["spec_FS25_precisionFarming.soilSampler"]
+        if soilSamplerSpec ~= nil and soilSamplerSpec.isSampling then
+            return true
+        end
+
+        local attacherJoints = object.spec_attacherJoints
+        local attachedImplements = attacherJoints ~= nil and attacherJoints.attachedImplements or nil
+        if attachedImplements ~= nil then
+            for _, implementData in pairs(attachedImplements) do
+                if visit(implementData.object) then
+                    return true
+                end
+            end
+        end
+
+        return false
+    end
+
+    return visit(vehicle)
+end
+
+function AdvancedDamageSystem:resetAiWorkerCruiseControlState(restoreCruiseSpeed)
     local spec = self.spec_AdvancedDamageSystem
     if spec == nil then return end
 
     local state = spec.aiWorkerPid
     if state == nil then return end
 
-    if state.baseCruiseSpeed ~= nil and state.baseCruiseSpeed > 0 then
+    if restoreCruiseSpeed ~= false and state.baseCruiseSpeed ~= nil and state.baseCruiseSpeed > 0 then
         local motor = self:getMotor()
         self:setCruiseControlMaxSpeed(motor:getMaximumForwardSpeed() * 3.6, nil)
     end
@@ -4441,6 +4627,14 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
 
     if not self:getIsAIActive() or not self:getIsMotorStarted() then
         self:resetAiWorkerCruiseControlState()
+        return
+    end
+
+    -- Courseplay deliberately requests a full stop while a Precision Farming
+    -- soil sample is being taken. Do not let the ADS load controller override
+    -- that stop or retain load stress from the stationary sampling operation.
+    if getIsSoilSamplingActive(self) then
+        self:resetAiWorkerCruiseControlState(false)
         return
     end
 
@@ -6508,6 +6702,21 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
     local spec = self.spec_AdvancedDamageSystem
     if not spec then return end
 
+    if spec.isExcludedVehicle then
+        spec.dynamicBreakdowns.GENERAL_WEAR = nil
+        local previouslyActiveEffects = spec.activeEffects or {}
+        spec.activeEffects = {}
+
+        for effectId, applicator in pairs(ADS_Breakdowns.EffectApplicators) do
+            if previouslyActiveEffects[effectId] ~= nil and applicator.remove then
+                applicator.remove(self, applicator)
+            end
+        end
+
+        self:recalculateAndApplyIndicators()
+        return
+    end
+
     if self:hasBreakdown("GENERAL_WEAR") then
         spec.dynamicBreakdowns.GENERAL_WEAR = buildGeneralWearBreakdown(self)
     else
@@ -6516,7 +6725,6 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
 
     local previouslyActiveEffects = spec.activeEffects or {}
     local aggregatedEffects = {}
-
     local unknownBreakdownIds = {}
 
     for id, breakdown in pairs(self:getActiveBreakdowns()) do
@@ -6530,7 +6738,7 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
             if stageData.effects then
                 for _, effectData in ipairs(stageData.effects) do
                     local effectId = effectData.id
-                    local strategy = effectData.aggregation or "sum" 
+                    local strategy = effectData.aggregation or "sum"
 
                     local newValue
                     if type(effectData.value) == 'function' then
@@ -6538,12 +6746,12 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
                     else
                         newValue = effectData.value
                     end
-                    
+
                     local existingEffect = aggregatedEffects[effectId]
 
                     if existingEffect == nil then
                         local newEffect = ADS_Utils.deepCopy(effectData)
-                        newEffect.value = newValue 
+                        newEffect.value = newValue
                         aggregatedEffects[effectId] = newEffect
                     else
                         if strategy == "sum" then
@@ -6557,7 +6765,7 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
                                 existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
                             end
                             existingEffect.value = existingEffect.value * newValue
-                        
+
                         elseif strategy == "min" then
                             if newValue < existingEffect.value then
                                 existingEffect.value = newValue
@@ -6569,7 +6777,7 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
                                 existingEffect.value = newValue
                                 existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
                             end
-                        
+
                         elseif strategy == "boolean_or" then
                             local wasActive = existingEffect.value ~= nil and existingEffect.value ~= false and existingEffect.value ~= 0
                             local isActive = newValue ~= nil and newValue ~= false and newValue ~= 0
@@ -6662,6 +6870,8 @@ function AdvancedDamageSystem:recalculateAndApplyIndicators()
     if not spec then return end
 
     spec.activeIndicators = {} 
+    if spec.isExcludedVehicle then return end
+
     local aggregatedIndicatorData = {} 
 
     for id, breakdown in pairs(self:getActiveBreakdowns()) do
@@ -8340,7 +8550,10 @@ function AdvancedDamageSystem.ConsoleCommands:getTargetVehicle()
         print("ADS Error: Override vehicle does not have AdvancedDamageSystem support.")
         return nil
     end
-    local vehicle = g_localPlayer.getCurrentVehicle() 
+    local vehicle = g_localPlayer ~= nil
+        and g_localPlayer.getCurrentVehicle ~= nil
+        and g_localPlayer:getCurrentVehicle()
+        or nil
     if not vehicle or not vehicle.spec_AdvancedDamageSystem then
         print("ADS Error: You must be in a vehicle with AdvancedDamageSystem support.")
         return nil
@@ -10120,6 +10333,55 @@ function AdvancedDamageSystem.ConsoleCommands:toggleHudDebugView(rawArgs)
     print(string.format("ADS: HUD debug view mode = %s", nextMode))
 end
 
+function AdvancedDamageSystem.ConsoleCommands:setExcluded(rawArgs)
+    if not g_currentMission:getIsServer() then
+        local vehicle = self:getTargetVehicle()
+        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setExcluded", rawArgs, nil, vehicle) end
+        return
+    end
+
+    local vehicle = self:getTargetVehicle()
+    if not vehicle then return end
+
+    local spec = vehicle.spec_AdvancedDamageSystem
+    local args = parseArguments(rawArgs)
+    local rawValue = args and args[1] and string.lower(tostring(args[1])) or nil
+
+    if rawValue == nil then
+        print(string.format(
+            "ADS: '%s' exclusion state: user=%s, default=%s, effective=%s. Usage: ads_setExcluded <true|false>",
+            vehicle:getFullName(),
+            tostring(spec.isExcludedByUser == true),
+            tostring(spec.isExcludedByDefault == true),
+            tostring(spec.isExcludedVehicle == true)
+        ))
+        return
+    end
+
+    local isExcluded
+    if rawValue == "true" or rawValue == "1" or rawValue == "on" or rawValue == "yes" then
+        isExcluded = true
+    elseif rawValue == "false" or rawValue == "0" or rawValue == "off" or rawValue == "no" then
+        isExcluded = false
+    else
+        print("ADS Error: Usage: ads_setExcluded <true|false>")
+        return
+    end
+
+    local changed, reason = vehicle:setADSUserExcluded(isExcluded)
+    if reason == "default" then
+        print(string.format("ADS: '%s' is excluded automatically and cannot be changed by this command.", vehicle:getFullName()))
+        return
+    end
+
+    if not changed then
+        print(string.format("ADS: '%s' is already %s by the user flag.", vehicle:getFullName(), isExcluded and "excluded" or "included"))
+        return
+    end
+
+    print(string.format("ADS: '%s' is now %s.", vehicle:getFullName(), isExcluded and "excluded from ADS" or "managed by ADS"))
+end
+
 function AdvancedDamageSystem.ConsoleCommands:debug()
     if not g_currentMission:getIsServer() then
         ADS_ConsoleCommandEvent.sendToServer("debug", nil, nil, nil)
@@ -10155,6 +10417,7 @@ addConsoleCommand("ads_setOperatingTime", "Sets operating time on current vehicl
 addConsoleCommand("ads_setPlowMaxForce", "Sets maxForce on selected/attached plow. Usage: ads_setPlowMaxForce [kN]", "setPlowMaxForce", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_resetFactorStats", "Resets accumulated factor stats for current vehicle.", "resetFactorStats", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_toggleHudDebugView", "Switch debug HUD view. Usage: ads_toggleHudDebugView [default|stats|toggle]", "toggleHudDebugView", AdvancedDamageSystem.ConsoleCommands)
+addConsoleCommand("ads_setExcluded", "Excludes or includes the current vehicle in ADS. Usage: ads_setExcluded <true|false>", "setExcluded", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_debug", "Enbales/disabled ADS debug", "debug", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_setConfigVar", "Sets ADS_Config variable. Usage: ads_setConfigVar <path> <value>", "setConfigVar", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_setSpecVar", "Sets ADS specialization variable on current vehicle. Usage: ads_setSpecVar <path> <value>", "setSpecVar", AdvancedDamageSystem.ConsoleCommands)
