@@ -14,6 +14,7 @@ The mod includes a temperature model for key systems, advanced battery and alter
 
 Changelog 0.9.2.6:
 - Tutorial tips now work correctly in multiplayer for all connected clients
+- Fixed excessive hydraulic stress when turning sharply with towed PTO implements (mulchers, mowers); wide-angle PTO shafts on trailer-hitched implements now use the correct 70° angle threshold instead of 30°
 
 Changelog 0.9.2.5:
 - Added vehicle icons to the ADS Fleet Management menu
@@ -114,6 +115,7 @@ Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batt
 
 Changelog 0.9.2.6:
 - Tutorial-Hinweise funktionieren nun korrekt im Mehrspielermodus für alle verbundenen Spieler
+- Behoben: übermäßiger Hydraulikstress bei scharfen Kurven mit gezogenen Zapfwellen-Anbaugeräten (Mähwerke, Mulcher); Breitwinkselkardane an Deichselanbaugeräten verwenden nun den korrekten Grenzwert von 70° statt 30°
 
 Changelog 0.9.2.5:
 - Fahrzeugsymbole zum ADS-Fleet-Management-Menü hinzugefügt
@@ -213,6 +215,7 @@ Le mod comprend un modèle thermique pour les systèmes clés, une simulation av
 
 Changelog 0.9.2.6:
 - Les astuces de didacticiel fonctionnent désormais correctement en multijoueur pour tous les clients connectés
+- Correction d'un stress hydraulique excessif lors de virages serrés avec des outils PTO trainés (broyeurs, faucheuses) ; les cardans grand angle sur attelage remorque utilisent désormais le seuil correct de 70° au lieu de 30°
 
 Changelog 0.9.2.5:
 - Ajout d'icônes de véhicules dans le menu ADS Fleet Management

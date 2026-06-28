@@ -2088,6 +2088,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.operatingMass = 0
     self.spec_AdvancedDamageSystem.isPtoActive = false
     self.spec_AdvancedDamageSystem.maxConnectedPtoAngleDeg = 0
+    self.spec_AdvancedDamageSystem.ptoConnectionIsTrailerHitch = false
     self.spec_AdvancedDamageSystem.hasConnectedPto = false
     self.spec_AdvancedDamageSystem.hydraulicsMoveAlphaCache = {}
     self.spec_AdvancedDamageSystem.chassisVibState = {
@@ -4045,6 +4046,7 @@ local function updateImplementChainState(vehicle)
     local maxConnectedPtoAngleDeg = 0
     local hasConnectedPto = false
     local isPtoActive = false
+    local ptoConnectionIsTrailerHitch = false
     local maxCutterArea = 0
 
     local function updatePtoActivityState(vehicleObj)
@@ -4071,6 +4073,14 @@ local function updateImplementChainState(vehicle)
             for _, output in ipairs(outputs) do
                 if output ~= nil and output.connectedInput ~= nil then
                     hasConnectedPto = true
+
+                    -- towed implements (trailer hitch) use a wide-angle PTO shaft by design
+                    local jd = parentObj.spec_attacherJoints ~= nil and
+                                parentObj.spec_attacherJoints.attacherJoints ~= nil and
+                                parentObj.spec_attacherJoints.attacherJoints[jointDescIndex]
+                    if jd ~= nil and jd.jointType == 3 then
+                        ptoConnectionIsTrailerHitch = true
+                    end
 
                     local inputPto = output.connectedInput
                     local outputNode = output.outputNode
@@ -4199,6 +4209,7 @@ local function updateImplementChainState(vehicle)
     spec.maxConnectedPtoAngleDeg = maxConnectedPtoAngleDeg
     spec.hasConnectedPto = hasConnectedPto
     spec.isPtoActive = isPtoActive
+    spec.ptoConnectionIsTrailerHitch = ptoConnectionIsTrailerHitch
     spec.implements = implements
     spec.isHarvesting = maxCutterArea > 0 and isOnField and lastSpeed >= 0.5 and isTurnedOn
 end
@@ -5462,7 +5473,9 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
                 local ptoAngleDeg = tonumber(spec.maxConnectedPtoAngleDeg or 0) or 0
                 local hasConnectedPto = spec.hasConnectedPto == true
                 ptoSharpAngleDeg = ptoAngleDeg
-                local sharpAngleThreshold = C.PTO_SHARP_ANGLE_FACTOR_THRESHOLD or 30
+                local sharpAngleThreshold = spec.ptoConnectionIsTrailerHitch == true
+                    and (C.PTO_SHARP_ANGLE_WIDE_THRESHOLD or 70)
+                    or  (C.PTO_SHARP_ANGLE_FACTOR_THRESHOLD or 30)
                 if sharpAngleThreshold <= (2 * math.pi + 0.001) then
                     sharpAngleThreshold = math.deg(sharpAngleThreshold)
                 end
