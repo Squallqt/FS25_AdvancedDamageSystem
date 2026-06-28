@@ -1272,7 +1272,6 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     end
     local syncFuelRaw = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
     spec._fuelUsageRaw = syncFuelRaw
-    spec.fuelUsage = syncFuelRaw
     spec._netMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
     spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec._netMotorLoad, 0, 1.5)
     spec.dynamicMotorLoad = spec._netDynamicMotorLoad
