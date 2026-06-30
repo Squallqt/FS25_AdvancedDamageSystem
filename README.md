@@ -1,52 +1,17 @@
-# Advanced Damage System
+# FS25_AdvancedDamageSystem
 
-> [!IMPORTANT]
-> This repository is an independently maintained fork of Advanced Damage System for Farming Simulator 25.
->
-> The project name is currently unchanged and may be replaced later as part of a complete rebranding.
->
-> Original project created by [id577](https://github.com/id577).  
-> Independent fork maintained by [Squallqt](https://github.com/Squallqt) since 30 June 2026.
->
-> This project remains licensed under the GNU General Public License version 3. See [NOTICE.md](NOTICE.md) for provenance and attribution details.
+Advanced vehicle wear, failure, diagnostics, maintenance, and repair system for Farming Simulator 25.
 
-<img src="https://img.youtube.com/vi/HV9-DvFaPSM/maxresdefault.jpg" alt="Advanced Damage System Feature Showcase">
+[![Version](https://img.shields.io/badge/version-0.9.2.6-blue.svg)](#)
+[![FS25](https://img.shields.io/badge/FS25-compatible-green.svg)](https://farming-simulator.com/)
+[![Multiplayer](https://img.shields.io/badge/multiplayer-supported-success.svg)](#)
+[![Languages](https://img.shields.io/badge/languages-15-blue.svg)](#)
 
-▶️ Watch ADS Feature Showcase on YouTube
+This repository is an independently maintained fork of Advanced Damage System by id577, maintained by Squallqt since 30 June 2026, while preserving the full technical gameplay model and documentation.
 
-Advanced Damage System is a mod that completely reworks the standard vehicle damage and maintenance system in Farming Simulator 25. A machine's reliability now depends directly on how carefully and efficiently you use it: the harder you push your equipment and the worse you maintain it, the more often it will break down.
+> **Note:** Credits, provenance, and attribution are maintained in [NOTICE.md](NOTICE.md). This project remains licensed under GNU GPL v3.
 
-Forget about one-click repairs. Maintenance now takes time, resources, and proper planning. You will need to manage wear, schedule repairs in advance, and organize your fleet so that breakdowns do not ruin the season.
-
-<table>
-<tr>
-<td width="65%" valign="top">
-
-> [!WARNING]
-> **IMPORTANT WARNING**
->
-> *   This mod is a work in progress (WIP). Features are subject to change, and bugs are to be expected.
-> *   Use at your own risk. The author is not responsible for any potential issues with your savegame or game. It is strongly recommended to back up your saves.
-
-</td>
-<td width="35%" align="center" valign="top">
-<img width="256" height="256" alt="icon_ads" src="https://github.com/user-attachments/assets/ac09c1b1-daa3-4026-b312-b09156d9a03e" />
-
-</td>
-</tr>
-</table>
-
-## Credits and acknowledgements
-
-- **id577** — original creator and maintainer of Advanced Damage System.
-- **Squallqt** — multiplayer and network support, dedicated-server testing, interface improvements, fixes, technical testing, and maintenance of this independent fork.
-- **Frvetz** — creator of the Realistic Damage System mod for FS22; credited for permission to use ideas from that project and for early support.
-- **Saibotsu / The Mod Workshop** — balance testing, feedback, and development support.
-- **Derwen Modding** — testing of early builds.
-
-The complete contribution history remains available in the Git history.
-
-# Quick Start
+## Quick Start
 
 If you do not want to read the full guide at the bottom of this page but still want to play with ADS without constant breakdowns and unnecessary frustration, just follow these three rules:
 
@@ -65,7 +30,7 @@ If you do not want to read the full guide at the bottom of this page but still w
    Avoid overloading, overheating, using implements that are too heavy or too demanding for the machine, excessive wheel slip in mud, hard work on a cold engine, and high-speed driving over rough terrain.  
    As a general rule: if something would be harmful to the machine in real life, it is harmful in ADS too.
 
-# Key Features
+## Features
 - **Complete Replacement of the Vanilla Damage System:** Every vehicle in the game is now divided into multiple individual systems: engine, transmission, hydraulics, cooling system, fuel system, working systems, electrical system, and chassis. Each system tracks how the machine is actually being used. For example, chassis wear increases faster if you drive quickly over rough terrain. The harsher the operating conditions, the faster wear builds up and the more often breakdowns occur.
 - **Regular Maintenance Becomes Essential:** Scheduled service is now required to prevent accelerated wear and avoid costly failures.
 - **Dynamic Breakdowns:** Dozens of different failures tied to specific systems, each with its own gameplay effects and consequences.
@@ -77,7 +42,14 @@ If you do not want to read the full guide at the bottom of this page but still w
 
   ... More information below in the guide
 
-# Console Commands
+## Installation
+
+### Manual
+1. Place the mod ZIP file in your FS25 `mods/` directory (do not extract).
+2. Enable the mod in game.
+3. Access ADS interfaces from in-game menus and workshop interactions.
+
+## Console Commands
 For testing and debugging, ADS includes console commands. Most commands require you to be inside a vehicle that supports this mod.
 
 | Command | Description | Usage Example |
@@ -105,18 +77,7 @@ For testing and debugging, ADS includes console commands. Most commands require 
 | **ads_setConfigVar** | Changes a value inside `ADS_Config` at runtime. Intended for testing and debugging. | `ads_setConfigVar CORE.BASE_SYSTEMS_WEAR 0.02` |
 | **ads_setSpecVar** | Changes a value inside `spec_AdvancedDamageSystem` on the current vehicle. Intended for testing and debugging. | `ads_setSpecVar systems.engine.condition 0.85` |
 
-# Screenshots
-<img width="2560" height="1440" alt="444" src="https://github.com/user-attachments/assets/4286276b-d204-4166-886f-4eebe964fba9" />
-<img width="1280" height="719" alt="Снимок экрана 2026-04-24 170740" src="https://github.com/user-attachments/assets/d98b3fa3-8a50-4322-9a0d-8678519b10b5" />
-<img width="1907" height="1308" alt="666" src="https://github.com/user-attachments/assets/aaa4f359-e4cb-4c77-857a-6e3af5a00304" />
-<img width="1314" height="839" alt="111" src="https://github.com/user-attachments/assets/66e7e049-59e6-4f26-937a-a74f1e19a247" />
-<img width="1280" height="719" alt="Снимок экрана 2026-04-24 174821" src="https://github.com/user-attachments/assets/771f6fce-5b96-462c-aae5-b45887b01366" />
-<img width="1253" height="763" alt="image" src="https://github.com/user-attachments/assets/18fe2f51-44f8-46fe-a1ac-8b892d25852c" />
-<img width="1233" height="832" alt="222" src="https://github.com/user-attachments/assets/64748b85-6e3c-43d6-b19a-d7027e66df49" />
-<img width="1334" height="788" alt="Снимок экрана 2026-03-29 224955" src="https://github.com/user-attachments/assets/77ca8ae3-a531-4934-96d0-b53c941e5095" />
-
-
-# Mod Guide
+## Detailed Technical Guide
 
 > [!IMPORTANT]
 > The mod is actively being developed: some mechanics are constantly being expanded, changed, and reworked, so the guide may contain some inaccuracies.
@@ -691,3 +652,11 @@ Battery temperature is simulated separately. It is influenced by ambient tempera
 This system also interacts with breakdowns. A failed alternator can leave the machine running only on battery reserve, while battery failure can lead to weak cranking, hard starting, or a complete no-start situation. Depending on the condition of the electrical system, the vehicle may suffer from unstable voltage, poor charging, or total loss of starting ability.
 
 If the battery is too weak to start the engine, you can use jumper cables and get power from another vehicle. ADS models this as an actual external power connection: both batteries are linked into a shared circuit, current flows between them, and the donor vehicle can support the receiver during cranking or temporary charging.
+
+## Support
+
+- Issues and suggestions: https://github.com/Squallqt/FS25_AdvancedDamageSystem/issues
+
+## License
+
+GNU General Public License v3.0. See `LICENSE` and `NOTICE.md`.
