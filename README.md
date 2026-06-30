@@ -1,23 +1,18 @@
+# Advanced Damage System
+
 > [!IMPORTANT]
-> ### Support the Project
+> This repository is an independently maintained fork of Advanced Damage System for Farming Simulator 25.
 >
-> Advanced Damage System is a passion project, and I’m doing my best to make it more realistic, stable, and enjoyable for the FS25 community.
+> The project name is currently unchanged and may be replaced later as part of a complete rebranding.
 >
-> If you like the mod and want to support its development, your donation would mean a lot. Continued development depends heavily on the time I can afford to dedicate to the project, and your support helps me choose development over extra paid work.
+> Original project created by [id577](https://github.com/id577).  
+> Independent fork maintained by [Squallqt](https://github.com/Squallqt) since 30 June 2026.
 >
-> Every donation helps me keep working on new features, fixes, and improvements.
->
-> Thank you for helping keep ADS alive and growing.
->
-> [Donate via DonationAlerts](https://dalink.to/id577) · [Donate via Coindrop](https://coindrop.to/id577) · [Donate via Ko-fi](https://ko-fi.com/themodworkshop) - please include 'ADS' in the donation message.
+> This project remains licensed under the GNU General Public License version 3. See [NOTICE.md](NOTICE.md) for provenance and attribution details.
 
+<img src="https://img.youtube.com/vi/HV9-DvFaPSM/maxresdefault.jpg" alt="Advanced Damage System Feature Showcase">
 
-
-# FS25_AdvancedDamageSystem
-
-[![Advanced Damage System Feature Showcase](https://img.youtube.com/vi/HV9-DvFaPSM/maxresdefault.jpg)](https://www.youtube.com/watch?v=HV9-DvFaPSM)
-
-▶️ [Watch ADS Feature Showcase on YouTube](https://www.youtube.com/watch?v=HV9-DvFaPSM)
+▶️ Watch ADS Feature Showcase on YouTube
 
 Advanced Damage System is a mod that completely reworks the standard vehicle damage and maintenance system in Farming Simulator 25. A machine's reliability now depends directly on how carefully and efficiently you use it: the harder you push your equipment and the worse you maintain it, the more often it will break down.
 
@@ -41,15 +36,15 @@ Forget about one-click repairs. Maintenance now takes time, resources, and prope
 </tr>
 </table>
 
-# Acknowledgements 
+## Credits and acknowledgements
 
-A huge thank you to **Frvetz** (https://github.com/Frvetz), creator of the Realistic Damage System mod for FS22, for the permission to use ideas from his mod and for the support during the early stages of development.
+- **id577** — original creator and maintainer of Advanced Damage System.
+- **Squallqt** — multiplayer and network support, dedicated-server testing, interface improvements, fixes, technical testing, and maintenance of this independent fork.
+- **Frvetz** — creator of the Realistic Damage System mod for FS22; credited for permission to use ideas from that project and for early support.
+- **Saibotsu / The Mod Workshop** — balance testing, feedback, and development support.
+- **Derwen Modding** — testing of early builds.
 
-Special thanks to [Saibotsu](https://github.com/Saibotsu) ([The Mod Workshop](https://www.youtube.com/@TheModWorkshop)) for extensive balance testing, helpful feedback, and ongoing support throughout development.
-
-A huge special thanks to **Squallqt** (https://github.com/Squallqt) for his direct contributions to the project. He implemented multiplayer support and provided invaluable help with testing and technical advice.
-
-Also, a big thank you to **Derwen Modding** for testing the early builds.
+The complete contribution history remains available in the Git history.
 
 # Quick Start
 
