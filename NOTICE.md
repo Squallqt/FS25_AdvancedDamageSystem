@@ -2,6 +2,11 @@
 
 This repository is an independent fork of Advanced Damage System for Farming Simulator 25.
 
+Credits and acknowledgements:
+- id577 - original creator and maintainer of Advanced Damage System.
+- Squallqt - multiplayer and network support, dedicated-server testing, interface improvements, fixes, technical testing, and maintenance of this independent fork.
+- Frvetz - creator of the Realistic Damage System mod for FS22; credited for permission to use ideas from that project and for early support.
+
 Original project:
 - Project: Advanced Damage System
 - Original author and maintainer: id577
