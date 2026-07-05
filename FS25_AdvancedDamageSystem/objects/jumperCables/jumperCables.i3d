@@ -27,12 +27,12 @@
     <TransformGroup name="jumperCables" lockedgroup="true" nodeId="10">
       <TransformGroup name="graphics" translation="0 0 0.0513875" nodeId="11">
         <TransformGroup name="leftPair" nodeId="255">
-          <Shape name="aRedLeft" translation="-0.16 0.016 0" rotation="-70 -15 -5" shapeId="1" nodeId="52" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="31"/>
-          <Shape name="aBlackLeft" translation="-0.12 0.05 0.021" rotation="-70 -17 -6" shapeId="2" nodeId="53" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="41"/>
+          <Shape name="aRedLeft" clipDistance="300" translation="-0.16 0.016 0" rotation="-70 -15 -5" shapeId="1" nodeId="52" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="31"/>
+          <Shape name="aBlackLeft" clipDistance="300" translation="-0.12 0.05 0.021" rotation="-70 -17 -6" shapeId="2" nodeId="53" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="41"/>
         </TransformGroup>
         <TransformGroup name="rightPair" nodeId="256">
-          <Shape name="aRedRight" translation="0.12 0.05 0.0211809" rotation="-70 17 6" shapeId="1" nodeId="15" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="31"/>
-          <Shape name="aBlackRight" translation="0.16 0.0162098 0" rotation="-70 15 5" shapeId="2" nodeId="16" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="41"/>
+          <Shape name="aRedRight" clipDistance="300" translation="0.12 0.05 0.0211809" rotation="-70 17 6" shapeId="1" nodeId="15" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="31"/>
+          <Shape name="aBlackRight" clipDistance="300" translation="0.16 0.0162098 0" rotation="-70 15 5" shapeId="2" nodeId="16" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="41"/>
         </TransformGroup>
       </TransformGroup>
       <TransformGroup name="handNode" translation="-0.0117173 0.32997 -7.39185e-05" rotation="-49.3208 13.2875 91.924" nodeId="12">
