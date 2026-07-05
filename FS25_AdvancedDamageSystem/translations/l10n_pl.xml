@@ -38,6 +38,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="Obejmuje naprawy nowych pojazdów gwarancją (do 20 godzin pracy lub 12 miesięcy). Bezpłatnie pokrywane są wyłącznie części OEM."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Sterowanie przeciążeniem i przegrzewaniem pracownika zatrudnionego (AI)."/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Jeśli włączone, pracownik AI zmniejsza obciążenie, aby zapobiec przeciążeniu silnika lub przegrzaniu."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
+        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
         <text name="ads_aiWorkerTargetStress_label" text="Reakcja prędkości AI"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Określa, jak wcześnie pracownik AI reaguje na przeciążenie i przegrzewanie. Wyższe wartości oznaczają mniejszą czułość i późniejszą reakcję, a niższe wartości większą czułość i wcześniejsze zwalnianie."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Spokojna"/>
@@ -731,7 +735,7 @@
         <text name="ads_tutorial_cvt_overheat_title" text="Przegrzewanie CVT"/>
         <text name="ads_tutorial_cvt_overheat_message" text="Przekładnia CVT zaczyna się przegrzewać. Może się to zdarzyć z jednego lub kilku powodów: skrzynia jest nadmiernie obciążona, chłodnica jest zapchana albo pogoda jest bardzo gorąca. Na przykład możesz ciągnąć zbyt ciężki pług lub holować przeładowaną przyczepę.&#10;&#10;Uważaj: przegrzanie to jedna z najbardziej niszczących rzeczy, jakie mogą spotkać przekładnię CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Ciężka przyczepa"/>
-        <text name="ads_tutorial_heavy_trailer_message" text="Wygląda na to, że próbujesz holować przyczepę, która jest za ciężka dla Twojego ciągnika. Możesz to robić dalej, ale przekładnia będzie pod ogromnym obciążeniem, a hamulce również nie będą zadowolone z dodatkowego ciężaru.&#10;&#10;Trzymaj się prostej zasady: 10 HP lub więcej na każdą tonę holowanego ładunku, a maszyna posłuży wyraźnie dłużej."/>
+        <text name="ads_tutorial_heavy_trailer_message" text="Holowany ładunek może być zbyt ciężki dla tego pojazdu. Możesz jechać dalej, ale skrzynia biegów i układ napędowy będą pracować pod większym obciążeniem.&#10;&#10;ADS stosuje dwie wartości: ciągnik potrzebuje co najmniej 10 HP na tonę holowanej masy, a ciężarówka co najmniej 6 HP na tonę całkowitej masy zestawu. Poniżej odpowiedniej wartości i przy dużym obciążeniu silnika zużycie przekładni wzrasta."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Zawieszenie pod obciążeniem"/>
         <text name="ads_tutorial_chassis_vibration_message" text="Hej, zwolnij. Szybka jazda po nierównym terenie szybko zużyje zawieszenie Twojego %s. Co więcej, takie drgania szkodzą też innym układom, zwłaszcza hydraulice i elektryce. Jedź płynnie i spokojnie."/>
         <text name="ads_tutorial_steering_title" text="Skręcanie na postoju"/>

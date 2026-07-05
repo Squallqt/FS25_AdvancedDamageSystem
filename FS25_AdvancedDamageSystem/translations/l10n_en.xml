@@ -38,6 +38,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="Applies warranty coverage to repairs on new vehicles (up to 20 operating hours or 12 months). Only OEM parts are covered at no cost."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="AI Overload &amp; Overheat Control"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="If enabled, the AI worker reduces load to prevent engine overload or overheating."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
+        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
         <text name="ads_aiWorkerTargetStress_label" text="AI Speed Response"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Controls how early the AI worker reacts to overload and overheating. Higher values are less sensitive and react later; lower values are more sensitive and slow down earlier."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Relaxed"/>
@@ -732,7 +736,7 @@
         <text name="ads_tutorial_cvt_overheat_title" text="CVT Overheating"/>
         <text name="ads_tutorial_cvt_overheat_message" text="The CVT is starting to overheat. This can happen for one or several reasons: the transmission is under excessive load, the radiator is clogged, or the weather is very hot. For example, you may be pulling a plow that is too heavy or towing an overloaded trailer.&#10;&#10;Stay alert: overheating is one of the most destructive things that can happen to a CVT transmission."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Heavy Trailer"/>
-        <text name="ads_tutorial_heavy_trailer_message" text="It looks like you are trying to tow a trailer that is too heavy for your tractor. You can keep doing it, but the transmission will be under enormous stress, and the brakes will not appreciate the extra load either.&#10;&#10;Follow a simple rule: 10 HP or more per 1 ton of towed weight, and the machine will last noticeably longer."/>
+        <text name="ads_tutorial_heavy_trailer_message" text="It looks like the towing load may be too heavy for this vehicle. You can keep driving, but the transmission and driveline will be under increased stress.&#10;&#10;ADS uses two guidelines: tractors need at least 10 HP per ton of towed mass, while trucks need at least 6 HP per ton of total combination weight. Falling below the applicable value under high engine load increases transmission wear."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Suspension Under Stress"/>
         <text name="ads_tutorial_chassis_vibration_message" text="Whoa, slow down! Driving fast over rough terrain will quickly wear out the suspension of your %s. On top of that, those vibrations also harm other systems — especially hydraulics and electrics. Drive smoothly and take it easy."/>
         <text name="ads_tutorial_steering_title" text="Steering While Stationary"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="110">
     <author>id577, Squallqt</author>
-    <version>0.9.2.6</version>
+    <version>0.9.2.7</version>
     <title>
         <en>Advanced Damage System</en>
         <de>Erweitertes Schadenssystem</de>
@@ -12,10 +12,21 @@
 
 The mod includes a temperature model for key systems, advanced battery and alternator simulation, realistic breakdown logic, expanded workshop workflows, service reports, maintenance history, and pre-shift inspections. As a result, vehicle management becomes a strategic part of gameplay: service takes time, poor operation increases the risk of failures, and neglecting machine condition can disrupt critical field work. A responsible farmer who looks after equipment, services it on time, and avoids unnecessary abuse will keep the fleet reliable and avoid serious problems during the season.
 
+Changelog 0.9.2.7:
+- Reworked Heavy Trailer and Brake Mass factors: tractors use 10 HP per tonne of towed mass, while trucks use 6 HP per tonne of gross combination weight
+- Fixed savegame loading crashes involving locomotives and Enhanced Vehicle
+- Added wheel slip monitoring to the HUD
+
 Changelog 0.9.2.6:
 - Fixed a brief spike in the fuel consumption display when a vehicle streams in over the network
 - Tutorial tips now work correctly in multiplayer for all connected clients
 - Fixed excessive hydraulic stress when turning sharply with towed PTO implements (mulchers, mowers); wide-angle PTO shafts on trailer-hitched implements now use the correct 70° angle threshold instead of 30°
+- Added the ads_setExcluded true|false console command and a setting for thermal simulation speed
+- Fixed AI operation with large plows in multiplayer and AI handling of vehicles stalled by breakdowns
+- Improved detection of vehicles under cover
+- Fixed ADS simulation on empty servers and an infinite loading issue caused by the tutorial in multiplayer
+- Fixed compatibility issues with TerraFarm and Courseplay; improved engine load calculation with More Realistic
+- Updated the Turkish translation
 
 Changelog 0.9.2.5:
 - Added vehicle icons to the ADS Fleet Management menu
@@ -114,10 +125,21 @@ Changelog 0.9.0.0:
 
 Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batterie- und Lichtmaschinensimulation, realistische Ausfalllogik, erweiterte Werkstattabläufe, Serviceberichte, Wartungshistorie und Vorschicht-Inspektionen. Dadurch wird Fahrzeugmanagement zu einem strategischen Teil des Gameplays: Wartung kostet Zeit, falscher Einsatz erhöht das Ausfallrisiko, und vernachlässigter Maschinenzustand kann wichtige Feldarbeiten gefährden. Ein verantwortungsvoller Landwirt, der seine Technik pflegt, rechtzeitig wartet und unnötige Überlastung vermeidet, hält seinen Fuhrpark zuverlässig und vermeidet ernsthafte Probleme in der Saison.
 
+Changelog 0.9.2.7:
+- Faktoren für schwere Anhänger und Bremsmasse überarbeitet: Traktoren verwenden 10 PS pro Tonne gezogener Masse, LKWs 6 PS pro Tonne Gesamtzuggewicht
+- Spielstand-Ladeabstürze mit Lokomotiven und Enhanced Vehicle behoben
+- Anzeige für Radschlupf im HUD hinzugefügt
+
 Changelog 0.9.2.6:
 - Behoben: kurzer Anzeigespike beim Kraftstoffverbrauch beim Einstreamen eines Fahrzeugs über das Netzwerk
 - Tutorial-Hinweise funktionieren nun korrekt im Mehrspielermodus für alle verbundenen Spieler
 - Behoben: übermäßiger Hydraulikstress bei scharfen Kurven mit gezogenen Zapfwellen-Anbaugeräten (Mähwerke, Mulcher); Breitwinkselkardane an Deichselanbaugeräten verwenden nun den korrekten Grenzwert von 70° statt 30°
+- Konsolenbefehl ads_setExcluded true|false und eine Einstellung für die Geschwindigkeit der thermischen Simulation hinzugefügt
+- KI-Betrieb mit großen Pflügen im Mehrspielermodus und der Umgang der KI mit durch Defekte abgestellten Fahrzeugen behoben
+- Erkennung von Fahrzeugen unter einer Überdachung verbessert
+- ADS-Simulation auf leeren Servern und eine durch das Tutorial verursachte Endlosschleife beim Laden im Mehrspielermodus behoben
+- Kompatibilitätsprobleme mit TerraFarm und Courseplay behoben; Motorlastberechnung mit More Realistic verbessert
+- Türkische Übersetzung aktualisiert
 
 Changelog 0.9.2.5:
 - Fahrzeugsymbole zum ADS-Fleet-Management-Menü hinzugefügt
@@ -215,10 +237,21 @@ Changelog 0.9.0.0:
 
 Le mod comprend un modèle thermique pour les systèmes clés, une simulation avancée de la batterie et de l'alternateur, une logique de pannes réaliste, des procédures d'atelier étendues, des rapports d'intervention, un historique d'entretien et des inspections avant prise de poste. La gestion du matériel devient ainsi une dimension stratégique du gameplay : l'entretien prend du temps, une mauvaise utilisation augmente le risque de panne, et négliger l'état des machines peut compromettre des travaux de campagne essentiels. Un agriculteur consciencieux qui surveille son matériel, l'entretient à temps et évite les mauvais traitements inutiles conservera une flotte fiable et évitera de graves problèmes en saison.
 
+Changelog 0.9.2.7:
+- Refonte des facteurs Heavy Trailer et Brake Mass : les tracteurs utilisent 10 ch par tonne de masse tractée, tandis que les camions utilisent 6 ch par tonne de poids total roulant
+- Correction de crashs au chargement de sauvegardes impliquant des locomotives et Enhanced Vehicle
+- Ajout de l'affichage du patinage dans le HUD
+
 Changelog 0.9.2.6:
 - Correction d'un pic bref dans l'affichage de la consommation de carburant lors du chargement d'un véhicule sur le réseau
 - Les astuces de didacticiel fonctionnent désormais correctement en multijoueur pour tous les clients connectés
 - Correction d'un stress hydraulique excessif lors de virages serrés avec des outils PTO trainés (broyeurs, faucheuses) ; les cardans grand angle sur attelage remorque utilisent désormais le seuil correct de 70° au lieu de 30°
+- Ajout de la commande console ads_setExcluded true|false et d'un réglage de la vitesse de simulation thermique
+- Correction du fonctionnement de l'IA avec les grandes charrues en multijoueur et de sa gestion des véhicules immobilisés par une panne
+- Amélioration de la détection des véhicules placés sous un abri
+- Correction de la simulation ADS sur les serveurs vides et d'un chargement infini causé par le didacticiel en multijoueur
+- Correction de problèmes de compatibilité avec TerraFarm et Courseplay ; amélioration du calcul de la charge moteur avec More Realistic
+- Mise à jour de la traduction turque
 
 Changelog 0.9.2.5:
 - Ajout d'icônes de véhicules dans le menu ADS Fleet Management

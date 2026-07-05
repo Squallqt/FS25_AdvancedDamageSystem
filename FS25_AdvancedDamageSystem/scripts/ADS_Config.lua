@@ -4,7 +4,7 @@ ADS_Config = {
     -- When true, the mod will print detailed information about its calculations,
     -- such as wear rates, breakdown checks, and temperature changes.
     -- Set to false for normal gameplay to avoid performance impact and console spam.
-    VER = 135,
+    VER = 136,
 
     DEBUG = false,
     TUTORIAL_MODE = true,
@@ -23,6 +23,10 @@ ADS_Config = {
     UPDATE_VEHICLE_STATE_DELAY_ONE = 50,
     UPDATE_VEHICLE_STATE_DELAY_TWO = 200,
     UPDATE_VEHICLE_STATE_DELAY_THREE = 500,
+    ROOF_RAYCAST_INTERVAL = 5000,
+    ROOF_RAYCAST_DISTANCE = 40,
+    ROOF_RAYCAST_START_OFFSET = 1,
+    ROOF_STATIONARY_SPEED_LIMIT = 0.5,
     
     -- How often the main simulation logic (wear, temperature, etc.) updates, in milliseconds.
     -- This handles the slow-burning processes. A higher value is better for performance
@@ -107,7 +111,10 @@ ADS_Config = {
             WHEEL_SLIP_MULTIPLIER = 10.0,        
             WHEEL_SLIP_THRESHOLD = 0.05,
             HEAVY_TRAILER_MULTIPLIER = 2.0,
-            HEAVY_TRAILER_MASS_RATIO_THRESHOLD = 12,
+            HEAVY_TRAILER_MASS_RATIO_THRESHOLD = 10.0,
+            HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT = 5.0,
+            HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD = 6.0,
+            HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT = 3.0,
             HEAVY_TRAILER_MOTORLOAD_THRESHOLD = 0.7,
             COLD_TRANSMISSION_MULTIPLIER = 60.0,
             COLD_TRANSMISSION_THRESHOLD = 45,
@@ -124,7 +131,7 @@ ADS_Config = {
             OPERATING_FACTOR_THRESHOLD = 0.3,
             COLD_OIL_MULTIPLIER = 60.0,
             COLD_OIL_THRESHOLD = 30,
-            PTO_SHARP_ANGLE_FACTOR_MULTIPLIER = 20.0,
+            PTO_SHARP_ANGLE_FACTOR_MULTIPLIER = 8.0,
             PTO_SHARP_ANGLE_FACTOR_THRESHOLD = 30.0,
             PTO_SHARP_ANGLE_WIDE_THRESHOLD = 70.0,
             VIB_FACTOR_THRESHOLD = 0.08,
@@ -166,12 +173,15 @@ ADS_Config = {
             VIB_FACTOR_MAX_SIGNAL = 0.36,
             VIB_FACTOR_MULTIPLIER = 36.0,
             VIB_FIELD_MULTIPLIER = 2.0,
-            STEER_LOAD_FACTOR_MULTIPLIER = 12.0,
+            STEER_LOAD_FACTOR_MULTIPLIER = 6.0,
             STEER_LOAD_SPEED_THRESHOLD = 4.0,
             STEER_LOAD_RATE_DEADZONE = 0.02,
             STEER_LOAD_RATE_FULL = 0.60,
             BRAKE_MASS_FACTOR_MULTIPLIER = 36.0,
-            BRAKE_MASS_RATIO_THRESHOLD = 12.0,
+            BRAKE_MASS_RATIO_THRESHOLD = 10.0,
+            BRAKE_MASS_RATIO_FULL_EFFECT = 5.0,
+            BRAKE_MASS_TRUCK_RATIO_THRESHOLD = 6.0,
+            BRAKE_MASS_TRUCK_RATIO_FULL_EFFECT = 3.0,
             BRAKE_MASS_SPEED_THRESHOLD = 2.0,
             BRAKE_PEDAL_THRESHOLD = 0.15,
         },
@@ -206,6 +216,10 @@ ADS_Config = {
         ENABLE_WARNING_MESSAGES = true,
 
         AI_OVERLOAD_AND_OVERHEAT_CONTROL = true,
+        -- Allows a critical overload to stop AI workers and AutoDrive.
+        AI_DISABLE_ON_CRITICAL_OVERLOAD = true,
+        -- Applies critical-overload shutdown and overload/overheat speed control to contract vehicles.
+        CONTRACT_VEHICLE_PROTECTION = false,
         AI_WORKER_PID = {
             MIN_SPEED = 3.0,
             MAX_REDUCTION = 16.0,
@@ -791,6 +805,8 @@ function ADS_Config.saveToXMLFile()
     setXMLBool (xmlFile, root .. ".GENERAL_WEAR_ENABLED",   ADS_Config.CORE.GENERAL_WEAR_ENABLED)
     setXMLBool (xmlFile, root .. ".ENABLE_WARNING_MESSAGES", ADS_Config.CORE.ENABLE_WARNING_MESSAGES)
     setXMLBool (xmlFile, root .. ".AI_OVERLOAD_CONTROL",    ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL)
+    setXMLBool (xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_OVERLOAD", ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD)
+    setXMLBool (xmlFile, root .. ".CONTRACT_VEHICLE_PROTECTION", ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION)
     setXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS", ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS)
     setXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED",     ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED)
 
@@ -915,6 +931,16 @@ function ADS_Config.loadFromXMLFile()
 
     v = getXMLBool(xmlFile, root .. ".AI_OVERLOAD_CONTROL")
     if v ~= nil then ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = v end
+
+    v = getXMLBool(xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_OVERLOAD")
+    if v == nil then
+        -- Compatibility with the short-lived broader setting name.
+        v = getXMLBool(xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_FAILURE")
+    end
+    if v ~= nil then ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD = v end
+
+    v = getXMLBool(xmlFile, root .. ".CONTRACT_VEHICLE_PROTECTION")
+    if v ~= nil then ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION = v end
 
     v = getXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS")
     if v ~= nil then ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = v end

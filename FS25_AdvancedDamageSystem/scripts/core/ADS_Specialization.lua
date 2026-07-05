@@ -551,12 +551,20 @@ local function getIsVehicleNeedLubticate(vehicle)
     return workProcessSystem.enabled ~= false
 end
 
-local function getIsVehicleNeedBlowOut(vehicle)
+local function getIsTruck(vehicle)
+    if vehicle == nil or g_storeManager == nil or vehicle.configFileName == nil then
+        return false
+    end
+
     local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-    local categoryName = storeItem ~= nil and storeItem.categoryName or ""
+    local categoryName = storeItem ~= nil and tostring(storeItem.categoryName or "") or ""
+    return string.upper(categoryName) == "TRUCKS"
+end
+
+local function getIsVehicleNeedBlowOut(vehicle)
     local vtype = vehicle.type ~= nil and vehicle.type.name or ""
 
-    if categoryName == "TRUCKS" or vtype == "car" or vtype == "carFillable" or vtype == "motorbike" then
+    if getIsTruck(vehicle) or vtype == "car" or vtype == "carFillable" or vtype == "motorbike" then
         return false
     end
 
@@ -1129,6 +1137,7 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     
     SpecializationUtil.registerFunction(vehicleType, "isUnderService", AdvancedDamageSystem.isUnderService)
     SpecializationUtil.registerFunction(vehicleType, "isUnderRoof", AdvancedDamageSystem.isUnderRoof)
+    SpecializationUtil.registerFunction(vehicleType, "isUnderRoofRaycastCallback", AdvancedDamageSystem.isUnderRoofRaycastCallback)
     SpecializationUtil.registerFunction(vehicleType, "getCurrentStatus", AdvancedDamageSystem.getCurrentStatus)
     
     SpecializationUtil.registerFunction(vehicleType, "updateThermalSystems", ADS_Thermal.updateThermalSystems)
@@ -1239,6 +1248,7 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
         local entry = spec.maintenanceLog[i]
         streamWriteString(streamId, ADS_Utils.serializeMaintenanceLogEntry(entry))
     end
+
 end
 
 function AdvancedDamageSystem:onReadStream(streamId, connection)
@@ -1703,6 +1713,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.isExcludedByDefault = false
     self.spec_AdvancedDamageSystem.isExcludedByUser = false
     self.spec_AdvancedDamageSystem.isElectricVehicle = false
+    self.spec_AdvancedDamageSystem.isTruck = getIsTruck(self)
     self.spec_AdvancedDamageSystem.isVehicleNeedLubricate = false
     self.spec_AdvancedDamageSystem.isVehicleNeedBlowOut = false
 
@@ -1950,6 +1961,8 @@ function AdvancedDamageSystem:onLoad(savegame)
             vibFieldMultiplier = 1,
             steerLoadFactor = 0,
             steerLowSpeedFactor = 0,
+            steerGroundFrictionCoeff = 0,
+            steerGroundFrictionFactor = 0,
             steerGroundContact = 0,
             steerMoving = false,
             brakeMassFactor = 0,
@@ -2069,6 +2082,10 @@ function AdvancedDamageSystem:onLoad(savegame)
 
     self.spec_AdvancedDamageSystem.isExcludedFromPTOSharpAngleFactor = false
     self.spec_AdvancedDamageSystem.isUnderRoof = true
+    self.spec_AdvancedDamageSystem.roofRaycastHit = false
+    self.spec_AdvancedDamageSystem.roofRaycastResult = nil
+    self.spec_AdvancedDamageSystem.roofLastRaycastTime = nil
+    self.spec_AdvancedDamageSystem.roofWasStationary = false
     self.spec_AdvancedDamageSystem.dynamicMotorLoad = 0
     self.spec_AdvancedDamageSystem.avgDynamicMotorLoad = 0
     self.spec_AdvancedDamageSystem.avgSpeed = 0
@@ -2112,6 +2129,11 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.chassisBrakeState = {
         pedal = 0,
         massRatio = 0,
+        trailerMass = 0,
+        totalMass = 0,
+        hpMassRatio = 1000,
+        hpTrailerMassRatio = 1000,
+        hpGrossMassRatio = 1000,
         isBraking = false,
         isBrakingByAxis = false
     }
@@ -2931,7 +2953,7 @@ local function syncColdEngineEffect(vehicle)
     end
 end
 
-local function syncOverheatProtection(vehicle)
+local function syncOverheatProtection(vehicle, dt)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then return end
     local rawEngineTemp = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
@@ -2975,7 +2997,7 @@ local function syncOverheatProtection(vehicle)
         if vehicle.isServer then
             local engineFailedEffect = spec.activeEffects.ENGINE_FAILURE
             if rawEngineTemp > 125 and not engineFailedEffect then
-                if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(spec.onUpdateTimer, 3) then
+                if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, 3) then
                     vehicle:addBreakdown('ENGINE_JAM')
                 end
             end
@@ -3023,26 +3045,33 @@ local function syncDisableAiWorkers(vehicle)
     if spec.activeEffects ~= nil and next(spec.activeEffects) ~= nil then
         for _, effectData in pairs(spec.activeEffects) do
             if effectData ~= nil and effectData.extraData ~= nil and effectData.extraData.disableAi then
-                local autoDriveActive = vehicle.ad ~= nil
-                    and vehicle.ad.stateModule ~= nil
-                    and vehicle.ad.stateModule.isActive ~= nil
-                    and vehicle.ad.stateModule:isActive()
+                local isCriticalOverload = effectData.extraData.criticalOverload == true
+                local shouldDisableAi = not isCriticalOverload
+                    or (ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD
+                        and (vehicle.propertyState ~= 4 or ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION))
 
-                if autoDriveActive and vehicle.stopAutoDrive ~= nil then
-                    vehicle.ad.isStoppingWithError = true
+                if shouldDisableAi then
+                    local autoDriveActive = vehicle.ad ~= nil
+                        and vehicle.ad.stateModule ~= nil
+                        and vehicle.ad.stateModule.isActive ~= nil
+                        and vehicle.ad.stateModule:isActive()
 
-                    if vehicle.ad.stateModule.setLoopsDone ~= nil then
-                        vehicle.ad.stateModule:setLoopsDone(0)
+                    if autoDriveActive and vehicle.stopAutoDrive ~= nil then
+                        vehicle.ad.isStoppingWithError = true
+
+                        if vehicle.ad.stateModule.setLoopsDone ~= nil then
+                            vehicle.ad.stateModule:setLoopsDone(0)
+                        end
+
+                        vehicle:stopAutoDrive()
                     end
 
-                    vehicle:stopAutoDrive()
-                end
+                    if vehicle:getIsAIActive() and vehicle.stopCurrentAIJob ~= nil then
+                        vehicle:stopCurrentAIJob(AIMessageErrorVehicleBroken.new())
+                    end
 
-                if vehicle:getIsAIActive() and vehicle.stopCurrentAIJob ~= nil then
-                    vehicle:stopCurrentAIJob(AIMessageErrorVehicleBroken.new())
+                    return
                 end
-
-                return
             end
         end
     end
@@ -3402,29 +3431,35 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     self:updateVehicleStateSnapshot(dt)
     AdvancedDamageSystem.updateStartButtonActionEvents(self)
 
+    local updateDelay = ADS_Config.ON_UPDATE_DELAY
     spec.onUpdateTimer = spec.onUpdateTimer + dt
 
-    if spec.onUpdateTimer < ADS_Config.ON_UPDATE_DELAY then
+    if spec.onUpdateTimer < updateDelay then
         return
     end
+
+    -- State-based callbacks must only evaluate the current state once. Discard
+    -- missed sampling intervals instead of replaying them with stale data.
+    spec.onUpdateTimer = spec.onUpdateTimer % updateDelay
+    local updateDt = updateDelay
 
     --- Registration in ADS_Main.vehicles and first load checks.
     registerVehicle(self)
 
     --- Temperature smoothing
-    self:getSmoothedTemperature(spec.onUpdateTimer)
+    self:getSmoothedTemperature(updateDt)
 
     --- Fuel consumption
     syncFuelConsumption(self)
 
     --- smoothedMotorLoad
-    getSmoothedMotorLoad(self, spec.onUpdateTimer)
+    getSmoothedMotorLoad(self, updateDt)
 
     --- Checking for cold engine effect
     syncColdEngineEffect(self)
 
     --- Checking for dead alternator or dead battery
-    self:syncVoltageSagEffect(spec.onUpdateTimer)
+    self:syncVoltageSagEffect(updateDt)
 
     --- Checking for airintake clogging
     syncAirIntakeCloggingEffect(self)
@@ -3433,13 +3468,13 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     self:syncDeadBatteryEffect()
     
     --- Overheat protection for vehcile > 2000 year and engine failure from overheating for < 2000
-    syncOverheatProtection(self)
+    syncOverheatProtection(self, updateDt)
 
     --- CVT addon breakdown sync
     syncCVTaddonBreakdown(self)
     
     --- Blinking warning for currently controlled vehicle
-    syncBlinkingWarning(self, spec.onUpdateTimer)
+    syncBlinkingWarning(self, updateDt)
 
     --- Side notifications for vehicles without players at the moment of the effect event
     syncSideNotifications(self)
@@ -3448,29 +3483,27 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     syncDisableAiWorkers(self)
 
     --- syncing tutorial messages
-    syncTutorialMessages(self, spec.onUpdateTimer)
+    syncTutorialMessages(self, updateDt)
     
     --- just in case, reset damage amount to 0 if it's not
     if self.isServer and self.getDamageAmount ~= nil and self:getDamageAmount() ~= 0 then self:setDamageAmount(0.0, true) end
     
     --- AI worker overload, temp control
     if ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL then
-        self:updateAiWorkerCruiseControl(spec.onUpdateTimer)
+        self:updateAiWorkerCruiseControl(updateDt)
     end
 
     --- Enables the thermal model for neutral vehicles on the map, should the player happen to use them
     if self.isServer and ADS_Main and ADS_Main.vehicles and ADS_Main.vehicles[self.uniqueId] == nil and self:getIsControlled() then
-        self:updateThermalSystems(spec.onUpdateTimer)
+        self:updateThermalSystems(updateDt)
     end
 
     --- Random and permanent effects from breakdowns. Skip if spec.activeEffects is empty
     if spec ~= nil and spec.activeFunctions ~= nil and next(spec.activeFunctions) ~= nil then
         for _ , func in pairs(spec.activeFunctions) do
-            func(self, spec.onUpdateTimer)
+            func(self, updateDt)
         end
     end
-
-    spec.onUpdateTimer = spec.onUpdateTimer - ADS_Config.ON_UPDATE_DELAY
 end
 
 function AdvancedDamageSystem:adsUpdate(dt, isWorkshopOpen)
@@ -4396,14 +4429,25 @@ local function updateChassisBrakingState(vehicle)
 
     brakeState.pedal = 0
     brakeState.massRatio = 0
+    brakeState.trailerMass = 0
+    brakeState.totalMass = 0
     brakeState.hpMassRatio = 1000
+    brakeState.hpTrailerMassRatio = 1000
+    brakeState.hpGrossMassRatio = 1000
     brakeState.isBraking = false
     brakeState.isBrakingByAxis = false
 
     local totalMass = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass() or 0) or 0
     local selfMass = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass(true) or 0) or 0
-    local trailerMass = math.max(totalMass - selfMass, 0.01)
-    brakeState.hpMassRatio = math.max((vehicle:getMotor().peakMotorPower or 0) * 1.36, 0.001) / trailerMass
+    local trailerMass = math.max(totalMass - selfMass, 0)
+    local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+    local horsepower = math.max(((motor ~= nil and motor.peakMotorPower) or 0) * 1.36, 0.001)
+    brakeState.trailerMass = trailerMass
+    brakeState.totalMass = totalMass
+    brakeState.hpTrailerMassRatio = horsepower / math.max(trailerMass, 0.01)
+    brakeState.hpGrossMassRatio = horsepower / math.max(totalMass, 0.01)
+    -- Keep the legacy field for chassis braking and third-party integrations.
+    brakeState.hpMassRatio = brakeState.hpTrailerMassRatio
 
     local drivable = vehicle.spec_drivable
     if drivable == nil or vehicle.spec_wheels == nil then
@@ -4593,38 +4637,41 @@ function AdvancedDamageSystem:updateVehicleStateSnapshot(dt)
     local spec = self.spec_AdvancedDamageSystem
     if not self.isServer or spec == nil or spec.isExcludedVehicle then return end
 
+    local delayOne = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
+    local delayTwo = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
+    local delayThree = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
+
     spec.updateVehicleStateTimerOne = spec.updateVehicleStateTimerOne + dt
     spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo + dt
     spec.updateVehicleStateTimerThree = spec.updateVehicleStateTimerThree + dt
 
     --- GROUP 1 ---
-    if spec.updateVehicleStateTimerOne >= ADS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE then
+    if spec.updateVehicleStateTimerOne >= delayOne then
+        spec.updateVehicleStateTimerOne = spec.updateVehicleStateTimerOne % delayOne
         --- avgAbsDiffAcc for dynamic motorLoad calculations
-        updateAvgAbsDiffAccWindow(spec, self:getMotor(), spec.updateVehicleStateTimerOne)
+        updateAvgAbsDiffAccWindow(spec, self:getMotor(), delayOne)
         --- dynamic motorLoad
-        updateDynamicMotorLoad(self, spec.updateVehicleStateTimerOne)
-
-        spec.updateVehicleStateTimerOne = spec.updateVehicleStateTimerOne - ADS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
+        updateDynamicMotorLoad(self, delayOne)
     end
 
     --- GROUP 2 ---
-    if spec.updateVehicleStateTimerTwo >= ADS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO then
+    if spec.updateVehicleStateTimerTwo >= delayTwo then
+        spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo % delayTwo
         --- isCranking
         updateStarterState(self)
         --- whee slip
         updateWheelSlip(self)
         --- chassis vibration
-        updateChassisVibState(self, spec.updateVehicleStateTimerTwo)
+        updateChassisVibState(self, delayTwo)
         --- low speed steering
-        updateChassisSteeringState(self, spec.updateVehicleStateTimerTwo)
+        updateChassisSteeringState(self, delayTwo)
         --- braking under mass
         updateChassisBrakingState(self)
-        
-        spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo - ADS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
     end
     
     --- GROUP 3 ---
-    if spec.updateVehicleStateTimerThree >= ADS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE then
+    if spec.updateVehicleStateTimerThree >= delayThree then
+        spec.updateVehicleStateTimerThree = spec.updateVehicleStateTimerThree % delayThree
         --- max friction force
         updateActiveDraftStats(self)
         --- average tire friction coefficient
@@ -4632,11 +4679,9 @@ function AdvancedDamageSystem:updateVehicleStateSnapshot(dt)
         --- implement chain state
         updateImplementChainState(self)
         --- fuel state
-        updateFuelState(self, spec.updateVehicleStateTimerThree)
+        updateFuelState(self, delayThree)
         --- is vehicle under roof
         spec.isUnderRoof = self:isUnderRoof()
-
-        spec.updateVehicleStateTimerThree = spec.updateVehicleStateTimerThree - ADS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
     end
 end
 
@@ -4733,6 +4778,11 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
     if not self.isServer then return end
     local spec = self.spec_AdvancedDamageSystem
     if spec == nil then return end
+
+    if self.propertyState == 4 and not ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION then
+        self:resetAiWorkerCruiseControlState()
+        return
+    end
 
     local config = ADS_Config.CORE and ADS_Config.CORE.AI_WORKER_PID
     if config == nil then return end
@@ -5212,7 +5262,18 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     local vehicleHaveCVT = hasCVTTransmission(self)
     local expiredServiceFactor, pullOverloadFactor, luggingFactor, heavyTrailerFactor, wheelSlipFactor,  coldTransFactor, hotTransFactor = 0, 0, 0, 0, 0, 0, 0
     local wearRate = 1.0
-    local hpMassRatio = spec.chassisBrakeState.hpMassRatio or 100
+    local brakeState = spec.chassisBrakeState or {}
+    local isTruck = spec.isTruck == true
+    local trailerMass = math.max(tonumber(brakeState.trailerMass or 0) or 0, 0)
+    local hpMassRatio = isTruck
+        and (tonumber(brakeState.hpGrossMassRatio or 100) or 100)
+        or (tonumber(brakeState.hpTrailerMassRatio or brakeState.hpMassRatio or 100) or 100)
+    local heavyTrailerRatioThreshold = isTruck
+        and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0)
+        or (tonumber(C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0)
+    local heavyTrailerFullEffectRatio = isTruck
+        and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT) or 3.0)
+        or (tonumber(C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT) or 5.0)
     local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.transmission.name)
     
     if not systemData.enabled then
@@ -5317,8 +5378,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         -- heavy trailer factor
-        if hpMassRatio < C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD and motorLoad > C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD and speed > 0.5 then
-            heavyTrailerFactor = ADS_Utils.calculateQuadraticMultiplier(hpMassRatio, C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD, true, 5.0)
+        if trailerMass > 0.1 and hpMassRatio < heavyTrailerRatioThreshold and motorLoad > C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD and speed > 0.5 then
+            heavyTrailerFactor = ADS_Utils.calculateQuadraticMultiplier(hpMassRatio, heavyTrailerRatioThreshold, true, heavyTrailerFullEffectRatio)
             local loadRange = math.max(1.0 - C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD, 0.001)
             local loadRatio = math.clamp((motorLoad - C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD) / loadRange, 0, 1.0)
             heavyTrailerFactor = math.max(heavyTrailerFactor * C.HEAVY_TRAILER_MULTIPLIER * loadRatio, 0)
@@ -5387,6 +5448,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         pullOverloadTimerMax = systemData.pullOverloadTimerMax,
         heavyTrailerFactor = heavyTrailerFactor,
         heavyTrailerMassRatio = hpMassRatio,
+        heavyTrailerMassBasis = isTruck and "gcw" or "trailer",
         luggingFactor = luggingFactor,
         wheelSlipFactor = wheelSlipFactor,
         coldTransFactor = coldTransFactor,
@@ -5716,14 +5778,26 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
     local vibAvgDensityType = tonumber(vibState.avgDensityType or 0) or 0
     local vibFieldMultiplier = tonumber(vibState.fieldMultiplier or 1) or 1
     local steerLowSpeedFactor = 0
+    local steerGroundFrictionCoeff = math.max(tonumber(spec.avgTireGroundFrictionCoeff) or 0, 0)
+    local steerGroundFrictionFactor = steerGroundFrictionCoeff ^ 2
     local steerGroundContact = tonumber(steerState.groundContact or 0) or 0
     local steerRateFactor = tonumber(steerState.rateFactor or 0) or 0
     local steerDeltaRate = tonumber(steerState.deltaRate or 0) or 0
     local steerMoving = steerState.isMoving == true
     local brakeMassFactor = 0
-    local hpBrakeMassRatio = tonumber(brakeState.hpMassRatio or 0) or 0
+    local isTruck = spec.isTruck == true
+    local trailerMass = math.max(tonumber(brakeState.trailerMass or 0) or 0, 0)
+    local hpBrakeMassRatio = isTruck
+        and (tonumber(brakeState.hpGrossMassRatio or 100) or 100)
+        or (tonumber(brakeState.hpTrailerMassRatio or brakeState.hpMassRatio or 100) or 100)
     local brakePedal = tonumber(brakeState.pedal or 0) or 0
     local C = ADS_Config.CORE.CHASSIS_FACTOR_DATA
+    local brakeMassRatioThreshold = isTruck
+        and (tonumber(C.BRAKE_MASS_TRUCK_RATIO_THRESHOLD) or 6.0)
+        or (tonumber(C.BRAKE_MASS_RATIO_THRESHOLD) or 10.0)
+    local brakeMassFullEffectRatio = isTruck
+        and (tonumber(C.BRAKE_MASS_TRUCK_RATIO_FULL_EFFECT) or 3.0)
+        or (tonumber(C.BRAKE_MASS_RATIO_FULL_EFFECT) or 5.0)
     local wearRate = 1.0
 
     if not systemData.enabled then
@@ -5748,10 +5822,9 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
             end
 
             -- braking under mass
-            if brakeState.isBraking and speed > (tonumber(C.BRAKE_MASS_SPEED_THRESHOLD) or 2.0) then
-                local ratioThreshold = tonumber(C.BRAKE_MASS_RATIO_THRESHOLD) or 12.0
-                if hpBrakeMassRatio < ratioThreshold then
-                    local ratioFactor = ADS_Utils.calculateQuadraticMultiplier(hpBrakeMassRatio, ratioThreshold, true, 5.0)
+            if trailerMass > 0.1 and brakeState.isBraking and speed > (tonumber(C.BRAKE_MASS_SPEED_THRESHOLD) or 2.0) then
+                if hpBrakeMassRatio < brakeMassRatioThreshold then
+                    local ratioFactor = ADS_Utils.calculateQuadraticMultiplier(hpBrakeMassRatio, brakeMassRatioThreshold, true, brakeMassFullEffectRatio)
                     local brakeInputFactor = brakePedal
                     brakeMassFactor = ratioFactor * brakeInputFactor * (tonumber(C.BRAKE_MASS_FACTOR_MULTIPLIER) or 6.0)
                     brakeMassFactor = math.min(brakeMassFactor, tonumber(C.BRAKE_MASS_FACTOR_MULTIPLIER) or brakeMassFactor)
@@ -5768,7 +5841,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         if steerSpeedThreshold > 0 and steerState.isLowSpeedActive and steerGroundContact > 0 and steerMoving then
             steerLowSpeedFactor = ADS_Utils.calculateQuadraticMultiplier(math.clamp(speed, 0, steerSpeedThreshold), steerSpeedThreshold, true)
             if steerLowSpeedFactor > 0 then
-                steerLoadFactor = steerLowSpeedFactor * steerRateFactor * (tonumber(C.STEER_LOAD_FACTOR_MULTIPLIER) or 5.0)
+                steerLoadFactor = steerLowSpeedFactor * steerRateFactor * (tonumber(C.STEER_LOAD_FACTOR_MULTIPLIER) or 5.0) * steerGroundFrictionFactor
                 wearRate = wearRate + steerLoadFactor
             end
         end
@@ -5798,12 +5871,15 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         vibFieldMultiplier = vibFieldMultiplier,
         steerLoadFactor = steerLoadFactor,
         steerLowSpeedFactor = steerLowSpeedFactor,
+        steerGroundFrictionCoeff = steerGroundFrictionCoeff,
+        steerGroundFrictionFactor = steerGroundFrictionFactor,
         steerRateFactor = steerRateFactor,
         steerDeltaRate = steerDeltaRate,
         steerGroundContact = steerGroundContact,
         steerMoving = steerMoving,
         brakeMassFactor = brakeMassFactor,
         brakeMassRatio = hpBrakeMassRatio,
+        brakeMassBasis = isTruck and "gcw" or "trailer",
         brakePedal = brakePedal
     })
 end
@@ -8049,7 +8125,15 @@ function AdvancedDamageSystem:getSystemStressLevel(systemName)
     return spec.systems[systemKey].stress
 end
 
+function AdvancedDamageSystem:isUnderRoofRaycastCallback()
+    local spec = self.spec_AdvancedDamageSystem
+    if spec ~= nil then
+        spec.roofRaycastHit = true
+    end
+end
+
 function AdvancedDamageSystem:isUnderRoof()
+    local spec = self.spec_AdvancedDamageSystem
     local node = self.rootNode
     if (node == nil or node == 0) and self.components ~= nil and self.components[1] ~= nil then
         node = self.components[1].node
@@ -8061,59 +8145,85 @@ function AdvancedDamageSystem:isUnderRoof()
 
     local x, y, z = getWorldTranslation(node)
     local mission = g_currentMission
+    local isIndoorMask = false
 
     if mission ~= nil and mission.indoorMask ~= nil then
-        local handle, firstChannel, numChannels = mission.indoorMask:getDensityMapData()
-        if handle ~= nil and handle ~= 0 and mission.terrainSize ~= nil and mission.terrainSize > 0 then
-            local maskSize = getBitVectorMapSize(handle)
-            if maskSize ~= nil and maskSize > 0 then
-                local terrainHalfSize = mission.terrainSize * 0.5
-                local worldToDensityMap = maskSize / mission.terrainSize
-                local xI = math.floor((x + terrainHalfSize) * worldToDensityMap)
-                local zI = math.floor((z + terrainHalfSize) * worldToDensityMap)
+        if mission.indoorMask.getIsIndoorAtWorldPosition ~= nil then
+            isIndoorMask = mission.indoorMask:getIsIndoorAtWorldPosition(x, z) == true
+        else
+            local handle, firstChannel, numChannels = mission.indoorMask:getDensityMapData()
+            if handle ~= nil and handle ~= 0 and mission.terrainSize ~= nil and mission.terrainSize > 0 then
+                local maskSize = getBitVectorMapSize(handle)
+                if maskSize ~= nil and maskSize > 0 then
+                    local terrainHalfSize = mission.terrainSize * 0.5
+                    local worldToDensityMap = maskSize / mission.terrainSize
+                    local xI = math.floor((x + terrainHalfSize) * worldToDensityMap)
+                    local zI = math.floor((z + terrainHalfSize) * worldToDensityMap)
 
-                if xI >= 0 and xI < maskSize and zI >= 0 and zI < maskSize then
-                    local maskValue = getBitVectorMapPoint(handle, xI, zI, firstChannel, numChannels)
-                    local indoorValue = IndoorMask ~= nil and IndoorMask.INDOOR or 1
-                    return maskValue == indoorValue
-                end
-            end
-        end
-    end
-
-    if mission == nil or mission.placeableSystem == nil or mission.placeableSystem.placeables == nil then
-        return false
-    end
-
-    for _, placeable in pairs(mission.placeableSystem.placeables) do
-        local indoorAreas = placeable.spec_indoorAreas
-        if indoorAreas ~= nil and indoorAreas.areas ~= nil and placeable.rootNode ~= nil and placeable.rootNode ~= 0 then
-            local localX, _, localZ = worldToLocal(placeable.rootNode, x, y, z)
-
-            for _, area in ipairs(indoorAreas.areas) do
-                if area.start ~= nil and area.width ~= nil and area.height ~= nil then
-                    local sx, sy, sz = getWorldTranslation(area.start)
-                    local wx, wy, wz = getWorldTranslation(area.width)
-                    local hx, hy, hz = getWorldTranslation(area.height)
-
-                    local localStartX, _, localStartZ = worldToLocal(placeable.rootNode, sx, sy, sz)
-                    local localWidthX, _, localWidthZ = worldToLocal(placeable.rootNode, wx, wy, wz)
-                    local localHeightX, _, localHeightZ = worldToLocal(placeable.rootNode, hx, hy, hz)
-
-                    local minX = math.min(localStartX, localWidthX, localHeightX)
-                    local maxX = math.max(localStartX, localWidthX, localHeightX)
-                    local minZ = math.min(localStartZ, localWidthZ, localHeightZ)
-                    local maxZ = math.max(localStartZ, localWidthZ, localHeightZ)
-
-                    if localX >= minX and localX <= maxX and localZ >= minZ and localZ <= maxZ then
-                        return true
+                    if xI >= 0 and xI < maskSize and zI >= 0 and zI < maskSize then
+                        local maskValue = getBitVectorMapPoint(handle, xI, zI, firstChannel, numChannels)
+                        local indoorValue = IndoorMask ~= nil and IndoorMask.INDOOR or 1
+                        isIndoorMask = maskValue == indoorValue
                     end
                 end
             end
         end
     end
 
-    return false
+    local movementVehicle = self.rootVehicle or self
+    local speed = movementVehicle.getLastSpeed ~= nil and math.abs(tonumber(movementVehicle:getLastSpeed(true)) or 0) or 0
+    local stationarySpeedLimit = tonumber(ADS_Config.ROOF_STATIONARY_SPEED_LIMIT) or 0.5
+    local isStationary = speed <= stationarySpeedLimit
+
+    if not isStationary then
+        if spec ~= nil then
+            spec.roofWasStationary = false
+            spec.roofLastRaycastTime = nil
+            spec.roofRaycastResult = nil
+        end
+        return isIndoorMask
+    end
+
+    if spec == nil then
+        return isIndoorMask
+    end
+
+    local now = (mission ~= nil and mission.time) or g_time or 0
+    local raycastInterval = tonumber(ADS_Config.ROOF_RAYCAST_INTERVAL) or 5000
+    local lastRaycastTime = tonumber(spec.roofLastRaycastTime)
+    local needsRaycast = spec.roofWasStationary ~= true
+        or lastRaycastTime == nil
+        or now < lastRaycastTime
+        or now - lastRaycastTime >= raycastInterval
+
+    spec.roofWasStationary = true
+
+    if needsRaycast and raycastClosest ~= nil and CollisionFlag ~= nil then
+        spec.roofLastRaycastTime = now
+        spec.roofRaycastHit = false
+
+        local roofMask = CollisionFlag.STATIC_OBJECT + CollisionFlag.BUILDING
+        raycastClosest(
+            x,
+            y + (tonumber(ADS_Config.ROOF_RAYCAST_START_OFFSET) or 1),
+            z,
+            0,
+            1,
+            0,
+            tonumber(ADS_Config.ROOF_RAYCAST_DISTANCE) or 40,
+            "isUnderRoofRaycastCallback",
+            self,
+            roofMask
+        )
+
+        spec.roofRaycastResult = spec.roofRaycastHit == true
+    end
+
+    if spec.roofRaycastResult ~= nil then
+        return spec.roofRaycastResult == true
+    end
+
+    return isIndoorMask
 end
 
 function AdvancedDamageSystem:isUnderService()

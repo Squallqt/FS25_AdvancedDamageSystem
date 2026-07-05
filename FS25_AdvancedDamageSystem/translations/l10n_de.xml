@@ -38,6 +38,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="Aktiviert Garantieleistungen für Reparaturen an Neufahrzeugen (bis zu 20 Betriebsstunden oder 12 Monate). Nur OEM-Teile werden kostenlos übernommen."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="KI-Überlastungs- und Überhitzungskontrolle"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Der KI-Helfer reduziert die Motorlast bei drohender Überlastung oder Überhitzung."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
+        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
         <text name="ads_aiWorkerTargetStress_label" text="KI-Reaktion auf Last"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Steuert, wie frueh der KI-Helfer auf Ueberlastung und Ueberhitzung reagiert. Hoehere Werte sind weniger empfindlich und reagieren spaeter; niedrigere Werte sind empfindlicher und verlangsamen frueher."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Gelassen"/>
@@ -723,7 +727,7 @@
         <text name="ads_tutorial_cvt_overheat_title" text="CVT überhitzt"/>
         <text name="ads_tutorial_cvt_overheat_message" text="Das CVT-Getriebe beginnt zu überhitzen. Das kann einen oder mehrere Gründe haben: Das Getriebe steht unter zu hoher Last, der Kühler ist verschmutzt oder das Wetter ist sehr heiß. Zum Beispiel ziehen Sie vielleicht einen zu schweren Pflug oder schleppen einen überladenen Anhänger.&#10;&#10;Bleiben Sie aufmerksam: Überhitzung gehört zu den zerstörerischsten Belastungen für ein CVT-Getriebe."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Schwerer Anhänger"/>
-        <text name="ads_tutorial_heavy_trailer_message" text="Es sieht so aus, als würden Sie einen Anhänger ziehen, der für Ihren Traktor zu schwer ist. Sie können das zwar tun, aber das Getriebe steht dabei unter enormer Belastung, und auch die Bremsen danken Ihnen das zusätzliche Gewicht nicht.&#10;&#10;Eine einfache Faustregel: 10 PS oder mehr pro 1 Tonne Zuggewicht, dann hält die Maschine deutlich länger."/>
+        <text name="ads_tutorial_heavy_trailer_message" text="Die gezogene Last scheint für dieses Fahrzeug zu hoch zu sein. Sie können weiterfahren, aber Getriebe und Antriebsstrang werden stärker belastet.&#10;&#10;ADS verwendet zwei Richtwerte: Traktoren benötigen mindestens 10 PS pro Tonne gezogener Masse, Lkw mindestens 6 PS pro Tonne Gesamtzuggewicht. Wird der jeweilige Wert bei hoher Motorlast unterschritten, steigt der Getriebeverschleiß."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Fahrwerk unter Belastung"/>
         <text name="ads_tutorial_chassis_vibration_message" text="Langsamer! Schnelles Fahren über unebenes Gelände verschleißt das Fahrwerk Ihres %s sehr schnell. Außerdem schaden diese Vibrationen auch anderen Systemen, vor allem der Hydraulik und der Elektrik. Fahren Sie ruhig und mit Gefühl."/>
         <text name="ads_tutorial_steering_title" text="Lenken im Stand"/>

@@ -28,6 +28,9 @@ function ADS_Hud:new()
     g_overlayManager:addTextureConfigFile(ADS_Hud.modDirectory .. "hud/ads_dashboardHud.xml", "ads_DashboardHud")
     g_overlayManager:createOverlay("ads_DashboardHud.reliability", 0, 0, 0, 0)
     g_overlayManager:createOverlay("ads_DashboardHud.maintainability", 0, 0, 0, 0)
+    self.wheelSlipHud = {
+        icon = g_overlayManager:createOverlay("ads_DashboardHud.wheelSlip", 0, 0, 0, 0)
+    }
 
     self.indicators = {
         engine = {
@@ -790,6 +793,10 @@ function ADS_Hud:storeScaledValues()
     local serviceWidth, serviceHeight = self:scalePixelValuesToScreenVector(27, 9)
     self.indicators.service.icon:setDimension(serviceWidth, serviceHeight)
 
+    self.wheelSlipHud.offsetX, self.wheelSlipHud.offsetY = self:scalePixelValuesToScreenVector(47, -73)
+    local wheelSlipWidth, wheelSlipHeight = self:scalePixelValuesToScreenVector(24, 16)
+    self.wheelSlipHud.icon:setDimension(wheelSlipWidth, wheelSlipHeight)
+
     self.engineTempText.offsetX, self.engineTempText.offsetY = self:scalePixelValuesToScreenVector(0, 36)
 	self.engineTempText.size = self:scalePixelToScreenHeight(9)
 
@@ -804,6 +811,9 @@ function ADS_Hud:storeScaledValues()
 
     self.fuelConsoText.offsetX, self.fuelConsoText.offsetY = self:scalePixelValuesToScreenVector(8, 1)
     self.fuelConsoText.size = self:scalePixelToScreenHeight(10)
+
+    self.wheelSlipHud.textOffsetX, self.wheelSlipHud.textOffsetY = self:scalePixelValuesToScreenVector(59, -78)
+    self.wheelSlipHud.textSize = self:scalePixelToScreenHeight(9)
 end
 
 function ADS_Hud:drawDashboard()
@@ -979,8 +989,34 @@ function ADS_Hud:drawDashboard()
         end
     end
 
+    self:drawWheelSlipDisplay(spec, posX, posY)
+
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
     setTextBold(false)
+end
+
+function ADS_Hud:drawWheelSlipDisplay(spec, posX, posY)
+    if self.wheelSlipHud == nil or self.wheelSlipHud.icon == nil then
+        return
+    end
+
+    local wheelSlip = math.clamp(tonumber(spec.wheelSlipIntensity) or 0, 0, 1)
+
+    local icon = self.wheelSlipHud.icon
+    icon:setPosition(posX + self.wheelSlipHud.offsetX, posY + self.wheelSlipHud.offsetY)
+    icon:setVisible(true)
+    icon:setColor(1, 1, 1, 1)
+    icon:render()
+
+    setTextAlignment(RenderText.ALIGN_CENTER)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
+    setTextBold(true)
+    setTextColor(1, 1, 1, 1)
+    renderText(posX + self.wheelSlipHud.textOffsetX, posY + self.wheelSlipHud.textOffsetY, self.wheelSlipHud.textSize, string.format("%.0f%%", wheelSlip * 100))
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+    setTextBold(false)
+    setTextColor(1, 1, 1, 1)
 end
 
 -- =====================================================================================
@@ -1563,7 +1599,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     local transmissionLines = buildSystemLines("transmission", transmissionDbg, transmissionMaxFactor, {
         { shortName = "sf", statKey = "sf", value = transmissionDbg.expiredServiceFactor or 0 },
         { shortName = "pof", statKey = "pof", value = transmissionDbg.pullOverloadFactor or 0, extraInfo = string.format("%.1f->%.1f", transmissionDbg.pullOverloadTimer or 0, transmissionDbg.pullOverloadTimerMin or 0) },
-        { shortName = "htf", statKey = "htf", value = transmissionDbg.heavyTrailerFactor or 0, extraInfo = string.format("hp/m: %.1f", transmissionDbg.heavyTrailerMassRatio or 0) },
+        { shortName = "htf", statKey = "htf", value = transmissionDbg.heavyTrailerFactor or 0, extraInfo = string.format("hp/%s: %.1f", transmissionDbg.heavyTrailerMassBasis or "trailer", transmissionDbg.heavyTrailerMassRatio or 0) },
         { shortName = "lf", statKey = "lf", value = transmissionDbg.luggingFactor or 0 },
         { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0, extraInfo = string.format("s: %.1f c: %.2f", asPercent(spec.wheelSlipIntensity or 0), avgTireGroundFrictionCoeff) },
         { shortName = "ctf", statKey = "ctf", value = (transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor) or 0 },
@@ -1598,8 +1634,8 @@ function ADS_Hud:drawActiveVehicleHUD()
     local chassisLines = buildSystemLines("chassis", chassisDbg, chassisMaxFactor, {
         { shortName = "sf", statKey = "sf", value = chassisDbg.expiredServiceFactor or 0 },
         { shortName = "vf", statKey = "vf", value = chassisDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(chassisDbg.vibRaw or 0), asPercent(chassisDbg.vibSignal or 0)) },
-        { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("lowSp: %.2f m: %s", tonumber(chassisDbg.steerLowSpeedFactor or 0) or 0, tostring(chassisDbg.steerMoving == true)) },
-        { shortName = "bmf", statKey = "bmf", value = chassisDbg.brakeMassFactor or 0, extraInfo = string.format("hp/m: %.1f", chassisDbg.brakeMassRatio or 0) }
+        { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("lowSp: %.2f c: %.2f m: %s", tonumber(chassisDbg.steerLowSpeedFactor or 0) or 0, tonumber(chassisDbg.steerGroundFrictionCoeff or 0) or 0, tostring(chassisDbg.steerMoving == true)) },
+        { shortName = "bmf", statKey = "bmf", value = chassisDbg.brakeMassFactor or 0, extraInfo = string.format("hp/%s: %.1f", chassisDbg.brakeMassBasis or "trailer", chassisDbg.brakeMassRatio or 0) }
     })
 
     local fuelLines = buildSystemLines("fuel", fuelDbg, fuelMaxFactor, {
@@ -2207,6 +2243,9 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, panel, activeHeaderSiz
             local parts = {}
             if dbg.steerLowSpeedFactor ~= nil then
                 table.insert(parts, string.format("lowSp %.3f", tonumber(dbg.steerLowSpeedFactor) or 0))
+            end
+            if dbg.steerGroundFrictionCoeff ~= nil then
+                table.insert(parts, string.format("friction %.3f", tonumber(dbg.steerGroundFrictionCoeff) or 0))
             end
             if dbg.steerMoving ~= nil then
                 table.insert(parts, string.format("moving %s", tostring(dbg.steerMoving == true)))

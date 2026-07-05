@@ -15,5 +15,6 @@
       <slice id="oil" uvs="8px 381px 72px 72px" />
       <slice id="reliability" uvs="103px 885px 72px 72px" />
       <slice id="maintainability" uvs="215px 890px 72px 72px" />
+      <slice id="wheelSlip" uvs="318px 890px 72px 48px" />
    </slices>
 </texture>

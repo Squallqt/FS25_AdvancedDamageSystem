@@ -80,7 +80,7 @@ function ADS_Main.registerSpecializationToVehicles()
             not string.find(vehicleType, "FS25_ASM_FarmyardTrailerDolly") and
             vehicleType ~= "motorbike" and 
             vehicleType ~= "inlineWrapper" and 
-            vehicleType ~= "locomotive" and 
+            not string.find(string.lower(vehicleType), "locomotive", 1, true) and
             vehicleType ~= "conveyorBelt" and 
             vehicleType ~= "pickupConveyorBelt" and 
             vehicleType ~= "woodCrusherTrailermotorized" and 
@@ -483,7 +483,7 @@ function ADS_Main:update(dt)
         self.workshopFirstEval = true
         self:forceWorkshopUpdate()
         if self.workshopCheckTimer >= ADS_Config.CORE_UPDATE_DELAY then
-            self.workshopCheckTimer = self.workshopCheckTimer - ADS_Config.CORE_UPDATE_DELAY
+            self.workshopCheckTimer = self.workshopCheckTimer % ADS_Config.CORE_UPDATE_DELAY
         end
     end
 

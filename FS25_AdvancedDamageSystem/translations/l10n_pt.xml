@@ -38,6 +38,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="Aplica uma garantia aos reparos de veículos novos (até 20 horas de operação ou 12 meses). Apenas peças originais são cobertas sem custo."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Controlo de sobrecarga/sobreaquecimento IA"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Se ativado, o trabalhador IA reduz a carga para evitar sobrecarga do motor ou sobreaquecimento."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
+        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
         <text name="ads_aiWorkerTargetStress_label" text="Resposta da velocidade da IA"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Controla quão cedo o trabalhador IA reage à sobrecarga e ao sobreaquecimento. Valores mais altos são menos sensíveis e reagem mais tarde; valores mais baixos são mais sensíveis e reduzem a velocidade mais cedo."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Descontraída"/>
@@ -723,7 +727,7 @@
         <text name="ads_tutorial_cvt_overheat_title" text="Sobreaquecimento da CVT"/>
         <text name="ads_tutorial_cvt_overheat_message" text="A transmissão CVT está a começar a sobreaquecer. Isto pode acontecer por um ou vários motivos: a transmissão está sob carga excessiva, o radiador está obstruído ou o clima está muito quente. Por exemplo, pode estar a puxar um arado demasiado pesado ou a rebocar um atrelado sobrecarregado.&#10;&#10;Fique atento: o sobreaquecimento é uma das coisas mais destrutivas que podem acontecer a uma transmissão CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Atrelado pesado"/>
-        <text name="ads_tutorial_heavy_trailer_message" text="Parece que está a tentar rebocar um atrelado demasiado pesado para o seu trator. Pode continuar a fazê-lo, mas a transmissão ficará sob enorme esforço, e os travões também não vão gostar da carga extra.&#10;&#10;Siga uma regra simples: 10 HP ou mais por tonelada rebocada, e a máquina vai durar muito mais."/>
+        <text name="ads_tutorial_heavy_trailer_message" text="A carga rebocada parece ser demasiado pesada para este veículo. Pode continuar a conduzir, mas a transmissão e o sistema de tração ficarão sob maior esforço.&#10;&#10;O ADS usa duas referências: os tratores precisam de pelo menos 10 HP por tonelada rebocada, enquanto os camiões precisam de pelo menos 6 HP por tonelada de peso bruto combinado. Abaixo do valor aplicável, com elevada carga do motor, o desgaste da transmissão aumenta."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Suspensão sob esforço"/>
         <text name="ads_tutorial_chassis_vibration_message" text="Ei, vá com calma! Conduzir depressa em terreno irregular vai desgastar rapidamente a suspensão do seu %s. Além disso, essas vibrações também prejudicam outros sistemas, sobretudo a hidráulica e a parte elétrica. Conduza de forma suave e sem pressa."/>
         <text name="ads_tutorial_steering_title" text="Virar parado"/>

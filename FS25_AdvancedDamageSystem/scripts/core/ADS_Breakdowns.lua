@@ -510,7 +510,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.0,
                 repairPrice = 0.0,
                 effects = {
-                    { id = "EMPTY_EFFECT", value = 1.0, aggregation = "boolean_or",  extraData = {message = "ads_breakdowns_overload_breakdown_stage2_message", reason = "BREAKDOWN", disableAi = true}}
+                    { id = "EMPTY_EFFECT", value = 1.0, aggregation = "boolean_or",  extraData = {message = "ads_breakdowns_overload_breakdown_stage2_message", reason = "BREAKDOWN", disableAi = true, criticalOverload = true}}
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -3361,6 +3361,10 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
 
 function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, axisSide, doHandbrake, dt)
     local spec_ads = vehicle.spec_AdvancedDamageSystem
+    if spec_ads == nil then
+        return superFunc(vehicle, axisForward, axisSide, doHandbrake, dt)
+    end
+
     local brakeEffect = spec_ads and spec_ads.activeEffects.BRAKE_FORCE_MODIFIER
     local limpEffect = spec_ads and spec_ads.activeEffects.ENGINE_LIMP_EFFECT
     local hesitationEffect = spec_ads and spec_ads.activeEffects.ENGINE_HESITATION_CHANCE
@@ -3411,7 +3415,7 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
                     else
                         axisForward = -1 * maxAllowedAcceleration
                     end
-                end   
+                end
             end
         end
     end
@@ -3484,7 +3488,7 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
 
     return result
 end
-                  
+
 -- ==========================================================
 -- ENGINE_TORQUE_MODIFIER
 ADS_Breakdowns.EffectApplicators.ENGINE_TORQUE_MODIFIER = {
@@ -4979,7 +4983,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
 
             if not v.isServer then return end
 
-            if v:getIsMotorStarted() then
+            if v:getIsMotorStarted() and not v:getIsAIActive() then
                 local effect = v.spec_AdvancedDamageSystem.activeEffects.ENGINE_STALLS_CHANCE
                 if effect and effect.value > 0 then
                     if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
@@ -5559,7 +5563,7 @@ ADS_Breakdowns.EffectApplicators.EMPTY_EFFECT = {
 -- ==========================================================
 function ADS_Breakdowns.getCanMotorRun(self, superFunc)
     local spec = self.spec_AdvancedDamageSystem
-    if spec ~= nil and spec.isExcludedVehicle then
+    if spec == nil or spec.isExcludedVehicle then
         return superFunc(self)
     end
 
