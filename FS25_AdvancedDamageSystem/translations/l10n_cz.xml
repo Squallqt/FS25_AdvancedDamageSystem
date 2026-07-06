@@ -1,5 +1,8 @@
 <l10n>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Traktor"/>
+        <text name="ads_hud_mass_towed" text="Připojeno"/>
+        <text name="ads_hud_mass_total" text="Celkem"/>
         <text name="ads_settings_title" text="NASTAVENÍ ADS"/>
         <text name="ads_settings_admin_required" text="Nastavení ADS vyžaduje v režimu více hráčů oprávnění administrátora."/>
         <text name="ads_maintenancePrice_label" text="Násobitel ceny údržby"/>
@@ -766,4 +769,3 @@
         <text name="ads_tutorial_battery_low_message" text="Jejda, vypadá to, že baterie brzy vypoví službu. To se může stát po dlouhém stání, kvůli silnému mrazu nebo závadě v elektroinstalaci.&#10;&#10;S nízkou kapacitou bude startování obtížné nebo i nemožné. Pokud nenastartujete, můžete stroj nahodit z jiného vozidla pomocí startovacích kabelů."/>
     </texts>
 </l10n>
-

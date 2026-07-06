@@ -1,5 +1,8 @@
 <l10n>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Traktör"/>
+        <text name="ads_hud_mass_towed" text="Bağlı"/>
+        <text name="ads_hud_mass_total" text="Toplam"/>
         <text name="ads_settings_title" text="GHS AYARLARI"/>
         <text name="ads_settings_admin_required" text="GHS ayarları için çok oyunculu modda yönetici izinleri gereklidir."/>
         <text name="ads_maintenancePrice_label" text="Bakım Fiyat Çarpanı"/>
@@ -766,4 +769,3 @@
         <text name="ads_tutorial_battery_low_message" text="Oops, görünüşe göre akü bitmek üzere. Bu durum, aracın uzun süre hareketsiz kalması, aşırı soğuk hava veya elektrik sistemindeki arızalar nedeniyle ortaya çıkabilir.&#10;&#10;Şarj seviyesi düşük olduğunda, aracı çalıştırmak zorlaşır, hatta imkansız hale gelebilir. Aracı çalıştıramıyorsanız, akü kablosu kullanarak başka bir araçtan akü şarjı yapabilirsiniz."/>
     </texts>
 </l10n>
-

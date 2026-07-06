@@ -1,5 +1,8 @@
 <l10n>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Traktori"/>
+        <text name="ads_hud_mass_towed" text="Kytketty"/>
+        <text name="ads_hud_mass_total" text="Yhteensä"/>
         <text name="ads_settings_title" text="ADS-ASETUKSET"/>
         <text name="ads_settings_admin_required" text="ADS-asetukset vaativat järjestelmänvalvojan oikeudet moninpelissä."/>
         <text name="ads_maintenancePrice_label" text="Huoltokustannusten kerroin"/>

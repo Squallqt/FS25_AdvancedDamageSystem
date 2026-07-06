@@ -1,5 +1,8 @@
 <l10n>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Ciągnik"/>
+        <text name="ads_hud_mass_towed" text="Doczepione"/>
+        <text name="ads_hud_mass_total" text="Razem"/>
         <text name="ads_settings_title" text="ADS USTAWIENIA"/>
         <text name="ads_settings_admin_required" text="Ustawienia ADS wymagają uprawnień administratora w trybie wieloosobowym."/>
         <text name="ads_maintenancePrice_label" text="Mnożnik kosztów utrzymania"/>
@@ -764,4 +767,3 @@
         <text name="ads_tutorial_battery_low_message" text="Ups, wygląda na to, że akumulator zaraz padnie. Może się tak stać po długim postoju, podczas silnych mrozów albo z powodu usterek instalacji elektrycznej.&#10;&#10;Przy niskim poziomie naładowania rozruch będzie trudny albo wręcz niemożliwy. Jeśli nie uda się uruchomić maszyny, możesz odpalić ją z innego pojazdu przy pomocy Jumper Cables."/>
     </texts>
 </l10n>
-

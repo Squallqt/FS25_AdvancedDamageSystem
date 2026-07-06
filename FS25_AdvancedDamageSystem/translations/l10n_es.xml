@@ -1,5 +1,8 @@
 <l10n>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Tractor"/>
+        <text name="ads_hud_mass_towed" text="Enganchado"/>
+        <text name="ads_hud_mass_total" text="Total"/>
         <text name="ads_settings_title" text="ADS AJUSTES"/>
         <text name="ads_settings_admin_required" text="Los ajustes de ADS requieren permisos de administrador en multijugador."/>
         <text name="ads_maintenancePrice_label" text="Multiplicador del precio de mantenimiento"/>

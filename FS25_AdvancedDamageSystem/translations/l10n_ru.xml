@@ -1,5 +1,8 @@
 <l10n>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Трактор"/>
+        <text name="ads_hud_mass_towed" text="Прицеплено"/>
+        <text name="ads_hud_mass_total" text="Всего"/>
         <text name="ads_settings_title" text="ADS НАСТРОЙКИ"/>
         <text name="ads_settings_admin_required" text="Для изменения настроек ADS нужны права администратора."/>
         <text name="ads_maintenancePrice_label" text="Множитель стоимости обслуживания"/>

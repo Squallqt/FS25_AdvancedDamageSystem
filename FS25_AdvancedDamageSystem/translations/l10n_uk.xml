@@ -1,6 +1,9 @@
 <l10n>
     <translationContributors>Kalderone, Petro2000</translationContributors>
     <texts>
+        <text name="ads_hud_mass_tractor" text="Трактор"/>
+        <text name="ads_hud_mass_towed" text="Причеплене"/>
+        <text name="ads_hud_mass_total" text="Разом"/>
         <text name="ads_settings_title" text="НАЛАШТУВАННЯ ADS"/>
         <text name="ads_settings_admin_required" text="Налаштування ADS потребують прав адміністратора в багатокористувацькій грі."/>
         <text name="ads_maintenancePrice_label" text="Множник ціни обслуговування"/>

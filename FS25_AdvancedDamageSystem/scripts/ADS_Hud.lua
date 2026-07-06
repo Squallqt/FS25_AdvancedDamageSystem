@@ -96,6 +96,8 @@ function ADS_Hud:new()
 
     self.fuelConsoText = {}
 
+    self.loadMassText = {}
+
     self.notificationPanel = {
         x = 0.40,
         y = 0.14,   
@@ -395,6 +397,7 @@ function ADS_Hud:draw()
     if self.vehicle ~= nil then
         self:drawDashboard()
         self:drawFuelConsumption()
+        self:drawLoadMass()
     end
 end
 
@@ -814,6 +817,9 @@ function ADS_Hud:storeScaledValues()
 
     self.wheelSlipHud.textOffsetX, self.wheelSlipHud.textOffsetY = self:scalePixelValuesToScreenVector(59, -78)
     self.wheelSlipHud.textSize = self:scalePixelToScreenHeight(9)
+
+    self.loadMassText.size = self:scalePixelToScreenHeight(13)
+    self.loadMassText.paddingH, self.loadMassText.paddingV = self:scalePixelValuesToScreenVector(10, 4)
 end
 
 function ADS_Hud:drawDashboard()
@@ -1078,6 +1084,166 @@ function ADS_Hud:drawFuelConsumption()
     setTextColor(1, 1, 1, 1)
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
     setTextAlignment(RenderText.ALIGN_LEFT)
+end
+
+-- =====================================================================================
+--                              LOAD / MASS HUD
+-- =====================================================================================
+
+-- Blends the load colour from green (enough power reserve) to red (too heavy for the
+-- vehicle), following the same quadratic curve the wear model uses for the load factor.
+function ADS_Hud:getLoadSeverityColor(severity)
+    local colors = ADS_Breakdowns.COLORS
+    local s = math.clamp(tonumber(severity) or 0, 0, 1)
+    local green = HUD.COLOR.ACTIVE
+    local mid = colors.WARNING
+    local high = colors.CRITICAL
+    local high = colors.CRITICAL
+
+    local fromColor, toColor, t
+    if s <= 0.5 then
+        fromColor, toColor, t = green, mid, s / 0.5
+    else
+        fromColor, toColor, t = mid, high, (s - 0.5) / 0.5
+    end
+
+    return {
+        fromColor[1] + (toColor[1] - fromColor[1]) * t,
+        fromColor[2] + (toColor[2] - fromColor[2]) * t,
+        fromColor[3] + (toColor[3] - fromColor[3]) * t,
+        1
+    }
+end
+
+function ADS_Hud:formatMass(massTons)
+    return string.format("%.1f t", math.max(tonumber(massTons) or 0, 0))
+end
+
+function ADS_Hud:drawLoadMass()
+    local vehicle = self.vehicle
+    if vehicle == nil or vehicle.getTotalMass == nil then
+        return
+    end
+
+    local spec = vehicle.spec_AdvancedDamageSystem
+    if spec == nil or spec.isExcludedVehicle then
+        return
+    end
+
+    local speedMeter = g_currentMission.hud.speedMeter
+    if speedMeter == nil or speedMeter.speedBg == nil then
+        return
+    end
+
+    local selfMass  = tonumber(vehicle:getTotalMass(true)) or 0
+    local totalMass = tonumber(vehicle:getTotalMass())     or 0
+    local towedMass = math.max(totalMass - selfMass, 0)
+
+    local loadColor = HUD.COLOR.ACTIVE
+
+    -- Only a real towed or carried load can drive the heavy-load wear factors.
+    if towedMass > 0.1 then
+        local motor      = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+        local horsepower = math.max(((motor ~= nil and motor.peakMotorPower) or 0) * 1.36, 0.001)
+        local isTruck    = spec.isTruck == true
+        local ratioBasis = isTruck and totalMass or towedMass
+        local powerToWeight = horsepower / math.max(ratioBasis, 0.01)
+
+        local C         = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
+        local threshold = isTruck
+            and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0)
+            or  (tonumber(C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD)       or 10.0)
+        local fullEffect = isTruck
+            and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT) or 3.0)
+            or  (tonumber(C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT)       or 5.0)
+
+        local severity = ADS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
+        loadColor = self:getLoadSeverityColor(severity)
+    end
+
+    -- sm:getPosition() returns the speedometer's right and bottom boundaries
+    local smRightX, smBottomY = g_currentMission.hud.speedMeter:getPosition()
+    local padH = self.loadMassText.paddingH or 0
+    local padV = self.loadMassText.paddingV or 0
+    local size = self.loadMassText.size or 0.01
+    local sep  = "     "
+
+    local tractorLabel = g_i18n:getText("ads_hud_mass_tractor") .. "  "
+    local tractorValue = self:formatMass(selfMass)
+    local chargeLabel  = g_i18n:getText("ads_hud_mass_towed")   .. "  "
+    local chargeValue  = self:formatMass(towedMass)
+    local totalLabel   = g_i18n:getText("ads_hud_mass_total")    .. "  "
+    local totalValue   = self:formatMass(totalMass)
+
+    local wTL  = getTextWidth(size, tractorLabel)
+    local wTV  = getTextWidth(size, tractorValue)
+    local wCL  = getTextWidth(size, chargeLabel)
+    local wCV  = getTextWidth(size, chargeValue)
+    local wOL  = getTextWidth(size, totalLabel)
+    local wOV  = getTextWidth(size, totalValue)
+    local wsep = getTextWidth(size, sep)
+    local w1   = wTL + wTV
+    local w2   = wCL + wCV
+    local w3   = wOL + wOV
+    local fullW = w1 + wsep + w2 + wsep + w3
+
+    local textHeight = getTextHeight(size, totalValue)
+    local panelH = textHeight + padV * 2
+    local panelW = fullW + padH * 2
+    local panelX = smRightX - panelW
+    local panelY = (smBottomY - panelH) * 0.5
+    local startX = panelX + padH
+    local textY  = panelY + panelH * 0.5 + self:scalePixelToScreenHeight(2)
+
+    -- Native engine rounded rectangle
+    local bg = HUD.COLOR.BACKGROUND
+    drawFilledRectRound(panelX, panelY, panelW, panelH, 0.35, bg[1], bg[2], bg[3], bg[4])
+
+    local sepLineW = 1 / g_screenWidth
+    local sepLineH = panelH * 0.55
+    local sepLineY = panelY + (panelH - sepLineH) * 0.5
+    local green    = HUD.COLOR.ACTIVE
+    self:drawNotificationDivider(startX + w1 + wsep * 0.5 - sepLineW * 0.5,             sepLineY, sepLineW, sepLineH, green)
+    self:drawNotificationDivider(startX + w1 + wsep + w2 + wsep * 0.5 - sepLineW * 0.5, sepLineY, sepLineW, sepLineH, green)
+
+    local cx = startX
+    local dimLabel = {1, 1, 1, 0.55}
+
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
+
+    -- Tractor: dim label, bold white value
+    setTextBold(false)
+    setTextColor(unpack(dimLabel))
+    renderText(cx, textY, size, tractorLabel)
+    setTextBold(true)
+    setTextColor(1, 1, 1, 1)
+    renderText(cx + wTL, textY, size, tractorValue)
+
+    cx = cx + w1 + wsep
+
+    -- Implement: dim label, bold severity-coloured value
+    setTextBold(false)
+    setTextColor(unpack(dimLabel))
+    renderText(cx, textY, size, chargeLabel)
+    setTextBold(true)
+    setTextColor(loadColor[1], loadColor[2], loadColor[3], 1)
+    renderText(cx + wCL, textY, size, chargeValue)
+
+    cx = cx + w2 + wsep
+
+    -- Total: dim label, bold severity-coloured value
+    setTextBold(false)
+    setTextColor(unpack(dimLabel))
+    renderText(cx, textY, size, totalLabel)
+    setTextBold(true)
+    setTextColor(loadColor[1], loadColor[2], loadColor[3], 1)
+    renderText(cx + wOL, textY, size, totalValue)
+
+    setTextBold(false)
+    setTextColor(1, 1, 1, 1)
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
 end
 
 -- =====================================================================================
