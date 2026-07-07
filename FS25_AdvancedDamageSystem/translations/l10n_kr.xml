@@ -765,5 +765,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="바퀴가 심하게 헛돌고 있는 것 같습니다. 지금 이미 빠져서 조언을 들을 기분이 아닐 수도 있지만, 이것만은 기억하세요. 휠 슬립은 변속기에 가장 치명적인 요인 중 하나이며, 다음 정비소 방문 시점을 훨씬 앞당기게 됩니다."/>
         <text name="ads_tutorial_battery_low_title" text="배터리 약함"/>
         <text name="ads_tutorial_battery_low_message" text="앗, 배터리가 거의 방전될 것 같습니다. 장기간 방치, 심한 추위, 전기 시스템 이상 등이 원인일 수 있습니다.&#10;&#10;충전량이 낮으면 시동이 어렵거나 아예 걸리지 않을 수 있습니다. 시동이 되지 않으면 Jumper Cables를 사용해 다른 차량에서 점프 시동을 걸 수 있습니다."/>
+        <text name="input_ADS_TOGGLE_4WD" text="구동 모드 (4x2 / 4WD / 자동)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="차동 잠금"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="주차 브레이크"/>
+        <text name="ads_settings_section_drivetrain" text="구동계 및 주차 브레이크"/>
+        <text name="ads_drivetrainEnabled_label" text="4WD / 차동 잠금 관리"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="트랙터의 전륜 구동축 연결과 차동 잠금 장치의 수동 제어를 활성화합니다. Enhanced Vehicle의 차동 장치 관리가 활성화된 경우 ADS는 완전히 물러나고 Enhanced Vehicle이 구동계를 단독으로 관리합니다."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="자동 구동 모드 허용"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="구동 선택기에 자동 위치를 추가합니다: 바퀴가 미끄러지거나 부하가 걸린 작업 속도에서 전륜축이 자동으로 연결되고, 도로에서는 해제됩니다. 이 옵션을 끄면 자동 모드로 남아 있던 차량은 4WD로 전환됩니다."/>
+        <text name="ads_drivetrainWindupDamage_label" text="구동계 비틀림 손상"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="차동 장치를 잠근 채 접지력이 높은 지면에서 회전하면 구동계가 비틀려 시간이 지남에 따라 변속기가 손상됩니다. 더 관대한 게임을 원하면 비활성화하세요."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="차동 잠금 해제 속도"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="차동 잠금은 실제 트랙터의 도그 클러치처럼 이 속도 이상에서 자동으로 해제되고, 요청된 상태라면 그 이하에서 다시 체결됩니다."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="주차 브레이크"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="모든 ADS 차량에 전용 키로 조작하는 주차 브레이크를 추가합니다. 체결된 브레이크는 기계를 고정하고 가속 입력을 무시합니다."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="자동 주차 브레이크"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="현대 트랙터의 전기유압식 주차 위치처럼, 운전자가 정지된 기계에서 내리면 주차 브레이크가 자동으로 체결됩니다."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (전륜축 해제)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4WD (전륜축 연결)"/>
+        <text name="ads_drivetrain_mode_auto" text="4WD 자동"/>
+        <text name="ads_drivetrain_notify_mode" text="구동 모드: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="차동 잠금 체결됨"/>
+        <text name="ads_drivetrain_notify_lock_off" text="차동 잠금 해제됨"/>
+        <text name="ads_drivetrain_notify_park_on" text="주차 브레이크 체결됨"/>
+        <text name="ads_drivetrain_notify_park_off" text="주차 브레이크 해제됨"/>
+        <text name="ads_drivetrain_warning_windup" text="구동계 비틀림! 차동 잠금을 해제하거나 단단한 지면에서 회전하지 마세요."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="주차 브레이크가 체결되어 있습니다!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="구동계 비틀림"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="차동 잠금을 체결한 채 접지력이 높은 지면에서 회전하고 있습니다. 커브에서 앞바퀴와 뒷바퀴는 서로 다른 거리를 이동하지만, 잠긴 차동 장치는 같은 속도로 회전하도록 강제합니다: 구동계가 비틀리며 변속기가 파손될 때까지 손상됩니다. 도로나 단단한 지면에서 회전하기 전에 잠금을 해제하세요 — 실제 트랙터에서는 부드러운 지면에서 직진할 때만 사용합니다."/>
     </texts>
 </l10n>

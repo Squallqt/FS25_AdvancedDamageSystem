@@ -32,6 +32,7 @@ source(g_currentModDirectory .. "events/ADS_VehicleExclusionEvent.lua")
 source(g_currentModDirectory .. "events/ADS_StartButtonEvent.lua")
 source(g_currentModDirectory .. "events/ADS_HandToolSyncEvent.lua")
 source(g_currentModDirectory .. "events/ADS_JumperCablesEvent.lua")
+source(g_currentModDirectory .. "events/ADS_DrivetrainEvent.lua")
 
 function ADS_Main.loadGuiProfiles()
     if ADS_Main.guiProfilesLoaded or g_gui == nil then
@@ -46,16 +47,6 @@ function ADS_Main.loadGuiProfiles()
     end
 
     ADS_Main.guiProfilesLoaded = true
-end
-
-local function log_dbg(...)
-    if ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_MAIN] " .. table.concat(args, " "))
-    end
 end
 
 -- ===========================================================
@@ -109,7 +100,6 @@ function ADS_Main.registerSpecializationToVehicles()
 			end
 		end
 	end
-    log_dbg("Specialization applied!")
 end
 
 -- ===========================================================
@@ -378,7 +368,6 @@ end
 FSBaseMission.onStartMission = Utils.prependedFunction(FSBaseMission.onStartMission, ADS_Main.onStartMission)
 FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, ADS_Config.saveToXMLFile)
 Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, function()
-    log_dbg("Mission00.loadMission00Finished hook fired")
     ADS_Config.loadFromXMLFile()
     ADS_Config.loadClientTutorialState()
 end)
@@ -547,7 +536,6 @@ function ADS_Main:update(dt)
 end
 
 function ADS_Main:loadMap()
-    log_dbg("loadMap() called")
     ADS_Main.loadGuiProfiles()
     ADS_SettingsPage.reset()
     self.shopMenuPageInstalled = false

@@ -16,7 +16,6 @@ end
 
 
 function ADS_WorkshopDialog.register()
-    log_dbg("Registering ADS_WorkshopDialog...")
     local dialog = ADS_WorkshopDialog.new()
     g_gui:loadGui(modDirectory .. "gui/ADS_WorkshopDialog.xml", "ADS_WorkshopDialog", dialog)
     ADS_WorkshopDialog.INSTANCE = dialog
@@ -54,7 +53,6 @@ end
 
 function ADS_WorkshopDialog:updateScreen()
     if self.vehicle == nil then return end
-    log_dbg("Updating ADS_WorkshopDialog screen...")
     local spec = self.vehicle.spec_AdvancedDamageSystem
     local vehicle = self.vehicle
     local STATUS = AdvancedDamageSystem.STATUS
@@ -438,15 +436,11 @@ function ADS_WorkshopDialog:onOpen(superFunc)
 
     local function onVehicleChangeStatusEvent(vehicle)
         if self.vehicle.node == vehicle.node then
-            log_dbg("Received ADS_VEHICLE_CHANGE_STATUS event for current vehicle. Updating screen.")
             self:updateScreen()
-        else
-            log_dbg("Received ADS_VEHICLE_CHANGE_STATUS event for another vehicle. Ignoring.")
         end
     end
 
     local function onWorkshopChangeStatusEvent(vehicle)
-        log_dbg("Received ADS_WORKSHOP_CHANGE_STATUS event. Updating screen.")
         self:updateScreen()
     end
 

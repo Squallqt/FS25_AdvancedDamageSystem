@@ -764,5 +764,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="Sembra che le tue ruote stiano pattinando parecchio. Potresti anche essere bloccato in questo momento e poco disposto ad ascoltare consigli, ma tienilo a mente: lo slittamento delle ruote è uno dei fattori più distruttivi per la trasmissione e avvicinerà sensibilmente la tua prossima visita in officina."/>
         <text name="ads_tutorial_battery_low_title" text="Batteria debole"/>
         <text name="ads_tutorial_battery_low_message" text="Ops, sembra che la batteria stia per scaricarsi del tutto. Questo può succedere dopo un lungo periodo di inattività, per il freddo intenso o a causa di guasti nell'impianto elettrico.&#10;&#10;Con poca carica, avviare il motore sarà difficile o persino impossibile. Se non riesci a metterla in moto, puoi fare un avviamento con i cavi da un altro veicolo usando i Jumper Cables."/>
+        <text name="input_ADS_TOGGLE_4WD" text="Modalità di trazione (4x2 / 4WD / AUTO)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Blocco del differenziale"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="Freno di stazionamento"/>
+        <text name="ads_settings_section_drivetrain" text="Trasmissione e freno di stazionamento"/>
+        <text name="ads_drivetrainEnabled_label" text="Gestione 4WD / blocco differenziale"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Attiva il controllo manuale dell'assale anteriore inseribile e dei blocchi del differenziale sui trattori. Se la gestione dei differenziali di Enhanced Vehicle è attiva, ADS si ritira completamente ed Enhanced Vehicle gestisce la trasmissione da solo."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="Consenti modalità AUTO"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Aggiunge una posizione AUTO: l'assale anteriore si inserisce automaticamente in caso di slittamento o a velocità di lavoro sotto carico, e si disinserisce su strada. I veicoli lasciati in AUTO tornano in 4WD quando questa opzione viene disattivata."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Danni da torsione della trasmissione"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Sterzare su superfici con molta aderenza con i differenziali bloccati mette in torsione la trasmissione e la danneggia col tempo. Disattiva per un'esperienza più permissiva."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Velocità di sblocco del differenziale"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="I blocchi del differenziale si disinseriscono automaticamente sopra questa velocità, come gli innesti a denti di un vero trattore, e si reinseriscono al di sotto finché richiesti."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="Freno di stazionamento"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Aggiunge un freno di stazionamento a tutti i veicoli ADS, azionato da un proprio tasto. Il freno inserito ancora la macchina e ignora l'acceleratore."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Freno di stazionamento automatico"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Inserisce automaticamente il freno di stazionamento quando l'operatore lascia la macchina ferma, come la posizione di parcheggio elettroidraulica dei trattori moderni."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (assale anteriore disinserito)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4WD (assale anteriore inserito)"/>
+        <text name="ads_drivetrain_mode_auto" text="4WD AUTO"/>
+        <text name="ads_drivetrain_notify_mode" text="Modalità di trazione: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Blocco differenziale inserito"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Blocco differenziale disinserito"/>
+        <text name="ads_drivetrain_notify_park_on" text="Freno di stazionamento inserito"/>
+        <text name="ads_drivetrain_notify_park_off" text="Freno di stazionamento rilasciato"/>
+        <text name="ads_drivetrain_warning_windup" text="Trasmissione in torsione! Rilascia il blocco del differenziale o non sterzare su terreno duro."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="Freno di stazionamento inserito!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Torsione della trasmissione"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Stai sterzando su un terreno con molta aderenza con il blocco del differenziale inserito. In curva le ruote anteriori e posteriori percorrono distanze diverse, ma i differenziali bloccati le costringono a girare alla stessa velocità: la trasmissione va in torsione e si danneggia fino a rompersi. Rilascia il blocco prima di sterzare su strada — sui veri trattori si usa solo in rettilineo su terreno morbido."/>
     </texts>
 </l10n>

@@ -757,5 +757,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="Ihre Räder scheinen stark durchzudrehen. Vielleicht stecken Sie gerade sogar fest und haben wenig Lust auf Hinweise, aber behalten Sie das im Kopf: Radschlupf gehört zu den zerstörerischsten Belastungen für das Getriebe und bringt Ihren nächsten Werkstattbesuch deutlich näher."/>
         <text name="ads_tutorial_battery_low_title" text="Schwache Batterie"/>
         <text name="ads_tutorial_battery_low_message" text="Hoppla, die Batterie ist offenbar fast leer. Das kann nach langer Standzeit, bei starkem Frost oder durch Defekte im elektrischen System passieren.&#10;&#10;Mit niedrigem Ladezustand wird das Starten schwierig oder sogar unmöglich. Wenn die Maschine nicht mehr anspringt, können Sie sie mit Jumper Cables von einem anderen Fahrzeug aus überbrücken."/>
+        <text name="input_ADS_TOGGLE_4WD" text="Antriebsmodus (4x2 / Allrad / AUTO)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Differentialsperre"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="Feststellbremse"/>
+        <text name="ads_settings_section_drivetrain" text="Antriebsstrang und Feststellbremse"/>
+        <text name="ads_drivetrainEnabled_label" text="Allrad- / Differentialsperren-Verwaltung"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Aktiviert die manuelle Steuerung der zuschaltbaren Vorderachse und der Differentialsperren bei Traktoren. Ist die Differentialverwaltung von Enhanced Vehicle aktiv, zieht sich ADS vollständig zurück und Enhanced Vehicle verwaltet den Antriebsstrang allein."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="AUTO-Antriebsmodus erlauben"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Fügt dem Antriebswahlschalter eine AUTO-Stellung hinzu: Die Vorderachse schaltet bei Radschlupf oder bei Arbeitsgeschwindigkeit unter Last automatisch zu und löst sich auf der Straße. In AUTO belassene Fahrzeuge fallen auf Allrad zurück, wenn diese Option deaktiviert wird."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Schäden durch Antriebsstrangverspannung"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Kurvenfahrten auf griffigem Untergrund mit gesperrten Differentialen verspannen den Antriebsstrang und beschädigen das Getriebe mit der Zeit. Für ein nachsichtigeres Spielerlebnis deaktivieren."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Lösegeschwindigkeit der Differentialsperre"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Die Differentialsperren lösen sich oberhalb dieser Geschwindigkeit automatisch, wie die mechanischen Klauenkupplungen eines echten Traktors, und greifen darunter wieder ein, solange sie angefordert sind."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="Feststellbremse"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Fügt allen ADS-Fahrzeugen eine Feststellbremse mit eigener Tastenbelegung hinzu. Die angezogene Bremse verankert die Maschine und ignoriert das Gaspedal."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Automatische Feststellbremse"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Zieht die Feststellbremse automatisch an, wenn der Fahrer die stehende Maschine verlässt, wie die elektrohydraulische Parkstellung moderner Traktoren."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (Vorderachse abgeschaltet)"/>
+        <text name="ads_drivetrain_mode_4wd" text="Allrad (Vorderachse zugeschaltet)"/>
+        <text name="ads_drivetrain_mode_auto" text="Allrad AUTO"/>
+        <text name="ads_drivetrain_notify_mode" text="Antriebsmodus: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Differentialsperre eingelegt"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Differentialsperre gelöst"/>
+        <text name="ads_drivetrain_notify_park_on" text="Feststellbremse angezogen"/>
+        <text name="ads_drivetrain_notify_park_off" text="Feststellbremse gelöst"/>
+        <text name="ads_drivetrain_warning_windup" text="Antriebsstrang verspannt! Differentialsperre lösen oder nicht auf hartem Boden lenken."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="Feststellbremse angezogen!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Antriebsstrangverspannung"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Sie lenken auf griffigem Boden mit eingelegter Differentialsperre. In einer Kurve legen Vorder- und Hinterräder unterschiedliche Strecken zurück, doch die gesperrten Differentiale zwingen sie zur gleichen Drehzahl: Der Antriebsstrang verspannt sich und beschädigt das Getriebe bis zum Bruch. Lösen Sie die Sperre vor Kurvenfahrten auf Straßen oder hartem Untergrund — bei echten Traktoren wird sie nur geradeaus auf weichem Boden verwendet."/>
     </texts>
 </l10n>

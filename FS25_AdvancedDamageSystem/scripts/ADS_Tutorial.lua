@@ -433,6 +433,22 @@ function ADS_Tutorial:update(dt)
                 messagedData.WHEEL_SLIP = true
                 self.messageDowntime = downtimeAfterMessage
 
+            --- driveline windup (locked differentials + steering on high-grip ground)
+            elseif not messagedData.DRIVETRAIN_WINDUP
+                and transmissionSystemEnabled
+                and isMotorStarted
+                and spec.drivetrain ~= nil
+                and spec.drivetrain.diffLockEngaged == true
+                and (tonumber(spec.drivetrain.windupStress) or 0) > ADS_Config.DRIVETRAIN.WINDUP_TUTORIAL_THRESHOLD then
+                ADS_Hud.showNotification(
+                    g_i18n:getText("ads_tutorial_drivetrain_windup_message"),
+                    0,
+                    g_i18n:getText("ads_tutorial_drivetrain_windup_title"),
+                    true
+                )
+                messagedData.DRIVETRAIN_WINDUP = true
+                self.messageDowntime = downtimeAfterMessage
+
             -- ==========================================================
             -- CHASSIS
             -- ==========================================================

@@ -765,5 +765,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="Parece que tus ruedas están patinando mucho. Puede que incluso estés atascado ahora mismo y no tengas ganas de consejos, pero tenlo en cuenta: el patinaje de ruedas es uno de los factores más destructivos para la transmisión y acercará bastante tu próxima visita al taller."/>
         <text name="ads_tutorial_battery_low_title" text="Batería débil"/>
         <text name="ads_tutorial_battery_low_message" text="Ups, parece que la batería está a punto de agotarse. Esto puede ocurrir después de un largo periodo parada, por frío intenso o debido a fallos en el sistema eléctrico.&#10;&#10;Con poca carga, arrancar será difícil o incluso imposible. Si no consigues ponerla en marcha, puedes arrancarla con pinzas desde otro vehículo usando los Cables de Arranque."/>
+        <text name="input_ADS_TOGGLE_4WD" text="Modo de tracción (4x2 / 4WD / AUTO)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Bloqueo del diferencial"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="Freno de estacionamiento"/>
+        <text name="ads_settings_section_drivetrain" text="Transmisión y freno de estacionamiento"/>
+        <text name="ads_drivetrainEnabled_label" text="Gestión 4WD / bloqueo de diferencial"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Activa el control manual del eje delantero conectable y de los bloqueos de diferencial en tractores. Si la gestión de diferenciales de Enhanced Vehicle está activa, ADS se retira por completo y Enhanced Vehicle gestiona la transmisión por su cuenta."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="Permitir modo AUTO"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Añade una posición AUTO: el eje delantero se conecta automáticamente con patinaje o a velocidad de trabajo bajo carga, y se desconecta en carretera. Los vehículos dejados en AUTO vuelven a 4WD al desactivar esta opción."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Daños por torsión de la transmisión"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Girar sobre superficies con buen agarre con los diferenciales bloqueados tensa la transmisión y la daña con el tiempo. Desactívalo para una experiencia más permisiva."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Velocidad de desbloqueo del diferencial"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Los bloqueos de diferencial se sueltan automáticamente por encima de esta velocidad, como los embragues de garras de un tractor real, y se reactivan por debajo mientras estén solicitados."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="Freno de estacionamiento"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Añade un freno de estacionamiento a todos los vehículos ADS, con su propia tecla. El freno accionado inmoviliza la máquina e ignora el acelerador."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Freno de estacionamiento automático"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Acciona automáticamente el freno de estacionamiento cuando el operador abandona la máquina detenida, como la posición de aparcamiento electrohidráulica de los tractores modernos."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (eje delantero desconectado)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4WD (eje delantero conectado)"/>
+        <text name="ads_drivetrain_mode_auto" text="4WD AUTO"/>
+        <text name="ads_drivetrain_notify_mode" text="Modo de tracción: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Bloqueo de diferencial activado"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Bloqueo de diferencial liberado"/>
+        <text name="ads_drivetrain_notify_park_on" text="Freno de estacionamiento accionado"/>
+        <text name="ads_drivetrain_notify_park_off" text="Freno de estacionamiento liberado"/>
+        <text name="ads_drivetrain_warning_windup" text="¡Transmisión en torsión! Suelta el bloqueo del diferencial o no gires sobre suelo duro."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="¡Freno de estacionamiento accionado!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Torsión de la transmisión"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Estás girando sobre suelo con buen agarre con el bloqueo de diferencial activado. En una curva, las ruedas delanteras y traseras recorren distancias diferentes, pero los diferenciales bloqueados las obligan a girar a la misma velocidad: la transmisión se tensa y se daña hasta romperse. Suelta el bloqueo antes de girar en carretera — en los tractores reales solo se usa en línea recta sobre suelo blando."/>
     </texts>
 </l10n>

@@ -32,6 +32,21 @@ function ADS_Hud:new()
         icon = g_overlayManager:createOverlay("ads_DashboardHud.wheelSlip", 0, 0, 0, 0)
     }
 
+    -- 4WD / diff lock indicator
+    self.drivetrainHud = {
+        icons = {
+            drivelineOpen    = { overlay = g_overlayManager:createOverlay("ads_DashboardHud.drivelineOpen", 0, 0, 0, 0),    aspect = 45 / 59, height = 21 },
+            drivelineEngaged = { overlay = g_overlayManager:createOverlay("ads_DashboardHud.drivelineEngaged", 0, 0, 0, 0), aspect = 45 / 59, height = 21 },
+            diffLockCenter   = { overlay = g_overlayManager:createOverlay("ads_DashboardHud.diffLockCenter", 0, 0, 0, 0),   aspect = 44 / 59, height = 21 },
+            diffLockRear     = { overlay = g_overlayManager:createOverlay("ads_DashboardHud.diffLockRear", 0, 0, 0, 0),     aspect = 44 / 59, height = 21 }
+        }
+    }
+
+    -- Parking brake indicator
+    self.parkBrakeHud = {
+        icon = g_overlayManager:createOverlay("ads_DashboardHud.parkBrake", 0, 0, 0, 0)
+    }
+
     self.indicators = {
         engine = {
             name = 'engine',
@@ -800,6 +815,23 @@ function ADS_Hud:storeScaledValues()
     local wheelSlipWidth, wheelSlipHeight = self:scalePixelValuesToScreenVector(24, 16)
     self.wheelSlipHud.icon:setDimension(wheelSlipWidth, wheelSlipHeight)
 
+    self.drivetrainHud.centerX, self.drivetrainHud.centerY = self:scalePixelValuesToScreenVector(-59, -65)
+    self.drivetrainHud.autoBadgeOffsetX, self.drivetrainHud.autoBadgeOffsetY = self:scalePixelValuesToScreenVector(-59, -80)
+    self.drivetrainHud.autoBadgeSize = self:scalePixelToScreenHeight(7)
+    for _, iconData in pairs(self.drivetrainHud.icons) do
+        local iconWidth, iconHeight = self:scalePixelValuesToScreenVector(iconData.height * iconData.aspect, iconData.height)
+        iconData.overlay:setDimension(iconWidth, iconHeight)
+        iconData.width2, iconData.height2 = iconWidth * 0.5, iconHeight * 0.5
+    end
+
+    if self.parkBrakeHud ~= nil and self.parkBrakeHud.icon ~= nil then
+        local parkWidth, parkHeight = self:scalePixelValuesToScreenVector(19, 15)
+        self.parkBrakeHud.icon:setDimension(parkWidth, parkHeight)
+        self.parkBrakeHud.width = parkWidth
+        self.parkBrakeHud.height = parkHeight
+        self.parkBrakeHud.gapX = self:scalePixelToScreenWidth(6)
+    end
+
     self.engineTempText.offsetX, self.engineTempText.offsetY = self:scalePixelValuesToScreenVector(0, 36)
 	self.engineTempText.size = self:scalePixelToScreenHeight(9)
 
@@ -995,7 +1027,11 @@ function ADS_Hud:drawDashboard()
         end
     end
 
-    self:drawWheelSlipDisplay(spec, posX, posY)
+    if ADS_Drivetrain == nil or not ADS_Drivetrain.getIsRoadVehicleCategory(vehicle) then
+        self:drawWheelSlipDisplay(spec, posX, posY)
+    end
+    self:drawDrivetrainDisplay(vehicle, spec, posX, posY)
+    self:drawParkBrakeDisplay(vehicle)
 
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
     setTextBold(false)
@@ -1023,6 +1059,109 @@ function ADS_Hud:drawWheelSlipDisplay(spec, posX, posY)
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
     setTextBold(false)
     setTextColor(1, 1, 1, 1)
+end
+
+function ADS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
+    if self.drivetrainHud == nil or ADS_Drivetrain == nil then
+        return
+    end
+
+    if not ADS_Drivetrain.getIsAvailable(vehicle) then
+        return
+    end
+
+    local state = ADS_Drivetrain.getState(vehicle)
+    if state == nil then
+        return
+    end
+
+    local colors = ADS_Breakdowns.COLORS
+    local iconId, color
+    local showAutoBadge = false
+
+    if state.diffLockEngaged then
+        -- Locked driveline: center-lock schematic in 4WD, rear-lock schematic in 4x2.
+        local fourWheelDrive = state.driveMode == ADS_Drivetrain.MODE.FOUR_WD
+            or (state.driveMode == ADS_Drivetrain.MODE.AUTO and state.autoEngaged)
+        iconId = (fourWheelDrive and ADS_Drivetrain.getHasCenterDifferential(vehicle)) and "diffLockCenter" or "diffLockRear"
+        color = colors.WARNING
+
+        local windupStress = tonumber(state.windupStress) or 0
+        if windupStress > ADS_Config.DRIVETRAIN.WINDUP_CRITICAL_THRESHOLD then
+            -- Blinking critical while the driveline is winding up.
+            local blinkOn = math.floor((g_time or 0) / 250) % 2 == 0
+            color = blinkOn and colors.CRITICAL or colors.WARNING
+        end
+    else
+        if not ADS_Drivetrain.getHasCenterDifferential(vehicle) then
+            return -- single-axle machine without lock engaged: nothing to show
+        end
+        if state.driveMode == ADS_Drivetrain.MODE.TWO_WD then
+            iconId = "drivelineOpen"
+            color = {1, 1, 1, 0.85}
+        elseif state.driveMode == ADS_Drivetrain.MODE.FOUR_WD then
+            iconId = "drivelineEngaged"
+            color = ADS_Hud.COLOR_GAME_GREEN
+        else -- AUTO
+            iconId = state.autoEngaged and "drivelineEngaged" or "drivelineOpen"
+            color = state.autoEngaged and ADS_Hud.COLOR_GAME_GREEN or {1, 1, 1, 0.85}
+            showAutoBadge = true
+        end
+    end
+
+    local iconData = self.drivetrainHud.icons[iconId]
+    if iconData == nil then
+        return
+    end
+
+    local overlay = iconData.overlay
+    overlay:setPosition(posX + self.drivetrainHud.centerX - iconData.width2, posY + self.drivetrainHud.centerY - iconData.height2)
+    overlay:setVisible(true)
+    overlay:setColor(color[1], color[2], color[3], color[4])
+    overlay:render()
+
+    if showAutoBadge then
+        setTextAlignment(RenderText.ALIGN_CENTER)
+        setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
+        setTextBold(true)
+        setTextColor(color[1], color[2], color[3], color[4])
+        renderText(posX + self.drivetrainHud.autoBadgeOffsetX, posY + self.drivetrainHud.autoBadgeOffsetY, self.drivetrainHud.autoBadgeSize, "AUTO")
+        setTextAlignment(RenderText.ALIGN_LEFT)
+        setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+        setTextBold(false)
+        setTextColor(1, 1, 1, 1)
+    end
+end
+
+function ADS_Hud:drawParkBrakeDisplay(vehicle)
+    if self.parkBrakeHud == nil or self.parkBrakeHud.icon == nil then
+        return
+    end
+    if not ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED or ADS_Drivetrain == nil then
+        return
+    end
+
+    local state = ADS_Drivetrain.getState(vehicle)
+    if state == nil or state.parkExternallyManaged then
+        return -- EV's own parking brake (and HUD) takes over
+    end
+
+    local sm = g_currentMission.hud.speedMeter
+    if sm == nil or sm.gearIcon == nil then
+        return
+    end
+
+    local gearIconX, gearIconY = sm.gearIcon:getPosition()
+    local gearIconHeight = sm.gearIcon.height or 0
+    local icon = self.parkBrakeHud.icon
+    icon:setPosition(gearIconX - self.parkBrakeHud.width - self.parkBrakeHud.gapX,
+        gearIconY + (gearIconHeight - (self.parkBrakeHud.height or 0)) * 0.5)
+    icon:setVisible(true)
+
+    local colors = ADS_Breakdowns.COLORS
+    local color = state.parkBrake and colors.CRITICAL or colors.DEFAULT
+    icon:setColor(color[1], color[2], color[3], color[4])
+    icon:render()
 end
 
 -- =====================================================================================
@@ -1574,6 +1713,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     local workprocessDbg = spec.debugData.workprocess or {}
     local serviceDbg = spec.debugData.service or {}
     local batteryDbg = spec.debugData.battery or {}
+    local drivetrainDbg = spec.debugData.drivetrain or {}
 
     local overviewLines = {}
     local serviceWearRate = serviceDbg.totalWearRate or ADS_Config.CORE.BASE_SERVICE_WEAR or 0
@@ -1633,6 +1773,21 @@ function ADS_Hud:drawActiveVehicleHUD()
         cloggingWetnessFactor
     ), {1, 1, 1, 1}, 0.95)
 
+    do
+        local drivetrainModeNames = { [0] = "4x2", [1] = "4WD", [2] = "AUTO" }
+        addLine(overviewLines, string.format(
+            "Drivetrain: ctl: %s | mode: %s | autoEng: %s | lock: %s | park: %s | windup: %.1f%% (wf: %.2f) | ext: %s",
+            tostring(drivetrainDbg.hasControl == true),
+            drivetrainModeNames[tonumber(drivetrainDbg.driveMode) or -1] or "n/a",
+            tostring(drivetrainDbg.autoEngaged == true),
+            tostring(drivetrainDbg.diffLockEngaged == true),
+            tostring(drivetrainDbg.parkBrake == true),
+            asPercent(drivetrainDbg.windupStress or 0),
+            tonumber(drivetrainDbg.windupWearFactor) or 0,
+            tostring(drivetrainDbg.externallyManaged == true)
+        ), {1, 1, 1, 1}, 0.95)
+    end
+
     local engineMaxFactor = math.max(
         engineDbg.motorLoadFactor or 0,
         engineDbg.airIntakeCloggingFactor or 0,
@@ -1646,6 +1801,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         transmissionDbg.heavyTrailerFactor or 0,
         transmissionDbg.luggingFactor or 0,
         transmissionDbg.wheelSlipFactor or 0,
+        transmissionDbg.drivetrainWindupFactor or 0,
         transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor or 0,
         transmissionDbg.hotTransFactor or 0
     ) * bcw
@@ -1768,6 +1924,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         { shortName = "htf", statKey = "htf", value = transmissionDbg.heavyTrailerFactor or 0, extraInfo = string.format("hp/%s: %.1f", transmissionDbg.heavyTrailerMassBasis or "trailer", transmissionDbg.heavyTrailerMassRatio or 0) },
         { shortName = "lf", statKey = "lf", value = transmissionDbg.luggingFactor or 0 },
         { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0, extraInfo = string.format("s: %.1f c: %.2f", asPercent(spec.wheelSlipIntensity or 0), avgTireGroundFrictionCoeff) },
+        { shortName = "dwf", statKey = "dwf", value = transmissionDbg.drivetrainWindupFactor or 0, extraInfo = string.format("w: %.1f%% lock: %s", asPercent(drivetrainDbg.windupStress or 0), tostring(drivetrainDbg.diffLockEngaged == true)) },
         { shortName = "ctf", statKey = "ctf", value = (transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor) or 0 },
         { shortName = "hotf", statKey = "hotf", value = transmissionDbg.hotTransFactor or 0 }
     })

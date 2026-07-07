@@ -3365,6 +3365,12 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
         return superFunc(vehicle, axisForward, axisSide, doHandbrake, dt)
     end
 
+    -- Parking brake: anchor the machine and ignore throttle, like a real park position.
+    if ADS_Drivetrain.getIsParkBrakeEngaged(vehicle) then
+        axisForward = 0
+        doHandbrake = true
+    end
+
     local brakeEffect = spec_ads and spec_ads.activeEffects.BRAKE_FORCE_MODIFIER
     local limpEffect = spec_ads and spec_ads.activeEffects.ENGINE_LIMP_EFFECT
     local hesitationEffect = spec_ads and spec_ads.activeEffects.ENGINE_HESITATION_CHANCE

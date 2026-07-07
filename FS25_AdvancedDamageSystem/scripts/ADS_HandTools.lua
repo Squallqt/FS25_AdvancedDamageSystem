@@ -454,7 +454,6 @@ function adsHandTools:onHeldStart()
         g_currentMission:showBlinkingWarning(string.format(g_i18n:getText("ads_jumper_cables_both_already_connected"), spec.connectedVehicleA:getFullName(), spec.connectedVehicleB:getFullName()), 2200)
     end
 
-    log_dbg("Hand tool equipped:", getToolKind(self))
 end
 
 function adsHandTools:onHeldEnd()
@@ -475,7 +474,6 @@ function adsHandTools:onHeldEnd()
     setAirResistanceSoundState(self, false)
     resetDustEmitterPosition(self)
 
-    log_dbg("Hand tool unequipped:", getToolKind(self))
 end
 
 function adsHandTools:setAirBlowerActiveServer(isActive, connection)

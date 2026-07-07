@@ -1,59 +1,33 @@
-# OS generated files
-.DS_Store
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-.Spotlight-V100/
-.Trashes/
-._*
-
-# Editor and IDE files
-.vscode/
-.idea/
-*.code-workspace
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-*.swp
-*.swo
-*~
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Local environment files
-.env
-.env.*
-*.local
-
-# Temporary files and caches
-tmp/
-temp/
-.cache/
-.sass-cache/
-.eslintcache
-coverage/
-
-# Build outputs
-dist/
-build/
-out/
-
 # Build artifacts
 *.zip
 *.rar
 *.7z
 
-# Project-specific
-dataS_decompile/
-data_dump/
-AGENTS.md
-packMod.ps1
-FS25_*
-FS22_*
-1_other_data/
+# Giants Editor temp files
+*.cache
+*.bak
+*.tmp
+
+# System files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+
+# Development folders
+node_modules/
+build/
+dist/
+temp/
+
+# Backup files
+*~
+*.orig
+*.swp

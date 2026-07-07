@@ -25,16 +25,6 @@ ADS_InGameMenuFrame.SORT_COLUMN = {
 
 local ADS_InGameMenuFrame_mt = Class(ADS_InGameMenuFrame, TabbedMenuFrameElement)
 
-local function log_dbg(...)
-    if ADS_Config ~= nil and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_INGAME_MENU] " .. table.concat(args, " "))
-    end
-end
-
 local function getVehicleTotalCost(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
     local log = spec ~= nil and spec.maintenanceLog or nil

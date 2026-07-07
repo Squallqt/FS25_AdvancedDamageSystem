@@ -4,16 +4,6 @@ ADS_MaintenanceTwoOptionsDialog.INSTANCE = nil
 local ADS_MaintenanceTwoOptionsDialog_mt = Class(ADS_MaintenanceTwoOptionsDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
-local function log_dbg(...)
-    if ADS_Config and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_REPORT_DIALOG] " .. table.concat(args, " "))
-    end
-end
-
 function ADS_MaintenanceTwoOptionsDialog.register()
     local dialog = ADS_MaintenanceTwoOptionsDialog.new()
     g_gui:loadGui(modDirectory .. "gui/ADS_MaintenanceTwoOptionsDialog.xml", "ADS_MaintenanceTwoOptionsDialog", dialog)
@@ -122,7 +112,6 @@ end
 
 function ADS_MaintenanceTwoOptionsDialog:updateScreen()
     if self.vehicle == nil then return end
-    log_dbg("Updating log Screen...")
 
     local spec = self.vehicle.spec_AdvancedDamageSystem
 

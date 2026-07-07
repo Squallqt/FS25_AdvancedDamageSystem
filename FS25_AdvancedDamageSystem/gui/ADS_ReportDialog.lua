@@ -357,7 +357,6 @@ end
 
 function ADS_ReportDialog:updateScreen()
     if self.vehicle == nil then return end
-    log_dbg("Updating log Screen...")
     local spec = self.vehicle.spec_AdvancedDamageSystem
 
     self.overallAssessmentData = {}

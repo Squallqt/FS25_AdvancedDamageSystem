@@ -757,5 +757,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="On dirait que vos roues patinent fortement. Vous êtes peut-être même déjà enlisé et peu réceptif aux conseils, mais gardez cela en tête : le patinage des roues est l'un des facteurs les plus destructeurs pour la transmission et rapprochera nettement votre prochaine visite à l'atelier."/>
         <text name="ads_tutorial_battery_low_title" text="Batterie faible"/>
         <text name="ads_tutorial_battery_low_message" text="Oups, la batterie semble sur le point de se décharger complètement. Cela peut arriver après une longue période d'immobilisation, en cas de grand froid ou à cause de défauts du système électrique.&#10;&#10;Avec une faible charge, le démarrage sera difficile, voire impossible. Si vous ne parvenez pas à démarrer, vous pouvez faire un démarrage assisté depuis un autre véhicule avec les Jumper Cables."/>
+        <text name="input_ADS_TOGGLE_4WD" text="Mode de transmission (4x2 / 4RM / AUTO)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Blocage de différentiel"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="Frein de parking"/>
+        <text name="ads_settings_section_drivetrain" text="Transmission et frein de parking"/>
+        <text name="ads_drivetrainEnabled_label" text="Gestion 4RM / blocage de différentiel"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Active le contrôle manuel du pont avant moteur et des blocages de différentiel sur les tracteurs. Si la gestion des différentiels d'Enhanced Vehicle est active, ADS s'efface complètement et Enhanced Vehicle gère seul la transmission."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="Autoriser le mode AUTO"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Ajoute une position AUTO au sélecteur : le pont avant s'engage automatiquement en cas de patinage ou à vitesse de travail sous charge, et se libère sur route. Les véhicules laissés en AUTO repassent en 4RM quand cette option est désactivée."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Dégâts de contrainte de transmission"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Braquer sur une surface adhérente avec les différentiels bloqués met la transmission sous contrainte (wind-up) et l'endommage progressivement. Désactivez pour une expérience plus permissive."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Vitesse de déverrouillage du différentiel"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Les blocages de différentiel se libèrent automatiquement au-dessus de cette vitesse, comme les crabots mécaniques d'un vrai tracteur, et se réengagent en dessous tant qu'ils sont demandés."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="Frein de parking"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Ajoute un frein de parking à tous les véhicules ADS, commandé par sa propre touche. Le frein engagé immobilise la machine et ignore l'accélérateur."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Frein de parking automatique"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Engage automatiquement le frein de parking quand l'opérateur quitte la machine à l'arrêt, comme la position parking électro-hydraulique des tracteurs modernes."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (pont avant désengagé)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4RM (pont avant engagé)"/>
+        <text name="ads_drivetrain_mode_auto" text="4RM AUTO"/>
+        <text name="ads_drivetrain_notify_mode" text="Mode de transmission : %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Blocage de différentiel engagé"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Blocage de différentiel libéré"/>
+        <text name="ads_drivetrain_notify_park_on" text="Frein de parking serré"/>
+        <text name="ads_drivetrain_notify_park_off" text="Frein de parking desserré"/>
+        <text name="ads_drivetrain_warning_windup" text="Transmission sous contrainte ! Libérez le blocage de différentiel ou cessez de braquer sur sol dur."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="Frein de parking serré !"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Contrainte de transmission (wind-up)"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Vous braquez sur un sol adhérent avec le blocage de différentiel engagé. Dans une courbe, les roues avant et arrière parcourent des distances différentes, mais les différentiels bloqués les forcent à tourner à la même vitesse : la transmission se met sous contrainte et s'endommage jusqu'à la casse. Libérez le blocage avant de braquer sur route ou sol dur — sur un vrai tracteur, il ne s'utilise qu'en ligne droite sur sol meuble."/>
     </texts>
 </l10n>

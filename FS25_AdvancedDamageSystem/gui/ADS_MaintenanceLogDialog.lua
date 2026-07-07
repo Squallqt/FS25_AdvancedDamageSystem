@@ -4,16 +4,6 @@ ADS_MaintenanceLogDialog.INSTANCE = nil
 local ADS_MaintenanceLogDialog_mt = Class(ADS_MaintenanceLogDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
-local function log_dbg(...)
-    if ADS_Config and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print(" " .. table.concat(args, " "))
-    end
-end
-
 local function isLoggableRepairBreakdownId(breakdownId)
     return breakdownId ~= nil and breakdownId ~= "GENERAL_WEAR"
 end
@@ -131,7 +121,6 @@ end
 
 function ADS_MaintenanceLogDialog:updateScreen()
     if self.vehicle == nil then return end
-    log_dbg("Updating log Screen...")
 
     local spec = self.vehicle.spec_AdvancedDamageSystem
     self.logDataAll = spec.maintenanceLog or {}

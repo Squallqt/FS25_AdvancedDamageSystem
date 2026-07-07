@@ -4,16 +4,6 @@ ADS_MaintenanceThreeOptionsDialog.INSTANCE = nil
 local ADS_MaintenanceThreeOptionsDialog_mt = Class(ADS_MaintenanceThreeOptionsDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
-local function log_dbg(...)
-    if ADS_Config and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_REPORT_DIALOG] " .. table.concat(args, " "))
-    end
-end
-
 function ADS_MaintenanceThreeOptionsDialog.register()
     local dialog = ADS_MaintenanceThreeOptionsDialog.new()
     g_gui:loadGui(modDirectory .. "gui/ADS_MaintenanceThreeOptionsDialog.xml", "ADS_MaintenanceThreeOptionsDialog", dialog)
@@ -176,7 +166,6 @@ end
 
 function ADS_MaintenanceThreeOptionsDialog:updateScreen()
     if self.vehicle == nil then return end
-    log_dbg("Updating log Screen...")
 
     local spec = self.vehicle.spec_AdvancedDamageSystem
     local workshopType = ADS_WorkshopDialog.INSTANCE ~= nil and ADS_WorkshopDialog.INSTANCE.workshopType or spec.workshopType

@@ -549,6 +549,57 @@ ADS_Config = {
         JUMPER_CABLES_MAX_CONNECTION_DISTANCE = 12.0,
     },
 
+    -- ====================================================================================
+    -- DRIVETRAIN (4WD / DIFFERENTIAL LOCK) PARAMETERS
+    -- Runtime management of the physics differentials declared by vehicle.xml.
+    -- ====================================================================================
+    DRIVETRAIN = {
+        -- Master switch for the whole 4WD / diff lock feature.
+        ENABLED = true,
+        -- Allows the AUTO drive mode (front axle engages on slip / low speed under load).
+        ALLOW_AUTO_MODE = true,
+        -- Differential locks disengage automatically above this speed (km/h), like the
+        -- mechanical dog clutches of a real tractor. Also gates re-engagement.
+        DIFFLOCK_AUTO_RELEASE_SPEED = 25,
+
+        -- AUTO mode calibration
+        AUTO_ENGAGE_SLIP_THRESHOLD = 0.12,   -- wheelSlipIntensity above which 4WD engages
+        AUTO_ENGAGE_LOAD_THRESHOLD = 0.55,   -- motor load for low-speed engagement
+        AUTO_ENGAGE_SPEED = 13,              -- km/h: below = working speed, engage under load
+        AUTO_DISENGAGE_SPEED = 20,           -- km/h: above (and no slip) = road, disengage
+        AUTO_HYSTERESIS_MS = 2000,           -- delay before AUTO releases the front axle
+
+        -- Physics application
+        -- Multiplier applied to the XML maxSpeedRatio to make a differential truly OPEN.
+        -- Vanilla axle values (~1.3) are nearly locked; a realistic unlocked differential
+        -- must let one wheel spin freely, otherwise locking is imperceptible.
+        OPEN_BIAS_FACTOR = 1000.0,
+        LOCKED_BIAS = 1.0,                   -- maxSpeedRatio for a locked differential
+
+        -- Driveline windup damage (4WD / locked diffs + steering + high-grip surface)
+        WINDUP_DAMAGE_ENABLED = true,
+        WINDUP_STEER_THRESHOLD = 0.12,       -- rad: minimum steering angle to wind up
+        WINDUP_FRICTION_THRESHOLD = 0.85,    -- tire/ground friction: hard surfaces only
+        WINDUP_4WD_FACTOR = 0.15,            -- MFWD-only binding is mild compared to locked diffs
+        WINDUP_4WD_MAX_STRESS = 0.18,        -- keep MFWD-only windup below warning / breakage territory
+        WINDUP_ACCUMULATION_RATE = 0.09,     -- stress per second at full factors
+        WINDUP_RELEASE_RATE = 0.25,          -- stress release per second
+        WINDUP_WEAR_MULTIPLIER = 12.0,       -- additive transmission wear factor at full stress
+        WINDUP_INSTANT_DAMAGE = 0.03,        -- transmission condition lost when the driveline lets go
+        WINDUP_TUTORIAL_THRESHOLD = 0.05,    -- first-time tutorial before meaningful wear builds up
+        WINDUP_WARNING_THRESHOLD = 0.22,     -- repeated warning, aligned with average stress warning
+        WINDUP_CRITICAL_THRESHOLD = 0.44,    -- blinking HUD critical, aligned with average stress critical
+
+        EXCLUDED_CATEGORIES = {
+            CARS = true,
+            TRUCKS = true
+        },
+
+        -- Parking brake
+        PARKBRAKE_ENABLED = true,
+        PARKBRAKE_AUTO_MODE = false          -- opt-in: engages automatically when the operator leaves the machine
+    },
+
     ELECTRICAL = {
         BATTERY_NOMINAL_CAPACITY = 150,
         BATTERY_USABLE_CAPACITY_FACTOR = 0.1,
@@ -698,6 +749,7 @@ ADS_Config = {
         CVT_OVERHEAT = false,
         HEAVY_TRAILER = false,
         CHASSIS_VIBRATION = false,
+        DRIVETRAIN_WINDUP = false,
         STEERING = false,
         CRANKING = false,
         BATTERY_LOW = false,
@@ -784,7 +836,6 @@ function ADS_Config.saveToXMLFile()
     end
 
     local xmlFileName = savegameFolderPath .. "/" .. ADS_Config.savegameFile
-    log_dbg("SAVE to:", xmlFileName)
 
     local xmlFile = createXMLFile("advancedDamageSystem", xmlFileName, "advancedDamageSystem")
     if xmlFile == nil or xmlFile == 0 then
@@ -845,6 +896,14 @@ function ADS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE",        ADS_Config.FIELD_CARE.RAYCAST_DISTANCE)
     setXMLFloat(xmlFile, root .. ".JUMPER_CABLES_MAX_CONNECTION_DISTANCE", ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE)
 
+    -- DRIVETRAIN
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_ENABLED",           ADS_Config.DRIVETRAIN.ENABLED)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_ALLOW_AUTO_MODE",   ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_WINDUP_DAMAGE",     ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED)
+    setXMLFloat(xmlFile, root .. ".DRIVETRAIN_DIFFLOCK_RELEASE_SPEED", ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED", ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO",    ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE)
+
     -- DEBUG
     setXMLBool (xmlFile, root .. ".DEBUG_MODE",             ADS_Config.DEBUG)
     setXMLBool (xmlFile, root .. ".TUTORIAL_MODE",          ADS_Config.TUTORIAL_MODE)
@@ -864,11 +923,8 @@ end
 -- ============================================================
 function ADS_Config.loadFromXMLFile()
     if ADS_Config._loaded then
-        log_dbg("LOAD SKIP - already loaded")
         return
     end
-
-    log_dbg("LOAD - loadFromXMLFile() called")
 
     if g_currentMission == nil then
         log_dbg("LOAD SKIP - g_currentMission is nil")
@@ -886,10 +942,8 @@ function ADS_Config.loadFromXMLFile()
     end
 
     local xmlFileName = savegameFolderPath .. "/" .. ADS_Config.savegameFile
-    log_dbg("LOAD from:", xmlFileName)
 
     if not fileExists(xmlFileName) then
-        log_dbg("LOAD - file not found, using defaults")
         return
     end
 
@@ -904,11 +958,9 @@ function ADS_Config.loadFromXMLFile()
 
     local savedVersion = getXMLFloat(xmlFile, root .. ".VER")
     if savedVersion == nil then
-        log_dbg("LOAD - no VER in file, using defaults")
         delete(xmlFile)
         return
     end
-    log_dbg("LOAD - saved VER=", tostring(savedVersion), "current VER=", tostring(ADS_Config.VER))
 
     -- CORE
     v = getXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR")
@@ -1038,6 +1090,25 @@ function ADS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".JUMPER_CABLES_MAX_CONNECTION_DISTANCE")
     if v ~= nil then ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE = v end
 
+    -- DRIVETRAIN
+    v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_ENABLED")
+    if v ~= nil then ADS_Config.DRIVETRAIN.ENABLED = v end
+
+    v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_ALLOW_AUTO_MODE")
+    if v ~= nil then ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = v end
+
+    v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_WINDUP_DAMAGE")
+    if v ~= nil then ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = v end
+
+    v = getXMLFloat(xmlFile, root .. ".DRIVETRAIN_DIFFLOCK_RELEASE_SPEED")
+    if v ~= nil then ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = math.clamp(v, 5, 60) end
+
+    v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED")
+    if v ~= nil then ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = v end
+
+    v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO")
+    if v ~= nil then ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = v end
+
     -- DEBUG
     v = getXMLBool(xmlFile, root .. ".DEBUG_MODE")
     if v ~= nil then ADS_Config.DEBUG = v end
@@ -1057,5 +1128,4 @@ function ADS_Config.loadFromXMLFile()
 
     delete(xmlFile)
     ADS_Config._loaded = true
-    log_dbg("LOAD OK - BASE_SERVICE_WEAR=", tostring(ADS_Config.CORE.BASE_SERVICE_WEAR))
 end

@@ -172,6 +172,7 @@ source(g_currentModDirectory .. "scripts/core/ADS_Thermal.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Electrical.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Breakdowns.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Consumptables.lua")
+source(g_currentModDirectory .. "scripts/core/ADS_Drivetrain.lua")
 
 AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
     expiredServiceFactor = "sf",
@@ -185,6 +186,7 @@ AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
     heavyTrailerFactor = "htf",
     luggingFactor = "lf",
     wheelSlipFactor = "wsf",
+    drivetrainWindupFactor = "dwf",
     coldTransFactor = "ctf",
     hotTransFactor = "hotf",
     -- hydraulic
@@ -966,7 +968,6 @@ end
 -- ==========================================================
 
 function AdvancedDamageSystem.initSpecialization()
-    log_dbg("initSpecialization called.")
     local schema = Vehicle.xmlSchema
     local schemaSavegame = Vehicle.xmlSchemaSavegame
 
@@ -1019,6 +1020,9 @@ function AdvancedDamageSystem.initSpecialization()
     schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressStart", "Pending repair per-system stress start values")
     schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressTarget", "Pending repair per-system stress target values")
     schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressStartRatio", "Pending repair per-system stress start ratios")
+    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#driveMode", "Drivetrain mode (0=4x2, 1=4WD, 2=AUTO)")
+    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#diffLockRequested", "Differential lock requested")
+    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#parkBrake", "Parking brake engaged")
 
     local logKey = baseKey .. ".maintenanceLog.entry(?)"
     schemaSavegame:register(XMLValueType.INT,    logKey .. "#id", "Entry ID")
@@ -1056,7 +1060,6 @@ function AdvancedDamageSystem.initSpecialization()
 end
 
 function AdvancedDamageSystem.registerEventListeners(vehicleType)
-    log_dbg("registerEventListeners called for vehicleType:", vehicleType.name)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onDelete", AdvancedDamageSystem)
@@ -1089,7 +1092,6 @@ function AdvancedDamageSystem.registerOverwrittenFunctions(vehicleType)
 end
 
 function AdvancedDamageSystem.registerFunctions(vehicleType)
-    log_dbg("registerFunctions called for vehicleType:", vehicleType.name)
     SpecializationUtil.registerFunction(vehicleType, "adsUpdate", AdvancedDamageSystem.adsUpdate)
     SpecializationUtil.registerFunction(vehicleType, "updateVehicleStateSnapshot", AdvancedDamageSystem.updateVehicleStateSnapshot)
     SpecializationUtil.registerFunction(vehicleType, "setADSUserExcluded", AdvancedDamageSystem.setADSUserExcluded)
@@ -1151,6 +1153,8 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     SpecializationUtil.registerFunction(vehicleType, "establishExternalPowerConnection", ADS_Electrical.establishExternalPowerConnection)
     SpecializationUtil.registerFunction(vehicleType, "clearExternalPowerConnection", ADS_Electrical.clearExternalPowerConnection)
     
+    SpecializationUtil.registerFunction(vehicleType, "updateDrivetrain", ADS_Drivetrain.updateDrivetrain)
+
     SpecializationUtil.registerFunction(vehicleType, "updateEngineConsumables", ADS_Consumptables.updateEngineConsumables)
     SpecializationUtil.registerFunction(vehicleType, "updateRadiatorClogging", ADS_Consumptables.updateRadiatorClogging)
     SpecializationUtil.registerFunction(vehicleType, "updateAirIntakeClogging", ADS_Consumptables.updateAirIntakeClogging)
@@ -1248,6 +1252,9 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
         local entry = spec.maintenanceLog[i]
         streamWriteString(streamId, ADS_Utils.serializeMaintenanceLogEntry(entry))
     end
+
+    -- [Group 11] Drivetrain
+    ADS_Drivetrain.writeStreamState(self, streamId)
 
 end
 
@@ -1350,6 +1357,9 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
         end
     end
 
+    -- [Group 11] Drivetrain
+    ADS_Drivetrain.readStreamState(self, streamId)
+
     self:recalculateAndApplyEffects()
     self:recalculateAndApplyIndicators()
 end
@@ -1423,6 +1433,11 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteInt32(streamId, spec.pendingProgressStepIndex or 0)
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressTotalTime, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressElapsedTime, 0, 0))
+        end
+
+        -- [11] Drivetrain
+        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_drivetrain) ~= 0) then
+            ADS_Drivetrain.writeStreamState(self, streamId)
         end
 
         -- [10] Tutorial data (MP clients only)
@@ -1548,6 +1563,11 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec.pendingProgressElapsedTime = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
         end
 
+        -- [11] Drivetrain
+        if streamReadBool(streamId) then
+            ADS_Drivetrain.readStreamState(self, streamId)
+        end
+
         -- [10] Tutorial data (MP clients only)
         if streamReadBool(streamId) then
             local fuelState = spec.fuelState
@@ -1590,7 +1610,6 @@ end
 -- ============================================================
 
 function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
-    log_dbg("saveToXMLFile called for vehicle:", self:getFullName(), "with key:", key)
     local spec = self.spec_AdvancedDamageSystem
     if spec ~= nil and not spec.isExcludedByDefault then
         xmlFile:setValue(key .. "#isExcludedByUser", spec.isExcludedByUser == true)
@@ -1650,6 +1669,8 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#pendingRepairSystemStressTarget", ADS_Utils.serializeNumericMap(spec.pendingRepairSystemStressTarget))
         xmlFile:setValue(key .. "#pendingRepairSystemStressStartRatio", ADS_Utils.serializeNumericMap(spec.pendingRepairSystemStressStartRatio))
 
+        ADS_Drivetrain.saveToXMLFile(self, xmlFile, key)
+
         if spec.maintenanceLog and #spec.maintenanceLog > 0 then
             for i, entry in ipairs(spec.maintenanceLog) do
                 local entryKey = string.format("%s.maintenanceLog.entry(%d)", key, i - 1)
@@ -1701,14 +1722,10 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
             end
         end
         
-        log_dbg("Saved service:", spec.serviceLevel, "condition:", spec.conditionLevel)
-        log_dbg("Saved breakdowns string:", breakdownString)
     end
 end
 
 function AdvancedDamageSystem:onLoad(savegame)
-    log_dbg("onLoad called for vehicle:", self:getFullName())
-    
     self.spec_AdvancedDamageSystem.isExcludedVehicle = false
     self.spec_AdvancedDamageSystem.isExcludedByDefault = false
     self.spec_AdvancedDamageSystem.isExcludedByUser = false
@@ -1786,6 +1803,9 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.startButtonDown = false
     self.spec_AdvancedDamageSystem.startButtonHeld = false
     self.spec_AdvancedDamageSystem.startButtonUp = false
+
+    self.spec_AdvancedDamageSystem.drivetrainActionEvents = {}
+    ADS_Drivetrain.initSpec(self)
 
     self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
     self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
@@ -2189,11 +2209,11 @@ function AdvancedDamageSystem:onLoad(savegame)
         self.spec_AdvancedDamageSystem.adsDirtyFlag_breakdowns = self:getNextDirtyFlag()        -- [8] activeBreakdowns
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceProgress = self:getNextDirtyFlag()   -- [9] pendingProgressElapsedTime, pendingProgressTotalTime, pendingProgressStepIndex
         self.spec_AdvancedDamageSystem.adsDirtyFlag_tutorialData = self:getNextDirtyFlag()        -- [10] tutorial-only data for MP clients
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_drivetrain = self:getNextDirtyFlag()          -- [11] driveMode, autoEngaged, diffLockRequested, diffLockEngaged, windupStress
     end
 end
 
 function AdvancedDamageSystem:onPostLoad(savegame)
-    log_dbg("onPostLoad called for vehicle:", self:getFullName())
     local spec = self.spec_AdvancedDamageSystem
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
 
@@ -2208,8 +2228,6 @@ function AdvancedDamageSystem:onPostLoad(savegame)
 
     if spec ~= nil and savegame ~= nil then
         local key = savegame.key .. ".AdvancedDamageSystem"
-
-        log_dbg("Attempting to load from key:", key)
 
         spec.serviceLevel = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#service", spec.serviceLevel), spec.serviceLevel or 1.0, 0.001)
         spec.conditionLevel = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#condition", spec.conditionLevel), spec.conditionLevel or 1.0, 0.001, 1.0)
@@ -2268,6 +2286,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         if spec.serviceOptionOne == "" then spec.serviceOptionOne = nil end
         if spec.serviceOptionTwo == "" then spec.serviceOptionTwo = nil end
         spec.serviceOptionThree = savegame.xmlFile:getValue(key .. "#serviceOptionThree", spec.serviceOptionThree)
+        ADS_Drivetrain.loadFromSavegame(self, savegame.xmlFile, key)
         local loadedWorkshopType = savegame.xmlFile:getValue(key .. "#workshopType", "")
         if loadedWorkshopType ~= nil and loadedWorkshopType ~= "" then
             spec.workshopType = loadedWorkshopType
@@ -2688,12 +2707,10 @@ function AdvancedDamageSystem:onPostLoad(savegame)
 end
 
 function AdvancedDamageSystem:onDelete()
-    log_dbg("onDelete called for vehicle:", self:getFullName(), "ID:", self.uniqueId)
     local spec = self.spec_AdvancedDamageSystem
 
     if spec and spec.samples then
         g_soundManager:deleteSamples(spec.samples)
-        log_dbg(" -> Sound samples deleted.")
     end
 
     if ADS_Main and ADS_Main.vehicles and self.uniqueId and ADS_Main.vehicles[self.uniqueId] then
@@ -2702,7 +2719,6 @@ function AdvancedDamageSystem:onDelete()
         end
         ADS_Main.vehicles[self.uniqueId] = nil
         ADS_Main.numVehicles = ADS_Main.numVehicles - 1
-        log_dbg(" -> Removed from ADS_Main.vehicles list.")
     end
 end
 
@@ -2784,6 +2800,8 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
     end
 
     self:clearActionEventsTable(spec.startButtonActionEvents)
+
+    ADS_Drivetrain.registerActionEvents(self, isActiveForInputIgnoreSelection)
 
     if not isActiveForInputIgnoreSelection then
         return
@@ -2896,7 +2914,6 @@ local function registerVehicle(vehicle)
             local spec = vehicle.spec_AdvancedDamageSystem
             if spec == nil then return end
 
-            log_dbg(" -> Registering vehicle in ADS_Main.vehicles list. ID:", vehicle.uniqueId)
             --- Registration in ADS_Main.vehicles
             ADS_Main.vehicles[vehicle.uniqueId] = vehicle
             ADS_Main.numVehicles = ADS_Main.numVehicles + 1
@@ -3484,7 +3501,10 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
 
     --- syncing tutorial messages
     syncTutorialMessages(self, updateDt)
-    
+
+    --- 4WD / differential lock management
+    self:updateDrivetrain(updateDt)
+
     --- just in case, reset damage amount to 0 if it's not
     if self.isServer and self.getDamageAmount ~= nil and self:getDamageAmount() ~= 0 then self:setDamageAmount(0.0, true) end
     
@@ -5261,6 +5281,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     systemData.pullOverloadTimer = tonumber(systemData.pullOverloadTimer) or 0
     local vehicleHaveCVT = hasCVTTransmission(self)
     local expiredServiceFactor, pullOverloadFactor, luggingFactor, heavyTrailerFactor, wheelSlipFactor,  coldTransFactor, hotTransFactor = 0, 0, 0, 0, 0, 0, 0
+    local drivetrainWindupFactor = 0
     local wearRate = 1.0
     local brakeState = spec.chassisBrakeState or {}
     local isTruck = spec.isTruck == true
@@ -5399,6 +5420,12 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
              spec.wheelSlipTutorialTimer = math.max((spec.wheelSlipTutorialTimer or 0) - dt, 0)
         end
 
+        -- driveline windup factor (locked differentials + steering on grippy ground)
+        drivetrainWindupFactor = ADS_Drivetrain.getWindupWearFactor(self)
+        if drivetrainWindupFactor > 0 then
+            wearRate = wearRate + drivetrainWindupFactor
+        end
+
         if vehicleHaveCVT then
             -- cold CVT factor
             if (spec.transmissionTemperature or -99) < C.COLD_TRANSMISSION_THRESHOLD and rpmLoad > 0.75 and not spec.isElectricVehicle and not self:getIsAIActive() then
@@ -5451,6 +5478,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         heavyTrailerMassBasis = isTruck and "gcw" or "trailer",
         luggingFactor = luggingFactor,
         wheelSlipFactor = wheelSlipFactor,
+        drivetrainWindupFactor = drivetrainWindupFactor,
         coldTransFactor = coldTransFactor,
         coldMotorFactor = coldTransFactor,
         hotTransFactor = hotTransFactor
@@ -10658,10 +10686,3 @@ addConsoleCommand("ads_debug", "Enbales/disabled ADS debug", "debug", AdvancedDa
 addConsoleCommand("ads_setConfigVar", "Sets ADS_Config variable. Usage: ads_setConfigVar <path> <value>", "setConfigVar", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_setSpecVar", "Sets ADS specialization variable on current vehicle. Usage: ads_setSpecVar <path> <value>", "setSpecVar", AdvancedDamageSystem.ConsoleCommands)
 addConsoleCommand("ads_printSpecVar", "Prints ADS specialization variable on current vehicle. Usage: ads_printSpecVar <path>", "printSpecVar", AdvancedDamageSystem.ConsoleCommands)
-
-
-
-
-
-
-

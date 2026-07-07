@@ -767,5 +767,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="Görünüşe göre tekerlekleriniz ciddi şekilde kayıyor. Şu anda sıkışmış durumda olabilirsiniz ve tavsiye dinleyecek havada olmayabilirsiniz, ancak şunu unutmayın: Tekerlek kayması, şanzıman için en yıkıcı faktörlerden biridir ve bir sonraki servis ziyaretinizi çok daha yakına çekecektir."/>
         <text name="ads_tutorial_battery_low_title" text="Pil Zayıf"/>
         <text name="ads_tutorial_battery_low_message" text="Oops, görünüşe göre akü bitmek üzere. Bu durum, aracın uzun süre hareketsiz kalması, aşırı soğuk hava veya elektrik sistemindeki arızalar nedeniyle ortaya çıkabilir.&#10;&#10;Şarj seviyesi düşük olduğunda, aracı çalıştırmak zorlaşır, hatta imkansız hale gelebilir. Aracı çalıştıramıyorsanız, akü kablosu kullanarak başka bir araçtan akü şarjı yapabilirsiniz."/>
+        <text name="input_ADS_TOGGLE_4WD" text="Çekiş modu (4x2 / 4WD / OTO)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Diferansiyel kilidi"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="El freni"/>
+        <text name="ads_settings_section_drivetrain" text="Aktarma organları ve el freni"/>
+        <text name="ads_drivetrainEnabled_label" text="4WD / diferansiyel kilidi yönetimi"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Traktörlerde devreye alınabilir ön aksın ve diferansiyel kilitlerinin manuel kontrolünü etkinleştirir. Enhanced Vehicle'ın diferansiyel yönetimi aktifse ADS tamamen geri çekilir ve aktarma organlarını Enhanced Vehicle tek başına yönetir."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="OTO çekiş moduna izin ver"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Çekiş seçicisine OTO konumu ekler: ön aks, teker kayması olduğunda veya yük altında çalışma hızında otomatik devreye girer, yolda devreden çıkar. OTO'da bırakılan araçlar bu seçenek kapatıldığında 4WD'ye döner."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Aktarma organları burulma hasarı"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Diferansiyeller kilitliyken tutuşu yüksek zeminde dönmek aktarma organlarını burar ve zamanla şanzımana zarar verir. Daha hoşgörülü bir deneyim için kapatın."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Kilit bırakma hızı"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Diferansiyel kilitleri bu hızın üzerinde, gerçek bir traktörün tırnaklı kavramaları gibi otomatik olarak çözülür ve talep edildiği sürece altında yeniden devreye girer."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="El freni"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Tüm ADS araçlarına kendi tuşuyla kumanda edilen bir el freni ekler. Çekilmiş fren makineyi sabitler ve gaz girişini yok sayar."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Otomatik el freni"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Modern traktörlerin elektrohidrolik park konumu gibi, operatör duran makineden indiğinde el frenini otomatik olarak çeker."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (ön aks devre dışı)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4WD (ön aks devrede)"/>
+        <text name="ads_drivetrain_mode_auto" text="4WD OTO"/>
+        <text name="ads_drivetrain_notify_mode" text="Çekiş modu: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Diferansiyel kilidi devrede"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Diferansiyel kilidi çözüldü"/>
+        <text name="ads_drivetrain_notify_park_on" text="El freni çekildi"/>
+        <text name="ads_drivetrain_notify_park_off" text="El freni bırakıldı"/>
+        <text name="ads_drivetrain_warning_windup" text="Aktarma organları buruluyor! Diferansiyel kilidini bırakın veya sert zeminde dönmeyin."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="El freni çekili!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Aktarma organları burulması"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Diferansiyel kilidi devredeyken tutuşu yüksek zeminde dönüyorsunuz. Virajda ön ve arka tekerlekler farklı mesafeler kat eder, ancak kilitli diferansiyeller onları aynı hızda dönmeye zorlar: aktarma organları burulur ve şanzıman kırılana kadar hasar görür. Yolda veya sert zeminde dönmeden önce kilidi bırakın — gerçek traktörlerde yalnızca yumuşak zeminde düz giderken kullanılır."/>
     </texts>
 </l10n>

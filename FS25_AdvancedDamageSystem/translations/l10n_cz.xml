@@ -767,5 +767,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="Vypadá to, že vám kola silně prokluzují. Možná jste zrovna zapadli a nemáte na rady náladu, ale pamatujte na tohle: prokluz kol je jedním z nejničivějších faktorů pro převodovku a výrazně vám přiblíží příští návštěvu servisu."/>
         <text name="ads_tutorial_battery_low_title" text="Slabá baterie"/>
         <text name="ads_tutorial_battery_low_message" text="Jejda, vypadá to, že baterie brzy vypoví službu. To se může stát po dlouhém stání, kvůli silnému mrazu nebo závadě v elektroinstalaci.&#10;&#10;S nízkou kapacitou bude startování obtížné nebo i nemožné. Pokud nenastartujete, můžete stroj nahodit z jiného vozidla pomocí startovacích kabelů."/>
+        <text name="input_ADS_TOGGLE_4WD" text="Režim pohonu (4x2 / 4WD / AUTO)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Uzávěrka diferenciálu"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="Parkovací brzda"/>
+        <text name="ads_settings_section_drivetrain" text="Pohon a parkovací brzda"/>
+        <text name="ads_drivetrainEnabled_label" text="Správa 4WD / uzávěrky diferenciálu"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Zapíná ruční ovládání připojitelné přední nápravy a uzávěrek diferenciálu u traktorů. Pokud je aktivní správa diferenciálů z Enhanced Vehicle, ADS zcela ustoupí a Enhanced Vehicle spravuje pohon samostatně."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="Povolit režim AUTO"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Přidává polohu AUTO: přední náprava se připojí automaticky při prokluzu kol nebo při pracovní rychlosti pod zátěží a na silnici se odpojí. Vozidla ponechaná v AUTO se po vypnutí této volby vrátí do 4WD."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Poškození z torzního napětí pohonu"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Zatáčení na přilnavém povrchu s uzavřenými diferenciály napíná pohonné ústrojí a časem poškozuje převodovku. Vypněte pro shovívavější hru."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Rychlost uvolnění uzávěrky"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Uzávěrky diferenciálu se nad touto rychlostí automaticky uvolní, jako zubové spojky skutečného traktoru, a pod ní se znovu zapnou, dokud jsou požadovány."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="Parkovací brzda"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Přidává všem vozidlům ADS parkovací brzdu s vlastní klávesou. Zatažená brzda stroj ukotví a ignoruje plyn."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Automatická parkovací brzda"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Automaticky zatáhne parkovací brzdu, když obsluha opustí stojící stroj, jako elektrohydraulická parkovací poloha moderních traktorů."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (přední náprava odpojena)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4WD (přední náprava připojena)"/>
+        <text name="ads_drivetrain_mode_auto" text="4WD AUTO"/>
+        <text name="ads_drivetrain_notify_mode" text="Režim pohonu: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Uzávěrka diferenciálu zapnuta"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Uzávěrka diferenciálu uvolněna"/>
+        <text name="ads_drivetrain_notify_park_on" text="Parkovací brzda zatažena"/>
+        <text name="ads_drivetrain_notify_park_off" text="Parkovací brzda uvolněna"/>
+        <text name="ads_drivetrain_warning_windup" text="Torzní napětí pohonu! Uvolněte uzávěrku diferenciálu nebo nezatáčejte na tvrdém povrchu."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="Zatažená parkovací brzda!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Torzní napětí pohonu"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Zatáčíte na přilnavém povrchu se zapnutou uzávěrkou diferenciálu. V zatáčce urazí přední a zadní kola různé vzdálenosti, ale uzavřené diferenciály je nutí točit se stejnou rychlostí: pohonné ústrojí se napíná a poškozuje převodovku až k prasknutí. Před zatáčením na silnici uzávěrku uvolněte — u skutečných traktorů se používá jen v přímém směru na měkkém podkladu."/>
     </texts>
 </l10n>

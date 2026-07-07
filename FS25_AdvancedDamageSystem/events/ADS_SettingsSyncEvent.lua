@@ -52,6 +52,12 @@ function ADS_SettingsSyncEvent.new()
     self.fieldInspectionDuration   = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
     self.lubricationReducePerDay   = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY
     self.debugMode                 = ADS_Config.DEBUG
+    self.drivetrainEnabled         = ADS_Config.DRIVETRAIN.ENABLED
+    self.drivetrainAllowAutoMode   = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE
+    self.drivetrainWindupDamage    = ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED
+    self.drivetrainDiffLockReleaseSpeed = ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED
+    self.drivetrainParkBrakeEnabled = ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED
+    self.drivetrainParkBrakeAuto   = ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE
 
     return self
 end
@@ -93,6 +99,12 @@ function ADS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.fieldInspectionDuration or 6000)
     streamWriteFloat32(streamId, self.lubricationReducePerDay or 0.2)
     streamWriteBool(streamId,    self.debugMode              or false)
+    streamWriteBool(streamId,    self.drivetrainEnabled ~= false)
+    streamWriteBool(streamId,    self.drivetrainAllowAutoMode ~= false)
+    streamWriteBool(streamId,    self.drivetrainWindupDamage ~= false)
+    streamWriteFloat32(streamId, self.drivetrainDiffLockReleaseSpeed or 25)
+    streamWriteBool(streamId,    self.drivetrainParkBrakeEnabled ~= false)
+    streamWriteBool(streamId,    self.drivetrainParkBrakeAuto ~= false)
 end
 
 
@@ -132,6 +144,12 @@ function ADS_SettingsSyncEvent:readStream(streamId, connection)
     self.fieldInspectionDuration   = streamReadFloat32(streamId)
     self.lubricationReducePerDay   = streamReadFloat32(streamId)
     self.debugMode                 = streamReadBool(streamId)
+    self.drivetrainEnabled         = streamReadBool(streamId)
+    self.drivetrainAllowAutoMode   = streamReadBool(streamId)
+    self.drivetrainWindupDamage    = streamReadBool(streamId)
+    self.drivetrainDiffLockReleaseSpeed = streamReadFloat32(streamId)
+    self.drivetrainParkBrakeEnabled = streamReadBool(streamId)
+    self.drivetrainParkBrakeAuto   = streamReadBool(streamId)
 
     self:run(connection)
 end
@@ -180,6 +198,12 @@ local function applyConfig(event)
     ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION         = event.fieldInspectionDuration
     ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY        = event.lubricationReducePerDay
     ADS_Config.DEBUG                                        = event.debugMode
+    ADS_Config.DRIVETRAIN.ENABLED                           = event.drivetrainEnabled ~= false
+    ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE                   = event.drivetrainAllowAutoMode ~= false
+    ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED             = event.drivetrainWindupDamage ~= false
+    ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED       = math.clamp(tonumber(event.drivetrainDiffLockReleaseSpeed) or 25, 5, 60)
+    ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED                 = event.drivetrainParkBrakeEnabled ~= false
+    ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE               = event.drivetrainParkBrakeAuto ~= false
 
     local newConfig = {
         parkVehicle = event.parkVehicle,

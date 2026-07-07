@@ -64,6 +64,13 @@ local function buildPendingConfigFromAdsConfig()
         fieldInspectionDuration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
         lubricationReducePerDay = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY,
 
+        drivetrainEnabled = ADS_Config.DRIVETRAIN.ENABLED,
+        drivetrainAllowAutoMode = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE,
+        drivetrainWindupDamage = ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED,
+        drivetrainDiffLockReleaseSpeed = ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED,
+        drivetrainParkBrakeEnabled = ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED,
+        drivetrainParkBrakeAuto = ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE,
+
         debugMode = ADS_Config.DEBUG
     }
 end
@@ -316,6 +323,13 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
     ADS_Config.FIELD_CARE.CLOGGING_SPEED = pending.cloggingSpeed
     ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = pending.fieldInspectionDuration
     ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY = pending.lubricationReducePerDay
+
+    ADS_Config.DRIVETRAIN.ENABLED = pending.drivetrainEnabled
+    ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = pending.drivetrainAllowAutoMode
+    ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = pending.drivetrainWindupDamage
+    ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = pending.drivetrainDiffLockReleaseSpeed
+    ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = pending.drivetrainParkBrakeEnabled
+    ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = pending.drivetrainParkBrakeAuto
 
     ADS_Config.DEBUG = pending.debugMode
 
@@ -611,6 +625,46 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
         g_i18n:getText("ads_lubricationReducePerDay_tooltip")
     )
 
+    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_drivetrain"))
+
+    page.ads_drivetrainEnabled = ADS_InGameSettings:addBinaryOption(
+        page,
+        "onDrivetrainEnabledChanged",
+        g_i18n:getText("ads_drivetrainEnabled_label"),
+        g_i18n:getText("ads_drivetrainEnabled_tooltip")
+    )
+    page.ads_drivetrainAllowAutoMode = ADS_InGameSettings:addBinaryOption(
+        page,
+        "onDrivetrainAllowAutoModeChanged",
+        g_i18n:getText("ads_drivetrainAllowAutoMode_label"),
+        g_i18n:getText("ads_drivetrainAllowAutoMode_tooltip")
+    )
+    page.ads_drivetrainWindupDamage = ADS_InGameSettings:addBinaryOption(
+        page,
+        "onDrivetrainWindupDamageChanged",
+        g_i18n:getText("ads_drivetrainWindupDamage_label"),
+        g_i18n:getText("ads_drivetrainWindupDamage_tooltip")
+    )
+    page.ads_drivetrainDiffLockReleaseSpeed = ADS_InGameSettings:addMultiTextOption(
+        page,
+        "onDrivetrainDiffLockReleaseSpeedChanged",
+        ADS_InGameSettings.steps.diffLockReleaseSpeed.texts,
+        g_i18n:getText("ads_drivetrainDiffLockReleaseSpeed_label"),
+        g_i18n:getText("ads_drivetrainDiffLockReleaseSpeed_tooltip")
+    )
+    page.ads_drivetrainParkBrakeEnabled = ADS_InGameSettings:addBinaryOption(
+        page,
+        "onDrivetrainParkBrakeEnabledChanged",
+        g_i18n:getText("ads_drivetrainParkBrakeEnabled_label"),
+        g_i18n:getText("ads_drivetrainParkBrakeEnabled_tooltip")
+    )
+    page.ads_drivetrainParkBrakeAuto = ADS_InGameSettings:addBinaryOption(
+        page,
+        "onDrivetrainParkBrakeAutoChanged",
+        g_i18n:getText("ads_drivetrainParkBrakeAuto_label"),
+        g_i18n:getText("ads_drivetrainParkBrakeAuto_tooltip")
+    )
+
     ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_other"))
 
     page.ads_aiOverloadAndOverheatControl = ADS_InGameSettings:addBinaryOption(
@@ -817,6 +871,7 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     setIndex(currentPage.ads_lubricationReducePerDay, steps.lubricationReducePerDay.values, pending.lubricationReducePerDay)
     setIndex(currentPage.ads_aiWorkerTargetStress, steps.aiWorkerTargetStress.values, pending.aiWorkerTargetStress)
     setIndex(currentPage.ads_aiWorkerMinSpeed, steps.aiWorkerMinSpeed.values, pending.aiWorkerMinSpeed)
+    setIndex(currentPage.ads_drivetrainDiffLockReleaseSpeed, steps.diffLockReleaseSpeed.values, pending.drivetrainDiffLockReleaseSpeed)
     
     if tutorialOption ~= nil then
         tutorialOption:setIsChecked(pending.tutorialMode, false, false)
@@ -833,6 +888,11 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     currentPage.ads_mobileWorkshopAvailable:setIsChecked(pending.mobileAlwaysAvailable, false, false)
     currentPage.ads_ownWorkshopAvailable:setIsChecked(pending.ownAlwaysAvailable, false, false)
     currentPage.ads_mobileWorkshopRestrictions:setIsChecked(pending.mobileWorkshopRestrictionsEnabled, false, false)
+    currentPage.ads_drivetrainEnabled:setIsChecked(pending.drivetrainEnabled, false, false)
+    currentPage.ads_drivetrainAllowAutoMode:setIsChecked(pending.drivetrainAllowAutoMode, false, false)
+    currentPage.ads_drivetrainWindupDamage:setIsChecked(pending.drivetrainWindupDamage, false, false)
+    currentPage.ads_drivetrainParkBrakeEnabled:setIsChecked(pending.drivetrainParkBrakeEnabled, false, false)
+    currentPage.ads_drivetrainParkBrakeAuto:setIsChecked(pending.drivetrainParkBrakeAuto, false, false)
     currentPage.ads_debugMode:setIsChecked(pending.debugMode, false, false)
     
     setIndex(currentPage.ads_workshopOpenHour, steps.hours.values, pending.openHour)
@@ -872,6 +932,12 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     currentPage.ads_mobileWorkshopAvailable:setDisabled(disableAll)
     currentPage.ads_ownWorkshopAvailable:setDisabled(disableAll)
     currentPage.ads_mobileWorkshopRestrictions:setDisabled(disableAll)
+    currentPage.ads_drivetrainEnabled:setDisabled(disableAll)
+    currentPage.ads_drivetrainAllowAutoMode:setDisabled(disableAll or not pending.drivetrainEnabled)
+    currentPage.ads_drivetrainWindupDamage:setDisabled(disableAll or not pending.drivetrainEnabled)
+    currentPage.ads_drivetrainDiffLockReleaseSpeed:setDisabled(disableAll or not pending.drivetrainEnabled)
+    currentPage.ads_drivetrainParkBrakeEnabled:setDisabled(disableAll)
+    currentPage.ads_drivetrainParkBrakeAuto:setDisabled(disableAll or not pending.drivetrainParkBrakeEnabled)
     currentPage.ads_thermalSensitivity:setDisabled(disableAll)
     currentPage.ads_cloggingSpeed:setDisabled(disableAll)
     currentPage.ads_fieldInspectionDuration:setDisabled(disableAll)
@@ -1152,6 +1218,42 @@ end
 
 function ADS_InGameSettings:onAiWorkerMinSpeedChanged(state)
     getPendingConfig().aiWorkerMinSpeed = ADS_InGameSettings.steps.aiWorkerMinSpeed.values[state]
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onDrivetrainEnabledChanged(state)
+    getPendingConfig().drivetrainEnabled = (state == BinaryOptionElement.STATE_RIGHT)
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onDrivetrainAllowAutoModeChanged(state)
+    getPendingConfig().drivetrainAllowAutoMode = (state == BinaryOptionElement.STATE_RIGHT)
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onDrivetrainWindupDamageChanged(state)
+    getPendingConfig().drivetrainWindupDamage = (state == BinaryOptionElement.STATE_RIGHT)
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onDrivetrainDiffLockReleaseSpeedChanged(state)
+    getPendingConfig().drivetrainDiffLockReleaseSpeed = ADS_InGameSettings.steps.diffLockReleaseSpeed.values[state]
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onDrivetrainParkBrakeEnabledChanged(state)
+    getPendingConfig().drivetrainParkBrakeEnabled = (state == BinaryOptionElement.STATE_RIGHT)
+    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function ADS_InGameSettings:onDrivetrainParkBrakeAutoChanged(state)
+    getPendingConfig().drivetrainParkBrakeAuto = (state == BinaryOptionElement.STATE_RIGHT)
     ADS_InGameSettings.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
@@ -1540,6 +1642,11 @@ function ADS_InGameSettings:generateAllSteps()
 
     -- AI minimum cruise speed: 3 km/h to 10 km/h.
     self.steps.aiWorkerMinSpeed = createSteps(3, 8, 1, function(v)
+        return string.format("%d km/h", v)
+    end)
+
+    -- Diff lock auto-release speed: 10 km/h to 40 km/h.
+    self.steps.diffLockReleaseSpeed = createSteps(10, 7, 5, function(v)
         return string.format("%d km/h", v)
     end)
 

@@ -764,5 +764,33 @@
         <text name="ads_tutorial_wheel_slip_message" text="Схоже, ваші колеса сильно буксують. Можливо, ви застрягли і вам зараз не до порад, але пам’ятайте: пробуксовування — один із найгірших факторів для трансмісії, що наближає наступний візит до сервісу."/>
         <text name="ads_tutorial_battery_low_title" text="Слабкий акумулятор"/>
         <text name="ads_tutorial_battery_low_message" text="Ой, схоже, акумулятор скоро сяде. Це трапляється після тривалого простою, через сильний мороз або несправності в електромережі.&#10;&#10;При низькому заряді запуск буде важким або неможливим. Якщо не зможете завестися — скористайтеся пусковими дротами від іншої техніки."/>		
+        <text name="input_ADS_TOGGLE_4WD" text="Режим приводу (4x2 / 4WD / АВТО)"/>
+        <text name="input_ADS_TOGGLE_DIFFLOCK" text="Блокування диференціала"/>
+        <text name="input_ADS_TOGGLE_PARKBRAKE" text="Стоянкове гальмо"/>
+        <text name="ads_settings_section_drivetrain" text="Трансмісія та стоянкове гальмо"/>
+        <text name="ads_drivetrainEnabled_label" text="Керування 4WD / блокуванням диференціала"/>
+        <text name="ads_drivetrainEnabled_tooltip" text="Вмикає ручне керування підключним переднім мостом і блокуваннями диференціалів на тракторах. Якщо активне керування диференціалами Enhanced Vehicle, ADS повністю відступає, і Enhanced Vehicle керує трансмісією самостійно."/>
+        <text name="ads_drivetrainAllowAutoMode_label" text="Дозволити режим АВТО"/>
+        <text name="ads_drivetrainAllowAutoMode_tooltip" text="Додає положення АВТО: передній міст підключається автоматично при пробуксовці або на робочій швидкості під навантаженням і відключається на дорозі. Машини, залишені в АВТО, повертаються до 4WD після вимкнення цієї опції."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Пошкодження від скручування трансмісії"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Повороти на твердому покритті із заблокованими диференціалами скручують трансмісію та поступово пошкоджують її. Вимкніть для м'якшого ґеймплею."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Швидкість розблокування диференціала"/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Блокування диференціалів автоматично вимикаються вище цієї швидкості, як кулачкові муфти справжнього трактора, і знову вмикаються нижче неї, доки запитані."/>
+        <text name="ads_drivetrainParkBrakeEnabled_label" text="Стоянкове гальмо"/>
+        <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Додає всім машинам ADS стоянкове гальмо з власною клавішею. Затягнуте гальмо утримує машину та ігнорує газ."/>
+        <text name="ads_drivetrainParkBrakeAuto_label" text="Автоматичне стоянкове гальмо"/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Автоматично затягує стоянкове гальмо, коли оператор залишає нерухому машину, як електрогідравлічне паркувальне положення сучасних тракторів."/>
+        <text name="ads_drivetrain_mode_4x2" text="4x2 (передній міст відключено)"/>
+        <text name="ads_drivetrain_mode_4wd" text="4WD (передній міст підключено)"/>
+        <text name="ads_drivetrain_mode_auto" text="4WD АВТО"/>
+        <text name="ads_drivetrain_notify_mode" text="Режим приводу: %s"/>
+        <text name="ads_drivetrain_notify_lock_on" text="Блокування диференціала увімкнено"/>
+        <text name="ads_drivetrain_notify_lock_off" text="Блокування диференціала вимкнено"/>
+        <text name="ads_drivetrain_notify_park_on" text="Стоянкове гальмо затягнуто"/>
+        <text name="ads_drivetrain_notify_park_off" text="Стоянкове гальмо відпущено"/>
+        <text name="ads_drivetrain_warning_windup" text="Скручування трансмісії! Вимкніть блокування диференціала або не повертайте на твердому покритті."/>
+        <text name="ads_drivetrain_warning_parkbrake" text="Затягнуто стоянкове гальмо!"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Скручування трансмісії"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Ви повертаєте на твердому покритті з увімкненим блокуванням диференціала. У повороті передні й задні колеса проходять різні відстані, але заблоковані диференціали змушують їх обертатися з однаковою швидкістю: трансмісія скручується та пошкоджується аж до поломки. Вимикайте блокування перед поворотами на дорозі — на справжніх тракторах воно використовується лише прямолінійно на м'якому ґрунті."/>
     </texts>
 </l10n>
