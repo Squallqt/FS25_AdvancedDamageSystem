@@ -349,7 +349,7 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
         self.optionOneDisclaimer:setText(optionOneDisclaimers[ADS_Utils.getIndexByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, self.selectedOptionOne)] or "")
         self.choosenPartsText:setVisible(false)
     elseif self.maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
-        local choosenPartsText = g_i18n:getText("ads_option_menu_choosen_parts_text")
+        local choosenPartsText = g_i18n:getText("ads_option_menu_chosen_parts_text")
         local choosenPartsLabels = {}
         if self.selectedOptionOne == AdvancedDamageSystem.REPAIR_TYPES.LOW then
             for _, part in ipairs(choosenPartsForQuickFix) do

@@ -2373,7 +2373,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         stages = {
             {
                 severity = "ads_breakdowns_severity_minor",
-                description = "ads_breakdowns_fun_clutch_failure_stage1_description",
+                description = "ads_breakdowns_fan_clutch_failure_stage1_description",
                 detectionChance = 1.0,
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.FAN_CLUTCH_FAILURE,
                 repairPrice = 1.0 * breakdownPriceMultipliers.FAN_CLUTCH_FAILURE,
@@ -2384,7 +2384,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "ads_breakdowns_severity_moderate",
-                description = "ads_breakdowns_fun_clutch_failure_stage2_description",
+                description = "ads_breakdowns_fan_clutch_failure_stage2_description",
                 detectionChance = 1.0,
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.FAN_CLUTCH_FAILURE,
                 repairPrice = 2.0 * breakdownPriceMultipliers.FAN_CLUTCH_FAILURE,
@@ -2398,7 +2398,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "ads_breakdowns_severity_major",
-                description = "ads_breakdowns_fun_clutch_failure_stage3_description",
+                description = "ads_breakdowns_fan_clutch_failure_stage3_description",
                 detectionChance = 1.0,
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.FAN_CLUTCH_FAILURE,
                 repairPrice = 4.0 * breakdownPriceMultipliers.FAN_CLUTCH_FAILURE,
@@ -2412,7 +2412,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "ads_breakdowns_severity_critical",
-                description = "ads_breakdowns_fun_clutch_failure_stage4_description",
+                description = "ads_breakdowns_fan_clutch_failure_stage4_description",
                 detectionChance = 1.0,
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.FAN_CLUTCH_FAILURE,

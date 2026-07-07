@@ -3,6 +3,7 @@
         <text name="ads_hud_mass_tractor" text="Traktor"/>
         <text name="ads_hud_mass_towed" text="Angehängt"/>
         <text name="ads_hud_mass_total" text="Gesamt"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS EINSTELLUNGEN"/>
         <text name="ads_settings_admin_required" text="ADS-Einstellungen erfordern im Mehrspielermodus Administratorrechte."/>
         <text name="ads_maintenancePrice_label" text="Preis-Multiplikator für Wartung"/>
@@ -22,17 +23,17 @@
         <text name="ads_lubricationReducePerDay_label" text="Austrocknungsrate der Schmierung"/>
         <text name="ads_lubricationReducePerDay_tooltip" text="Legt fest, wie stark die Schmierung innerhalb eines Spieltags austrocknet. Bei 0 % trocknet die Schmierung mit der Zeit nicht aus."/>
         <text name="ads_ws_header_title" text="Werkstatt"/>
-        <text name="ads_settings_section_service_wear" text="Wartung und Verschleiss"/>
+        <text name="ads_settings_section_service_wear" text="Wartung und Verschleiß"/>
         <text name="ads_settings_section_thermal_model" text="Thermisches Modell"/>
         <text name="ads_settings_section_battery_alternator" text="Batterie und Lichtmaschine"/>
         <text name="ads_settings_section_preshift_maintenance" text="Wartung vor Schichtbeginn"/>
         <text name="ads_settings_section_other" text="Sonstiges"/>
-        <text name="ads_dealerWorkshopAvailable_label" text="Haendlerwerkstatt 24/7"/>
-        <text name="ads_dealerWorkshopAvailable_tooltip" text="Haelt die Haendlerwerkstatt zu jeder Tageszeit verfuegbar."/>
+        <text name="ads_dealerWorkshopAvailable_label" text="Händlerwerkstatt 24/7"/>
+        <text name="ads_dealerWorkshopAvailable_tooltip" text="Hält die Händlerwerkstatt zu jeder Tageszeit verfügbar."/>
         <text name="ads_mobileWorkshopAvailable_label" text="Mobile Werkstatt 24/7"/>
-        <text name="ads_mobileWorkshopAvailable_tooltip" text="Haelt die mobile Werkstatt zu jeder Tageszeit verfuegbar."/>
+        <text name="ads_mobileWorkshopAvailable_tooltip" text="Hält die mobile Werkstatt zu jeder Tageszeit verfügbar."/>
         <text name="ads_ownWorkshopAvailable_label" text="Eigene Werkstatt 24/7"/>
-        <text name="ads_ownWorkshopAvailable_tooltip" text="Haelt Ihre eigene Werkstatt zu jeder Tageszeit verfuegbar."/>
+        <text name="ads_ownWorkshopAvailable_tooltip" text="Hält Ihre eigene Werkstatt zu jeder Tageszeit verfügbar."/>
         <text name="ads_instantInspection_label" text="Sofortige Inspektion"/>
         <text name="ads_instantInspection_tooltip" text="Wenn aktiviert, werden alle Inspektionen sofort abgeschlossen (es vergeht keine Zeit). Hinweis: Die Inspektionsoption „Sichtprüfung“ ist dann nicht verfügbar."/>
         <text name="ads_parkVehicle_label" text="Fahrzeug während der Wartung parken"/>
@@ -41,18 +42,18 @@
         <text name="ads_warrantyEnabled_tooltip" text="Aktiviert Garantieleistungen für Reparaturen an Neufahrzeugen (bis zu 20 Betriebsstunden oder 12 Monate). Nur OEM-Teile werden kostenlos übernommen."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="KI-Überlastungs- und Überhitzungskontrolle"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Der KI-Helfer reduziert die Motorlast bei drohender Überlastung oder Überhitzung."/>
-        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
-        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
-        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
-        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="KI bei kritischer Überlastung stoppen"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Ermöglicht ADS, KI-Helfer und AutoDrive bei kritischer Überlastung anzuhalten."/>
+        <text name="ads_contractVehicleProtection_label" text="Schutz für Vertragsfahrzeuge"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Wendet die KI-Abschaltung bei kritischer Überlastung sowie die Geschwindigkeitsregelung bei Überlastung oder Überhitzung auf Vertragsfahrzeuge an."/>
         <text name="ads_aiWorkerTargetStress_label" text="KI-Reaktion auf Last"/>
-        <text name="ads_aiWorkerTargetStress_tooltip" text="Steuert, wie frueh der KI-Helfer auf Ueberlastung und Ueberhitzung reagiert. Hoehere Werte sind weniger empfindlich und reagieren spaeter; niedrigere Werte sind empfindlicher und verlangsamen frueher."/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Steuert, wie früh der KI-Helfer auf Überlastung und Überhitzung reagiert. Höhere Werte sind weniger empfindlich und reagieren später; niedrigere Werte sind empfindlicher und verlangsamen früher."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Gelassen"/>
         <text name="ads_aiWorkerTargetStress_balanced" text="Ausgewogen"/>
         <text name="ads_aiWorkerTargetStress_sensitive" text="Empfindlich"/>
         <text name="ads_aiWorkerTargetStress_verySensitive" text="Sehr empfindlich"/>
         <text name="ads_aiWorkerMinSpeed_label" text="Minimale KI-Geschwindigkeit"/>
-        <text name="ads_aiWorkerMinSpeed_tooltip" text="Legt die niedrigste Tempomatgeschwindigkeit fest, die der KI-Helfer beim Verlangsamen zur Vermeidung von Ueberlastung oder Ueberhitzung verwenden darf."/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Legt die niedrigste Tempomatgeschwindigkeit fest, die der KI-Helfer beim Verlangsamen zur Vermeidung von Überlastung oder Überhitzung verwenden darf."/>
         <text name="ads_debugMode_label" text="Debug-Modus"/>
         <text name="ads_debugMode_tooltip" text="Aktiviert oder deaktiviert das Debug-Panel und die umfangreiche Debug-Protokollierung in der Konsole."/>
         <text name="ads_warningMessages_label" text="Warnmeldungen"/>
@@ -66,31 +67,32 @@
         <text name="ads_batteryCapacity_label" text="Batteriekapazität"/>
         <text name="ads_thermalSensitivity_label" text="Thermische Empfindlichkeit"/>
         <text name="ads_option_off" text="Aus"/>
-        <text name="ads_option_none" text="None"/>
+        <text name="ads_option_none" text="Keine"/>
         <text name="ads_serviceInterval_tooltip" text="Legt das grundlegende Wartungsintervall in Stunden fest, nach dem eine Wartung erforderlich ist. Das tatsächliche Intervall hängt von der Fahrzeugmarke, dem Alter und der Qualität früherer Wartungen ab."/>
-        <text name="ads_vehicleLifespan_tooltip" text="Legt die grundlegende Fahrzeuglebensdauer in Stunden fest, nach der der Zustand 0 % erreicht. Je näher der Zustand an null liegt, desto unzuverlässiger wird das Fahrzeug."/>
+        <text name="ads_vehicleLifespan_tooltip" text="Legt die grundlegende Fahrzeuglebensdauer in Stunden fest, nach deren Ablauf der Zustand 0 % erreicht. Je näher der Zustand an null liegt, desto unzuverlässiger wird das Fahrzeug."/>
         <text name="ads_downtimeWear_tooltip" text="Legt die Geschwindigkeit des passiven Verschleißes im Stillstand als Prozentsatz des Grundverschleißes fest (Fahrzeuglebensdauer). Beispiel: 5 % bei der Standard-Lebensdauer von 100 Stunden bedeuten, dass jedes System nach etwa 20 Stunden Stillstand rund 1 % Zustand verliert. Hinweis: Wird das Fahrzeug unter Dach gelagert, ist passiver Verschleiß deaktiviert."/>
         <text name="ads_generalWearEnabled_tooltip" text="Aktiviert altersbedingten Verschleiß. Mit zunehmendem Verschleiß erhält jedes System kleine Abzüge auf seine wichtigsten Eigenschaften, etwa Motorleistung, Hydraulikgeschwindigkeit oder Bremswirkung. Der Effekt wird nach dem ersten Drittel der Lebensdauer aktiv, macht sich jedoch erst nach zwei Dritteln deutlich bemerkbar und verstärkt sich zum Ende der Lebensdauer der Maschine hin."/>
         <text name="ads_mobileWorkshopRestrictions_tooltip" text="Wenn aktiviert, hängt die Verfügbarkeit verschiedener Arbeiten in der mobilen Werkstatt von der Wartungsfreundlichkeit des Fahrzeugs ab."/>
         <text name="ads_systemStressRate_tooltip" text="Bestimmt, wie schnell sich Stress in den Systemen durch Überlastung, Überhitzung, Schlupf und andere harte Betriebsbedingungen aufbaut. Stress beeinflusst die Wahrscheinlichkeit von Ausfällen direkt: Je mehr Stress sich in einem System ansammelt, desto wahrscheinlicher ist eine Panne."/>
         <text name="ads_batteryCapacity_tooltip" text="Passt die maximal nutzbare Batteriekapazität an. Werte nahe 150 Ah sind realistischer, allerdings treten bei diesem Niveau Entladeprobleme der Batterie kaum noch auf."/>
         <text name="ads_alternatorMaxOutput_label" text="Max. Lichtmaschinenstrom"/>
-        <text name="ads_alternatorMaxOutput_tooltip" text="Legt den maximalen Ausgangsstrom der Lichtmaschine fest. Hoehere Werte erlauben es der Lichtmaschine, die Batterie schneller nachzuladen."/>
+        <text name="ads_alternatorMaxOutput_tooltip" text="Legt den maximalen Ausgangsstrom der Lichtmaschine fest. Höhere Werte erlauben es der Lichtmaschine, die Batterie schneller nachzuladen."/>
         <text name="ads_idleCurrent_label" text="Ruhestrom"/>
-        <text name="ads_idleCurrent_tooltip" text="Legt den Entladestrom der Batterie bei abgestelltem Motor fest. Bei 0,5 A wuerde eine 15-Ah-Batterie zum Beispiel etwa 30 Echtzeitstunden bis zur vollstaendigen Entladung benoetigen, bevor Temperatureffekte beruecksichtigt werden."/>
+        <text name="ads_idleCurrent_tooltip" text="Legt den Entladestrom der Batterie bei abgestelltem Motor fest. Bei 0,5 A würde eine 15-Ah-Batterie zum Beispiel etwa 30 Echtzeitstunden bis zur vollständigen Entladung benötigen, bevor Temperatureffekte berücksichtigt werden."/>
         <text name="ads_thermalSensitivity_tooltip" text="Passt das Verhalten des thermischen Modells an. Höhere Einstellungen machen Motor und Getriebe empfindlicher gegenüber Last, Umgebungstemperatur und Kühlerverschmutzung und erzeugen unter gleichen Bedingungen mehr Wärme."/>
         <text name="ads_temperatureChangeSpeed_label" text="Geschwindigkeit des Thermomodells"/>
         <text name="ads_temperatureChangeSpeed_tooltip" text="Bestimmt, wie schnell sich Motor- und Getriebetemperaturen ändern. Niedrigere Werte verlangsamen Erwärmung und Abkühlung, höhere Werte beschleunigen beides. Standard ist 1.4x."/>
-        <text name="ads_radiatorDirtInfluence_label" text="Einfluss der Kuehler-Verschmutzung"/>
-        <text name="ads_radiatorDirtInfluence_tooltip" text="Verringert die Kuehlleistung des Kuehlers bei maximaler Verschmutzung um diesen Prozentsatz."/>
-        <text name="ads_warmingBoostPower_label" text="Beschleunigte Aufwaermung"/>
-        <text name="ads_warmingBoostPower_tooltip" text="Beschleunigt kuenstlich die Aufwaermung von Motor und Getriebe. Verwenden Sie Aus fuer unveraendertes thermisches Verhalten."/>
-        <text name="ads_coolingSlowdownPower_label" text="Verlangsamte Abkuehlung"/>
-        <text name="ads_coolingSlowdownPower_tooltip" text="Verlangsamt kuenstlich die Abkuehlung von Motor und Getriebe nach dem Abstellen des Fahrzeugs. Verwenden Sie Aus fuer unveraendertes Abkuehlverhalten."/>
+        <text name="ads_radiatorDirtInfluence_label" text="Einfluss der Kühler-Verschmutzung"/>
+        <text name="ads_radiatorDirtInfluence_tooltip" text="Verringert die Kühlleistung des Kühlers bei maximaler Verschmutzung um diesen Prozentsatz."/>
+        <text name="ads_warmingBoostPower_label" text="Beschleunigte Aufwärmung"/>
+        <text name="ads_warmingBoostPower_tooltip" text="Beschleunigt künstlich die Aufwärmung von Motor und Getriebe. Verwenden Sie Aus für unverändertes thermisches Verhalten."/>
+        <text name="ads_coolingSlowdownPower_label" text="Verlangsamte Abkühlung"/>
+        <text name="ads_coolingSlowdownPower_tooltip" text="Verlangsamt künstlich die Abkühlung von Motor und Getriebe nach dem Abstellen des Fahrzeugs. Verwenden Sie Aus für unverändertes Abkühlverhalten."/>
         <text name="ads_thermal_none" text="Passiv"/>
         <text name="ads_thermal_mild" text="Leicht"/>
         <text name="ads_thermal_default" text="Standard"/>
         <text name="ads_thermal_aggressive" text="Aggressiv"/>
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="Wert"/>
         <text name="ads_ws_label_age" text="Alter"/>
         <text name="ads_ws_label_operating_hours" text="Betriebsstunden"/>
@@ -132,6 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="Protokoll ist noch leer"/>
         <text name="ads_ws_cancel_confirm_title" text="Abbrechen %s?"/>
         <text name="ads_ws_cancel_confirm_text" text="Der aktuelle Fortschritt wird unverändert gespeichert. Es wird kein Geld zurückerstattet."/>
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="Wartungsprotokoll"/>
         <text name="ads_log_title" text="Technisches Wartungsprotokoll"/>
         <text name="ads_log_total_cost_title" text="Gesamtausgaben"/>
@@ -153,6 +156,7 @@
         <text name="ads_log_price" text="Kosten"/>
         <text name="ads_log_button_show_report" text="Bericht anzeigen"/>
         <text name="ads_log_empty" text="Protokoll ist leer"/>
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Dauerhaft"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Leistungsreduzierung"/>
         <text name="ads_breakdowns_severity_shutdown" text="Motorabschaltung"/>
@@ -279,10 +283,10 @@
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage2_description" text="Mäßige Fehlfunktion des Hydraulikregelventils. Der Durchfluss ist instabil, die Hydraulik reagiert verzögert und die Effizienz sinkt deutlich."/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage3_description" text="Schwere Fehlfunktion des Hydraulikregelventils. Der Durchfluss ist stark ungleichmäßig, die Steuerung reagiert schlecht und die verfügbare Hydraulikleistung sinkt deutlich."/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_description" text="Kritischer Ausfall des Hydraulikregelventils. Der Hydraulikfluss kann nicht mehr korrekt geregelt werden und ein normaler Betrieb ist unmöglich."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage1_description" text="Erste Anzeichen einer Stoerung des CVT-Getriebes wurden erkannt. Eine Diagnose und Reparatur ist erforderlich."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage2_description" text="Die Stoerung des CVT-Getriebes schreitet fort. Weiterer Betrieb kann zum Notlauf fuehren."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage3_description" text="Kritische Beschaedigung des CVT-Getriebes. Das Getriebe arbeitet im Notlauf und die maximale Fahrgeschwindigkeit ist reduziert."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Vollstaendiger Ausfall des CVT-Getriebes. Ein weiterer Betrieb ist bis zur Reparatur nicht moeglich."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage1_description" text="Erste Anzeichen einer Störung des CVT-Getriebes wurden erkannt. Eine Diagnose und Reparatur ist erforderlich."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage2_description" text="Die Störung des CVT-Getriebes schreitet fort. Weiterer Betrieb kann zum Notlauf führen."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage3_description" text="Kritische Beschädigung des CVT-Getriebes. Das Getriebe arbeitet im Notlauf und die maximale Fahrgeschwindigkeit ist reduziert."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Vollständiger Ausfall des CVT-Getriebes. Ein weiterer Betrieb ist bis zur Reparatur nicht möglich."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="CVT-Getriebe ausgefallen"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Ausfall des Hydraulikregelventils"/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Motorthermostat beginnt auszufallen. Der Motor braucht länger, um die optimale Temperatur zu erreichen, oder läuft etwas zu heiß."/>
@@ -324,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Starkes Leck im Kühlmittelkreislauf. Der Kühlverlust ist erheblich und die Überhitzungsgefahr steigt stark."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Kritischer Ausfall des Kühlsystems. Es steht nicht mehr genügend Kühlmittel für einen sicheren Motorbetrieb zur Verfügung."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Kühlmittelverlust"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Leichter Ausfall der Lüfterkupplung. Der Lüfter reagiert träger und die Kühlung ist leicht eingeschränkt."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Mäßiger Ausfall der Lüfterkupplung. Die Lüfterzuschaltung erfolgt unregelmäßig und die Kühlleistung sinkt deutlich."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Schwerer Ausfall der Lüfterkupplung. Der Lüfter liefert nicht mehr ausreichend Luftdurchsatz und der Motor überhitzt leichter."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Kritischer Ausfall der Lüfterkupplung. Der Lüfter kann die notwendige Kühlleistung nicht mehr bereitstellen."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Ausfall der Lüfterkupplung"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Leichter Ausfall der Lüfterkupplung. Der Lüfter reagiert träger und die Kühlung ist leicht eingeschränkt."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Mäßiger Ausfall der Lüfterkupplung. Die Lüfterzuschaltung erfolgt unregelmäßig und die Kühlleistung sinkt deutlich."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Schwerer Ausfall der Lüfterkupplung. Der Lüfter liefert nicht mehr ausreichend Luftdurchsatz und der Motor überhitzt leichter."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Kritischer Ausfall der Lüfterkupplung. Der Lüfter kann die notwendige Kühlleistung nicht mehr bereitstellen."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Ausfall der Lüfterkupplung"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Leichte Verstopfung des Kraftstofffilters. Der Kraftstoffdurchfluss sinkt unter hoher Last geringfügig."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Mäßige Verstopfung des Kraftstofffilters. Unter Last wird die Kraftstoffversorgung spürbar eingeschränkt, die Leistung sinkt und der Motor verschluckt sich gelegentlich."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Starke Verstopfung des Kraftstofffilters. Die Kraftstoffversorgung ist stark eingeschränkt, die Leistung bricht deutlich ein und Motorabsteller sind möglich."/>
@@ -371,6 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="Zapfwelle automatisch ausgekuppelt"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Gang ausgelegt"/>
         <text name="ads_breakdown_at_progress_message" text="in Arbeit"/>
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="Motor ist kalt! Hohe Drehzahlen verursachen Verschleiß!"/>
         <text name="ads_spec_overheat_engine_message" text="Warnung! Motor überhitzt."/>
         <text name="ads_spec_overheat_transmission_message" text="Warnung! Getriebe überhitzt."/>
@@ -379,7 +384,7 @@
         <text name="ads_spec_never" text="Nie"/>
         <text name="ads_spec_op_hours_short" text="Bst."/>
         <text name="ads_spec_tomorrow_at" text="morgen um "/>
-        <text name="ads_spec_day_after_tommorow_at" text="übermorgen um "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="übermorgen um "/>
         <text name="ads_spec_in_days_at" text="in {days} Tagen um "/>
         <text name="ads_spec_day_s" text="Tag(e)"/>
         <text name="ads_spec_hour_s" text="Stunde(n)"/>
@@ -387,7 +392,7 @@
         <text name="ads_spec_duration_format_hours" text="%d %s"/>
         <text name="ads_spec_duration_format_minutes" text="%d %s"/>
         <text name="ads_spec_duration_format_combined" text="%s und %s"/>
-        <text name="ads_spec_months_ago_unit" text="Monate"/>
+        <text name="ads_spec_months_ago_unit" text="Monaten"/>
         <text name="ads_spec_months_ago_format" text="vor %s %s"/>
         <text name="ads_spec_last_maintenance_until_format" text="%s bis %s"/>
         <text name="ads_spec_service_interval_format" text="%s Bst."/>
@@ -396,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="%s Problem(e) erkannt"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="Keine Probleme erkannt"/>
         <text name="ads_spec_next_planned_service_notification" text="Geplante Maßnahme gestartet: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="Geplanter Termin %s wegen unzureichender Mittel abgesagt"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="Geplanter Termin %s wegen unzureichender Mittel abgesagt"/>
         <text name="ads_spec_workshop_dealer" text="Händler"/>
         <text name="ads_spec_workshop_own" text="Eigene"/>
         <text name="ads_spec_workshop_mobile" text="Mobil"/>
@@ -426,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="Überfällig"/>
         <text name="ads_spec_state_legendary" text="Legendär"/>
         <text name="ads_spec_state_premium" text="Premium"/>
-        <text name="ads_spec_state_standart" text="Standard"/>
+        <text name="ads_spec_state_standard" text="Standard"/>
         <text name="ads_spec_state_budget" text="Budget"/>
         <text name="ads_spec_state_low" text="Niedrig"/>
         <text name="ads_spec_state_average" text="Durchschnittlich"/>
@@ -449,6 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Behelfsreparatur"/>
         <text name="ads_spec_repair_type_replacement" text="Standard"/>
         <text name="ads_spec_repair_type_advanced" text="Gründlich"/>
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Wählen Sie den Inspektionstyp aus"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Beheben Sie festgestellte Fehler"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Wartungsstufe auswählen"/>
@@ -486,7 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Standardreparatur mit OEM-Teilen automatisch starten, wenn Fehler erkannt werden."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Nach der Reparatur automatisch eine Standardwartung mit OEM-Verbrauchsmaterialien starten."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Das Fahrzeug im Zuge der Generalüberholung neu lackieren."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Für die Reparatur ausgewählt:"/>
+        <text name="ads_option_menu_chosen_parts_text" text="* Für die Reparatur ausgewählt:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Inspektionsbericht"/>
         <text name="ads_report_vehicle_name_title" text="Fahrzeugname"/>
         <text name="ads_report_date_title" text="Datum"/>
@@ -546,6 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Anzeichen einer intensiven Überbeanspruchung festgestellt. Betriebsbedingungen verbessern."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Defekte Verbrauchsmaterialien erkannt. Wiederholen Sie die Wartung, um fehlerhafte Komponenten auszutauschen."/>
         <text name="ads_report_recommendation_all_ok" text="Keine kritischen Empfehlungen. Das Fahrzeug ist einsatzbereit."/>
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Fettpresse"/>
         <text name="ads_grease_gun_function" text="Wird für Schmierarbeiten im Rahmen der Wartung verwendet"/>
         <text name="ads_grease_gun_action" text="Fett auftragen"/>
@@ -654,6 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="Die Kettenspannung wirkt leicht ungleichmäßig."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="Die Kette wirkt gelockert, und die Spannung ist deutlich ungleichmäßig."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="Die Kette hängt sichtbar durch, und die Spannung wirkt stark gestört."/>
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="Advanced Damage System"/>
         <text name="ads_ingame_menu_section_active" text="ADS-Fahrzeuge"/>
         <text name="ads_ingame_menu_section_service" text="In Wartung"/>
@@ -684,11 +693,12 @@
         <text name="ads_sell_dialog_total" text="Gesamt"/>
         <text name="ads_mobile_workshop_low_maintainability" text="WARNUNG: %s ist für %s in der mobilen Werkstatt wegen geringer Wartungsfreundlichkeit nicht verfügbar."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritische Überlastung! Verringern Sie sofort die Belastung der Maschine."/>
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Tutorial-Modus"/>
         <text name="ads_tutorialMode_tooltip" text="Zeigt Tutorial-Hinweise während des Spielens an. Im Mehrspielermodus deaktiviert."/>
-        <text name="ads_tutorialResetTips_label" text="Hinweise zuruecksetzen"/>
-        <text name="ads_tutorialResetTips_text" text="Hinweise zuruecksetzen"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Setzt den Verlauf der Tutorial-Hinweise zurueck und zeigt alle Hinweise erneut an. Nur im Einzelspielermodus verfuegbar."/>
+        <text name="ads_tutorialResetTips_label" text="Hinweise zurücksetzen"/>
+        <text name="ads_tutorialResetTips_text" text="Hinweise zurücksetzen"/>
+        <text name="ads_tutorialResetTips_tooltip" text="Setzt den Verlauf der Tutorial-Hinweise zurück und zeigt alle Hinweise erneut an. Nur im Einzelspielermodus verfügbar."/>
         <text name="ads_tutorialResetConfirm_title" text="Tutorial-Hinweise zurücksetzen?"/>
         <text name="ads_tutorialResetConfirm_message" text="Verlauf der Tutorial-Hinweise zurücksetzen und alle Hinweise erneut anzeigen?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Willkommen bei Advanced Damage System"/>
@@ -697,18 +707,18 @@
         <text name="ads_tutorial_welcome_message" text="Dieses Mod überarbeitet das Schadens- und Wartungssystem für Fahrzeuge im Spiel grundlegend. Es gibt viele Änderungen, deshalb werden von Zeit zu Zeit Tutorial-Hinweise eingeblendet. Sie helfen Ihnen, die neuen Mechaniken schneller zu verstehen, typische Fehler zu vermeiden und Ihre Maschinen vor Ausfällen zu bewahren.&#10;&#10;Wenn Sie möchten, können Sie die Tutorial-Hinweise jetzt direkt deaktivieren. Später lassen sie sich in den Mod-Einstellungen im Bereich Advanced Damage System jederzeit wieder einschalten."/>
         <text name="ads_tutorial_service_due_soon_title" text="Regelmäßige Wartung"/>
         <text name="ads_tutorial_service_due_soon_message" text="%s benötigt bald Wartung.&#10;&#10;In ADS brauchen Fahrzeuge regelmäßigen Service. Wenn Sie ihn zu lange hinauszögern, steigt das Pannenrisiko deutlich an.&#10;&#10;Besuchen Sie die nächste Werkstatt und wählen Sie &quot;Wartung&quot;. Das Wartungsintervall kann in den Mod-Einstellungen angepasst werden."/>
-        <text name="ads_tutorial_service_interval_expired_title" text="Wartungsintervall ueberschritten"/>
-        <text name="ads_tutorial_service_interval_expired_message" text="%s hat sein Wartungsintervall ueberschritten und braucht eine Wartung.&#10;&#10;Fahren Sie so schnell wie moeglich in eine Werkstatt und fuehren Sie die Massnahme &quot;Wartung&quot; durch. Wenn Sie ein Fahrzeug mit ueberfaelliger Wartung weiter einsetzen, steigt das Risiko fuer mehrere Ausfaelle deutlich an."/>
+        <text name="ads_tutorial_service_interval_expired_title" text="Wartungsintervall überschritten"/>
+        <text name="ads_tutorial_service_interval_expired_message" text="%s hat sein Wartungsintervall überschritten und braucht eine Wartung.&#10;&#10;Fahren Sie so schnell wie möglich in eine Werkstatt und führen Sie die Maßnahme &quot;Wartung&quot; durch. Wenn Sie ein Fahrzeug mit überfälliger Wartung weiter einsetzen, steigt das Risiko für mehrere Ausfälle deutlich an."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Kühler und Lufteinlässe verschmutzt"/>
-        <text name="ads_tutorial_rad_or_intake_clogged_message" text="Der Kühler und die Lufteinlässe Ihres Fahrzeugs scheinen stark verschmutzt zu sein.&#10;&#10;Ein verschmutzter Kühler kann Wärme schlechter abführen, und zugesetzte Lufteinlässe können die Luftzufuhr zum Motor einschränken. Das reduziert die Leistung und erhöht den Kraftstoffverbrauch.&#10;&#10;Reinigen können Sie beides an einer Waschstation oder mit dem Air Blower aus dem Shop.&#10;&#10;Den Zustand von Kühler und Lufteinlässen können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
+        <text name="ads_tutorial_rad_or_intake_clogged_message" text="Der Kühler und die Lufteinlässe Ihres Fahrzeugs scheinen stark verschmutzt zu sein.&#10;&#10;Ein verschmutzter Kühler kann Wärme schlechter abführen, und zugesetzte Lufteinlässe können die Luftzufuhr zum Motor einschränken. Das reduziert die Leistung und erhöht den Kraftstoffverbrauch.&#10;&#10;Reinigen können Sie beides an einer Waschstation oder mit dem Druckluftgebläse aus dem Shop.&#10;&#10;Den Zustand von Kühler und Lufteinlässen können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Schmierung erforderlich"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Ihr %s benötigt regelmäßige Schmierung.&#10;&#10;In ADS sinkt der Schmierzustand der Arbeitskomponenten jeden Tag ein Stück, wodurch der Verschleiß ansteigt.&#10;&#10;Kaufen Sie im Shop eine Grease Gun und schmieren Sie Ihre Maschine täglich oder vor jeder Arbeitsschicht.&#10;&#10;Den Schmierzustand können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Ihr %s benötigt regelmäßige Schmierung.&#10;&#10;In ADS sinkt der Schmierzustand der Arbeitskomponenten jeden Tag ein Stück, wodurch der Verschleiß ansteigt.&#10;&#10;Kaufen Sie im Shop eine Fettpresse und schmieren Sie Ihre Maschine täglich oder vor jeder Arbeitsschicht.&#10;&#10;Den Schmierzustand können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
         <text name="ads_tutorial_needs_repair_title" text="Fahrzeugstörung"/>
         <text name="ads_tutorial_needs_repair_message" text="Mit Ihrem %s stimmt offenbar etwas nicht. Möglicherweise ist eines der Bauteile ausgefallen.&#10;&#10;Besuchen Sie unbedingt eine Werkstatt und führen Sie eine Inspektion durch. Warten Sie nicht zu lange: Der Defekt kann sich verschlimmern, und damit steigen auch die späteren Reparaturkosten.&#10;&#10;Wenn die Inspektion einen Fehler bestätigt, beheben Sie ihn mit der Reparatur in der Werkstatt."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Generalüberholung"/>
         <text name="ads_tutorial_needs_overhaul_message" text="Ihr %s ist offenbar in die Jahre gekommen. Es wird Zeit, über einen Ersatz oder eine Generalüberholung nachzudenken. Das ist ein langer und aufwendiger Vorgang, kann Ihrer vertrauten Lieblingsmaschine aber ein zweites Leben schenken. Die Lebensdauer lässt sich übrigens in den Einstellungen anpassen: Je höher sie ist, desto langsamer verschleißen Ihre Fahrzeuge."/>
-        <text name="ads_tutorial_age_degradation_title" text="Altersbedingter Verschleiss"/>
-        <text name="ads_tutorial_age_degradation_message" text="Wussten Sie, dass Fahrzeuge in ADS mit zunehmendem Alter nach und nach einen Teil ihrer urspruenglichen Leistung verlieren?&#10;&#10;Nach etwa einem Drittel der Lebensdauer beginnt der altersbedingte Verschleiss, wichtige Eigenschaften wie Leistung, Bremswirkung und andere Systeme leicht zu verschlechtern. Je aelter das Fahrzeug wird, desto staerker faellt dieser Effekt aus, und besonders deutlich wird er gegen Ende der Lebensdauer.&#10;&#10;Sie koennen diesen altersbedingten Verschleiss in den Mod-Einstellungen deaktivieren."/>
+        <text name="ads_tutorial_age_degradation_title" text="Altersbedingter Verschleiß"/>
+        <text name="ads_tutorial_age_degradation_message" text="Wussten Sie, dass Fahrzeuge in ADS mit zunehmendem Alter nach und nach einen Teil ihrer ursprünglichen Leistung verlieren?&#10;&#10;Nach etwa einem Drittel der Lebensdauer beginnt der altersbedingte Verschleiß, wichtige Eigenschaften wie Leistung, Bremswirkung und andere Systeme leicht zu verschlechtern. Je älter das Fahrzeug wird, desto stärker fällt dieser Effekt aus, und besonders deutlich wird er gegen Ende der Lebensdauer.&#10;&#10;Sie können diesen altersbedingten Verschleiß in den Mod-Einstellungen deaktivieren."/>
         <text name="ads_tutorial_needs_preventive_title" text="Panne steht bevor"/>
         <text name="ads_tutorial_needs_preventive_message" text="Es sieht so aus, als würde eines der Systeme Ihres %s bald ausfallen. Die gute Nachricht: Sie können das verhindern. In der Werkstatt gibt es dafür eine besondere Leistung: vorbeugende Wartung. Sie umfasst eine vollständige technische Prüfung plus vorbeugende Reparaturen an allen problematischen Komponenten."/>
         <text name="ads_tutorial_poor_consumables_title" text="Minderwertige Verbrauchsmaterialien"/>
@@ -718,7 +728,7 @@
         <text name="ads_tutorial_idle_and_downtime_title" text="Leerlauf und Standzeit"/>
         <text name="ads_tutorial_idle_and_downtime_message" text="Übrigens ist der Verschleiß deutlich geringer, wenn Ihre Maschine zwar läuft, aber nicht aktiv arbeitet. Das ist nur logisch. Bei abgestelltem Motor ist der Verschleiß fast vernachlässigbar, und wenn die Maschine unter Dach steht, entfällt er sogar ganz."/>
         <text name="ads_tutorial_hot_weather_title" text="Heißes Wetter"/>
-        <text name="ads_tutorial_hot_weather_message" text="Ganz schön heiß heute. Bei solchem Wetter sollten Sie besonders auf einen sauberen Kühler achten und den Motor möglichst nicht überlasten, sonst ist Überhitzung nur eine Frage der Zeit.&#10;&#10;Denken Sie daran: Den Kühlerzustand können Sie jederzeit mit einer Sichtprüfung kontrollieren, indem Sie die Taste R gedrückt halten, während Sie das Fahrzeug ansehen. Reinigen lässt er sich außerdem mit dem Air Blower."/>
+        <text name="ads_tutorial_hot_weather_message" text="Ganz schön heiß heute. Bei solchem Wetter sollten Sie besonders auf einen sauberen Kühler achten und den Motor möglichst nicht überlasten, sonst ist Überhitzung nur eine Frage der Zeit.&#10;&#10;Denken Sie daran: Den Kühlerzustand können Sie jederzeit mit einer Sichtprüfung kontrollieren, indem Sie die Taste R gedrückt halten, während Sie das Fahrzeug ansehen. Reinigen lässt er sich außerdem mit dem Druckluftgebläse."/>
         <text name="ads_tutorial_wet_weather_title" text="Nasses Wetter"/>
         <text name="ads_tutorial_wet_weather_message" text="Was für ein Wetter. Feuchtigkeit setzt Verkabelung und elektrischen Komponenten zu, deshalb steigt der Verschleiß des elektrischen Systems unter solchen Bedingungen leicht an.&#10;&#10;Außerdem ist es dringend nicht zu empfehlen, bei diesem Wetter zu dreschen. Ihrem Mähdrescher schadet das nur."/>
         <text name="ads_tutorial_low_fuel_title" text="Wenig Kraftstoff"/>
@@ -747,8 +757,8 @@
         <text name="ads_tutorial_cold_engine_message" text="Wärmen Sie Ihre Maschine immer auf, bevor Sie sie einsetzen. Nicht nur der Motor braucht Zeit auf Temperatur zu kommen, sondern auch viele andere Baugruppen: Hydrauliköl, das CVT-Getriebe und sogar der Kraftstoff, besonders bei Frost. Ein kalter Betrieb kann deshalb in mehreren Systemen Probleme verursachen.&#10;&#10;Liegt die Motortemperatur über 50 Grad (122°F), ist alles ausreichend warm und die Maschine kann bedenkenlos eingesetzt werden."/>
         <text name="ads_tutorial_pto_sharp_angle_title" text="Zapfwellenwinkel zu groß"/>
         <text name="ads_tutorial_pto_sharp_angle_message" text="Vorsicht: Der Zapfwellenwinkel zwischen Ihrer Maschine und dem Anbaugerät ist zu groß. Die Gelenkwelle läuft dann mit harten Impulsen, die Vibrationen nehmen zu und der Verschleiß steigt schnell an.&#10;&#10;Halten Sie den Winkel unter 30 Grad und schalten Sie die Zapfwelle bei scharfen Kurven und Wendemanövern möglichst aus."/>
-        <text name="ads_tutorial_overload_indicator_title" text="Ueberlastungswarnung"/>
-        <text name="ads_tutorial_overload_indicator_message" text="%s steht unter hoher Last. Darauf weist Sie die Warnleuchte hin, die gerade im Armaturenbrett aufgeleuchtet ist.&#10;&#10;Moeglicherweise hat die Maschine nicht genug Leistung fuer die aktuelle Arbeit. Versuchen Sie, die Last zu verringern: Begrenzen Sie Ihre Geschwindigkeit mit dem Tempomat oder nehmen Sie etwas Gas weg, statt mit voller Leistung zu fahren."/>
+        <text name="ads_tutorial_overload_indicator_title" text="Überlastungswarnung"/>
+        <text name="ads_tutorial_overload_indicator_message" text="%s steht unter hoher Last. Darauf weist Sie die Warnleuchte hin, die gerade im Armaturenbrett aufgeleuchtet ist.&#10;&#10;Möglicherweise hat die Maschine nicht genug Leistung für die aktuelle Arbeit. Versuchen Sie, die Last zu verringern: Begrenzen Sie Ihre Geschwindigkeit mit dem Tempomat oder nehmen Sie etwas Gas weg, statt mit voller Leistung zu fahren."/>
         <text name="ads_tutorial_engine_overload_title" text="Motorüberlastung"/>
         <text name="ads_tutorial_engine_overload_message" text="Der Motor steht unter enormer Belastung. Möglicherweise ist die aktuelle Arbeit einfach zu viel für diese Maschine, und Sie sollten über ein stärkeres Fahrzeug nachdenken. Vielleicht reicht es aber auch schon, langsamer zu fahren und damit die Last auf den Motor zu senken.&#10;&#10;Behalten Sie in jedem Fall im Hinterkopf: Unter solcher Belastung steigt der Verschleiß deutlich an."/>
         <text name="ads_tutorial_lugging_title" text="Motor im unteren Drehzahlbereich quälen"/>
@@ -756,7 +766,8 @@
         <text name="ads_tutorial_wheel_slip_title" text="Radschlupf"/>
         <text name="ads_tutorial_wheel_slip_message" text="Ihre Räder scheinen stark durchzudrehen. Vielleicht stecken Sie gerade sogar fest und haben wenig Lust auf Hinweise, aber behalten Sie das im Kopf: Radschlupf gehört zu den zerstörerischsten Belastungen für das Getriebe und bringt Ihren nächsten Werkstattbesuch deutlich näher."/>
         <text name="ads_tutorial_battery_low_title" text="Schwache Batterie"/>
-        <text name="ads_tutorial_battery_low_message" text="Hoppla, die Batterie ist offenbar fast leer. Das kann nach langer Standzeit, bei starkem Frost oder durch Defekte im elektrischen System passieren.&#10;&#10;Mit niedrigem Ladezustand wird das Starten schwierig oder sogar unmöglich. Wenn die Maschine nicht mehr anspringt, können Sie sie mit Jumper Cables von einem anderen Fahrzeug aus überbrücken."/>
+        <text name="ads_tutorial_battery_low_message" text="Hoppla, die Batterie ist offenbar fast leer. Das kann nach langer Standzeit, bei starkem Frost oder durch Defekte im elektrischen System passieren.&#10;&#10;Mit niedrigem Ladezustand wird das Starten schwierig oder sogar unmöglich. Wenn die Maschine nicht mehr anspringt, können Sie sie mit Starthilfekabeln von einem anderen Fahrzeug aus überbrücken."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Antriebsmodus (4x2 / Allrad / AUTO)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Differentialsperre"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Feststellbremse"/>

@@ -3,8 +3,9 @@
         <text name="ads_hud_mass_tractor" text="Tracteur"/>
         <text name="ads_hud_mass_towed" text="Attelé"/>
         <text name="ads_hud_mass_total" text="Total"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS PARAMÈTRES"/>
-        <text name="ads_settings_admin_required" text="Les parametres ADS necessitent les droits d'administrateur en multijoueur."/>
+        <text name="ads_settings_admin_required" text="Les paramètres ADS nécessitent les droits d’administrateur en multijoueur."/>
         <text name="ads_maintenancePrice_label" text="Multiplicateur de prix de la maintenance"/>
         <text name="ads_maintenancePrice_tooltip" text="Ajuste le coût de tous les services d'atelier, y compris les inspections, les réparations et les révisions. Une valeur plus élevée rend toutes les activités de maintenance plus coûteuses."/>
         <text name="ads_maintenanceDuration_label" text="Multiplicateur de durée de maintenance"/>
@@ -17,13 +18,13 @@
         <text name="ads_engineMaxHeat_tooltip" text="Le taux de base de chaleur générée par le moteur à charge maximale. Des valeurs plus élevées feront chauffer le moteur plus rapidement."/>
         <text name="ads_cloggingSpeed_label" text="Vitesse d'encrassement"/>
         <text name="ads_cloggingSpeed_tooltip" text="Règle la vitesse à laquelle le radiateur et l'admission d'air s'encrassent lors du travail dans la poussière, la menue paille et les résidus de culture. Des valeurs plus élevées accélèrent l'encrassement. À 100 %, la vitesse d'encrassement correspond à environ un tiers de l'intervalle d'entretien."/>
-        <text name="ads_fieldInspectionDuration_label" text="Duree de l'inspection"/>
-        <text name="ads_fieldInspectionDuration_tooltip" text="Definit la duree d'une inspection de terrain avant la prise de service, en secondes reelles."/>
-        <text name="ads_lubricationReducePerDay_label" text="Vitesse de dessechement de la lubrification"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Definit la quantite de lubrification qui seche en une journee de jeu. A 0 %, la lubrification ne seche pas avec le temps."/>
+        <text name="ads_fieldInspectionDuration_label" text="Durée de l’inspection"/>
+        <text name="ads_fieldInspectionDuration_tooltip" text="Définit la durée d’une inspection de terrain avant la prise de service, en secondes réelles."/>
+        <text name="ads_lubricationReducePerDay_label" text="Vitesse de dessèchement de la lubrification"/>
+        <text name="ads_lubricationReducePerDay_tooltip" text="Définit la quantité de lubrification qui sèche en une journée de jeu. À 0 %, la lubrification ne sèche pas avec le temps."/>
         <text name="ads_ws_header_title" text="Atelier"/>
         <text name="ads_settings_section_service_wear" text="Entretien et usure"/>
-        <text name="ads_settings_section_thermal_model" text="Modele thermique"/>
+        <text name="ads_settings_section_thermal_model" text="Modèle thermique"/>
         <text name="ads_settings_section_battery_alternator" text="Batterie et alternateur"/>
         <text name="ads_settings_section_preshift_maintenance" text="Entretien avant la prise de service"/>
         <text name="ads_settings_section_other" text="Autres"/>
@@ -41,18 +42,18 @@
         <text name="ads_warrantyEnabled_tooltip" text="Applique une garantie aux réparations des véhicules neufs (jusqu'à 20 heures de fonctionnement ou 12 mois). Seules les pièces OEM sont couvertes sans frais."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Contrôle surcharge/surchauffe IA"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Si activé, l'ouvrier IA réduit la charge pour éviter la surcharge moteur ou la surchauffe."/>
-        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
-        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
-        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
-        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
-        <text name="ads_aiWorkerTargetStress_label" text="Reactivite de vitesse de l'IA"/>
-        <text name="ads_aiWorkerTargetStress_tooltip" text="Controle a quel moment l'ouvrier IA reagit a la surcharge et a la surchauffe. Des valeurs plus elevees sont moins sensibles et reagissent plus tard ; des valeurs plus faibles sont plus sensibles et ralentissent plus tot."/>
-        <text name="ads_aiWorkerTargetStress_relaxed" text="Detendue"/>
-        <text name="ads_aiWorkerTargetStress_balanced" text="Equilibree"/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Arrêter l’IA en cas de surcharge critique"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Permet à ADS d’arrêter les ouvriers IA et AutoDrive en cas de surcharge critique."/>
+        <text name="ads_contractVehicleProtection_label" text="Protection des véhicules de contrat"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Applique aux véhicules de contrat l’arrêt de l’IA en cas de surcharge critique ainsi que la régulation de vitesse en cas de surcharge ou de surchauffe."/>
+        <text name="ads_aiWorkerTargetStress_label" text="Réactivité de l’IA"/>
+        <text name="ads_aiWorkerTargetStress_tooltip" text="Détermine à quel moment l’ouvrier IA réagit à la surcharge et à la surchauffe. Les valeurs élevées sont moins sensibles et entraînent une réaction plus tardive ; les valeurs faibles sont plus sensibles et provoquent un ralentissement plus précoce."/>
+        <text name="ads_aiWorkerTargetStress_relaxed" text="Détendue"/>
+        <text name="ads_aiWorkerTargetStress_balanced" text="Équilibrée"/>
         <text name="ads_aiWorkerTargetStress_sensitive" text="Sensible"/>
-        <text name="ads_aiWorkerTargetStress_verySensitive" text="Tres sensible"/>
+        <text name="ads_aiWorkerTargetStress_verySensitive" text="Très sensible"/>
         <text name="ads_aiWorkerMinSpeed_label" text="Vitesse minimale de l'IA"/>
-        <text name="ads_aiWorkerMinSpeed_tooltip" text="Definit la vitesse minimale de regulateur que l'ouvrier IA est autorise a utiliser lorsqu'il ralentit pour eviter une surcharge ou une surchauffe."/>
+        <text name="ads_aiWorkerMinSpeed_tooltip" text="Définit la vitesse minimale du régulateur que l’ouvrier IA peut utiliser lorsqu’il ralentit pour éviter une surcharge ou une surchauffe."/>
         <text name="ads_debugMode_label" text="Mode débogage"/>
         <text name="ads_debugMode_tooltip" text="Active ou désactive le panneau de débogage et la journalisation de débogage étendue dans la console."/>
         <text name="ads_warningMessages_label" text="Messages d'avertissement"/>
@@ -66,7 +67,7 @@
         <text name="ads_batteryCapacity_label" text="Capacité de la batterie"/>
         <text name="ads_thermalSensitivity_label" text="Sensibilité thermique"/>
         <text name="ads_option_off" text="Arrêt"/>
-        <text name="ads_option_none" text="None"/>
+        <text name="ads_option_none" text="Aucun"/>
         <text name="ads_serviceInterval_tooltip" text="Définit l'intervalle d'entretien de base en heures, au-delà duquel un entretien est requis. L'intervalle réel dépend de la marque du véhicule, de son âge et de la qualité des entretiens précédents."/>
         <text name="ads_vehicleLifespan_tooltip" text="Définit la durée de vie de base du véhicule en heures, après laquelle son état atteindra 0 %. Plus l'état se rapproche de zéro, plus le véhicule devient peu fiable."/>
         <text name="ads_downtimeWear_tooltip" text="Définit la vitesse d'usure passive lorsqu'un véhicule reste à l'arrêt, en pourcentage du taux d'usure de base (Durée de vie du véhicule). Par exemple, 5 % avec la durée de vie par défaut de 100 heures signifie que chaque système perd environ 1 % d'état après environ 20 heures d'immobilisation. Remarque : l'usure passive est désactivée lorsque le véhicule est stocké sous abri."/>
@@ -75,22 +76,23 @@
         <text name="ads_systemStressRate_tooltip" text="Détermine la vitesse à laquelle le stress s'accumule dans les systèmes sous l'effet de la surcharge, de la surchauffe, du patinage et d'autres conditions d'utilisation sévères. Le stress influe directement sur la probabilité de panne : plus un système accumule de stress, plus une panne devient probable."/>
         <text name="ads_batteryCapacity_tooltip" text="Ajuste la capacité maximale réellement utilisable de la batterie. Des valeurs proches de 150 Ah sont plus réalistes, mais à ce niveau vous rencontrerez à peine des problèmes de décharge de batterie."/>
         <text name="ads_alternatorMaxOutput_label" text="Courant max. de l'alternateur"/>
-        <text name="ads_alternatorMaxOutput_tooltip" text="Definit le courant de sortie maximal de l'alternateur. Des valeurs plus elevees permettent a l'alternateur de recharger la batterie plus rapidement."/>
+        <text name="ads_alternatorMaxOutput_tooltip" text="Définit le courant de sortie maximal de l’alternateur. Les valeurs élevées permettent à l’alternateur de recharger la batterie plus rapidement."/>
         <text name="ads_idleCurrent_label" text="Courant de veille"/>
-        <text name="ads_idleCurrent_tooltip" text="Definit le courant de decharge de la batterie lorsque le moteur est arrete. Par exemple, avec 0,5 A, une batterie de 15 Ah mettrait environ 30 heures reelles a se decharger completement, avant prise en compte des effets de la temperature."/>
+        <text name="ads_idleCurrent_tooltip" text="Définit le courant de décharge de la batterie lorsque le moteur est arrêté. Par exemple, à 0,5 A, une batterie de 15 Ah mettrait environ 30 heures réelles à se décharger complètement, avant la prise en compte des effets de la température."/>
         <text name="ads_thermalSensitivity_tooltip" text="Ajuste le comportement du modèle thermique. Des réglages plus élevés rendent le moteur et la transmission plus sensibles à la charge, à la température ambiante et à l'encrassement du radiateur, générant ainsi plus de chaleur dans les mêmes conditions."/>
         <text name="ads_temperatureChangeSpeed_label" text="Vitesse du modèle thermique"/>
         <text name="ads_temperatureChangeSpeed_tooltip" text="Règle la vitesse de variation des températures du moteur et de la transmission. Les valeurs basses ralentissent le réchauffement et le refroidissement, les valeurs élevées accélèrent les deux. La valeur par défaut est 1.4x."/>
         <text name="ads_radiatorDirtInfluence_label" text="Influence de l'encrassement du radiateur"/>
-        <text name="ads_radiatorDirtInfluence_tooltip" text="Reduit la capacite de refroidissement du radiateur de ce pourcentage lorsque l'encrassement est maximal."/>
-        <text name="ads_warmingBoostPower_label" text="Acceleration de la mise en temperature"/>
-        <text name="ads_warmingBoostPower_tooltip" text="Accelere artificiellement la mise en temperature du moteur et de la transmission. Utilisez Arret pour conserver le comportement thermique d'origine."/>
+        <text name="ads_radiatorDirtInfluence_tooltip" text="Réduit la capacité de refroidissement du radiateur de ce pourcentage lorsque l’encrassement est maximal."/>
+        <text name="ads_warmingBoostPower_label" text="Accélération de la mise en température"/>
+        <text name="ads_warmingBoostPower_tooltip" text="Accélère artificiellement la mise en température du moteur et de la transmission. Utilisez « Arrêt » pour conserver le comportement thermique d’origine."/>
         <text name="ads_coolingSlowdownPower_label" text="Ralentissement du refroidissement"/>
-        <text name="ads_coolingSlowdownPower_tooltip" text="Ralentit artificiellement le refroidissement du moteur et de la transmission apres l'arret du vehicule. Utilisez Arret pour conserver un refroidissement non modifie."/>
+        <text name="ads_coolingSlowdownPower_tooltip" text="Ralentit artificiellement le refroidissement du moteur et de la transmission après l’arrêt du véhicule. Utilisez « Arrêt » pour conserver le comportement de refroidissement d’origine."/>
         <text name="ads_thermal_none" text="Passif"/>
         <text name="ads_thermal_mild" text="Modérée"/>
         <text name="ads_thermal_default" text="Par défaut"/>
         <text name="ads_thermal_aggressive" text="Agressif"/>
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="Valeur"/>
         <text name="ads_ws_label_age" text="Âge"/>
         <text name="ads_ws_label_operating_hours" text="Heures de fonctionnement"/>
@@ -132,6 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="Le journal est encore vide"/>
         <text name="ads_ws_cancel_confirm_title" text="Annuler %s ?"/>
         <text name="ads_ws_cancel_confirm_text" text="La progression actuelle sera enregistrée telle quelle. Aucun argent ne sera remboursé."/>
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="Journal d'entretien"/>
         <text name="ads_log_title" text="Journal d'entretien technique"/>
         <text name="ads_log_total_cost_title" text="Dépenses totales"/>
@@ -153,6 +156,7 @@
         <text name="ads_log_price" text="Coût"/>
         <text name="ads_log_button_show_report" text="Afficher le rapport"/>
         <text name="ads_log_empty" text="Le journal est vide"/>
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Permanent"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Réduit la puissance"/>
         <text name="ads_breakdowns_severity_shutdown" text="Arrêt"/>
@@ -279,15 +283,15 @@
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage2_description" text="Dysfonctionnement modéré du distributeur hydraulique. Le débit est instable, la réponse hydraulique est ralentie et l'efficacité diminue nettement."/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage3_description" text="Dysfonctionnement sévère du distributeur hydraulique. Le débit est très irrégulier, les commandes répondent mal et la puissance hydraulique disponible chute fortement."/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_description" text="Défaillance critique du distributeur hydraulique. Le flux hydraulique ne peut plus être correctement contrôlé et le fonctionnement devient impossible."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage1_description" text="Les premiers signes d un dysfonctionnement de la transmission CVT ont ete detectes. Un diagnostic et une reparation sont necessaires."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage2_description" text="Le dysfonctionnement de la transmission CVT s aggrave. Une utilisation prolongee peut entrainer le passage en mode d urgence."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage3_description" text="Endommagement critique de la transmission CVT. La transmission est en mode d urgence et la vitesse maximale du vehicule est reduite."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Defaillance complete de la transmission CVT. Toute utilisation ulterieure est impossible jusqu a la reparation."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage1_description" text="Les premiers signes d’un dysfonctionnement de la transmission CVT ont été détectés. Un diagnostic et une réparation sont nécessaires."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage2_description" text="Le dysfonctionnement de la transmission CVT s’aggrave. Une utilisation prolongée peut entraîner le passage en mode d’urgence."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage3_description" text="Endommagement critique de la transmission CVT. La transmission est en mode d’urgence et la vitesse maximale du véhicule est réduite."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Défaillance complète de la transmission CVT. Toute utilisation ultérieure est impossible jusqu’à la réparation."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Transmission CVT hors service"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Défaillance du distributeur hydraulique"/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Le thermostat du moteur commence à présenter des défaillances. Le moteur met plus de temps à atteindre sa température optimale ou fonctionne à une température légèrement élevée."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="La réponse du thermostat est médiocre. La régulation de la température du moteur est instable, ce qui augmente l'usure."/>
-        <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Le thermostat est bloqué en position fermée. Le moteur  surchauffera constamment sous la charge."/>
+        <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Le thermostat est bloqué en position fermée. Le moteur surchauffera constamment sous la charge."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage4_description" text="Défaillance totale du thermostat. Le liquide de refroidissement du moteur ne peut pas circuler correctement, ce qui entraîne une surchauffe imminente et grave."/>
         <text name="ads_breakdowns_hydraulic_pump_malfunction_stage1_description" text="Fuite interne mineure de la pompe hydraulique. Les outils fonctionnent légèrement plus lentement."/>
         <text name="ads_breakdowns_hydraulic_pump_malfunction_stage2_description" text="Joints de pompe hydraulique usés. Fonctionnement hydraulique nettement plus lent."/>
@@ -324,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Fuite sévère de liquide de refroidissement. La perte de refroidissement est importante et le risque de surchauffe devient élevé."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Défaillance critique du circuit de refroidissement. Le liquide de refroidissement est insuffisant pour un fonctionnement sûr du moteur."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Fuite de liquide de refroidissement"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Défaillance légère de l'embrayage de ventilateur. Le ventilateur réagit moins efficacement et le refroidissement est légèrement dégradé."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Défaillance modérée de l'embrayage de ventilateur. L'engagement du ventilateur est irrégulier et l'efficacité du refroidissement baisse nettement."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Défaillance sévère de l'embrayage de ventilateur. Le ventilateur ne fournit plus un débit d'air suffisant et le moteur surchauffe plus facilement."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Défaillance critique de l'embrayage de ventilateur. Le ventilateur ne peut plus assurer le refroidissement nécessaire."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Défaillance de l'embrayage de ventilateur"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Défaillance légère de l'embrayage de ventilateur. Le ventilateur réagit moins efficacement et le refroidissement est légèrement dégradé."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Défaillance modérée de l'embrayage de ventilateur. L'engagement du ventilateur est irrégulier et l'efficacité du refroidissement baisse nettement."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Défaillance sévère de l'embrayage de ventilateur. Le ventilateur ne fournit plus un débit d'air suffisant et le moteur surchauffe plus facilement."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Défaillance critique de l'embrayage de ventilateur. Le ventilateur ne peut plus assurer le refroidissement nécessaire."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Défaillance de l'embrayage de ventilateur"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Léger encrassement du filtre à carburant. Le débit de carburant diminue légèrement sous forte charge."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Encrassement modéré du filtre à carburant. Le débit devient insuffisant sous charge, la puissance baisse et le moteur hésite parfois."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Encrassement sévère du filtre à carburant. L'alimentation en carburant est fortement restreinte, la puissance chute nettement et des calages sont possibles."/>
@@ -371,6 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="PDF désengagée automatiquement"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Transmission désactivée"/>
         <text name="ads_breakdown_at_progress_message" text="en cours"/>
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="Moteur froid ! Les hauts régimes causent de l'usure !"/>
         <text name="ads_spec_overheat_engine_message" text="Attention ! Surchauffe du moteur."/>
         <text name="ads_spec_overheat_transmission_message" text="Attention ! Surchauffe de la transmission."/>
@@ -379,7 +384,7 @@
         <text name="ads_spec_never" text="Jamais"/>
         <text name="ads_spec_op_hours_short" text="h"/>
         <text name="ads_spec_tomorrow_at" text="demain à "/>
-        <text name="ads_spec_day_after_tommorow_at" text="après-demain à "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="après-demain à "/>
         <text name="ads_spec_in_days_at" text="dans {days} jours à "/>
         <text name="ads_spec_day_s" text="jour(s)"/>
         <text name="ads_spec_hour_s" text="heure(s)"/>
@@ -396,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="%s problème(s) détecté(s)"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="Aucun problème détecté"/>
         <text name="ads_spec_next_planned_service_notification" text="Intervention planifiée lancée : %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="Le %s planifié a été annulé faute de fonds suffisants"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="Le %s planifié a été annulé faute de fonds suffisants"/>
         <text name="ads_spec_workshop_dealer" text="Concessionnaire"/>
         <text name="ads_spec_workshop_own" text="Privé"/>
         <text name="ads_spec_workshop_mobile" text="Mobile"/>
@@ -426,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="En retard"/>
         <text name="ads_spec_state_legendary" text="Légendaire"/>
         <text name="ads_spec_state_premium" text="Premium"/>
-        <text name="ads_spec_state_standart" text="Standard"/>
+        <text name="ads_spec_state_standard" text="Standard"/>
         <text name="ads_spec_state_budget" text="Économique"/>
         <text name="ads_spec_state_low" text="Faible"/>
         <text name="ads_spec_state_average" text="Moyen"/>
@@ -449,6 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Provisoire"/>
         <text name="ads_spec_repair_type_replacement" text="Standard"/>
         <text name="ads_spec_repair_type_advanced" text="Approfondie"/>
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Sélectionnez le type d'inspection"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Réparer les défauts découverts"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Sélectionnez le niveau de maintenance"/>
@@ -486,7 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Démarrer automatiquement une réparation standard avec des pièces OEM si des défauts sont détectés."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Démarrer automatiquement un entretien standard avec des consommables OEM après la réparation."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Repeindre le véhicule pendant la révision générale."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Choisies pour la réparation :"/>
+        <text name="ads_option_menu_chosen_parts_text" text="* Choisies pour la réparation :"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Rapport d'inspection"/>
         <text name="ads_report_vehicle_name_title" text="Nom du véhicule"/>
         <text name="ads_report_date_title" text="Date"/>
@@ -546,6 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Signes de surutilisation intensive détectés. Améliorer les conditions d’exploitation."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Consommables défectueux détectés. Répétez la maintenance pour remplacer les composants défectueux."/>
         <text name="ads_report_recommendation_all_ok" text="Aucune recommandation critique. Le véhicule est en état de fonctionnement."/>
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Pistolet à graisse"/>
         <text name="ads_grease_gun_function" text="Utilisé pour les opérations de graissage"/>
         <text name="ads_grease_gun_action" text="Appliquer de la graisse"/>
@@ -654,6 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="La tension de la chenille paraît légèrement irrégulière."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="La chenille paraît relâchée, avec une tension visiblement irrégulière."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="La chenille présente un affaissement visible, et la tension semble fortement compromise."/>
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="Advanced Damage System"/>
         <text name="ads_ingame_menu_section_active" text="Véhicules ADS"/>
         <text name="ads_ingame_menu_section_service" text="En entretien"/>
@@ -683,11 +692,12 @@
         <text name="ads_sell_dialog_washing_penalty" text="Lavage"/>
         <text name="ads_sell_dialog_total" text="Total"/>
         <text name="ads_mobile_workshop_low_maintainability" text="WARNING: %s est indisponible pour %s dans l'atelier mobile en raison d'une faible maintenabilite."/>
-        <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Surcharge critique ! Reduisez immediatement la charge sur la machine."/>
+        <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Surcharge critique ! Réduisez immédiatement la charge du véhicule."/>
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Mode tutoriel"/>
         <text name="ads_tutorialMode_tooltip" text="Affiche des conseils tutoriels pendant le jeu. Désactivé en multijoueur."/>
-        <text name="ads_tutorialResetTips_label" text="Reinitialiser les conseils"/>
-        <text name="ads_tutorialResetTips_text" text="Reinitialiser les conseils"/>
+        <text name="ads_tutorialResetTips_label" text="Réinitialiser les conseils"/>
+        <text name="ads_tutorialResetTips_text" text="Réinitialiser les conseils"/>
         <text name="ads_tutorialResetTips_tooltip" text="Reinitialise l'historique des conseils du didacticiel et les affiche tous de nouveau. Disponible uniquement en solo."/>
         <text name="ads_tutorialResetConfirm_title" text="Réinitialiser les conseils tutoriels ?"/>
         <text name="ads_tutorialResetConfirm_message" text="Réinitialiser l'historique des conseils tutoriels et tous les réafficher ?"/>
@@ -696,19 +706,19 @@
         <text name="ads_tutorial_welcome_enable_button" text="Activer les conseils"/>
         <text name="ads_tutorial_welcome_message" text="Ce mod revoit entièrement les systèmes de dégâts et d'entretien des véhicules du jeu. Il apporte de nombreux changements, c'est pourquoi des conseils tutoriels apparaîtront de temps en temps. Ils vous aideront à comprendre plus vite les nouvelles mécaniques, à éviter les erreurs courantes et à empêcher vos machines de tomber en panne.&#10;&#10;Si vous le souhaitez, vous pouvez désactiver les conseils tutoriels dès maintenant. Vous pourrez toujours les réactiver plus tard dans les paramètres du mod, dans la section Advanced Damage System."/>
         <text name="ads_tutorial_service_due_soon_title" text="Entretien périodique"/>
-        <text name="ads_tutorial_service_due_soon_message" text="%s aura bientôt besoin d'un entretien.&#10;&#10;Dans ADS, les véhicules nécessitent un entretien régulier. Si vous le retardez, le risque de panne augmente fortement.&#10;&#10;Rendez-vous à l'atelier le plus proche et choisissez &quot;Maintenance&quot;. L'intervalle d'entretien peut être ajusté dans les paramètres du mod."/>
-        <text name="ads_tutorial_service_interval_expired_title" text="Intervalle d'entretien depasse"/>
-        <text name="ads_tutorial_service_interval_expired_message" text="%s a depasse son intervalle d'entretien et doit etre maintenu.&#10;&#10;Rendez-vous a l'atelier des que possible et lancez la procedure &quot;Entretien&quot;. Continuer a utiliser un vehicule avec un entretien en retard augmente fortement le risque de pannes multiples."/>
+        <text name="ads_tutorial_service_due_soon_message" text="%s aura bientôt besoin d'un entretien.&#10;&#10;Dans ADS, les véhicules nécessitent un entretien régulier. Si vous le retardez, le risque de panne augmente fortement.&#10;&#10;Rendez-vous à l'atelier le plus proche et choisissez &quot;Entretien&quot;. L'intervalle d'entretien peut être ajusté dans les paramètres du mod."/>
+        <text name="ads_tutorial_service_interval_expired_title" text="Intervalle d’entretien dépassé"/>
+        <text name="ads_tutorial_service_interval_expired_message" text="%s a dépassé son intervalle d’entretien et doit être entretenu.&#10;&#10;Rendez-vous à l’atelier dès que possible et lancez la procédure « Entretien ». Continuer à utiliser un véhicule dont l’entretien est en retard augmente fortement le risque de pannes multiples."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Radiateur et prises d'air encrassés"/>
-        <text name="ads_tutorial_rad_or_intake_clogged_message" text="Le radiateur et les prises d'air de votre véhicule semblent fortement encrassés.&#10;&#10;Un radiateur sale dissipe moins bien la chaleur, et des prises d'air bouchées peuvent limiter l'arrivée d'air au moteur. Cela réduit la puissance et augmente la consommation de carburant.&#10;&#10;Vous pouvez les nettoyer à la station de lavage ou avec l'Air Blower du magasin.&#10;&#10;Vous pouvez vérifier l'état du radiateur et des prises d'air via l'inspection : maintenez la touche R en regardant le véhicule."/>
+        <text name="ads_tutorial_rad_or_intake_clogged_message" text="Le radiateur et les prises d'air de votre véhicule semblent fortement encrassés.&#10;&#10;Un radiateur sale dissipe moins bien la chaleur, et des prises d'air bouchées peuvent limiter l'arrivée d'air au moteur. Cela réduit la puissance et augmente la consommation de carburant.&#10;&#10;Vous pouvez les nettoyer à la station de lavage ou avec le souffleur d'air comprimé du magasin.&#10;&#10;Vous pouvez vérifier l'état du radiateur et des prises d'air via l'inspection : maintenez la touche R en regardant le véhicule."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Lubrification nécessaire"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Votre %s a besoin d'une lubrification régulière.&#10;&#10;Dans ADS, le niveau de lubrification des composants de travail baisse progressivement chaque jour, ce qui augmente leur usure.&#10;&#10;Achetez un Grease Gun dans le magasin et lubrifiez votre machine chaque jour ou avant chaque journée de travail.&#10;&#10;Vous pouvez vérifier le niveau de lubrification via l'inspection : maintenez la touche R en regardant le véhicule."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Votre %s a besoin d'une lubrification régulière.&#10;&#10;Dans ADS, le niveau de lubrification des composants de travail baisse progressivement chaque jour, ce qui augmente leur usure.&#10;&#10;Achetez un pistolet à graisse dans le magasin et lubrifiez votre machine chaque jour ou avant chaque journée de travail.&#10;&#10;Vous pouvez vérifier le niveau de lubrification via l'inspection : maintenez la touche R en regardant le véhicule."/>
         <text name="ads_tutorial_needs_repair_title" text="Défaut du véhicule"/>
         <text name="ads_tutorial_needs_repair_message" text="Il semble qu'il y ait un problème avec votre %s. L'une de ses pièces a peut-être lâché.&#10;&#10;Assurez-vous de passer à l'atelier pour effectuer une inspection. Ne tardez pas : la défaillance peut continuer à s'aggraver et le coût de la réparation augmentera avec elle.&#10;&#10;Si l'inspection confirme un défaut, corrigez-le via la procédure de réparation à l'atelier."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Révision générale"/>
         <text name="ads_tutorial_needs_overhaul_message" text="Votre %s commence visiblement à accuser son âge. Il est temps d'envisager un remplacement ou une révision générale. C'est une opération longue et exigeante, mais c'est le meilleur moyen de donner une seconde vie à cette machine à laquelle vous vous êtes attaché. Vous pouvez d'ailleurs modifier la durée de vie dans les paramètres : plus elle est élevée, plus vos véhicules s'usent lentement."/>
-        <text name="ads_tutorial_age_degradation_title" text="Degradation liee a l'age"/>
-        <text name="ads_tutorial_age_degradation_message" text="Saviez-vous que, dans ADS, les vehicules perdent progressivement une partie de leurs performances d'origine en vieillissant ?&#10;&#10;Apres environ un tiers de leur duree de vie, l'usure liee a l'age commence a reduire legerement certaines caracteristiques importantes comme la puissance, le freinage et d'autres systemes. Plus le vehicule vieillit, plus cet effet se renforce, et il devient particulierement visible en fin de vie.&#10;&#10;Vous pouvez desactiver cette degradation liee a l'age dans les parametres du mod."/>
+        <text name="ads_tutorial_age_degradation_title" text="Dégradation liée à l’âge"/>
+        <text name="ads_tutorial_age_degradation_message" text="Saviez-vous que, dans ADS, les véhicules perdent progressivement une partie de leurs performances d’origine en vieillissant ?&#10;&#10;Après environ un tiers de leur durée de vie, l’usure liée à l’âge commence à réduire légèrement certaines caractéristiques importantes, comme la puissance, le freinage et les performances d’autres systèmes. Plus le véhicule vieillit, plus cet effet se renforce ; il devient particulièrement visible en fin de vie.&#10;&#10;Vous pouvez désactiver cette dégradation liée à l’âge dans les paramètres du mod."/>
         <text name="ads_tutorial_needs_preventive_title" text="Panne imminente"/>
         <text name="ads_tutorial_needs_preventive_message" text="On dirait qu'un des systèmes de votre %s est sur le point de tomber en panne. La bonne nouvelle, c'est que vous pouvez l'éviter ! Un service spécial est disponible à l'atelier : l'entretien préventif. Il comprend une inspection technique complète ainsi que des réparations préventives de tous les composants à risque."/>
         <text name="ads_tutorial_poor_consumables_title" text="Consommables de mauvaise qualité"/>
@@ -718,7 +728,7 @@
         <text name="ads_tutorial_idle_and_downtime_title" text="Ralenti et immobilisation"/>
         <text name="ads_tutorial_idle_and_downtime_message" text="Au fait, l'usure est bien plus faible lorsque votre machine tourne sans travailler activement, ce qui est assez logique. Lorsque le moteur est coupé, l'usure devient minime, et si la machine est stockée à l'abri, elle disparaît même complètement."/>
         <text name="ads_tutorial_hot_weather_title" text="Temps chaud"/>
-        <text name="ads_tutorial_hot_weather_message" text="Il fait vraiment très chaud aujourd'hui. Par ce temps, il faut surveiller de près la propreté du radiateur et éviter de surcharger le moteur, sinon la surchauffe n'est qu'une question de temps.&#10;&#10;N'oubliez pas : vous pouvez toujours vérifier l'état du radiateur par une inspection visuelle en maintenant la touche R en regardant la machine, et vous pouvez aussi le nettoyer avec l'Air Blower."/>
+        <text name="ads_tutorial_hot_weather_message" text="Il fait vraiment très chaud aujourd'hui. Par ce temps, il faut surveiller de près la propreté du radiateur et éviter de surcharger le moteur, sinon la surchauffe n'est qu'une question de temps.&#10;&#10;N'oubliez pas : vous pouvez toujours vérifier l'état du radiateur par une inspection visuelle en maintenant la touche R en regardant la machine, et vous pouvez aussi le nettoyer avec le souffleur d'air comprimé."/>
         <text name="ads_tutorial_wet_weather_title" text="Quel temps !"/>
         <text name="ads_tutorial_wet_weather_message" text="Quel temps aujourd'hui. L'humidité nuit au câblage et aux équipements électriques, si bien que l'usure du système électrique augmente légèrement dans ces conditions.&#10;&#10;En plus de cela, il est fortement déconseillé de récolter par un temps pareil : vous ne ferez que nuire à votre moissonneuse-batteuse."/>
         <text name="ads_tutorial_low_fuel_title" text="Carburant bas"/>
@@ -748,7 +758,7 @@
         <text name="ads_tutorial_pto_sharp_angle_title" text="Angle de PDF trop important"/>
         <text name="ads_tutorial_pto_sharp_angle_message" text="Attention : l'angle de la PDF entre votre machine et l'outil est trop important. L'arbre de transmission commence à travailler avec de fortes pulsations, les vibrations augmentent et l'usure s'accélère rapidement.&#10;&#10;Gardez l'angle sous 30 degrés et essayez de désengager la PDF lors des virages serrés et des manœuvres en bout de champ."/>
         <text name="ads_tutorial_overload_indicator_title" text="Avertissement de surcharge"/>
-        <text name="ads_tutorial_overload_indicator_message" text="%s est soumis a une forte charge. Le voyant qui vient de s'allumer sur le tableau de bord vous en avertit.&#10;&#10;La machine n'a peut-etre pas assez de puissance pour la tache en cours. Essayez de reduire la charge : limitez votre vitesse avec le regulateur, ou relachez un peu l'accelerateur au lieu de rouler a pleine puissance."/>
+        <text name="ads_tutorial_overload_indicator_message" text="%s est soumis à une forte charge. Le voyant qui vient de s’allumer sur le tableau de bord vous en avertit.&#10;&#10;La machine n’a peut-être pas assez de puissance pour la tâche en cours. Essayez de réduire la charge : limitez votre vitesse avec le régulateur, ou relâchez légèrement l’accélérateur au lieu de rouler à pleine puissance."/>
         <text name="ads_tutorial_engine_overload_title" text="Surcharge moteur"/>
         <text name="ads_tutorial_engine_overload_message" text="Le moteur subit une contrainte énorme. Il se peut que la tâche que vous essayez d'effectuer soit tout simplement trop lourde pour cette machine et qu'il faille envisager un véhicule plus puissant. Ou bien il suffit peut-être de ralentir pour réduire la charge du moteur.&#10;&#10;Dans tous les cas, gardez à l'esprit que l'usure augmente sensiblement sous ce type de contrainte."/>
         <text name="ads_tutorial_lugging_title" text="Moteur en sous-régime"/>
@@ -756,7 +766,8 @@
         <text name="ads_tutorial_wheel_slip_title" text="Patinage des roues"/>
         <text name="ads_tutorial_wheel_slip_message" text="On dirait que vos roues patinent fortement. Vous êtes peut-être même déjà enlisé et peu réceptif aux conseils, mais gardez cela en tête : le patinage des roues est l'un des facteurs les plus destructeurs pour la transmission et rapprochera nettement votre prochaine visite à l'atelier."/>
         <text name="ads_tutorial_battery_low_title" text="Batterie faible"/>
-        <text name="ads_tutorial_battery_low_message" text="Oups, la batterie semble sur le point de se décharger complètement. Cela peut arriver après une longue période d'immobilisation, en cas de grand froid ou à cause de défauts du système électrique.&#10;&#10;Avec une faible charge, le démarrage sera difficile, voire impossible. Si vous ne parvenez pas à démarrer, vous pouvez faire un démarrage assisté depuis un autre véhicule avec les Jumper Cables."/>
+        <text name="ads_tutorial_battery_low_message" text="Oups, la batterie semble sur le point de se décharger complètement. Cela peut arriver après une longue période d'immobilisation, en cas de grand froid ou à cause de défauts du système électrique.&#10;&#10;Avec une faible charge, le démarrage sera difficile, voire impossible. Si vous ne parvenez pas à démarrer, vous pouvez faire un démarrage assisté depuis un autre véhicule avec les câbles de démarrage."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Mode de transmission (4x2 / 4RM / AUTO)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Blocage de différentiel"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Frein de parking"/>

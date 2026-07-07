@@ -3,6 +3,7 @@
         <text name="ads_hud_mass_tractor" text="트랙터"/>
         <text name="ads_hud_mass_towed" text="부착"/>
         <text name="ads_hud_mass_total" text="합계"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS 설정"/>
         <text name="ads_settings_admin_required" text="멀티플레이어에서는 ADS 설정을 변경하려면 관리자 권한이 필요합니다."/>
         <text name="ads_maintenancePrice_label" text="정비 비용 배율"/>
@@ -41,10 +42,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="신규 차량 수리에 보증을 적용합니다(최대 20시간 운행 또는 12개월). OEM 부품 교체 시에만 비용이 면제됩니다."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="AI 과부하 및 과열 제어"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="활성화 시 AI 작업자가 엔진 과부하 또는 과열을 방지하기 위해 부하를 줄입니다."/>
-        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
-        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
-        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
-        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="임계 과부하 시 AI 정지"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="임계 과부하가 발생하면 ADS가 AI 작업자와 AutoDrive를 정지하도록 합니다."/>
+        <text name="ads_contractVehicleProtection_label" text="계약 차량 보호"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="계약 차량에도 임계 과부하 시 AI 정지와 과부하 또는 과열에 따른 속도 제어를 적용합니다."/>
         <text name="ads_aiWorkerTargetStress_label" text="AI 속도 반응"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="AI 작업자가 과부하와 과열에 얼마나 일찍 반응할지 조절합니다. 값이 높을수록 덜 민감해 더 늦게 반응하고, 값이 낮을수록 더 민감해 더 일찍 감속합니다."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="완만함"/>
@@ -91,7 +92,7 @@
         <text name="ads_thermal_mild" text="완만함"/>
         <text name="ads_thermal_default" text="기본"/>
         <text name="ads_thermal_aggressive" text="공격적"/>
-
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="가치"/>
         <text name="ads_ws_label_age" text="차령"/>
         <text name="ads_ws_label_operating_hours" text="가동 시간"/>
@@ -133,7 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="기록이 비어 있습니다"/>
         <text name="ads_ws_cancel_confirm_title" text="%s을(를) 취소하시겠습니까?"/>
         <text name="ads_ws_cancel_confirm_text" text="현재 진행 상황이 그대로 저장됩니다. 비용은 환불되지 않습니다."/>
-
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="정비 기록"/>
         <text name="ads_log_title" text="기술 정비 기록부"/>
         <text name="ads_log_total_cost_title" text="총 비용"/>
@@ -155,7 +156,7 @@
         <text name="ads_log_price" text="비용"/>
         <text name="ads_log_button_show_report" text="보고서 보기"/>
         <text name="ads_log_empty" text="기록이 없습니다"/>
-
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="영구적"/>
         <text name="ads_breakdowns_severity_reduce_power" text="출력 저하"/>
         <text name="ads_breakdowns_severity_shutdown" text="작동 중지"/>
@@ -327,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="심각한 냉각수 누수. 효율이 대폭 감소하여 부하 시 과열 가능성이 높습니다."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="치명적인 냉각수 누수. 냉각 효율을 상실하여 안전한 온도를 유지할 수 없습니다."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="냉각수 누수 치명적"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="팬 클러치 오작동. 냉각 팬 효율이 약간 떨어지고 비정상적인 소음이 발생합니다."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="보통 수준의 팬 클러치 오작동. 냉각 팬 효율 저하와 함께 소음이 뚜렷하게 들립니다."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="심각한 팬 클러치 오작동. 효율이 대폭 감소하고 소음이 매우 심해집니다."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="치명적인 팬 클러치 고장. 효율을 거의 상실하여 적절한 공기 흐름을 보장할 수 없습니다."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="팬 클러치 고장"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="팬 클러치 오작동. 냉각 팬 효율이 약간 떨어지고 비정상적인 소음이 발생합니다."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="보통 수준의 팬 클러치 오작동. 냉각 팬 효율 저하와 함께 소음이 뚜렷하게 들립니다."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="심각한 팬 클러치 오작동. 효율이 대폭 감소하고 소음이 매우 심해집니다."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="치명적인 팬 클러치 고장. 효율을 거의 상실하여 적절한 공기 흐름을 보장할 수 없습니다."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="팬 클러치 고장"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="연료 필터 막힘. 연료 흐름이 제한되어 부하 시 엔진이 미세하게 주춤거리며 토크가 약간 줄어듭니다."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="연료 필터 보통 막힘. 연료 제한이 뚜렷하며 빈번한 주춤거림, 토크 감소 및 정지가 발생할 수 있습니다."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="연료 필터 심각한 막힘. 연료 흐름이 치명적으로 제한되어 심한 주춤거림과 대폭적인 토크 감소, 잦은 정지가 발생합니다."/>
@@ -374,7 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="PTO 자동 차단됨"/>
         <text name="ads_breakdowns_gear_disengage_message" text="기어 빠짐"/>
         <text name="ads_breakdown_at_progress_message" text="진행 중"/>
-
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="엔진이 차갑습니다! 고 RPM은 마모의 원인이 됩니다!"/>
         <text name="ads_spec_overheat_engine_message" text="경고! 엔진 과열 중."/>
         <text name="ads_spec_overheat_transmission_message" text="경고! 변속기 과열 중."/>
@@ -383,7 +384,7 @@
         <text name="ads_spec_never" text="기록 없음"/>
         <text name="ads_spec_op_hours_short" text="시간"/>
         <text name="ads_spec_tomorrow_at" text="내일 "/>
-        <text name="ads_spec_day_after_tommorow_at" text="모레 "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="모레 "/>
         <text name="ads_spec_in_days_at" text="{days}일 후 "/>
         <text name="ads_spec_day_s" text="일"/>
         <text name="ads_spec_hour_s" text="시간"/>
@@ -400,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="%s개의 결함 발견"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="결함 없음"/>
         <text name="ads_spec_next_planned_service_notification" text="예약된 절차 시작: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="자금 부족으로 예약된 %s 취소됨"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="자금 부족으로 예약된 %s 취소됨"/>
         <text name="ads_spec_workshop_dealer" text="대리점"/>
         <text name="ads_spec_workshop_own" text="자가 정비"/>
         <text name="ads_spec_workshop_mobile" text="이동식"/>
@@ -430,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="기한 지남"/>
         <text name="ads_spec_state_legendary" text="전설적"/>
         <text name="ads_spec_state_premium" text="프리미엄"/>
-        <text name="ads_spec_state_standart" text="표준"/>
+        <text name="ads_spec_state_standard" text="표준"/>
         <text name="ads_spec_state_budget" text="보급형"/>
         <text name="ads_spec_state_low" text="낮음"/>
         <text name="ads_spec_state_average" text="평균"/>
@@ -453,7 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="임시 수리"/>
         <text name="ads_spec_repair_type_replacement" text="표준"/>
         <text name="ads_spec_repair_type_advanced" text="정밀 수리"/>
-
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="점검 유형 선택"/>
         <text name="ads_option_menu_option_two_title_inspection" text="발견된 결함 수리"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="정비 수준 선택"/>
@@ -473,7 +474,7 @@
         <text name="ads_option_menu_inspection_complete_description" text="* 정밀 진단입니다. 잠재적인 결함을 포함한 모든 고장 발견을 보장하며, 모든 부품에 대한 정확한 상태 수치가 포함된 포괄적인 보고서를 제공합니다."/>
         <text name="ads_option_menu_maintenance_minimal_description" text="* 기본 서비스입니다. 훨씬 저렴하고 빠르지만 정비 수준을 완전히 회복시키지 못하며 다음 정비까지의 주기가 짧습니다."/>
         <text name="ads_option_menu_maintenance_standard_description" text="* 제조사 규격에 따른 일상 정비입니다. 정비 수준을 정상으로 회복시키고 표준 정비 주기를 제공합니다."/>
-        <text name="ads_option_menu_maintenance_extended_description" text="* 포괄적인 서비스입니다. 더 오래 걸리고 비용이 많이 들지만, 정비 수준을 표준 이상으로 회복시키고 더 긴 정비 주기를 제공합니다."/>   
+        <text name="ads_option_menu_maintenance_extended_description" text="* 포괄적인 서비스입니다. 더 오래 걸리고 비용이 많이 들지만, 정비 수준을 표준 이상으로 회복시키고 더 긴 정비 주기를 제공합니다."/>
         <text name="ads_option_menu_maintenance_preventive_description" text="* 표준 서비스 이상의 예방 정비입니다. 정비 수준을 정상으로 회복시키고 가장 문제가 되는 시스템을 점검하여 고장 위험을 줄입니다."/>
         <text name="ads_option_menu_repair_type_fix_description" text="* 긴급한 작업을 위해 차량 작동 상태만 유지하려는 임시 수리입니다. 빠르고 저렴하게 기본 기능을 복구하지만, 근본적인 결함은 해결되지 않아 일정 시간 후 다시 나타납니다."/>
         <text name="ads_option_menu_repair_type_replacement_description" text="* 고장난 부품의 표준 교체입니다. 현재 결함을 완전히 제거하고 해당 유닛을 정상 작동 상태로 복구합니다."/>
@@ -491,8 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* 결함 발견 시 자동으로 순정 부품을 사용한 표준 수리를 시작합니다."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* 수리 후 자동으로 순정 소모품을 사용한 표준 정비를 시작합니다."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* 오버홀 중 차량을 재도색합니다."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* 수리에 선택됨:"/>
-
+        <text name="ads_option_menu_chosen_parts_text" text="* 수리에 선택됨:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="점검 보고서"/>
         <text name="ads_report_vehicle_name_title" text="차량명"/>
         <text name="ads_report_date_title" text="날짜"/>
@@ -552,7 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="집중적인 과사용 흔적이 발견되었습니다. 운행 조건을 개선하십시오."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="결함 있는 소모품이 발견되었습니다. 결함 부품 교체를 위해 정비를 다시 수행하십시오."/>
         <text name="ads_report_recommendation_all_ok" text="특별한 권장 사항이 없습니다. 차량이 정상 운행 가능한 상태입니다."/>
-
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="그리스 건"/>
         <text name="ads_grease_gun_function" text="윤활 서비스 절차에 사용됩니다"/>
         <text name="ads_grease_gun_action" text="그리스 주입"/>
@@ -661,7 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="트랙 장력이 약간 불균형해 보입니다."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="트랙이 느슨해 보이며 장력이 뚜렷하게 불균형합니다."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="트랙이 눈에 띄게 처져 있으며 장력이 심각하게 훼손되었습니다."/>
-        
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="고급 손상 시스템"/>
         <text name="ads_ingame_menu_section_active" text="ADS 차량"/>
         <text name="ads_ingame_menu_section_service" text="정비 중"/>
@@ -692,6 +693,7 @@
         <text name="ads_sell_dialog_total" text="합계"/>
         <text name="ads_mobile_workshop_low_maintainability" text="경고: 정비 용이성이 낮아 이동식 정비소에서 %s의 %s 작업을 수행할 수 없습니다."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="치명적 과부하! 즉시 차량의 부하를 줄이십시오."/>
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="튜토리얼 모드"/>
         <text name="ads_tutorialMode_tooltip" text="게임 플레이 중 튜토리얼 팁을 표시합니다. 멀티플레이어에서는 비활성화됩니다."/>
         <text name="ads_tutorialResetTips_label" text="팁 초기화"/>
@@ -704,13 +706,13 @@
         <text name="ads_tutorial_welcome_enable_button" text="팁 켜기"/>
         <text name="ads_tutorial_welcome_message" text="이 모드는 게임의 차량 손상 및 정비 시스템을 완전히 새롭게 바꿉니다. 변경 사항이 많기 때문에 튜토리얼 팁이 수시로 표시됩니다. 이 팁들은 새로운 메커니즘을 더 빨리 이해하고, 흔한 실수를 피하며, 기계가 고장 나지 않도록 도와줍니다.&#10;&#10;원하시면 지금 바로 튜토리얼 팁을 끌 수 있습니다. 이후에는 모드 설정의 Advanced Damage System 항목에서 언제든 다시 켤 수 있습니다."/>
         <text name="ads_tutorial_service_due_soon_title" text="정기 정비"/>
-        <text name="ads_tutorial_service_due_soon_message" text="%s 차량은 곧 정비가 필요합니다.&#10;&#10;ADS에서는 차량이 정기적인 정비를 받아야 합니다. 이를 미루면 고장 위험이 크게 높아집니다.&#10;&#10;가장 가까운 정비소를 방문해 &quot;Maintenance&quot;를 선택하세요. 정비 주기는 모드 설정에서 조정할 수 있습니다."/>
+        <text name="ads_tutorial_service_due_soon_message" text="%s 차량은 곧 정비가 필요합니다.&#10;&#10;ADS에서는 차량이 정기적인 정비를 받아야 합니다. 이를 미루면 고장 위험이 크게 높아집니다.&#10;&#10;가장 가까운 정비소를 방문해 &quot;정비&quot;를 선택하세요. 정비 주기는 모드 설정에서 조정할 수 있습니다."/>
         <text name="ads_tutorial_service_interval_expired_title" text="정비 주기 초과"/>
         <text name="ads_tutorial_service_interval_expired_message" text="%s의 정비 주기가 지났으며 정비가 필요합니다.&#10;&#10;가능한 한 빨리 정비소로 가서 &quot;정비&quot; 절차를 실행하세요. 정비 주기를 넘긴 차량을 계속 운행하면 여러 고장이 동시에 발생할 위험이 크게 높아집니다."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="라디에이터 및 흡기구 오염"/>
-        <text name="ads_tutorial_rad_or_intake_clogged_message" text="차량의 라디에이터와 흡기구가 심하게 막힌 것 같습니다.&#10;&#10;라디에이터가 더러우면 열을 제대로 방출하지 못하고, 흡기구가 막히면 엔진으로 들어가는 공기 흐름이 제한될 수 있습니다. 그러면 출력이 떨어지고 연료 소비가 증가합니다.&#10;&#10;세차장에서 청소하거나 상점에서 구입한 Air Blower로 청소할 수 있습니다.&#10;&#10;라디에이터와 흡기구 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
+        <text name="ads_tutorial_rad_or_intake_clogged_message" text="차량의 라디에이터와 흡기구가 심하게 막힌 것 같습니다.&#10;&#10;라디에이터가 더러우면 열을 제대로 방출하지 못하고, 흡기구가 막히면 엔진으로 들어가는 공기 흐름이 제한될 수 있습니다. 그러면 출력이 떨어지고 연료 소비가 증가합니다.&#10;&#10;세차장에서 청소하거나 상점에서 구입한 에어 블로워로 청소할 수 있습니다.&#10;&#10;라디에이터와 흡기구 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
         <text name="ads_tutorial_needs_lubrication_title" text="윤활 필요"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="%s 차량은 정기적인 윤활이 필요합니다.&#10;&#10;ADS에서는 작업 부품의 윤활 상태가 매일 조금씩 감소하며, 그에 따라 마모가 증가합니다.&#10;&#10;상점에서 Grease Gun을 구입해 매일 또는 작업 시작 전마다 차량에 윤활을 해 주세요.&#10;&#10;윤활 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="%s 차량은 정기적인 윤활이 필요합니다.&#10;&#10;ADS에서는 작업 부품의 윤활 상태가 매일 조금씩 감소하며, 그에 따라 마모가 증가합니다.&#10;&#10;상점에서 그리스 건을 구입해 매일 또는 작업 시작 전마다 차량에 윤활을 해 주세요.&#10;&#10;윤활 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
         <text name="ads_tutorial_needs_repair_title" text="차량 이상"/>
         <text name="ads_tutorial_needs_repair_message" text="%s 차량에 뭔가 문제가 있는 것 같습니다. 부품 하나가 고장 났을 수 있습니다.&#10;&#10;반드시 정비소를 방문해 점검을 받으세요. 미루지 마세요. 문제가 계속 악화될 수 있고, 그만큼 수리 비용도 올라갑니다.&#10;&#10;점검 결과 고장이 확인되면 정비소의 수리 절차를 통해 해결하세요."/>
         <text name="ads_tutorial_needs_overhaul_title" text="대정비"/>
@@ -726,7 +728,7 @@
         <text name="ads_tutorial_idle_and_downtime_title" text="공회전과 보관"/>
         <text name="ads_tutorial_idle_and_downtime_message" text="참고로 차량이 켜져 있지만 실제로 작업을 하지 않을 때는 마모가 훨씬 적습니다. 이는 아주 자연스러운 일입니다. 엔진이 꺼져 있으면 마모는 아주 미미해지고, 차량을 실내에 보관하면 마모는 완전히 사라집니다."/>
         <text name="ads_tutorial_hot_weather_title" text="더운 날씨"/>
-        <text name="ads_tutorial_hot_weather_message" text="오늘은 정말 덥네요. 이런 날씨에는 라디에이터 청결 상태를 더욱 세심하게 확인하고 엔진 과부하를 피해야 합니다. 그렇지 않으면 과열은 시간문제입니다.&#10;&#10;기억하세요. 차량을 바라보며 R 키를 길게 눌러 시각 점검으로 라디에이터 상태를 확인할 수 있고, Air Blower로 청소도 할 수 있습니다."/>
+        <text name="ads_tutorial_hot_weather_message" text="오늘은 정말 덥네요. 이런 날씨에는 라디에이터 청결 상태를 더욱 세심하게 확인하고 엔진 과부하를 피해야 합니다. 그렇지 않으면 과열은 시간문제입니다.&#10;&#10;기억하세요. 차량을 바라보며 R 키를 길게 눌러 시각 점검으로 라디에이터 상태를 확인할 수 있고, 에어 블로워로 청소도 할 수 있습니다."/>
         <text name="ads_tutorial_wet_weather_title" text="정말 궂은 날씨"/>
         <text name="ads_tutorial_wet_weather_message" text="오늘 날씨가 참 안 좋네요. 습기는 배선과 전기 장비에 좋지 않기 때문에 이런 조건에서는 전기 시스템의 마모가 약간 더 빨라집니다.&#10;&#10;게다가 이런 날씨에 수확 작업을 하는 것은 강력히 권장되지 않습니다. 콤바인만 망가뜨리게 될 것입니다."/>
         <text name="ads_tutorial_low_fuel_title" text="연료 부족"/>
@@ -764,7 +766,8 @@
         <text name="ads_tutorial_wheel_slip_title" text="휠 슬립"/>
         <text name="ads_tutorial_wheel_slip_message" text="바퀴가 심하게 헛돌고 있는 것 같습니다. 지금 이미 빠져서 조언을 들을 기분이 아닐 수도 있지만, 이것만은 기억하세요. 휠 슬립은 변속기에 가장 치명적인 요인 중 하나이며, 다음 정비소 방문 시점을 훨씬 앞당기게 됩니다."/>
         <text name="ads_tutorial_battery_low_title" text="배터리 약함"/>
-        <text name="ads_tutorial_battery_low_message" text="앗, 배터리가 거의 방전될 것 같습니다. 장기간 방치, 심한 추위, 전기 시스템 이상 등이 원인일 수 있습니다.&#10;&#10;충전량이 낮으면 시동이 어렵거나 아예 걸리지 않을 수 있습니다. 시동이 되지 않으면 Jumper Cables를 사용해 다른 차량에서 점프 시동을 걸 수 있습니다."/>
+        <text name="ads_tutorial_battery_low_message" text="앗, 배터리가 거의 방전될 것 같습니다. 장기간 방치, 심한 추위, 전기 시스템 이상 등이 원인일 수 있습니다.&#10;&#10;충전량이 낮으면 시동이 어렵거나 아예 걸리지 않을 수 있습니다. 시동이 되지 않으면 점프 케이블을 사용해 다른 차량에서 점프 시동을 걸 수 있습니다."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="구동 모드 (4x2 / 4WD / 자동)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="차동 잠금"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="주차 브레이크"/>

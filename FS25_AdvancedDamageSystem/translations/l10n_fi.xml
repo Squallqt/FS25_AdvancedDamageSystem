@@ -3,6 +3,7 @@
         <text name="ads_hud_mass_tractor" text="Traktori"/>
         <text name="ads_hud_mass_towed" text="Kytketty"/>
         <text name="ads_hud_mass_total" text="Yhteensä"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS-ASETUKSET"/>
         <text name="ads_settings_admin_required" text="ADS-asetukset vaativat järjestelmänvalvojan oikeudet moninpelissä."/>
         <text name="ads_maintenancePrice_label" text="Huoltokustannusten kerroin"/>
@@ -41,10 +42,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="Soveltaa takuusuojaa uusien ajoneuvojen korjauksiin (enintään 20 käyttötuntia tai 12 kuukautta). Vain alkuperäiset varaosat katetaan veloituksetta."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Tekoälyn ylikuormitus- ja ylikuumenemissäätö"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Jos käytössä, tekoälytyöntekijä vähentää kuormaa estääkseen moottorin ylikuormituksen tai ylikuumenemisen."/>
-        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
-        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
-        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
-        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Pysäytä tekoäly kriittisessä ylikuormituksessa"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Sallii ADS:n pysäyttää tekoälytyöntekijät ja AutoDriven kriittisen ylikuormituksen aikana."/>
+        <text name="ads_contractVehicleProtection_label" text="Sopimusajoneuvojen suojaus"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Ottaa sopimusajoneuvoissa käyttöön tekoälyn pysäytyksen kriittisessä ylikuormituksessa sekä nopeuden rajoituksen ylikuormituksen tai ylikuumenemisen yhteydessä."/>
         <text name="ads_aiWorkerTargetStress_label" text="Tekoälyn nopeusreaktio"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Määrittää, kuinka aikaisin tekoälytyöntekijä reagoi ylikuormitukseen ja ylikuumenemiseen. Suuremmat arvot ovat vähemmän herkkiä ja reagoivat myöhemmin; pienemmät arvot ovat herkempiä ja hidastavat aiemmin."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Rento"/>
@@ -91,7 +92,7 @@
         <text name="ads_thermal_mild" text="Lievä"/>
         <text name="ads_thermal_default" text="Oletus"/>
         <text name="ads_thermal_aggressive" text="Aggressiivinen"/>
-
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="Arvo"/>
         <text name="ads_ws_label_age" text="Ikä"/>
         <text name="ads_ws_label_operating_hours" text="Käyttötunnit"/>
@@ -133,7 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="Loki on vielä tyhjä"/>
         <text name="ads_ws_cancel_confirm_title" text="Peruuta %s?"/>
         <text name="ads_ws_cancel_confirm_text" text="Nykyinen edistyminen tallennetaan sellaisenaan. Rahoja ei palauteta."/>
-
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="Huoltoloki"/>
         <text name="ads_log_title" text="Tekninen huoltoloki"/>
         <text name="ads_log_total_cost_title" text="Kokonaiskulut"/>
@@ -155,7 +156,7 @@
         <text name="ads_log_price" text="Kustannus"/>
         <text name="ads_log_button_show_report" text="Näytä raportti"/>
         <text name="ads_log_empty" text="Loki on tyhjä"/>
-
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Pysyvä"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Tehon alennus"/>
         <text name="ads_breakdowns_severity_shutdown" text="Sammutus"/>
@@ -327,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Vakava jäähdytysnesteen vuoto. Jäähdytysjärjestelmän tehokkuus on merkittävästi alentunut ja ylikuumeneminen kuormituksessa on todennäköistä."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Kriittinen jäähdytysnesteen vuoto. Jäähdytysjärjestelmän tehokkuus on kriittisen alhainen eikä turvallista moottorin lämpötilaa voida ylläpitää."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Jäähdytysnesteen vuoto kriittistä"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on hieman alentunut ja epänormaalia tuuletinkytkimen melua esiintyy."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Kohtalainen tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on alentunut ja tuuletinkytkimen melu on selvästi kuultavissa."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Vakava tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on merkittävästi alentunut ja tuuletinkytkimen melu on vakavaa."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Kriittinen tuuletinkytkimen vaurio. Jäähdytystuulettimen tehokkuus on kriittisen alhainen eikä riittävää ilmavirtausta jäähdytysjärjestelmän läpi voida taata."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Tuuletinkytkimen vaurio"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on hieman alentunut ja epänormaalia tuuletinkytkimen melua esiintyy."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Kohtalainen tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on alentunut ja tuuletinkytkimen melu on selvästi kuultavissa."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Vakava tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on merkittävästi alentunut ja tuuletinkytkimen melu on vakavaa."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Kriittinen tuuletinkytkimen vaurio. Jäähdytystuulettimen tehokkuus on kriittisen alhainen eikä riittävää ilmavirtausta jäähdytysjärjestelmän läpi voida taata."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Tuuletinkytkimen vaurio"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Polttoainesuodattimen tukkeutuminen. Polttoaineen virtaus on rajoittunut aiheuttaen lievää moottorin epäröintiä kuormituksessa ja pientä moottorin vääntömomentin alenemista."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Kohtalainen polttoainesuodattimen tukkeutuminen. Polttoaineen virtauksen rajoitus on havaittava, moottorin epäröinti kuormituksessa on tiheää, moottorin vääntömomentti on alentunut ja moottorin sammuminen on mahdollista."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Vakava polttoainesuodattimen tukkeutuminen. Polttoaineen virtaus on kriittisen rajoittunut, moottorin epäröinti on voimakasta, moottorin vääntömomentti on voimakkaasti alentunut ja moottorin sammuminen on todennäköistä."/>
@@ -374,7 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="Voimanotto irrotettu automaattisesti"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Vaihde irrotettu"/>
         <text name="ads_breakdown_at_progress_message" text="käynnissä"/>
-
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="Moottori on kylmä! Suuret kierrokset aiheuttavat kulumista!"/>
         <text name="ads_spec_overheat_engine_message" text="Varoitus! Moottori ylikuumenee."/>
         <text name="ads_spec_overheat_transmission_message" text="Varoitus! Vaihteisto ylikuumenee."/>
@@ -383,7 +384,7 @@
         <text name="ads_spec_never" text="Ei koskaan"/>
         <text name="ads_spec_op_hours_short" text="k/t"/>
         <text name="ads_spec_tomorrow_at" text="huomenna kello "/>
-        <text name="ads_spec_day_after_tommorow_at" text="ylihuomenna kello "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="ylihuomenna kello "/>
         <text name="ads_spec_in_days_at" text="{days} päivän kuluttua kello "/>
         <text name="ads_spec_day_s" text="päivä(ä)"/>
         <text name="ads_spec_hour_s" text="tunti(a)"/>
@@ -400,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="%s ongelma(a) havaittu"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="Ei ongelmia havaittu"/>
         <text name="ads_spec_next_planned_service_notification" text="Aikataulutettu toimenpide aloitettu: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="Aikataulutettu %s peruutettu varojen puuttumisen vuoksi"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="Aikataulutettu %s peruutettu varojen puuttumisen vuoksi"/>
         <text name="ads_spec_workshop_dealer" text="Jälleenmyyjä"/>
         <text name="ads_spec_workshop_own" text="Oma"/>
         <text name="ads_spec_workshop_mobile" text="Liikkuva"/>
@@ -430,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="Myöhässä"/>
         <text name="ads_spec_state_legendary" text="Legendaarinen"/>
         <text name="ads_spec_state_premium" text="Premium"/>
-        <text name="ads_spec_state_standart" text="Standardi"/>
+        <text name="ads_spec_state_standard" text="Standardi"/>
         <text name="ads_spec_state_budget" text="Edullinen"/>
         <text name="ads_spec_state_low" text="Alhainen"/>
         <text name="ads_spec_state_average" text="Keskimääräinen"/>
@@ -453,7 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Pikakorjaus"/>
         <text name="ads_spec_repair_type_replacement" text="Standardi"/>
         <text name="ads_spec_repair_type_advanced" text="Edistynyt"/>
-
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Valitse tarkastustyyppi"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Korjaa havaitut viat"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Valitse huoltotaso"/>
@@ -491,8 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Aloita automaattisesti standardikorjaus OEM-osilla, jos vikoja havaitaan."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Aloita automaattisesti standardihuolto OEM-kulutustarvikkeilla korjauksen jälkeen."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Maalaa ajoneuvo uudelleen yleishuollon aikana."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Valittu korjaukseen:"/>
-
+        <text name="ads_option_menu_chosen_parts_text" text="* Valittu korjaukseen:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Tarkastusraportti"/>
         <text name="ads_report_vehicle_name_title" text="Ajoneuvon nimi"/>
         <text name="ads_report_date_title" text="Päivämäärä"/>
@@ -552,7 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Intensiivisen ylikäytön merkkejä havaittu. Paranna käyttöolosuhteita."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Viallisia kulutustarvikkeita havaittu. Toista huolto viallisten komponenttien vaihtamiseksi."/>
         <text name="ads_report_recommendation_all_ok" text="Ei kriittisiä suosituksia. Ajoneuvo on käyttökunnossa."/>
-
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Rasvaruisku"/>
         <text name="ads_grease_gun_function" text="Käytetään voitelutoimenpiteisiin"/>
         <text name="ads_grease_gun_action" text="Voitele"/>
@@ -661,7 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="Telan kireys näyttää hieman epätasaiselta."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="Tela näyttää löysältä ja epätasainen kireys on havaittavissa."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="Tela roikkuu näkyvästi ja kireys näyttää vakavasti kompromissoidulta."/>
-        
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="Edistyksellinen vauriojärjestelmä"/>
         <text name="ads_ingame_menu_section_active" text="ADS-ajoneuvot"/>
         <text name="ads_ingame_menu_section_service" text="Huollossa"/>
@@ -682,18 +683,17 @@
         <text name="ads_ingame_menu_header_finish_time" text="Valmistumisaika"/>
         <text name="ads_ingame_menu_header_service_cost" text="Kustannus"/>
         <text name="ads_ingame_menu_section_other" text="Muut ajoneuvot"/>
-        <text name="ads_ingame_menu_empty_other" text="Ei ei-ADS-ajoneuvoja saatavilla"/>
+        <text name="ads_ingame_menu_empty_other" text="Ei ADS-järjestelmän ulkopuolisia ajoneuvoja saatavilla"/>
         <text name="ads_ingame_menu_empty_active" text="Ei ADS-ajoneuvoja saatavilla"/>
         <text name="ads_ingame_menu_empty_service" text="Yhtään ajoneuvoa ei ole tällä hetkellä huollossa"/>
         <text name="ads_sell_dialog_costs_title" text="Lisäkustannukset"/>
-        <text name="ads_sell_dialog_deposit_return" text="Pantin palautus"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Myöhässä oleva huolto"/>
         <text name="ads_sell_dialog_repair_penalty" text="Korjaus"/>
         <text name="ads_sell_dialog_washing_penalty" text="Pesu"/>
         <text name="ads_sell_dialog_total" text="Yhteensä"/>
         <text name="ads_mobile_workshop_low_maintainability" text="VAROITUS: %s ei ole saatavilla kohteelle %s liikkuvassa korjaamossa alhaisen huollettavuuden vuoksi."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kriittinen ylikuormitus! Vähennä ajoneuvon kuormaa välittömästi."/>
-    
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Opetustila"/>
         <text name="ads_tutorialMode_tooltip" text="Näyttää opetusvihjaita pelin aikana. Ei käytettävissä moninpelissä."/>
         <text name="ads_tutorialResetTips_label" text="Nollaa vihjeet"/>
@@ -767,6 +767,7 @@
         <text name="ads_tutorial_wheel_slip_message" text="Näyttää siltä, että pyörät luistavat pahasti. Olet ehkä jumiutunut juuri nyt eikä sinua huvita neuvot, mutta pidä tämä mielessä: pyörän luistaminen on yksi tuhoisimmista tekijöistä vaihteistolle ja tuo seuraavan huoltokäynnin paljon lähemmäksi."/>
         <text name="ads_tutorial_battery_low_title" text="Heikko akku"/>
         <text name="ads_tutorial_battery_low_message" text="Hups, näyttää siltä, että akku on lähellä kuolemistaan. Tämä voi tapahtua pitkän seisontajakson jälkeen, vakavan pakkasen vuoksi tai sähköjärjestelmän vikojen takia.&#10;&#10;Alhaisella varauksella käynnistäminen on vaikeaa tai jopa mahdotonta. Jos et saa sitä käynnistymään, voit käynnistää koneen toisesta ajoneuvosta käynnistyskaapeleilla."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Vetotila (4x2 / 4WD / AUTO)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Tasauspyörästön lukko"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Seisontajarru"/>

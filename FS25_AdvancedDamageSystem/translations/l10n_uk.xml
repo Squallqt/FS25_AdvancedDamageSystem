@@ -1,9 +1,9 @@
 <l10n>
-    <translationContributors>Kalderone, Petro2000</translationContributors>
     <texts>
         <text name="ads_hud_mass_tractor" text="Трактор"/>
         <text name="ads_hud_mass_towed" text="Причеплене"/>
         <text name="ads_hud_mass_total" text="Разом"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="НАЛАШТУВАННЯ ADS"/>
         <text name="ads_settings_admin_required" text="Налаштування ADS потребують прав адміністратора в багатокористувацькій грі."/>
         <text name="ads_maintenancePrice_label" text="Множник ціни обслуговування"/>
@@ -25,8 +25,8 @@
         <text name="ads_ws_header_title" text="Майстерня"/>
         <text name="ads_settings_section_service_wear" text="Обслуговування та зношування"/>
         <text name="ads_settings_section_thermal_model" text="Теплова модель"/>
-        <text name="ads_settings_section_battery_alternator" text="Акумулятор та генератор"/>		
-		<text name="ads_settings_section_preshift_maintenance" text="Передзмінне обслуговування"/>
+        <text name="ads_settings_section_battery_alternator" text="Акумулятор та генератор"/>
+        <text name="ads_settings_section_preshift_maintenance" text="Передзмінне обслуговування"/>
         <text name="ads_settings_section_other" text="Інше"/>
         <text name="ads_dealerWorkshopAvailable_label" text="Майстерня дилера 24/7"/>
         <text name="ads_dealerWorkshopAvailable_tooltip" text="Робить майстерню дилера доступною в будь-який час доби."/>
@@ -40,12 +40,12 @@
         <text name="ads_parkVehicle_tooltip" text="Якщо увімкнено, транспортні засоби, що проходять обслуговування, пропускаються при перемиканні клавішею TAB."/>
         <text name="ads_warrantyEnabled_label" text="Гарантія на нове обладнання"/>
         <text name="ads_warrantyEnabled_tooltip" text="Застосовує гарантійне покриття до ремонту нових транспортних засобів (до 20 мотогодин або 12 місяців). Безкоштовно покриваються лише оригінальні запчастини (OEM)."/>
-		<text name="ads_aiOverloadAndOverheatControl_label" text="Контроль перевантаження та перегріву ШІ"/>
+        <text name="ads_aiOverloadAndOverheatControl_label" text="Контроль перевантаження та перегріву ШІ"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Якщо увімкнено, працівник ШІ зменшує навантаження, щоб запобігти перевантаженню або перегріву двигуна."/>
-        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
-        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
-        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
-        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Зупиняти ШІ за критичного перевантаження"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Дозволяє ADS зупиняти працівників ШІ та AutoDrive за критичного перевантаження."/>
+        <text name="ads_contractVehicleProtection_label" text="Захист контрактної техніки"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Застосовує до контрактної техніки зупинку ШІ за критичного перевантаження та регулювання швидкості в разі перевантаження або перегріву."/>
         <text name="ads_aiWorkerTargetStress_label" text="Реакція ШІ на швидкість"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Контролює, наскільки рано працівник ШІ реагує на перевантаження та перегрів. Вищі значення менш чутливі та реагують пізніше; нижчі значення більш чутливі та сповільнюються раніше."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Розслаблено"/>
@@ -58,7 +58,7 @@
         <text name="ads_debugMode_tooltip" text="Вмикає або вимикає панель налагодження та розширене логування в консолі."/>
         <text name="ads_warningMessages_label" text="Попереджувальні повідомлення"/>
         <text name="ads_warningMessages_tooltip" text="Вмикає або вимикає ігрові попереджувальні повідомлення, такі як сповіщення про холодний двигун та перегрів."/>
-		<text name="ads_mobileWorkshopRestrictions_label" text="Обмеження мобільної майстерні"/>
+        <text name="ads_mobileWorkshopRestrictions_label" text="Обмеження мобільної майстерні"/>
         <text name="ads_serviceInterval_label" text="Сервісний інтервал"/>
         <text name="ads_vehicleLifespan_label" text="Термін служби техніки"/>
         <text name="ads_downtimeWear_label" text="Пасивний знос"/>
@@ -72,8 +72,7 @@
         <text name="ads_vehicleLifespan_tooltip" text="Встановлює базовий термін служби техніки в годинах, після якого її стан досягне 0%. Чим ближче стан до нуля, тим менш надійною стає техніка."/>
         <text name="ads_downtimeWear_tooltip" text="Встановлює швидкість пасивного зносу під час простою як відсоток від базової швидкості зносу. Наприклад, 5% при терміні служби 100 годин означає, що кожна система втрачає близько 1% стану після приблизно 20 годин простою. Примітка: пасивний знос вимкнено, якщо техніка зберігається під накриттям."/>
         <text name="ads_generalWearEnabled_tooltip" text="Вмикає знос, пов'язаний з віком. У міру зношування техніка отримує невеликі штрафи до основних характеристик (потужність двигуна, швидкість гідравліки тощо). Ефект стає помітним після другої третини терміну служби."/>
-		
-		<text name="ads_mobileWorkshopRestrictions_tooltip" text="Якщо увімкнено, доступність процедур у мобільній майстерні залежить від ремонтопридатності техніки."/>
+        <text name="ads_mobileWorkshopRestrictions_tooltip" text="Якщо увімкнено, доступність процедур у мобільній майстерні залежить від ремонтопридатності техніки."/>
         <text name="ads_systemStressRate_tooltip" text="Контролює швидкість накопичення стресу в системах від перевантаження, перегріву, пробуксовки тощо. Стрес безпосередньо впливає на ймовірність поломки."/>
         <text name="ads_batteryCapacity_tooltip" text="Регулює максимальну корисну ємність акумулятора. Значення близько 150 Аг є більш реалістичними."/>
         <text name="ads_alternatorMaxOutput_label" text="Макс. вихід генератора"/>
@@ -93,7 +92,8 @@
         <text name="ads_thermal_mild" text="М'яка"/>
         <text name="ads_thermal_default" text="Стандартна"/>
         <text name="ads_thermal_aggressive" text="Агресивна"/>
-		<text name="ads_ws_label_value" text="Вартість"/>
+        <!-- Workshop -->
+        <text name="ads_ws_label_value" text="Вартість"/>
         <text name="ads_ws_label_age" text="Вік"/>
         <text name="ads_ws_label_operating_hours" text="Мотогодини"/>
         <text name="ads_ws_label_service" text="Сервіс"/>
@@ -115,7 +115,7 @@
         <text name="ads_ws_action_maintenance" text="Обслуговування"/>
         <text name="ads_ws_action_repair" text="Ремонт"/>
         <text name="ads_ws_action_overhaul" text="Кап. ремонт"/>
-		<text name="ads_ws_action_cancel_service" text="Скасувати процедуру"/>
+        <text name="ads_ws_action_cancel_service" text="Скасувати процедуру"/>
         <text name="ads_ws_button_show" text="Показати"/>
         <text name="ads_ws_age_unit" text="міс."/>
         <text name="ads_ws_hours_unit" text="год"/>
@@ -134,7 +134,8 @@
         <text name="ads_ws_no_log_empty_message" text="Журнал поки порожній"/>
         <text name="ads_ws_cancel_confirm_title" text="Скасувати %s?"/>
         <text name="ads_ws_cancel_confirm_text" text="Поточний прогрес буде збережено як є. Гроші не повертаються."/>
-		<text name="ads_log_header_title" text="Журнал обслуговування"/>
+        <!-- Maintenance Log -->
+        <text name="ads_log_header_title" text="Журнал обслуговування"/>
         <text name="ads_log_title" text="Журнал технічного обслуговування"/>
         <text name="ads_log_total_cost_title" text="Загальні витрати"/>
         <text name="ads_log_cost_per_month_title" text="Вартість на місяць"/>
@@ -155,6 +156,7 @@
         <text name="ads_log_price" text="Вартість"/>
         <text name="ads_log_button_show_report" text="Показати звіт"/>
         <text name="ads_log_empty" text="Журнал порожній"/>
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Постійна"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Зниження потужності"/>
         <text name="ads_breakdowns_severity_shutdown" text="Вимкнення"/>
@@ -195,8 +197,7 @@
         <text name="ads_breakdowns_part_fuel_line" text="Паливопровід"/>
         <text name="ads_breakdowns_part_harvest_processing_system" text="Система обробки врожаю"/>
         <text name="ads_breakdowns_part_unloading_auger" text="Вивантажувальний шнек"/>
-		
-		<text name="ads_breakdowns_quick_fix_stage" text="Підлатано"/>
+        <text name="ads_breakdowns_quick_fix_stage" text="Підлатано"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Дефект"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Вузол працює нормально, але діагностика виявила дефектну деталь. Через критично низький запас міцності рекомендована профілактична заміна, щоб уникнути раптової поломки."/>
         <text name="ads_breakdowns_temporarily_repaired_description" text="Вузол працює нормально, але тримається виключно на швидкому ремонті зношених елементів. Щоб уникнути неминучої поломки під навантаженням, рекомендується якомога швидше провести повну заміну деталей."/>
@@ -225,7 +226,7 @@
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Сильна сульфатація акумулятора. Корисна ємність критично низька, робота стартера нестабільна."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Критична сульфатація акумулятора. Ефективна ємність майже відсутня, потужності стартера недостатньо для надійного запуску."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Недостатньо пускової потужності АКБ"/>
-        <text name="ads_alternator_regulator_failure_stage1_description" text="Несправність регулятора генератора. Потужність зарядки знижена, що погіршує ефективність зарядки акумулятора."/>
+        <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Несправність регулятора генератора. Потужність зарядки знижена, що погіршує ефективність зарядки акумулятора."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Середня несправність регулятора. Зарядка нестабільна, що призводить до поганої зарядки АКБ та втрат напруги в системі."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Сильна несправність регулятора. Зарядка критично знижена, напруга нестабільна, електрична система працює з великими втратами."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Повна відмова регулятора генератора. Зарядка акумулятора відсутня, система працює лише на залишках резерву АКБ."/>
@@ -327,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Сильний витік антифризу. Ефективність охолодження значно впала, перегрів під навантаженням дуже ймовірний."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Критичний витік охолоджуючої рідини. Безпечна температура двигуна не може бути забезпечена."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Критичний витік антифризу"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Несправність муфти вентилятора. Ефективність обдування злегка знижена, присутній аномальний шум муфти."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Середня несправність муфти вентилятора. Ефективність охолодження знижена, шум муфти чітко чутно."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Сильна несправність муфти вентилятора. Обдування значно погіршилося, шум муфти дуже сильний."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Критична відмова муфти вентилятора. Ефективність охолодження критично низька, потік повітря через радіатор не забезпечується."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Відмова муфти вентилятора"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Несправність муфти вентилятора. Ефективність обдування злегка знижена, присутній аномальний шум муфти."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Середня несправність муфти вентилятора. Ефективність охолодження знижена, шум муфти чітко чутно."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Сильна несправність муфти вентилятора. Обдування значно погіршилося, шум муфти дуже сильний."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Критична відмова муфти вентилятора. Ефективність охолодження критично низька, потік повітря через радіатор не забезпечується."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Відмова муфти вентилятора"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Засмічення паливного фільтра. Потік палива обмежений, що викликає легкі перебої під навантаженням та невелике падіння моменту."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Середнє засмічення фільтра. Перебої в роботі часті, потужність двигуна знижена, можливі зупинки."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Сильне засмічення паливного фільтра. Потік палива критично обмежений, крутний момент сильно впав, зупинки двигуна дуже ймовірні."/>
@@ -374,7 +375,8 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="ВВП автоматично вимкнено"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Передачу вибито"/>
         <text name="ads_breakdown_at_progress_message" text="триває"/>
-		<text name="ads_spec_cold_engine_message" text="Двигун холодний! Високі оберти спричиняють знос!"/>
+        <!-- Vehicle Specifications -->
+        <text name="ads_spec_cold_engine_message" text="Двигун холодний! Високі оберти спричиняють знос!"/>
         <text name="ads_spec_overheat_engine_message" text="Увага! Перегрів двигуна."/>
         <text name="ads_spec_overheat_transmission_message" text="Увага! Перегрів трансмісії."/>
         <text name="ads_spec_this_month" text="Цього місяця"/>
@@ -382,7 +384,7 @@
         <text name="ads_spec_never" text="Ніколи"/>
         <text name="ads_spec_op_hours_short" text="м/год"/>
         <text name="ads_spec_tomorrow_at" text="завтра о "/>
-        <text name="ads_spec_day_after_tommorow_at" text="післязавтра о "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="післязавтра о "/>
         <text name="ads_spec_in_days_at" text="через {days} дн. о "/>
         <text name="ads_spec_day_s" text="дн."/>
         <text name="ads_spec_hour_s" text="год."/>
@@ -399,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="Виявлено проблем: %s"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="Проблем не виявлено"/>
         <text name="ads_spec_next_planned_service_notification" text="Планова процедура розпочата: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="Планову процедуру %s скасовано через брак коштів"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="Планову процедуру %s скасовано через брак коштів"/>
         <text name="ads_spec_workshop_dealer" text="Дилер"/>
         <text name="ads_spec_workshop_own" text="Власна"/>
         <text name="ads_spec_workshop_mobile" text="Мобільна"/>
@@ -429,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="Прострочено"/>
         <text name="ads_spec_state_legendary" text="Легендарний"/>
         <text name="ads_spec_state_premium" text="Преміум"/>
-        <text name="ads_spec_state_standart" text="Стандартний"/>
+        <text name="ads_spec_state_standard" text="Стандартний"/>
         <text name="ads_spec_state_budget" text="Бюджетний"/>
         <text name="ads_spec_state_low" text="Низький"/>
         <text name="ads_spec_state_average" text="Середній"/>
@@ -452,7 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Швидка латка"/>
         <text name="ads_spec_repair_type_replacement" text="Стандартний"/>
         <text name="ads_spec_repair_type_advanced" text="Поглиблений"/>
-
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Оберіть тип огляду"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Ремонт виявлених несправностей"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Оберіть рівень обслуговування"/>
@@ -472,7 +474,7 @@
         <text name="ads_option_menu_inspection_complete_description" text="* Глибока діагностика. Гарантує виявлення всіх поломок, включно з потенційними, та надає вичерпний звіт із точним відсотком зносу всіх вузлів."/>
         <text name="ads_option_menu_maintenance_minimal_description" text="* Базовий сервіс. Значно дешевший і швидший, проте не повністю відновлює рівень сервісу та скорочує інтервал до наступного ТО."/>
         <text name="ads_option_menu_maintenance_standard_description" text="* Регламентне обслуговування згідно зі специфікаціями виробника. Відновлює рівень сервісу до норми та забезпечує стандартний сервісний інтервал."/>
-        <text name="ads_option_menu_maintenance_extended_description" text="* Всебічне обслуговування. Триває довше і коштує дорожче, але відновлює рівень сервісу вище стандарту та подовжує інтервал до наступного ТО."/>   
+        <text name="ads_option_menu_maintenance_extended_description" text="* Всебічне обслуговування. Триває довше і коштує дорожче, але відновлює рівень сервісу вище стандарту та подовжує інтервал до наступного ТО."/>
         <text name="ads_option_menu_maintenance_preventive_description" text="* Профілактика понад стандарти виробника. Відновлює рівень сервісу та фокусується на найбільш проблемних вузлах для зниження ризику поломок."/>
         <text name="ads_option_menu_repair_type_fix_description" text="* Тимчасовий ремонт для термінової роботи. Швидко та дешево відновлює функціональність, проте причина поломки не усувається і вона знову з'явиться з часом."/>
         <text name="ads_option_menu_repair_type_replacement_description" text="* Стандартна заміна несправного компонента. Повністю усуває поточну поломку та відновлює вузол до нормального робочого стану."/>
@@ -490,8 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Автоматично почати стандартний ремонт із запчастинами OEM у разі виявлення поломок."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Автоматично почати стандартне ТО з витратними матеріалами OEM після ремонту."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Перефарбувати транспортний засіб під час капітального ремонту."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Обрано для ремонту:"/>
-
+        <text name="ads_option_menu_chosen_parts_text" text="* Обрано для ремонту:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Звіт про огляд"/>
         <text name="ads_report_vehicle_name_title" text="Назва техніки"/>
         <text name="ads_report_date_title" text="Дата"/>
@@ -551,7 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Виявлено ознаки інтенсивного перевантаження. Покращте умови експлуатації."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Виявлено дефектні витратні матеріали. Повторіть ТО для заміни несправних компонентів."/>
         <text name="ads_report_recommendation_all_ok" text="Критичних рекомендацій немає. Техніка перебуває у придатному для роботи стані."/>
-
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Шприц для змащування"/>
         <text name="ads_grease_gun_function" text="Використовується для проведення процедур змащування"/>
         <text name="ads_grease_gun_action" text="Змастити"/>
@@ -660,7 +662,8 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="Натяг гусениці виглядає злегка нерівномірним."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="Гусениця виглядає ослабленою, помітний нерівномірний натяг."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="Гусениця помітно провисає, натяг серйозно порушено."/>
-		<text name="ads_ingame_menu_title" text="Advanced Damage System"/>
+        <!-- In-Game Menu -->
+        <text name="ads_ingame_menu_title" text="Advanced Damage System"/>
         <text name="ads_ingame_menu_section_active" text="Техніка ADS"/>
         <text name="ads_ingame_menu_section_service" text="На обслуговуванні"/>
         <text name="ads_ingame_menu_header_vehicle" text="Транспорт"/>
@@ -686,11 +689,11 @@
         <text name="ads_sell_dialog_costs_title" text="Додаткові витрати"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Прострочене ТО"/>
         <text name="ads_sell_dialog_repair_penalty" text="Ремонт"/>
-        <text name="ads_sell_dialog_washing" text="Мийка"/>
+        <text name="ads_sell_dialog_washing_penalty" text="Мийка"/>
         <text name="ads_sell_dialog_total" text="Разом"/>
         <text name="ads_mobile_workshop_low_maintainability" text="УВАГА: %s недоступний для %s у мобільній майстерні через низьку ремонтопридатність."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Критичне перевантаження! Негайно зменште навантаження на машину."/>
-    
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Режим навчання"/>
         <text name="ads_tutorialMode_tooltip" text="Показує підказки під час гри. Вимкнено в багатокористувацькому режимі."/>
         <text name="ads_tutorialResetTips_label" text="Скинути підказки"/>
@@ -749,7 +752,7 @@
         <text name="ads_tutorial_critical_failure_title" text="Критична відмова"/>
         <text name="ads_tutorial_critical_failure_message" text="Що ж, це невдача. Ваш %s повністю виведений з ладу і не може рухатися самостійно. Ви можете скористатися мобільною майстернею для швидкого ремонту, щоб машина доїхала до бази своїм ходом.&#10;&#10;В іншому випадку доведеться шукати спосіб евакуації."/>
         <text name="ads_tutorial_heavy_lift_title" text="Заважке обладнання"/>
-        <text name="ads_tutorial_heavy_lift_message" text="Схоже, це знаряддя занадто важке для вашого %s. Гідравліка працює на межі можливостей, що негативно вплине на її ресурс.&#10;&#10;Дотримуйтесь правила: вага обладнання не повинна перевищувати 60% від власної ваги техніки."/>
+        <text name="ads_tutorial_heavy_lift_message" text="Схоже, це знаряддя занадто важке для вашого %s. Гідравліка працює на межі можливостей, що негативно вплине на її ресурс.&#10;&#10;Дотримуйтесь правила: вага обладнання не повинна перевищувати 60%% від власної ваги техніки."/>
         <text name="ads_tutorial_cold_engine_title" text="Прогрійте машину"/>
         <text name="ads_tutorial_cold_engine_message" text="Завжди прогрівайте техніку перед роботою. Крім двигуна, прогріву потребують гідравлічне масло, варіатор і навіть паливо — особливо в морози. Робота «на холодну» спричиняє проблеми в багатьох системах одночасно.&#10;&#10;Коли температура двигуна вище 50 градусів (122°F), техніка готова до безпечного використання."/>
         <text name="ads_tutorial_pto_sharp_angle_title" text="Гострий кут ВВП"/>
@@ -763,7 +766,8 @@
         <text name="ads_tutorial_wheel_slip_title" text="Пробуксовування"/>
         <text name="ads_tutorial_wheel_slip_message" text="Схоже, ваші колеса сильно буксують. Можливо, ви застрягли і вам зараз не до порад, але пам’ятайте: пробуксовування — один із найгірших факторів для трансмісії, що наближає наступний візит до сервісу."/>
         <text name="ads_tutorial_battery_low_title" text="Слабкий акумулятор"/>
-        <text name="ads_tutorial_battery_low_message" text="Ой, схоже, акумулятор скоро сяде. Це трапляється після тривалого простою, через сильний мороз або несправності в електромережі.&#10;&#10;При низькому заряді запуск буде важким або неможливим. Якщо не зможете завестися — скористайтеся пусковими дротами від іншої техніки."/>		
+        <text name="ads_tutorial_battery_low_message" text="Ой, схоже, акумулятор скоро сяде. Це трапляється після тривалого простою, через сильний мороз або несправності в електромережі.&#10;&#10;При низькому заряді запуск буде важким або неможливим. Якщо не зможете завестися — скористайтеся пусковими дротами від іншої техніки."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Режим приводу (4x2 / 4WD / АВТО)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Блокування диференціала"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Стоянкове гальмо"/>

@@ -3,6 +3,7 @@
         <text name="ads_hud_mass_tractor" text="Трактор"/>
         <text name="ads_hud_mass_towed" text="Прицеплено"/>
         <text name="ads_hud_mass_total" text="Всего"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS НАСТРОЙКИ"/>
         <text name="ads_settings_admin_required" text="Для изменения настроек ADS нужны права администратора."/>
         <text name="ads_maintenancePrice_label" text="Множитель стоимости обслуживания"/>
@@ -91,6 +92,7 @@
         <text name="ads_thermal_mild" text="Мягкий"/>
         <text name="ads_thermal_default" text="По умолчанию"/>
         <text name="ads_thermal_aggressive" text="Агрессивный"/>
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="Стоимость"/>
         <text name="ads_ws_label_age" text="Возраст"/>
         <text name="ads_ws_label_operating_hours" text="Наработка"/>
@@ -132,6 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="Журнал пока пуст"/>
         <text name="ads_ws_cancel_confirm_title" text="Отменить %s?"/>
         <text name="ads_ws_cancel_confirm_text" text="Текущий прогресс будет зафиксирован. Деньги за работу не возвращаются."/>
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="Журнал ТО"/>
         <text name="ads_log_title" text="Журнал технического обслуживания"/>
         <text name="ads_log_total_cost_title" text="Потрачено всего"/>
@@ -153,6 +156,7 @@
         <text name="ads_log_price" text="Стоимость"/>
         <text name="ads_log_button_show_report" text="Показать отчет"/>
         <text name="ads_log_empty" text="В журнале нет записей"/>
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Постоянная"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Снижение мощности"/>
         <text name="ads_breakdowns_severity_shutdown" text="Остановка двигателя"/>
@@ -324,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Сильная утечка охлаждающей жидкости. Потеря охлаждения значительная, риск перегрева становится высоким."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Критический отказ системы охлаждения. Охлаждающей жидкости недостаточно для безопасной работы двигателя."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Утечка охлаждающей жидкости"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Легкая неисправность муфты вентилятора. Вентилятор реагирует менее эффективно, охлаждение слегка ухудшается."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Умеренная неисправность муфты вентилятора. Включение вентилятора становится нестабильным, эффективность охлаждения заметно падает."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Сильная неисправность муфты вентилятора. Вентилятор не обеспечивает достаточный поток воздуха, двигатель легче перегревается."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Критический отказ муфты вентилятора. Вентилятор больше не способен обеспечивать необходимое охлаждение."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Отказ муфты вентилятора"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Легкая неисправность муфты вентилятора. Вентилятор реагирует менее эффективно, охлаждение слегка ухудшается."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Умеренная неисправность муфты вентилятора. Включение вентилятора становится нестабильным, эффективность охлаждения заметно падает."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Сильная неисправность муфты вентилятора. Вентилятор не обеспечивает достаточный поток воздуха, двигатель легче перегревается."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Критический отказ муфты вентилятора. Вентилятор больше не способен обеспечивать необходимое охлаждение."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Отказ муфты вентилятора"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Небольшое засорение топливного фильтра. Поток топлива под высокой нагрузкой слегка снижается."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Умеренное засорение топливного фильтра. Подача топлива под нагрузкой заметно ограничена, мощность падает, двигатель иногда захлебывается."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Сильное засорение топливного фильтра. Подача топлива серьезно ограничена, мощность резко падает, возможны остановки двигателя."/>
@@ -371,6 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="ВОМ отключен автоматически"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Передача выключена"/>
         <text name="ads_breakdown_at_progress_message" text="в процессе"/>
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="Двигатель холодный! Высокие обороты вызывают износ!"/>
         <text name="ads_spec_overheat_engine_message" text="Внимание! Перегрев двигателя."/>
         <text name="ads_spec_overheat_transmission_message" text="Внимание! Перегрев трансмиссии."/>
@@ -379,7 +384,7 @@
         <text name="ads_spec_never" text="Никогда"/>
         <text name="ads_spec_op_hours_short" text="м/ч"/>
         <text name="ads_spec_tomorrow_at" text="завтра в "/>
-        <text name="ads_spec_day_after_tommorow_at" text="послезавтра в "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="послезавтра в "/>
         <text name="ads_spec_in_days_at" text="через {days} дн. в "/>
         <text name="ads_spec_day_s" text="дн."/>
         <text name="ads_spec_hour_s" text="ч."/>
@@ -396,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="Обнаружено неисправностей: %s"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="Неисправности не обнаружены"/>
         <text name="ads_spec_next_planned_service_notification" text="Запланированная процедура начата: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="Запланированное %s отменено из-за недостатка средств"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="Запланированное %s отменено из-за недостатка средств"/>
         <text name="ads_spec_workshop_dealer" text="Дилер"/>
         <text name="ads_spec_workshop_own" text="Собственный"/>
         <text name="ads_spec_workshop_mobile" text="Мобильный"/>
@@ -426,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="Просрочено"/>
         <text name="ads_spec_state_legendary" text="Легендарная"/>
         <text name="ads_spec_state_premium" text="Премиум"/>
-        <text name="ads_spec_state_standart" text="Стандарт"/>
+        <text name="ads_spec_state_standard" text="Стандарт"/>
         <text name="ads_spec_state_budget" text="Бюджет"/>
         <text name="ads_spec_state_low" text="Низкая"/>
         <text name="ads_spec_state_average" text="Средняя"/>
@@ -449,6 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Временный"/>
         <text name="ads_spec_repair_type_replacement" text="Стандарт"/>
         <text name="ads_spec_repair_type_advanced" text="Углубленный"/>
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Выберите тип осмотра"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Устранить выявленные неисправности"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Выберите уровень обслуживания"/>
@@ -486,7 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Автоматически запустить стандартный ремонт с использованием оригинальных запчастей, если будут обнаружены неисправности."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Автоматически запустить стандартное техническое обслуживание с использованием оригинальных расходников после завершения ремонта."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Обновить лакокрасочное покрытие в процессе капитального ремонта."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Выбрано для ремонта:"/>
+        <text name="ads_option_menu_chosen_parts_text" text="* Выбрано для ремонта:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Отчет об осмотре"/>
         <text name="ads_report_vehicle_name_title" text="Название техники"/>
         <text name="ads_report_date_title" text="Дата"/>
@@ -546,6 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Обнаружены признаки тяжелых условий эксплуатации. Рекомендуется скорректировать режим работы техники."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Обнаружены дефектные расходные материалы. Повторите техническое обслуживание для замены неисправных компонентов."/>
         <text name="ads_report_recommendation_all_ok" text="Критических рекомендаций нет. Техника находится в работоспособном состоянии."/>
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Смазочный шприц"/>
         <text name="ads_grease_gun_function" text="Используется для смазки узлов при обслуживании"/>
         <text name="ads_grease_gun_action" text="Нанести смазку"/>
@@ -654,6 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="Натяжение гусеницы выглядит слегка неравномерным."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="Гусеница выглядит ослабленной, заметно неравномерное натяжение."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="Гусеница заметно провисает, натяжение выглядит сильно нарушенным."/>
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="Advanced Damage System"/>
         <text name="ads_ingame_menu_section_active" text="Техника ADS"/>
         <text name="ads_ingame_menu_section_service" text="На обслуживании"/>
@@ -684,6 +693,7 @@
         <text name="ads_sell_dialog_total" text="Итого"/>
         <text name="ads_mobile_workshop_low_maintainability" text="ВНИМАНИЕ: %s недоступно для %s в мобильной мастерской из-за низкой ремонтопригодности."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Критическая перегрузка! Немедленно снизьте нагрузку на технику."/>
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Режим обучения"/>
         <text name="ads_tutorialMode_tooltip" text="Показывает обучающие подсказки во время игры. В мультиплеере отключено."/>
         <text name="ads_tutorialResetTips_label" text="Сбросить подсказки"/>
@@ -700,9 +710,9 @@
         <text name="ads_tutorial_service_interval_expired_title" text="Интервал обслуживания истек"/>
         <text name="ads_tutorial_service_interval_expired_message" text="%s превысил интервал обслуживания и нуждается в техобслуживании.&#10;&#10;Как можно скорее отправляйтесь в мастерскую и выполните процедуру &quot;Техобслуживание&quot;. Дальнейшая эксплуатация техники с просроченным обслуживанием заметно повышает риск сразу нескольких поломок."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Загрязнение радиатора и воздухозаборников"/>
-        <text name="ads_tutorial_rad_or_intake_clogged_message" text="Похоже, радиатор и воздухозаборники вашей техники сильно загрязнены.&#10;&#10;Грязный радиатор хуже отводит тепло, а забитые воздухозаборники могут вызывать нехватку воздуха для двигателя. Это приводит к снижению мощности и повышенному расходу топлива.&#10;&#10;Очистить их можно на мойке или с помощью специального Air Blower, который продаётся в магазине.&#10;&#10;Проверить состояние радиатора и воздухозаборников можно через осмотр: удерживайте клавишу R, глядя на технику."/>
+        <text name="ads_tutorial_rad_or_intake_clogged_message" text="Похоже, радиатор и воздухозаборники вашей техники сильно загрязнены.&#10;&#10;Грязный радиатор хуже отводит тепло, а забитые воздухозаборники могут вызывать нехватку воздуха для двигателя. Это приводит к снижению мощности и повышенному расходу топлива.&#10;&#10;Очистить их можно на мойке или с помощью специальной воздуходувки, которая продаётся в магазине.&#10;&#10;Проверить состояние радиатора и воздухозаборников можно через осмотр: удерживайте клавишу R, глядя на технику."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Смазка техники"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Ваш %s нуждается в периодической смазке.&#10;&#10;В ADS уровень смазки рабочих агрегатов постепенно снижается каждый день, что приводит к их повышенному износу.&#10;&#10;Приобретите Grease Gun в магазине и смазывайте технику ежедневно или перед рабочей сменой.&#10;&#10;Проверить уровень смазки можно через осмотр: удерживайте клавишу R, глядя на технику."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Ваш %s нуждается в периодической смазке.&#10;&#10;В ADS уровень смазки рабочих агрегатов постепенно снижается каждый день, что приводит к их повышенному износу.&#10;&#10;Приобретите смазочный шприц в магазине и смазывайте технику ежедневно или перед рабочей сменой.&#10;&#10;Проверить уровень смазки можно через осмотр: удерживайте клавишу R, глядя на технику."/>
         <text name="ads_tutorial_needs_repair_title" text="Неисправность техники"/>
         <text name="ads_tutorial_needs_repair_message" text="Похоже, с вашим %s что-то не так. Возможно, одна из деталей техники дала сбой.&#10;&#10;Обязательно посетите мастерскую и проведите осмотр. Не затягивайте с этим: поломка будет прогрессировать, а вместе с ней вырастет и стоимость будущего ремонта.&#10;&#10;Если после осмотра обнаружится неисправность, устраните её с помощью процедуры ремонта в мастерской."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Капитальный ремонт"/>
@@ -718,7 +728,7 @@
         <text name="ads_tutorial_idle_and_downtime_title" text="Простой и хранение"/>
         <text name="ads_tutorial_idle_and_downtime_message" text="Кстати, износ значительно меньше, когда ваша техника запущена, но активно не используется, что вполне логично. В заглушённом состоянии износ совсем крошечный, а при хранении техники под крышей он отсутствует вовсе."/>
         <text name="ads_tutorial_hot_weather_title" text="Жаркая погода"/>
-        <text name="ads_tutorial_hot_weather_message" text="Ох, ну и жара сегодня. В такую погоду особенно тщательно нужно следить за чистотой радиатора и стараться не перегружать двигатель — иначе перегрев не заставит себя ждать.&#10;&#10;Помните: вы всегда можете проверить состояние радиатора с помощью визуального осмотра, удерживая клавишу R, глядя на технику, а также продуть его с помощью Air Blower."/>
+        <text name="ads_tutorial_hot_weather_message" text="Ох, ну и жара сегодня. В такую погоду особенно тщательно нужно следить за чистотой радиатора и стараться не перегружать двигатель — иначе перегрев не заставит себя ждать.&#10;&#10;Помните: вы всегда можете проверить состояние радиатора с помощью визуального осмотра, удерживая клавишу R, глядя на технику, а также продуть его с помощью воздуходувки."/>
         <text name="ads_tutorial_wet_weather_title" text="Ну и погодка!"/>
         <text name="ads_tutorial_wet_weather_message" text="Ну и погодка! Влага плохо влияет на проводку и электрооборудование, поэтому износ электрической системы в такую погоду немного повышен.&#10;&#10;Кроме того, строго не рекомендуется убирать урожай в такую погоду — так вы только навредите своему комбайну."/>
         <text name="ads_tutorial_low_fuel_title" text="Мало топлива"/>
@@ -756,7 +766,8 @@
         <text name="ads_tutorial_wheel_slip_title" text="Пробуксовка колёс"/>
         <text name="ads_tutorial_wheel_slip_message" text="Похоже, ваши колёса сильно буксуют. Возможно, вы даже застряли и вам сейчас не до нравоучений, но учтите: пробуксовка — один из самых разрушительных факторов для трансмиссии, который заметно ускорит ваш визит в сервис."/>
         <text name="ads_tutorial_battery_low_title" text="Слабый аккумулятор"/>
-        <text name="ads_tutorial_battery_low_message" text="Упс, похоже аккумулятор на технике вот-вот сядет. Такое может случиться после долгой стоянки, из-за сильного мороза или при неисправностях в электросистеме.&#10;&#10;Из-за низкого заряда запуск будет затруднён или вообще невозможен. Если завестись не получится, вы можете прикурить технику от другой машины с помощью Jumper Cables."/>
+        <text name="ads_tutorial_battery_low_message" text="Упс, похоже, аккумулятор на технике вот-вот разрядится. Такое может случиться после долгой стоянки, из-за сильного мороза или неисправностей в электросистеме.&#10;&#10;При низком заряде запуск будет затруднён или вообще невозможен. Если завести технику не получится, можно запустить её от другой машины с помощью пусковых проводов."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Режим привода (4x2 / 4WD / АВТО)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Блокировка дифференциала"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Стояночный тормоз"/>

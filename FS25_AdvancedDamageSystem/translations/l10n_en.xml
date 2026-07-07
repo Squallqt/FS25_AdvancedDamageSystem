@@ -3,6 +3,7 @@
         <text name="ads_hud_mass_tractor" text="Tractor"/>
         <text name="ads_hud_mass_towed" text="Attached"/>
         <text name="ads_hud_mass_total" text="Total"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS SETTINGS"/>
         <text name="ads_settings_admin_required" text="ADS settings require administrator permissions in multiplayer."/>
         <text name="ads_maintenancePrice_label" text="Maintenance Price Multiplier"/>
@@ -91,7 +92,7 @@
         <text name="ads_thermal_mild" text="Mild"/>
         <text name="ads_thermal_default" text="Default"/>
         <text name="ads_thermal_aggressive" text="Aggressive"/>
-
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="Value"/>
         <text name="ads_ws_label_age" text="Age"/>
         <text name="ads_ws_label_operating_hours" text="Operating hours"/>
@@ -133,7 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="Log is empty yet"/>
         <text name="ads_ws_cancel_confirm_title" text="Cancel %s?"/>
         <text name="ads_ws_cancel_confirm_text" text="Current progress will be saved as-is. No money will be refunded."/>
-
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="Maintenance Log"/>
         <text name="ads_log_title" text="Technical Maintenance Log"/>
         <text name="ads_log_total_cost_title" text="Total Expenses"/>
@@ -155,7 +156,7 @@
         <text name="ads_log_price" text="Cost"/>
         <text name="ads_log_button_show_report" text="Show Report"/>
         <text name="ads_log_empty" text="Log is empty"/>
-
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Permanent"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Reduce Power"/>
         <text name="ads_breakdowns_severity_shutdown" text="Shutdown"/>
@@ -290,7 +291,7 @@
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="CVT hydraulic control failure"/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Engine thermostat is beginning to fail. The engine takes longer to reach optimal temperature or runs slightly hot."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Thermostat response is poor. Engine temperature regulation is unstable, increasing wear."/>
-        <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="The thermostat is stuck closed. The engine  will constantly overheat under load."/>
+        <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="The thermostat is stuck closed. The engine will constantly overheat under load."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage4_description" text="Complete thermostat failure. The engine coolant cannot circulate correctly, leading to imminent and severe overheating."/>
         <text name="ads_breakdowns_hydraulic_pump_malfunction_stage1_description" text="Minor internal pump leak. Hydraulic implements are slightly slower."/>
         <text name="ads_breakdowns_hydraulic_pump_malfunction_stage2_description" text="Worn pump seals. Noticeably slower hydraulic operations."/>
@@ -327,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Severe coolant leak. Cooling system efficiency is significantly reduced and overheating under load is likely."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Critical coolant leak. Cooling system efficiency is critically reduced and safe engine temperature cannot be maintained."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Coolant leak critical"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Fan clutch malfunction. Cooling fan efficiency is slightly reduced and abnormal fan clutch noise is present."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Moderate fan clutch malfunction. Cooling fan efficiency is reduced and fan clutch noise is clearly audible."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Severe fan clutch malfunction. Cooling fan efficiency is significantly reduced and fan clutch noise is severe."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Critical fan clutch failure. Cooling fan efficiency is critically reduced and adequate airflow through the cooling system cannot be ensured."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Fan clutch failure"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Fan clutch malfunction. Cooling fan efficiency is slightly reduced and abnormal fan clutch noise is present."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Moderate fan clutch malfunction. Cooling fan efficiency is reduced and fan clutch noise is clearly audible."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Severe fan clutch malfunction. Cooling fan efficiency is significantly reduced and fan clutch noise is severe."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Critical fan clutch failure. Cooling fan efficiency is critically reduced and adequate airflow through the cooling system cannot be ensured."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Fan clutch failure"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Fuel filter clogging. Fuel flow is restricted, causing slight engine hesitation under load and a minor reduction in engine torque."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Moderate fuel filter clogging. Fuel flow restriction is noticeable, engine hesitation under load is frequent, engine torque is reduced, and engine stalls may occur."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Severe fuel filter clogging. Fuel flow is critically restricted, engine hesitation is pronounced, engine torque is heavily reduced, and engine stalls are likely."/>
@@ -374,7 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="PTO auto-disengaged"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Gear disengage"/>
         <text name="ads_breakdown_at_progress_message" text="in progress"/>
-
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="Engine is cold! High revs cause wear!"/>
         <text name="ads_spec_overheat_engine_message" text="Warning! Engine overheating."/>
         <text name="ads_spec_overheat_transmission_message" text="Warning! Transmission overheating."/>
@@ -383,7 +384,7 @@
         <text name="ads_spec_never" text="Never"/>
         <text name="ads_spec_op_hours_short" text="o/h"/>
         <text name="ads_spec_tomorrow_at" text="tomorrow at "/>
-        <text name="ads_spec_day_after_tommorow_at" text="day after tommorow at "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="day after tomorrow at "/>
         <text name="ads_spec_in_days_at" text="in {days} days at "/>
         <text name="ads_spec_day_s" text="day(s)"/>
         <text name="ads_spec_hour_s" text="hour(s)"/>
@@ -400,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="%s issue(s) detected"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="No issues detected"/>
         <text name="ads_spec_next_planned_service_notification" text="Scheduled procedure started: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="Scheduled %s cancelled due to insufficient funds"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="Scheduled %s cancelled due to insufficient funds"/>
         <text name="ads_spec_workshop_dealer" text="Dealer"/>
         <text name="ads_spec_workshop_own" text="Owned"/>
         <text name="ads_spec_workshop_mobile" text="Mobile"/>
@@ -430,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="Overdue"/>
         <text name="ads_spec_state_legendary" text="Legendary"/>
         <text name="ads_spec_state_premium" text="Premium"/>
-        <text name="ads_spec_state_standart" text="Standard"/>
+        <text name="ads_spec_state_standard" text="Standard"/>
         <text name="ads_spec_state_budget" text="Budget"/>
         <text name="ads_spec_state_low" text="Low"/>
         <text name="ads_spec_state_average" text="Average"/>
@@ -442,7 +443,7 @@
         <text name="ads_spec_part_types_premium" text="Premium"/>
         <text name="ads_spec_inspection_visual" text="Visual"/>
         <text name="ads_spec_inspection_standard" text="Standard"/>
-        <text name="ads_spec_inspection_complete" text="Full Defectoscopy"/>
+        <text name="ads_spec_inspection_complete" text="Complete Diagnostics"/>
         <text name="ads_spec_maintenance_minimal" text="Minimal"/>
         <text name="ads_spec_maintenance_standard" text="Standard"/>
         <text name="ads_spec_maintenance_extended" text="Extended"/>
@@ -453,7 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Quick fix"/>
         <text name="ads_spec_repair_type_replacement" text="Standard"/>
         <text name="ads_spec_repair_type_advanced" text="Advanced"/>
-
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Select inspection type"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Repair discovered faults"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Select maintenance level"/>
@@ -473,14 +474,14 @@
         <text name="ads_option_menu_inspection_complete_description" text="* Deep diagnostics. Guarantees detection of all faults, including potential ones, and provides a comprehensive report with exact health percentages for all components."/>
         <text name="ads_option_menu_maintenance_minimal_description" text="* Basic service. Significantly cheaper and faster, but does not fully restore the Service Level and provides a shorter service interval until the next maintenance."/>
         <text name="ads_option_menu_maintenance_standard_description" text="* Routine maintenance according to manufacturer specifications. Restores Service Level to normal and provides the standard service interval until the next maintenance."/>
-        <text name="ads_option_menu_maintenance_extended_description" text="* Comprehensive service. Takes longer and costs more, but restores Service Level beyond the standard level and provides a longer service interval until the next maintenance."/>   
+        <text name="ads_option_menu_maintenance_extended_description" text="* Comprehensive service. Takes longer and costs more, but restores Service Level beyond the standard level and provides a longer service interval until the next maintenance."/>
         <text name="ads_option_menu_maintenance_preventive_description" text="* Preventive maintenance beyond standard manufacturer service. Restores Service Level to normal and addresses the most problematic systems to reduce breakdown risk."/>
         <text name="ads_option_menu_repair_type_fix_description" text="* Temporary repair intended to keep the machine operational for urgent work. Quickly and inexpensively restores basic functionality, however the fault remains unresolved and will reappear after some time."/>
         <text name="ads_option_menu_repair_type_replacement_description" text="* Standard replacement of the failed component. Fully eliminates the current fault and restores the affected unit to normal operating condition."/>
         <text name="ads_option_menu_repair_type_advanced_description" text="* In-depth repair including replacement of the failed component and servicing of related parts within the system. Significantly reduces the risk of repeated faults in the affected system."/>
         <text name="ads_option_menu_overhaul_partial_description" text="* Rebuilds the selected system to a good operating condition. Faster and less expensive than a full-vehicle overhaul."/>
         <text name="ads_option_menu_overhaul_standard_description" text="* Comprehensive work on all major components. Restores Condition to good level."/>
-        <text name="ads_option_menu_overhaul_full_description" text="* Complete remanufacturing. High cost and duration, but restores Condition to excellent level."/>
+        <text name="ads_option_menu_overhaul_full_description" text="* Complete rebuild. High cost and duration, but restores Condition to an excellent level."/>
         <text name="ads_option_menu_part_used_description" text="* Salvaged parts. Very cheap, but extremely risky (~50% chance of defects)"/>
         <text name="ads_option_menu_part_aftermarket_description" text="* Budget aftermarket copies. Reduced cost, but carries a moderate risk of defects (33%)."/>
         <text name="ads_option_menu_part_oem_description" text="* Original Equipment Manufacturer parts. Standard reliability (10% defect risk) at full price."/>
@@ -491,8 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Automatically start standard repair with OEM parts if any faults are detected."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Automatically start standard maintenance with OEM consumables after repair."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Repaint the vehicle during overhaul."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Choosen for repair:"/>
-
+        <text name="ads_option_menu_chosen_parts_text" text="* Chosen for repair:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Inspection Report"/>
         <text name="ads_report_vehicle_name_title" text="Vehicle Name"/>
         <text name="ads_report_date_title" text="Date"/>
@@ -552,7 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Signs of intensive overuse detected. Improve operating conditions."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Defective consumables detected. Repeat maintenance to replace faulty components."/>
         <text name="ads_report_recommendation_all_ok" text="No critical recommendations. Vehicle is in serviceable condition."/>
-
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Grease Gun"/>
         <text name="ads_grease_gun_function" text="Used for lubrication service procedures"/>
         <text name="ads_grease_gun_action" text="Apply grease"/>
@@ -566,7 +567,7 @@
         <text name="ads_air_blower_cleaning_not_require" text="%s does not require cleaning"/>
         <text name="ads_air_blower_already_clean" text="%s: radiator and air intake are already clean"/>
         <text name="ads_jumper_cables_name" text="Jumper Cables"/>
-        <text name="ads_jumper_cables_function" text="Used to to connect vehicle batteries and jump-start dead engines"/>
+        <text name="ads_jumper_cables_function" text="Used to connect vehicle batteries and jump-start engines with discharged batteries"/>
         <text name="ads_jumper_cables_action" text="Connect/disconnect jumper cables"/>
         <text name="ads_jumper_cables_connected" text="Jumper cables connected to %s"/>
         <text name="ads_jumper_cables_already_connected" text="Jumper cables already connected to %s"/>
@@ -661,7 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="The track tension appears slightly uneven."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="The track appears loose, with noticeable uneven tension."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="The track is visibly sagging, and the tension appears severely compromised."/>
-        
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="Advanced Damage System"/>
         <text name="ads_ingame_menu_section_active" text="ADS Vehicles"/>
         <text name="ads_ingame_menu_section_service" text="In Service"/>
@@ -692,7 +693,7 @@
         <text name="ads_sell_dialog_total" text="Total"/>
         <text name="ads_mobile_workshop_low_maintainability" text="WARNING: %s is unavailable for %s in the mobile workshop due to low maintainability."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Critical overload! Reduce the load on the vehicle immediately."/>
-    
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Tutorial mode"/>
         <text name="ads_tutorialMode_tooltip" text="Shows tutorial tips during gameplay. Disabled in multiplayer."/>
         <text name="ads_tutorialResetTips_label" text="Reset tips"/>
@@ -766,6 +767,7 @@
         <text name="ads_tutorial_wheel_slip_message" text="It looks like your wheels are slipping badly. You may even be stuck right now and not in the mood for advice, but keep this in mind: wheel slip is one of the most destructive factors for the transmission and will bring your next service visit much closer."/>
         <text name="ads_tutorial_battery_low_title" text="Weak Battery"/>
         <text name="ads_tutorial_battery_low_message" text="Oops, it looks like the battery is about to die. This can happen after a long period of standing, because of severe cold, or due to faults in the electrical system.&#10;&#10;With a low charge, starting will be difficult or even impossible. If you cannot get it started, you can jump-start the machine from another vehicle using Jumper Cables."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Drive mode (4x2 / 4WD / AUTO)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Differential lock"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Parking brake"/>

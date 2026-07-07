@@ -21,7 +21,7 @@
             <Text profile="fs25_dialogText" id="optionTwoText" position="0px -170px" text="Choose consumables:"/>
             <MultiTextOption profile="ads_multiTextOption" id="optionTwo" position="0px -200px" onClick="onClickOptionTwo" texts="1|2|3|4" />
 
-            <Text profile="ads_disclaimerText" position="40px -245px" size="500px 30px" id="choosenPartsText" text="* Choosen parts for repair: Clutch, ECU."/>
+            <Text profile="ads_disclaimerText" position="40px -245px" size="500px 30px" id="choosenPartsText" text="* Chosen parts for repair: Clutch, ECU."/>
 
             <!-- Price, duration, finish time -->
             <SmoothList profile="ads_dialogInfoTable" id="serviceInfoTable" position="0px -275px" size="400px 78px">

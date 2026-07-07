@@ -25,7 +25,7 @@ AdvancedDamageSystem = {
         OVERDUE = "ads_spec_state_overdue",
         LEGENDARY = "ads_spec_state_legendary",
         PREMIUM = "ads_spec_state_premium",
-        STANDART = "ads_spec_state_standart",
+        STANDART = "ads_spec_state_standard",
         BUDGET = "ads_spec_state_budget",
         LOW = "ads_spec_state_low",
         AVERAGE = "ads_spec_state_average",
@@ -7956,7 +7956,7 @@ function AdvancedDamageSystem:completeService()
                 ADS_VehicleChangeStatusEvent.send(self, maintenanceCompletedText)
             end
         else
-            local notEnoughMoneyText = string.format("%s: %s", self:getFullName(), string.format(g_i18n:getText('ads_spec_next_planned_service_not_enouth_money_notification'), g_i18n:getText(nextWork)))
+            local notEnoughMoneyText = string.format("%s: %s", self:getFullName(), string.format(g_i18n:getText('ads_spec_next_planned_service_not_enough_money_notification'), g_i18n:getText(nextWork)))
             if g_currentMission.hud ~= nil and g_currentMission.hud.addSideNotification ~= nil
                     and self:getOwnerFarmId() == g_currentMission:getFarmId() then
                 g_currentMission.hud:addSideNotification({1, 1, 1, 1}, notEnoughMoneyText)

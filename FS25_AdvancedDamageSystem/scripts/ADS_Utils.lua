@@ -303,7 +303,7 @@ function ADS_Utils.formatFinishTime(finishTime, daysToAdd)
     if daysToAdd == 1 then
         daysText = g_i18n:getText('ads_spec_tomorrow_at')
     elseif daysToAdd == 2 then
-        daysText =  g_i18n:getText('ads_spec_day_after_tommorow_at')
+        daysText =  g_i18n:getText('ads_spec_day_after_tomorrow_at')
     elseif daysToAdd > 2 then
         daysText = g_i18n:getText('ads_spec_in_days_at')
         daysText = string.gsub(daysText, "{days}", daysToAdd)
@@ -467,7 +467,7 @@ end
 
 function ADS_Utils.formatReliability(value)
     if value < 1.0 then return g_i18n:getText('ads_spec_state_budget')
-    elseif value < 1.1 then return g_i18n:getText('ads_spec_state_standart')
+    elseif value < 1.1 then return g_i18n:getText('ads_spec_state_standard')
     elseif value < 1.2 then return g_i18n:getText('ads_spec_state_premium')
     else return g_i18n:getText('ads_spec_state_legendary') end        
 end

@@ -3,6 +3,7 @@
         <text name="ads_hud_mass_tractor" text="Tractor"/>
         <text name="ads_hud_mass_towed" text="Enganchado"/>
         <text name="ads_hud_mass_total" text="Total"/>
+        <!-- Settings -->
         <text name="ads_settings_title" text="ADS AJUSTES"/>
         <text name="ads_settings_admin_required" text="Los ajustes de ADS requieren permisos de administrador en multijugador."/>
         <text name="ads_maintenancePrice_label" text="Multiplicador del precio de mantenimiento"/>
@@ -41,10 +42,10 @@
         <text name="ads_warrantyEnabled_tooltip" text="Aplica cobertura de garantía a reparaciones de vehículos nuevos (hasta 20 horas de operación o 12 meses). Solo las piezas OEM están cubiertas sin costo."/>
         <text name="ads_aiOverloadAndOverheatControl_label" text="Control de sobrecarga y sobrecalentamiento de IA"/>
         <text name="ads_aiOverloadAndOverheatControl_tooltip" text="Si está activado, el trabajador IA reduce la carga para evitar sobrecarga o sobrecalentamiento del motor."/>
-        <text name="ads_aiDisableOnCriticalOverload_label" text="Stop AI on Critical Overload"/>
-        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Allows ADS to stop AI workers and AutoDrive during a critical overload."/>
-        <text name="ads_contractVehicleProtection_label" text="Contract Vehicle Protection"/>
-        <text name="ads_contractVehicleProtection_tooltip" text="Applies critical-overload AI shutdown and overload/overheat speed regulation to contract vehicles."/>
+        <text name="ads_aiDisableOnCriticalOverload_label" text="Detener la IA por sobrecarga crítica"/>
+        <text name="ads_aiDisableOnCriticalOverload_tooltip" text="Permite que ADS detenga a los trabajadores de IA y AutoDrive durante una sobrecarga crítica."/>
+        <text name="ads_contractVehicleProtection_label" text="Protección de vehículos de contrato"/>
+        <text name="ads_contractVehicleProtection_tooltip" text="Aplica a los vehículos de contrato la detención de la IA por sobrecarga crítica y la regulación de velocidad por sobrecarga o sobrecalentamiento."/>
         <text name="ads_aiWorkerTargetStress_label" text="Respuesta de velocidad de la IA"/>
         <text name="ads_aiWorkerTargetStress_tooltip" text="Controla con cuánta anticipación reacciona el trabajador de la IA ante la sobrecarga y el sobrecalentamiento. Los valores más altos son menos sensibles y reaccionan más tarde; los valores más bajos son más sensibles y reducen la velocidad antes."/>
         <text name="ads_aiWorkerTargetStress_relaxed" text="Relajada"/>
@@ -91,7 +92,7 @@
         <text name="ads_thermal_mild" text="Suave"/>
         <text name="ads_thermal_default" text="Predeterminado"/>
         <text name="ads_thermal_aggressive" text="Agresivo"/>
-
+        <!-- Workshop -->
         <text name="ads_ws_label_value" text="Valor"/>
         <text name="ads_ws_label_age" text="Antigüedad"/>
         <text name="ads_ws_label_operating_hours" text="Horas de operación"/>
@@ -133,7 +134,7 @@
         <text name="ads_ws_no_log_empty_message" text="El registro aún está vacío"/>
         <text name="ads_ws_cancel_confirm_title" text="¿Cancelar %s?"/>
         <text name="ads_ws_cancel_confirm_text" text="El progreso actual se guardará tal como está. No se reembolsará dinero."/>
-
+        <!-- Maintenance Log -->
         <text name="ads_log_header_title" text="Registro de mantenimiento"/>
         <text name="ads_log_title" text="Registro de mantenimiento técnico"/>
         <text name="ads_log_total_cost_title" text="Gastos totales"/>
@@ -155,7 +156,7 @@
         <text name="ads_log_price" text="Coste"/>
         <text name="ads_log_button_show_report" text="Mostrar informe"/>
         <text name="ads_log_empty" text="Registro vacío"/>
-
+        <!-- Breakdowns -->
         <text name="ads_breakdowns_severity_permanent" text="Permanente"/>
         <text name="ads_breakdowns_severity_reduce_power" text="Reducir potencia"/>
         <text name="ads_breakdowns_severity_shutdown" text="Apagado"/>
@@ -177,9 +178,9 @@
         <text name="ads_breakdowns_part_clutch" text="Embrague"/>
         <text name="ads_breakdowns_part_synchronizer" text="Sincronizador"/>
         <text name="ads_breakdowns_part_powershift_hydraulic_pump" text="Bomba hidráulica Powershift"/>
-        <text name="ads_breakdowns_part_cvt" text="CVT"/>
         <text name="ads_breakdowns_part_cvt_chain" text="Cadena CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Válvula de control hidráulico CVT"/>
+        <text name="ads_breakdowns_part_cvt" text="CVT"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Bomba hidráulica"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Cilindro hidráulico"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Embrague TDF"/>
@@ -200,11 +201,6 @@
         <text name="ads_breakdowns_defected_parts_stage" text="Defectuoso"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="La unidad funciona con normalidad, pero el diagnóstico ha revelado una pieza defectuosa. Debido a un margen de seguridad críticamente bajo, se recomienda el reemplazo preventivo para evitar una falla repentina."/>
         <text name="ads_breakdowns_temporarily_repaired_description" text="La unidad funciona con normalidad, pero depende completamente de una reparación rápida de los elementos desgastados. Para evitar una avería inevitable bajo carga, se recomienda el reemplazo completo de las piezas lo antes posible."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage1_description" text="Se han detectado los primeros signos de un fallo en la transmisión CVT. Se requiere diagnóstico y reparación."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage2_description" text="El fallo de la transmisión CVT está progresando. Seguir utilizándola puede provocar la entrada en modo de emergencia."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage3_description" text="Daño crítico en la transmisión CVT. La caja está en modo de emergencia y la velocidad máxima del vehículo está reducida."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Fallo total de la transmisión CVT. No es posible seguir utilizando el vehículo hasta que se repare."/>
-        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Fallo de la transmisión CVT"/>
         <text name="ads_breakdowns_overheat_protection_stage1_description" text="Modo de protección del motor"/>
         <text name="ads_breakdowns_overheat_protection_stage1_message" text="¡Modo de emergencia del motor activado! ¡Potencia reducida!"/>
         <text name="ads_breakdowns_overheat_protection_stage2_description" text="Modo de protección del motor"/>
@@ -287,6 +283,11 @@
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage2_description" text="Mal funcionamiento moderado de la válvula de control hidráulico CVT. La inestabilidad de la presión hidráulica es frecuente, el par del motor se reduce, la temperatura de la transmisión aumenta y el rango de relación disponible se limita aún más."/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage3_description" text="Mal funcionamiento severo de la válvula de control hidráulico CVT. Las caídas de presión hidráulica son pronunciadas, el par del motor está muy reducido, es probable que la transmisión se sobrecaliente y la limitación del rango de relación es significativa."/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_description" text="Fallo crítico de la válvula de control hidráulico CVT. El control de presión ya no es estable, el rango de relación está severamente restringido, el calentamiento de la transmisión es excesivo y el tren motriz opera en modo de emergencia."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage1_description" text="Se han detectado los primeros signos de un fallo en la transmisión CVT. Se requiere diagnóstico y reparación."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage2_description" text="El fallo de la transmisión CVT está progresando. Seguir utilizándola puede provocar la entrada en modo de emergencia."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage3_description" text="Daño crítico en la transmisión CVT. La caja está en modo de emergencia y la velocidad máxima del vehículo está reducida."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Fallo total de la transmisión CVT. No es posible seguir utilizando el vehículo hasta que se repare."/>
+        <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Fallo de la transmisión CVT"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Fallo de control hidráulico CVT"/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="El termostato del motor está comenzando a fallar. El motor tarda más en alcanzar la temperatura óptima o funciona ligeramente caliente."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="La respuesta del termostato es deficiente. La regulación de la temperatura del motor es inestable, aumentando el desgaste."/>
@@ -327,11 +328,11 @@
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Fuga severa de refrigerante. La eficiencia del sistema de refrigeración se reduce significativamente y es probable que se sobrecaliente bajo carga."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Fuga crítica de refrigerante. La eficiencia del sistema de refrigeración se reduce críticamente y no se puede mantener una temperatura segura del motor."/>
         <text name="ads_breakdowns_coolant_leak_stage4_message" text="Fuga de refrigerante crítica"/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage1_description" text="Mal funcionamiento del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce ligeramente y hay ruido anormal del embrague."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage2_description" text="Mal funcionamiento moderado del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce y el ruido del embrague es claramente audible."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage3_description" text="Mal funcionamiento severo del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce significativamente y el ruido del embrague es severo."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_description" text="Fallo crítico del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce críticamente y no se puede garantizar un flujo de aire adecuado a través del sistema de refrigeración."/>
-        <text name="ads_breakdowns_fun_clutch_failure_stage4_message" text="Fallo del embrague del ventilador"/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Mal funcionamiento del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce ligeramente y hay ruido anormal del embrague."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Mal funcionamiento moderado del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce y el ruido del embrague es claramente audible."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Mal funcionamiento severo del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce significativamente y el ruido del embrague es severo."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Fallo crítico del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce críticamente y no se puede garantizar un flujo de aire adecuado a través del sistema de refrigeración."/>
+        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Fallo del embrague del ventilador"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Obstrucción del filtro de combustible. El flujo de combustible está restringido, causando una ligera vacilación del motor bajo carga y una reducción menor del par del motor."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Obstrucción moderada del filtro de combustible. La restricción del flujo de combustible es notable, la vacilación del motor bajo carga es frecuente, el par del motor se reduce y pueden ocurrir caladas."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Obstrucción severa del filtro de combustible. El flujo de combustible está críticamente restringido, la vacilación del motor es pronunciada, el par del motor está muy reducido y es probable que el motor se cale."/>
@@ -374,7 +375,7 @@
         <text name="ads_breakdowns_pto_auto_disengage_message" text="TDF desacoplada automáticamente"/>
         <text name="ads_breakdowns_gear_disengage_message" text="Desembrague de marcha"/>
         <text name="ads_breakdown_at_progress_message" text="en curso"/>
-
+        <!-- Vehicle Specifications -->
         <text name="ads_spec_cold_engine_message" text="¡El motor está frío! ¡Altas revoluciones causan desgaste!"/>
         <text name="ads_spec_overheat_engine_message" text="¡Atención! Sobrecalentamiento del motor."/>
         <text name="ads_spec_overheat_transmission_message" text="¡Atención! Sobrecalentamiento de la transmisión."/>
@@ -383,7 +384,7 @@
         <text name="ads_spec_never" text="Nunca"/>
         <text name="ads_spec_op_hours_short" text="h"/>
         <text name="ads_spec_tomorrow_at" text="mañana a las "/>
-        <text name="ads_spec_day_after_tommorow_at" text="pasado mañana a las "/>
+        <text name="ads_spec_day_after_tomorrow_at" text="pasado mañana a las "/>
         <text name="ads_spec_in_days_at" text="en {days} días a las "/>
         <text name="ads_spec_day_s" text="día(s)"/>
         <text name="ads_spec_hour_s" text="hora(s)"/>
@@ -400,7 +401,7 @@
         <text name="ads_spec_inspection_issues_detected_notification" text="%s problema(s) detectado(s)"/>
         <text name="ads_spec_inspection_no_issues_detected_notification" text="No se detectaron problemas"/>
         <text name="ads_spec_next_planned_service_notification" text="Procedimiento programado iniciado: %s"/>
-        <text name="ads_spec_next_planned_service_not_enouth_money_notification" text="%s programado cancelado por fondos insuficientes"/>
+        <text name="ads_spec_next_planned_service_not_enough_money_notification" text="%s programado cancelado por fondos insuficientes"/>
         <text name="ads_spec_workshop_dealer" text="Concesionario"/>
         <text name="ads_spec_workshop_own" text="Propio"/>
         <text name="ads_spec_workshop_mobile" text="Móvil"/>
@@ -430,7 +431,7 @@
         <text name="ads_spec_state_overdue" text="Vencido"/>
         <text name="ads_spec_state_legendary" text="Legendario"/>
         <text name="ads_spec_state_premium" text="Superior"/>
-        <text name="ads_spec_state_standart" text="Estándar"/>
+        <text name="ads_spec_state_standard" text="Estándar"/>
         <text name="ads_spec_state_budget" text="Económico"/>
         <text name="ads_spec_state_low" text="Bajo"/>
         <text name="ads_spec_state_average" text="Medio"/>
@@ -453,7 +454,7 @@
         <text name="ads_spec_repair_type_fix" text="Parche rápido"/>
         <text name="ads_spec_repair_type_replacement" text="Estándar"/>
         <text name="ads_spec_repair_type_advanced" text="Avanzado"/>
-
+        <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Seleccionar tipo de inspección"/>
         <text name="ads_option_menu_option_two_title_inspection" text="Reparar fallos encontrados"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Seleccionar nivel de mantenimiento"/>
@@ -473,7 +474,7 @@
         <text name="ads_option_menu_inspection_complete_description" text="* Diagnóstico profundo. Garantiza la detección de todos los fallos, incluidos los potenciales, y proporciona un informe completo con porcentajes exactos de salud para todos los componentes."/>
         <text name="ads_option_menu_maintenance_minimal_description" text="* Servicio básico. Significativamente más barato y rápido, pero no restaura completamente el Nivel de Servicio y proporciona un intervalo de servicio más corto hasta el próximo mantenimiento."/>
         <text name="ads_option_menu_maintenance_standard_description" text="* Mantenimiento rutinario según especificaciones del fabricante. Restaura el Nivel de Servicio a normal y proporciona el intervalo de servicio estándar hasta el próximo mantenimiento."/>
-        <text name="ads_option_menu_maintenance_extended_description" text="* Servicio completo. Toma más tiempo y cuesta más, pero restaura el Nivel de Servicio más allá del nivel estándar y proporciona un intervalo de servicio más largo hasta el próximo mantenimiento."/>   
+        <text name="ads_option_menu_maintenance_extended_description" text="* Servicio completo. Toma más tiempo y cuesta más, pero restaura el Nivel de Servicio más allá del nivel estándar y proporciona un intervalo de servicio más largo hasta el próximo mantenimiento."/>
         <text name="ads_option_menu_maintenance_preventive_description" text="* Mantenimiento preventivo más allá del servicio estándar del fabricante. Restaura el Nivel de Servicio a normal y aborda los sistemas más problemáticos para reducir el riesgo de averías."/>
         <text name="ads_option_menu_repair_type_fix_description" text="* Reparación temporal destinada a mantener la máquina operativa para trabajos urgentes. Restaura rápida y económicamente la funcionalidad básica, sin embargo, el fallo permanece sin resolver y reaparecerá después de algún tiempo."/>
         <text name="ads_option_menu_repair_type_replacement_description" text="* Reemplazo estándar del componente averiado. Elimina completamente el fallo actual y restaura la unidad afectada a su condición operativa normal."/>
@@ -491,8 +492,8 @@
         <text name="ads_option_menu_option_three_disclaimer_repair_after_detection" text="* Iniciar automáticamente reparación estándar con piezas OEM si se detecta algún fallo."/>
         <text name="ads_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Iniciar automáticamente mantenimiento estándar con consumibles OEM después de la reparación."/>
         <text name="ads_option_menu_option_three_disclaimer_overhaul_repaint" text="* Repintar el vehículo durante la revisión."/>
-        <text name="ads_option_menu_choosen_parts_text" text="* Elegido para reparación:"/>
-
+        <text name="ads_option_menu_chosen_parts_text" text="* Elegido para reparación:"/>
+        <!-- Inspection Report -->
         <text name="ads_report_header_title" text="Informe de inspección"/>
         <text name="ads_report_vehicle_name_title" text="Nombre del vehículo"/>
         <text name="ads_report_date_title" text="Fecha"/>
@@ -552,7 +553,7 @@
         <text name="ads_report_recommendation_operating_conditions" text="Se detectaron signos de uso intensivo excesivo. Mejorar las condiciones de operación."/>
         <text name="ads_report_recommendation_repeat_maintenance" text="Consumibles defectuosos detectados. Repetir el mantenimiento para reemplazar los componentes defectuosos."/>
         <text name="ads_report_recommendation_all_ok" text="No hay recomendaciones críticas. El vehículo está en condiciones operativas."/>
-
+        <!-- Tools and Inspection -->
         <text name="ads_grease_gun_name" text="Engrasadora"/>
         <text name="ads_grease_gun_function" text="Se utiliza para procedimientos de lubricación"/>
         <text name="ads_grease_gun_action" text="Aplicar grasa"/>
@@ -565,7 +566,7 @@
         <text name="ads_air_blower_no_vehicle" text="No hay vehículo en el rango de limpieza"/>
         <text name="ads_air_blower_cleaning_not_require" text="%s no requiere limpieza"/>
         <text name="ads_air_blower_already_clean" text="%s: el radiador y la toma de aire ya están limpios"/>
-        <text name="ads_jumper_cables_name" text="Cables de Arranque"/>
+        <text name="ads_jumper_cables_name" text="Cables de arranque"/>
         <text name="ads_jumper_cables_function" text="Se utilizan para conectar baterías de vehículos y arrancar motores descargados"/>
         <text name="ads_jumper_cables_action" text="Conectar/desconectar Cables de Arranque"/>
         <text name="ads_jumper_cables_connected" text="Cables de Arranque conectados a %s"/>
@@ -661,7 +662,7 @@
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage2" text="La tensión de la oruga parece ligeramente desigual."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage3" text="La oruga parece floja, con una tensión notablemente desigual."/>
         <text name="ads_inspection_hint_track_tensioner_malfunction_stage4" text="La oruga está visiblemente combada y la tensión parece gravemente comprometida."/>
-        
+        <!-- In-Game Menu -->
         <text name="ads_ingame_menu_title" text="Sistema de Daños Avanzado"/>
         <text name="ads_ingame_menu_section_active" text="Vehículos ADS"/>
         <text name="ads_ingame_menu_section_service" text="En mantenimiento"/>
@@ -692,6 +693,7 @@
         <text name="ads_sell_dialog_total" text="Total"/>
         <text name="ads_mobile_workshop_low_maintainability" text="ADVERTENCIA: %s no está disponible para %s en el taller móvil debido a baja mantenibilidad."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="¡Sobrecarga crítica! Reduzca de inmediato la carga sobre la máquina."/>
+        <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Modo tutorial"/>
         <text name="ads_tutorialMode_tooltip" text="Muestra consejos del tutorial durante la partida. Desactivado en multijugador."/>
         <text name="ads_tutorialResetTips_label" text="Restablecer consejos"/>
@@ -704,7 +706,7 @@
         <text name="ads_tutorial_welcome_enable_button" text="Activar consejos"/>
         <text name="ads_tutorial_welcome_message" text="Este mod rehace por completo los sistemas de daños y mantenimiento de los vehículos del juego. Hay muchos cambios, por eso aparecerán consejos del tutorial de vez en cuando. Te ayudarán a entender más rápido las nuevas mecánicas, evitar errores comunes y mantener tus máquinas lejos de las averías.&#10;&#10;Si quieres, puedes desactivar ahora mismo los consejos del tutorial. Siempre podrás volver a activarlos más tarde en la configuración del mod, dentro de la sección Advanced Damage System."/>
         <text name="ads_tutorial_service_due_soon_title" text="Mantenimiento periódico"/>
-        <text name="ads_tutorial_service_due_soon_message" text="%s necesitará mantenimiento muy pronto.&#10;&#10;En ADS, los vehículos requieren servicio regular. Si lo retrasas, el riesgo de averías aumenta considerablemente.&#10;&#10;Visita el taller más cercano y selecciona &quot;Maintenance&quot;. El intervalo de mantenimiento puede ajustarse en la configuración del mod."/>
+        <text name="ads_tutorial_service_due_soon_message" text="%s necesitará mantenimiento muy pronto.&#10;&#10;En ADS, los vehículos requieren servicio regular. Si lo retrasas, el riesgo de averías aumenta considerablemente.&#10;&#10;Visita el taller más cercano y selecciona &quot;Mantenimiento&quot;. El intervalo de mantenimiento puede ajustarse en la configuración del mod."/>
         <text name="ads_tutorial_service_interval_expired_title" text="Intervalo de servicio vencido"/>
         <text name="ads_tutorial_service_interval_expired_message" text="%s ha superado su intervalo de servicio y necesita mantenimiento.&#10;&#10;Dirígete a un taller lo antes posible y ejecuta el procedimiento de &quot;Mantenimiento&quot;. Seguir utilizando un vehículo con el servicio vencido aumenta mucho el riesgo de múltiples fallos."/>
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Radiador y tomas de aire obstruidos"/>
@@ -764,7 +766,8 @@
         <text name="ads_tutorial_wheel_slip_title" text="Patinaje de ruedas"/>
         <text name="ads_tutorial_wheel_slip_message" text="Parece que tus ruedas están patinando mucho. Puede que incluso estés atascado ahora mismo y no tengas ganas de consejos, pero tenlo en cuenta: el patinaje de ruedas es uno de los factores más destructivos para la transmisión y acercará bastante tu próxima visita al taller."/>
         <text name="ads_tutorial_battery_low_title" text="Batería débil"/>
-        <text name="ads_tutorial_battery_low_message" text="Ups, parece que la batería está a punto de agotarse. Esto puede ocurrir después de un largo periodo parada, por frío intenso o debido a fallos en el sistema eléctrico.&#10;&#10;Con poca carga, arrancar será difícil o incluso imposible. Si no consigues ponerla en marcha, puedes arrancarla con pinzas desde otro vehículo usando los Cables de Arranque."/>
+        <text name="ads_tutorial_battery_low_message" text="Ups, parece que la batería está a punto de agotarse. Esto puede ocurrir después de un largo periodo de inactividad, por frío intenso o debido a fallos en el sistema eléctrico.&#10;&#10;Con poca carga, arrancar será difícil o incluso imposible. Si no consigues ponerla en marcha, puedes arrancarla con pinzas desde otro vehículo usando los Cables de Arranque."/>
+        <!-- Drivetrain -->
         <text name="input_ADS_TOGGLE_4WD" text="Modo de tracción (4x2 / 4WD / AUTO)"/>
         <text name="input_ADS_TOGGLE_DIFFLOCK" text="Bloqueo del diferencial"/>
         <text name="input_ADS_TOGGLE_PARKBRAKE" text="Freno de estacionamiento"/>

@@ -13,6 +13,7 @@
 The mod includes a temperature model for key systems, advanced battery and alternator simulation, realistic breakdown logic, expanded workshop workflows, service reports, maintenance history, and pre-shift inspections. As a result, vehicle management becomes a strategic part of gameplay: service takes time, poor operation increases the risk of failures, and neglecting machine condition can disrupt critical field work. A responsible farmer who looks after equipment, services it on time, and avoids unnecessary abuse will keep the fleet reliable and avoid serious problems during the season.
 
 Changelog 0.9.3.0 [WIP]:
+- Fixed & improved translations
 - Added drivetrain management for tractors: 4x2 / 4WD / AUTO drive modes and differential locks (new key bindings, HUD indicator, settings)
 - Turning on hard ground with locked differentials now damages the transmission
 - Added a parking brake with HUD indicator and optional automatic engagement
