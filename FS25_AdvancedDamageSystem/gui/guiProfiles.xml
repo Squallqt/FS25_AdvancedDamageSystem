@@ -335,14 +335,14 @@
         <position value="30px 0px"/>
     </Profile>
     <Profile name="ads_menuDockedSliderBg" extends="fs25_sliderDockedBg" with="anchorTopRight">
-        <position value="130px 30px"/>
     </Profile>
     <Profile name="ads_menuSettingsDockedSliderBg" extends="fs25_sliderDockedBg" with="anchorTopRight">
-        <position value="-10px 30px"/>
     </Profile>
     <Profile name="ads_menuDockedSliderBox" extends="fs25_sliderDockedBox"/>
     <Profile name="ads_menuDockedSlider" extends="fs25_helpLineSlider">
+        <startImageColor value="$preset_fs25_colorMainHighlight"/>
         <sliderImageColor value="$preset_fs25_colorMainHighlight"/>
+        <endImageColor value="$preset_fs25_colorMainHighlight"/>
     </Profile>
     <Profile name="ads_settingsButton" extends="emptyPanel" with="anchorMiddleRight">
         <size value="280px 32px"/>

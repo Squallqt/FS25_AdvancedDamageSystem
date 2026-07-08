@@ -135,6 +135,7 @@ Changelog 0.9.0.0:
 Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batterie- und Lichtmaschinensimulation, realistische Ausfalllogik, erweiterte Werkstattabläufe, Serviceberichte, Wartungshistorie und Vorschicht-Inspektionen. Dadurch wird Fahrzeugmanagement zu einem strategischen Teil des Gameplays: Wartung kostet Zeit, falscher Einsatz erhöht das Ausfallrisiko, und vernachlässigter Maschinenzustand kann wichtige Feldarbeiten gefährden. Ein verantwortungsvoller Landwirt, der seine Technik pflegt, rechtzeitig wartet und unnötige Überlastung vermeidet, hält seinen Fuhrpark zuverlässig und vermeidet ernsthafte Probleme in der Saison.
 
 Changelog 0.9.3.0 [WIP]:
+- Übersetzungen korrigiert und verbessert
 - Antriebsstrangverwaltung für Traktoren hinzugefügt: Fahrmodi 4x2 / Allrad / AUTO und Differentialsperren (neue Tastenbelegungen, HUD-Anzeige, Einstellungen)
 - Kurvenfahrten auf hartem Boden mit gesperrten Differentialen beschädigen nun das Getriebe
 - Feststellbremse mit HUD-Anzeige und optionalem automatischem Anziehen hinzugefügt
@@ -255,6 +256,7 @@ Changelog 0.9.0.0:
 Le mod comprend un modèle thermique pour les systèmes clés, une simulation avancée de la batterie et de l'alternateur, une logique de pannes réaliste, des procédures d'atelier étendues, des rapports d'intervention, un historique d'entretien et des inspections avant prise de poste. La gestion du matériel devient ainsi une dimension stratégique du gameplay : l'entretien prend du temps, une mauvaise utilisation augmente le risque de panne, et négliger l'état des machines peut compromettre des travaux de campagne essentiels. Un agriculteur consciencieux qui surveille son matériel, l'entretient à temps et évite les mauvais traitements inutiles conservera une flotte fiable et évitera de graves problèmes en saison.
 
 Changelog 0.9.3.0 [WIP] :
+- Correction & amélioration des traductions
 - Ajout de la gestion de transmission pour les tracteurs : modes 4x2 / 4RM / AUTO et blocages de différentiel (nouveaux raccourcis, témoin HUD, réglages)
 - Braquer sur sol dur avec les différentiels bloqués endommage désormais la transmission
 - Ajout d'un frein de parking avec témoin HUD et serrage automatique optionnel

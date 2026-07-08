@@ -1,4 +1,6 @@
 
+local modDirectory = g_currentModDirectory
+
 ADS_Config = {
     -- Enables or disables extensive debug logging in the console.
     -- When true, the mod will print detailed information about its calculations,
@@ -773,14 +775,33 @@ function ADS_Config.resetTutorialMessages()
     end
 end
 
+function ADS_Config.getCurrentModVersion()
+    if ADS_Config.currentModVersion ~= nil then
+        return ADS_Config.currentModVersion
+    end
+
+    local version = ""
+    if modDirectory ~= nil then
+        local xmlFile = loadXMLFile("adsModDescVersion", modDirectory .. "modDesc.xml")
+        if xmlFile ~= nil and xmlFile ~= 0 then
+            version = getXMLString(xmlFile, "modDesc.version") or ""
+            delete(xmlFile)
+        end
+    end
+
+    ADS_Config.currentModVersion = version
+    return ADS_Config.currentModVersion
+end
+
 function ADS_Config.saveClientTutorialState()
-    local folder = getUserProfileAppPath() .. "modsSettings"
+    local folder = getUserProfileAppPath() .. "modSettings/FS25_AdvancedSystemDamage"
     createFolder(folder)
     local path = folder .. "/AdvancedDamageSystem_tutorial.xml"
     local xmlFile = createXMLFile("adsTutorialClient", path, "adsTutorial")
     if xmlFile == nil or xmlFile == 0 then return end
 
     setXMLBool(xmlFile, "adsTutorial.tutorialMode", ADS_Config.TUTORIAL_MODE)
+    setXMLString(xmlFile, "adsTutorial.welcomeVersionSeen", ADS_Config.WELCOME_VERSION_SEEN or "")
     for messageId, isShown in pairs(ADS_Config.TUTORIAL_MESSAGES) do
         setXMLBool(xmlFile, string.format("adsTutorial.messages.%s", tostring(messageId)), isShown == true)
     end
@@ -789,7 +810,7 @@ function ADS_Config.saveClientTutorialState()
 end
 
 function ADS_Config.loadClientTutorialState()
-    local path = getUserProfileAppPath() .. "modsSettings/AdvancedDamageSystem_tutorial.xml"
+    local path = getUserProfileAppPath() .. "modSettings/FS25_AdvancedSystemDamage/AdvancedDamageSystem_tutorial.xml"
     if not fileExists(path) then return end
 
     local xmlFile = loadXMLFile("adsTutorialClient", path)
@@ -804,6 +825,14 @@ function ADS_Config.loadClientTutorialState()
             ADS_Config.TUTORIAL_MESSAGES[messageId] = v
         end
     end
+
+    local welcomeVersionSeen = getXMLString(xmlFile, "adsTutorial.welcomeVersionSeen")
+    if welcomeVersionSeen ~= nil then
+        ADS_Config.WELCOME_VERSION_SEEN = welcomeVersionSeen
+    elseif ADS_Config.TUTORIAL_MESSAGES.WELCOME == true then
+        ADS_Config.WELCOME_VERSION_SEEN = ADS_Config.getCurrentModVersion()
+    end
+
     delete(xmlFile)
 end
 
@@ -906,12 +935,6 @@ function ADS_Config.saveToXMLFile()
 
     -- DEBUG
     setXMLBool (xmlFile, root .. ".DEBUG_MODE",             ADS_Config.DEBUG)
-    setXMLBool (xmlFile, root .. ".TUTORIAL_MODE",          ADS_Config.TUTORIAL_MODE)
-
-    -- TUTORIAL
-    for messageId, isShown in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-        setXMLBool(xmlFile, string.format("%s.tutorialMessages.%s", root, tostring(messageId)), isShown == true)
-    end
 
     saveXMLFile(xmlFile)
     delete(xmlFile)
@@ -1112,19 +1135,6 @@ function ADS_Config.loadFromXMLFile()
     -- DEBUG
     v = getXMLBool(xmlFile, root .. ".DEBUG_MODE")
     if v ~= nil then ADS_Config.DEBUG = v end
-
-    -- TUTORIAL
-    v = getXMLBool(xmlFile, root .. ".TUTORIAL_MODE")
-    if v ~= nil then ADS_Config.TUTORIAL_MODE = v end
-
-    for messageId, defaultValue in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-        v = getXMLBool(xmlFile, string.format("%s.tutorialMessages.%s", root, tostring(messageId)))
-        if v ~= nil then
-            ADS_Config.TUTORIAL_MESSAGES[messageId] = v
-        else
-            ADS_Config.TUTORIAL_MESSAGES[messageId] = defaultValue == true
-        end
-    end
 
     delete(xmlFile)
     ADS_Config._loaded = true
