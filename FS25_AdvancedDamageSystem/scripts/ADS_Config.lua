@@ -599,7 +599,7 @@ ADS_Config = {
 
         -- Parking brake
         PARKBRAKE_ENABLED = true,
-        PARKBRAKE_AUTO_MODE = false          -- opt-in: engages automatically when the operator leaves the machine
+        PARKBRAKE_AUTO_MODE = true            -- engages when the operator leaves the machine, releases on throttle input
     },
 
     ELECTRICAL = {

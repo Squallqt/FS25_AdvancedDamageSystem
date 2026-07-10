@@ -356,7 +356,7 @@ function ADS_Drivetrain.initSpec(vehicle)
         hasCenterDiff = false,              -- capability flag, replicated to clients
         externallyManaged = false,          -- EV owns the diffs; resolved on the server, replicated to clients
         parkExternallyManaged = false,      -- EV owns the parking brake; resolved on the server, replicated to clients
-        driveMode = ADS_Drivetrain.MODE.FOUR_WD,
+        driveMode = ADS_Drivetrain.MODE.TWO_WD,
         autoEngaged = false,
         diffLockRequested = false,
         diffLockEngaged = false,
@@ -372,7 +372,9 @@ function ADS_Drivetrain.initSpec(vehicle)
         _lastNotifiedLock = nil,
         _lastNotifiedPark = nil,
         _windupWarningCooldown = 0,
-        _parkWarningCooldown = 0
+        _parkWarningCooldown = 0,
+        _wasLocallyControlled = false,
+        _parkNotifyGraceMs = 0
     }
 end
 
@@ -734,14 +736,44 @@ local function updateWindupModel(vehicle, state, spec, dt)
     end
 end
 
+--- Fires the park brake side notification when its state changed since last check.
+local function notifyParkBrakeChange(state)
+    if state._lastNotifiedPark ~= state.parkBrake then
+        if state._lastNotifiedPark ~= nil then
+            local key = state.parkBrake and "ads_drivetrain_notify_park_on" or "ads_drivetrain_notify_park_off"
+            g_currentMission.hud:addSideNotification({1, 1, 1, 1}, g_i18n:getText(key))
+            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
+                g_soundManager:playSample(ADS_Main.samples.notification2D)
+            end
+        end
+        state._lastNotifiedPark = state.parkBrake
+    end
+end
+
 --- Local player feedback (client side of the machine currently controlled).
 local function updateLocalNotifications(vehicle, state, dt)
     if g_dedicatedServerInfo ~= nil then return end
-    if not vehicle:getIsControlled() or g_currentMission == nil or vehicle:getIsAIActive() then
+    local isControlled = g_currentMission ~= nil and vehicle:getIsControlled() and not vehicle:getIsAIActive()
+    if not isControlled then
         state._lastNotifiedMode = state.driveMode
         state._lastNotifiedLock = state.diffLockEngaged
+
+        -- Auto park brake engages/releases right as control is lost (leaving the seat,
+        -- switching to a passenger seat): the server needs a tick to react and replicate,
+        -- so keep watching for a short grace period instead of dropping the notification.
+        if state._wasLocallyControlled then
+            state._parkNotifyGraceMs = 1500
+        end
+        if (state._parkNotifyGraceMs or 0) > 0 then
+            state._parkNotifyGraceMs = math.max(state._parkNotifyGraceMs - dt, 0)
+            notifyParkBrakeChange(state)
+        else
+            state._lastNotifiedPark = state.parkBrake
+        end
+        state._wasLocallyControlled = false
         return
     end
+    state._wasLocallyControlled = true
 
     if state._lastNotifiedMode ~= state.driveMode then
         if state._lastNotifiedMode ~= nil then
@@ -765,20 +797,12 @@ local function updateLocalNotifications(vehicle, state, dt)
         state._lastNotifiedLock = state.diffLockEngaged
     end
 
-    if state._lastNotifiedPark ~= state.parkBrake then
-        if state._lastNotifiedPark ~= nil then
-            local key = state.parkBrake and "ads_drivetrain_notify_park_on" or "ads_drivetrain_notify_park_off"
-            g_currentMission.hud:addSideNotification({1, 1, 1, 1}, g_i18n:getText(key))
-            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
-                g_soundManager:playSample(ADS_Main.samples.notification2D)
-            end
-        end
-        state._lastNotifiedPark = state.parkBrake
-    end
+    notifyParkBrakeChange(state)
 
-    -- Trying to drive off against the engaged parking brake.
+    -- Trying to drive off against the engaged parking brake (manual mode only: in
+    -- auto mode the brake releases on throttle input instead of warning about it).
     state._parkWarningCooldown = math.max((state._parkWarningCooldown or 0) - dt, 0)
-    if state.parkBrake and vehicle.spec_drivable ~= nil then
+    if state.parkBrake and not getConfig().PARKBRAKE_AUTO_MODE and vehicle.spec_drivable ~= nil then
         local axisForward = math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0)
         if axisForward > 0.2 and state._parkWarningCooldown <= 0 then
             g_currentMission:showBlinkingWarning(g_i18n:getText("ads_drivetrain_warning_parkbrake"), 2000)
@@ -815,6 +839,15 @@ local function updateParkBrakeState(vehicle, state, dt)
         local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
         if not vehicle:getIsControlled() and not vehicle:getIsAIActive() and speed < 1.0 then
             ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, true, false)
+        end
+    end
+
+    -- Auto release on throttle input (real electro-hydraulic park brakes disengage
+    -- as the operator drives off, no manual toggle needed).
+    if getConfig().PARKBRAKE_AUTO_MODE and state.parkBrake and vehicle:getIsControlled() then
+        local axisForward = vehicle.spec_drivable ~= nil and math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0) or 0
+        if axisForward > 0.2 then
+            ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
         end
     end
 end

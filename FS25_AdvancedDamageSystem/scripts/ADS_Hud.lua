@@ -16,7 +16,7 @@ ADS_Hud.ROUNDED_PANEL_UV = {
     bottom      = {  5, 59, 54,  5 },
     bottomRight = { 59, 59,  5,  5 }
 }
-ADS_Hud.COLOR_GAME_GREEN = {0.529, 0.706, 0, 1}
+ADS_Hud.COLOR_GAME_GREEN = HUD.COLOR.ACTIVE
 ADS_Hud.NOTIFICATION_GAMEPAD_CLOSE_BUTTON = 1
 
 function ADS_Hud:new()
@@ -815,8 +815,8 @@ function ADS_Hud:storeScaledValues()
     local wheelSlipWidth, wheelSlipHeight = self:scalePixelValuesToScreenVector(24, 16)
     self.wheelSlipHud.icon:setDimension(wheelSlipWidth, wheelSlipHeight)
 
-    self.drivetrainHud.centerX, self.drivetrainHud.centerY = self:scalePixelValuesToScreenVector(-59, -65)
-    self.drivetrainHud.autoBadgeOffsetX, self.drivetrainHud.autoBadgeOffsetY = self:scalePixelValuesToScreenVector(-59, -80)
+    self.drivetrainHud.centerX, self.drivetrainHud.centerY = self:scalePixelValuesToScreenVector(-59, -67)
+    self.drivetrainHud.autoBadgeOffsetX, self.drivetrainHud.autoBadgeOffsetY = self:scalePixelValuesToScreenVector(-59, -82)
     self.drivetrainHud.autoBadgeSize = self:scalePixelToScreenHeight(7)
     for _, iconData in pairs(self.drivetrainHud.icons) do
         local iconWidth, iconHeight = self:scalePixelValuesToScreenVector(iconData.height * iconData.aspect, iconData.height)
@@ -829,7 +829,8 @@ function ADS_Hud:storeScaledValues()
         self.parkBrakeHud.icon:setDimension(parkWidth, parkHeight)
         self.parkBrakeHud.width = parkWidth
         self.parkBrakeHud.height = parkHeight
-        self.parkBrakeHud.gapX = self:scalePixelToScreenWidth(6)
+        self.parkBrakeHud.gapX = self:scalePixelToScreenWidth(8)
+        self.parkBrakeHud.offsetY = self:scalePixelToScreenHeight(-2)
     end
 
     self.engineTempText.offsetX, self.engineTempText.offsetY = self:scalePixelValuesToScreenVector(0, 36)
@@ -1155,7 +1156,7 @@ function ADS_Hud:drawParkBrakeDisplay(vehicle)
     local gearIconHeight = sm.gearIcon.height or 0
     local icon = self.parkBrakeHud.icon
     icon:setPosition(gearIconX - self.parkBrakeHud.width - self.parkBrakeHud.gapX,
-        gearIconY + (gearIconHeight - (self.parkBrakeHud.height or 0)) * 0.5)
+        gearIconY + (gearIconHeight - (self.parkBrakeHud.height or 0)) * 0.5 + (self.parkBrakeHud.offsetY or 0))
     icon:setVisible(true)
 
     local colors = ADS_Breakdowns.COLORS
