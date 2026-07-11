@@ -3367,6 +3367,9 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
 
     -- Parking brake: anchor the machine and ignore throttle, like a real park position.
     if ADS_Drivetrain.getIsParkBrakeEngaged(vehicle) then
+        if vehicle:getCruiseControlState() ~= Drivable.CRUISECONTROL_STATE_OFF then
+            vehicle:setCruiseControlState(Drivable.CRUISECONTROL_STATE_OFF)
+        end
         axisForward = 0
         doHandbrake = true
     end

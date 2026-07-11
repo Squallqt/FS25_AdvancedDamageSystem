@@ -23,7 +23,7 @@ function ADS_Hud:new()
 	local self = ADS_Hud:superClass().new(ADS_Hud_mt)
 	self.vehicle = nil
 
-    self.panelBackgroundRounded = self.modDirectory .. "hud/panelRounded.dds"
+    self.roundedPanelOverlay = Overlay.new(self.modDirectory .. "hud/panelRounded.dds", 0, 0, 0, 0)
 
     g_overlayManager:addTextureConfigFile(ADS_Hud.modDirectory .. "hud/ads_dashboardHud.xml", "ads_DashboardHud")
     g_overlayManager:createOverlay("ads_DashboardHud.reliability", 0, 0, 0, 0)
@@ -125,7 +125,6 @@ function ADS_Hud:new()
         dividerSpacing = 0.003,
         bottomDividerSpacing = 2,
         persistentDurationMs = 60000,
-        background = self.panelBackgroundRounded,
         dividerBackground = "dataS/menu/base/graph_pixel.dds",
         title = nil,
         text = nil,
@@ -147,7 +146,6 @@ function ADS_Hud:new()
         width = 0.60,
         padding = 0.01,
         lineHeight = 0.012,
-        background = self.panelBackgroundRounded,
         isVisible = false
     }
 
@@ -155,7 +153,7 @@ function ADS_Hud:new()
         refreshIntervalMs = 100,
         lastUpdateTime = -math.huge,
         vehicle = nil,
-        background = nil,
+        panel = nil,
         commands = nil
     }
 
@@ -165,7 +163,6 @@ function ADS_Hud:new()
         width = 0.22,
         padding = 0.01,
         lineHeight = 0.012,
-        background = self.panelBackgroundRounded,
         isVisible = false
     }
 
@@ -182,6 +179,15 @@ function ADS_Hud:new()
     return self
 end
 
+function ADS_Hud:delete()
+    if self.roundedPanelOverlay ~= nil then
+        self.roundedPanelOverlay:delete()
+        self.roundedPanelOverlay = nil
+    end
+
+    ADS_Hud:superClass().delete(self)
+end
+
 function ADS_Hud:setVisible(isVisible)
     self.activeVehicleDebugPanel.isVisible = isVisible
 end
@@ -191,7 +197,7 @@ function ADS_Hud:setVehicle(vehicle)
         self.indicatorRuntime = {}
         self.activeVehicleDebugCache.lastUpdateTime = -math.huge
         self.activeVehicleDebugCache.vehicle = nil
-        self.activeVehicleDebugCache.background = nil
+        self.activeVehicleDebugCache.panel = nil
         self.activeVehicleDebugCache.commands = nil
     end
 
@@ -608,25 +614,21 @@ function ADS_Hud:snapScreenRect(x, y, width, height)
     return snappedX, snappedY, snappedWidth, snappedHeight
 end
 
-function ADS_Hud:renderPanelQuad(texturePath, x, y, width, height, color, uvs)
-    if texturePath == nil or width <= 0 or height <= 0 then
+function ADS_Hud:renderPanelQuad(x, y, width, height, color, uvs)
+    if self.roundedPanelOverlay == nil or width <= 0 or height <= 0 then
         return
     end
 
-    local overlay = Overlay.new(texturePath, x, y, width, height)
-    if uvs ~= nil then
-        overlay:setUVs(GuiUtils.getUVs(uvs, {ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE, ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE}))
-    end
-
+    local overlay = self.roundedPanelOverlay
+    overlay:setPosition(x, y)
+    overlay:setDimension(width, height)
+    overlay:setUVs(GuiUtils.getUVs(uvs, {ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE, ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE}))
     overlay:setColor(color[1], color[2], color[3], color[4] or 1)
     overlay:render()
 end
 
-function ADS_Hud:drawPanelBackground(texturePath, x, y, width, height, color)
+function ADS_Hud:drawPanelBackground(x, y, width, height, color)
     local panelColor = color or {0, 0, 0, 0.7}
-    if texturePath == nil then
-        return
-    end
 
     local panelX, panelY, panelWidth, panelHeight = self:snapScreenRect(x, y, width, height)
     local cornerWidth = math.min(
@@ -647,17 +649,17 @@ function ADS_Hud:drawPanelBackground(texturePath, x, y, width, height, color)
     local centerHeight = math.max(topY - centerY, 0)
     local uv = ADS_Hud.ROUNDED_PANEL_UV
 
-    self:renderPanelQuad(texturePath, leftX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomLeft)
-    self:renderPanelQuad(texturePath, centerX, bottomY, centerWidth, cornerHeight, panelColor, uv.bottom)
-    self:renderPanelQuad(texturePath, rightX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomRight)
+    self:renderPanelQuad(leftX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomLeft)
+    self:renderPanelQuad(centerX, bottomY, centerWidth, cornerHeight, panelColor, uv.bottom)
+    self:renderPanelQuad(rightX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomRight)
 
-    self:renderPanelQuad(texturePath, leftX, centerY, cornerWidth, centerHeight, panelColor, uv.left)
-    self:renderPanelQuad(texturePath, centerX, centerY, centerWidth, centerHeight, panelColor, uv.center)
-    self:renderPanelQuad(texturePath, rightX, centerY, cornerWidth, centerHeight, panelColor, uv.right)
+    self:renderPanelQuad(leftX, centerY, cornerWidth, centerHeight, panelColor, uv.left)
+    self:renderPanelQuad(centerX, centerY, centerWidth, centerHeight, panelColor, uv.center)
+    self:renderPanelQuad(rightX, centerY, cornerWidth, centerHeight, panelColor, uv.right)
 
-    self:renderPanelQuad(texturePath, leftX, topY, cornerWidth, cornerHeight, panelColor, uv.topLeft)
-    self:renderPanelQuad(texturePath, centerX, topY, centerWidth, cornerHeight, panelColor, uv.top)
-    self:renderPanelQuad(texturePath, rightX, topY, cornerWidth, cornerHeight, panelColor, uv.topRight)
+    self:renderPanelQuad(leftX, topY, cornerWidth, cornerHeight, panelColor, uv.topLeft)
+    self:renderPanelQuad(centerX, topY, centerWidth, cornerHeight, panelColor, uv.top)
+    self:renderPanelQuad(rightX, topY, cornerWidth, cornerHeight, panelColor, uv.topRight)
 end
 
 function ADS_Hud:drawNotificationPanel()
@@ -701,7 +703,6 @@ function ADS_Hud:drawNotificationPanel()
     local panelY = anchorCenterY - dynamicHeight * 0.5
 
     self:drawPanelBackground(
-        panel.background,
         panel.x,
         panelY,
         panel.width,
@@ -811,8 +812,8 @@ function ADS_Hud:storeScaledValues()
     local serviceWidth, serviceHeight = self:scalePixelValuesToScreenVector(27, 9)
     self.indicators.service.icon:setDimension(serviceWidth, serviceHeight)
 
-    self.wheelSlipHud.offsetX, self.wheelSlipHud.offsetY = self:scalePixelValuesToScreenVector(47, -73)
-    local wheelSlipWidth, wheelSlipHeight = self:scalePixelValuesToScreenVector(24, 16)
+    self.wheelSlipHud.offsetX, self.wheelSlipHud.offsetY = self:scalePixelValuesToScreenVector(47, -76)
+    local wheelSlipWidth, wheelSlipHeight = self:scalePixelValuesToScreenVector(24, 24)
     self.wheelSlipHud.icon:setDimension(wheelSlipWidth, wheelSlipHeight)
 
     self.drivetrainHud.centerX, self.drivetrainHud.centerY = self:scalePixelValuesToScreenVector(-59, -67)
@@ -825,12 +826,12 @@ function ADS_Hud:storeScaledValues()
     end
 
     if self.parkBrakeHud ~= nil and self.parkBrakeHud.icon ~= nil then
-        local parkWidth, parkHeight = self:scalePixelValuesToScreenVector(19, 15)
+        local parkWidth, parkHeight = self:scalePixelValuesToScreenVector(23, 19)
         self.parkBrakeHud.icon:setDimension(parkWidth, parkHeight)
         self.parkBrakeHud.width = parkWidth
         self.parkBrakeHud.height = parkHeight
         self.parkBrakeHud.gapX = self:scalePixelToScreenWidth(8)
-        self.parkBrakeHud.offsetY = self:scalePixelToScreenHeight(-2)
+        self.parkBrakeHud.offsetY = self:scalePixelToScreenHeight(0)
     end
 
     self.engineTempText.offsetX, self.engineTempText.offsetY = self:scalePixelValuesToScreenVector(0, 36)
@@ -1259,6 +1260,33 @@ function ADS_Hud:formatMass(massTons)
     return string.format("%.1f t", math.max(tonumber(massTons) or 0, 0))
 end
 
+-- Mass currently carried on raised attacher joints (moveAlpha 0 = raised, 1 = lowered).
+local function collectHydraulicLiftMass(vehicleObj, visited)
+    visited = visited or {}
+    if vehicleObj == nil or visited[vehicleObj] then
+        return 0
+    end
+    visited[vehicleObj] = true
+
+    local mass = 0
+    local attachedImplements = vehicleObj.getAttachedImplements ~= nil and vehicleObj:getAttachedImplements() or nil
+    if attachedImplements ~= nil then
+        for _, implementData in pairs(attachedImplements) do
+            local childObj = implementData ~= nil and implementData.object or nil
+            if childObj ~= nil then
+                local attacherJoints = vehicleObj.spec_attacherJoints ~= nil and vehicleObj.spec_attacherJoints.attacherJoints or nil
+                local jointDesc = attacherJoints ~= nil and attacherJoints[implementData.jointDescIndex] or nil
+                if jointDesc ~= nil and jointDesc.allowsLowering and jointDesc.moveAlpha ~= nil then
+                    local childMass = childObj.getTotalMass ~= nil and (childObj:getTotalMass(true) or 0) or 0
+                    mass = mass + childMass * math.max(1 - jointDesc.moveAlpha, 0)
+                end
+                mass = mass + collectHydraulicLiftMass(childObj, visited)
+            end
+        end
+    end
+    return mass
+end
+
 function ADS_Hud:drawLoadMass()
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.getTotalMass == nil then
@@ -1297,8 +1325,16 @@ function ADS_Hud:drawLoadMass()
             and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT) or 3.0)
             or  (tonumber(C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT)       or 5.0)
 
-        local severity = ADS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
-        loadColor = self:getLoadSeverityColor(severity)
+        local trailerSeverity = ADS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
+
+        -- Heavy-lift ratio, based on the attacher joint's own raise position.
+        local hydraulicsConfig = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA
+        local liftThreshold = tonumber(hydraulicsConfig.HEAVY_LIFT_FACTOR_THRESHOLD) or 0.6
+        local liftedMass = collectHydraulicLiftMass(vehicle)
+        local liftMassRatio = selfMass > 0 and (liftedMass / selfMass) or 0
+        local liftSeverity = ADS_Utils.calculateQuadraticMultiplier(liftMassRatio, liftThreshold, false)
+
+        loadColor = self:getLoadSeverityColor(math.max(trailerSeverity, liftSeverity))
     end
 
     -- sm:getPosition() returns the speedometer's right and bottom boundaries
@@ -1395,15 +1431,14 @@ function ADS_Hud:renderActiveVehicleDebugCache(cache)
         return
     end
 
-    local background = cache.background
-    if background ~= nil and background.path ~= nil then
-        local color = background.color or {0, 0, 0, 0.7}
+    local panel = cache.panel
+    if panel ~= nil then
+        local color = panel.color or {0, 0, 0, 0.7}
         self:drawPanelBackground(
-            background.path,
-            background.x,
-            background.y,
-            background.width,
-            background.height,
+            panel.x,
+            panel.y,
+            panel.width,
+            panel.height,
             color
         )
     end
@@ -2483,14 +2518,13 @@ function ADS_Hud:drawActiveVehicleHUD()
 
     cache.lastUpdateTime = now
     cache.vehicle = vehicle
-    cache.background = panel.background ~= nil and {
-        path = panel.background,
+    cache.panel = {
         x = panel.x,
         y = panel.y,
         width = panel.width,
         height = dynamicHeight,
         color = {0, 0, 0, 0.7}
-    } or nil
+    }
     cache.commands = queuedCommands
 
     self:renderActiveVehicleDebugCache(cache)
@@ -2774,16 +2808,13 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, panel, activeHeaderSiz
     totalSectionHeight = totalSectionHeight + (math.max(#sections - 1, 0) * sectionGap)
 
     local dynamicHeight = (panel.padding * 2) + activeHeaderSize + totalSectionHeight + 0.02
-    if panel.background ~= nil then
-        self:drawPanelBackground(
-            panel.background,
-            panel.x,
-            panel.y,
-            panel.width,
-            dynamicHeight,
-            {0, 0, 0, 0.7}
-        )
-    end
+    self:drawPanelBackground(
+        panel.x,
+        panel.y,
+        panel.width,
+        dynamicHeight,
+        {0, 0, 0, 0.7}
+    )
 
     local textStartX = panel.x + panel.padding
     local currentY = panel.y + dynamicHeight - panel.padding
@@ -2873,16 +2904,13 @@ function ADS_Hud:drawManagerHUD()
     local dynamicHeight = (panel.padding * 2) + textSettings.headerSize + (totalLines * panel.lineHeight)
     local panelY = panel.y - dynamicHeight
 
-    if panel.background ~= nil then
-        self:drawPanelBackground(
-            panel.background,
-            panel.x,
-            panelY,
-            panel.width,
-            dynamicHeight,
-            {0, 0, 0, 0.7}
-        )
-    end
+    self:drawPanelBackground(
+        panel.x,
+        panelY,
+        panel.width,
+        dynamicHeight,
+        {0, 0, 0, 0.7}
+    )
 
     setTextColor(unpack(textSettings.color))
     

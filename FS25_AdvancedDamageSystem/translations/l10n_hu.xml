@@ -1,6 +1,6 @@
 <l10n>
     <texts>
-        <text name="ads_hud_mass_tractor" text="Traktor"/>
+        <text name="ads_hud_mass_tractor" text="Jármű"/>
         <text name="ads_hud_mass_towed" text="Csatolt"/>
         <text name="ads_hud_mass_total" text="Összesen"/>
         <!-- Settings -->

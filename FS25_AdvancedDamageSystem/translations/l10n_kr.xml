@@ -1,6 +1,6 @@
 <l10n>
     <texts>
-        <text name="ads_hud_mass_tractor" text="트랙터"/>
+        <text name="ads_hud_mass_tractor" text="차량"/>
         <text name="ads_hud_mass_towed" text="부착"/>
         <text name="ads_hud_mass_total" text="합계"/>
         <!-- Settings -->

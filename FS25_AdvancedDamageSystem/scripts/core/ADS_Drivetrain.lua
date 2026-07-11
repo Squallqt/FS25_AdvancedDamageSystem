@@ -758,9 +758,7 @@ local function updateLocalNotifications(vehicle, state, dt)
         state._lastNotifiedMode = state.driveMode
         state._lastNotifiedLock = state.diffLockEngaged
 
-        -- Auto park brake engages/releases right as control is lost (leaving the seat,
-        -- switching to a passenger seat): the server needs a tick to react and replicate,
-        -- so keep watching for a short grace period instead of dropping the notification.
+        -- Grace window so the park brake notification survives losing control.
         if state._wasLocallyControlled then
             state._parkNotifyGraceMs = 1500
         end
@@ -799,8 +797,7 @@ local function updateLocalNotifications(vehicle, state, dt)
 
     notifyParkBrakeChange(state)
 
-    -- Trying to drive off against the engaged parking brake (manual mode only: in
-    -- auto mode the brake releases on throttle input instead of warning about it).
+    -- Trying to drive off against the engaged parking brake (manual mode only).
     state._parkWarningCooldown = math.max((state._parkWarningCooldown or 0) - dt, 0)
     if state.parkBrake and not getConfig().PARKBRAKE_AUTO_MODE and vehicle.spec_drivable ~= nil then
         local axisForward = math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0)
@@ -842,8 +839,7 @@ local function updateParkBrakeState(vehicle, state, dt)
         end
     end
 
-    -- Auto release on throttle input (real electro-hydraulic park brakes disengage
-    -- as the operator drives off, no manual toggle needed).
+    -- Auto release on throttle input.
     if getConfig().PARKBRAKE_AUTO_MODE and state.parkBrake and vehicle:getIsControlled() then
         local axisForward = vehicle.spec_drivable ~= nil and math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0) or 0
         if axisForward > 0.2 then

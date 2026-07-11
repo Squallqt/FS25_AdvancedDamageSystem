@@ -1,6 +1,6 @@
 <l10n>
     <texts>
-        <text name="ads_hud_mass_tractor" text="Traktör"/>
+        <text name="ads_hud_mass_tractor" text="Araç"/>
         <text name="ads_hud_mass_towed" text="Bağlı"/>
         <text name="ads_hud_mass_total" text="Toplam"/>
         <!-- Settings -->
