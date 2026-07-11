@@ -25,6 +25,7 @@ source(g_currentModDirectory .. "events/ADS_WorkshopChangeStatusEvent.lua")
 source(g_currentModDirectory .. "events/ADS_ServiceRequestEvent.lua")
 source(g_currentModDirectory .. "events/ADS_CancelServiceEvent.lua")
 source(g_currentModDirectory .. "events/ADS_SettingsSyncEvent.lua")
+source(g_currentModDirectory .. "events/ADS_TutorialStateEvent.lua")
 source(g_currentModDirectory .. "events/ADS_EffectSyncEvent.lua")
 source(g_currentModDirectory .. "events/ADS_LogEntrySyncEvent.lua")
 source(g_currentModDirectory .. "events/ADS_ConsoleCommandEvent.lua")
@@ -369,7 +370,9 @@ FSBaseMission.onStartMission = Utils.prependedFunction(FSBaseMission.onStartMiss
 FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, ADS_Config.saveToXMLFile)
 Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, function()
     ADS_Config.loadFromXMLFile()
-    ADS_Config.loadClientTutorialState()
+    if g_server == nil then
+        ADS_TutorialStateEvent.requestFromServer()
+    end
 end)
 FSBaseMission.sendInitialClientState = Utils.appendedFunction(FSBaseMission.sendInitialClientState, function(_, connection)
     if g_server ~= nil then
@@ -540,8 +543,8 @@ function ADS_Main:loadMap()
     ADS_SettingsPage.reset()
     self.shopMenuPageInstalled = false
     self.shopMenuFrame = nil
+    ADS_Config.resetTutorialStateSession()
     ADS_Config.loadFromXMLFile()
-    ADS_Config.loadClientTutorialState()
     self:tryRegisterShopMenuPage()
 end
 
@@ -550,6 +553,7 @@ function ADS_Main:deleteMap()
     self.shopMenuFrame = nil
     ADS_Main.guiProfilesLoaded = nil
     ADS_Config._loaded = nil
+    ADS_Config.resetTutorialStateSession()
     ADS_SettingsPage.reset()
 end
 

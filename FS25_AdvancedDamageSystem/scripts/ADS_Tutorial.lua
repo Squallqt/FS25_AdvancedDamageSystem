@@ -27,7 +27,7 @@ function ADS_Tutorial:showMessage(text, doPause, downtime)
 
         if disableTutorial then
             ADS_Config.TUTORIAL_MODE = false
-            ADS_Config.saveClientTutorialState()
+            ADS_Config.syncTutorialState()
         end
 
         if doPause then
@@ -58,7 +58,7 @@ end
 function ADS_Tutorial:update(dt)
     local mission = g_currentMission
 
-    if not ADS_Config.TUTORIAL_MODE or g_localPlayer == nil then
+    if g_localPlayer == nil or not ADS_Config.ensureLocalTutorialState() or not ADS_Config.TUTORIAL_MODE then
         self.vehicle = nil
         self.timer = 0
         return
@@ -87,7 +87,6 @@ function ADS_Tutorial:update(dt)
         local currentModVersion = ADS_Config.getCurrentModVersion()
         if ADS_Config.WELCOME_VERSION_SEEN ~= currentModVersion then
             self:showMessage(g_i18n:getText("ads_tutorial_welcome_message"), false, 5000)
-            messagedData.WELCOME = true
             ADS_Config.WELCOME_VERSION_SEEN = currentModVersion
         end
 
@@ -614,7 +613,7 @@ function ADS_Tutorial:update(dt)
     end
 
     if prevDowntime <= 0 and self.messageDowntime > 0 then
-        ADS_Config.saveClientTutorialState()
+        ADS_Config.syncTutorialState()
     end
 
 end

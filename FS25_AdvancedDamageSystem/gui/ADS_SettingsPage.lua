@@ -285,7 +285,7 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
     local tutorialModeChanged = valuesDiffer(pending.tutorialMode, current.tutorialMode)
     ADS_Config.TUTORIAL_MODE = pending.tutorialMode
     if tutorialModeChanged then
-        ADS_Config.saveClientTutorialState()
+        ADS_Config.syncTutorialState()
     end
 
     ADS_Config.CORE.BASE_SERVICE_WEAR = pending.baseServiceWear
@@ -1003,7 +1003,7 @@ function ADS_InGameSettings:onResetTutorialTipsClicked()
     YesNoDialog.show(function(shouldReset)
         if shouldReset then
             ADS_Config.resetTutorialMessages()
-            ADS_Config.saveClientTutorialState()
+            ADS_Config.syncTutorialState()
         end
     end, nil, g_i18n:getText("ads_tutorialResetConfirm_message"), g_i18n:getText("ads_tutorialResetConfirm_title"))
 end

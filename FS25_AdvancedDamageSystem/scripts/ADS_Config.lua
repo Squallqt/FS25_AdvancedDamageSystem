@@ -731,7 +731,6 @@ ADS_Config = {
     },
     
     TUTORIAL_MESSAGES = {
-        WELCOME = false,
         SERVICE_DUE_SOON = false,
         SERVICE_INTERVAL_EXPIRED = false,
         RAD_OR_INTAKE_CLOGGED = false,
@@ -769,9 +768,7 @@ ADS_Config = {
 
 function ADS_Config.resetTutorialMessages()
     for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-        if messageId ~= "WELCOME" then
-            ADS_Config.TUTORIAL_MESSAGES[messageId] = false
-        end
+        ADS_Config.TUTORIAL_MESSAGES[messageId] = false
     end
 end
 
@@ -793,47 +790,111 @@ function ADS_Config.getCurrentModVersion()
     return ADS_Config.currentModVersion
 end
 
-function ADS_Config.saveClientTutorialState()
-    local folder = getUserProfileAppPath() .. "modSettings/FS25_AdvancedSystemDamage"
-    createFolder(folder)
-    local path = folder .. "/AdvancedDamageSystem_tutorial.xml"
-    local xmlFile = createXMLFile("adsTutorialClient", path, "adsTutorial")
-    if xmlFile == nil or xmlFile == 0 then return end
+ADS_Config.TUTORIAL_MESSAGE_IDS = {}
+for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
+    table.insert(ADS_Config.TUTORIAL_MESSAGE_IDS, messageId)
+end
+table.sort(ADS_Config.TUTORIAL_MESSAGE_IDS)
 
-    setXMLBool(xmlFile, "adsTutorial.tutorialMode", ADS_Config.TUTORIAL_MODE)
-    setXMLString(xmlFile, "adsTutorial.welcomeVersionSeen", ADS_Config.WELCOME_VERSION_SEEN or "")
-    for messageId, isShown in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-        setXMLBool(xmlFile, string.format("adsTutorial.messages.%s", tostring(messageId)), isShown == true)
+ADS_Config.TUTORIAL_PLAYER_STATES = {}
+ADS_Config.TUTORIAL_STATE_LOADED = false
+ADS_Config.TUTORIAL_LOCAL_USER_ID = nil
+
+function ADS_Config.createTutorialState(tutorialMode, welcomeVersionSeen, messages)
+    local state = {
+        tutorialMode = tutorialMode ~= false,
+        welcomeVersionSeen = tostring(welcomeVersionSeen or ""),
+        messages = {}
+    }
+
+    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+        state.messages[messageId] = messages ~= nil and messages[messageId] == true or false
     end
-    saveXMLFile(xmlFile)
-    delete(xmlFile)
+
+    return state
 end
 
-function ADS_Config.loadClientTutorialState()
-    local path = getUserProfileAppPath() .. "modSettings/FS25_AdvancedSystemDamage/AdvancedDamageSystem_tutorial.xml"
-    if not fileExists(path) then return end
+function ADS_Config.captureTutorialState()
+    return ADS_Config.createTutorialState(
+        ADS_Config.TUTORIAL_MODE,
+        ADS_Config.WELCOME_VERSION_SEEN,
+        ADS_Config.TUTORIAL_MESSAGES
+    )
+end
 
-    local xmlFile = loadXMLFile("adsTutorialClient", path)
-    if xmlFile == nil or xmlFile == 0 then return end
+function ADS_Config.applyTutorialState(state)
+    local normalized = ADS_Config.createTutorialState(
+        state ~= nil and state.tutorialMode,
+        state ~= nil and state.welcomeVersionSeen,
+        state ~= nil and state.messages
+    )
 
-    local v = getXMLBool(xmlFile, "adsTutorial.tutorialMode")
-    if v ~= nil then ADS_Config.TUTORIAL_MODE = v end
-
-    for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-        v = getXMLBool(xmlFile, string.format("adsTutorial.messages.%s", tostring(messageId)))
-        if v ~= nil then
-            ADS_Config.TUTORIAL_MESSAGES[messageId] = v
-        end
+    ADS_Config.TUTORIAL_MODE = normalized.tutorialMode
+    ADS_Config.WELCOME_VERSION_SEEN = normalized.welcomeVersionSeen
+    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+        ADS_Config.TUTORIAL_MESSAGES[messageId] = normalized.messages[messageId]
     end
+    ADS_Config.TUTORIAL_STATE_LOADED = true
+end
 
-    local welcomeVersionSeen = getXMLString(xmlFile, "adsTutorial.welcomeVersionSeen")
-    if welcomeVersionSeen ~= nil then
-        ADS_Config.WELCOME_VERSION_SEEN = welcomeVersionSeen
-    elseif ADS_Config.TUTORIAL_MESSAGES.WELCOME == true then
-        ADS_Config.WELCOME_VERSION_SEEN = ADS_Config.getCurrentModVersion()
+function ADS_Config.resetLocalTutorialState()
+    ADS_Config.TUTORIAL_MODE = true
+    ADS_Config.WELCOME_VERSION_SEEN = ""
+    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+        ADS_Config.TUTORIAL_MESSAGES[messageId] = false
     end
+    ADS_Config.TUTORIAL_STATE_LOADED = false
+    ADS_Config.TUTORIAL_LOCAL_USER_ID = nil
+end
 
-    delete(xmlFile)
+function ADS_Config.resetTutorialStateSession()
+    ADS_Config.TUTORIAL_PLAYER_STATES = {}
+    ADS_Config.resetLocalTutorialState()
+end
+
+function ADS_Config.getTutorialPlayerState(uniqueUserId)
+    if uniqueUserId == nil or uniqueUserId == "" then return nil end
+
+    uniqueUserId = tostring(uniqueUserId)
+    local state = ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId]
+    if state == nil then
+        state = ADS_Config.createTutorialState()
+        ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId] = state
+    end
+    return ADS_Config.createTutorialState(state.tutorialMode, state.welcomeVersionSeen, state.messages)
+end
+
+function ADS_Config.setTutorialPlayerState(uniqueUserId, state)
+    if uniqueUserId == nil or uniqueUserId == "" or state == nil then return end
+    ADS_Config.TUTORIAL_PLAYER_STATES[tostring(uniqueUserId)] = ADS_Config.createTutorialState(
+        state.tutorialMode,
+        state.welcomeVersionSeen,
+        state.messages
+    )
+end
+
+function ADS_Config.ensureLocalTutorialState()
+    if ADS_Config.TUTORIAL_STATE_LOADED then return true end
+    if g_server == nil or g_localPlayer == nil or g_localPlayer.getUniqueUserId == nil then return false end
+
+    local uniqueUserId = g_localPlayer:getUniqueUserId()
+    local state = ADS_Config.getTutorialPlayerState(uniqueUserId)
+    if state == nil then return false end
+
+    ADS_Config.TUTORIAL_LOCAL_USER_ID = uniqueUserId
+    ADS_Config.applyTutorialState(state)
+    return true
+end
+
+function ADS_Config.syncTutorialState()
+    if not ADS_Config.TUTORIAL_STATE_LOADED and not ADS_Config.ensureLocalTutorialState() then return end
+
+    local state = ADS_Config.captureTutorialState()
+    if g_server ~= nil then
+        ADS_Config.setTutorialPlayerState(ADS_Config.TUTORIAL_LOCAL_USER_ID, state)
+    elseif ADS_TutorialStateEvent ~= nil then
+        ADS_TutorialStateEvent.sendToServer(state)
+    end
 end
 
 ADS_Config.savegameFile = "advancedDamageSystem.xml"
@@ -843,6 +904,47 @@ local function log_dbg(...)
         local args = {...}
         for i = 1, #args do args[i] = tostring(args[i]) end
         print("[ADS_CFG] " .. table.concat(args, " "))
+    end
+end
+
+local function saveTutorialPlayerStates(xmlFile, root)
+    local userIds = {}
+    for uniqueUserId, _ in pairs(ADS_Config.TUTORIAL_PLAYER_STATES) do
+        table.insert(userIds, uniqueUserId)
+    end
+    table.sort(userIds)
+
+    for index, uniqueUserId in ipairs(userIds) do
+        local state = ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId]
+        local key = string.format("%s.tutorialPlayers.player(%d)", root, index - 1)
+        setXMLString(xmlFile, key .. "#uniqueUserId", uniqueUserId)
+        setXMLBool(xmlFile, key .. ".tutorialMode", state.tutorialMode)
+        setXMLString(xmlFile, key .. ".welcomeVersionSeen", state.welcomeVersionSeen)
+        for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+            setXMLBool(xmlFile, key .. ".messages." .. messageId, state.messages[messageId] == true)
+        end
+    end
+end
+
+local function loadTutorialPlayerStates(xmlFile, root)
+    ADS_Config.TUTORIAL_PLAYER_STATES = {}
+    local index = 0
+
+    while true do
+        local key = string.format("%s.tutorialPlayers.player(%d)", root, index)
+        local uniqueUserId = getXMLString(xmlFile, key .. "#uniqueUserId")
+        if uniqueUserId == nil then break end
+
+        local messages = {}
+        for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+            messages[messageId] = getXMLBool(xmlFile, key .. ".messages." .. messageId) == true
+        end
+        ADS_Config.setTutorialPlayerState(uniqueUserId, {
+            tutorialMode = getXMLBool(xmlFile, key .. ".tutorialMode"),
+            welcomeVersionSeen = getXMLString(xmlFile, key .. ".welcomeVersionSeen"),
+            messages = messages
+        })
+        index = index + 1
     end
 end
 
@@ -935,6 +1037,11 @@ function ADS_Config.saveToXMLFile()
 
     -- DEBUG
     setXMLBool (xmlFile, root .. ".DEBUG_MODE",             ADS_Config.DEBUG)
+
+    if ADS_Config.TUTORIAL_STATE_LOADED and ADS_Config.TUTORIAL_LOCAL_USER_ID ~= nil then
+        ADS_Config.setTutorialPlayerState(ADS_Config.TUTORIAL_LOCAL_USER_ID, ADS_Config.captureTutorialState())
+    end
+    saveTutorialPlayerStates(xmlFile, root)
 
     saveXMLFile(xmlFile)
     delete(xmlFile)
@@ -1135,6 +1242,10 @@ function ADS_Config.loadFromXMLFile()
     -- DEBUG
     v = getXMLBool(xmlFile, root .. ".DEBUG_MODE")
     if v ~= nil then ADS_Config.DEBUG = v end
+
+    if g_currentMission:getIsServer() then
+        loadTutorialPlayerStates(xmlFile, root)
+    end
 
     delete(xmlFile)
     ADS_Config._loaded = true
