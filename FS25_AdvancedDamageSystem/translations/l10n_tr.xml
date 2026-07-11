@@ -779,11 +779,11 @@
         <text name="ads_drivetrainWindupDamage_label" text="Aktarma organları burulma hasarı"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="Diferansiyeller kilitliyken tutuşu yüksek zeminde dönmek aktarma organlarını burar ve zamanla şanzımana zarar verir. Daha hoşgörülü bir deneyim için kapatın."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Kilit bırakma hızı"/>
-        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Diferansiyel kilitleri bu hızın üzerinde, gerçek bir traktörün tırnaklı kavramaları gibi otomatik olarak çözülür ve talep edildiği sürece altında yeniden devreye girer."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Diferansiyel kilitleri bu hızın üzerinde otomatik olarak çözülür ve talep edildiği sürece altında yeniden devreye girer."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="El freni"/>
         <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Tüm ADS araçlarına kendi tuşuyla kumanda edilen bir el freni ekler. Çekilmiş fren makineyi sabitler ve gaz girişini yok sayar."/>
         <text name="ads_drivetrainParkBrakeAuto_label" text="Otomatik el freni"/>
-        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Modern traktörlerin elektrohidrolik park konumu gibi, operatör duran makineden indiğinde el frenini otomatik olarak çeker."/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Operatör duran makineden indiğinde el frenini otomatik olarak çeker."/>
         <text name="ads_drivetrain_mode_4x2" text="4x2 (ön aks devre dışı)"/>
         <text name="ads_drivetrain_mode_4wd" text="4WD (ön aks devrede)"/>
         <text name="ads_drivetrain_mode_auto" text="4WD OTO"/>
@@ -792,9 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Diferansiyel kilidi çözüldü"/>
         <text name="ads_drivetrain_notify_park_on" text="El freni çekildi"/>
         <text name="ads_drivetrain_notify_park_off" text="El freni bırakıldı"/>
-        <text name="ads_drivetrain_warning_windup" text="Aktarma organları buruluyor! Diferansiyel kilidini bırakın veya sert zeminde dönmeyin."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Aktarma organları buruluyor! Sert zeminde dönmeden önce 4WD'yi devre dışı bırakın."/>
+        <text name="ads_drivetrain_warning_difflock_windup" text="Diferansiyel kilidi zorlanıyor! Kilidi bırakın veya direksiyon açısını azaltın."/>
         <text name="ads_drivetrain_warning_parkbrake" text="El freni çekili!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Aktarma organları burulması"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="Diferansiyel kilidi devredeyken tutuşu yüksek zeminde dönüyorsunuz. Virajda ön ve arka tekerlekler farklı mesafeler kat eder, ancak kilitli diferansiyeller onları aynı hızda dönmeye zorlar: aktarma organları burulur ve şanzıman kırılana kadar hasar görür. Yolda veya sert zeminde dönmeden önce kilidi bırakın — gerçek traktörlerde yalnızca yumuşak zeminde düz giderken kullanılır."/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Diferansiyel kilidi devredeyken tutuşu yüksek zeminde dönüyorsunuz. Virajda iç ve dış tekerlekler farklı mesafeler kat eder, ancak diferansiyel kilidi onları aynı hızda dönmeye zorlar: aktarma organları gerilir ve şanzıman aşınması artar. Dönmeden önce kilidi bırakın."/>
     </texts>
 </l10n>

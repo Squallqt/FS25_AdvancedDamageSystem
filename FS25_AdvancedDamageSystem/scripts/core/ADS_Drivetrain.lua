@@ -167,7 +167,7 @@ function ADS_Drivetrain.getIsRoadVehicleCategory(vehicle)
     return false
 end
 
-local function isWheelSteerable(wheel)
+function ADS_Drivetrain.getIsWheelSteerable(wheel)
     local physics = wheel ~= nil and wheel.physics or nil
     if physics == nil then return false end
     local rotMin = tonumber(physics.rotMin) or 0
@@ -216,7 +216,7 @@ local function getAxleScore(vehicle, wheelIndices)
         if wheel ~= nil then
             count = count + 1
             zSum = zSum + getWheelLocalZ(wheel)
-            if isWheelSteerable(wheel) then
+            if ADS_Drivetrain.getIsWheelSteerable(wheel) then
                 steerableCount = steerableCount + 1
             end
         end
@@ -364,6 +364,7 @@ function ADS_Drivetrain.initSpec(vehicle)
         windupStress = 0,
         windupWearFactor = 0,
         windupActive = false,
+        _windupDamageLatched = false,
         _appliedMode = nil,                 -- last state pushed to the physics engine
         _appliedLock = nil,
         _wasAddedToPhysics = false,
@@ -652,18 +653,10 @@ local function updateDiffLockState(vehicle, state, dt)
     end
 end
 
---- Average |steeringAngle| over the steerable wheels of the vehicle (rad).
-local function getCurrentSteeringMagnitude(vehicle)
-    local spec_wheels = vehicle.spec_wheels
-    if spec_wheels == nil or spec_wheels.wheels == nil then return 0 end
-    local maxAngle = 0
-    for _, wheel in ipairs(spec_wheels.wheels) do
-        local physics = wheel.physics
-        if physics ~= nil and isWheelSteerable(wheel) then
-            maxAngle = math.max(maxAngle, math.abs(tonumber(physics.steeringAngle) or 0))
-        end
-    end
-    return maxAngle
+function ADS_Drivetrain.getIsTurning(vehicle)
+    local spec = vehicle.spec_AdvancedDamageSystem
+    local steerState = spec ~= nil and spec.chassisSteerState or nil
+    return (tonumber(steerState ~= nil and steerState.angleMagnitude or 0) or 0) > getConfig().WINDUP_STEER_THRESHOLD
 end
 
 --- Driveline windup: 4WD / locked differentials + steering + grip = accumulated stress (server).
@@ -678,6 +671,10 @@ local function updateWindupModel(vehicle, state, spec, dt)
         windupFactor = math.max(tonumber(C.WINDUP_4WD_FACTOR) or 0, 0)
     end
 
+    if not state.diffLockEngaged then
+        state._windupDamageLatched = false
+    end
+
     if not C.WINDUP_DAMAGE_ENABLED
         or windupFactor <= 0
         or (vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive()) then
@@ -689,13 +686,14 @@ local function updateWindupModel(vehicle, state, spec, dt)
 
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
     local friction = sanitizeNumber(spec.avgTireGroundFrictionCoeff, 0, 0, 3)
-    local slip = sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 3)
-    local steering = getCurrentSteeringMagnitude(vehicle)
+    local steerState = spec.chassisSteerState
+    local steering = sanitizeNumber(steerState ~= nil and steerState.angleMagnitude or 0, 0, 0)
+    local surfaceFactor = state.diffLockEngaged and 1 or sanitizeNumber(spec.avgGroundSurfaceFactor, 0, 0, 1)
 
     local isWindingUp = speed > 1.0
         and steering > C.WINDUP_STEER_THRESHOLD
+        and surfaceFactor > 0
         and friction >= C.WINDUP_FRICTION_THRESHOLD
-        and slip < 0.10 -- slipping wheels relieve the driveline
 
     state.windupActive = isWindingUp
 
@@ -704,7 +702,7 @@ local function updateWindupModel(vehicle, state, spec, dt)
         local steerFactor = math.min(steering / 0.5, 1.0)
         local frictionFactor = math.min(friction / math.max(C.WINDUP_FRICTION_THRESHOLD, 0.001), 1.5)
         local speedFactor = math.min(speed / 10.0, 1.0)
-        local rate = C.WINDUP_ACCUMULATION_RATE * steerFactor * frictionFactor * speedFactor * windupFactor
+        local rate = C.WINDUP_ACCUMULATION_RATE * steerFactor * frictionFactor * speedFactor * surfaceFactor * windupFactor
         if state.windupStress > stressLimit then
             state.windupStress = math.max(state.windupStress - (dt / 1000) * C.WINDUP_RELEASE_RATE, stressLimit)
         else
@@ -712,8 +710,25 @@ local function updateWindupModel(vehicle, state, spec, dt)
         end
     else
         -- Low grip or straight driving lets the strain dissipate through the tires.
-        local releaseBoost = 1.0 + slip * 4.0 + math.max(1.2 - friction, 0)
+        local releaseBoost = 1.0 + (1.0 - surfaceFactor) + math.max(1.2 - friction, 0)
         state.windupStress = math.max(state.windupStress - (dt / 1000) * C.WINDUP_RELEASE_RATE * releaseBoost, 0)
+    end
+
+    if state.windupStress <= 0 then
+        state._windupDamageLatched = false
+    end
+
+    -- Peak load: apply one impact per continuous locked-windup episode.
+    if state.diffLockEngaged and state.windupStress >= 1.0 and not state._windupDamageLatched then
+        local transmissionSystem = spec.systems ~= nil and spec.systems.transmission or nil
+        if transmissionSystem ~= nil and transmissionSystem.enabled == true and vehicle.applyInstantDamageToSystem ~= nil then
+            vehicle:applyInstantDamageToSystem(AdvancedDamageSystem.SYSTEMS.TRANSMISSION, C.WINDUP_INSTANT_DAMAGE)
+            state._windupDamageLatched = true
+            state.windupStress = 0.5
+            if spec.adsDirtyFlag_wear ~= nil then
+                vehicle:raiseDirtyFlags(spec.adsDirtyFlag_wear)
+            end
+        end
     end
 
     -- Continuous transmission wear factor consumed by updateTransmissionSystem.
@@ -723,17 +738,6 @@ local function updateWindupModel(vehicle, state, spec, dt)
         state.windupWearFactor = 0
     end
 
-    -- Peak load: something in the driveline gives way.
-    if state.diffLockEngaged and state.windupStress >= 1.0 then
-        local transmissionSystem = spec.systems ~= nil and spec.systems.transmission or nil
-        if transmissionSystem ~= nil and vehicle.applyInstantDamageToSystem ~= nil then
-            vehicle:applyInstantDamageToSystem(transmissionSystem, C.WINDUP_INSTANT_DAMAGE)
-        end
-        state.windupStress = 0.5
-        if spec.adsDirtyFlag_wear ~= nil then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_wear)
-        end
-    end
 end
 
 --- Fires the park brake side notification when its state changed since last check.
@@ -807,10 +811,13 @@ local function updateLocalNotifications(vehicle, state, dt)
         end
     end
 
-    -- Windup warning while abusing the locked driveline.
+    -- Preventive warning while 4WD or a locked differential winds up the driveline.
     state._windupWarningCooldown = math.max((state._windupWarningCooldown or 0) - dt, 0)
-    if state.diffLockEngaged and state.windupActive and state.windupStress > getConfig().WINDUP_WARNING_THRESHOLD and state._windupWarningCooldown <= 0 then
-        g_currentMission:showBlinkingWarning(g_i18n:getText("ads_drivetrain_warning_windup"), 2500)
+    local C = getConfig()
+    local warningThreshold = state.diffLockEngaged and C.WINDUP_WARNING_THRESHOLD or C.WINDUP_4WD_WARNING_THRESHOLD
+    if state.windupActive and state.windupStress > warningThreshold and state._windupWarningCooldown <= 0 then
+        local warningKey = state.diffLockEngaged and "ads_drivetrain_warning_difflock_windup" or "ads_drivetrain_warning_4wd_windup"
+        g_currentMission:showBlinkingWarning(g_i18n:getText(warningKey), 2500)
         state._windupWarningCooldown = 5000
     end
 end
@@ -824,14 +831,13 @@ local function updateParkBrakeState(vehicle, state, dt)
         return
     end
 
-    -- AI workers release the brake before driving off (a real operator would).
+    -- AI workers release the brake before driving off.
     if state.parkBrake and vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
         ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
         return
     end
 
-    -- Auto engage when the operator leaves the standing machine (modern tractors
-    -- engage their electro-hydraulic park position when the seat is vacated).
+    -- Auto engage when the operator leaves the standing machine.
     if getConfig().PARKBRAKE_AUTO_MODE and not state.parkBrake then
         local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
         if not vehicle:getIsControlled() and not vehicle:getIsAIActive() and speed < 1.0 then
@@ -894,10 +900,12 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
             state._appliedLock = nil
         end
 
-        if state.windupStress ~= 0 or state.windupWearFactor ~= 0 then
+        local hadWindupState = state.windupActive or state.windupStress ~= 0 or state.windupWearFactor ~= 0
+        state._windupDamageLatched = false
+        state.windupActive = false
+        if hadWindupState then
             state.windupStress = 0
             state.windupWearFactor = 0
-            state.windupActive = false
             if spec.adsDirtyFlag_drivetrain ~= nil then
                 vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
             end
@@ -918,6 +926,7 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
 
     local prevAutoEngaged = state.autoEngaged
     local prevDiffLockEngaged = state.diffLockEngaged
+    local prevWindupActive = state.windupActive
     local prevWindupQuantized = math.floor(sanitizeNumber(state.windupStress, 0, 0, 1) * 255 + 0.5)
 
     updateAutoMode(vehicle, state, spec, dt)
@@ -930,6 +939,7 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     local windupQuantized = math.floor(sanitizeNumber(state.windupStress, 0, 0, 1) * 255 + 0.5)
     if (prevAutoEngaged ~= state.autoEngaged
         or prevDiffLockEngaged ~= state.diffLockEngaged
+        or prevWindupActive ~= state.windupActive
         or prevWindupQuantized ~= windupQuantized)
         and spec.adsDirtyFlag_drivetrain ~= nil then
         vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
@@ -973,6 +983,7 @@ function ADS_Drivetrain.writeStreamState(vehicle, streamId)
     streamWriteBool(streamId, state ~= nil and state.diffLockRequested or false)
     streamWriteBool(streamId, state ~= nil and state.diffLockEngaged or false)
     streamWriteBool(streamId, state ~= nil and state.parkBrake or false)
+    streamWriteBool(streamId, state ~= nil and state.windupActive or false)
     streamWriteUInt8(streamId, math.floor(sanitizeNumber(state ~= nil and state.windupStress or 0, 0, 0, 1) * 255 + 0.5))
 end
 
@@ -986,6 +997,7 @@ function ADS_Drivetrain.readStreamState(vehicle, streamId)
     local diffLockRequested = streamReadBool(streamId)
     local diffLockEngaged = streamReadBool(streamId)
     local parkBrake = streamReadBool(streamId)
+    local windupActive = streamReadBool(streamId)
     local windupStress = streamReadUInt8(streamId) / 255
 
     local state = ADS_Drivetrain.getState(vehicle)
@@ -999,6 +1011,7 @@ function ADS_Drivetrain.readStreamState(vehicle, streamId)
     state.diffLockRequested = diffLockRequested
     state.diffLockEngaged = diffLockEngaged
     state.parkBrake = parkBrake
+    state.windupActive = windupActive
     state.windupStress = windupStress
 end
 

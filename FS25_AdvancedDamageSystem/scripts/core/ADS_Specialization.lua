@@ -2116,6 +2116,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.wheelSlipTutorialTimer = 0
     self.spec_AdvancedDamageSystem.luggingTutorialTimer = 0
     self.spec_AdvancedDamageSystem.avgTireGroundFrictionCoeff = 0
+    self.spec_AdvancedDamageSystem.avgGroundSurfaceFactor = 0
     self.spec_AdvancedDamageSystem.implements = {}
     self.spec_AdvancedDamageSystem.isImplementLifted = false
     self.spec_AdvancedDamageSystem.isImplementLowered = false
@@ -2209,7 +2210,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         self.spec_AdvancedDamageSystem.adsDirtyFlag_breakdowns = self:getNextDirtyFlag()        -- [8] activeBreakdowns
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceProgress = self:getNextDirtyFlag()   -- [9] pendingProgressElapsedTime, pendingProgressTotalTime, pendingProgressStepIndex
         self.spec_AdvancedDamageSystem.adsDirtyFlag_tutorialData = self:getNextDirtyFlag()        -- [10] tutorial-only data for MP clients
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_drivetrain = self:getNextDirtyFlag()          -- [11] driveMode, autoEngaged, diffLockRequested, diffLockEngaged, windupStress
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_drivetrain = self:getNextDirtyFlag()          -- [11] driveMode, autoEngaged, diffLockRequested, diffLockEngaged, windupActive, windupStress
     end
 end
 
@@ -3990,29 +3991,48 @@ local function updateWheelSlip(vehicle)
     spec.wheelSlipIntensity = wheelSlipIntensity
 end
 
-local function updateAverageTireGroundFrictionCoeff(vehicle)
+local function updateWheelGroundState(vehicle)
     local spec_wheels = vehicle.spec_wheels
     local spec = vehicle.spec_AdvancedDamageSystem
-    if spec == nil or spec_wheels == nil then
-        return 0
-    end 
+    if spec == nil then return end
+    if spec_wheels == nil or spec_wheels.wheels == nil then
+        spec.avgTireGroundFrictionCoeff = 0
+        spec.avgGroundSurfaceFactor = 0
+        return
+    end
 
-    local sum = 0
-    local count = 0
+    local frictionSum = 0
+    local frictionCount = 0
+    local surfaceFactorSum = 0
+    local groundedWheelCount = 0
     for _, wheel in ipairs(spec_wheels.wheels) do
         local physics = wheel ~= nil and wheel.physics or nil
-        local coeff = physics ~= nil and tonumber(physics.tireGroundFrictionCoeff) or nil
-        if coeff ~= nil and coeff > 0 then
-            sum = sum + coeff
-            count = count + 1
+        if physics ~= nil and physics.hasGroundContact == true then
+            groundedWheelCount = groundedWheelCount + 1
+
+            local coeff = tonumber(physics.tireGroundFrictionCoeff)
+            if coeff ~= nil and coeff > 0 then
+                frictionSum = frictionSum + coeff
+                frictionCount = frictionCount + 1
+            end
+
+            local densityType = physics.densityType or FieldGroundType.NONE
+            local groundDepth = math.clamp(tonumber(physics.groundDepth) or 0, 0, 1)
+            local groundType = WheelsUtil.getGroundType(
+                densityType ~= FieldGroundType.NONE,
+                physics.contact ~= WheelContactType.GROUND,
+                groundDepth
+            )
+            if groundType == WheelsUtil.GROUND_ROAD then
+                surfaceFactorSum = surfaceFactorSum + 1
+            elseif groundType == WheelsUtil.GROUND_HARD_TERRAIN then
+                surfaceFactorSum = surfaceFactorSum + (1 - groundDepth)
+            end
         end
     end
 
-    if count == 0 then
-        return 0
-    end
-
-    spec.avgTireGroundFrictionCoeff = sum / count
+    spec.avgTireGroundFrictionCoeff = frictionCount > 0 and frictionSum / frictionCount or 0
+    spec.avgGroundSurfaceFactor = groundedWheelCount > 0 and surfaceFactorSum / groundedWheelCount or 0
 end
 
 --- hydraulic
@@ -4378,6 +4398,7 @@ local function updateChassisSteeringState(vehicle, dt)
         steerState = {
             prevPosition = nil,
             position = 0,
+            angleMagnitude = 0,
             deltaRate = 0,
             rateFactor = 0,
             groundContact = 0,
@@ -4416,23 +4437,34 @@ local function updateChassisSteeringState(vehicle, dt)
     steerState.deltaRate = steerDeltaRate
     steerState.rateFactor = steerRateFactor
 
+    local steeringMagnitude = 0
     local steerGroundContact = 0
     if vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels ~= nil then
         for _, wheel in ipairs(vehicle.spec_wheels.wheels) do
+            local physics = wheel.physics
+            if physics ~= nil and ADS_Drivetrain.getIsWheelSteerable(wheel) then
+                steeringMagnitude = math.max(steeringMagnitude, math.abs(tonumber(physics.steeringAngle) or 0))
+            end
+
             local hasGroundContact = false
-            if wheel.physics ~= nil and wheel.physics.hasGroundContact ~= nil then
-                hasGroundContact = wheel.physics.hasGroundContact == true
+            if physics ~= nil and physics.hasGroundContact ~= nil then
+                hasGroundContact = physics.hasGroundContact == true
             elseif wheel.hasGroundContact ~= nil then
                 hasGroundContact = wheel.hasGroundContact == true
             end
 
             if hasGroundContact then
                 steerGroundContact = 1
-                break
             end
         end
     end
 
+    local articulatedAxis = vehicle.spec_articulatedAxis
+    if articulatedAxis ~= nil and articulatedAxis.componentJoint ~= nil then
+        steeringMagnitude = math.max(steeringMagnitude, math.abs(tonumber(articulatedAxis.curRot) or 0))
+    end
+
+    steerState.angleMagnitude = steeringMagnitude
     steerState.groundContact = steerGroundContact
     steerState.isLowSpeedActive = steerSpeedThreshold > 0 and speed <= steerSpeedThreshold
     steerState.isMoving = steerRateFactor > 0
@@ -4702,8 +4734,8 @@ function AdvancedDamageSystem:updateVehicleStateSnapshot(dt)
         spec.updateVehicleStateTimerThree = spec.updateVehicleStateTimerThree % delayThree
         --- max friction force
         updateActiveDraftStats(self)
-        --- average tire friction coefficient
-        updateAverageTireGroundFrictionCoeff(self)
+        --- wheel ground state
+        updateWheelGroundState(self)
         --- implement chain state
         updateImplementChainState(self)
         --- fuel state
@@ -5417,7 +5449,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         -- wheel slip factor
-        if spec.wheelSlipIntensity > C.WHEEL_SLIP_THRESHOLD and speed < 20 and motorLoad > 0.5 then
+        local isTurning = ADS_Drivetrain.getIsTurning(self)
+        if not isTurning and spec.wheelSlipIntensity > C.WHEEL_SLIP_THRESHOLD and speed < 20 and motorLoad > 0.5 then
             local groundFrictionCoef = spec.avgTireGroundFrictionCoeff
             wheelSlipFactor = ADS_Utils.calculateQuadraticMultiplier(spec.wheelSlipIntensity, C.WHEEL_SLIP_THRESHOLD, false)
             wheelSlipFactor = math.max(wheelSlipFactor * (C.WHEEL_SLIP_MULTIPLIER or 0) * (groundFrictionCoef ^ 2) * motorLoad, 0)

@@ -779,11 +779,11 @@
         <text name="ads_drivetrainWindupDamage_label" text="구동계 비틀림 손상"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="차동 장치를 잠근 채 접지력이 높은 지면에서 회전하면 구동계가 비틀려 시간이 지남에 따라 변속기가 손상됩니다. 더 관대한 게임을 원하면 비활성화하세요."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="차동 잠금 해제 속도"/>
-        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="차동 잠금은 실제 트랙터의 도그 클러치처럼 이 속도 이상에서 자동으로 해제되고, 요청된 상태라면 그 이하에서 다시 체결됩니다."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="차동 잠금은 이 속도 이상에서 자동으로 해제되고, 요청된 상태라면 그 이하에서 다시 체결됩니다."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="주차 브레이크"/>
         <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="모든 ADS 차량에 전용 키로 조작하는 주차 브레이크를 추가합니다. 체결된 브레이크는 기계를 고정하고 가속 입력을 무시합니다."/>
         <text name="ads_drivetrainParkBrakeAuto_label" text="자동 주차 브레이크"/>
-        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="현대 트랙터의 전기유압식 주차 위치처럼, 운전자가 정지된 기계에서 내리면 주차 브레이크가 자동으로 체결됩니다."/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="운전자가 정지된 기계에서 내리면 주차 브레이크가 자동으로 체결됩니다."/>
         <text name="ads_drivetrain_mode_4x2" text="4x2 (전륜축 해제)"/>
         <text name="ads_drivetrain_mode_4wd" text="4WD (전륜축 연결)"/>
         <text name="ads_drivetrain_mode_auto" text="4WD 자동"/>
@@ -792,9 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="차동 잠금 해제됨"/>
         <text name="ads_drivetrain_notify_park_on" text="주차 브레이크 체결됨"/>
         <text name="ads_drivetrain_notify_park_off" text="주차 브레이크 해제됨"/>
-        <text name="ads_drivetrain_warning_windup" text="구동계 비틀림! 차동 잠금을 해제하거나 단단한 지면에서 회전하지 마세요."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="구동계 비틀림! 단단한 지면에서 회전하기 전에 4WD를 해제하세요."/>
+        <text name="ads_drivetrain_warning_difflock_windup" text="차동 잠금에 부하가 걸리고 있습니다! 잠금을 해제하거나 조향각을 줄이세요."/>
         <text name="ads_drivetrain_warning_parkbrake" text="주차 브레이크가 체결되어 있습니다!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="구동계 비틀림"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="차동 잠금을 체결한 채 접지력이 높은 지면에서 회전하고 있습니다. 커브에서 앞바퀴와 뒷바퀴는 서로 다른 거리를 이동하지만, 잠긴 차동 장치는 같은 속도로 회전하도록 강제합니다: 구동계가 비틀리며 변속기가 파손될 때까지 손상됩니다. 도로나 단단한 지면에서 회전하기 전에 잠금을 해제하세요 — 실제 트랙터에서는 부드러운 지면에서 직진할 때만 사용합니다."/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="차동 잠금을 체결한 채 접지력이 높은 지면에서 회전하고 있습니다. 커브에서 안쪽과 바깥쪽 바퀴는 서로 다른 거리를 이동하지만, 차동 잠금은 같은 속도로 회전하도록 강제합니다: 구동계에 비틀림이 쌓이고 변속기 마모가 증가합니다. 회전하기 전에 잠금을 해제하세요."/>
     </texts>
 </l10n>

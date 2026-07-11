@@ -779,11 +779,11 @@
         <text name="ads_drivetrainWindupDamage_label" text="Driveline Windup Damage"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="Turning on a high-grip surface with locked differentials winds up the driveline and damages the transmission over time. Disable for a more forgiving experience."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Diff Lock Release Speed"/>
-        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="The differential locks disengage automatically above this speed, like the mechanical dog clutches of a real tractor, and re-engage below it while requested."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="The differential locks disengage automatically above this speed and re-engage below it while requested."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Parking Brake"/>
         <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Adds a parking brake to all ADS vehicles, toggled with its own key binding. The engaged brake anchors the machine and ignores throttle input."/>
         <text name="ads_drivetrainParkBrakeAuto_label" text="Automatic Parking Brake"/>
-        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Engages the parking brake automatically when the operator leaves the standing machine, like the electro-hydraulic park position of modern tractors."/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Engages the parking brake automatically when the operator leaves the standing machine."/>
         <text name="ads_drivetrain_mode_4x2" text="4x2 (front axle disengaged)"/>
         <text name="ads_drivetrain_mode_4wd" text="4WD (front axle engaged)"/>
         <text name="ads_drivetrain_mode_auto" text="4WD AUTO"/>
@@ -792,9 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Differential lock released"/>
         <text name="ads_drivetrain_notify_park_on" text="Parking brake engaged"/>
         <text name="ads_drivetrain_notify_park_off" text="Parking brake released"/>
-        <text name="ads_drivetrain_warning_windup" text="Driveline windup! Release the differential lock or stop turning on hard ground."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Driveline windup! Disengage 4WD before turning on hard ground."/>
+        <text name="ads_drivetrain_warning_difflock_windup" text="Differential lock under stress! Release it or reduce the steering angle."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Parking brake engaged!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Driveline Windup"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="You are turning on high-grip ground with the differential lock engaged. Front and rear wheels travel different distances in a curve, but the locked differentials force them to rotate at the same speed: the driveline winds up, damaging the transmission until it breaks. Release the differential lock before turning on roads or hard surfaces — on real tractors the lock is only used driving straight on soft ground."/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="You are turning on high-grip ground with the differential lock engaged. Inside and outside wheels travel different distances in a curve, but the differential lock forces them to rotate at the same speed: the driveline winds up and transmission wear increases. Release the differential lock before turning."/>
     </texts>
 </l10n>

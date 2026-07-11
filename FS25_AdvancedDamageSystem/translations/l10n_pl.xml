@@ -779,11 +779,11 @@
         <text name="ads_drivetrainWindupDamage_label" text="Uszkodzenia od naprężenia napędu"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="Skręcanie na przyczepnej nawierzchni z zablokowanymi dyferencjałami napręża układ napędowy i z czasem uszkadza skrzynię. Wyłącz dla łagodniejszej rozgrywki."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Prędkość zwalniania blokady"/>
-        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Blokady mechanizmów różnicowych zwalniają się automatycznie powyżej tej prędkości, jak kłowe sprzęgła prawdziwego ciągnika, i załączają ponownie poniżej niej, dopóki są żądane."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Blokady mechanizmów różnicowych zwalniają się automatycznie powyżej tej prędkości i załączają ponownie poniżej niej, dopóki są żądane."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Hamulec postojowy"/>
         <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Dodaje hamulec postojowy do wszystkich pojazdów ADS, przełączany własnym klawiszem. Zaciągnięty hamulec unieruchamia maszynę i ignoruje gaz."/>
         <text name="ads_drivetrainParkBrakeAuto_label" text="Automatyczny hamulec postojowy"/>
-        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Automatycznie zaciąga hamulec postojowy, gdy operator opuszcza stojącą maszynę, jak elektrohydrauliczna pozycja parkingowa nowoczesnych ciągników."/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Automatycznie zaciąga hamulec postojowy, gdy operator opuszcza stojącą maszynę."/>
         <text name="ads_drivetrain_mode_4x2" text="4x2 (przedni most rozłączony)"/>
         <text name="ads_drivetrain_mode_4wd" text="4WD (przedni most załączony)"/>
         <text name="ads_drivetrain_mode_auto" text="4WD AUTO"/>
@@ -792,9 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Blokada dyferencjału zwolniona"/>
         <text name="ads_drivetrain_notify_park_on" text="Hamulec postojowy zaciągnięty"/>
         <text name="ads_drivetrain_notify_park_off" text="Hamulec postojowy zwolniony"/>
-        <text name="ads_drivetrain_warning_windup" text="Naprężenie układu napędowego! Zwolnij blokadę dyferencjału albo nie skręcaj na twardym podłożu."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Naprężenie układu napędowego! Przed skrętem na twardym podłożu wyłącz 4WD."/>
+        <text name="ads_drivetrain_warning_difflock_windup" text="Blokada mechanizmu różnicowego jest naprężona! Wyłącz ją lub zmniejsz kąt skrętu."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Zaciągnięty hamulec postojowy!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Naprężenie układu napędowego"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="Skręcasz na przyczepnym podłożu z załączoną blokadą dyferencjału. W zakręcie przednie i tylne koła pokonują różne odległości, ale zablokowane dyferencjały wymuszają tę samą prędkość obrotową: układ napędowy napręża się i uszkadza skrzynię aż do awarii. Zwalniaj blokadę przed skręcaniem na drodze — w prawdziwych ciągnikach używa się jej tylko na wprost, na miękkim gruncie."/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Skręcasz na przyczepnym podłożu z załączoną blokadą dyferencjału. W zakręcie koła po wewnętrznej i zewnętrznej stronie pokonują różne odległości, ale blokada mechanizmu różnicowego wymusza tę samą prędkość obrotową: układ napędowy napręża się, zwiększając zużycie skrzyni biegów. Zwalniaj blokadę przed skręcaniem."/>
     </texts>
 </l10n>

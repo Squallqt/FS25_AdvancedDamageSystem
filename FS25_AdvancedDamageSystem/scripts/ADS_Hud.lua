@@ -1080,6 +1080,8 @@ function ADS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
     local colors = ADS_Breakdowns.COLORS
     local iconId, color
     local showAutoBadge = false
+    local windupStress = tonumber(state.windupStress) or 0
+    local windupWarningActive = state.windupActive == true and windupStress > ADS_Config.DRIVETRAIN.WINDUP_4WD_WARNING_THRESHOLD
 
     if state.diffLockEngaged then
         -- Locked driveline: center-lock schematic in 4WD, rear-lock schematic in 4x2.
@@ -1088,7 +1090,6 @@ function ADS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
         iconId = (fourWheelDrive and ADS_Drivetrain.getHasCenterDifferential(vehicle)) and "diffLockCenter" or "diffLockRear"
         color = colors.WARNING
 
-        local windupStress = tonumber(state.windupStress) or 0
         if windupStress > ADS_Config.DRIVETRAIN.WINDUP_CRITICAL_THRESHOLD then
             -- Blinking critical while the driveline is winding up.
             local blinkOn = math.floor((g_time or 0) / 250) % 2 == 0
@@ -1103,10 +1104,10 @@ function ADS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
             color = {1, 1, 1, 0.85}
         elseif state.driveMode == ADS_Drivetrain.MODE.FOUR_WD then
             iconId = "drivelineEngaged"
-            color = ADS_Hud.COLOR_GAME_GREEN
+            color = windupWarningActive and colors.WARNING or ADS_Hud.COLOR_GAME_GREEN
         else -- AUTO
             iconId = state.autoEngaged and "drivelineEngaged" or "drivelineOpen"
-            color = state.autoEngaged and ADS_Hud.COLOR_GAME_GREEN or {1, 1, 1, 0.85}
+            color = state.autoEngaged and (windupWarningActive and colors.WARNING or ADS_Hud.COLOR_GAME_GREEN) or {1, 1, 1, 0.85}
             showAutoBadge = true
         end
     end

@@ -560,8 +560,7 @@ ADS_Config = {
         ENABLED = true,
         -- Allows the AUTO drive mode (front axle engages on slip / low speed under load).
         ALLOW_AUTO_MODE = true,
-        -- Differential locks disengage automatically above this speed (km/h), like the
-        -- mechanical dog clutches of a real tractor. Also gates re-engagement.
+        -- Differential locks disengage automatically above this speed (km/h). Also gates re-engagement.
         DIFFLOCK_AUTO_RELEASE_SPEED = 25,
 
         -- AUTO mode calibration
@@ -581,15 +580,16 @@ ADS_Config = {
         -- Driveline windup damage (4WD / locked diffs + steering + high-grip surface)
         WINDUP_DAMAGE_ENABLED = true,
         WINDUP_STEER_THRESHOLD = 0.12,       -- rad: minimum steering angle to wind up
-        WINDUP_FRICTION_THRESHOLD = 0.85,    -- tire/ground friction: hard surfaces only
+        WINDUP_FRICTION_THRESHOLD = 0.85,    -- tire/ground friction: high-grip surfaces only
         WINDUP_4WD_FACTOR = 0.15,            -- MFWD-only binding is mild compared to locked diffs
-        WINDUP_4WD_MAX_STRESS = 0.18,        -- keep MFWD-only windup below warning / breakage territory
+        WINDUP_4WD_MAX_STRESS = 0.18,        -- keep MFWD-only windup below critical / breakage territory
         WINDUP_ACCUMULATION_RATE = 0.09,     -- stress per second at full factors
         WINDUP_RELEASE_RATE = 0.25,          -- stress release per second
         WINDUP_WEAR_MULTIPLIER = 12.0,       -- additive transmission wear factor at full stress
-        WINDUP_INSTANT_DAMAGE = 0.03,        -- transmission condition lost when the driveline lets go
-        WINDUP_TUTORIAL_THRESHOLD = 0.05,    -- first-time tutorial before meaningful wear builds up
-        WINDUP_WARNING_THRESHOLD = 0.22,     -- repeated warning, aligned with average stress warning
+        WINDUP_INSTANT_DAMAGE = 0.03,        -- one-off transmission condition loss per locked-windup episode
+        WINDUP_TUTORIAL_THRESHOLD = 0.05,    -- first-time diff-lock tutorial before meaningful wear builds up
+        WINDUP_4WD_WARNING_THRESHOLD = 0.05, -- preventive 4WD warning below the MFWD stress cap
+        WINDUP_WARNING_THRESHOLD = 0.22,     -- repeated diff-lock warning, aligned with average stress warning
         WINDUP_CRITICAL_THRESHOLD = 0.44,    -- blinking HUD critical, aligned with average stress critical
 
         EXCLUDED_CATEGORIES = {

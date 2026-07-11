@@ -779,11 +779,11 @@
         <text name="ads_drivetrainWindupDamage_label" text="Пошкодження від скручування трансмісії"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="Повороти на твердому покритті із заблокованими диференціалами скручують трансмісію та поступово пошкоджують її. Вимкніть для м'якшого ґеймплею."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Швидкість розблокування диференціала"/>
-        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Блокування диференціалів автоматично вимикаються вище цієї швидкості, як кулачкові муфти справжнього трактора, і знову вмикаються нижче неї, доки запитані."/>
+        <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Блокування диференціалів автоматично вимикаються вище цієї швидкості та знову вмикаються нижче неї, доки запитані."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Стоянкове гальмо"/>
         <text name="ads_drivetrainParkBrakeEnabled_tooltip" text="Додає всім машинам ADS стоянкове гальмо з власною клавішею. Затягнуте гальмо утримує машину та ігнорує газ."/>
         <text name="ads_drivetrainParkBrakeAuto_label" text="Автоматичне стоянкове гальмо"/>
-        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Автоматично затягує стоянкове гальмо, коли оператор залишає нерухому машину, як електрогідравлічне паркувальне положення сучасних тракторів."/>
+        <text name="ads_drivetrainParkBrakeAuto_tooltip" text="Автоматично затягує стоянкове гальмо, коли оператор залишає нерухому машину."/>
         <text name="ads_drivetrain_mode_4x2" text="4x2 (передній міст відключено)"/>
         <text name="ads_drivetrain_mode_4wd" text="4WD (передній міст підключено)"/>
         <text name="ads_drivetrain_mode_auto" text="4WD АВТО"/>
@@ -792,9 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Блокування диференціала вимкнено"/>
         <text name="ads_drivetrain_notify_park_on" text="Стоянкове гальмо затягнуто"/>
         <text name="ads_drivetrain_notify_park_off" text="Стоянкове гальмо відпущено"/>
-        <text name="ads_drivetrain_warning_windup" text="Скручування трансмісії! Вимкніть блокування диференціала або не повертайте на твердому покритті."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Скручування трансмісії! Перед поворотом на твердому покритті вимкніть 4WD."/>
+        <text name="ads_drivetrain_warning_difflock_windup" text="Блокування диференціала під навантаженням! Вимкніть його або зменште кут повороту."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Затягнуто стоянкове гальмо!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Скручування трансмісії"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="Ви повертаєте на твердому покритті з увімкненим блокуванням диференціала. У повороті передні й задні колеса проходять різні відстані, але заблоковані диференціали змушують їх обертатися з однаковою швидкістю: трансмісія скручується та пошкоджується аж до поломки. Вимикайте блокування перед поворотами на дорозі — на справжніх тракторах воно використовується лише прямолінійно на м'якому ґрунті."/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Ви повертаєте на твердому покритті з увімкненим блокуванням диференціала. У повороті внутрішні та зовнішні колеса проходять різні відстані, але блокування диференціала змушує їх обертатися з однаковою швидкістю: трансмісія скручується, а зношення коробки передач прискорюється. Вимикайте блокування перед поворотами."/>
     </texts>
 </l10n>

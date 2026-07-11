@@ -269,7 +269,8 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
     end
 
     -- wheel slip
-    if spec.wheelSlipIntensity ~= nil and spec.wheelSlipIntensity > 0.05 then
+    local isTurning = ADS_Drivetrain.getIsTurning(vehicle)
+    if not isTurning and spec.wheelSlipIntensity ~= nil and spec.wheelSlipIntensity > 0.05 then
         local wheelSlipIntensity = sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 10)
         local avgTireGroundFrictionCoeff = sanitizeNumber(spec.avgTireGroundFrictionCoeff, 0, 0, 10)
         wheelSlipFactor = math.min(wheelSlipFactor + (wheelSlipIntensity / 2) * (avgTireGroundFrictionCoeff ^ 2), 1.4)
