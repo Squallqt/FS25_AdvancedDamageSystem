@@ -539,18 +539,17 @@ function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
     return true
 end
 
-local function getIsVehicleNeedLubticate(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
-    if spec == nil then
+local function getIsVehicleNeedLubricate(vehicle)
+    if vehicle == nil then
         return false
     end
 
-    local workProcessSystem = spec.systems ~= nil and spec.systems.workprocess or nil
-    if type(workProcessSystem) ~= "table" then
+    local vtype = vehicle.type ~= nil and vehicle.type.name or ""
+    if vtype == "car" or vtype == "carFillable" or vtype == "motorbike" then
         return false
     end
 
-    return workProcessSystem.enabled ~= false
+    return not ADS_Drivetrain.getIsRoadVehicleCategory(vehicle)
 end
 
 local function getIsTruck(vehicle)
@@ -990,7 +989,7 @@ function AdvancedDamageSystem.initSpecialization()
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#radiatorClogging", "Radiator clogging level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airIntakeClogging", "Air intake clogging level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lubricationLevel", "Lubrication level")
-    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#lastLubricationProcessedDay", "Last lubrication processed day")
+    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lastOperatingGameTime", "Last engine operating game time")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#thermostatState", "Engine Thermostat Position")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionThermostatState", "Transmission Thermostat Position")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lastInspPwr", "Last Inspected Power")
@@ -1638,7 +1637,7 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#radiatorClogging", math.max(spec.radiatorClogging or 0, 0))
         xmlFile:setValue(key .. "#airIntakeClogging", math.max(spec.airIntakeClogging or 0, 0))
         xmlFile:setValue(key .. "#lubricationLevel", math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
-        xmlFile:setValue(key .. "#lastLubricationProcessedDay", spec.lastLubricationProcessedDay or 0)
+        xmlFile:setValue(key .. "#lastOperatingGameTime", math.max(spec.lastOperatingGameTime or 0, 0))
         xmlFile:setValue(key .. "#thermostatState", AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#transmissionThermostatState", AdvancedDamageSystem.sanitizeNumber(spec.transmissionThermostatState, 0.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#lastInspPwr", spec.lastInspectedPower or 1)
@@ -1809,11 +1808,11 @@ function AdvancedDamageSystem:onLoad(savegame)
 
     self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
     self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
-    self.spec_AdvancedDamageSystem.lastLubricationDay = nil
-    self.spec_AdvancedDamageSystem.lastLubricationProcessedDay = g_currentMission ~= nil
-        and g_currentMission.environment ~= nil
-        and g_currentMission.environment.currentDay
-        or 6
+    local environment = g_currentMission ~= nil and g_currentMission.environment or nil
+    self.spec_AdvancedDamageSystem.lastOperatingGameTime = environment ~= nil
+        and ((tonumber(environment.currentMonotonicDay) or 0) * 24 * 60 * 60 * 1000 + (tonumber(environment.dayTime) or 0))
+        or 0
+    self.spec_AdvancedDamageSystem._wasMotorRunningForLubrication = false
 
     self.spec_AdvancedDamageSystem.batterySoc = 1.0
     self.spec_AdvancedDamageSystem.batteryChargeAh = nil
@@ -2269,10 +2268,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         spec.radiatorClogging = math.max(savegame.xmlFile:getValue(key .. "#radiatorClogging", spec.radiatorClogging), 0)
         spec.airIntakeClogging = math.max(savegame.xmlFile:getValue(key .. "#airIntakeClogging", spec.airIntakeClogging), 0)
         spec.lubricationLevel = math.clamp(savegame.xmlFile:getValue(key .. "#lubricationLevel", spec.lubricationLevel), 0.0, 1.0)
-        spec.lastLubricationProcessedDay = savegame.xmlFile:getValue(
-            key .. "#lastLubricationProcessedDay",
-            g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.currentDay or spec.lastLubricationProcessedDay or 0
-        )
+        spec.lastOperatingGameTime = math.max(savegame.xmlFile:getValue(key .. "#lastOperatingGameTime", spec.lastOperatingGameTime), 0)
         spec.thermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
         spec.transmissionThermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
         if spec.engTermPID ~= nil then
@@ -2658,7 +2654,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     local vtype = self.type.name
     spec.isExcludedFromPTOSharpAngleFactor = PTO_SHARP_ANGLE_EXCLUDED_TYPES[vtype] == true
     enableOrDisableSystems(self)
-    spec.isVehicleNeedLubricate = getIsVehicleNeedLubticate(self)
+    spec.isVehicleNeedLubricate = getIsVehicleNeedLubricate(self)
     spec.isVehicleNeedBlowOut = getIsVehicleNeedBlowOut(self)
     resetIsMovingRecursive(self, {})
 
@@ -3544,13 +3540,14 @@ function AdvancedDamageSystem:adsUpdate(dt, isWorkshopOpen)
     -- OP Time update for ADS vehicles
     local motorState = self.getMotorState ~= nil and self:getMotorState() or nil
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
+    local operatingDt = 0
 
     if (spec.realOperatingTime == nil or spec.realOperatingTime <= 0) and currentOperatingTime > 0 then
         spec.realOperatingTime = currentOperatingTime
     end
 
     if motorState == MotorState.ON then
-        local operatingDt = dt or 0
+        operatingDt = dt or 0
         if g_modIsLoaded ~= nil and g_modIsLoaded["FS25_ingameTimeOperatingHours"] then
             local timeScale = getSafeMissionTimeScale()
             operatingDt = dt * timeScale
@@ -3590,8 +3587,8 @@ function AdvancedDamageSystem:adsUpdate(dt, isWorkshopOpen)
         self:updateConditionLevel()
         -- general wear
         self:processGeneralWearBreakdown()
-        -- lubtication level
-        self:updateLubricationLevel(dt)
+        -- lubrication level
+        self:updateLubricationLevel(operatingDt, motorState)
         --- Overload warnings / rolling avg stress
         syncOverloadWarning(self, dt)
     end
@@ -5847,7 +5844,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
     local spec = self.spec_AdvancedDamageSystem
     local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.chassis.name)
     local systemData = spec.systems.chassis
-    local expiredServiceFactor, vibFactor, steerLoadFactor = 0, 0, 0
+    local expiredServiceFactor, lubricationFactor, vibFactor, steerLoadFactor = 0, 0, 0, 0
     local vibState = spec.chassisVibState or {}
     local steerState = spec.chassisSteerState or {}
     local brakeState = spec.chassisBrakeState or {}
@@ -5888,6 +5885,13 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
 
 
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+        if spec.isVehicleNeedLubricate then
+            local lubricationLevel = math.clamp(tonumber(spec.lubricationLevel) or 1.0, 0.0, 1.0)
+            lubricationFactor = ADS_Utils.calculateQuadraticMultiplier(lubricationLevel, 1.0, true, 0.0)
+            lubricationFactor = lubricationFactor * (C.LUBRICATION_FACTOR_MULTIPLIER or 0)
+            wearRate = wearRate + lubricationFactor
+        end
+
         if speed > 0.003 then
             -- vibration
             local vibThreshold = tonumber(C.VIB_FACTOR_THRESHOLD) or 0.12
@@ -5941,6 +5945,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
 
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
         expiredServiceFactor = expiredServiceFactor,
+        lubricationFactor = lubricationFactor,
         vibFactor = vibFactor,
         vibSignal = vibSignal,
         vibRaw = vibRaw,
@@ -6053,7 +6058,7 @@ function AdvancedDamageSystem:updateWorkProcessSystem(dt)
     local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.workprocess.name)
     local systemData = ensureSystemData(spec, systemKey)
     local expiredServiceFactor = 0
-    local wetCropFactor, lubricationFactor = 0, 0
+    local wetCropFactor = 0
     local C = ADS_Config.CORE.WORKPROCESS_FACTOR_DATA
     local wearRate = 1.0
 
@@ -6080,14 +6085,6 @@ function AdvancedDamageSystem:updateWorkProcessSystem(dt)
             wearRate = wearRate + wetCropFactor
         end
 
-        -- lubrication
-        if isTurnedOn and spec.isVehicleNeedLubricate then
-            local lubricationLevel = math.clamp(tonumber(spec.lubricationLevel) or 1.0, 0.0, 1.0)
-            lubricationFactor = ADS_Utils.calculateQuadraticMultiplier(lubricationLevel, 1.0, true, 0.0)
-            lubricationFactor = lubricationFactor * (C.LUBRICATION_FACTOR_MULTIPLIER or 0)
-            wearRate = wearRate + lubricationFactor
-        end
-
         -- service
         expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER)
         wearRate = wearRate + expiredServiceFactor
@@ -6101,8 +6098,7 @@ function AdvancedDamageSystem:updateWorkProcessSystem(dt)
 
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
         expiredServiceFactor = expiredServiceFactor,
-        wetCropFactor = wetCropFactor,
-        lubricationFactor = lubricationFactor
+        wetCropFactor = wetCropFactor
     })
 end
 
@@ -6338,21 +6334,6 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if isLateStage and effect ~= nil and effect.value() >= 2 then table.insert(effects, effect) end
 
-            --- WORKPORCESS
-            elseif systemName == systems.WORKPROCESS then
-
-                --- early stage
-                effect = {
-                    id = "YIELD_REDUCTION_MODIFIER", 
-                    value = function ()
-                        local baseEffect = -0.20
-                        local condition = systemCondition
-                        local multiplier = (1 - condition) ^ 3
-                        return baseEffect * multiplier
-                    end,
-                    aggregation = "sum"
-                }
-                if effect ~= nil then table.insert(effects, effect) end
             end 
         end
     end

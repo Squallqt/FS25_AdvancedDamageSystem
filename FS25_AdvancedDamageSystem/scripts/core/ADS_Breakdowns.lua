@@ -2724,7 +2724,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             return false
         end,
         probability = function(vehicle)
-            local weight = getBreakdownProbabilityWeightPercent(vehicle, systems.WORKPROCESS, {"lhf", "lubf"}, {"wcf", "sf"})
+            local weight = getBreakdownProbabilityWeightPercent(vehicle, systems.WORKPROCESS, {"lhf"}, {"wcf", "sf"})
             if vehicle.getIsTurnedOn ~= nil and vehicle:getIsTurnedOn() then
                 return weight * 1.5
             end
@@ -2781,7 +2781,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
                 effects = { 
-                    { id = "YIELD_REDUCTION_MODIFIER", value = -0.4, aggregation = "sum", extraData = {message = 'ads_breakdowns_harvest_processing_system_wear_stage4_message', disableAi = true} },
+                    { id = "HARVEST_PROCESSING_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = 'ads_breakdowns_harvest_processing_system_wear_stage4_message', disableAi = true} },
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2799,7 +2799,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             return (vtype == 'combineDrivable' or vtype == 'combineCutter') and vehicle.spec_pipe ~= nil
         end,
         probability = function(vehicle)
-            local weight = getBreakdownProbabilityWeightPercent(vehicle, systems.WORKPROCESS, {"lhf"}, {"lubf", "wcf", "sf"})
+            local weight = getBreakdownProbabilityWeightPercent(vehicle, systems.WORKPROCESS, {"lhf"}, {"wcf", "sf"})
             if vehicle.getIsTurnedOn ~= nil and vehicle:getIsTurnedOn() then
                 if vehicle.spec_dischargeable.currentDischargeState ~= Dischargeable.DISCHARGE_STATE_OFF then
                     return weight * 2.0
@@ -4374,6 +4374,31 @@ function ADS_Breakdowns.getSpeedLimitOverwrite(vehicle, superFunc, onlyIfWorking
 
     return speedLimit or math.huge, doCheckSpeedLimit
 end
+
+-- =========================================================
+-- HARVEST_PROCESSING_FAILURE
+ADS_Breakdowns.EffectApplicators.HARVEST_PROCESSING_FAILURE = {
+    getEffectName = function()
+        return "HARVEST_PROCESSING_FAILURE"
+    end,
+    apply = function(vehicle, effectData, handler)
+        local effectName = handler.getEffectName()
+        local activeFunc = function(v)
+            local spec = v.spec_AdvancedDamageSystem
+            local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
+            if v.isServer and effect ~= nil and (tonumber(effect.value) or 0) > 0
+                    and v.getIsTurnedOn ~= nil and v:getIsTurnedOn() and v.setIsTurnedOn ~= nil then
+                v:setIsTurnedOn(false)
+            end
+        end
+
+        activeFunc(vehicle)
+        addFuncToActive(vehicle, effectName, activeFunc)
+    end,
+    remove = function(vehicle, handler)
+        removeFuncFromActive(vehicle, handler.getEffectName())
+    end
+}
 
 -- =========================================================
 -- YIELD_REDUCTION_MODIFIER

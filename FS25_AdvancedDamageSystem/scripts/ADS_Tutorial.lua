@@ -330,8 +330,7 @@ function ADS_Tutorial:update(dt)
                 self.messageDowntime = downtimeAfterMessage
 
             --- needs lubrication
-            elseif not messagedData.NEEDS_LUBRICATION and workprocessSystemEnabled and spec.isVehicleNeedLubricate and spec.lubricationLevel <= 0.8 then
-                -- self:showMessage(string.format(g_i18n:getText("ads_tutorial_needs_lubrication"), vehicle:getFullName()), true)
+            elseif not messagedData.NEEDS_LUBRICATION and spec.isVehicleNeedLubricate and spec.lubricationLevel <= 0.8 then
                 ADS_Hud.showNotification(
                     string.format(g_i18n:getText("ads_tutorial_needs_lubrication_message"), vehicle:getFullName()),
                     0,

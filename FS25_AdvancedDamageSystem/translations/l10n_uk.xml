@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Регулює швидкість засмічення радіатора та повітрозабірника під час роботи в пилу, соломі та рослинних залишках. Вищі значення прискорюють засмічення. При 100% швидкість засмічення становить приблизно третину сервісного інтервалу."/>
         <text name="ads_fieldInspectionDuration_label" text="Тривалість огляду"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Встановлює час проведення передзмінного огляду в реальних секундах."/>
-        <text name="ads_lubricationReducePerDay_label" text="Швидкість висихання змазки"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Встановлює, наскільки сильно змазка висихає за один ігровий день. При 0% змазка не висихає з часом."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Швидкість витрати мастила"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Встановлює витрату мастила за одну годину роботи. При 0% рівень мастила не знижується з напрацюванням мотогодин."/>
         <text name="ads_ws_header_title" text="Майстерня"/>
         <text name="ads_settings_section_service_wear" text="Обслуговування та зношування"/>
         <text name="ads_settings_section_thermal_model" text="Теплова модель"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Знос системи збирання та обробки. Ефективність обробки врожаю злегка знижена, що призводить до незначних втрат."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Середній знос системи обробки. Ефективність помітно знижена, втрати врожаю стають відчутними."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Сильний знос системи обробки. Значне зниження ефективності, високі втрати врожаю."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Критичний знос системи обробки врожаю. Критичне зниження ефективності, екстремальні втрати під час роботи."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Критичне падіння ефективності збирання"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Критичний знос спричинив відмову системи збирання та обробки. Збирання неможливе до ремонту системи."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Система обробки врожаю не працює"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Незначний знос внутрішніх шнеків та ланцюгів елеватора. Невелика кількість врожаю втрачається під час внутрішнього транспортування."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Зношені витки шнеків та проковзування конвеєрних стрічок викликають втрати всередині машини. Можливий періодичний скрегіт."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Пошкоджені лопаті елеватора та шнеки ледве справляються з масою врожаю, що призводить до значних втрат та ризику серйозного затору."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Засмічення радіатора та впуску"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Схоже, радіатор та повітрозабірники вашої техніки сильно забиті.&#10;&#10;Брудний радіатор не може ефективно відводити тепло, а засмічений впуск обмежує потік повітря до двигуна. Це знижує потужність та підвищує витрату палива.&#10;&#10;Ви можете очистити їх на мийці або за допомогою повітродувки з магазину.&#10;&#10;Перевірити стан радіатора можна через огляд: утримуйте клавішу R, дивлячись на техніку."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Необхідне змащування"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Ваш %s потребує регулярного змащування.&#10;&#10;В ADS рівень змазки робочих вузлів поступово знижується щодня, що прискорює знос.&#10;&#10;Придбайте шприц для змащування в магазині та змащуйте машину щодня або перед кожною робочою зміною.&#10;&#10;Перевірити рівень змазки можна через огляд: утримуйте клавішу R, дивлячись на техніку."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Ваш %s потребує регулярного змащування.&#10;&#10;В ADS рівень мастила знижується з напрацюванням мотогодин. Після тривалого простою техніку також потрібно змастити перед поверненням до експлуатації. Недостатнє змащування прискорює знос ходової частини.&#10;&#10;Придбайте шприц для змащування в магазині та змастіть машину, коли огляд покаже таку потребу.&#10;&#10;Перевірити рівень мастила можна через огляд: утримуйте клавішу R, дивлячись на техніку."/>
         <text name="ads_tutorial_needs_repair_title" text="Несправність техніки"/>
         <text name="ads_tutorial_needs_repair_message" text="Схоже, з вашим %s щось не так. Можливо, один із вузлів вийшов з ладу.&#10;&#10;Обов'язково завітайте до майстерні та проведіть огляд. Не зволікайте: несправність може прогресувати, а вартість ремонту — зростати.&#10;&#10;Якщо огляд підтвердить поломку, усуньте її за допомогою процедури ремонту в майстерні."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Капітальний ремонт"/>

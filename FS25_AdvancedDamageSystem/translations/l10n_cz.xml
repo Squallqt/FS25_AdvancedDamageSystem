@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Upravuje, jak rychle se zanáší chladič a sání vzduchu při práci v prachu, plevách a zbytcích plodin. Vyšší hodnoty způsobují rychlejší zanášení. Při 100 % odpovídá rychlost zanášení zhruba jedné třetině servisního intervalu."/>
         <text name="ads_fieldInspectionDuration_label" text="Doba trvání prohlídky"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Nastavuje, jak dlouho trvá předsměnová kontrola v terénu (v reálných sekundách)."/>
-        <text name="ads_lubricationReducePerDay_label" text="Rychlost vysychání maziva"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Nastavuje, kolik maziva vyschne za jeden herní den. Při 0 % mazivo časem nevysychá."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Rychlost úbytku maziva"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Určuje, kolik maziva se spotřebuje za jednu provozní hodinu. Při 0 % se úroveň mazání s provozními hodinami nesnižuje."/>
         <text name="ads_ws_header_title" text="Dílna"/>
         <text name="ads_settings_section_service_wear" text="Servis a opotřebení"/>
         <text name="ads_settings_section_thermal_model" text="Tepelný model"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Opotřebení mláticího a separačního ústrojí. Účinnost zpracování plodin je mírně snížena, což vede k drobným ztrátám výnosu."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Střední opotřebení mláticího ústrojí. Účinnost zpracování je znatelně nižší, což způsobuje měřitelné ztráty na výnosu."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Silné opotřebení mláticího ústrojí. Účinnost zpracování je výrazně snížena, ztráty výnosu jsou vysoké."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritické opotřebení mláticího a separačního ústrojí. Účinnost zpracování je kriticky nízká, což způsobuje extrémní ztráty během sklizně."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Účinnost mlácení kriticky snížena"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritické opotřebení způsobilo poruchu sklízecího a zpracovatelského systému. Sklizeň není možná, dokud nebude systém opraven."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Systém zpracování sklizně mimo provoz"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Mírné opotřebení vnitřních šneků a řetězů dopravníků. Malé množství plodiny se ztrácí během vnitřního transportu."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Opotřebované závity šneků a prokluzující dopravníkové pásy způsobují zvýšené sypání plodiny uvnitř stroje. Můžete slyšet občasné skřípání."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Poškozené lopatky elevátoru a šneky mají potíže s přesunem masy plodiny, což vede k výrazným ztrátám a riziku velkého ucpání."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Znečištění chladiče a sání"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Vypadá to, že chladič a přívody vzduchu vašeho vozidla jsou silně zanesené.&#10;&#10;Špinavý chladič nemůže efektivně odvádět teplo a ucpané sání omezuje přívod vzduchu do motoru. To snižuje výkon a zvyšuje spotřebu paliva.&#10;&#10;Můžete je vyčistit v myčce nebo pomocí vzduchového dmychadla zakoupeného v obchodě.&#10;&#10;Stav chladiče a sání můžete ověřit prohlídkou: podržte klávesu R, zatímco se díváte na vozidlo."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Vyžadováno promazání"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Vaše %s potřebuje pravidelné mazání.&#10;&#10;V ADS úroveň promazání pracovních částí postupně klesá každý den, což zvyšuje opotřebení.&#10;&#10;Kupte si v obchodě mazací lis a promažte svůj stroj denně nebo před každou směnou.&#10;&#10;Stav promazání můžete ověřit prohlídkou: podržte klávesu R, zatímco se díváte na vozidlo."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Vaše %s potřebuje pravidelné mazání.&#10;&#10;V ADS se úroveň mazání snižuje s provozními hodinami. Po delším odstavení je také nutné stroj před opětovným uvedením do provozu promazat. Nedostatečné mazání urychluje opotřebení podvozku.&#10;&#10;Kupte si v obchodě mazací lis a stroj promažte, když to prohlídka vyžaduje.&#10;&#10;Stav promazání můžete ověřit prohlídkou: podržte klávesu R, zatímco se díváte na vozidlo."/>
         <text name="ads_tutorial_needs_repair_title" text="Závada na vozidle"/>
         <text name="ads_tutorial_needs_repair_message" text="Zdá se, že s vaším vozidlem %s není něco v pořádku. Jedna z jeho částí zřejmě selhala.&#10;&#10;Určitě navštivte dílnu a proveďte prohlídku. Neodkládejte to: závada se může dále šířit a náklady na opravu s časem porostou.&#10;&#10;Pokud prohlídka potvrdí závadu, opravte ji v dílně pomocí procedury opravy."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Generální oprava"/>

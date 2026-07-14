@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Dostosuj, jak szybko chłodnica i dolot powietrza zapychają się podczas pracy w kurzu, plewach i resztkach roślinnych. Wyższe wartości powodują szybsze narastanie zanieczyszczeń. Przy 100% tempo zapychania wynosi około jednej trzeciej interwału serwisowego."/>
         <text name="ads_fieldInspectionDuration_label" text="Czas trwania inspekcji"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Określa, ile rzeczywistych sekund trwa inspekcja polowa przed rozpoczęciem zmiany."/>
-        <text name="ads_lubricationReducePerDay_label" text="Tempo wysychania smarowania"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Określa, ile smarowania wysycha w ciągu jednego dnia w grze. Przy 0% smarowanie nie wysycha z upływem czasu."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Tempo zużycia smarowania"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Określa, ile smarowania zużywa się na godzinę pracy. Przy 0% poziom smarowania nie spada wraz z godzinami pracy."/>
         <text name="ads_ws_header_title" text="Warsztat"/>
         <text name="ads_settings_section_service_wear" text="Serwis i zużycie"/>
         <text name="ads_settings_section_thermal_model" text="Model cieplny"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Zużycie elementów systemu zbioru i obróbki skutkuje lekkim spadkiem wydajności przetwarzania i minimalnymi stratami plonów."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Umiarkowane zużycie elementów systemu zbioru i obróbki powoduje wyraźny spadek wydajności przetwarzania oraz mierzalne straty plonów."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Silne zużycie elementów systemu zbioru i obróbki skutkuje znacznym spadkiem wydajności i dużymi stratami plonów."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="System zbioru i przetwarzania wykazuje krytyczne zużycie; efektywność przetwarzania plonów spada drastycznie, prowadząc do bardzo dużych strat plonów w trakcie pracy."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Efektywność systemu przetwarzania plonów jest krytycznie niska."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Krytyczne zużycie spowodowało awarię systemu zbioru i przetwarzania. Zbiór nie jest możliwy do czasu naprawy systemu."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="System przetwarzania plonów nie działa"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Wewnętrzne ślimaki i łańcuchy przenośnika wykazują lekkie zużycie, skutkujące nieznaczną utratą plonów."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Elementy transportu wewnętrznego, takie jak ślimaki i taśmy przenośnika, są zużyte, co powoduje większe wysypywanie plonów oraz sporadyczne hałasy mechaniczne."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Łopatki przenośnika i ślimaki są uszkodzone, przez co transport masy plonów jest utrudniony, co skutkuje znacznymi stratami i możliwością powstania zatoru."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Zanieczyszczona chłodnica i dolot powietrza"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Wygląda na to, że chłodnica i wloty powietrza w Twoim pojeździe są mocno zabrudzone.&#10;&#10;Brudna chłodnica gorzej odprowadza ciepło, a zapchane wloty powietrza mogą ograniczać dopływ powietrza do silnika. To obniża moc i zwiększa zużycie paliwa.&#10;&#10;Możesz je wyczyścić na myjni lub za pomocą urządzenia do przedmuchiwania powietrzem ze sklepu.&#10;&#10;Stan chłodnicy i wlotów powietrza sprawdzisz przez inspekcję: przytrzymaj klawisz R, patrząc na pojazd."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Wymagane smarowanie"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Twój %s wymaga regularnego smarowania.&#10;&#10;W ADS poziom smarowania podzespołów roboczych stopniowo spada każdego dnia, co zwiększa ich zużycie.&#10;&#10;Kup w sklepie ręczną smarownicę i smaruj maszynę codziennie albo przed każdą zmianą roboczą.&#10;&#10;Poziom smarowania możesz sprawdzić przez inspekcję: przytrzymaj klawisz R, patrząc na pojazd."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Twój %s wymaga regularnego smarowania.&#10;&#10;W ADS poziom smarowania spada wraz z godzinami pracy. Po długim okresie nieużywania maszynę trzeba również nasmarować przed ponownym uruchomieniem. Niedostateczne smarowanie przyspiesza zużycie podwozia.&#10;&#10;Kup w sklepie ręczną smarownicę i nasmaruj maszynę, gdy inspekcja wykaże taką potrzebę.&#10;&#10;Poziom smarowania możesz sprawdzić przez inspekcję: przytrzymaj klawisz R, patrząc na pojazd."/>
         <text name="ads_tutorial_needs_repair_title" text="Usterka pojazdu"/>
         <text name="ads_tutorial_needs_repair_message" text="Wygląda na to, że coś jest nie tak z Twoim %s. Jedna z jego części mogła ulec awarii.&#10;&#10;Koniecznie odwiedź warsztat i wykonaj inspekcję. Nie zwlekaj: usterka może się pogłębiać, a wraz z nią wzrośnie koszt naprawy.&#10;&#10;Jeśli inspekcja potwierdzi problem, usuń go przy pomocy procedury naprawy w warsztacie."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Remont generalny"/>

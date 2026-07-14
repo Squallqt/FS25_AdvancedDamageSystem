@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Säätää, kuinka nopeasti jäähdytin ja ilmanotto tukkeutuvat pölyn, ruumenien ja sadonjätteiden joukossa. Suuremmat arvot nopeuttavat tukkeutumista. 100 %:lla tukkeutumisnopeus on noin kolmasosa huoltovälistä."/>
         <text name="ads_fieldInspectionDuration_label" text="Tarkastuksen kesto"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Määrittää, kuinka kauan vuoron aloitustarkastus kestää reaaliajassa sekunteina."/>
-        <text name="ads_lubricationReducePerDay_label" text="Voitelun kuivumisnopeus"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Määrittää, kuinka paljon voitelu kuivuu yhden pelivuorokauden aikana. 0 %:lla voitelu ei kuivu ajan myötä."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Voitelun kulumisnopeus"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Määrittää, kuinka paljon voitelua kuluu käyttötuntia kohden. Arvolla 0 % voitelutaso ei laske käyttötuntien myötä."/>
         <text name="ads_ws_header_title" text="Korjaamo"/>
         <text name="ads_settings_section_service_wear" text="Huolto ja kuluminen"/>
         <text name="ads_settings_section_thermal_model" text="Lämpömalli"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on hieman alentunut aiheuttaen pienen sadonmenetyksen."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Kohtalainen puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on havaittavasti alentunut aiheuttaen mitattavan sadonmenetyksen."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Vakava puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on merkittävästi alentunut aiheuttaen suuren sadonmenetyksen."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kriittinen puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on kriittisen alhainen aiheuttaen äärimmäisen sadonmenetyksen toiminnan aikana."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Puinnin tehokkuus kriittisen alhainen"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kriittinen kuluminen on aiheuttanut puinti- ja käsittelyjärjestelmän vikaantumisen. Sadonkorjuu ei ole mahdollista ennen järjestelmän korjaamista."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Puinnin käsittelyjärjestelmä pois käytöstä"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Lievä sisäisten ruuvien ja elevaattoriketjujen kuluminen. Pieni määrä satoa menetetään sisäisessä kuljetuksessa."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Kuluneet ruuvilenkit ja liukuvat kuljettimet aiheuttavat lisääntynyttä sirottelua koneen sisällä. Satunnaista narskumismelua voi kuulla."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Vaurioituneet elevaattorilaput ja ruuvit kamppailevat satomassan siirtämiseksi, mikä johtaa merkittäviin häviöihin ja suuren tukoksen riskiin."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Jäähdyttimen ja ilmanottosuodattimen saastuminen"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Ajoneuvosi jäähdytin ja ilmanotot näyttävät olevan pahasti tukossa.&#10;&#10;Likainen jäähdytin ei voi luovuttaa lämpöä tehokkaasti, ja tukossa olevat ilmanotot voivat rajoittaa ilmavirtausta moottoriin. Tämä vähentää tehoa ja lisää polttoaineen kulutusta.&#10;&#10;Voit puhdistaa ne pesuasemalla tai kaupasta saatavalla paineilmapuhaltimella.&#10;&#10;Voit tarkistaa jäähdyttimen ja ilmanottojen kunnon tarkastuksen kautta: pidä R-näppäintä pohjassa ajoneuvoa katsoessasi."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Voitelu tarpeen"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="%s tarvitsee säännöllistä voitelua.&#10;&#10;ADS:ssä työskentelevien komponenttien voitelutaso laskee vähitellen joka päivä, mikä lisää kulumista.&#10;&#10;Osta rasvaruisku kaupasta ja voitele koneesi päivittäin tai ennen jokaista työvuoroa.&#10;&#10;Voit tarkistaa voitelutason tarkastuksen kautta: pidä R-näppäintä pohjassa ajoneuvoa katsoessasi."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="%s tarvitsee säännöllistä voitelua.&#10;&#10;ADS:ssä voitelutaso laskee käyttötuntien myötä. Pitkän käyttämättömän jakson jälkeen kone on myös voideltava ennen käyttöönottoa. Riittämätön voitelu nopeuttaa alustan kulumista.&#10;&#10;Osta rasvaruisku kaupasta ja voitele kone, kun tarkastus osoittaa sen tarpeelliseksi.&#10;&#10;Voit tarkistaa voitelutason tarkastuksen kautta: pidä R-näppäintä pohjassa ajoneuvoa katsoessasi."/>
         <text name="ads_tutorial_needs_repair_title" text="Ajoneuvon vika"/>
         <text name="ads_tutorial_needs_repair_message" text="Näyttää siltä, että %s:ssä on jotain vialla. Yksi sen osista on saattanut vikaantua.&#10;&#10;Muista vierailla korjaamossa ja suorittaa tarkastus. Älä viivästele: vika saattaa jatkua kehittymistään ja korjauskustannukset kasvavat sen mukana.&#10;&#10;Jos tarkastus vahvistaa vian, korjaa se korjaamon korjaustoimenpiteellä."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Suuri yleishuolto"/>

@@ -50,7 +50,7 @@ function ADS_SettingsSyncEvent.new()
     self.idleCurrentA              = ADS_Config.ELECTRICAL.IDLE_CURRENT_A
     self.cloggingSpeed             = ADS_Config.FIELD_CARE.CLOGGING_SPEED
     self.fieldInspectionDuration   = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
-    self.lubricationReducePerDay   = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY
+    self.lubricationReducePerOperatingHour = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR
     self.debugMode                 = ADS_Config.DEBUG
     self.drivetrainEnabled         = ADS_Config.DRIVETRAIN.ENABLED
     self.drivetrainAllowAutoMode   = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE
@@ -97,7 +97,7 @@ function ADS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.idleCurrentA           or 0.5)
     streamWriteFloat32(streamId, self.cloggingSpeed          or 1.0)
     streamWriteFloat32(streamId, self.fieldInspectionDuration or 6000)
-    streamWriteFloat32(streamId, self.lubricationReducePerDay or 0.2)
+    streamWriteFloat32(streamId, self.lubricationReducePerOperatingHour or 0.1)
     streamWriteBool(streamId,    self.debugMode              or false)
     streamWriteBool(streamId,    self.drivetrainEnabled ~= false)
     streamWriteBool(streamId,    self.drivetrainAllowAutoMode ~= false)
@@ -142,7 +142,7 @@ function ADS_SettingsSyncEvent:readStream(streamId, connection)
     self.idleCurrentA              = streamReadFloat32(streamId)
     self.cloggingSpeed             = streamReadFloat32(streamId)
     self.fieldInspectionDuration   = streamReadFloat32(streamId)
-    self.lubricationReducePerDay   = streamReadFloat32(streamId)
+    self.lubricationReducePerOperatingHour = streamReadFloat32(streamId)
     self.debugMode                 = streamReadBool(streamId)
     self.drivetrainEnabled         = streamReadBool(streamId)
     self.drivetrainAllowAutoMode   = streamReadBool(streamId)
@@ -196,7 +196,7 @@ local function applyConfig(event)
     ADS_Config.ELECTRICAL.IDLE_CURRENT_A                    = event.idleCurrentA
     ADS_Config.FIELD_CARE.CLOGGING_SPEED                    = event.cloggingSpeed
     ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION         = event.fieldInspectionDuration
-    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY        = event.lubricationReducePerDay
+    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = event.lubricationReducePerOperatingHour
     ADS_Config.DEBUG                                        = event.debugMode
     ADS_Config.DRIVETRAIN.ENABLED                           = event.drivetrainEnabled ~= false
     ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE                   = event.drivetrainAllowAutoMode ~= false

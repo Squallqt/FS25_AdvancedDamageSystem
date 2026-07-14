@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="먼지나 왕겨, 작물 잔여물 속에서 작업할 때 라디에이터와 흡기구가 얼마나 빨리 막히는지를 조정합니다. 값이 높을수록 더 빨리 막힙니다. 100%일 때, 막힘 속도는 정비 주기의 약 1/3입니다."/>
         <text name="ads_fieldInspectionDuration_label" text="점검 소요 시간"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="작업 시작 전 현장 점검에 걸리는 시간을 실제 초 단위로 설정합니다."/>
-        <text name="ads_lubricationReducePerDay_label" text="윤활 건조 속도"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="게임 내 하루 동안 윤활이 얼마나 마르는지 설정합니다. 0%에서는 시간이 지나도 윤활이 마르지 않습니다."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="윤활 소모율"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="작동 시간당 소모되는 윤활량을 설정합니다. 0%에서는 작동 시간이 늘어나도 윤활 수준이 감소하지 않습니다."/>
         <text name="ads_ws_header_title" text="정비소"/>
         <text name="ads_settings_section_service_wear" text="정비 및 마모"/>
         <text name="ads_settings_section_thermal_model" text="열 모델"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="수확 처리 시스템 마모. 처리 효율이 미세하게 감소하여 약간의 수확 손실이 발생합니다."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="수확 처리 시스템 보통 마모. 효율 감소로 인해 측정 가능한 수준의 수확 손실이 발생합니다."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="수확 처리 시스템 심각한 마모. 효율이 대폭 낮아져 높은 수확 손실이 발생합니다."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="치명적인 수확 처리 시스템 마모. 작업 중 극심한 수준의 수확 손실을 유발합니다."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="수확 처리 효율 치명적 저하"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="심각한 마모로 수확 및 처리 시스템이 고장 났습니다. 시스템을 수리할 때까지 수확할 수 없습니다."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="수확 처리 시스템 작동 불가"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="내부 오거 및 엘리베이터 체인 미세 마모. 내부 이송 과정에서 소량의 작물이 유실됩니다."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="오거 날개 마모 및 컨베이어 벨트 미끄러짐으로 장비 내부 유출이 증가합니다. 가끔 긁히는 소음이 들릴 수 있습니다."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="엘리베이터 패들 및 오거 손상으로 작물 이송에 어려움을 겪으며, 상당한 유실과 심각한 막힘 위험이 있습니다."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="라디에이터 및 흡기구 오염"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="차량의 라디에이터와 흡기구가 심하게 막힌 것 같습니다.&#10;&#10;라디에이터가 더러우면 열을 제대로 방출하지 못하고, 흡기구가 막히면 엔진으로 들어가는 공기 흐름이 제한될 수 있습니다. 그러면 출력이 떨어지고 연료 소비가 증가합니다.&#10;&#10;세차장에서 청소하거나 상점에서 구입한 에어 블로워로 청소할 수 있습니다.&#10;&#10;라디에이터와 흡기구 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
         <text name="ads_tutorial_needs_lubrication_title" text="윤활 필요"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="%s 차량은 정기적인 윤활이 필요합니다.&#10;&#10;ADS에서는 작업 부품의 윤활 상태가 매일 조금씩 감소하며, 그에 따라 마모가 증가합니다.&#10;&#10;상점에서 그리스 건을 구입해 매일 또는 작업 시작 전마다 차량에 윤활을 해 주세요.&#10;&#10;윤활 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="%s 차량은 정기적인 윤활이 필요합니다.&#10;&#10;ADS에서는 작동 시간이 늘어남에 따라 윤활 상태가 감소합니다. 장기간 사용하지 않은 뒤에는 차량을 다시 운행하기 전에 윤활해야 합니다. 윤활이 부족하면 섀시 마모가 빨라집니다.&#10;&#10;상점에서 그리스 건을 구입하고 점검 결과 윤활이 필요할 때 차량에 사용하세요.&#10;&#10;윤활 상태는 점검을 통해 확인할 수 있습니다. 차량을 바라보며 R 키를 길게 누르세요."/>
         <text name="ads_tutorial_needs_repair_title" text="차량 이상"/>
         <text name="ads_tutorial_needs_repair_message" text="%s 차량에 뭔가 문제가 있는 것 같습니다. 부품 하나가 고장 났을 수 있습니다.&#10;&#10;반드시 정비소를 방문해 점검을 받으세요. 미루지 마세요. 문제가 계속 악화될 수 있고, 그만큼 수리 비용도 올라갑니다.&#10;&#10;점검 결과 고장이 확인되면 정비소의 수리 절차를 통해 해결하세요."/>
         <text name="ads_tutorial_needs_overhaul_title" text="대정비"/>

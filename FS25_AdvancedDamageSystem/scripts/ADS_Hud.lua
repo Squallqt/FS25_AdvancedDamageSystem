@@ -1873,6 +1873,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     ) * bcw
     local chassisMaxFactor = math.max(
         chassisDbg.expiredServiceFactor or 0,
+        chassisDbg.lubricationFactor or 0,
         chassisDbg.vibFactor or 0,
         chassisDbg.steerLoadFactor or 0,
         chassisDbg.brakeMassFactor or 0
@@ -1886,8 +1887,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     ) * bcw
     local workprocessMaxFactor = math.max(
         workprocessDbg.expiredServiceFactor or 0,
-        workprocessDbg.wetCropFactor or 0,
-        workprocessDbg.lubricationFactor or 0
+        workprocessDbg.wetCropFactor or 0
     ) * bcw
 
     local factorStats = {}
@@ -2000,6 +2000,7 @@ function ADS_Hud:drawActiveVehicleHUD()
 
     local chassisLines = buildSystemLines("chassis", chassisDbg, chassisMaxFactor, {
         { shortName = "sf", statKey = "sf", value = chassisDbg.expiredServiceFactor or 0 },
+        { shortName = "lubf", statKey = "lubf", value = chassisDbg.lubricationFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(lubricationLevel)) },
         { shortName = "vf", statKey = "vf", value = chassisDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(chassisDbg.vibRaw or 0), asPercent(chassisDbg.vibSignal or 0)) },
         { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("lowSp: %.2f c: %.2f m: %s", tonumber(chassisDbg.steerLowSpeedFactor or 0) or 0, tonumber(chassisDbg.steerGroundFrictionCoeff or 0) or 0, tostring(chassisDbg.steerMoving == true)) },
         { shortName = "bmf", statKey = "bmf", value = chassisDbg.brakeMassFactor or 0, extraInfo = string.format("hp/%s: %.1f", chassisDbg.brakeMassBasis or "trailer", chassisDbg.brakeMassRatio or 0) }
@@ -2015,8 +2016,7 @@ function ADS_Hud:drawActiveVehicleHUD()
 
     local workprocessLines = buildSystemLines("workprocess", workprocessDbg, workprocessMaxFactor, {
         { shortName = "sf", statKey = "sf", value = workprocessDbg.expiredServiceFactor or 0 },
-        { shortName = "wcf", statKey = "wcf", value = workprocessDbg.wetCropFactor or 0 },
-        { shortName = "lubf", statKey = "lubf", value = workprocessDbg.lubricationFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(lubricationLevel)) }
+        { shortName = "wcf", statKey = "wcf", value = workprocessDbg.wetCropFactor or 0 }
     })
 
     local systemSections = {}

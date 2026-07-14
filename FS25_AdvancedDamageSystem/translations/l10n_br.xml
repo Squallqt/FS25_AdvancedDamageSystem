@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Define a velocidade com que o radiador e a admissão de ar entopem ao trabalhar em poeira, palha fina e resíduos de colheita. Valores mais altos aceleram o entupimento. A 100%, a velocidade de entupimento corresponde a cerca de um terço do intervalo de manutenção."/>
         <text name="ads_fieldInspectionDuration_label" text="Duração da inspeção"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Define quanto tempo uma inspeção de campo pré-turno leva, em segundos reais."/>
-        <text name="ads_lubricationReducePerDay_label" text="Taxa de secagem da lubrificação"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Define quanto da lubrificação seca ao longo de um dia no jogo. Em 0%, a lubrificação não seca com o tempo."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Taxa de consumo da lubrificação"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Define quanta lubrificação é consumida por hora de funcionamento. Em 0%, o nível de lubrificação não diminui com as horas de funcionamento."/>
         <text name="ads_ws_header_title" text="Oficina"/>
         <text name="ads_settings_section_service_wear" text="Manutenção e desgaste"/>
         <text name="ads_settings_section_thermal_model" text="Modelo térmico"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Desgaste leve do sistema de colheita e processamento. A eficiência de processamento diminui ligeiramente, resultando em uma pequena perda de rendimento."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Desgaste moderado do sistema de colheita e processamento. A eficiência de processamento diminui notavelmente, resultando em uma perda de rendimento mensurável."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Desgaste severo do sistema de colheita e processamento. A eficiência de processamento é bastante reduzida, resultando em uma perda significativa de rendimento."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Desgaste crítico do sistema de colheita e processamento. A eficiência é reduzida a um nível crítico, causando perdas extremas durante o trabalho."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Eficiência de processamento de colheita reduzida a um nível crítico"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="O desgaste crítico causou a falha do sistema de colheita e processamento. Não é possível colher até que o sistema seja reparado."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Sistema de processamento da colheita fora de serviço"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Leve desgaste das roscas sem-fim internas e das correntes do elevador. Uma pequena quantidade de colheita é perdida durante o transporte interno."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="O desgaste das roscas sem-fim e o deslizamento das correias transportadoras resultam em aumento de derramamentos dentro da máquina. Ruídos de rangido podem ser ouvidos às vezes."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="As pás e as roscas sem-fim danificadas do elevador têm dificuldade em mover a massa da colheita, resultando em perdas significativas e risco de grande entupimento."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Radiador e entradas de ar obstruídos"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="O radiador e as entradas de ar do seu veículo parecem estar muito obstruídos.&#10;&#10;Um radiador sujo não consegue dissipar o calor com eficiência, e entradas de ar obstruídas podem restringir o fluxo de ar para o motor. Isso reduz a potência e aumenta o consumo de combustível.&#10;&#10;Você pode limpá-los em uma estação de lavagem ou com o Soprador de ar comprimido da loja.&#10;&#10;Você pode verificar o estado do radiador e das entradas de ar pela inspeção: segure a tecla R enquanto olha para o veículo."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Lubrificação necessária"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Seu %s precisa de lubrificação regular.&#10;&#10;No ADS, o nível de lubrificação dos componentes de trabalho diminui gradualmente a cada dia, o que aumenta o desgaste.&#10;&#10;Compre uma pistola de graxa na loja e lubrifique sua máquina diariamente ou antes de cada turno de trabalho.&#10;&#10;Você pode verificar o nível de lubrificação pela inspeção: segure a tecla R enquanto olha para o veículo."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Seu %s precisa de lubrificação regular.&#10;&#10;No ADS, o nível de lubrificação diminui com as horas de funcionamento. Após um longo período sem uso, também é necessário lubrificar a máquina antes de voltar ao trabalho. A lubrificação insuficiente acelera o desgaste do chassi.&#10;&#10;Compre uma pistola de graxa na loja e lubrifique a máquina quando a inspeção indicar essa necessidade.&#10;&#10;Você pode verificar o nível de lubrificação pela inspeção: segure a tecla R enquanto olha para o veículo."/>
         <text name="ads_tutorial_needs_repair_title" text="Falha no veículo"/>
         <text name="ads_tutorial_needs_repair_message" text="Parece que há algo errado com seu %s. Uma das peças pode ter falhado.&#10;&#10;Passe em uma oficina e faça uma inspeção. Não demore: a falha pode continuar evoluindo, e o custo do reparo vai aumentar junto com ela.&#10;&#10;Se a inspeção confirmar um defeito, corrija-o com o procedimento de reparo na oficina."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Revisão geral"/>

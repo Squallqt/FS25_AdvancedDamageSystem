@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Beállítja, milyen gyorsan tömődik el a hűtő és a levegőbeömlő porban, pelyvában és növényi maradványok között végzett munka során. Magasabb értéknél gyorsabban rakódik le a szennyeződés. 100%-on az eltömődés üteme nagyjából a szervizintervallum egyharmada."/>
         <text name="ads_fieldInspectionDuration_label" text="Átvizsgálás időtartama"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Beállítja, mennyi ideig tartson a műszak előtti terepi átvizsgálás valós másodpercben."/>
-        <text name="ads_lubricationReducePerDay_label" text="Kenés kiszáradási üteme"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Beállítja, mennyi kenés szárad ki egy játékon belüli nap alatt. 0%-on a kenés idővel nem szárad ki."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Kenés fogyási üteme"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Beállítja, mennyi kenőanyag fogy egy üzemóra alatt. 0%-on a kenési szint nem csökken az üzemórákkal."/>
         <text name="ads_ws_header_title" text="Műhely"/>
         <text name="ads_settings_section_service_wear" text="Szerviz és kopás"/>
         <text name="ads_settings_section_thermal_model" text="Hőmodell"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="A betakarító- és feldolgozórendszer kopása. A terményfeldolgozás hatékonysága enyhén csökkent, ami kisebb hozamveszteséget okoz."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="A betakarító- és feldolgozórendszer közepes kopása. A terményfeldolgozás hatékonysága észrevehetően csökkent, ami mérhető hozamveszteséget okoz."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="A betakarító- és feldolgozórendszer súlyos kopása. A terményfeldolgozás hatékonysága jelentősen csökkent, ami nagy hozamveszteséget okoz."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="A betakarító- és feldolgozórendszer kritikus kopása. A terményfeldolgozás hatékonysága kritikusan csökkent, ami működés közben extrém hozamveszteséget okoz."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="A betakarítási hatékonyság kritikusan csökkent"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="A kritikus kopás a betakarító- és feldolgozórendszer meghibásodását okozta. A betakarítás a rendszer javításáig nem lehetséges."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="A betakarító rendszer üzemképtelen"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="A belső csigák és elevátorláncok enyhe kopása. A belső szállítás során kis mennyiségű termény elvész."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Kopott csigalevelek és csúszó szállítószalagok fokozott szóródást okoznak a gépen belül. Időnként daráló zaj hallható."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Sérült elevátorlapátok és csigák nehezen mozgatják a terménytömeget, ami jelentős veszteséghez és komoly eltömődés kockázatához vezet."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Hűtő és levegőbeömlő szennyeződése"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Úgy tűnik, a jármű hűtője és levegőbeömlői erősen eltömődtek.&#10;&#10;A koszos hűtő nem tud hatékonyan hőt leadni, az eltömődött levegőbeömlők pedig korlátozhatják a motor légellátását. Ez csökkenti a teljesítményt és növeli az üzemanyag-fogyasztást.&#10;&#10;Megtisztíthatod őket egy mosóállomáson vagy a boltban vásárolható Légfúvóval.&#10;&#10;A hűtő és a levegőbeömlők állapotát átvizsgálással ellenőrizheted: nézz a járműre, és tartsd nyomva az R billentyűt."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Kenés szükséges"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="%s rendszeres kenést igényel.&#10;&#10;Az ADS-ben a munkakomponensek kenési szintje napról napra fokozatosan csökken, ami növeli a kopást.&#10;&#10;Vásárolj zsírzópisztolyt a boltban, és kend meg a gépet naponta vagy minden műszak előtt.&#10;&#10;A kenési szintet átvizsgálással ellenőrizheted: nézz a járműre, és tartsd nyomva az R billentyűt."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="%s rendszeres kenést igényel.&#10;&#10;Az ADS-ben a kenési szint az üzemórákkal csökken. Hosszabb használaton kívüli időszak után a gépet az újbóli üzembe helyezés előtt is meg kell kenni. Az elégtelen kenés felgyorsítja az alváz kopását.&#10;&#10;Vásárolj zsírzópisztolyt a boltban, és kend meg a gépet, amikor az átvizsgálás ezt szükségesnek jelzi.&#10;&#10;A kenési szintet átvizsgálással ellenőrizheted: nézz a járműre, és tartsd nyomva az R billentyűt."/>
         <text name="ads_tutorial_needs_repair_title" text="Járműhiba"/>
         <text name="ads_tutorial_needs_repair_message" text="Úgy tűnik, valami nincs rendben ezzel: %s. Lehet, hogy az egyik alkatrésze meghibásodott.&#10;&#10;Mindenképp látogass el egy műhelybe, és végezz átvizsgálást. Ne halogasd: a hiba tovább romolhat, és vele együtt a javítás költsége is nő.&#10;&#10;Ha az átvizsgálás megerősíti a hibát, javítsd ki a műhelyben a javítási eljárással."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Nagyjavítás"/>

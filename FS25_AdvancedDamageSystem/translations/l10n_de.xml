@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Regelt, wie schnell sich Kühler und Lufteinlass bei der Arbeit in Staub, Spreu und Ernteresten zusetzen. Höhere Werte beschleunigen die Verschmutzung. Bei 100 % entspricht die Verschmutzungsgeschwindigkeit ungefähr einem Drittel des Wartungsintervalls."/>
         <text name="ads_fieldInspectionDuration_label" text="Dauer der Inspektion"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Legt fest, wie lange eine Feldinspektion vor Schichtbeginn in Echtzeitsekunden dauert."/>
-        <text name="ads_lubricationReducePerDay_label" text="Austrocknungsrate der Schmierung"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Legt fest, wie stark die Schmierung innerhalb eines Spieltags austrocknet. Bei 0 % trocknet die Schmierung mit der Zeit nicht aus."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Schmierstoffverbrauch"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Legt fest, wie viel Schmierung pro Betriebsstunde verbraucht wird. Bei 0 % sinkt der Schmierzustand nicht mit den Betriebsstunden."/>
         <text name="ads_ws_header_title" text="Werkstatt"/>
         <text name="ads_settings_section_service_wear" text="Wartung und Verschleiß"/>
         <text name="ads_settings_section_thermal_model" text="Thermisches Modell"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Leichter Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz sinkt leicht, was zu geringem Ertragsverlust führt."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Mäßiger Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz sinkt merklich, was zu messbarem Ertragsverlust führt."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Starker Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz ist deutlich reduziert, was zu hohem Ertragsverlust führt."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritischer Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz ist auf ein kritisches Niveau gesunken und verursacht extreme Verluste während des Betriebs."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Ernteverarbeitungseffizienz kritisch reduziert"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritischer Verschleiß hat zum Ausfall des Ernte- und Verarbeitungssystems geführt. Eine Ernte ist erst nach der Reparatur des Systems wieder möglich."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Ernteverarbeitungssystem außer Betrieb"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Leichter Verschleiß an internen Schnecken und Aufzugsketten. Eine geringe Menge Erntegut geht beim internen Transport verloren."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Verschlissene Schneckenwindungen und rutschende Förderbänder verursachen erhöhten Verlust im Inneren der Maschine. Gelegentlich sind Schleifgeräusche zu hören."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Beschädigte Elevatorpaddel und Schnecken haben Schwierigkeiten, die Erntemasse zu bewegen, was zu erheblichen Verlusten und der Gefahr einer großen Verstopfung führt."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Kühler und Lufteinlässe verschmutzt"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Der Kühler und die Lufteinlässe Ihres Fahrzeugs scheinen stark verschmutzt zu sein.&#10;&#10;Ein verschmutzter Kühler kann Wärme schlechter abführen, und zugesetzte Lufteinlässe können die Luftzufuhr zum Motor einschränken. Das reduziert die Leistung und erhöht den Kraftstoffverbrauch.&#10;&#10;Reinigen können Sie beides an einer Waschstation oder mit dem Druckluftgebläse aus dem Shop.&#10;&#10;Den Zustand von Kühler und Lufteinlässen können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Schmierung erforderlich"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Ihr %s benötigt regelmäßige Schmierung.&#10;&#10;In ADS sinkt der Schmierzustand der Arbeitskomponenten jeden Tag ein Stück, wodurch der Verschleiß ansteigt.&#10;&#10;Kaufen Sie im Shop eine Fettpresse und schmieren Sie Ihre Maschine täglich oder vor jeder Arbeitsschicht.&#10;&#10;Den Schmierzustand können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Ihr %s benötigt regelmäßige Schmierung.&#10;&#10;In ADS sinkt der Schmierzustand mit den Betriebsstunden. Nach längerer Stilllegung muss die Maschine vor der Wiederinbetriebnahme ebenfalls geschmiert werden. Unzureichende Schmierung beschleunigt den Verschleiß des Fahrwerks.&#10;&#10;Kaufen Sie im Shop eine Fettpresse und schmieren Sie die Maschine, wenn die Inspektion dies verlangt.&#10;&#10;Den Schmierzustand können Sie über die Inspektion prüfen: Halten Sie die Taste R gedrückt, während Sie das Fahrzeug ansehen."/>
         <text name="ads_tutorial_needs_repair_title" text="Fahrzeugstörung"/>
         <text name="ads_tutorial_needs_repair_message" text="Mit Ihrem %s stimmt offenbar etwas nicht. Möglicherweise ist eines der Bauteile ausgefallen.&#10;&#10;Besuchen Sie unbedingt eine Werkstatt und führen Sie eine Inspektion durch. Warten Sie nicht zu lange: Der Defekt kann sich verschlimmern, und damit steigen auch die späteren Reparaturkosten.&#10;&#10;Wenn die Inspektion einen Fehler bestätigt, beheben Sie ihn mit der Reparatur in der Werkstatt."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Generalüberholung"/>

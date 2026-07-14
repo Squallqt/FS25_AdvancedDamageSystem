@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Toz, saman ve mahsul artıkları içinde çalışırken radyatörün ve hava girişinin ne kadar hızlı tıkanacağını ayarlar. Daha yüksek değerler, tıkanmanın daha hızlı artmasına neden olur. %100 değerinde, tıkanma oranı bakım aralığının yaklaşık üçte biri kadardır."/>
         <text name="ads_fieldInspectionDuration_label" text="Denetim Süresi"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Vardiya öncesi saha denetiminin ne kadar süreceğini, gerçek saniye cinsinden belirler."/>
-        <text name="ads_lubricationReducePerDay_label" text="Yağlama Kuruma Hızı"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Oyun içi bir gün boyunca yağlamanın ne kadar kuruyacağını belirler. %0 ayarında, yağlama zamanla kurumaz."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Yağlama Tüketim Hızı"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Çalışma saati başına ne kadar yağlama tüketileceğini belirler. %0 ayarında, yağlama seviyesi çalışma saatleriyle azalmaz."/>
         <text name="ads_ws_header_title" text="Atölye"/>
         <text name="ads_settings_section_service_wear" text="Bakım ve Aşınma"/>
         <text name="ads_settings_section_thermal_model" text="Termal Model"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Hasat ve işleme sisteminde aşınma. Mahsul işleme verimliliği hafifçe düşer ve bu da küçük çaplı bir verim kaybına yol açar."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Hasat ve işleme sisteminde orta derecede aşınma. Mahsul işleme verimliliği gözle görülür şekilde azalır ve bu da ölçülebilir bir verim kaybına yol açar."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Hasat ve işleme sisteminde ciddi aşınma. Mahsul işleme verimliliği önemli ölçüde düşer ve bu da yüksek verim kaybına yol açar."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Hasat ve işleme sisteminde ciddi aşınma. Mahsul işleme verimliliği önemli ölçüde azalır ve bu da çalışma sırasında aşırı verim kaybına yol açar."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Hasat işleme verimliliği önemli ölçüde azaldı"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritik aşınma, hasat ve işleme sisteminin arızalanmasına neden oldu. Sistem onarılana kadar hasat yapılamaz."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Hasat işleme sistemi devre dışı"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="İç vidalarda ve elevatör zincirlerinde hafif aşınma görülmektedir. İç nakliye sırasında az miktarda mahsul kaybı yaşanmaktadır."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Aşınmış burgu kanatları ve kayan konveyör bantları, makine içinde dökülmelerin artmasına neden olmaktadır. Ara sıra gıcırtı sesleri duyabilirsiniz."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Hasar görmüş elevatör kanatları ve helezonlar, mahsul kütlesini taşımakta zorlanıyor; bu durum, önemli kayıplara ve ciddi bir tıkanma riskine yol açıyor."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Radyatör ve Hava Girişinde Kirlenme"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Aracınızın radyatörü ve hava girişleri oldukça tıkanmış görünüyor.&#10;&#10;Kirli bir radyatör ısıyı verimli bir şekilde dağıtamaz ve tıkanmış hava girişleri motora giden hava akışını kısıtlayabilir. Bu durum, gücü düşürür ve yakıt tüketimini artırır.&#10;&#10;Bunları bir yıkama istasyonunda veya mağazadan alacağınız Hava Üfleyici ile temizleyebilirsiniz.&#10;&#10;R tuşunu basılı tutarken araca bakarak radyatör ve hava girişlerinin durumunu kontrol edebilirsiniz."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Yağlama Gerekiyor"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="%s'nizin düzenli olarak yağlanması gerekiyor.&#10;&#10;ADS'de, çalışan parçaların yağlama seviyesi her gün kademeli olarak düşer ve bu da aşınmayı artırır.&#10;&#10;Mağazadan bir gres tabancası satın alın ve makinenizi her gün veya her vardiya öncesinde yağlayın.&#10;&#10;Yağlama seviyesini inceleme yoluyla kontrol edebilirsiniz: araca bakarken R tuşunu basılı tutun."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="%s'nizin düzenli olarak yağlanması gerekiyor.&#10;&#10;ADS'de yağlama seviyesi çalışma saatleriyle düşer. Uzun süre kullanılmadıktan sonra makine yeniden hizmete alınmadan önce de yağlanmalıdır. Yetersiz yağlama şasi aşınmasını hızlandırır.&#10;&#10;Mağazadan bir gres tabancası satın alın ve inceleme gerektiğini gösterdiğinde makineyi yağlayın.&#10;&#10;Yağlama seviyesini inceleme yoluyla kontrol edebilirsiniz: araca bakarken R tuşunu basılı tutun."/>
         <text name="ads_tutorial_needs_repair_title" text="Araç Arızası"/>
         <text name="ads_tutorial_needs_repair_message" text="Görünüşe göre %s'nizde bir sorun var. Parçalarından biri arızalanmış olabilir.&#10;&#10;Mutlaka bir servise gidip bir kontrol yaptırın. Bunu ertelemeyin: arıza daha da kötüleşebilir ve onarım maliyeti de buna bağlı olarak artacaktır.&#10;&#10;Kontrol sonucunda bir arıza tespit edilirse, servisteki onarım prosedürüne göre arızayı giderin."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Kapsamlı Onarım"/>

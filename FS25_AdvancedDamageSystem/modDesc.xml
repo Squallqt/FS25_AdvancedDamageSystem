@@ -20,6 +20,8 @@ Changelog 0.9.3.0 [WIP]:
 - Hands the drivetrain and parking brake over to Enhanced Vehicle when its matching functions are enabled
 - Added a HUD readout of tractor, towed, and combined mass
 - Removed unnecessary debug log spam from routine UI and config updates
+- Extended operating-hour-based lubrication to all non-road ADS machines; prolonged storage now requires lubrication before return to service, and insufficient lubrication increases chassis wear
+- Reworked harvester wear: mechanical yield losses are now tied only to the harvest-processing failure, while a critical failure stops harvesting
 
 Changelog 0.9.2.7:
 - Reworked Heavy Trailer and Brake Mass factors: tractors use 10 HP per tonne of towed mass, while trucks use 6 HP per tonne of gross combination weight
@@ -142,6 +144,8 @@ Changelog 0.9.3.0 [WIP]:
 - Übergibt Antriebsstrang und Feststellbremse an Enhanced Vehicle, wenn dessen entsprechende Funktionen aktiv sind
 - HUD-Anzeige von Traktor-, Anhänger- und Gesamtmasse hinzugefügt
 - Unnötige Debug-Log-Ausgaben aus routinemäßigen UI- und Konfigurationsaktualisierungen entfernt
+- Betriebsstundenabhängige Schmierung auf alle ADS-Arbeitsmaschinen außerhalb der Straßenkategorien erweitert; nach längerer Stilllegung ist vor der Wiederinbetriebnahme eine Schmierung erforderlich, und unzureichende Schmierung erhöht den Fahrwerksverschleiß
+- Verschleiß von Erntemaschinen überarbeitet: Mechanische Ernteverluste entstehen nur noch durch den Defekt des Ernteverarbeitungssystems; ein kritischer Ausfall stoppt die Ernte
 
 Changelog 0.9.2.7:
 - Faktoren für schwere Anhänger und Bremsmasse überarbeitet: Traktoren verwenden 10 PS pro Tonne gezogener Masse, LKWs 6 PS pro Tonne Gesamtzuggewicht
@@ -263,6 +267,8 @@ Changelog 0.9.3.0 [WIP] :
 - Cède la transmission et le frein de parking à Enhanced Vehicle quand ses fonctions correspondantes sont activées
 - Ajout d'un affichage HUD des masses tracteur, tractée et totale
 - Suppression de logs de debug inutiles lors des mises à jour d'interface et de configuration
+- Extension du graissage basé sur les heures de fonctionnement à toutes les machines ADS hors catégories routières ; une longue période de stockage impose désormais un graissage avant remise en service, et un graissage insuffisant augmente l'usure du châssis
+- Refonte de l'usure des machines de récolte : les pertes mécaniques de rendement proviennent uniquement de la panne du système de traitement, tandis qu'une défaillance critique arrête la récolte
 
 Changelog 0.9.2.7:
 - Refonte des facteurs Heavy Trailer et Brake Mass : les tracteurs utilisent 10 ch par tonne de masse tractée, tandis que les camions utilisent 6 ch par tonne de poids total roulant

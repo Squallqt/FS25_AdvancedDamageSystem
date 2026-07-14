@@ -557,9 +557,12 @@ function ADS_ReportDialog:updateScreen()
 
     --- harvest efficiency
     if ADS_Breakdowns.BreakdownRegistry.HARVEST_PROCESSING_SYSTEM_WEAR.isApplicable(self.vehicle) then
-        local harvestingEfficiencyModifier = 1.0
+        local harvestProcessingFailure = getEffectValue(activeEffects, "HARVEST_PROCESSING_FAILURE") or 0
         local yieldReductionModifier = getEffectValue(activeEffects, "YIELD_REDUCTION_MODIFIER") or 0
-        harvestingEfficiencyModifier = harvestingEfficiencyModifier + yieldReductionModifier
+        local harvestingEfficiencyModifier = 1.0 + yieldReductionModifier
+        if harvestProcessingFailure > 0 then
+            harvestingEfficiencyModifier = 0
+        end
         addVehicleSpec({
             key = "ads_report_system_condition_harvest",
             kind = "ratio",

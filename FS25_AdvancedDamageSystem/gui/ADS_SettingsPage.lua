@@ -62,7 +62,7 @@ local function buildPendingConfigFromAdsConfig()
 
         cloggingSpeed = ADS_Config.FIELD_CARE.CLOGGING_SPEED,
         fieldInspectionDuration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
-        lubricationReducePerDay = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY,
+        lubricationReducePerOperatingHour = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR,
 
         drivetrainEnabled = ADS_Config.DRIVETRAIN.ENABLED,
         drivetrainAllowAutoMode = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE,
@@ -326,7 +326,7 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
 
     ADS_Config.FIELD_CARE.CLOGGING_SPEED = pending.cloggingSpeed
     ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = pending.fieldInspectionDuration
-    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_DAY = pending.lubricationReducePerDay
+    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = pending.lubricationReducePerOperatingHour
 
     ADS_Config.DRIVETRAIN.ENABLED = pending.drivetrainEnabled
     ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = pending.drivetrainAllowAutoMode
@@ -621,12 +621,12 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
         g_i18n:getText("ads_fieldInspectionDuration_label"),
         g_i18n:getText("ads_fieldInspectionDuration_tooltip")
     )
-    page.ads_lubricationReducePerDay = ADS_InGameSettings:addMultiTextOption(
+    page.ads_lubricationReducePerOperatingHour = ADS_InGameSettings:addMultiTextOption(
         page,
-        "onLubricationReducePerDayChanged",
-        ADS_InGameSettings.steps.lubricationReducePerDay.texts,
-        g_i18n:getText("ads_lubricationReducePerDay_label"),
-        g_i18n:getText("ads_lubricationReducePerDay_tooltip")
+        "onLubricationReducePerOperatingHourChanged",
+        ADS_InGameSettings.steps.lubricationReducePerOperatingHour.texts,
+        g_i18n:getText("ads_lubricationReducePerOperatingHour_label"),
+        g_i18n:getText("ads_lubricationReducePerOperatingHour_tooltip")
     )
 
     ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_drivetrain"))
@@ -872,7 +872,7 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     setIndex(currentPage.ads_coolingSlowdownPower, steps.thermalPower.values, pending.coolingSlowdownPower)
     setIndex(currentPage.ads_cloggingSpeed, steps.cloggingSpeed.values, pending.cloggingSpeed)
     setIndex(currentPage.ads_fieldInspectionDuration, steps.fieldInspectionDuration.values, pending.fieldInspectionDuration)
-    setIndex(currentPage.ads_lubricationReducePerDay, steps.lubricationReducePerDay.values, pending.lubricationReducePerDay)
+    setIndex(currentPage.ads_lubricationReducePerOperatingHour, steps.lubricationReducePerOperatingHour.values, pending.lubricationReducePerOperatingHour)
     setIndex(currentPage.ads_aiWorkerTargetStress, steps.aiWorkerTargetStress.values, pending.aiWorkerTargetStress)
     setIndex(currentPage.ads_aiWorkerMinSpeed, steps.aiWorkerMinSpeed.values, pending.aiWorkerMinSpeed)
     setIndex(currentPage.ads_drivetrainDiffLockReleaseSpeed, steps.diffLockReleaseSpeed.values, pending.drivetrainDiffLockReleaseSpeed)
@@ -945,7 +945,7 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     currentPage.ads_thermalSensitivity:setDisabled(disableAll)
     currentPage.ads_cloggingSpeed:setDisabled(disableAll)
     currentPage.ads_fieldInspectionDuration:setDisabled(disableAll)
-    currentPage.ads_lubricationReducePerDay:setDisabled(disableAll)
+    currentPage.ads_lubricationReducePerOperatingHour:setDisabled(disableAll)
     currentPage.ads_aiOverloadAndOverheatControl:setDisabled(disableAll)
     currentPage.ads_aiDisableOnCriticalOverload:setDisabled(disableAll)
     currentPage.ads_contractVehicleProtection:setDisabled(disableAll)
@@ -1191,8 +1191,8 @@ function ADS_InGameSettings:onFieldInspectionDurationChanged(state)
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onLubricationReducePerDayChanged(state)
-    getPendingConfig().lubricationReducePerDay = ADS_InGameSettings.steps.lubricationReducePerDay.values[state]
+function ADS_InGameSettings:onLubricationReducePerOperatingHourChanged(state)
+    getPendingConfig().lubricationReducePerOperatingHour = ADS_InGameSettings.steps.lubricationReducePerOperatingHour.values[state]
     ADS_InGameSettings.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
@@ -1624,14 +1624,14 @@ function ADS_InGameSettings:generateAllSteps()
         return string.format("%d s", v / 1000)
     end)
 
-    -- Lubrication Drying: Off, then 10% to 100% per day.
+    -- Lubrication wear: Off, then 10% to 100% per operating hour.
     do
         local data = { values = {0.0}, texts = {g_i18n:getText("ads_option_off")} }
         for percent = 10, 100, 10 do
             table.insert(data.values, percent / 100)
             table.insert(data.texts, string.format("%d%%", percent))
         end
-        self.steps.lubricationReducePerDay = data
+        self.steps.lubricationReducePerOperatingHour = data
     end
 
     -- AI speed response target stress. Lower values react earlier and more aggressively.

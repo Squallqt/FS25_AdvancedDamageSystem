@@ -20,8 +20,8 @@
         <text name="ads_cloggingSpeed_tooltip" text="Adjusts how quickly the radiator and air intake clog while working in dust, chaff, and crop residue. Higher values make clogging build up faster. At 100%, the clogging rate is roughly one third of the service interval."/>
         <text name="ads_fieldInspectionDuration_label" text="Inspection Duration"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Sets how long a pre-shift field inspection takes, in real seconds."/>
-        <text name="ads_lubricationReducePerDay_label" text="Lubrication Drying Rate"/>
-        <text name="ads_lubricationReducePerDay_tooltip" text="Sets how much lubrication dries out over one in-game day. At 0%, lubrication does not dry out over time."/>
+        <text name="ads_lubricationReducePerOperatingHour_label" text="Lubrication Wear Rate"/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Sets how much lubrication is consumed per operating hour. At 0%, the lubrication level does not decrease with operating hours."/>
         <text name="ads_ws_header_title" text="Workshop"/>
         <text name="ads_settings_section_service_wear" text="Service and Wear"/>
         <text name="ads_settings_section_thermal_model" text="Thermal Model"/>
@@ -357,8 +357,8 @@
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Wear of the harvesting and processing system. Crop processing efficiency is slightly reduced, resulting in minor yield loss."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Moderate wear of the harvesting and processing system. Crop processing efficiency is noticeably reduced, resulting in measurable yield loss."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Severe wear of the harvesting and processing system. Crop processing efficiency is significantly reduced, resulting in high yield loss."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Critical wear of the harvesting and processing system. Crop processing efficiency is critically reduced, causing extreme yield loss during operation."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Harvest processing efficiency critically reduced"/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Critical wear has caused the harvesting and processing system to fail. Harvesting is impossible until the system is repaired."/>
+        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Harvest processing system out of service"/>
         <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Slight wear on internal augers and elevator chains. A small amount of crop is lost during internal transport."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Worn auger flights and slipping conveyor belts are causing increased spillage inside the machine. You may hear occasional grinding noises."/>
         <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Damaged elevator paddles and augers are struggling to move the crop mass, leading to significant losses and a risk of a major clog."/>
@@ -712,7 +712,7 @@
         <text name="ads_tutorial_rad_or_intake_clogged_title" text="Radiator and Air Intake Contamination"/>
         <text name="ads_tutorial_rad_or_intake_clogged_message" text="Your vehicle’s radiator and air intakes appear to be heavily clogged.&#10;&#10;A dirty radiator cannot dissipate heat efficiently, and clogged air intakes can restrict airflow to the engine. This reduces power and increases fuel consumption.&#10;&#10;You can clean them at a washing station or with the Air Blower from the shop.&#10;&#10;You can check the condition of the radiator and air intakes through inspection: hold the R key while looking at the vehicle."/>
         <text name="ads_tutorial_needs_lubrication_title" text="Lubrication Required"/>
-        <text name="ads_tutorial_needs_lubrication_message" text="Your %s needs regular lubrication.&#10;&#10;In ADS, the lubrication level of working components gradually drops every day, which increases wear.&#10;&#10;Buy a Grease Gun in the shop and lubricate your machine daily or before each work shift.&#10;&#10;You can check the lubrication level through inspection: hold the R key while looking at the vehicle."/>
+        <text name="ads_tutorial_needs_lubrication_message" text="Your %s needs regular lubrication.&#10;&#10;In ADS, the lubrication level drops with operating hours. After a long period without use, lubrication is also required before returning the machine to service. Insufficient lubrication accelerates chassis wear.&#10;&#10;Buy a Grease Gun in the shop and lubricate the machine when inspection indicates it is required.&#10;&#10;You can check the lubrication level through inspection: hold the R key while looking at the vehicle."/>
         <text name="ads_tutorial_needs_repair_title" text="Vehicle Fault"/>
         <text name="ads_tutorial_needs_repair_message" text="It looks like something is wrong with your %s. One of its parts may have failed.&#10;&#10;Make sure to visit a workshop and perform an inspection. Do not delay it: the failure may continue to progress, and the repair cost will rise with it.&#10;&#10;If the inspection confirms a fault, fix it with the repair procedure at the workshop."/>
         <text name="ads_tutorial_needs_overhaul_title" text="Major Overhaul"/>
