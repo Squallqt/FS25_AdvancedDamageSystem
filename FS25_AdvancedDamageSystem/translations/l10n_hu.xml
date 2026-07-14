@@ -776,8 +776,8 @@
         <text name="ads_drivetrainEnabled_tooltip" text="Bekapcsolja a kapcsolható első híd és a differenciálzárak kézi vezérlését a traktorokon. Ha az Enhanced Vehicle differenciálkezelése aktív, az ADS teljesen visszavonul, és az Enhanced Vehicle egyedül kezeli a hajtásláncot."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="AUTO hajtásmód engedélyezése"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="AUTO állást ad a hajtásválasztóhoz: az első híd kerékcsúszásnál vagy munkasebességnél terhelés alatt automatikusan bekapcsol, közúton pedig kikapcsol. Az AUTO-ban hagyott gépek 4WD-re váltanak, ha ezt a beállítást kikapcsolják."/>
-        <text name="ads_drivetrainWindupDamage_label" text="Hajtáslánc-feszülési károk"/>
-        <text name="ads_drivetrainWindupDamage_tooltip" text="A zárt differenciálművekkel tapadós felületen való kanyarodás megfeszíti a hajtásláncot és idővel károsítja a váltót. Engedékenyebb játékhoz kapcsolja ki."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Hajtáslánc-terhelési károk"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="A zárt differenciálművekkel tapadós felületen való kanyarodás terheli a hajtásláncot és idővel károsítja a váltót. Engedékenyebb játékhoz kapcsolja ki."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Differenciálzár kioldási sebessége"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="A differenciálzárak e sebesség felett automatikusan kioldanak, alatta pedig újra bekapcsolnak, amíg igényelve vannak."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Rögzítőfék"/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Differenciálzár kioldva"/>
         <text name="ads_drivetrain_notify_park_on" text="Rögzítőfék behúzva"/>
         <text name="ads_drivetrain_notify_park_off" text="Rögzítőfék kiengedve"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="A hajtáslánc feszül! Kemény talajon kanyarodás előtt kapcsolja ki a 4WD-t."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="A hajtáslánc terhelés alatt áll! Kemény talajon kanyarodás előtt kapcsolja ki a 4WD-t."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="A differenciálzár feszül! Oldja ki, vagy csökkentse a kormányzási szöget."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Behúzott rögzítőfék!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Hajtáslánc-feszülés"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="Tapadós talajon kanyarodik bekapcsolt differenciálzárral. Kanyarban a belső és külső kerekek eltérő utat tesznek meg, de a differenciálzár azonos fordulatszámra kényszeríti őket: a hajtáslánc megfeszül, és fokozódik a váltó kopása. Oldja ki a zárat, mielőtt kanyarodna."/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Hajtáslánc-terhelés"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Tapadós talajon kanyarodik bekapcsolt differenciálzárral. Kanyarban a belső és külső kerekek eltérő utat tesznek meg, de a differenciálzár azonos fordulatszámra kényszeríti őket: a hajtáslánc terhelés alá kerül, és fokozódik a váltó kopása. Oldja ki a zárat, mielőtt kanyarodna."/>
     </texts>
 </l10n>

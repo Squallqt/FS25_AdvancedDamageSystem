@@ -570,13 +570,6 @@ ADS_Config = {
         AUTO_DISENGAGE_SPEED = 20,           -- km/h: above (and no slip) = road, disengage
         AUTO_HYSTERESIS_MS = 2000,           -- delay before AUTO releases the front axle
 
-        -- Physics application
-        -- Multiplier applied to the XML maxSpeedRatio to make a differential truly OPEN.
-        -- Vanilla axle values (~1.3) are nearly locked; a realistic unlocked differential
-        -- must let one wheel spin freely, otherwise locking is imperceptible.
-        OPEN_BIAS_FACTOR = 1000.0,
-        LOCKED_BIAS = 1.0,                   -- maxSpeedRatio for a locked differential
-
         -- Driveline windup damage (4WD / locked diffs + steering + high-grip surface)
         WINDUP_DAMAGE_ENABLED = true,
         WINDUP_STEER_THRESHOLD = 0.12,       -- rad: minimum steering angle to wind up

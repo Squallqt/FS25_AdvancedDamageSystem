@@ -776,8 +776,8 @@
         <text name="ads_drivetrainEnabled_tooltip" text="Ativa o controle manual do eixo dianteiro acoplável e dos bloqueios de diferencial nos tratores. Se a gestão de diferenciais do Enhanced Vehicle estiver ativa, o ADS se retira completamente e o Enhanced Vehicle gerencia a transmissão sozinho."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="Permitir modo AUTO"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="Adiciona uma posição AUTO: o eixo dianteiro é acoplado automaticamente com patinagem ou em velocidade de trabalho sob carga, e desacoplado na estrada. Veículos deixados em AUTO voltam para 4WD quando esta opção é desativada."/>
-        <text name="ads_drivetrainWindupDamage_label" text="Danos por torção da transmissão"/>
-        <text name="ads_drivetrainWindupDamage_tooltip" text="Fazer curvas em superfícies de boa aderência com os diferenciais bloqueados torce a transmissão e a danifica com o tempo. Desative para uma experiência mais tolerante."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Danos por tensão na transmissão"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Fazer curvas em superfícies de boa aderência com os diferenciais bloqueados coloca a transmissão sob tensão e a danifica com o tempo. Desative para uma experiência mais tolerante."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Velocidade de liberação do bloqueio"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Os bloqueios de diferencial se soltam automaticamente acima desta velocidade e reengatam abaixo dela enquanto solicitados."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Freio de estacionamento"/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Bloqueio de diferencial liberado"/>
         <text name="ads_drivetrain_notify_park_on" text="Freio de estacionamento acionado"/>
         <text name="ads_drivetrain_notify_park_off" text="Freio de estacionamento liberado"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="Transmissão em torção! Desative o 4WD antes de fazer curvas em solo duro."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Transmissão sob tensão! Desative o 4WD antes de fazer curvas em solo duro."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="Bloqueio do diferencial sob tensão! Solte-o ou reduza o ângulo de esterçamento."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Freio de estacionamento acionado!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Torção da transmissão"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Tensão na transmissão"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Você está fazendo curva em solo de boa aderência com o bloqueio do diferencial acionado. Na curva, as rodas internas e externas percorrem distâncias diferentes, mas o bloqueio do diferencial as força a girar na mesma velocidade: a transmissão fica sob tensão e o desgaste aumenta. Solte o bloqueio antes de fazer curvas."/>
     </texts>
 </l10n>

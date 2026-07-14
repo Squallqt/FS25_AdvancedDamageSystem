@@ -777,7 +777,7 @@
         <text name="ads_drivetrainAllowAutoMode_label" text="Autoriser le mode AUTO"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="Ajoute une position AUTO au sélecteur : le pont avant s'engage automatiquement en cas de patinage ou à vitesse de travail sous charge, et se libère sur route. Les véhicules laissés en AUTO repassent en 4RM quand cette option est désactivée."/>
         <text name="ads_drivetrainWindupDamage_label" text="Dégâts de contrainte de transmission"/>
-        <text name="ads_drivetrainWindupDamage_tooltip" text="Braquer sur une surface adhérente avec les différentiels bloqués met la transmission sous contrainte (wind-up) et l'endommage progressivement. Désactivez pour une expérience plus permissive."/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Braquer sur une surface adhérente avec les différentiels bloqués met la transmission sous contrainte et l'endommage progressivement. Désactivez pour une expérience plus permissive."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Vitesse de déverrouillage du différentiel"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Les blocages de différentiel se libèrent automatiquement au-dessus de cette vitesse et se réengagent en dessous tant qu'ils sont demandés."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Frein de parking"/>
@@ -795,7 +795,7 @@
         <text name="ads_drivetrain_warning_4wd_windup" text="Transmission sous contrainte ! Désengagez les 4RM avant de braquer sur sol dur."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="Blocage de différentiel sous contrainte ! Libérez-le ou réduisez le braquage."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Frein de parking serré !"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Contrainte de transmission (wind-up)"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Contrainte de transmission"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Vous braquez sur un sol adhérent avec le blocage de différentiel engagé. Dans une courbe, les roues intérieures et extérieures parcourent des distances différentes, mais le blocage de différentiel les force à tourner à la même vitesse : la transmission se met sous contrainte et son usure s'accélère. Libérez le blocage avant de braquer."/>
     </texts>
 </l10n>

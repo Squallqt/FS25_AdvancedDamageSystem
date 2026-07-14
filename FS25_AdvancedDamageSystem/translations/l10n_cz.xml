@@ -776,7 +776,7 @@
         <text name="ads_drivetrainEnabled_tooltip" text="Zapíná ruční ovládání připojitelné přední nápravy a uzávěrek diferenciálu u traktorů. Pokud je aktivní správa diferenciálů z Enhanced Vehicle, ADS zcela ustoupí a Enhanced Vehicle spravuje pohon samostatně."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="Povolit režim AUTO"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="Přidává polohu AUTO: přední náprava se připojí automaticky při prokluzu kol nebo při pracovní rychlosti pod zátěží a na silnici se odpojí. Vozidla ponechaná v AUTO se po vypnutí této volby vrátí do 4WD."/>
-        <text name="ads_drivetrainWindupDamage_label" text="Poškození z torzního napětí pohonu"/>
+        <text name="ads_drivetrainWindupDamage_label" text="Poškození z namáhání pohonu"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="Zatáčení na přilnavém povrchu s uzavřenými diferenciály napíná pohonné ústrojí a časem poškozuje převodovku. Vypněte pro shovívavější hru."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Rychlost uvolnění uzávěrky"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Uzávěrky diferenciálu se nad touto rychlostí automaticky uvolní a pod ní se znovu zapnou, dokud jsou požadovány."/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Uzávěrka diferenciálu uvolněna"/>
         <text name="ads_drivetrain_notify_park_on" text="Parkovací brzda zatažena"/>
         <text name="ads_drivetrain_notify_park_off" text="Parkovací brzda uvolněna"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="Torzní napětí pohonu! Před zatáčením na tvrdém povrchu vypněte 4WD."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Namáhání pohonu! Před zatáčením na tvrdém povrchu vypněte 4WD."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="Uzávěrka diferenciálu je namáhána! Uvolněte ji nebo zmenšete úhel natočení kol."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Zatažená parkovací brzda!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Torzní napětí pohonu"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Namáhání pohonu"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Zatáčíte na přilnavém povrchu se zapnutou uzávěrkou diferenciálu. V zatáčce urazí vnitřní a vnější kola různé vzdálenosti, ale uzávěrka diferenciálu je nutí točit se stejnou rychlostí: pohonné ústrojí se napíná a zvyšuje se opotřebení převodovky. Před zatáčením uzávěrku uvolněte."/>
     </texts>
 </l10n>

@@ -1823,6 +1823,13 @@ function ADS_Hud:drawActiveVehicleHUD()
             tonumber(drivetrainDbg.windupWearFactor) or 0,
             tostring(drivetrainDbg.externallyManaged == true)
         ), {1, 1, 1, 1}, 0.95)
+        for wheelIndex, axleSpeed in ipairs(drivetrainDbg.wheelAxleSpeeds or {}) do
+            addLine(overviewLines, string.format(
+                "Wheel #%d axle speed: %.3f rad/s",
+                wheelIndex,
+                tonumber(axleSpeed) or 0
+            ), {1, 1, 1, 1}, 0.95)
+        end
     end
 
     local engineMaxFactor = math.max(
@@ -1960,7 +1967,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         { shortName = "pof", statKey = "pof", value = transmissionDbg.pullOverloadFactor or 0, extraInfo = string.format("%.1f->%.1f", transmissionDbg.pullOverloadTimer or 0, transmissionDbg.pullOverloadTimerMin or 0) },
         { shortName = "htf", statKey = "htf", value = transmissionDbg.heavyTrailerFactor or 0, extraInfo = string.format("hp/%s: %.1f", transmissionDbg.heavyTrailerMassBasis or "trailer", transmissionDbg.heavyTrailerMassRatio or 0) },
         { shortName = "lf", statKey = "lf", value = transmissionDbg.luggingFactor or 0 },
-        { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0, extraInfo = string.format("s: %.1f c: %.2f", asPercent(spec.wheelSlipIntensity or 0), avgTireGroundFrictionCoeff) },
+        { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0, extraInfo = string.format("c: %.2f", avgTireGroundFrictionCoeff) },
         { shortName = "dwf", statKey = "dwf", value = transmissionDbg.drivetrainWindupFactor or 0, extraInfo = string.format("w: %.1f%% lock: %s", asPercent(drivetrainDbg.windupStress or 0), tostring(drivetrainDbg.diffLockEngaged == true)) },
         { shortName = "ctf", statKey = "ctf", value = (transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor) or 0 },
         { shortName = "hotf", statKey = "hotf", value = transmissionDbg.hotTransFactor or 0 }

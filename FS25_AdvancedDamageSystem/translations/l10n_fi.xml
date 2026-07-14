@@ -776,8 +776,8 @@
         <text name="ads_drivetrainEnabled_tooltip" text="Ottaa käyttöön kytkettävän etuakselin ja tasauspyörästön lukkojen manuaalisen hallinnan traktoreissa. Jos Enhanced Vehiclen tasauspyörästöjen hallinta on käytössä, ADS väistyy kokonaan ja Enhanced Vehicle hallitsee voimansiirtoa itsenäisesti."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="Salli AUTO-vetotila"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="Lisää AUTO-asennon: etuakseli kytkeytyy automaattisesti renkaiden luistaessa tai työnopeudella kuormituksen alla, ja irtoaa maantiellä. AUTO-tilaan jätetyt koneet palaavat 4WD-tilaan, kun tämä asetus poistetaan käytöstä."/>
-        <text name="ads_drivetrainWindupDamage_label" text="Voimansiirron jännitysvauriot"/>
-        <text name="ads_drivetrainWindupDamage_tooltip" text="Kääntyminen pitävällä alustalla tasauspyörästöt lukittuina jännittää voimansiirtoa ja vaurioittaa vaihteistoa ajan mittaan. Poista käytöstä armollisempaa pelikokemusta varten."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Voimansiirron rasitusvauriot"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Kääntyminen pitävällä alustalla tasauspyörästöt lukittuina rasittaa voimansiirtoa ja vaurioittaa vaihteistoa ajan mittaan. Poista käytöstä armollisempaa pelikokemusta varten."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Lukon vapautusnopeus"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Tasauspyörästön lukot vapautuvat automaattisesti tämän nopeuden yläpuolella ja kytkeytyvät uudelleen sen alapuolella niin kauan kuin niitä pyydetään."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Seisontajarru"/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Tasauspyörästön lukko vapautettu"/>
         <text name="ads_drivetrain_notify_park_on" text="Seisontajarru kytketty"/>
         <text name="ads_drivetrain_notify_park_off" text="Seisontajarru vapautettu"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="Voimansiirto jännittyy! Kytke 4WD pois ennen kääntymistä kovalla alustalla."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Voimansiirto kuormittuu! Kytke 4WD pois ennen kääntymistä kovalla alustalla."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="Tasauspyörästön lukko kuormittuu! Vapauta lukko tai vähennä ohjauskulmaa."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Seisontajarru kytketty!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Voimansiirron jännitys"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="Käännyt pitävällä alustalla tasauspyörästön lukko kytkettynä. Kaarteessa sisä- ja ulkopyörät kulkevat eri matkat, mutta tasauspyörästön lukko pakottaa ne pyörimään samalla nopeudella: voimansiirto jännittyy ja vaihteiston kuluminen lisääntyy. Vapauta lukko ennen kääntymistä."/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Voimansiirron rasitus"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Käännyt pitävällä alustalla tasauspyörästön lukko kytkettynä. Kaarteessa sisä- ja ulkopyörät kulkevat eri matkat, mutta tasauspyörästön lukko pakottaa ne pyörimään samalla nopeudella: voimansiirto kuormittuu ja vaihteiston kuluminen lisääntyy. Vapauta lukko ennen kääntymistä."/>
     </texts>
 </l10n>

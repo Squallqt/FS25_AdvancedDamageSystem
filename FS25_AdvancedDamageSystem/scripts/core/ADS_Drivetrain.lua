@@ -6,12 +6,11 @@
 --   * Analyze the differential topology declared by vehicle.xml (spec_motorized.differentials)
 --     without any hardcoded indices: axle differentials connect two wheels, the center
 --     differential connects two other differentials.
---   * Drive the engine differentials at runtime through the official physics binding
---     updateDifferential(motorizedNode, index0, torqueRatio, maxSpeedRatio). No vanilla
+--   * Build the active driveline with the native differential graph bindings. No vanilla
 --     function is overwritten or monkeypatched.
---   * Drive modes: 4x2 (front axle disengaged), 4WD (rigid transfer), AUTO (engages the
---     front axle on slip / low speed under load, releases it on the road).
---   * Differential locks: rear axle in 4x2, front + rear in 4WD, with a realistic
+--   * Drive modes: 4x2 (primary axle graph only), 4WD (full XML graph), AUTO (engages the
+--     assist axle on slip / low speed under load, releases it on the road).
+--   * Differential locks: active native torque balancing across the driven outputs, with
 --     automatic release above a speed threshold.
 --   * Driveline windup model: driving in 4WD or with locked differentials while
 --     steering on a high-grip surface accumulates stress and damages the transmission.
@@ -41,6 +40,11 @@ ADS_Drivetrain.MODE_L10N = {
     [1] = "ads_drivetrain_mode_4wd",
     [2] = "ads_drivetrain_mode_auto"
 }
+
+local LOCKED_AXLE_SPEED_RATIO = 1.1
+local LOCKED_MIN_TORQUE_RATIO = 0.3
+local LOCKED_MAX_TORQUE_RATIO = 0.7
+local LOCKED_WHEEL_SPEED_FILTER = 0.08
 
 local function sanitizeNumber(value, fallback, minValue, maxValue)
     if AdvancedDamageSystem ~= nil and AdvancedDamageSystem.sanitizeNumber ~= nil then
@@ -184,6 +188,14 @@ local function getWheelLocalZ(wheel)
     return tonumber(physics.positionZ) or (physics.netInfo ~= nil and tonumber(physics.netInfo.z)) or 0
 end
 
+local function getWheelAxleSpeed(wheel)
+    local physics = wheel ~= nil and wheel.physics or nil
+    if wheel == nil or wheel.node == nil or physics == nil or not physics.wheelShapeCreated then
+        return 0
+    end
+    return tonumber(getWheelShapeAxleSpeed(wheel.node, physics.wheelShape)) or 0
+end
+
 -- ==========================================================
 --                 TOPOLOGY ANALYSIS
 -- ==========================================================
@@ -239,13 +251,11 @@ function ADS_Drivetrain.buildLayout(vehicle)
 
     local layout = {
         differentialCount = #differentials,
-        originals = {},           -- [idx0] = { torqueRatio, maxSpeedRatio }
+        originals = {},           -- immutable XML differential descriptors by 0-based index
         centerIdx0 = nil,         -- inter-axle differential (engine index, 0-based)
         -- The disengageable axle is the STEERED one: front axle on a tractor (MFWD),
         -- rear assist axle on a combine or a sprayer. The primary axle is the fixed one.
-        engageableIdx0 = nil,     -- steered/assist axle differential
         primaryIdx0 = nil,        -- fixed/primary axle differential
-        engageableIsOutput1 = true, -- is the engageable axle wired to output 1 of the center diff?
         engageableWheelIndices = {},
         primaryWheelIndices = {},
         lockableIdx0 = {},        -- axle differentials that can be locked
@@ -265,8 +275,12 @@ function ADS_Drivetrain.buildLayout(vehicle)
     for i, differential in ipairs(differentials) do
         local idx0 = i - 1
         layout.originals[idx0] = {
-            torqueRatio = sanitizeNumber(differential.torqueRatio, 0.5, 0, 1),
-            maxSpeedRatio = sanitizeNumber(differential.maxSpeedRatio, 1.3, 0.1)
+            torqueRatio = tonumber(differential.torqueRatio) or 0.5,
+            maxSpeedRatio = tonumber(differential.maxSpeedRatio) or 1.3,
+            diffIndex1 = differential.diffIndex1,
+            diffIndex1IsWheel = differential.diffIndex1IsWheel == true,
+            diffIndex2 = differential.diffIndex2,
+            diffIndex2IsWheel = differential.diffIndex2IsWheel == true
         }
 
         local isInterAxle = not differential.diffIndex1IsWheel and not differential.diffIndex2IsWheel
@@ -298,12 +312,10 @@ function ADS_Drivetrain.buildLayout(vehicle)
         end
 
         if out1IsEngageable then
-            layout.engageableIsOutput1 = true
-            layout.engageableIdx0, layout.primaryIdx0 = out1Idx0, out2Idx0
+            layout.primaryIdx0 = out2Idx0
             layout.engageableWheelIndices, layout.primaryWheelIndices = out1Wheels, out2Wheels
         else
-            layout.engageableIsOutput1 = false
-            layout.engageableIdx0, layout.primaryIdx0 = out2Idx0, out1Idx0
+            layout.primaryIdx0 = out1Idx0
             layout.engageableWheelIndices, layout.primaryWheelIndices = out2Wheels, out1Wheels
         end
 
@@ -367,6 +379,10 @@ function ADS_Drivetrain.initSpec(vehicle)
         _windupDamageLatched = false,
         _appliedMode = nil,                 -- last state pushed to the physics engine
         _appliedLock = nil,
+        _activeDifferentialIndices = nil,
+        _activeFourWheelDrive = nil,
+        _graphManaged = false,
+        _wheelPeripheralSpeeds = {},
         _wasAddedToPhysics = false,
         _autoConditionTimer = 0,
         _lastNotifiedMode = nil,
@@ -441,8 +457,122 @@ local function getEffectiveFourWheelDrive(state)
     return false
 end
 
---- Pushes the requested state to the engine differentials. Server only.
---  Idempotent: only issues updateDifferential calls when the target state changed.
+--- Builds a validated native differential plan without touching the active physics graph.
+local function buildDifferentialPlan(vehicle, layout, useFullGraph)
+    local plan = {}
+    local sourceToNative = {}
+    local visiting = {}
+
+    local function addSourceDifferential(sourceIdx0)
+        local nativeIdx0 = sourceToNative[sourceIdx0]
+        if nativeIdx0 ~= nil then
+            return nativeIdx0
+        end
+        if visiting[sourceIdx0] then
+            return nil
+        end
+
+        local original = layout.originals[sourceIdx0]
+        if original == nil then
+            return nil
+        end
+        visiting[sourceIdx0] = true
+
+        local function resolveOutput(outputIndex, outputIsWheel)
+            if outputIsWheel then
+                local wheel = vehicle.getWheelFromWheelIndex ~= nil and vehicle:getWheelFromWheelIndex(outputIndex) or nil
+                local physics = wheel ~= nil and wheel.physics or nil
+                local wheelShape = tonumber(physics ~= nil and physics.wheelShape) or 0
+                if wheelShape == 0 then
+                    return nil
+                end
+                return wheelShape
+            end
+            return addSourceDifferential(outputIndex)
+        end
+
+        local output1 = resolveOutput(original.diffIndex1, original.diffIndex1IsWheel)
+        local output2 = resolveOutput(original.diffIndex2, original.diffIndex2IsWheel)
+        if output1 == nil or output2 == nil then
+            return nil
+        end
+
+        nativeIdx0 = #plan
+        plan[#plan + 1] = {
+            output1 = output1,
+            output1IsWheel = original.diffIndex1IsWheel,
+            output2 = output2,
+            output2IsWheel = original.diffIndex2IsWheel,
+            torqueRatio = original.torqueRatio,
+            maxSpeedRatio = original.maxSpeedRatio
+        }
+        sourceToNative[sourceIdx0] = nativeIdx0
+        visiting[sourceIdx0] = nil
+        return nativeIdx0
+    end
+
+    if useFullGraph or layout.centerIdx0 == nil then
+        for sourceIdx0 = 0, layout.differentialCount - 1 do
+            if addSourceDifferential(sourceIdx0) == nil then
+                return nil, nil
+            end
+        end
+    elseif layout.primaryIdx0 == nil or addSourceDifferential(layout.primaryIdx0) == nil then
+        return nil, nil
+    end
+
+    return plan, sourceToNative
+end
+
+local function installDifferentialGraph(vehicle, state, useFullGraph)
+    local spec_motorized = vehicle.spec_motorized
+    if spec_motorized == nil or spec_motorized.motorizedNode == nil or not vehicle.isAddedToPhysics then
+        return false
+    end
+
+    local plan, sourceToNative = buildDifferentialPlan(vehicle, state.layout, useFullGraph)
+    if plan == nil then
+        return false
+    end
+
+    local node = spec_motorized.motorizedNode
+    removeAllDifferentials(node)
+    for _, differential in ipairs(plan) do
+        addDifferential(
+            node,
+            differential.output1,
+            differential.output1IsWheel,
+            differential.output2,
+            differential.output2IsWheel,
+            differential.torqueRatio,
+            differential.maxSpeedRatio
+        )
+    end
+    vehicle:updateMotorProperties()
+
+    state._activeDifferentialIndices = sourceToNative
+    state._activeFourWheelDrive = useFullGraph or state.layout.centerIdx0 == nil
+    state._graphManaged = true
+    return true
+end
+
+local function restoreOriginalDifferentialGraph(vehicle, state)
+    if not state._graphManaged then
+        return true
+    end
+
+    if vehicle.isAddedToPhysics and not installDifferentialGraph(vehicle, state, true) then
+        return false
+    end
+
+    state._activeDifferentialIndices = nil
+    state._activeFourWheelDrive = nil
+    state._graphManaged = false
+    return true
+end
+
+--- Pushes the requested drive mode to the engine differentials. Server only.
+--  Idempotent: rebuilds the native graph only when the driven topology changes.
 function ADS_Drivetrain.applyState(vehicle, force)
     if not vehicle.isServer then return end
 
@@ -455,61 +585,142 @@ function ADS_Drivetrain.applyState(vehicle, force)
         return
     end
 
-    local C = getConfig()
     local layout = state.layout
     local fourWheelDrive = getEffectiveFourWheelDrive(state)
-    local lockEngaged = state.diffLockEngaged
-
-    if not force and state._appliedMode == fourWheelDrive and state._appliedLock == lockEngaged then
+    if not force
+        and state._graphManaged
+        and state._activeFourWheelDrive == fourWheelDrive
+        and state._appliedMode == fourWheelDrive then
         return
     end
 
-    local node = spec_motorized.motorizedNode
-
-    -- Engine facts (verified against the only field-proven runtime implementation and
-    -- the engine binding): to cut ALL torque from one output of a differential, the
-    -- torqueRatio must sit marginally OUTSIDE the [0..1] range on the side of the kept
-    -- output. In-range near-zero values (e.g. 0.001) are renormalized by the solver and
-    -- torque keeps flowing. With no torque on the constraint, the bias has no leverage,
-    -- so the cut output free-wheels regardless; bias 1.0 is the proven-stable value.
-    local CUT_OUTPUT1_RATIO = -0.00001 -- all torque to output 2
-    local CUT_OUTPUT2_RATIO = 1.00001  -- all torque to output 1
-
-    -- A realistic open axle differential imposes almost no speed coupling between its
-    -- wheels. Vanilla axle values (maxSpeedRatio ~1.5) are nearly locked, which is why
-    -- lock/unlock must swing between truly open and fully locked to be perceptible.
-    local function getOpenBias(original)
-        return math.max(original.maxSpeedRatio, 1.0) * C.OPEN_BIAS_FACTOR
-    end
-
-    -- Center differential: torque split + inter-axle coupling
-    if layout.centerIdx0 ~= nil then
-        local original = layout.originals[layout.centerIdx0]
-        if fourWheelDrive then
-            -- Engaged transfer: XML values (GIANTS models the rigid MFWD dog clutch
-            -- with a tight maxSpeedRatio). An engaged diff lock locks the transfer rigidly.
-            local bias = lockEngaged and C.LOCKED_BIAS or original.maxSpeedRatio
-            updateDifferential(node, layout.centerIdx0, original.torqueRatio, bias)
-        else
-            -- Steered axle disengaged: cut its torque entirely; the axle free-wheels.
-            local ratio = layout.engageableIsOutput1 and CUT_OUTPUT1_RATIO or CUT_OUTPUT2_RATIO
-            updateDifferential(node, layout.centerIdx0, ratio, C.LOCKED_BIAS)
-        end
-    end
-
-    -- Axle differentials. Realistic behavior: an unlocked axle differential is OPEN
-    -- (a spinning wheel free-wheels — that is exactly why the diff lock exists).
-    -- Locked: both wheels of the axle are forced to the same speed.
-    for _, idx0 in ipairs(layout.lockableIdx0) do
-        local original = layout.originals[idx0]
-        local isEngageableAxle = layout.engageableAxleIdx0Set ~= nil and layout.engageableAxleIdx0Set[idx0] == true
-        local axleIsDriven = fourWheelDrive or not isEngageableAxle
-        local shouldLock = lockEngaged and axleIsDriven
-        local bias = shouldLock and C.LOCKED_BIAS or getOpenBias(original)
-        updateDifferential(node, idx0, original.torqueRatio, bias)
+    if not installDifferentialGraph(vehicle, state, fourWheelDrive) then
+        return
     end
 
     state._appliedMode = fourWheelDrive
+    state._appliedLock = nil
+end
+
+local function getLockedDifferentialRatios(original, speed1, speed2, isAxleDifferential, gearRatio)
+    local torqueRatio = original.torqueRatio
+    local maxSpeedRatio = isAxleDifferential and LOCKED_AXLE_SPEED_RATIO or original.maxSpeedRatio
+
+    if gearRatio < 0 then
+        speed1 = -speed1
+        speed2 = -speed2
+    end
+
+    if speed1 < 0.1389 and speed2 < 0.1389 then
+        return torqueRatio, maxSpeedRatio
+    end
+
+    if not (-0.2778 < speed1 and speed1 < 90 and -0.2778 < speed2 and speed2 < 90) then
+        return torqueRatio, math.max(maxSpeedRatio, LOCKED_AXLE_SPEED_RATIO)
+    end
+
+    if speed1 < speed2 then
+        local speedRatio = math.max(speed1, 0) / speed2
+        torqueRatio = 1 - speedRatio * (1 - torqueRatio)
+        maxSpeedRatio = math.max(maxSpeedRatio, 1 + (LOCKED_AXLE_SPEED_RATIO - 1) * (1 - speedRatio))
+    elseif speed2 < speed1 then
+        local speedRatio = math.max(speed2, 0) / speed1
+        torqueRatio = torqueRatio * speedRatio
+        maxSpeedRatio = math.max(maxSpeedRatio, 1 + (LOCKED_AXLE_SPEED_RATIO - 1) * (1 - speedRatio))
+    end
+
+    if math.abs(torqueRatio - original.torqueRatio) < 0.05 then
+        torqueRatio = original.torqueRatio
+    end
+
+    return math.clamp(torqueRatio, LOCKED_MIN_TORQUE_RATIO, LOCKED_MAX_TORQUE_RATIO), maxSpeedRatio
+end
+
+local function getDifferentialOutputSpeeds(vehicle, state, differentialIdx0, wheelSpeeds, depth)
+    local layout = state.layout
+    if depth > layout.differentialCount then
+        return 0, 0
+    end
+
+    local differential = layout.originals[differentialIdx0]
+    if differential == nil then
+        return 0, 0
+    end
+
+    local function getOutputSpeed(outputIndex, outputIsWheel)
+        if outputIsWheel then
+            local speed = wheelSpeeds[outputIndex]
+            if speed ~= nil then
+                return speed
+            end
+
+            local wheel = vehicle.getWheelFromWheelIndex ~= nil and vehicle:getWheelFromWheelIndex(outputIndex) or nil
+            local physics = wheel ~= nil and wheel.physics or nil
+            local rawSpeed = 0
+            if wheel ~= nil and wheel.node ~= nil and physics ~= nil and physics.wheelShapeCreated then
+                rawSpeed = getWheelAxleSpeed(wheel) * (tonumber(physics.radius) or 0)
+            end
+
+            local previousSpeed = state._wheelPeripheralSpeeds[outputIndex]
+            speed = previousSpeed == nil and rawSpeed
+                or previousSpeed + LOCKED_WHEEL_SPEED_FILTER * (rawSpeed - previousSpeed)
+            state._wheelPeripheralSpeeds[outputIndex] = speed
+            wheelSpeeds[outputIndex] = speed
+            return speed
+        end
+
+        local childSpeed1, childSpeed2 = getDifferentialOutputSpeeds(vehicle, state, outputIndex, wheelSpeeds, depth + 1)
+        return (childSpeed1 + childSpeed2) * 0.5
+    end
+
+    return getOutputSpeed(differential.diffIndex1, differential.diffIndex1IsWheel),
+        getOutputSpeed(differential.diffIndex2, differential.diffIndex2IsWheel)
+end
+
+local function applyDifferentialLock(vehicle, state)
+    local spec_motorized = vehicle.spec_motorized
+    local activeIndices = state._activeDifferentialIndices
+    if spec_motorized == nil or spec_motorized.motorizedNode == nil or activeIndices == nil or not vehicle.isAddedToPhysics then
+        return
+    end
+
+    local lockEngaged = state.diffLockEngaged == true
+    if not lockEngaged and state._appliedLock == false then
+        return
+    end
+
+    local layout = state.layout
+    local wheelSpeeds = {}
+    local gearRatio = tonumber(spec_motorized.motor ~= nil and spec_motorized.motor.gearRatio) or 0
+
+    if lockEngaged and state._appliedLock ~= true then
+        state._wheelPeripheralSpeeds = {}
+    else
+        state._wheelPeripheralSpeeds = state._wheelPeripheralSpeeds or {}
+    end
+
+    for sourceIdx0 = 0, layout.differentialCount - 1 do
+        local nativeIdx0 = activeIndices[sourceIdx0]
+        local original = layout.originals[sourceIdx0]
+        if nativeIdx0 ~= nil and original ~= nil then
+            local torqueRatio = original.torqueRatio
+            local maxSpeedRatio = original.maxSpeedRatio
+            if lockEngaged then
+                local speed1, speed2 = getDifferentialOutputSpeeds(vehicle, state, sourceIdx0, wheelSpeeds, 1)
+                local isAxleDifferential = original.diffIndex1IsWheel and original.diffIndex2IsWheel
+                torqueRatio, maxSpeedRatio = getLockedDifferentialRatios(
+                    original,
+                    speed1,
+                    speed2,
+                    isAxleDifferential,
+                    gearRatio
+                )
+            end
+
+            updateDifferential(spec_motorized.motorizedNode, nativeIdx0, torqueRatio, maxSpeedRatio)
+        end
+    end
+
     state._appliedLock = lockEngaged
 end
 
@@ -884,20 +1095,13 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         -- Feature off or EV owns the diffs: full stand-by. When EV is active it manages
         -- the drivetrain entirely on its own (physics, behavior and consequences); ADS
         -- does not touch the differentials nor run any drivetrain damage model.
-        if state._appliedMode ~= nil or state._appliedLock ~= nil then
+        if state._graphManaged or state._appliedMode ~= nil or state._appliedLock ~= nil then
             state.autoEngaged = false
             state.diffLockEngaged = false
-            if not externallyManaged then
-                local layout = state.layout
-                local spec_motorized = vehicle.spec_motorized
-                if spec_motorized ~= nil and spec_motorized.motorizedNode ~= nil and vehicle.isAddedToPhysics then
-                    for idx0, original in pairs(layout.originals) do
-                        updateDifferential(spec_motorized.motorizedNode, idx0, original.torqueRatio, original.maxSpeedRatio)
-                    end
-                end
+            if restoreOriginalDifferentialGraph(vehicle, state) then
+                state._appliedMode = nil
+                state._appliedLock = nil
             end
-            state._appliedMode = nil
-            state._appliedLock = nil
         end
 
         local hadWindupState = state.windupActive or state.windupStress ~= 0 or state.windupWearFactor ~= 0
@@ -934,6 +1138,7 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     updateParkBrakeState(vehicle, state, dt)
     updateWindupModel(vehicle, state, spec, dt)
     ADS_Drivetrain.applyState(vehicle, physicsRestored)
+    applyDifferentialLock(vehicle, state)
 
     -- Replicate physical state changes (engagement + windup) to the clients.
     local windupQuantized = math.floor(sanitizeNumber(state.windupStress, 0, 0, 1) * 255 + 0.5)
@@ -958,6 +1163,16 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         dbg.parkBrake = state.parkBrake
         dbg.windupStress = state.windupStress
         dbg.windupWearFactor = state.windupWearFactor
+        local wheels = vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels or nil
+        local wheelAxleSpeeds = dbg.wheelAxleSpeeds or {}
+        local wheelCount = wheels ~= nil and #wheels or 0
+        for wheelIndex = 1, wheelCount do
+            wheelAxleSpeeds[wheelIndex] = getWheelAxleSpeed(wheels[wheelIndex])
+        end
+        for wheelIndex = #wheelAxleSpeeds, wheelCount + 1, -1 do
+            wheelAxleSpeeds[wheelIndex] = nil
+        end
+        dbg.wheelAxleSpeeds = wheelAxleSpeeds
     end
 end
 

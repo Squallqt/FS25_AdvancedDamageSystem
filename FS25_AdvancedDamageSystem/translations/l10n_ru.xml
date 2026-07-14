@@ -776,8 +776,8 @@
         <text name="ads_drivetrainEnabled_tooltip" text="Включает ручное управление подключаемым передним мостом и блокировками дифференциалов на тракторах. Если активно управление дифференциалами Enhanced Vehicle, ADS полностью отходит в сторону, и Enhanced Vehicle управляет трансмиссией самостоятельно."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="Разрешить режим АВТО"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="Добавляет положение АВТО: передний мост подключается автоматически при пробуксовке или на рабочей скорости под нагрузкой и отключается на дороге. Машины, оставленные в АВТО, переходят в 4WD при отключении этой опции."/>
-        <text name="ads_drivetrainWindupDamage_label" text="Повреждения от скручивания трансмиссии"/>
-        <text name="ads_drivetrainWindupDamage_tooltip" text="Повороты на твёрдом покрытии с заблокированными дифференциалами скручивают трансмиссию и постепенно повреждают её. Отключите для более щадящего геймплея."/>
+        <text name="ads_drivetrainWindupDamage_label" text="Повреждения трансмиссии под нагрузкой"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="Повороты на поверхности с хорошим сцеплением с заблокированными дифференциалами создают нагрузку на трансмиссию и постепенно повреждают её. Отключите для более щадящего геймплея."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Скорость разблокировки дифференциала"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Блокировки дифференциалов автоматически выключаются выше этой скорости и снова включаются ниже неё, пока запрошены."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="Стояночный тормоз"/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Блокировка дифференциала выключена"/>
         <text name="ads_drivetrain_notify_park_on" text="Стояночный тормоз затянут"/>
         <text name="ads_drivetrain_notify_park_off" text="Стояночный тормоз отпущен"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="Скручивание трансмиссии! Перед поворотом на твёрдом покрытии отключите 4WD."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="Трансмиссия под нагрузкой! Перед поворотом на твёрдом покрытии отключите 4WD."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="Блокировка дифференциала под нагрузкой! Отключите её или уменьшите угол поворота."/>
         <text name="ads_drivetrain_warning_parkbrake" text="Затянут стояночный тормоз!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Скручивание трансмиссии"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="Вы поворачиваете на твёрдом покрытии с включённой блокировкой дифференциала. В повороте внутренние и внешние колёса проходят разные расстояния, но блокировка дифференциала заставляет их вращаться с одинаковой скоростью: трансмиссия скручивается, а износ коробки передач ускоряется. Выключайте блокировку перед поворотами."/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Нагрузка на трансмиссию"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="Вы поворачиваете на поверхности с хорошим сцеплением с включённой блокировкой дифференциала. В повороте внутренние и внешние колёса проходят разные расстояния, но блокировка дифференциала заставляет их вращаться с одинаковой скоростью: трансмиссия испытывает нагрузку, а износ коробки передач ускоряется. Выключайте блокировку перед поворотами."/>
     </texts>
 </l10n>

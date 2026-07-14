@@ -776,7 +776,7 @@
         <text name="ads_drivetrainEnabled_tooltip" text="Activa el control manual del eje delantero conectable y de los bloqueos de diferencial en tractores. Si la gestión de diferenciales de Enhanced Vehicle está activa, ADS se retira por completo y Enhanced Vehicle gestiona la transmisión por su cuenta."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="Permitir modo AUTO"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="Añade una posición AUTO: el eje delantero se conecta automáticamente con patinaje o a velocidad de trabajo bajo carga, y se desconecta en carretera. Los vehículos dejados en AUTO vuelven a 4WD al desactivar esta opción."/>
-        <text name="ads_drivetrainWindupDamage_label" text="Daños por torsión de la transmisión"/>
+        <text name="ads_drivetrainWindupDamage_label" text="Daños por tensión de la transmisión"/>
         <text name="ads_drivetrainWindupDamage_tooltip" text="Girar sobre superficies con buen agarre con los diferenciales bloqueados tensa la transmisión y la daña con el tiempo. Desactívalo para una experiencia más permisiva."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="Velocidad de desbloqueo del diferencial"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="Los bloqueos de diferencial se sueltan automáticamente por encima de esta velocidad y se reactivan por debajo mientras estén solicitados."/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="Bloqueo de diferencial liberado"/>
         <text name="ads_drivetrain_notify_park_on" text="Freno de estacionamiento accionado"/>
         <text name="ads_drivetrain_notify_park_off" text="Freno de estacionamiento liberado"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="¡Transmisión en torsión! Desactiva la tracción 4WD antes de girar sobre suelo duro."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="¡Transmisión bajo tensión! Desactiva la tracción 4WD antes de girar sobre suelo duro."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="¡Bloqueo del diferencial bajo tensión! Desactívalo o reduce el ángulo de giro."/>
         <text name="ads_drivetrain_warning_parkbrake" text="¡Freno de estacionamiento accionado!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="Torsión de la transmisión"/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="Tensión de la transmisión"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Estás girando sobre suelo con buen agarre con el bloqueo de diferencial activado. En una curva, las ruedas interiores y exteriores recorren distancias diferentes, pero el bloqueo del diferencial las obliga a girar a la misma velocidad: la transmisión se tensa y su desgaste aumenta. Suelta el bloqueo antes de girar."/>
     </texts>
 </l10n>

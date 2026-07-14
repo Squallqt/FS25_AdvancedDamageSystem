@@ -776,8 +776,8 @@
         <text name="ads_drivetrainEnabled_tooltip" text="트랙터의 전륜 구동축 연결과 차동 잠금 장치의 수동 제어를 활성화합니다. Enhanced Vehicle의 차동 장치 관리가 활성화된 경우 ADS는 완전히 물러나고 Enhanced Vehicle이 구동계를 단독으로 관리합니다."/>
         <text name="ads_drivetrainAllowAutoMode_label" text="자동 구동 모드 허용"/>
         <text name="ads_drivetrainAllowAutoMode_tooltip" text="구동 선택기에 자동 위치를 추가합니다: 바퀴가 미끄러지거나 부하가 걸린 작업 속도에서 전륜축이 자동으로 연결되고, 도로에서는 해제됩니다. 이 옵션을 끄면 자동 모드로 남아 있던 차량은 4WD로 전환됩니다."/>
-        <text name="ads_drivetrainWindupDamage_label" text="구동계 비틀림 손상"/>
-        <text name="ads_drivetrainWindupDamage_tooltip" text="차동 장치를 잠근 채 접지력이 높은 지면에서 회전하면 구동계가 비틀려 시간이 지남에 따라 변속기가 손상됩니다. 더 관대한 게임을 원하면 비활성화하세요."/>
+        <text name="ads_drivetrainWindupDamage_label" text="구동계 응력 손상"/>
+        <text name="ads_drivetrainWindupDamage_tooltip" text="차동 장치를 잠근 채 접지력이 높은 지면에서 회전하면 구동계에 응력이 가해져 시간이 지남에 따라 변속기가 손상됩니다. 더 관대한 게임을 원하면 비활성화하세요."/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_label" text="차동 잠금 해제 속도"/>
         <text name="ads_drivetrainDiffLockReleaseSpeed_tooltip" text="차동 잠금은 이 속도 이상에서 자동으로 해제되고, 요청된 상태라면 그 이하에서 다시 체결됩니다."/>
         <text name="ads_drivetrainParkBrakeEnabled_label" text="주차 브레이크"/>
@@ -792,10 +792,10 @@
         <text name="ads_drivetrain_notify_lock_off" text="차동 잠금 해제됨"/>
         <text name="ads_drivetrain_notify_park_on" text="주차 브레이크 체결됨"/>
         <text name="ads_drivetrain_notify_park_off" text="주차 브레이크 해제됨"/>
-        <text name="ads_drivetrain_warning_4wd_windup" text="구동계 비틀림! 단단한 지면에서 회전하기 전에 4WD를 해제하세요."/>
+        <text name="ads_drivetrain_warning_4wd_windup" text="구동계에 응력이 발생합니다! 단단한 지면에서 회전하기 전에 4WD를 해제하세요."/>
         <text name="ads_drivetrain_warning_difflock_windup" text="차동 잠금에 부하가 걸리고 있습니다! 잠금을 해제하거나 조향각을 줄이세요."/>
         <text name="ads_drivetrain_warning_parkbrake" text="주차 브레이크가 체결되어 있습니다!"/>
-        <text name="ads_tutorial_drivetrain_windup_title" text="구동계 비틀림"/>
-        <text name="ads_tutorial_drivetrain_windup_message" text="차동 잠금을 체결한 채 접지력이 높은 지면에서 회전하고 있습니다. 커브에서 안쪽과 바깥쪽 바퀴는 서로 다른 거리를 이동하지만, 차동 잠금은 같은 속도로 회전하도록 강제합니다: 구동계에 비틀림이 쌓이고 변속기 마모가 증가합니다. 회전하기 전에 잠금을 해제하세요."/>
+        <text name="ads_tutorial_drivetrain_windup_title" text="구동계 응력"/>
+        <text name="ads_tutorial_drivetrain_windup_message" text="차동 잠금을 체결한 채 접지력이 높은 지면에서 회전하고 있습니다. 커브에서 안쪽과 바깥쪽 바퀴는 서로 다른 거리를 이동하지만, 차동 잠금은 같은 속도로 회전하도록 강제합니다: 구동계에 응력이 발생하고 변속기 마모가 증가합니다. 회전하기 전에 잠금을 해제하세요."/>
     </texts>
 </l10n>

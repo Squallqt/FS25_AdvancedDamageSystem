@@ -704,18 +704,21 @@ local function markTelemetryDirty(vehicle, spec)
     local realOperatingTime = spec.realOperatingTime or 0
     local motorLoad = getSyncMotorLoad(vehicle)
     local dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
+    local wheelSlip = tonumber(spec.wheelSlipIntensity) or 0
 
     if syncFloatChanged(spec._lastSyncTelemetry_operatingTime, operatingTime, 1.0) or
        syncFloatChanged(spec._lastSyncTelemetry_realOperatingTime, realOperatingTime, 1.0) or
        syncFloatChanged(spec._lastSyncTelemetry_fuelUsageRaw, spec._fuelUsageRaw, 0.3) or
        syncFloatChanged(spec._lastSyncTelemetry_motorLoad, motorLoad, 0.01) or
-       syncFloatChanged(spec._lastSyncTelemetry_dynamicMotorLoad, dynamicMotorLoad, 0.01) then
+       syncFloatChanged(spec._lastSyncTelemetry_dynamicMotorLoad, dynamicMotorLoad, 0.01) or
+       syncFloatChanged(spec._lastSyncTelemetry_wheelSlip, wheelSlip, 0.01) then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_telemetry)
             spec._lastSyncTelemetry_operatingTime = operatingTime
             spec._lastSyncTelemetry_realOperatingTime = realOperatingTime
             spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
             spec._lastSyncTelemetry_motorLoad = motorLoad
             spec._lastSyncTelemetry_dynamicMotorLoad = dynamicMotorLoad
+            spec._lastSyncTelemetry_wheelSlip = wheelSlip
             return true
     end
 
@@ -842,7 +845,6 @@ local function markTutorialDataDirty(vehicle, spec)
     local idleTimer  = fuelState ~= nil and (tonumber(fuelState.idleTimer)  or 0) or 0
     local fuelLevel  = fuelState ~= nil and (tonumber(fuelState.level)      or 0) or 0
     local luggingTimer    = tonumber(spec.luggingTutorialTimer)    or 0
-    local wheelSlip       = tonumber(spec.wheelSlipIntensity)      or 0
     local wheelSlipTimer  = tonumber(spec.wheelSlipTutorialTimer)  or 0
     local brakeState  = spec.chassisBrakeState
     local hpMassRatio = brakeState ~= nil and (tonumber(brakeState.hpMassRatio) or 1000) or 1000
@@ -859,7 +861,6 @@ local function markTutorialDataDirty(vehicle, spec)
     if syncFloatChanged(spec._lastSyncTutorial_idleTimer,       idleTimer,       1.0)   or
        syncFloatChanged(spec._lastSyncTutorial_fuelLevel,       fuelLevel,       0.01)  or
        syncFloatChanged(spec._lastSyncTutorial_luggingTimer,    luggingTimer,    100.0) or
-       syncFloatChanged(spec._lastSyncTutorial_wheelSlip,       wheelSlip,       0.05)  or
        syncFloatChanged(spec._lastSyncTutorial_wheelSlipTimer,  wheelSlipTimer,  100.0) or
        syncFloatChanged(spec._lastSyncTutorial_hpMassRatio,     hpMassRatio,     0.1)   or
        spec._lastSyncTutorial_groundContact ~= groundContact                           or
@@ -873,7 +874,6 @@ local function markTutorialDataDirty(vehicle, spec)
             spec._lastSyncTutorial_idleTimer       = idleTimer
             spec._lastSyncTutorial_fuelLevel       = fuelLevel
             spec._lastSyncTutorial_luggingTimer    = luggingTimer
-            spec._lastSyncTutorial_wheelSlip       = wheelSlip
             spec._lastSyncTutorial_wheelSlipTimer  = wheelSlipTimer
             spec._lastSyncTutorial_hpMassRatio     = hpMassRatio
             spec._lastSyncTutorial_groundContact   = groundContact
@@ -1391,6 +1391,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(self:getMotorLoadPercentage(), 0, 0, 1.5))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 1))
         end
 
         -- [4] Thermal
@@ -1446,7 +1447,6 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.idleTimer or 0, 0, 0, 600))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.level or 0, 0, 0, 1))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.luggingTutorialTimer, 0, 0, 5000))
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 3))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipTutorialTimer, 0, 0, 3000))
             local brakeState = spec.chassisBrakeState
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpMassRatio or 1000, 1000, 0, 10000))
@@ -1498,6 +1498,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec._netMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
             spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec._netMotorLoad, 0, 1.5)
             spec.dynamicMotorLoad = spec._netDynamicMotorLoad
+            spec.wheelSlipIntensity = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
         end
 
         -- [4] Thermal
@@ -1578,7 +1579,6 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             fuelState.idleTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 600)
             fuelState.level     = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
             spec.luggingTutorialTimer   = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 5000)
-            spec.wheelSlipIntensity     = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 3)
             spec.wheelSlipTutorialTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 3000)
             local brakeState = spec.chassisBrakeState
             if brakeState == nil then
@@ -2113,6 +2113,8 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.activeDraftEffectiveForceCap = 0
     self.spec_AdvancedDamageSystem.isCranking = false
     self.spec_AdvancedDamageSystem.wheelSlipIntensity = 0
+    self.spec_AdvancedDamageSystem._wheelSlipPreviousSample = 0
+    self.spec_AdvancedDamageSystem._wheelSlipOlderSample = 0
     self.spec_AdvancedDamageSystem.wheelSlipTutorialTimer = 0
     self.spec_AdvancedDamageSystem.luggingTutorialTimer = 0
     self.spec_AdvancedDamageSystem.avgTireGroundFrictionCoeff = 0
@@ -2202,7 +2204,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     if self.isServer then
         self.spec_AdvancedDamageSystem.adsDirtyFlag_state = self:getNextDirtyFlag()             -- [1] currentState, plannedState, maintenanceTimer
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceContext = self:getNextDirtyFlag()    -- [2] serviceOptionOne, serviceOptionTwo, serviceOptionThree, workshopType
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, _netMotorLoad, dynamicMotorLoad -- [5] telemetry
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, _netMotorLoad, dynamicMotorLoad, wheelSlipIntensity
         self.spec_AdvancedDamageSystem.adsDirtyFlag_thermal = self:getNextDirtyFlag()           -- [4] rawEngineTemperature, rawTransmissionTemperature, thermostatState, transmissionThermostatState
         self.spec_AdvancedDamageSystem.adsDirtyFlag_electrical = self:getNextDirtyFlag()        -- [5] batterySoc, batteryChargeAh, batteryTerminalVoltageV, systemVoltageV
         self.spec_AdvancedDamageSystem.adsDirtyFlag_fieldcare = self:getNextDirtyFlag()         -- [6] radiatorClogging, airIntakeClogging, lubricationLevel
@@ -3898,97 +3900,106 @@ end
 local function updateWheelSlip(vehicle)
     local spec_wheels = vehicle.spec_wheels
     local spec = vehicle.spec_AdvancedDamageSystem
-    if spec == nil or spec_wheels == nil then
-        return 0
+    if spec == nil then
+        return
+    end
+    if spec_wheels == nil or spec_wheels.wheels == nil then
+        spec.wheelSlipIntensity = 0
+        spec._wheelSlipPreviousSample = 0
+        spec._wheelSlipOlderSample = 0
+        return
     end
 
-    local wheelSlipIntensity = 0
+    local brakeThreshold = tonumber(ADS_Config.CORE.CHASSIS_FACTOR_DATA.BRAKE_PEDAL_THRESHOLD) or 0.15
+    if (tonumber(spec_wheels.brakePedal) or 0) > brakeThreshold then
+        spec.wheelSlipIntensity = 0
+        spec._wheelSlipPreviousSample = 0
+        spec._wheelSlipOlderSample = 0
+        return
+    end
 
-    if spec_wheels ~= nil and spec_wheels.wheels ~= nil then
-        local drivenWheels = {}
-        local drivenWheelCount = 0
-        local differentials = vehicle.spec_motorized ~= nil and vehicle.spec_motorized.differentials or nil
-
-        if differentials ~= nil and next(differentials) ~= nil then
-            local visitedDifferentials = {}
-            local function collectDifferential(diffIndex)
-                local runtimeIndex = (tonumber(diffIndex) or -1) + 1
-                if runtimeIndex < 1 or visitedDifferentials[runtimeIndex] then
-                    return
-                end
-
-                local differential = differentials[runtimeIndex]
-                if differential == nil then
-                    return
-                end
-
-                visitedDifferentials[runtimeIndex] = true
-
-                if differential.diffIndex1IsWheel then
-                    local wheelIndex = tonumber(differential.diffIndex1)
-                    if wheelIndex ~= nil and drivenWheels[wheelIndex] ~= true then
-                        drivenWheels[wheelIndex] = true
-                        drivenWheelCount = drivenWheelCount + 1
-                    end
-                else
-                    collectDifferential(differential.diffIndex1)
-                end
-
-                if differential.diffIndex2IsWheel then
-                    local wheelIndex = tonumber(differential.diffIndex2)
-                    if wheelIndex ~= nil and drivenWheels[wheelIndex] ~= true then
-                        drivenWheels[wheelIndex] = true
-                        drivenWheelCount = drivenWheelCount + 1
-                    end
-                else
-                    collectDifferential(differential.diffIndex2)
-                end
-            end
-
-            for differentialIndex, _ in ipairs(differentials) do
-                collectDifferential(differentialIndex - 1)
+    local drivetrainState = ADS_Drivetrain ~= nil and ADS_Drivetrain.getState(vehicle) or nil
+    local wheelSpeedSum = 0
+    local drivenWheelCount = 0
+    local function addWheelSpeed(wheelIndex)
+        local wheel = spec_wheels.wheels[tonumber(wheelIndex)]
+        local physicsWheel = wheel ~= nil and wheel.physics or nil
+        if physicsWheel ~= nil and physicsWheel.wheelShapeCreated and physicsWheel.hasGroundContact then
+            local radius = tonumber(physicsWheel.radius) or 0
+            if radius > 0 then
+                local axleSpeed = getWheelShapeAxleSpeed(wheel.node, physicsWheel.wheelShape)
+                wheelSpeedSum = wheelSpeedSum + math.abs((tonumber(axleSpeed) or 0) * radius)
+                drivenWheelCount = drivenWheelCount + 1
             end
         end
+    end
 
-        if drivenWheelCount == 0 then
+    local layout = drivetrainState ~= nil and drivetrainState.layout or nil
+    if ADS_Drivetrain ~= nil and ADS_Drivetrain.getIsAvailable(vehicle) and layout ~= nil then
+        for _, wheelIndex in ipairs(layout.primaryWheelIndices) do
+            addWheelSpeed(wheelIndex)
+        end
+
+        local fourWheelDrive = layout.centerIdx0 == nil
+            or drivetrainState.driveMode == ADS_Drivetrain.MODE.FOUR_WD
+            or (drivetrainState.driveMode == ADS_Drivetrain.MODE.AUTO and drivetrainState.autoEngaged)
+        if fourWheelDrive then
+            for _, wheelIndex in ipairs(layout.engageableWheelIndices) do
+                addWheelSpeed(wheelIndex)
+            end
+        end
+    else
+        local differentials = vehicle.spec_motorized ~= nil and vehicle.spec_motorized.differentials or nil
+        if differentials ~= nil and next(differentials) ~= nil then
+            local addedWheels = {}
+            for _, differential in ipairs(differentials) do
+                if differential.diffIndex1IsWheel then
+                    local wheelIndex = tonumber(differential.diffIndex1)
+                    if wheelIndex ~= nil and not addedWheels[wheelIndex] then
+                        addedWheels[wheelIndex] = true
+                        addWheelSpeed(wheelIndex)
+                    end
+                end
+                if differential.diffIndex2IsWheel then
+                    local wheelIndex = tonumber(differential.diffIndex2)
+                    if wheelIndex ~= nil and not addedWheels[wheelIndex] then
+                        addedWheels[wheelIndex] = true
+                        addWheelSpeed(wheelIndex)
+                    end
+                end
+            end
+        else
             for wheelIndex, wheel in ipairs(spec_wheels.wheels) do
                 local physicsWheel = wheel.physics
                 if physicsWheel ~= nil and (tonumber(physicsWheel.driveMode) or 0) ~= 0 then
-                    drivenWheels[wheelIndex] = true
-                    drivenWheelCount = drivenWheelCount + 1
+                    addWheelSpeed(wheelIndex)
                 end
             end
         end
-
-        local slipValues = {}
-
-        for wheelIndex, wheel in ipairs(spec_wheels.wheels) do
-            local physicsWheel = wheel.physics
-            if drivenWheels[wheelIndex] == true and physicsWheel ~= nil and physicsWheel.netInfo ~= nil and physicsWheel.hasGroundContact then
-                local vanillaSlip = math.max(tonumber(physicsWheel.netInfo.slip) or 0, 0)
-                table.insert(slipValues, vanillaSlip)
-            end
-        end
-
-        table.sort(slipValues, function(a, b)
-            return a > b
-        end)
-
-        local topCount = math.min(#slipValues, 2)
-        if topCount > 0 then
-            local topSlipSum = 0
-            for i = 1, topCount do
-                topSlipSum = topSlipSum + slipValues[i]
-            end
-            wheelSlipIntensity = topSlipSum / topCount
-        end
     end
 
-    if wheelSlipIntensity < 0.01 then
-        wheelSlipIntensity = 0
+    if drivenWheelCount == 0 then
+        spec.wheelSlipIntensity = 0
+        spec._wheelSlipPreviousSample = 0
+        spec._wheelSlipOlderSample = 0
+        return
+    end
+    local wheelSpeed = wheelSpeedSum / drivenWheelCount
+    local groundSpeed = math.abs((tonumber(vehicle.lastSpeedReal) or 0) * 1000)
+    local longitudinalSlipIntensity = 0
+    -- Agricultural slip compares theoretical wheel speed with actual ground speed.
+    if wheelSpeed > 0.0001 then
+        longitudinalSlipIntensity = math.clamp((wheelSpeed - groundSpeed) / wheelSpeed, 0, 1)
     end
 
-    spec.wheelSlipIntensity = wheelSlipIntensity
+    -- Reject isolated physics spikes without altering sustained native slip.
+    local previousSlip = spec._wheelSlipPreviousSample
+    local olderSlip = spec._wheelSlipOlderSample
+    spec._wheelSlipPreviousSample = longitudinalSlipIntensity
+    spec._wheelSlipOlderSample = previousSlip
+    spec.wheelSlipIntensity = longitudinalSlipIntensity + previousSlip + olderSlip
+        - math.min(longitudinalSlipIntensity, previousSlip, olderSlip)
+        - math.max(longitudinalSlipIntensity, previousSlip, olderSlip)
 end
 
 local function updateWheelGroundState(vehicle)
@@ -4719,7 +4730,7 @@ function AdvancedDamageSystem:updateVehicleStateSnapshot(dt)
         spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo % delayTwo
         --- isCranking
         updateStarterState(self)
-        --- whee slip
+        --- wheel slip
         updateWheelSlip(self)
         --- chassis vibration
         updateChassisVibState(self, delayTwo)
