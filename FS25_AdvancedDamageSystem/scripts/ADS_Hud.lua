@@ -1823,12 +1823,17 @@ function ADS_Hud:drawActiveVehicleHUD()
             tonumber(drivetrainDbg.windupWearFactor) or 0,
             tostring(drivetrainDbg.externallyManaged == true)
         ), {1, 1, 1, 1}, 0.95)
+        local wheelSpeedValues = {}
         for wheelIndex, axleSpeed in ipairs(drivetrainDbg.wheelAxleSpeeds or {}) do
-            addLine(overviewLines, string.format(
-                "Wheel #%d axle speed: %.3f rad/s",
-                wheelIndex,
-                tonumber(axleSpeed) or 0
-            ), {1, 1, 1, 1}, 0.95)
+            table.insert(wheelSpeedValues, string.format("#%d=%.3f", wheelIndex, tonumber(axleSpeed) or 0))
+        end
+        if #wheelSpeedValues > 0 then
+            addLine(
+                overviewLines,
+                "Wheel axle speeds (rad/s): " .. table.concat(wheelSpeedValues, " | "),
+                {1, 1, 1, 1},
+                0.95
+            )
         end
     end
 
@@ -2126,8 +2131,8 @@ function ADS_Hud:drawActiveVehicleHUD()
     local draftMaxForce = tonumber(spec.activeDraftMaxForce) or 0
     local draftEffectiveForceCap = tonumber(spec.activeDraftEffectiveForceCap) or 0
     local effectiveCapPerHp = peakPowerHp > 0 and (draftEffectiveForceCap / peakPowerHp) or 0
-    local drivetrainLines = {}
-    addLine(drivetrainLines, string.format(
+    local motorTelemetryLines = {}
+    addLine(motorTelemetryLines, string.format(
         "sp: %.1f (avg: %.1f) | ap: %.0f%% bp: %.0f%% | hp: %d/%d | ml/dml: %.0f/%.0f (+%.0f%%, ada: %.2f (avg: %.2f%%)) | rpm: %.0f%% | g: %d>%d(%d,%.2f) | max.f: %.2f, eff.c: %.2f | e/h: %.2f",
         currentSpeed,
         avgSpeed,
@@ -2151,7 +2156,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     ), {1, 1, 1, 1}, 0.95)
 
     if hasActiveCVTAddon then
-        addLine(drivetrainLines, string.format(
+        addLine(motorTelemetryLines, string.format(
             "CA: damage: %.6f%% | wd: %s, cd: %s | wh: %s, ch: %s | hp: %s",
             tonumber(spec_CVTaddon.CVTdamage) or 0,
             tostring(spec_CVTaddon.forDBL_warndamage == 1),
@@ -2383,7 +2388,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         table.insert(sections, {title = "CVT Temp", lines = transmissionTempLines})
     end
 
-    table.insert(sections, {title = "Drivetrain", lines = drivetrainLines})
+    table.insert(sections, {title = "Motor telemetry", lines = motorTelemetryLines})
     table.insert(sections, {title = "Battery", lines = batteryLines, showTitle = false})
     if isUnderService then
         table.insert(sections, {title = "Service Data", lines = serviceDataLines})
