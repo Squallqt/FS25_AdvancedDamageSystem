@@ -370,13 +370,11 @@ FSBaseMission.onStartMission = Utils.prependedFunction(FSBaseMission.onStartMiss
 FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, ADS_Config.saveToXMLFile)
 Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, function()
     ADS_Config.loadFromXMLFile()
-    if g_server == nil then
-        ADS_TutorialStateEvent.requestFromServer()
-    end
 end)
 FSBaseMission.sendInitialClientState = Utils.appendedFunction(FSBaseMission.sendInitialClientState, function(_, connection)
     if g_server ~= nil then
         connection:sendEvent(ADS_SettingsSyncEvent.new())
+        ADS_TutorialStateEvent.sendToClient(connection)
     end
 end)
 WorkshopScreen.setVehicle = Utils.appendedFunction(WorkshopScreen.setVehicle, ADS_Main.hookRepairButton)

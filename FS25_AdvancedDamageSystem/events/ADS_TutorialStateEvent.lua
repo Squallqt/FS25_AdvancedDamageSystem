@@ -7,23 +7,17 @@ function ADS_TutorialStateEvent.emptyNew()
     return Event.new(ADS_TutorialStateEvent_mt)
 end
 
-function ADS_TutorialStateEvent.new(state, isRequest)
+function ADS_TutorialStateEvent.new(state)
     local self = ADS_TutorialStateEvent.emptyNew()
-    self.isRequest = isRequest == true
-    if not self.isRequest then
-        self.state = ADS_Config.createTutorialState(
-            state ~= nil and state.tutorialMode,
-            state ~= nil and state.welcomeVersionSeen,
-            state ~= nil and state.messages
-        )
-    end
+    self.state = ADS_Config.createTutorialState(
+        state ~= nil and state.tutorialMode,
+        state ~= nil and state.welcomeVersionSeen,
+        state ~= nil and state.messages
+    )
     return self
 end
 
 function ADS_TutorialStateEvent:writeStream(streamId, connection)
-    streamWriteBool(streamId, self.isRequest)
-    if self.isRequest then return end
-
     streamWriteBool(streamId, self.state.tutorialMode)
     streamWriteString(streamId, self.state.welcomeVersionSeen)
     for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
@@ -32,12 +26,6 @@ function ADS_TutorialStateEvent:writeStream(streamId, connection)
 end
 
 function ADS_TutorialStateEvent:readStream(streamId, connection)
-    self.isRequest = streamReadBool(streamId)
-    if self.isRequest then
-        self:run(connection)
-        return
-    end
-
     local messages = {}
     local tutorialMode = streamReadBool(streamId)
     local welcomeVersionSeen = streamReadString(streamId)
@@ -59,19 +47,14 @@ end
 
 function ADS_TutorialStateEvent:run(connection)
     if connection:getIsServer() then
-        if not self.isRequest then
-            ADS_Config.applyTutorialState(self.state)
-        end
+        ADS_Config.applyTutorialState(self.state)
         return
     end
 
-    if self.isRequest then
-        ADS_TutorialStateEvent.sendToClient(connection)
-    else
-        ADS_Config.setTutorialPlayerState(getUniqueUserId(connection), self.state)
-    end
+    ADS_Config.setTutorialPlayerState(getUniqueUserId(connection), self.state)
 end
 
+--- Pushed by the server to a newly connected client (see FSBaseMission.sendInitialClientState in ADS_Main.lua).
 function ADS_TutorialStateEvent.sendToClient(connection)
     if g_server == nil then return end
 
@@ -84,11 +67,5 @@ end
 function ADS_TutorialStateEvent.sendToServer(state)
     if g_client ~= nil then
         g_client:getServerConnection():sendEvent(ADS_TutorialStateEvent.new(state))
-    end
-end
-
-function ADS_TutorialStateEvent.requestFromServer()
-    if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_TutorialStateEvent.new(nil, true))
     end
 end
