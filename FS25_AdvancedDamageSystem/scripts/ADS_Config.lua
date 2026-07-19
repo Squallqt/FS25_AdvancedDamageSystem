@@ -561,14 +561,14 @@ ADS_Config = {
         -- Allows the AUTO drive mode (front axle engages on slip / low speed under load).
         ALLOW_AUTO_MODE = true,
         -- Differential locks disengage automatically above this speed (km/h). Also gates re-engagement.
-        DIFFLOCK_AUTO_RELEASE_SPEED = 25,
+        DIFFLOCK_AUTO_RELEASE_SPEED = 10,
 
         -- AUTO mode calibration
         AUTO_ENGAGE_SLIP_THRESHOLD = 0.12,   -- wheelSlipIntensity above which 4WD engages
         AUTO_ENGAGE_LOAD_THRESHOLD = 0.55,   -- motor load for low-speed engagement
         AUTO_ENGAGE_SPEED = 13,              -- km/h: below = working speed, engage under load
         AUTO_DISENGAGE_SPEED = 20,           -- km/h: above (and no slip) = road, disengage
-        AUTO_HYSTERESIS_MS = 2000,           -- delay before AUTO releases the front axle
+        AUTO_HYSTERESIS_MS = 250,            -- delay before AUTO releases the front axle
 
         -- Driveline windup damage (4WD / locked diffs + steering + high-grip surface)
         WINDUP_DAMAGE_ENABLED = true,
