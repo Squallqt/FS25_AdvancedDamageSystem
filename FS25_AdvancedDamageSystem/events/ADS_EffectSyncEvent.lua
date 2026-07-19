@@ -104,7 +104,9 @@ function ADS_EffectSyncEvent:run(connection)
                 motor.gearChangeTimer    = self.extraFloat
                 motor.autoGearChangeTimer = self.extraFloat
             end
-            if vehicle.spec_AdvancedDamageSystem and self.status == "FAILED" then
+            if vehicle.spec_AdvancedDamageSystem
+                and self.status == "FAILED"
+                and vehicle:getIsActiveForInput(true) then
                 local sampleIdx = math.random(3)
                 g_soundManager:playSample(spec.samples['transmissionShiftFailed' .. sampleIdx])
             end
@@ -118,7 +120,9 @@ function ADS_EffectSyncEvent:run(connection)
             if motor and motor.setGear then
                 motor:setGear(0, false)
             end
-            g_soundManager:playSample(spec.samples.gearDisengage1)
+            if vehicle:getIsActiveForInput(true) then
+                g_soundManager:playSample(spec.samples.gearDisengage1)
+            end
             if vehicle:getIsActiveForInput(true) then
                 g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_gear_disengage_message"), 3000)
             end

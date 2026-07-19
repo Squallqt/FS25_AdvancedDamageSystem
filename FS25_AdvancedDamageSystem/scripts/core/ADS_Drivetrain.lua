@@ -968,9 +968,12 @@ end
 --- Local player feedback (client side of the machine currently controlled).
 local function updateLocalNotifications(vehicle, state, dt)
     if g_dedicatedServerInfo ~= nil then return end
-    local isControlled = g_currentMission ~= nil and vehicle:getIsControlled() and not vehicle:getIsAIActive()
+    local isControlled = g_currentMission ~= nil
+        and vehicle:getIsActiveForInput(true)
+        and not vehicle:getIsAIActive()
     if not isControlled then
         state._lastNotifiedMode = state.driveMode
+        state._lastNotifiedAutoEngaged = state.autoEngaged
         state._lastNotifiedLock = state.diffLockEngaged
 
         -- Grace window so the park brake notification survives losing control.
@@ -988,7 +991,8 @@ local function updateLocalNotifications(vehicle, state, dt)
     end
     state._wasLocallyControlled = true
 
-    if state._lastNotifiedMode ~= state.driveMode then
+    local driveModeChanged = state._lastNotifiedMode ~= state.driveMode
+    if driveModeChanged then
         if state._lastNotifiedMode ~= nil then
             local modeText = g_i18n:getText(ADS_Drivetrain.MODE_L10N[state.driveMode] or "ads_drivetrain_mode_4wd")
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, string.format(g_i18n:getText("ads_drivetrain_notify_mode"), modeText))
@@ -997,6 +1001,20 @@ local function updateLocalNotifications(vehicle, state, dt)
             end
         end
         state._lastNotifiedMode = state.driveMode
+    end
+
+    if driveModeChanged or state.driveMode ~= ADS_Drivetrain.MODE.AUTO then
+        state._lastNotifiedAutoEngaged = state.autoEngaged
+    elseif state._lastNotifiedAutoEngaged ~= state.autoEngaged then
+        if state._lastNotifiedAutoEngaged ~= nil then
+            local modeKey = state.autoEngaged and "ads_drivetrain_mode_4wd" or "ads_drivetrain_mode_4x2"
+            local modeText = g_i18n:getText(modeKey)
+            g_currentMission.hud:addSideNotification({1, 1, 1, 1}, string.format(g_i18n:getText("ads_drivetrain_notify_mode"), modeText))
+            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
+                g_soundManager:playSample(ADS_Main.samples.notification2D)
+            end
+        end
+        state._lastNotifiedAutoEngaged = state.autoEngaged
     end
 
     if state._lastNotifiedLock ~= state.diffLockEngaged then

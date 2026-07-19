@@ -2992,7 +2992,7 @@ local function syncOverheatProtection(vehicle, dt)
         if vehicle:getIsMotorStarted() then
             if (rawTransmissionTemp > 105 or rawEngineTemp > 105) and not overheatProtection then
                 vehicle:addBreakdown(overheatProtectionId, 1)
-                if vehicle.getIsControlled ~= nil and vehicle:getIsControlled() then
+                if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
                     g_soundManager:playSample(spec.samples.alarm)
                 end
             elseif overheatProtection then
@@ -3001,17 +3001,17 @@ local function syncOverheatProtection(vehicle, dt)
                 end
                 if (rawTransmissionTemp > 125 or rawEngineTemp > 125) and overheatProtection.stage < 4 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    if vehicle.getIsControlled ~= nil and vehicle:getIsControlled() then
+                    if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
                         g_soundManager:playSample(spec.samples.alarm)
                     end
                 elseif (rawTransmissionTemp > 115 or rawEngineTemp > 115) and overheatProtection.stage < 3 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    if vehicle.getIsControlled ~= nil and vehicle:getIsControlled() then
+                    if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
                         g_soundManager:playSample(spec.samples.alarm)
                     end
                 elseif (rawTransmissionTemp > 110 or rawEngineTemp > 110) and overheatProtection.stage < 2 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    if vehicle.getIsControlled ~= nil and vehicle:getIsControlled() then
+                    if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
                         g_soundManager:playSample(spec.samples.alarm)
                     end
                 end
