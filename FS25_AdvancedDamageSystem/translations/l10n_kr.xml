@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="점검 소요 시간"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="작업 시작 전 현장 점검에 걸리는 시간을 실제 초 단위로 설정합니다."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="윤활 소모율"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="작동 시간당 소모되는 윤활량을 설정합니다. 0%에서는 작동 시간이 늘어나도 윤활 수준이 감소하지 않습니다."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="작동 시간당 소모되는 윤활량을 설정합니다."/>
         <text name="ads_ws_header_title" text="정비소"/>
         <text name="ads_settings_section_service_wear" text="정비 및 마모"/>
         <text name="ads_settings_section_thermal_model" text="열 모델"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="기어 빠짐"/>
         <text name="ads_breakdown_at_progress_message" text="진행 중"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="엔진이 차갑습니다! 고 RPM은 마모의 원인이 됩니다!"/>
+        <text name="ads_spec_cold_engine_message" text="엔진이 차갑습니다! 부하를 줄이십시오!"/>
         <text name="ads_spec_overheat_engine_message" text="경고! 엔진 과열 중."/>
         <text name="ads_spec_overheat_transmission_message" text="경고! 변속기 과열 중."/>
         <text name="ads_spec_this_month" text="이번 달"/>

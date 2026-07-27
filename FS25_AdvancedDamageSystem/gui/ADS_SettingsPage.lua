@@ -1624,10 +1624,10 @@ function ADS_InGameSettings:generateAllSteps()
         return string.format("%d s", v / 1000)
     end)
 
-    -- Lubrication wear: Off, then 10% to 100% per operating hour.
+    -- Lubrication wear: Off, then 1% to 5% per operating hour.
     do
         local data = { values = {0.0}, texts = {g_i18n:getText("ads_option_off")} }
-        for percent = 10, 100, 10 do
+        for percent = 1, 5 do
             table.insert(data.values, percent / 100)
             table.insert(data.texts, string.format("%d%%", percent))
         end

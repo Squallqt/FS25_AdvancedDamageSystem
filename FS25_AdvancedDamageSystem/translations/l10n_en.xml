@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Inspection Duration"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Sets how long a pre-shift field inspection takes, in real seconds."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Lubrication Wear Rate"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Sets how much lubrication is consumed per operating hour. At 0%, the lubrication level does not decrease with operating hours."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Sets how much lubrication is consumed per operating hour."/>
         <text name="ads_ws_header_title" text="Workshop"/>
         <text name="ads_settings_section_service_wear" text="Service and Wear"/>
         <text name="ads_settings_section_thermal_model" text="Thermal Model"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="Gear disengage"/>
         <text name="ads_breakdown_at_progress_message" text="in progress"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="Engine is cold! High revs cause wear!"/>
+        <text name="ads_spec_cold_engine_message" text="Engine is cold! Reduce the load!"/>
         <text name="ads_spec_overheat_engine_message" text="Warning! Engine overheating."/>
         <text name="ads_spec_overheat_transmission_message" text="Warning! Transmission overheating."/>
         <text name="ads_spec_this_month" text="This month"/>

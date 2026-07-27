@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Тривалість огляду"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Встановлює час проведення передзмінного огляду в реальних секундах."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Швидкість витрати мастила"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Встановлює витрату мастила за одну годину роботи. При 0% рівень мастила не знижується з напрацюванням мотогодин."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Встановлює витрату мастила за одну годину роботи."/>
         <text name="ads_ws_header_title" text="Майстерня"/>
         <text name="ads_settings_section_service_wear" text="Обслуговування та зношування"/>
         <text name="ads_settings_section_thermal_model" text="Теплова модель"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="Передачу вибито"/>
         <text name="ads_breakdown_at_progress_message" text="триває"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="Двигун холодний! Високі оберти спричиняють знос!"/>
+        <text name="ads_spec_cold_engine_message" text="Двигун холодний! Зменште навантаження!"/>
         <text name="ads_spec_overheat_engine_message" text="Увага! Перегрів двигуна."/>
         <text name="ads_spec_overheat_transmission_message" text="Увага! Перегрів трансмісії."/>
         <text name="ads_spec_this_month" text="Цього місяця"/>

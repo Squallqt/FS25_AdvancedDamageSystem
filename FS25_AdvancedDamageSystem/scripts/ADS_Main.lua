@@ -5,6 +5,7 @@ local modName = g_currentModName
 
 source(g_currentModDirectory .. "scripts/ADS_Config.lua")
 source(g_currentModDirectory .. "scripts/ADS_Utils.lua")
+source(g_currentModDirectory .. "scripts/ADS_DebugSnapshot.lua")
 source(g_currentModDirectory .. "scripts/ADS_Leasing.lua")
 source(g_currentModDirectory .. "scripts/ADS_Tutorial.lua")
 source(g_currentModDirectory .. "gui/ADS_WorkshopDialog.lua")
@@ -34,6 +35,8 @@ source(g_currentModDirectory .. "events/ADS_StartButtonEvent.lua")
 source(g_currentModDirectory .. "events/ADS_HandToolSyncEvent.lua")
 source(g_currentModDirectory .. "events/ADS_JumperCablesEvent.lua")
 source(g_currentModDirectory .. "events/ADS_DrivetrainEvent.lua")
+source(g_currentModDirectory .. "events/ADS_DebugSnapshotResponseEvent.lua")
+source(g_currentModDirectory .. "events/ADS_DebugSnapshotRequestEvent.lua")
 
 function ADS_Main.loadGuiProfiles()
     if ADS_Main.guiProfilesLoaded or g_gui == nil then

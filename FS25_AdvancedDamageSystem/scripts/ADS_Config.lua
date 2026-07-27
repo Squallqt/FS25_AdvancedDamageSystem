@@ -91,8 +91,9 @@ ADS_Config = {
             LUGGING_MULTIPLIER = 3.0,       
             LUGGING_RPM_THRESHOLD = 0.6,
             LUGGING_MOTORLOAD_THRESHOLD = 0.80,
-            COLD_MOTOR_RPM_THRESHOLD = 0.5,
-            COLD_MOTOR_TEMP_THRESHOLD = 50,         
+            COLD_MOTOR_RPM_INFLUENCE = 0.35,
+            COLD_MOTOR_TEMP_THRESHOLD = 50,
+            COLD_MOTOR_WARNING_EXPOSURE_MS = 2000,
             COLD_MOTOR_MULTIPLIER = 60.0,
             OVERHEAT_MOTOR_MULTIPLIER = 100.0, 
             OVERHEAT_MOTOR_THRESHOLD = 95,
@@ -546,7 +547,10 @@ ADS_Config = {
         CLEANING_SPEED = 0.05,
         AIR_INTAKE_BREAKDOWN_THRESHOLD = 0.5,
         VISUAL_INSPECTION_DURATION = 6000,
-        LUBRICATION_REDUCE_PER_OPERATING_HOUR = 0.1,
+        LUBRICATION_REDUCE_PER_OPERATING_HOUR = 0.02,
+        LUBRICATION_RESTORE_PER_USE = 0.1,
+        LUBRICATION_WARNING_THRESHOLD = 0.80,
+        LUBRICATION_REDUCE_PER_PERIOD = 0.1,
         RAYCAST_DISTANCE = 2.0,
         JUMPER_CABLES_MAX_CONNECTION_DISTANCE = 12.0,
     },
@@ -556,43 +560,40 @@ ADS_Config = {
     -- Runtime management of the physics differentials declared by vehicle.xml.
     -- ====================================================================================
     DRIVETRAIN = {
-        -- Master switch for the whole 4WD / diff lock feature.
         ENABLED = true,
-        -- Allows the AUTO drive mode (front axle engages on slip / low speed under load).
         ALLOW_AUTO_MODE = true,
-        -- Differential locks disengage automatically above this speed (km/h). Also gates re-engagement.
         DIFFLOCK_AUTO_RELEASE_SPEED = 10,
 
-        -- AUTO mode calibration
-        AUTO_ENGAGE_SLIP_THRESHOLD = 0.12,   -- wheelSlipIntensity above which 4WD engages
-        AUTO_ENGAGE_LOAD_THRESHOLD = 0.55,   -- motor load for low-speed engagement
-        AUTO_ENGAGE_SPEED = 13,              -- km/h: below = working speed, engage under load
-        AUTO_DISENGAGE_SPEED = 20,           -- km/h: above (and no slip) = road, disengage
-        AUTO_HYSTERESIS_MS = 250,            -- delay before AUTO releases the front axle
+        OPEN_AXLE_SPEED_RATIO = 4.0,
+        LOCKED_AXLE_SPEED_RATIO = 1.0,
 
-        -- Driveline windup damage (4WD / locked diffs + steering + high-grip surface)
+        AUTO_ENGAGE_SLIP_THRESHOLD = 0.12,
+        AUTO_ENGAGE_LOAD_THRESHOLD = 0.55,
+        AUTO_ENGAGE_SPEED = 13,
+        AUTO_DISENGAGE_SPEED = 20,
+        AUTO_HYSTERESIS_MS = 250,
+
         WINDUP_DAMAGE_ENABLED = true,
-        WINDUP_STEER_THRESHOLD = 0.12,       -- rad: minimum steering angle to wind up
-        WINDUP_FRICTION_THRESHOLD = 0.85,    -- tire/ground friction: high-grip surfaces only
-        WINDUP_4WD_FACTOR = 0.15,            -- MFWD-only binding is mild compared to locked diffs
-        WINDUP_4WD_MAX_STRESS = 0.18,        -- keep MFWD-only windup below critical / breakage territory
-        WINDUP_ACCUMULATION_RATE = 0.09,     -- stress per second at full factors
-        WINDUP_RELEASE_RATE = 0.25,          -- stress release per second
-        WINDUP_WEAR_MULTIPLIER = 12.0,       -- additive transmission wear factor at full stress
-        WINDUP_INSTANT_DAMAGE = 0.03,        -- one-off transmission condition loss per locked-windup episode
-        WINDUP_TUTORIAL_THRESHOLD = 0.05,    -- first-time diff-lock tutorial before meaningful wear builds up
-        WINDUP_4WD_WARNING_THRESHOLD = 0.05, -- preventive 4WD warning below the MFWD stress cap
-        WINDUP_WARNING_THRESHOLD = 0.22,     -- repeated diff-lock warning, aligned with average stress warning
-        WINDUP_CRITICAL_THRESHOLD = 0.44,    -- blinking HUD critical, aligned with average stress critical
+        WINDUP_STEER_THRESHOLD = 0.12,
+        WINDUP_FRICTION_THRESHOLD = 0.85,
+        WINDUP_4WD_FACTOR = 0.15,
+        WINDUP_4WD_MAX_STRESS = 0.18,
+        WINDUP_ACCUMULATION_RATE = 0.09,
+        WINDUP_RELEASE_RATE = 0.25,
+        WINDUP_WEAR_MULTIPLIER = 12.0,
+        WINDUP_INSTANT_DAMAGE = 0.03,
+        WINDUP_TUTORIAL_THRESHOLD = 0.05,
+        WINDUP_4WD_WARNING_THRESHOLD = 0.05,
+        WINDUP_WARNING_THRESHOLD = 0.22,
+        WINDUP_CRITICAL_THRESHOLD = 0.44,
 
         EXCLUDED_CATEGORIES = {
             CARS = true,
             TRUCKS = true
         },
 
-        -- Parking brake
         PARKBRAKE_ENABLED = true,
-        PARKBRAKE_AUTO_MODE = true            -- engages when the operator leaves the machine, releases on throttle input
+        PARKBRAKE_AUTO_MODE = true
     },
 
     ELECTRICAL = {
@@ -1200,7 +1201,12 @@ function ADS_Config.loadFromXMLFile()
     if v ~= nil then ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = v end
 
     v = getXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR")
-    if v ~= nil then ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = v end
+    if v ~= nil then
+        local percent = math.floor(v * 100 + 0.5)
+        if percent >= 0 and percent <= 5 then
+            ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = percent / 100
+        end
+    end
 
     v = getXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE")
     if v ~= nil then
@@ -1224,7 +1230,7 @@ function ADS_Config.loadFromXMLFile()
     if v ~= nil then ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = v end
 
     v = getXMLFloat(xmlFile, root .. ".DRIVETRAIN_DIFFLOCK_RELEASE_SPEED")
-    if v ~= nil then ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = math.clamp(v, 5, 60) end
+    if v ~= nil then ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = math.clamp(v, 10, 40) end
 
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED")
     if v ~= nil then ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = v end

@@ -239,7 +239,7 @@ local function applyLubricationInspectionFindings(dialog, additionalLines)
     elseif lubricationLevel <= 0.60 then
         statusKey = "ads_inspection_status_dry"
         appendAdditionalLine(additionalLines, "ads_inspection_hint_lubrication_stage2")
-    elseif lubricationLevel <= 0.85 then
+    elseif lubricationLevel <= ADS_Config.FIELD_CARE.LUBRICATION_WARNING_THRESHOLD then
         statusKey = "ads_inspection_status_slightly_dry"
         appendAdditionalLine(additionalLines, "ads_inspection_hint_lubrication_stage1")
     end

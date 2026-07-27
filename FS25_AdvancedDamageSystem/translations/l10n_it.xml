@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Durata ispezione"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Imposta quanto dura un'ispezione sul campo pre-turno, in secondi reali."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Tasso di consumo della lubrificazione"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Imposta quanta lubrificazione viene consumata per ora di funzionamento. A 0%, il livello di lubrificazione non diminuisce con le ore di funzionamento."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Imposta quanta lubrificazione viene consumata per ora di funzionamento."/>
         <text name="ads_ws_header_title" text="Officina"/>
         <text name="ads_settings_section_service_wear" text="Manutenzione e usura"/>
         <text name="ads_settings_section_thermal_model" text="Modello termico"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="Marcia disinserita"/>
         <text name="ads_breakdown_at_progress_message" text="in corso"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="Motore freddo! I giri elevati causano usura!"/>
+        <text name="ads_spec_cold_engine_message" text="Motore freddo! Riduci il carico!"/>
         <text name="ads_spec_overheat_engine_message" text="Attenzione! Surriscaldamento del motore."/>
         <text name="ads_spec_overheat_transmission_message" text="Attenzione! Surriscaldamento della trasmissione."/>
         <text name="ads_spec_this_month" text="Questo mese"/>

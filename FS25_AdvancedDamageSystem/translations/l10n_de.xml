@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Dauer der Inspektion"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Legt fest, wie lange eine Feldinspektion vor Schichtbeginn in Echtzeitsekunden dauert."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Schmierstoffverbrauch"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Legt fest, wie viel Schmierung pro Betriebsstunde verbraucht wird. Bei 0 % sinkt der Schmierzustand nicht mit den Betriebsstunden."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Legt fest, wie viel Schmierung pro Betriebsstunde verbraucht wird."/>
         <text name="ads_ws_header_title" text="Werkstatt"/>
         <text name="ads_settings_section_service_wear" text="Wartung und Verschleiß"/>
         <text name="ads_settings_section_thermal_model" text="Thermisches Modell"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="Gang ausgelegt"/>
         <text name="ads_breakdown_at_progress_message" text="in Arbeit"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="Motor ist kalt! Hohe Drehzahlen verursachen Verschleiß!"/>
+        <text name="ads_spec_cold_engine_message" text="Motor ist kalt! Verringern Sie die Belastung!"/>
         <text name="ads_spec_overheat_engine_message" text="Warnung! Motor überhitzt."/>
         <text name="ads_spec_overheat_transmission_message" text="Warnung! Getriebe überhitzt."/>
         <text name="ads_spec_this_month" text="Diesen Monat"/>

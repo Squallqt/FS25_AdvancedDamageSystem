@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Tarkastuksen kesto"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Määrittää, kuinka kauan vuoron aloitustarkastus kestää reaaliajassa sekunteina."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Voitelun kulumisnopeus"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Määrittää, kuinka paljon voitelua kuluu käyttötuntia kohden. Arvolla 0 % voitelutaso ei laske käyttötuntien myötä."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Määrittää, kuinka paljon voitelua kuluu käyttötuntia kohden."/>
         <text name="ads_ws_header_title" text="Korjaamo"/>
         <text name="ads_settings_section_service_wear" text="Huolto ja kuluminen"/>
         <text name="ads_settings_section_thermal_model" text="Lämpömalli"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="Vaihde irrotettu"/>
         <text name="ads_breakdown_at_progress_message" text="käynnissä"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="Moottori on kylmä! Suuret kierrokset aiheuttavat kulumista!"/>
+        <text name="ads_spec_cold_engine_message" text="Moottori on kylmä! Vähennä kuormaa!"/>
         <text name="ads_spec_overheat_engine_message" text="Varoitus! Moottori ylikuumenee."/>
         <text name="ads_spec_overheat_transmission_message" text="Varoitus! Vaihteisto ylikuumenee."/>
         <text name="ads_spec_this_month" text="Tässä kuussa"/>

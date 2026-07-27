@@ -287,54 +287,42 @@ end
 --                  LUBRICATION
 -- ==========================================================
 
-local MILLISECONDS_PER_GAME_DAY = 24 * 60 * 60 * 1000
-local POST_STORAGE_LUBRICATION_LEVEL = 0.8
-
 function ADS_Consumptables:updateLubricationLevel(operatingDt, motorState)
     local C = ADS_Config.FIELD_CARE
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or not spec.isVehicleNeedLubricate then
+    if not spec.isVehicleNeedLubricate then
         return
     end
 
-    local environment = g_currentMission ~= nil and g_currentMission.environment or nil
+    local currentGameTime = ADS_Utils.getCurrentGameTime()
     local isMotorRunning = motorState == MotorState.ON
-    if environment ~= nil then
-        local currentGameTime = (tonumber(environment.currentMonotonicDay) or 0) * MILLISECONDS_PER_GAME_DAY
-            + (tonumber(environment.dayTime) or 0)
+    local periodDuration = ADS_Utils.getCurrentPeriodDuration()
+    local completedPeriods = math.floor((currentGameTime - spec.lastLubricationGameTime) / periodDuration)
 
-        if isMotorRunning and not spec._wasMotorRunningForLubrication then
-            local storageDuration = currentGameTime - (tonumber(spec.lastOperatingGameTime) or currentGameTime)
-            local storageThreshold = math.max(tonumber(environment.daysPerPeriod) or 1, 1) * MILLISECONDS_PER_GAME_DAY
-            if storageDuration >= storageThreshold then
-                spec.lubricationLevel = math.min(tonumber(spec.lubricationLevel) or 1.0, POST_STORAGE_LUBRICATION_LEVEL)
-            end
-        end
-
-        if isMotorRunning then
-            spec.lastOperatingGameTime = currentGameTime
-        end
-    end
-    spec._wasMotorRunningForLubrication = isMotorRunning
-
-    local lubricationReducePerHour = math.max(tonumber(C.LUBRICATION_REDUCE_PER_OPERATING_HOUR) or 0, 0)
-    local elapsedOperatingHours = math.max(tonumber(operatingDt) or 0, 0) / (60 * 60 * 1000)
-    if lubricationReducePerHour <= 0 or elapsedOperatingHours <= 0 then
-        return
+    if completedPeriods > 0 then
+        spec.lubricationLevel = math.max(
+            spec.lubricationLevel - completedPeriods * C.LUBRICATION_REDUCE_PER_PERIOD,
+            0
+        )
+        spec.lastLubricationGameTime = spec.lastLubricationGameTime + completedPeriods * periodDuration
     end
 
-    local lubricationLevel = math.clamp(tonumber(spec.lubricationLevel) or 1.0, 0.0, 1.0)
-    spec.lubricationLevel = math.max(lubricationLevel - lubricationReducePerHour * elapsedOperatingHours, 0)
+    if isMotorRunning then
+        spec.lastLubricationGameTime = currentGameTime
+    end
+
+    spec.lubricationLevel = math.max(
+        spec.lubricationLevel - C.LUBRICATION_REDUCE_PER_OPERATING_HOUR * operatingDt / (60 * 60 * 1000),
+        0
+    )
 end
 
 function ADS_Consumptables:lubricateVehicle()
+    local C = ADS_Config.FIELD_CARE
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil then
-        return
-    end
 
-    local prevLubricationLevel = tonumber(spec.lubricationLevel) or 0
-    spec.lubricationLevel = math.min(prevLubricationLevel + 0.2, 1.0)
+    spec.lubricationLevel = math.min(spec.lubricationLevel + C.LUBRICATION_RESTORE_PER_USE, 1.0)
+    spec.lastLubricationGameTime = ADS_Utils.getCurrentGameTime()
 
     --- tutorial message
     if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then

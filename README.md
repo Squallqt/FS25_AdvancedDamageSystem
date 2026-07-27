@@ -6,6 +6,7 @@ Advanced vehicle wear, failure, diagnostics, maintenance, and repair system for 
 [![FS25](https://img.shields.io/badge/FS25-compatible-green.svg)](https://farming-simulator.com/)
 [![Multiplayer](https://img.shields.io/badge/multiplayer-supported-success.svg)](#)
 [![Languages](https://img.shields.io/badge/languages-15-blue.svg)](#)
+[![License](https://img.shields.io/badge/license-GPL--3.0-yellow.svg)](LICENSE)
 
 This repository is an independently maintained fork of Advanced Damage System by id577, maintained by Squallqt since 30 June 2026, while preserving the full technical gameplay model and documentation.
 
@@ -225,7 +226,7 @@ Each system has its own set of wear factors that accelerate `Condition` loss and
 
 - **Wet Crop Factor:** Triggers when the machine is turned on, harvesting is in progress, and the weather is wet.
 
-- **Lubrication Factor:** Triggers when the machine requires lubrication and lubrication level is below `100%`. The effect becomes stronger as lubrication level drops.
+- **Lubrication Factor:** Triggers when the machine requires lubrication and its lubrication points fall below the serviceable range. The effect becomes stronger as lubrication level drops.
 
 ## 3. Breakdowns
 
@@ -581,6 +582,8 @@ You can buy a `Grease Gun` in the shop and use it to lubricate the vehicle befor
 - **Why it matters:** Poor lubrication increases wear and can eventually lead to lubrication-related failures. This is particularly important for high-complexity harvesting machines that operate under sustained load for long periods.
 
 - **When to use:** Before a working day or before demanding seasonal operations. Properly lubricating a combine before harvest is one of the easiest ways to avoid an inconvenient breakdown in the middle of the field.
+
+Each complete period without use reduces the lubrication level by `10%`. Operating the machine, applying grease, or completing any workshop procedure other than inspection restarts the inactivity interval.
 
 ## 6. Reliability and Maintainability
 

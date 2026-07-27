@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Átvizsgálás időtartama"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Beállítja, mennyi ideig tartson a műszak előtti terepi átvizsgálás valós másodpercben."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Kenés fogyási üteme"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Beállítja, mennyi kenőanyag fogy egy üzemóra alatt. 0%-on a kenési szint nem csökken az üzemórákkal."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Beállítja, mennyi kenőanyag fogy egy üzemóra alatt."/>
         <text name="ads_ws_header_title" text="Műhely"/>
         <text name="ads_settings_section_service_wear" text="Szerviz és kopás"/>
         <text name="ads_settings_section_thermal_model" text="Hőmodell"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="A sebességfokozat kiugrott"/>
         <text name="ads_breakdown_at_progress_message" text="folyamatban"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="A motor hideg! A magas fordulat kopást okoz!"/>
+        <text name="ads_spec_cold_engine_message" text="A motor hideg! Csökkentsd a terhelést!"/>
         <text name="ads_spec_overheat_engine_message" text="Figyelem! A motor túlmelegszik."/>
         <text name="ads_spec_overheat_transmission_message" text="Figyelem! A váltó túlmelegszik."/>
         <text name="ads_spec_this_month" text="Ebben a hónapban"/>

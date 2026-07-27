@@ -1,7 +1,3 @@
--- ADS_ConsoleCommandEvent
--- Client-to-server event for console commands that mutate vehicle or config
--- state. Only admin (master user) connections are allowed to execute commands.
-
 ADS_ConsoleCommandEvent = {}
 local ADS_ConsoleCommandEvent_mt = Class(ADS_ConsoleCommandEvent, Event)
 
@@ -150,7 +146,7 @@ function ADS_ConsoleCommandEvent:run(connection)
         end
     end
 
-    if self.commandName == "setConfigVar" or self.commandName == "debug" then
+    if self.commandName == "setConfigVar" then
         g_server:broadcastEvent(ADS_SettingsSyncEvent.new())
     end
 end

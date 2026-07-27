@@ -97,12 +97,12 @@ function ADS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.idleCurrentA           or 0.5)
     streamWriteFloat32(streamId, self.cloggingSpeed          or 1.0)
     streamWriteFloat32(streamId, self.fieldInspectionDuration or 6000)
-    streamWriteFloat32(streamId, self.lubricationReducePerOperatingHour or 0.1)
+    streamWriteFloat32(streamId, self.lubricationReducePerOperatingHour)
     streamWriteBool(streamId,    self.debugMode              or false)
     streamWriteBool(streamId,    self.drivetrainEnabled ~= false)
     streamWriteBool(streamId,    self.drivetrainAllowAutoMode ~= false)
     streamWriteBool(streamId,    self.drivetrainWindupDamage ~= false)
-    streamWriteFloat32(streamId, self.drivetrainDiffLockReleaseSpeed or 25)
+    streamWriteFloat32(streamId, self.drivetrainDiffLockReleaseSpeed or 10)
     streamWriteBool(streamId,    self.drivetrainParkBrakeEnabled ~= false)
     streamWriteBool(streamId,    self.drivetrainParkBrakeAuto ~= false)
 end
@@ -201,7 +201,7 @@ local function applyConfig(event)
     ADS_Config.DRIVETRAIN.ENABLED                           = event.drivetrainEnabled ~= false
     ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE                   = event.drivetrainAllowAutoMode ~= false
     ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED             = event.drivetrainWindupDamage ~= false
-    ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED       = math.clamp(tonumber(event.drivetrainDiffLockReleaseSpeed) or 25, 5, 60)
+    ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED       = math.clamp(tonumber(event.drivetrainDiffLockReleaseSpeed) or 10, 10, 40)
     ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED                 = event.drivetrainParkBrakeEnabled ~= false
     ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE               = event.drivetrainParkBrakeAuto ~= false
 

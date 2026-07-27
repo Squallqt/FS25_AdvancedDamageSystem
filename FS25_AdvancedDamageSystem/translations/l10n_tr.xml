@@ -21,7 +21,7 @@
         <text name="ads_fieldInspectionDuration_label" text="Denetim Süresi"/>
         <text name="ads_fieldInspectionDuration_tooltip" text="Vardiya öncesi saha denetiminin ne kadar süreceğini, gerçek saniye cinsinden belirler."/>
         <text name="ads_lubricationReducePerOperatingHour_label" text="Yağlama Tüketim Hızı"/>
-        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Çalışma saati başına ne kadar yağlama tüketileceğini belirler. %0 ayarında, yağlama seviyesi çalışma saatleriyle azalmaz."/>
+        <text name="ads_lubricationReducePerOperatingHour_tooltip" text="Çalışma saati başına ne kadar yağlama tüketileceğini belirler."/>
         <text name="ads_ws_header_title" text="Atölye"/>
         <text name="ads_settings_section_service_wear" text="Bakım ve Aşınma"/>
         <text name="ads_settings_section_thermal_model" text="Termal Model"/>
@@ -376,7 +376,7 @@
         <text name="ads_breakdowns_gear_disengage_message" text="Vites ayrılması"/>
         <text name="ads_breakdown_at_progress_message" text="devam ediyor"/>
         <!-- Vehicle Specifications -->
-        <text name="ads_spec_cold_engine_message" text="Motor soğuk! Yüksek devir aşınmaya neden olur!"/>
+        <text name="ads_spec_cold_engine_message" text="Motor soğuk! Yükü azaltın!"/>
         <text name="ads_spec_overheat_engine_message" text="Uyarı! Motor aşırı ısınmış."/>
         <text name="ads_spec_overheat_transmission_message" text="Uyarı! Şanzıman aşırı ısınıyor."/>
         <text name="ads_spec_this_month" text="Bu ay"/>

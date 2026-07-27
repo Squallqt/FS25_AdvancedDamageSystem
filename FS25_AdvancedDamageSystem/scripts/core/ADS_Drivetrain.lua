@@ -1,32 +1,3 @@
--- =====================================================================================
---  ADS_Drivetrain
---  Realistic 4WD / differential lock management for motorized ADS vehicles.
---
---  Responsibilities (single role: drivetrain physics state + windup stress model):
---   * Analyze the differential topology declared by vehicle.xml (spec_motorized.differentials)
---     without any hardcoded indices: axle differentials connect two wheels, the center
---     differential connects two other differentials.
---   * Build the active driveline with the native differential graph bindings. No vanilla
---     function is overwritten or monkeypatched.
---   * Drive modes: 4x2 (primary axle graph only), 4WD (full XML graph), AUTO (engages the
---     assist axle on slip / low speed under load, releases it on the road).
---   * Differential locks: active native torque balancing across the driven outputs, with
---     automatic release above a speed threshold.
---   * Driveline windup model: driving in 4WD or with locked differentials while
---     steering on a high-grip surface accumulates stress and damages the transmission.
---
---  Multiplayer: physics runs on the server. Player commands travel through
---  ADS_DrivetrainEvent; the resulting state is replicated with the dedicated
---  adsDirtyFlag_drivetrain update-stream group.
---
---  Third-party compatibility:
---   * FS25_EnhancedVehicle: if its own differential control is enabled the ADS module
---     stands down entirely for every vehicle (both would fight over the same physics
---     differentials). Checked dynamically, no load-order requirement.
---   * CVT addons (spec_CVTaddon): fully compatible, this module never touches motor
---     ratios, only differential torque distribution.
--- =====================================================================================
-
 ADS_Drivetrain = ADS_Drivetrain or {}
 
 ADS_Drivetrain.MODE = {
@@ -41,10 +12,14 @@ ADS_Drivetrain.MODE_L10N = {
     [2] = "ads_drivetrain_mode_auto"
 }
 
-local LOCKED_AXLE_SPEED_RATIO = 1.1
-local LOCKED_MIN_TORQUE_RATIO = 0.3
-local LOCKED_MAX_TORQUE_RATIO = 0.7
-local LOCKED_WHEEL_SPEED_FILTER = 0.08
+local LOCKED_MIN_TORQUE_RATIO = 0.1
+local LOCKED_MAX_TORQUE_RATIO = 0.9
+local LOCKED_TORQUE_DEAD_ZONE = 0.02
+local LOCKED_WHEEL_SPEED_FILTER = 0.2
+local TRACK_STEER_INPUT_EPSILON = 0.001
+local DEBUG_SAMPLE_INTERVAL_MS = 400
+local DEBUG_RATIO_MIN_SPEED = 0.05
+local DEBUG_RATIO_MAX = 99
 
 local function sanitizeNumber(value, fallback, minValue, maxValue)
     if AdvancedDamageSystem ~= nil and AdvancedDamageSystem.sanitizeNumber ~= nil then
@@ -56,17 +31,10 @@ local function sanitizeNumber(value, fallback, minValue, maxValue)
     return sanitized
 end
 
--- Lua locals only exist below their declaration: getConfig must precede every helper
--- that calls it (a late declaration silently resolves to nil at call time).
 local function getConfig()
     return ADS_Config.DRIVETRAIN
 end
 
---- EnhancedVehicle owns the physics differentials when its diff feature is enabled,
---  and its own parking brake when that feature is enabled. Mods load in separate
---  script environments, so EV's global table is not always visible from here. When
---  it is not, EV's persistent settings file (the same file its in-game menu writes)
---  is the authoritative source for both toggles.
 local evConfigCache = { diff = nil, park = nil, nextReadTime = -math.huge }
 
 local function readEnhancedVehicleSettings()
@@ -76,7 +44,6 @@ local function readEnhancedVehicleSettings()
     end
     evConfigCache.nextReadTime = now + 10000 -- re-read every 10s (menu changes)
 
-    -- EV ships with both functions enabled by default.
     local diffEnabled, parkEnabled = true, true
     local path = getUserProfileAppPath() .. "modSettings/FS25_EnhancedVehicle/FS25_EnhancedVehicle_v1.xml"
     if fileExists(path) then
@@ -106,7 +73,6 @@ local function getIsEnhancedVehicleLoaded(vehicle)
 end
 
 function ADS_Drivetrain.isExternallyManaged(vehicle)
-    -- Shared-state global visible: read EV's live flag directly.
     local ev = rawget(_G, "FS25_EnhancedVehicle")
     if ev ~= nil and ev.functionDiffIsEnabled ~= nil then
         return ev.functionDiffIsEnabled == true
@@ -119,7 +85,6 @@ function ADS_Drivetrain.isExternallyManaged(vehicle)
     return false
 end
 
---- EV's own parking brake takes precedence over ours when its feature is enabled.
 function ADS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
     local ev = rawget(_G, "FS25_EnhancedVehicle")
     if ev ~= nil and ev.functionParkingBrakeIsEnabled ~= nil then
@@ -200,7 +165,6 @@ end
 --                 TOPOLOGY ANALYSIS
 -- ==========================================================
 
---- Collects every wheel (by wheelIndex) driven through a differential subtree.
 local function collectWheelIndices(differentials, diffIndex0, wheelIndices, visited)
     local runtimeIndex = (tonumber(diffIndex0) or -1) + 1
     if runtimeIndex < 1 or visited[runtimeIndex] then return end
@@ -220,7 +184,6 @@ local function collectWheelIndices(differentials, diffIndex0, wheelIndices, visi
     end
 end
 
---- Scores an axle group: steerable wheels and average local Z position decide front vs rear.
 local function getAxleScore(vehicle, wheelIndices)
     local steerableCount, zSum, count = 0, 0, 0
     for _, wheelIndex in ipairs(wheelIndices) do
@@ -239,9 +202,33 @@ local function getAxleScore(vehicle, wheelIndices)
     return steerableCount / count, zSum / count
 end
 
---- Builds spec.drivetrain.layout from spec_motorized.differentials.
---  Pure data analysis (no physics calls): valid on server and client.
---  Returns nil when the vehicle has no usable differential setup.
+local function getIsTwinTrack(vehicle)
+    local spec_crawlers = vehicle.spec_crawlers
+    local crawlers = spec_crawlers ~= nil and spec_crawlers.crawlers or nil
+    if crawlers == nil or #crawlers ~= 2 then
+        return false
+    end
+
+    local wheels = vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels or nil
+    if wheels == nil or #wheels == 0 or WheelsUtil == nil then
+        return false
+    end
+
+    local crawlerTireType = WheelsUtil.getTireType("crawler")
+    if crawlerTireType == nil then
+        return false
+    end
+
+    for _, wheel in ipairs(wheels) do
+        local physics = wheel ~= nil and wheel.physics or nil
+        if physics == nil or physics.tireType ~= crawlerTireType then
+            return false
+        end
+    end
+
+    return true
+end
+
 function ADS_Drivetrain.buildLayout(vehicle)
     local spec_motorized = vehicle.spec_motorized
     local differentials = spec_motorized ~= nil and spec_motorized.differentials or nil
@@ -249,16 +236,16 @@ function ADS_Drivetrain.buildLayout(vehicle)
         return nil
     end
 
+    local isTwinTrack = getIsTwinTrack(vehicle)
     local layout = {
         differentialCount = #differentials,
-        originals = {},           -- immutable XML differential descriptors by 0-based index
-        centerIdx0 = nil,         -- inter-axle differential (engine index, 0-based)
-        -- The disengageable axle is the STEERED one: front axle on a tractor (MFWD),
-        -- rear assist axle on a combine or a sprayer. The primary axle is the fixed one.
-        primaryIdx0 = nil,        -- fixed/primary axle differential
+        isTwinTrack = isTwinTrack,
+        originals = {},
+        centerIdx0 = nil,
+        primaryIdx0 = nil,
         engageableWheelIndices = {},
         primaryWheelIndices = {},
-        lockableIdx0 = {},        -- axle differentials that can be locked
+        lockableIdx0 = {},
         engageableAxleIdx0Set = {}
     }
 
@@ -289,6 +276,10 @@ function ADS_Drivetrain.buildLayout(vehicle)
         end
     end
 
+    if isTwinTrack then
+        layout.centerIdx0 = nil
+    end
+
     if layout.centerIdx0 ~= nil then
         local center = differentials[layout.centerIdx0 + 1]
         local out1Idx0 = tonumber(center.diffIndex1) or 0
@@ -301,9 +292,6 @@ function ADS_Drivetrain.buildLayout(vehicle)
         local steer1, z1 = getAxleScore(vehicle, out1Wheels)
         local steer2, z2 = getAxleScore(vehicle, out2Wheels)
 
-        -- The engageable (disengageable) axle is the steered one, regardless of whether
-        -- it sits at the front (tractor MFWD) or at the rear (combine assist axle).
-        -- Fallback for fully articulated machines: the front output (+Z) disengages.
         local out1IsEngageable
         if steer1 ~= steer2 then
             out1IsEngageable = steer1 > steer2
@@ -319,9 +307,6 @@ function ADS_Drivetrain.buildLayout(vehicle)
             layout.engageableWheelIndices, layout.primaryWheelIndices = out2Wheels, out1Wheels
         end
 
-        -- Lockable differentials = every wheel-to-wheel differential. Axle membership
-        -- follows the center diff subtree the wheels belong to, which stays correct
-        -- for tandem-axle layouts with nested inter-axle diffs.
         local engageableWheelSet = {}
         for _, wheelIndex in ipairs(layout.engageableWheelIndices) do
             engageableWheelSet[wheelIndex] = true
@@ -336,8 +321,6 @@ function ADS_Drivetrain.buildLayout(vehicle)
             end
         end
     else
-        -- Single driven axle (no center differential): 4WD toggle unavailable,
-        -- but the axle differential itself remains lockable.
         for i, differential in ipairs(differentials) do
             if differential.diffIndex1IsWheel and differential.diffIndex2IsWheel then
                 local idx0 = i - 1
@@ -358,16 +341,15 @@ end
 --                SPEC INIT / STATE ACCESS
 -- ==========================================================
 
---- Called from AdvancedDamageSystem:onLoad.
 function ADS_Drivetrain.initSpec(vehicle)
     local spec = vehicle.spec_AdvancedDamageSystem
     spec.drivetrain = {
-        layout = nil,                       -- server only: physics layout (differentials are not loaded on clients)
+        layout = nil,
         layoutAnalyzed = false,
-        hasControl = false,                 -- capability flag, resolved on the server, replicated to clients
-        hasCenterDiff = false,              -- capability flag, replicated to clients
-        externallyManaged = false,          -- EV owns the diffs; resolved on the server, replicated to clients
-        parkExternallyManaged = false,      -- EV owns the parking brake; resolved on the server, replicated to clients
+        hasControl = false,
+        hasCenterDiff = false,
+        externallyManaged = false,
+        parkExternallyManaged = false,
         driveMode = ADS_Drivetrain.MODE.TWO_WD,
         autoEngaged = false,
         diffLockRequested = false,
@@ -377,7 +359,7 @@ function ADS_Drivetrain.initSpec(vehicle)
         windupWearFactor = 0,
         windupActive = false,
         _windupDamageLatched = false,
-        _appliedMode = nil,                 -- last state pushed to the physics engine
+        _appliedMode = nil,
         _appliedLock = nil,
         _activeDifferentialIndices = nil,
         _activeFourWheelDrive = nil,
@@ -400,10 +382,6 @@ function ADS_Drivetrain.getState(vehicle)
     return spec ~= nil and spec.drivetrain or nil
 end
 
---- True when the drive mode / diff lock feature can act on this vehicle.
---  hasControl and externallyManaged are resolved on the server (differentials and
---  the EV settings file live there) and replicated through the drivetrain sync group,
---  which keeps server and client decisions consistent.
 function ADS_Drivetrain.getIsAvailable(vehicle)
     local state = ADS_Drivetrain.getState(vehicle)
     return state ~= nil
@@ -423,7 +401,7 @@ local function ensureLayout(vehicle, state)
     end
     local spec_wheels = vehicle.spec_wheels
     if spec_wheels == nil or spec_wheels.wheels == nil or #spec_wheels.wheels == 0 then
-        return false -- wheels not ready yet, retry next update
+        return false
     end
     state.layoutAnalyzed = true
 
@@ -444,7 +422,6 @@ end
 --              PHYSICS APPLICATION (SERVER)
 -- ==========================================================
 
---- Effective mode as applied to the physics: AUTO resolves to engaged/disengaged.
 local function getEffectiveFourWheelDrive(state)
     if state.layout == nil or state.layout.centerIdx0 == nil then
         return true -- single-axle machines are always "engaged"
@@ -457,8 +434,29 @@ local function getEffectiveFourWheelDrive(state)
     return false
 end
 
---- Builds a validated native differential plan without touching the active physics graph.
-local function buildDifferentialPlan(vehicle, layout, useFullGraph)
+--- True when the installed graph drives both axles through a center differential.
+local function getIsNativeLock(layout, fourWheelDrive)
+    return fourWheelDrive and layout.centerIdx0 ~= nil
+end
+
+--- Speed ratio a differential must run at for the given lock state.
+local function getTargetSpeedRatio(original, lockEngaged, nativeLock)
+    local C = getConfig()
+
+    if original.diffIndex1IsWheel and original.diffIndex2IsWheel then
+        if lockEngaged then
+            return nativeLock and original.maxSpeedRatio or C.LOCKED_AXLE_SPEED_RATIO
+        end
+        return math.max(original.maxSpeedRatio, C.OPEN_AXLE_SPEED_RATIO)
+    end
+
+    return original.maxSpeedRatio
+end
+
+local function buildDifferentialPlan(vehicle, state, useFullGraph)
+    local layout = state.layout
+    local lockEngaged = state.diffLockEngaged == true
+    local nativeLock = getIsNativeLock(layout, useFullGraph)
     local plan = {}
     local sourceToNative = {}
     local visiting = {}
@@ -504,7 +502,7 @@ local function buildDifferentialPlan(vehicle, layout, useFullGraph)
             output2 = output2,
             output2IsWheel = original.diffIndex2IsWheel,
             torqueRatio = original.torqueRatio,
-            maxSpeedRatio = original.maxSpeedRatio
+            maxSpeedRatio = getTargetSpeedRatio(original, lockEngaged, nativeLock)
         }
         sourceToNative[sourceIdx0] = nativeIdx0
         visiting[sourceIdx0] = nil
@@ -530,7 +528,7 @@ local function installDifferentialGraph(vehicle, state, useFullGraph)
         return false
     end
 
-    local plan, sourceToNative = buildDifferentialPlan(vehicle, state.layout, useFullGraph)
+    local plan, sourceToNative = buildDifferentialPlan(vehicle, state, useFullGraph)
     if plan == nil then
         return false
     end
@@ -571,8 +569,6 @@ local function restoreOriginalDifferentialGraph(vehicle, state)
     return true
 end
 
---- Pushes the requested drive mode to the engine differentials. Server only.
---  Idempotent: rebuilds the native graph only when the driven topology changes.
 function ADS_Drivetrain.applyState(vehicle, force)
     if not vehicle.isServer then return end
 
@@ -602,38 +598,31 @@ function ADS_Drivetrain.applyState(vehicle, force)
     state._appliedLock = nil
 end
 
-local function getLockedDifferentialRatios(original, speed1, speed2, isAxleDifferential, gearRatio)
+local function getLockedTorqueRatio(original, speed1, speed2, gearRatio)
     local torqueRatio = original.torqueRatio
-    local maxSpeedRatio = isAxleDifferential and LOCKED_AXLE_SPEED_RATIO or original.maxSpeedRatio
 
     if gearRatio < 0 then
         speed1 = -speed1
         speed2 = -speed2
     end
 
-    if speed1 < 0.1389 and speed2 < 0.1389 then
-        return torqueRatio, maxSpeedRatio
-    end
-
-    if not (-0.2778 < speed1 and speed1 < 90 and -0.2778 < speed2 and speed2 < 90) then
-        return torqueRatio, math.max(maxSpeedRatio, LOCKED_AXLE_SPEED_RATIO)
+    local isStandstill = speed1 < 0.1389 and speed2 < 0.1389
+    local isOutOfRange = not (-0.2778 < speed1 and speed1 < 90 and -0.2778 < speed2 and speed2 < 90)
+    if isStandstill or isOutOfRange then
+        return torqueRatio
     end
 
     if speed1 < speed2 then
-        local speedRatio = math.max(speed1, 0) / speed2
-        torqueRatio = 1 - speedRatio * (1 - torqueRatio)
-        maxSpeedRatio = math.max(maxSpeedRatio, 1 + (LOCKED_AXLE_SPEED_RATIO - 1) * (1 - speedRatio))
+        torqueRatio = 1 - (math.max(speed1, 0) / speed2) * (1 - torqueRatio)
     elseif speed2 < speed1 then
-        local speedRatio = math.max(speed2, 0) / speed1
-        torqueRatio = torqueRatio * speedRatio
-        maxSpeedRatio = math.max(maxSpeedRatio, 1 + (LOCKED_AXLE_SPEED_RATIO - 1) * (1 - speedRatio))
+        torqueRatio = torqueRatio * (math.max(speed2, 0) / speed1)
     end
 
-    if math.abs(torqueRatio - original.torqueRatio) < 0.05 then
-        torqueRatio = original.torqueRatio
+    if math.abs(torqueRatio - original.torqueRatio) < LOCKED_TORQUE_DEAD_ZONE then
+        return original.torqueRatio
     end
 
-    return math.clamp(torqueRatio, LOCKED_MIN_TORQUE_RATIO, LOCKED_MAX_TORQUE_RATIO), maxSpeedRatio
+    return math.clamp(torqueRatio, LOCKED_MIN_TORQUE_RATIO, LOCKED_MAX_TORQUE_RATIO)
 end
 
 local function getDifferentialOutputSpeeds(vehicle, state, differentialIdx0, wheelSpeeds, depth)
@@ -690,6 +679,7 @@ local function applyDifferentialLock(vehicle, state)
     end
 
     local layout = state.layout
+    local nativeLock = getIsNativeLock(layout, state._activeFourWheelDrive == true)
     local wheelSpeeds = {}
     local gearRatio = tonumber(spec_motorized.motor ~= nil and spec_motorized.motor.gearRatio) or 0
 
@@ -703,18 +693,12 @@ local function applyDifferentialLock(vehicle, state)
         local nativeIdx0 = activeIndices[sourceIdx0]
         local original = layout.originals[sourceIdx0]
         if nativeIdx0 ~= nil and original ~= nil then
+            local isAxleDifferential = original.diffIndex1IsWheel and original.diffIndex2IsWheel
             local torqueRatio = original.torqueRatio
-            local maxSpeedRatio = original.maxSpeedRatio
-            if lockEngaged then
+            local maxSpeedRatio = getTargetSpeedRatio(original, lockEngaged, nativeLock)
+            if lockEngaged and isAxleDifferential and not nativeLock then
                 local speed1, speed2 = getDifferentialOutputSpeeds(vehicle, state, sourceIdx0, wheelSpeeds, 1)
-                local isAxleDifferential = original.diffIndex1IsWheel and original.diffIndex2IsWheel
-                torqueRatio, maxSpeedRatio = getLockedDifferentialRatios(
-                    original,
-                    speed1,
-                    speed2,
-                    isAxleDifferential,
-                    gearRatio
-                )
+                torqueRatio = getLockedTorqueRatio(original, speed1, speed2, gearRatio)
             end
 
             updateDifferential(spec_motorized.motorizedNode, nativeIdx0, torqueRatio, maxSpeedRatio)
@@ -728,7 +712,6 @@ end
 --                 COMMAND SETTERS (MP-SAFE)
 -- ==========================================================
 
---- Central MP-safe setter. Runs on both sides; forwards through ADS_DrivetrainEvent.
 function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested, parkBrake, noEventSend)
     local state = ADS_Drivetrain.getState(vehicle)
     if state == nil then return end
@@ -757,8 +740,6 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
             state.autoEngaged = false
             state._autoConditionTimer = 0
         end
-        -- The engagement decision (speed gate) happens in the server update; requesting
-        -- the lock at excessive speed simply arms it until conditions allow.
         local spec = vehicle.spec_AdvancedDamageSystem
         if changed and spec ~= nil and spec.adsDirtyFlag_drivetrain ~= nil then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
@@ -804,7 +785,6 @@ end
 --                  SIMULATION UPDATE
 -- ==========================================================
 
---- AUTO mode decision, evaluated on the server at ON_UPDATE cadence.
 local function updateAutoMode(vehicle, state, spec, dt)
     if state.driveMode ~= ADS_Drivetrain.MODE.AUTO then return end
 
@@ -835,12 +815,10 @@ local function updateAutoMode(vehicle, state, spec, dt)
     end
 end
 
---- Diff lock engagement gate + realistic automatic release (server).
 local function updateDiffLockState(vehicle, state, dt)
     local C = getConfig()
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
 
-    -- An AI worker would never drive around with locked differentials.
     if state.diffLockRequested and vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
         ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
         return
@@ -848,13 +826,11 @@ local function updateDiffLockState(vehicle, state, dt)
 
     if state.diffLockRequested then
         if state.diffLockEngaged then
-            -- Realistic auto-release above the mechanical threshold.
             if speed > C.DIFFLOCK_AUTO_RELEASE_SPEED then
                 state.diffLockEngaged = false
                 ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
             end
         else
-            -- Dog clutches only engage below the threshold.
             if speed <= C.DIFFLOCK_AUTO_RELEASE_SPEED then
                 state.diffLockEngaged = true
             end
@@ -867,10 +843,15 @@ end
 function ADS_Drivetrain.getIsTurning(vehicle)
     local spec = vehicle.spec_AdvancedDamageSystem
     local steerState = spec ~= nil and spec.chassisSteerState or nil
-    return (tonumber(steerState ~= nil and steerState.angleMagnitude or 0) or 0) > getConfig().WINDUP_STEER_THRESHOLD
+    local steeringAngle = tonumber(steerState ~= nil and steerState.angleMagnitude or 0) or 0
+    if steeringAngle > getConfig().WINDUP_STEER_THRESHOLD then
+        return true
+    end
+
+    return getIsTwinTrack(vehicle)
+        and (tonumber(steerState ~= nil and steerState.inputMagnitude or 0) or 0) > TRACK_STEER_INPUT_EPSILON
 end
 
---- Driveline windup: 4WD / locked differentials + steering + grip = accumulated stress (server).
 local function updateWindupModel(vehicle, state, spec, dt)
     local C = getConfig()
     local fourWheelDrive = state.layout ~= nil and state.layout.centerIdx0 ~= nil and getEffectiveFourWheelDrive(state)
@@ -899,10 +880,14 @@ local function updateWindupModel(vehicle, state, spec, dt)
     local friction = sanitizeNumber(spec.avgTireGroundFrictionCoeff, 0, 0, 3)
     local steerState = spec.chassisSteerState
     local steering = sanitizeNumber(steerState ~= nil and steerState.angleMagnitude or 0, 0, 0)
+    local trackSteeringInput = sanitizeNumber(steerState ~= nil and steerState.inputMagnitude or 0, 0, 0, 1)
+    local isTwinTrack = state.layout ~= nil and state.layout.isTwinTrack == true
+    local isSteering = (isTwinTrack and trackSteeringInput > TRACK_STEER_INPUT_EPSILON)
+        or steering > C.WINDUP_STEER_THRESHOLD
     local surfaceFactor = state.diffLockEngaged and 1 or sanitizeNumber(spec.avgGroundSurfaceFactor, 0, 0, 1)
 
     local isWindingUp = speed > 1.0
-        and steering > C.WINDUP_STEER_THRESHOLD
+        and isSteering
         and surfaceFactor > 0
         and friction >= C.WINDUP_FRICTION_THRESHOLD
 
@@ -910,7 +895,7 @@ local function updateWindupModel(vehicle, state, spec, dt)
 
     if isWindingUp then
         local stressLimit = state.diffLockEngaged and 1.0 or math.max(tonumber(C.WINDUP_4WD_MAX_STRESS) or 0, 0)
-        local steerFactor = math.min(steering / 0.5, 1.0)
+        local steerFactor = isTwinTrack and trackSteeringInput or math.min(steering / 0.5, 1.0)
         local frictionFactor = math.min(friction / math.max(C.WINDUP_FRICTION_THRESHOLD, 0.001), 1.5)
         local speedFactor = math.min(speed / 10.0, 1.0)
         local rate = C.WINDUP_ACCUMULATION_RATE * steerFactor * frictionFactor * speedFactor * surfaceFactor * windupFactor
@@ -920,7 +905,6 @@ local function updateWindupModel(vehicle, state, spec, dt)
             state.windupStress = math.min(state.windupStress + (dt / 1000) * rate, stressLimit)
         end
     else
-        -- Low grip or straight driving lets the strain dissipate through the tires.
         local releaseBoost = 1.0 + (1.0 - surfaceFactor) + math.max(1.2 - friction, 0)
         state.windupStress = math.max(state.windupStress - (dt / 1000) * C.WINDUP_RELEASE_RATE * releaseBoost, 0)
     end
@@ -929,7 +913,6 @@ local function updateWindupModel(vehicle, state, spec, dt)
         state._windupDamageLatched = false
     end
 
-    -- Peak load: apply one impact per continuous locked-windup episode.
     if state.diffLockEngaged and state.windupStress >= 1.0 and not state._windupDamageLatched then
         local transmissionSystem = spec.systems ~= nil and spec.systems.transmission or nil
         if transmissionSystem ~= nil and transmissionSystem.enabled == true and vehicle.applyInstantDamageToSystem ~= nil then
@@ -942,7 +925,6 @@ local function updateWindupModel(vehicle, state, spec, dt)
         end
     end
 
-    -- Continuous transmission wear factor consumed by updateTransmissionSystem.
     if state.windupStress > 0 and isWindingUp then
         state.windupWearFactor = state.windupStress * C.WINDUP_WEAR_MULTIPLIER * windupFactor
     else
@@ -951,7 +933,6 @@ local function updateWindupModel(vehicle, state, spec, dt)
 
 end
 
---- Fires the park brake side notification when its state changed since last check.
 local function notifyParkBrakeChange(state)
     if state._lastNotifiedPark ~= state.parkBrake then
         if state._lastNotifiedPark ~= nil then
@@ -965,7 +946,6 @@ local function notifyParkBrakeChange(state)
     end
 end
 
---- Local player feedback (client side of the machine currently controlled).
 local function updateLocalNotifications(vehicle, state, dt)
     if g_dedicatedServerInfo ~= nil then return end
     local isControlled = g_currentMission ~= nil
@@ -976,7 +956,6 @@ local function updateLocalNotifications(vehicle, state, dt)
         state._lastNotifiedAutoEngaged = state.autoEngaged
         state._lastNotifiedLock = state.diffLockEngaged
 
-        -- Grace window so the park brake notification survives losing control.
         if state._wasLocallyControlled then
             state._parkNotifyGraceMs = 1500
         end
@@ -1030,7 +1009,6 @@ local function updateLocalNotifications(vehicle, state, dt)
 
     notifyParkBrakeChange(state)
 
-    -- Trying to drive off against the engaged parking brake (manual mode only).
     state._parkWarningCooldown = math.max((state._parkWarningCooldown or 0) - dt, 0)
     if state.parkBrake and not getConfig().PARKBRAKE_AUTO_MODE and vehicle.spec_drivable ~= nil then
         local axisForward = math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0)
@@ -1040,7 +1018,6 @@ local function updateLocalNotifications(vehicle, state, dt)
         end
     end
 
-    -- Preventive warning while 4WD or a locked differential winds up the driveline.
     state._windupWarningCooldown = math.max((state._windupWarningCooldown or 0) - dt, 0)
     local C = getConfig()
     local warningThreshold = state.diffLockEngaged and C.WINDUP_WARNING_THRESHOLD or C.WINDUP_4WD_WARNING_THRESHOLD
@@ -1051,7 +1028,6 @@ local function updateLocalNotifications(vehicle, state, dt)
     end
 end
 
---- Automatic parking brake: engages when the operator leaves the machine (server).
 local function updateParkBrakeState(vehicle, state, dt)
     if not getConfig().PARKBRAKE_ENABLED or state.parkExternallyManaged then
         if state.parkBrake then
@@ -1060,13 +1036,11 @@ local function updateParkBrakeState(vehicle, state, dt)
         return
     end
 
-    -- AI workers release the brake before driving off.
     if state.parkBrake and vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
         ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
         return
     end
 
-    -- Auto engage when the operator leaves the standing machine.
     if getConfig().PARKBRAKE_AUTO_MODE and not state.parkBrake then
         local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
         if not vehicle:getIsControlled() and not vehicle:getIsAIActive() and speed < 1.0 then
@@ -1074,7 +1048,6 @@ local function updateParkBrakeState(vehicle, state, dt)
         end
     end
 
-    -- Auto release on throttle input.
     if getConfig().PARKBRAKE_AUTO_MODE and state.parkBrake and vehicle:getIsControlled() then
         local axisForward = vehicle.spec_drivable ~= nil and math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0) or 0
         if axisForward > 0.2 then
@@ -1083,22 +1056,102 @@ local function updateParkBrakeState(vehicle, state, dt)
     end
 end
 
---- Main entry point, called from AdvancedDamageSystem:onUpdate at ON_UPDATE cadence.
+--- Instantaneous wheel speed ratio per axle differential, with the speed ratio ADS currently enforces.
+local function updateDebugAxleRatios(vehicle, state, dbg)
+    local layout = state.layout
+    local activeIndices = state._activeDifferentialIndices
+    local entries = dbg.axleRatios or {}
+    dbg.axleRatios = entries
+
+    if layout == nil or activeIndices == nil then
+        for index = #entries, 1, -1 do
+            entries[index] = nil
+        end
+        return
+    end
+
+    local lockEngaged = state.diffLockEngaged == true
+    local nativeLock = getIsNativeLock(layout, state._activeFourWheelDrive == true)
+    local entryCount = 0
+
+    for sourceIdx0 = 0, layout.differentialCount - 1 do
+        local original = layout.originals[sourceIdx0]
+        if original ~= nil and original.diffIndex1IsWheel and original.diffIndex2IsWheel
+                and activeIndices[sourceIdx0] ~= nil then
+            entryCount = entryCount + 1
+            local entry = entries[entryCount] or {}
+            entries[entryCount] = entry
+
+            entry.label = string.format("W%d/W%d", original.diffIndex1, original.diffIndex2)
+            entry.cap = getTargetSpeedRatio(original, lockEngaged, nativeLock)
+
+            local wheel1 = vehicle.getWheelFromWheelIndex ~= nil and vehicle:getWheelFromWheelIndex(original.diffIndex1) or nil
+            local wheel2 = vehicle.getWheelFromWheelIndex ~= nil and vehicle:getWheelFromWheelIndex(original.diffIndex2) or nil
+            local speed1 = math.abs(getWheelAxleSpeed(wheel1))
+            local speed2 = math.abs(getWheelAxleSpeed(wheel2))
+            local fast, slow = math.max(speed1, speed2), math.min(speed1, speed2)
+
+            entry.ratio = nil
+            if fast >= DEBUG_RATIO_MIN_SPEED then
+                entry.ratio = math.min(fast / math.max(slow, fast / DEBUG_RATIO_MAX), DEBUG_RATIO_MAX)
+            end
+        end
+    end
+
+    for index = #entries, entryCount + 1, -1 do
+        entries[index] = nil
+    end
+end
+
+local function updateDebugData(vehicle, state, spec)
+    if not ADS_Config.DEBUG or spec.debugData == nil or spec.debugData.drivetrain == nil then
+        return
+    end
+
+    local dbg = spec.debugData.drivetrain
+    dbg.hasControl = state.hasControl
+    dbg.hasCenterDiff = state.hasCenterDiff
+    dbg.externallyManaged = state.externallyManaged
+    dbg.driveMode = state.driveMode
+    dbg.autoEngaged = state.autoEngaged
+    dbg.diffLockEngaged = state.diffLockEngaged
+    dbg.parkBrake = state.parkBrake
+    dbg.windupStress = state.windupStress
+    dbg.windupWearFactor = state.windupWearFactor
+
+    local now = g_time or 0
+    updateDebugAxleRatios(vehicle, state, dbg)
+
+    if now - (dbg.wheelSampleTime or -math.huge) < DEBUG_SAMPLE_INTERVAL_MS then
+        return
+    end
+    dbg.wheelSampleTime = now
+
+    local wheels = vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels or nil
+    local wheelAxleSpeeds = dbg.wheelAxleSpeeds or {}
+    local wheelCount = wheels ~= nil and #wheels or 0
+    for wheelIndex = 1, wheelCount do
+        wheelAxleSpeeds[wheelIndex] = getWheelAxleSpeed(wheels[wheelIndex])
+    end
+    for wheelIndex = #wheelAxleSpeeds, wheelCount + 1, -1 do
+        wheelAxleSpeeds[wheelIndex] = nil
+    end
+    dbg.wheelAxleSpeeds = wheelAxleSpeeds
+end
+
 function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     local spec = vehicle.spec_AdvancedDamageSystem
     local state = spec ~= nil and spec.drivetrain or nil
     if state == nil then return end
 
-    -- Clients never see spec_motorized.differentials (server-only data): they run on
-    -- the replicated capability flags and only handle local player feedback.
     if not vehicle.isServer then
         updateLocalNotifications(vehicle, state, dt)
+        updateDebugData(vehicle, state, spec)
         return
     end
 
     if not ensureLayout(vehicle, state) then return end
 
-    -- EV ownership is a server decision, replicated so client HUD/inputs stay coherent.
     local externallyManaged = ADS_Drivetrain.isExternallyManaged(vehicle)
     local parkExternallyManaged = ADS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
     if state.externallyManaged ~= externallyManaged or state.parkExternallyManaged ~= parkExternallyManaged then
@@ -1110,9 +1163,6 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     end
 
     if not getConfig().ENABLED or externallyManaged then
-        -- Feature off or EV owns the diffs: full stand-by. When EV is active it manages
-        -- the drivetrain entirely on its own (physics, behavior and consequences); ADS
-        -- does not touch the differentials nor run any drivetrain damage model.
         if state._graphManaged or state._appliedMode ~= nil or state._appliedLock ~= nil then
             state.autoEngaged = false
             state.diffLockEngaged = false
@@ -1135,13 +1185,10 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         return
     end
 
-    -- Settings may forbid AUTO after a vehicle was saved in AUTO: fall back to 4WD.
     if state.driveMode == ADS_Drivetrain.MODE.AUTO and not getConfig().ALLOW_AUTO_MODE then
         ADS_Drivetrain.setDrivetrainState(vehicle, ADS_Drivetrain.MODE.FOUR_WD, state.diffLockRequested, state.parkBrake, false)
     end
 
-    -- Differentials are recreated from vehicle.xml whenever the vehicle re-enters
-    -- physics: reapply our state on the rising edge.
     local isAddedToPhysics = vehicle.isAddedToPhysics == true
     local physicsRestored = isAddedToPhysics and not state._wasAddedToPhysics
     state._wasAddedToPhysics = isAddedToPhysics
@@ -1158,7 +1205,6 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     ADS_Drivetrain.applyState(vehicle, physicsRestored)
     applyDifferentialLock(vehicle, state)
 
-    -- Replicate physical state changes (engagement + windup) to the clients.
     local windupQuantized = math.floor(sanitizeNumber(state.windupStress, 0, 0, 1) * 255 + 0.5)
     if (prevAutoEngaged ~= state.autoEngaged
         or prevDiffLockEngaged ~= state.diffLockEngaged
@@ -1169,32 +1215,9 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     end
 
     updateLocalNotifications(vehicle, state, dt)
-
-    if ADS_Config.DEBUG and spec.debugData ~= nil and spec.debugData.drivetrain ~= nil then
-        local dbg = spec.debugData.drivetrain
-        dbg.hasControl = state.hasControl
-        dbg.hasCenterDiff = state.hasCenterDiff
-        dbg.externallyManaged = state.externallyManaged
-        dbg.driveMode = state.driveMode
-        dbg.autoEngaged = state.autoEngaged
-        dbg.diffLockEngaged = state.diffLockEngaged
-        dbg.parkBrake = state.parkBrake
-        dbg.windupStress = state.windupStress
-        dbg.windupWearFactor = state.windupWearFactor
-        local wheels = vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels or nil
-        local wheelAxleSpeeds = dbg.wheelAxleSpeeds or {}
-        local wheelCount = wheels ~= nil and #wheels or 0
-        for wheelIndex = 1, wheelCount do
-            wheelAxleSpeeds[wheelIndex] = getWheelAxleSpeed(wheels[wheelIndex])
-        end
-        for wheelIndex = #wheelAxleSpeeds, wheelCount + 1, -1 do
-            wheelAxleSpeeds[wheelIndex] = nil
-        end
-        dbg.wheelAxleSpeeds = wheelAxleSpeeds
-    end
+    updateDebugData(vehicle, state, spec)
 end
 
---- Consumed by AdvancedDamageSystem:updateTransmissionSystem as an additive wear factor.
 function ADS_Drivetrain.getWindupWearFactor(vehicle)
     local state = ADS_Drivetrain.getState(vehicle)
     if state == nil then return 0 end
@@ -1269,7 +1292,10 @@ end
 -- ==========================================================
 
 function ADS_Drivetrain.actionToggleDriveMode(vehicle, actionName, inputValue, callbackState, isAnalog)
-    if not ADS_Drivetrain.getIsAvailable(vehicle) then return end
+    if not ADS_Drivetrain.getIsAvailable(vehicle)
+            or not ADS_Drivetrain.getHasCenterDifferential(vehicle) then
+        return
+    end
     ADS_Drivetrain.cycleDriveMode(vehicle)
 end
 
@@ -1283,7 +1309,6 @@ function ADS_Drivetrain.actionToggleParkBrake(vehicle, actionName, inputValue, c
     ADS_Drivetrain.toggleParkBrake(vehicle)
 end
 
---- Registers the drivetrain vehicle actions. Called from onRegisterActionEvents.
 function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSelection)
     local spec = vehicle.spec_AdvancedDamageSystem
     local state = spec ~= nil and spec.drivetrain or nil
@@ -1295,8 +1320,6 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
     if not isActiveForInputIgnoreSelection then return end
     if spec.isExcludedVehicle then return end
 
-    -- Drive mode / diff lock: only without EV. Capability flags are replicated, but may
-    -- not be received yet right after joining: register anyway, callbacks re-validate.
     if getConfig().ENABLED and not state.externallyManaged then
         if state.hasCenterDiff or not state.layoutAnalyzed then
             local _, modeEventId = vehicle:addActionEvent(spec.drivetrainActionEvents, InputAction.ADS_TOGGLE_4WD, vehicle,
@@ -1317,8 +1340,6 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
         end
     end
 
-    -- Parking brake: available on every ADS vehicle, unless EV's own parking brake
-    -- feature is enabled (same take-over principle as the differential control).
     if getConfig().PARKBRAKE_ENABLED and not state.parkExternallyManaged then
         local _, parkEventId = vehicle:addActionEvent(spec.drivetrainActionEvents, InputAction.ADS_TOGGLE_PARKBRAKE, vehicle,
             ADS_Drivetrain.actionToggleParkBrake, false, true, false, true, nil)
@@ -1330,8 +1351,6 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
     end
 end
 
---- Consumed by ADS_Breakdowns.updateVehiclePhysics: anchors the vehicle when the
---  parking brake is engaged (the operator input path, like a real park position).
 function ADS_Drivetrain.getIsParkBrakeEngaged(vehicle)
     if not getConfig().PARKBRAKE_ENABLED then return false end
     local state = ADS_Drivetrain.getState(vehicle)
