@@ -2994,6 +2994,11 @@ SpeedMeterDisplay.draw = function(self, ...)
         return originalSpeedMeterDisplayDraw(self, ...)
     end
 
+    local spec = vehicle.spec_AdvancedDamageSystem
+    if spec ~= nil and spec.isExcludedVehicle then
+        return originalSpeedMeterDisplayDraw(self, ...)
+    end
+
     local selectedTool = nil
     local useCustomValue = false
     local customDamageAmount = 0
