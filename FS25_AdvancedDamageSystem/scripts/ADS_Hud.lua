@@ -135,6 +135,7 @@ function ADS_Hud:new()
         closeGlyphTextSpacing = 6
     }
 
+    self.notificationDividerOverlay = Overlay.new(self.notificationPanel.dividerBackground, 0, 0, 0, 0)
     self.notificationCloseGlyph = nil
     self.notificationCloseGlyphInputMode = nil
     self.notificationMouseButtonDownLast = false
@@ -183,6 +184,11 @@ function ADS_Hud:delete()
     if self.roundedPanelOverlay ~= nil then
         self.roundedPanelOverlay:delete()
         self.roundedPanelOverlay = nil
+    end
+
+    if self.notificationDividerOverlay ~= nil then
+        self.notificationDividerOverlay:delete()
+        self.notificationDividerOverlay = nil
     end
 
     ADS_Hud:superClass().delete(self)
@@ -574,7 +580,9 @@ function ADS_Hud:drawNotificationDivider(x, y, width, height, color)
     local snappedWidth = math.max(math.floor(width * g_screenWidth + 0.5) / g_screenWidth, 1 / g_screenWidth)
     local snappedHeight = math.max(math.floor(height * g_screenHeight + 0.5) / g_screenHeight, 1 / g_screenHeight)
 
-    local overlay = Overlay.new(self.notificationPanel.dividerBackground, snappedX, snappedY, snappedWidth, snappedHeight)
+    local overlay = self.notificationDividerOverlay
+    overlay:setPosition(snappedX, snappedY)
+    overlay:setDimension(snappedWidth, snappedHeight)
     overlay:setColor(unpack(color))
     overlay:render()
 end
