@@ -422,7 +422,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         isApplicable = function(vehicle)
             local spec = vehicle.spec_AdvancedDamageSystem
             if spec == nil then return end
-            if spec.isVEhicleNeedBlowOut then
+            if spec.isVehicleNeedBlowOut then
                 return true
             end
             return false
