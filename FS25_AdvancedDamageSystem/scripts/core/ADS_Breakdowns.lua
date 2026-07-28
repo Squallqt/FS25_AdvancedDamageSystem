@@ -3796,20 +3796,20 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
                 return minRatio * 100, maxRatio * 100
             end
 
+            slipEffect.extraData = slipEffect.extraData or {}
+            slipEffect.extraData.accumulatedMod = slipEffect.extraData.accumulatedMod or 0
+
+            local nowMs = (g_currentMission and g_currentMission.time) or 0
+            local lastUpdateMs = tonumber(slipEffect.extraData.lastUpdateMs) or nowMs
+            local dtSec = math.max((nowMs - lastUpdateMs) / 1000, 0)
+            if dtSec > 1 then dtSec = 1 end
+            slipEffect.extraData.lastUpdateMs = nowMs
+
             local speedFactor = math.min(self.vehicle:getLastSpeed() / (self:getMaximumForwardSpeed() * 3.6), 1.0)
 
             if modifier > 0 and minRatio ~= 0 and speedFactor > 0.5 then
                 local motorAccel = self.motorRotAccelerationSmoothed
                 local accelerationFactor = math.min(math.max(0, motorAccel / self.motorRotationAccelerationLimit * 5), 1.0)
-
-                slipEffect.extraData = slipEffect.extraData or {}
-                slipEffect.extraData.accumulatedMod = slipEffect.extraData.accumulatedMod or 0
-
-                local nowMs = (g_currentMission and g_currentMission.time) or 0
-                local lastUpdateMs = tonumber(slipEffect.extraData.lastUpdateMs) or nowMs
-                local dtSec = math.max((nowMs - lastUpdateMs) / 1000, 0)
-                if dtSec > 1 then dtSec = 1 end
-                slipEffect.extraData.lastUpdateMs = nowMs
 
                 local step = TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND * dtSec * (1 - math.min(speedFactor, 0.9))
                 if slipEffect.extraData.accumulatedMod < accelerationFactor then
