@@ -370,11 +370,6 @@ ADS_Main.workshopCheckTimer = 0
 ADS_Main.isWorkshopOpen = true
 ADS_Main.currentWeather = WeatherType.SUN
 ADS_Main.currentWeatherFactor = 1.0
-ADS_Main.samples = ADS_Main.samples or {}
-
-local xmlFile = loadXMLFile("adsSounds2D", Utils.getFilename("sounds/ads_sounds.xml", g_currentModDirectory))
-ADS_Main.samples.notification2D = g_soundManager:loadSample2DFromXML(xmlFile, "sounds", "notification2D", g_currentModDirectory, 1, AudioGroup.GUI)
-ADS_Main.samples.maintenanceCompleted2D = g_soundManager:loadSample2DFromXML(xmlFile, "sounds", "maintenanceCompleted2D", g_currentModDirectory, 1, AudioGroup.GUI)
 
 -- Compute workshop open/close from config hours and current game time.
 -- Runs on all machines for consistent local state.
@@ -517,6 +512,13 @@ function ADS_Main:loadMap()
     ADS_Config.resetTutorialStateSession()
     ADS_Config.loadFromXMLFile()
     self:tryRegisterShopMenuPage()
+
+    local soundsXmlFile = loadXMLFile("adsSounds2D", Utils.getFilename("sounds/ads_sounds.xml", modDirectory))
+    self.samples = {
+        notification2D = g_soundManager:loadSample2DFromXML(soundsXmlFile, "sounds", "notification2D", modDirectory, 1, AudioGroup.GUI),
+        maintenanceCompleted2D = g_soundManager:loadSample2DFromXML(soundsXmlFile, "sounds", "maintenanceCompleted2D", modDirectory, 1, AudioGroup.GUI)
+    }
+    delete(soundsXmlFile)
 end
 
 function ADS_Main:deleteMap()
@@ -526,6 +528,9 @@ function ADS_Main:deleteMap()
     ADS_Config._loaded = nil
     ADS_Config.resetTutorialStateSession()
     ADS_SettingsPage.reset()
+
+    g_soundManager:deleteSamples(self.samples)
+    self.samples = nil
 end
 
 addModEventListener(ADS_Main)
