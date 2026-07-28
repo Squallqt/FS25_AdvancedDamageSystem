@@ -902,11 +902,11 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     setIndex(currentPage.ads_workshopOpenHour, steps.hours.values, pending.openHour)
     setIndex(currentPage.ads_workshopCloseHour, steps.hours.values, pending.closeHour)
 
-    local areAllWorkshopAlwaysAvailableOptionsOff = not pending.dealerAlwaysAvailable
-        and not pending.mobileAlwaysAvailable
-        and not pending.ownAlwaysAvailable
-    currentPage.ads_workshopOpenHour:setDisabled(areAllWorkshopAlwaysAvailableOptionsOff)
-    currentPage.ads_workshopCloseHour:setDisabled(areAllWorkshopAlwaysAvailableOptionsOff)
+    local areAllWorkshopsAlwaysAvailable = pending.dealerAlwaysAvailable
+        and pending.mobileAlwaysAvailable
+        and pending.ownAlwaysAvailable
+    currentPage.ads_workshopOpenHour:setDisabled(areAllWorkshopsAlwaysAvailable)
+    currentPage.ads_workshopCloseHour:setDisabled(areAllWorkshopsAlwaysAvailable)
 
     -- MP permission: only server host or dedicated-server admin can change settings.
     local canChangeSettings = canChangeADSSettings()
@@ -954,8 +954,8 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     currentPage.ads_warningMessages:setDisabled(disableAll)
     currentPage.ads_debugMode:setDisabled(disableAll)
 
-    -- Workshop hour controls are disabled while all workshop 24/7 options are off.
-    if disableAll or areAllWorkshopAlwaysAvailableOptionsOff then
+    -- Workshop hour controls are disabled while every workshop type is available 24/7.
+    if disableAll or areAllWorkshopsAlwaysAvailable then
         currentPage.ads_workshopOpenHour:setDisabled(true)
         currentPage.ads_workshopCloseHour:setDisabled(true)
     end
