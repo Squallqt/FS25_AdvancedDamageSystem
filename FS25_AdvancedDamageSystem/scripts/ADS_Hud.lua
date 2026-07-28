@@ -3059,13 +3059,18 @@ SpeedMeterDisplay.draw = function(self, ...)
         end
     end
 
-    local result = originalSpeedMeterDisplayDraw(self, ...)
+    local ok, result = pcall(originalSpeedMeterDisplayDraw, self, ...)
 
     if useCustomValue then
         for vehicleInstance, originalMethod in pairs(originalGetDamageMethods) do
             vehicleInstance.getDamageAmount = originalMethod
         end
     end
+
+    if not ok then
+        error(result, 0)
+    end
+
     return result
 end
 
