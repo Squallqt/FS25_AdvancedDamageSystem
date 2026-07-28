@@ -322,35 +322,6 @@ function ADS_Main.processAttributeData(self, storeItem, vehicle, saleItem)
     end
 end
 
--- workshop condition bar fix
-function ADS_Main.setStatusBarValue(screenInstance, superFunc, bar, value)
-    local vehicle = nil
-
-    for _, v in screenInstance.vehicles do
-        if v:getDamageAmount() == 1 - value then
-            vehicle = v
-        end
-    end
-
-    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
-        local condition, isCompleteInspection = vehicle:getLastInspectedCondition()
-        if isCompleteInspection then
-            value = math.clamp(condition or 0, 0, 1)
-        elseif condition == nil or condition > 0.8 then
-            value = 1.0
-        elseif condition > 0.6 then
-            value = 0.75
-        elseif condition > 0.4 then
-            value = 0.5
-        elseif condition > 0.2 then
-            value = 0.25
-        else
-            value = 0.0
-        end
-    end
-    superFunc(screenInstance, bar, value)
-end
-
 -- garage overwiev fix
 function ADS_Main.populateCellForItemInSection(self, superFunc, list, section, index, cell)
     if list.id == 'vehiclesList' then
@@ -381,7 +352,6 @@ FSBaseMission.sendInitialClientState = Utils.appendedFunction(FSBaseMission.send
     end
 end)
 WorkshopScreen.setVehicle = Utils.appendedFunction(WorkshopScreen.setVehicle, ADS_Main.hookRepairButton)
-WorkshopScreen.setStatusBarValue = Utils.overwrittenFunction(WorkshopScreen.setStatusBarValue, ADS_Main.setStatusBarValue)
 InGameMenuStatisticsFrame.populateCellForItemInSection = Utils.overwrittenFunction(InGameMenuStatisticsFrame.populateCellForItemInSection, ADS_Main.populateCellForItemInSection)
 ShopConfigScreen.processAttributeData = Utils.appendedFunction(ShopConfigScreen.processAttributeData, ADS_Main.processAttributeData)
 
