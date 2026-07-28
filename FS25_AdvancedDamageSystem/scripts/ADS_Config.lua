@@ -307,7 +307,7 @@ ADS_Config = {
             },
 
             MAINTENANCE = {
-                [1] = 1.0,  STANDARD = 1.1,
+                [1] = 1.1,  STANDARD = 1.1,
                 [2] = 0.9,  MINIMAL  = 0.9,
                 [3] = 1.2,  EXTENDED = 1.2,
                 [4] = 1.4,  PREVENTIVE = 1.4,
