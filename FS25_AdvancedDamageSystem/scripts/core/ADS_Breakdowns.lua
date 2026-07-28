@@ -3442,7 +3442,7 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
             axisForward = axisForward * modifier
             if brakeEffect.extraData ~= nil and vehicle:getLastSpeed() < 15 then
                 if not brakeEffect.extraData.soundPlayed and math.abs(origAxisForward) > 0.999 then
-                    if math.random() < brakeEffect.value then
+                    if math.random() < math.abs(brakeEffect.value) then
                         g_soundManager:playSample(spec_ads.samples['brakes' .. math.random(3)])
                     end
                     brakeEffect.extraData.soundPlayed = true
