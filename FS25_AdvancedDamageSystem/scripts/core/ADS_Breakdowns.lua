@@ -10,6 +10,18 @@ local function log_dbg(...)
     end
 end
 
+local loggedHookErrors = {}
+
+-- Reports a wrapped engine call failure once per distinct error, regardless of debug mode.
+local function log_hook_error(context, err)
+    local key = context .. "|" .. tostring(err)
+    if loggedHookErrors[key] then
+        return
+    end
+    loggedHookErrors[key] = true
+    Logging.error("[ADS_BREAKDOWNS] %s failed: %s", context, tostring(err))
+end
+
 
 ADS_Breakdowns.DASHBOARD = {
     ENGINE = "engine",
@@ -3550,7 +3562,7 @@ if PowerConsumer ~= nil and PowerConsumer.getTotalConsumedPtoTorque ~= nil then
         local ok, torque, virtualMultiplicator = pcall(superFunc, self, excludeVehicle, expected, ignoreTurnOnPeak)
         if not ok then
             adsPtoCallDepth = math.max(adsPtoCallDepth - 1, 0)
-            log_dbg("ERROR in PowerConsumer.getTotalConsumedPtoTorque hook:", tostring(torque))
+            log_hook_error("PowerConsumer.getTotalConsumedPtoTorque", torque)
             return 0, 1
         end
 
@@ -4155,7 +4167,8 @@ function ADS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
     end
 
     if not success then
-        log_dbg("ERROR in original AttacherJoints.onUpdateTick: " .. tostring(result))
+        log_hook_error("AttacherJoints.onUpdateTick", result)
+        return
     end
 
     return result
@@ -4211,7 +4224,8 @@ function ADS_Breakdowns.applyHydraulicDamageToCylindered(self, superFunc, dt, ..
     end
 
     if not success then
-        log_dbg("ERROR in original Cylindered.onUpdate: " .. tostring(result))
+        log_hook_error("Cylindered.onUpdate", result)
+        return
     end
 
     return result
@@ -4248,7 +4262,8 @@ function ADS_Breakdowns.applyHydraulicDamageToFoldable(self, superFunc, directio
     end
 
     if not success then
-        log_dbg("ERROR in original Foldable.setFoldState: " .. tostring(result))
+        log_hook_error("Foldable.setFoldState", result)
+        return
     end
 
     return result
