@@ -180,16 +180,22 @@ end
 
 function ADS_Hud:delete()
     self.roundedPanelOverlay:delete()
+    self.roundedPanelOverlay = nil
     self.notificationDividerOverlay:delete()
+    self.notificationDividerOverlay = nil
     self.wheelSlipHud.icon:delete()
+    self.wheelSlipHud.icon = nil
     self.parkBrakeHud.icon:delete()
+    self.parkBrakeHud.icon = nil
 
     for _, icon in pairs(self.drivetrainHud.icons) do
         icon.overlay:delete()
+        icon.overlay = nil
     end
 
     for _, indicator in pairs(self.indicators) do
         indicator.icon:delete()
+        indicator.icon = nil
     end
 
     if self.notificationCloseGlyph ~= nil then
