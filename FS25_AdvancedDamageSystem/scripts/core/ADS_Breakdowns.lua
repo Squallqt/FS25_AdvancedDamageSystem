@@ -3775,6 +3775,9 @@ ADS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
     end
 }
 
+-- Convergence rate of the transmission slip modifier, per second at full factor.
+local TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND = 0.6
+
 if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
     VehicleMotor.getMinMaxGearRatio = Utils.overwrittenFunction(VehicleMotor.getMinMaxGearRatio, function(self, superFunc)
         local minRatio, maxRatio = superFunc(self)
@@ -3801,10 +3804,18 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
 
                 slipEffect.extraData = slipEffect.extraData or {}
                 slipEffect.extraData.accumulatedMod = slipEffect.extraData.accumulatedMod or 0
+
+                local nowMs = (g_currentMission and g_currentMission.time) or 0
+                local lastUpdateMs = tonumber(slipEffect.extraData.lastUpdateMs) or nowMs
+                local dtSec = math.max((nowMs - lastUpdateMs) / 1000, 0)
+                if dtSec > 1 then dtSec = 1 end
+                slipEffect.extraData.lastUpdateMs = nowMs
+
+                local step = TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND * dtSec * (1 - math.min(speedFactor, 0.9))
                 if slipEffect.extraData.accumulatedMod < accelerationFactor then
-                    slipEffect.extraData.accumulatedMod = math.min(slipEffect.extraData.accumulatedMod + 0.01 * (1 - math.min(speedFactor, 0.9)), 1.0)
+                    slipEffect.extraData.accumulatedMod = math.min(slipEffect.extraData.accumulatedMod + step, 1.0)
                 else
-                    slipEffect.extraData.accumulatedMod = math.max(slipEffect.extraData.accumulatedMod - 0.01 * (1 - math.min(speedFactor, 0.9)), 0.0)
+                    slipEffect.extraData.accumulatedMod = math.max(slipEffect.extraData.accumulatedMod - step, 0.0)
                 end
 
                 local dynamicModifier = modifier * slipEffect.extraData.accumulatedMod
