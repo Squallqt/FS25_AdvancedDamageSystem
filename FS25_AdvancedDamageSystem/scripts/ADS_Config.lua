@@ -64,8 +64,6 @@ ADS_Config = {
             fuel=0.08
         },
 
-        PERSISTENT_WEAR_RATE_LIMIT = 10.0,
-        IMPULSE_WEAR_RATE_LIMIT = 500.0,
         AVG_STRESS_WARNING_THRESHOLD = 0.22,
         AVG_STRESS_CRITICAL_THRESHOLD = 0.44,
 

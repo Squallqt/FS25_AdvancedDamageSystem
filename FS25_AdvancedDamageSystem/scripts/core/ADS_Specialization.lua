@@ -2888,7 +2888,6 @@ local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdow
             local random = math.random() * 0.2 + 0.9
             systemData.condition = math.clamp(targetCondition * random, 0.2, 1.0)
             systemData.stress = 0
-            systemData.persistentWearRateState = 0
         end
     end
 
