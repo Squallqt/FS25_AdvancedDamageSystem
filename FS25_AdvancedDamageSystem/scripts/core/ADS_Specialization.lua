@@ -4156,19 +4156,6 @@ local function getToolMotionFlags(vehicle)
     return isFoldMoving, isPlowRotationMoving, isCylinderedMoving
 end
 
-local function getDefaultNode(vehicle)
-    if vehicle == nil then
-        return nil
-    end
-    if vehicle.steeringAxleNode ~= nil then
-        return vehicle.steeringAxleNode
-    end
-    if vehicle.components ~= nil and vehicle.components[1] ~= nil then
-        return vehicle.components[1].node
-    end
-    return nil
-end
-
 local function updateImplementChainState(vehicle, dt)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then
@@ -9011,108 +8998,6 @@ local function parseArguments(argString, ...)
         end
 
     return args
-end
-
-local function recalculateMotorPowerFromTorqueCurve(motor)
-    if motor == nil or motor.torqueCurve == nil or motor.torqueCurve.keyframes == nil then
-        return false
-    end
-
-    motor.peakMotorTorque = motor.torqueCurve:getMaximum()
-    motor.peakMotorPower = 0
-    motor.peakMotorPowerRotSpeed = 0
-
-    local numKeyFrames = #motor.torqueCurve.keyframes
-    if numKeyFrames >= 2 then
-        for i = 2, numKeyFrames do
-            local v0 = motor.torqueCurve.keyframes[i - 1]
-            local v1 = motor.torqueCurve.keyframes[i]
-            local torque0 = motor.torqueCurve:getFromKeyframes(v0, v0, i - 1, i - 1, 0)
-            local torque1 = motor.torqueCurve:getFromKeyframes(v1, v1, i, i, 0)
-            local rpm
-            local torque
-
-            if math.abs(torque0 - torque1) > 0.0001 then
-                rpm = (v1.time * torque0 - v0.time * torque1) / (2.0 * (torque0 - torque1))
-                rpm = math.min(math.max(rpm, v0.time), v1.time)
-                torque = motor.torqueCurve:getFromKeyframes(v0, v1, i - 1, i, (v1.time - rpm) / (v1.time - v0.time))
-            else
-                rpm = v0.time
-                torque = torque0
-            end
-
-            local power = torque * rpm
-            if power > motor.peakMotorPower then
-                motor.peakMotorPower = power
-                motor.peakMotorPowerRotSpeed = rpm
-            end
-        end
-
-        motor.peakMotorPower = motor.peakMotorPower * math.pi / 30
-        motor.peakMotorPowerRotSpeed = motor.peakMotorPowerRotSpeed * math.pi / 30
-    elseif numKeyFrames == 1 then
-        local v = motor.torqueCurve.keyframes[1]
-        local rotSpeed = v.time * math.pi / 30
-        local torque = motor.torqueCurve:getFromKeyframes(v, v, 1, 1, 0)
-        motor.peakMotorPower = rotSpeed * torque
-        motor.peakMotorPowerRotSpeed = rotSpeed
-    end
-
-    return true
-end
-
-local function refreshAttachedImplementSourceMotorPeakPower(rootVehicle)
-    if rootVehicle == nil or rootVehicle.getAttachedImplements == nil then
-        return
-    end
-
-    local rootMotor = rootVehicle.getMotor ~= nil and rootVehicle:getMotor() or nil
-    local rootPeakMotorPower = rootMotor ~= nil and rootMotor.peakMotorPower or math.huge
-
-    for _, implement in pairs(rootVehicle:getAttachedImplements()) do
-        local object = implement ~= nil and implement.object or nil
-        if object ~= nil then
-            if object.spec_powerConsumer ~= nil then
-                object.spec_powerConsumer.sourceMotorPeakPower = rootPeakMotorPower
-            end
-            refreshAttachedImplementSourceMotorPeakPower(object)
-        end
-    end
-end
-
-local function getAttachedPlowLikeImplement(vehicle)
-    if vehicle == nil then
-        return nil
-    end
-
-    local selectedImplement = vehicle.getSelectedImplement ~= nil and vehicle:getSelectedImplement() or nil
-    local selectedObject = selectedImplement ~= nil and selectedImplement.object or nil
-    if selectedObject ~= nil and selectedObject.spec_powerConsumer ~= nil then
-        return selectedObject
-    end
-
-    local attachedImplements = vehicle.getAttachedImplements ~= nil and vehicle:getAttachedImplements() or nil
-    if attachedImplements == nil then
-        return nil
-    end
-
-    for _, implement in pairs(attachedImplements) do
-        local object = implement ~= nil and implement.object or nil
-        if object ~= nil then
-            if object.spec_plow ~= nil and object.spec_powerConsumer ~= nil then
-                return object
-            end
-        end
-    end
-
-    for _, implement in pairs(attachedImplements) do
-        local object = implement ~= nil and implement.object or nil
-        if object ~= nil and object.spec_powerConsumer ~= nil then
-            return object
-        end
-    end
-
-    return nil
 end
 
     if argString == nil or type(argString) ~= 'string' or argString == '' then

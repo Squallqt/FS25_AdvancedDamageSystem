@@ -3788,7 +3788,7 @@ ADS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
 }
 
 -- Convergence rate of the transmission slip modifier, per second at full factor.
-local TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND = 0.6
+local TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND = 0.9
 
 if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
     VehicleMotor.getMinMaxGearRatio = Utils.overwrittenFunction(VehicleMotor.getMinMaxGearRatio, function(self, superFunc)
