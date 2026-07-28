@@ -3479,19 +3479,6 @@ local function syncOverloadWarning(vehicle, dt)
     end
 end
 
-local function syncTutorialMessages(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
-    if spec == nil or not vehicle.isClient or not ADS_Config.TUTORIAL_ENABLED then return end
-    local messageData = ADS_Config.TUTORIAL_MESSAGES or {}
-    --- hard start
-    if spec.activeEffects ~= nil and spec.activeEffects.ENGINE_HARD_START_MODIFIER ~= nil then
-        if vehicle:getIsMotorStarted() and not messageData.HARD_START then
-            messageData.HARD_START = true
-        end
-    end
-
-end
-
 local function getSmoothedMotorLoad(vehicle, dt)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then return end
@@ -3568,9 +3555,6 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
 
     --- Disable AI workers for critical effects
     syncDisableAiWorkers(self)
-
-    --- syncing tutorial messages
-    syncTutorialMessages(self, updateDt)
 
     --- 4WD / differential lock management
     self:updateDrivetrain(updateDt)
