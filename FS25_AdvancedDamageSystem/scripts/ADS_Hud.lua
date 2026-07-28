@@ -26,8 +26,6 @@ function ADS_Hud:new()
     self.roundedPanelOverlay = Overlay.new(self.modDirectory .. "hud/panelRounded.dds", 0, 0, 0, 0)
 
     g_overlayManager:addTextureConfigFile(ADS_Hud.modDirectory .. "hud/ads_dashboardHud.xml", "ads_DashboardHud")
-    g_overlayManager:createOverlay("ads_DashboardHud.reliability", 0, 0, 0, 0)
-    g_overlayManager:createOverlay("ads_DashboardHud.maintainability", 0, 0, 0, 0)
     self.wheelSlipHud = {
         icon = g_overlayManager:createOverlay("ads_DashboardHud.wheelSlip", 0, 0, 0, 0)
     }
@@ -181,14 +179,22 @@ function ADS_Hud:new()
 end
 
 function ADS_Hud:delete()
-    if self.roundedPanelOverlay ~= nil then
-        self.roundedPanelOverlay:delete()
-        self.roundedPanelOverlay = nil
+    self.roundedPanelOverlay:delete()
+    self.notificationDividerOverlay:delete()
+    self.wheelSlipHud.icon:delete()
+    self.parkBrakeHud.icon:delete()
+
+    for _, icon in pairs(self.drivetrainHud.icons) do
+        icon.overlay:delete()
     end
 
-    if self.notificationDividerOverlay ~= nil then
-        self.notificationDividerOverlay:delete()
-        self.notificationDividerOverlay = nil
+    for _, indicator in pairs(self.indicators) do
+        indicator.icon:delete()
+    end
+
+    if self.notificationCloseGlyph ~= nil then
+        self.notificationCloseGlyph:delete()
+        self.notificationCloseGlyph = nil
     end
 
     ADS_Hud:superClass().delete(self)

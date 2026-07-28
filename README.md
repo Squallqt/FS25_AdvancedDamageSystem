@@ -2,7 +2,7 @@
 
 Advanced vehicle wear, failure, diagnostics, maintenance, and repair system for Farming Simulator 25.
 
-[![Version](https://img.shields.io/badge/version-0.9.2.6-blue.svg)](#)
+[![Version](https://img.shields.io/badge/version-0.9.3.0%20%5BWIP%5D-blue.svg)](#)
 [![FS25](https://img.shields.io/badge/FS25-compatible-green.svg)](https://farming-simulator.com/)
 [![Multiplayer](https://img.shields.io/badge/multiplayer-supported-success.svg)](#)
 [![Languages](https://img.shields.io/badge/languages-15-blue.svg)](#)
