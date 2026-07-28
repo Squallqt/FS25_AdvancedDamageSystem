@@ -4530,22 +4530,7 @@ ADS_Breakdowns.EffectApplicators.SERVICE_WEAR_MODIFIER = {
     end
 }
 
--- BREAKDOWN_PROBABILITIES_MODIFIER
-ADS_Breakdowns.EffectApplicators.BREAKDOWN_PROBABILITIES_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying BREAKDOWN_PROBABILITIES_MODIFIER:", effectData.value)
-        local spec = vehicle.spec_AdvancedDamageSystem
-        spec.extraBreakdownProbability = effectData.value
-    end,
-
-    remove = function(vehicle, handler)
-        log_dbg("Removing BREAKDOWN_PROBABILITIES_MODIFIER effect.")
-        local spec = vehicle.spec_AdvancedDamageSystem
-        spec.extraBreakdownProbability = 0
-    end
-}
-
--- ENGINE_HEAT_MODIFIER 
+-- ENGINE_HEAT_MODIFIER
 ADS_Breakdowns.EffectApplicators.ENGINE_HEAT_MODIFIER = {
     apply = function(vehicle, effectData, handler)
         log_dbg("Applying ENGINE_HEAT_MODIFIER:", effectData.value)

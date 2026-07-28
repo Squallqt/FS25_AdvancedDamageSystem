@@ -1775,7 +1775,6 @@ function AdvancedDamageSystem:onLoad(savegame)
 
     self.spec_AdvancedDamageSystem.extraConditionWear = 0
     self.spec_AdvancedDamageSystem.extraServiceWear = 0
-    self.spec_AdvancedDamageSystem.extraBreakdownProbability = 0
     self.spec_AdvancedDamageSystem.extraEngineHeat = 0
     self.spec_AdvancedDamageSystem.extraTransmissionHeat = 0
     self.spec_AdvancedDamageSystem.extraCurrentPeak = 0
