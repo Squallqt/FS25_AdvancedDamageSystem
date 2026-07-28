@@ -3052,9 +3052,11 @@ SpeedMeterDisplay.draw = function(self, ...)
         local allVehicles = vehicle.rootVehicle.childVehicles
         
         for _, v in ipairs(allVehicles) do
-            originalGetDamageMethods[v] = v.getDamageAmount 
-            v.getDamageAmount = function() 
-                return customDamageAmount 
+            if v.getDamageAmount ~= nil then
+                originalGetDamageMethods[v] = v.getDamageAmount
+                v.getDamageAmount = function()
+                    return customDamageAmount
+                end
             end
         end
     end
