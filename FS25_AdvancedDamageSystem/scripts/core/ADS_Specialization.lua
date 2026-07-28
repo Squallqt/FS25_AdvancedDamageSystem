@@ -4374,8 +4374,9 @@ local function updateImplementChainState(vehicle, dt)
         end
     end
 
+    local lockedHookLiftContainer = ADS_Utils.getLockedHookLiftContainer(vehicle)
     for _, branch in ipairs(liftBranches) do
-        if not isTrailerJointType(branch.jointTypeId) then
+        if not isTrailerJointType(branch.jointTypeId) and branch.root ~= lockedHookLiftContainer then
             local carriedRatio = branch.mass > 0 and math.clamp((branch.mass - branch.supportLoad) / branch.mass, 0, 1) or 0
             local liftRatioState = spec.hydraulicsLiftRatioCache[branch.root] or {
                 interpolated = 0,

@@ -1282,7 +1282,10 @@ function ADS_Hud:drawLoadMass()
 
     local selfMass  = tonumber(vehicle:getTotalMass(true)) or 0
     local totalMass = tonumber(vehicle:getTotalMass())     or 0
-    local towedMass = math.max(totalMass - selfMass, 0)
+    local lockedHookLiftContainer = ADS_Utils.getLockedHookLiftContainer(vehicle)
+    local carriedMass = lockedHookLiftContainer ~= nil and (tonumber(lockedHookLiftContainer:getTotalMass()) or 0) or 0
+    local vehicleMass = math.min(selfMass + carriedMass, totalMass)
+    local towedMass = math.max(totalMass - vehicleMass, 0)
 
     local loadColor = HUD.COLOR.ACTIVE
 
@@ -1318,7 +1321,7 @@ function ADS_Hud:drawLoadMass()
     local size = self.loadMassText.size or 0.01
     local sep  = "     "
 
-    local displaySelfMass = self:getStableDisplayMass("displaySelfMass", selfMass)
+    local displaySelfMass = self:getStableDisplayMass("displaySelfMass", vehicleMass)
     local displayTowedMass = self:getStableDisplayMass("displayTowedMass", towedMass)
     local displayTotalMass = displaySelfMass + displayTowedMass
 

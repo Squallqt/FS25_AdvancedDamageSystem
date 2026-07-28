@@ -11,6 +11,18 @@ function ADS_Utils.getCurrentPeriodDuration()
     return g_currentMission.environment.daysPerPeriod * MILLISECONDS_PER_GAME_DAY
 end
 
+function ADS_Utils.getLockedHookLiftContainer(vehicle)
+    local hookLift = vehicle ~= nil and vehicle.spec_hookLiftTrailer or nil
+    local attachedContainer = hookLift ~= nil and hookLift.attachedContainer or nil
+    local container = attachedContainer ~= nil and attachedContainer.object or nil
+
+    if hookLift == nil or hookLift.containerLockState ~= true or container == nil or container.spec_hookLiftContainer == nil then
+        return nil
+    end
+
+    return container
+end
+
 function ADS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     if meanTimeInMinutes <= 0 then
         return 1.0

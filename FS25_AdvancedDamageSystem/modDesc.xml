@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="110">
+<modDesc descVersion="111">
     <author>id577, Squallqt</author>
     <version>0.9.3.0</version>
     <title>
@@ -19,6 +19,7 @@ Changelog 0.9.3.0 [WIP]:
 - Added a parking brake with HUD indicator and optional automatic engagement
 - Hands the drivetrain and parking brake over to Enhanced Vehicle when its matching functions are enabled
 - Added a HUD readout of tractor, towed, and combined mass
+- Fixed locked hook-lift containers being classified as towed and continuously lifted loads; they now count as carried vehicle mass
 - Removed unnecessary debug log spam from routine UI and config updates
 - Extended lubrication to all non-road ADS machines; lubrication points gradually dry out during operation and prolonged inactivity, while insufficient lubrication increases chassis wear
 - Reworked harvester wear: mechanical yield losses are now tied only to the harvest-processing failure, while a critical failure stops harvesting
@@ -145,6 +146,7 @@ Changelog 0.9.3.0 [WIP]:
 - Feststellbremse mit HUD-Anzeige und optionalem automatischem Anziehen hinzugefügt
 - Übergibt Antriebsstrang und Feststellbremse an Enhanced Vehicle, wenn dessen entsprechende Funktionen aktiv sind
 - HUD-Anzeige von Traktor-, Anhänger- und Gesamtmasse hinzugefügt
+- Verriegelte Hakenliftcontainer werden nicht mehr als gezogene und dauerhaft angehobene Lasten eingestuft, sondern als getragene Fahrzeugmasse
 - Unnötige Debug-Log-Ausgaben aus routinemäßigen UI- und Konfigurationsaktualisierungen entfernt
 - Betriebsstundenabhängige Schmierung auf alle ADS-Arbeitsmaschinen außerhalb der Straßenkategorien erweitert; nach längerer Stilllegung ist vor der Wiederinbetriebnahme eine Schmierung erforderlich, und unzureichende Schmierung erhöht den Fahrwerksverschleiß
 - Verschleiß von Erntemaschinen überarbeitet: Mechanische Ernteverluste entstehen nur noch durch den Defekt des Ernteverarbeitungssystems; ein kritischer Ausfall stoppt die Ernte
@@ -270,6 +272,7 @@ Changelog 0.9.3.0 [WIP] :
 - Ajout d'un frein de parking avec témoin HUD et serrage automatique optionnel
 - Cède la transmission et le frein de parking à Enhanced Vehicle quand ses fonctions correspondantes sont activées
 - Ajout d'un affichage HUD des masses tracteur, tractée et totale
+- Correction des caissons hook-lift verrouillés classés comme charges tractées et continuellement levées ; ils comptent désormais comme masse portée par le véhicule
 - Suppression de logs de debug inutiles lors des mises à jour d'interface et de configuration
 - Extension du graissage à toutes les machines ADS hors catégories routières ; les points de graissage s'assèchent progressivement pendant le travail et les immobilisations prolongées, tandis qu'un graissage insuffisant augmente l'usure du châssis
 - Refonte de l'usure des machines de récolte : les pertes mécaniques de rendement proviennent uniquement de la panne du système de traitement, tandis qu'une défaillance critique arrête la récolte
