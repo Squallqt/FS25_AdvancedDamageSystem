@@ -4155,7 +4155,7 @@ function ADS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
     end
 
     if not success then
-        print("ERROR in original AttacherJoints.onUpdateTick: " .. tostring(result))
+        log_dbg("ERROR in original AttacherJoints.onUpdateTick: " .. tostring(result))
     end
 
     return result
