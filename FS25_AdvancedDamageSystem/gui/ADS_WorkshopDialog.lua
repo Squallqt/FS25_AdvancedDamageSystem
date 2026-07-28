@@ -5,7 +5,7 @@ local ADS_WorkshopDialog_mt = Class(ADS_WorkshopDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
 local function log_dbg(...)
-    if ADS_Main.DEBUG then
+    if ADS_Config.DEBUG then
         local args = {...}
         for i = 1, #args do
             args[i] = tostring(args[i])
