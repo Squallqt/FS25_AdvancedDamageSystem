@@ -79,26 +79,7 @@ function ADS_ConsoleCommandEvent:run(connection)
 
     local userId = g_currentMission.userManager:getUserIdByConnection(connection)
     local user = g_currentMission.userManager:getUserByUserId(userId)
-    if user == nil then
-        return
-    end
-
-    local isAllowed = user:getIsMasterUser()
-    if not isAllowed then
-        local ok, result = pcall(function()
-            local farm = g_farmManager:getFarmByUserId(userId)
-            if farm ~= nil and farm.userIdToPlayer ~= nil then
-                local player = farm.userIdToPlayer[userId]
-                if player ~= nil and player.isFarmManager == true then
-                    return true
-                end
-            end
-            return false
-        end)
-        isAllowed = ok and result == true
-    end
-
-    if not isAllowed then
+    if user == nil or not user:getIsMasterUser() then
         return
     end
 
