@@ -105,17 +105,7 @@ local function hasPtoCapability(vehicle)
     return false
 end
 
-local systems = (AdvancedDamageSystem ~= nil and AdvancedDamageSystem.SYSTEMS) or {
-    ENGINE = "ads_spec_system_engine",
-    TRANSMISSION = "ads_spec_system_transmission",
-    HYDRAULICS = "ads_spec_system_hydraulics",
-    COOLING = "ads_spec_system_cooling",
-    ELECTRICAL = "ads_spec_system_electrical",
-    CHASSIS = "ads_spec_system_chassis",
-    WORKPROCESS = "ads_spec_system_workprocess",
-    MATERIALFLOW = "ads_spec_system_materialflow",
-    FUEL = "ads_spec_system_fuel"
-}
+local systems = AdvancedDamageSystem.SYSTEMS
 
 ADS_Breakdowns.PARTS = {
     VEHICLE = "ads_breakdowns_part_vehicle",

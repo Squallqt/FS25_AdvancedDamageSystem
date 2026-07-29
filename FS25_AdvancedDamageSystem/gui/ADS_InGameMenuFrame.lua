@@ -185,7 +185,6 @@ local function buildServiceRow(vehicle)
     baseRow.remainingTime = ADS_Utils.formatDuration(duration)
     baseRow.finishTime = ADS_Utils.formatFinishTime(finishTime, daysToAdd)
     baseRow.serviceCost = g_i18n:formatMoney(pendingServicePrice or 0, 0, true, false)
-    baseRow.serviceCostValue = pendingServicePrice or 0
 
     return baseRow
 end
@@ -1223,18 +1222,6 @@ function ADS_InGameMenuFrame:onClickPriceHeader(element)
     self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.PRICE)
 end
 
-function ADS_InGameMenuFrame:onVehicleViewOnMap()
-    local row = self.rows[self.selectedRowIndex]
-    local vehicle = row ~= nil and row.vehicle or nil
-    local hotspot = vehicle ~= nil and vehicle.getMapHotspot ~= nil and vehicle:getMapHotspot() or nil
-
-    if hotspot ~= nil and g_inGameMenu ~= nil and g_inGameMenu.pageMapOverview ~= nil then
-        g_gui:showGui("")
-        g_inGameMenu:openMapOverview()
-        g_inGameMenu.pageMapOverview:showMapHotspot(hotspot)
-    end
-end
-
 function ADS_InGameMenuFrame:onTryEnterVehicle()
     local vehicle = self:getSelectedVehicle()
     if vehicle ~= nil and vehicle.getIsEnterableFromMenu ~= nil and vehicle:getIsEnterableFromMenu() then
@@ -1292,20 +1279,3 @@ function ADS_InGameMenuFrame:onShowMaintenanceLog()
     end
 end
 
-function ADS_InGameMenuFrame:onShowLastReport()
-    local vehicle = self:getSelectedVehicle()
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
-    if spec == nil then
-        return
-    end
-
-    for i = #spec.maintenanceLog, 1, -1 do
-        local entry = spec.maintenanceLog[i]
-        if AdvancedDamageSystem.getIsLogEntryHasReport(entry) then
-            ADS_ReportDialog.show(vehicle, entry)
-            return
-        end
-    end
-
-    InfoDialog.show(g_i18n:getText("ads_ws_no_last_report_message"))
-end

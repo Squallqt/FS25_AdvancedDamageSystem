@@ -137,7 +137,6 @@ end
 function ADS_Main:onStartMission()
     ADS_Main.loadGuiProfiles()
     self.shopMenuPageInstalled = false
-    self.shopMenuFrame = nil
 
     ADS_WorkshopDialog.register()
     ADS_MaintenanceLogDialog.register()
@@ -157,7 +156,7 @@ function ADS_Main:onStartMission()
 
 	mission.hud.setControlledVehicle = Utils.appendedFunction(mission.hud.setControlledVehicle, function(self, vehicle)
 		ADS_Main.hud:setVehicle(vehicle)
-		ADS_Main.hud:setVisible(vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle, true)
+		ADS_Main.hud:setVisible(vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle)
 	end)
 
 	mission.hud.drawControlledEntityHUD = Utils.appendedFunction(mission.hud.drawControlledEntityHUD, function(self)
@@ -294,7 +293,6 @@ function ADS_Main:tryRegisterShopMenuPage()
     end, "pageUsedSale")
     frame:initialize()
 
-    self.shopMenuFrame = frame
     self.shopMenuPageInstalled = true
     return true
 end
@@ -508,7 +506,6 @@ function ADS_Main:loadMap()
     ADS_Main.loadGuiProfiles()
     ADS_SettingsPage.reset()
     self.shopMenuPageInstalled = false
-    self.shopMenuFrame = nil
     ADS_Config.resetTutorialStateSession()
     ADS_Config.loadFromXMLFile()
     self:tryRegisterShopMenuPage()
@@ -523,7 +520,6 @@ end
 
 function ADS_Main:deleteMap()
     self.shopMenuPageInstalled = false
-    self.shopMenuFrame = nil
     ADS_Main.guiProfilesLoaded = nil
     ADS_Config._loaded = nil
     ADS_Config.resetTutorialStateSession()

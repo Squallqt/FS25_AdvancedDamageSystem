@@ -21,7 +21,6 @@ AdvancedDamageSystem = {
         OVERDUE = "ads_spec_state_overdue",
         LEGENDARY = "ads_spec_state_legendary",
         PREMIUM = "ads_spec_state_premium",
-        STANDART = "ads_spec_state_standard",
         BUDGET = "ads_spec_state_budget",
         LOW = "ads_spec_state_low",
         AVERAGE = "ads_spec_state_average",
@@ -1764,7 +1763,6 @@ function AdvancedDamageSystem:onLoad(savegame)
         dilution = 0.0
     }
     self.spec_AdvancedDamageSystem.oilFilterClogging = 0.0
-    self.spec_AdvancedDamageSystem.airFilterClogging = 0.0
     self.spec_AdvancedDamageSystem.airIntakeClogging = 0.0
 
     self.spec_AdvancedDamageSystem.extraConditionWear = 0
@@ -1901,7 +1899,6 @@ function AdvancedDamageSystem:onLoad(savegame)
             pullOverloadFactor = 0,
             heavyTrailerFactor = 0,
             heavyTrailerMassRatio = 0,
-            upHillLoadFactor = 0,
             wheelSlipFactor = 0,
             luggingFactor = 0,
             coldMotorFactor = 0,
@@ -5370,7 +5367,7 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
         elseif (spec.engineTemperature or -99) > C.OVERHEAT_MOTOR_THRESHOLD and motorLoad > 0.3 and not spec.isElectricVehicle then
             hotMotorFactor = ADS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_MOTOR_THRESHOLD, false, 120)
             local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(motorLoad, 0.3, false)
-            hotMotorFactor = hotMotorFactor * (C.OVERHEAT_MOTOR_MULTIPLIER or C.OVERHEAT_MOTOR_MULTIPLIER or 0) * motorLoadInf
+            hotMotorFactor = hotMotorFactor * (C.OVERHEAT_MOTOR_MULTIPLIER or 0) * motorLoadInf
             hotMotorFactor = math.min(hotMotorFactor, C.OVERHEAT_MOTOR_MULTIPLIER or hotMotorFactor)
             wearRate = wearRate + hotMotorFactor
         end
@@ -5435,10 +5432,6 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
 
     if hasCVTAddon(self) and self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
         local spec_CVTaddon = self.spec_CVTaddon
-
-        if self.spec_RealisticDamageSystem == nil then
-            self.spec_RealisticDamageSystem = {}
-        end
 
         local currentCVTdamage = math.clamp(tonumber(spec_CVTaddon.CVTdamage) or 0, 0, 100)
         local prevCVTdamage = math.clamp(tonumber(spec._prevCVTdamage) or currentCVTdamage, 0, 100)
@@ -6840,7 +6833,6 @@ function AdvancedDamageSystem:removeBreakdown(...)
         if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
             self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
         end
-    else
     end
 end
 
@@ -8205,7 +8197,6 @@ function AdvancedDamageSystem:addEntryToMaintenanceLog(maintenanceType, optionOn
     }
 
     table.insert(spec.maintenanceLog, entry)
-    spec.lastLogEntry = entry
 end
 
 

@@ -142,7 +142,6 @@ local function addDisabledLockToSettingsRow(rowElement, optionElement, tooltip)
         lockButton:setDisabled(not disabled)
     end
 
-    optionElement.ads_disabledLockIcon = lockButton
 
     return lockButton
 end

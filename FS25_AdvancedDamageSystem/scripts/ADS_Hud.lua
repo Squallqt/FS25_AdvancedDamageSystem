@@ -171,9 +171,6 @@ function ADS_Hud:new()
         color = {1, 1, 1, 1}
     }
 
-    self.tempData = {}
-    self.serviceData = {}
-    self.conditionData = {}
 
     return self
 end

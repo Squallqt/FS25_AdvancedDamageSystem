@@ -71,7 +71,6 @@ function ADS_EffectSyncEvent:run(connection)
             effect.extraData = effect.extraData or {}
             effect.extraData.status = self.status
             effect.extraData.timer = self.timer
-            effect.extraData.currentCount = self.extraInt
         end
 
         if isFromClient and g_server ~= nil then
