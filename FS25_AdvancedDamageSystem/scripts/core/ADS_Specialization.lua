@@ -1802,7 +1802,7 @@ function AdvancedDamageSystem:onLoad(savegame)
 
     self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
     self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
-    self.spec_AdvancedDamageSystem.lastLubricationGameTime = ADS_Utils.getCurrentGameTime()
+    self.spec_AdvancedDamageSystem.lastLubricationGameTime = 0
 
     self.spec_AdvancedDamageSystem.batterySoc = 1.0
     self.spec_AdvancedDamageSystem.batteryChargeAh = nil
@@ -2909,6 +2909,10 @@ local function registerVehicle(vehicle)
 
             local spec = vehicle.spec_AdvancedDamageSystem
             if spec == nil then return end
+
+            if spec.lastLubricationGameTime == 0 then
+                spec.lastLubricationGameTime = ADS_Utils.getCurrentGameTime()
+            end
 
             --- Registration in ADS_Main.vehicles
             ADS_Main.vehicles[vehicle.uniqueId] = vehicle
