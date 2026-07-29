@@ -375,7 +375,7 @@
         <text name="ads_spec_duration_format_combined" text="%s %s"/>
         <text name="ads_spec_months_ago_unit" text="개월 전"/>
         <text name="ads_spec_months_ago_format" text="%s %s"/>
-        <text name="ads_spec_last_maintenance_until_format" text="%s (남은 시간: %s)"/>
+        <text name="ads_spec_last_maintenance_until_format" text="%s (%s까지)"/>
         <text name="ads_spec_service_interval_format" text="%s 시간"/>
         <text name="ads_spec_maintenance_complete_notification" text="완료됨"/>
         <text name="ads_spec_maintenance_cancelled_notification" text="취소됨"/>
@@ -672,7 +672,7 @@
         <text name="ads_sell_dialog_repair_penalty" text="수리비 공제"/>
         <text name="ads_sell_dialog_washing_penalty" text="세척비 공제"/>
         <text name="ads_sell_dialog_total" text="합계"/>
-        <text name="ads_mobile_workshop_low_maintainability" text="경고: 정비 용이성이 낮아 이동식 정비소에서 %s의 %s 작업을 수행할 수 없습니다."/>
+        <text name="ads_mobile_workshop_low_maintainability" text="경고: 정비 용이성이 낮아 이동식 정비소에서 %s 작업을 %s에 대해 수행할 수 없습니다."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="치명적 과부하! 즉시 차량의 부하를 줄이십시오."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="튜토리얼 모드"/>

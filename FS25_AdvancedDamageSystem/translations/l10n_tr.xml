@@ -375,7 +375,7 @@
         <text name="ads_spec_duration_format_combined" text="%s ve %s"/>
         <text name="ads_spec_months_ago_unit" text="ay önce"/>
         <text name="ads_spec_months_ago_format" text="%s %s"/>
-        <text name="ads_spec_last_maintenance_until_format" text="%s'ye kadar %s"/>
+        <text name="ads_spec_last_maintenance_until_format" text="%s %s'ye kadar"/>
         <text name="ads_spec_service_interval_format" text="%s o/h"/>
         <text name="ads_spec_maintenance_complete_notification" text="tamamlandı"/>
         <text name="ads_spec_maintenance_cancelled_notification" text="iptal edildi"/>
@@ -672,7 +672,7 @@
         <text name="ads_sell_dialog_repair_penalty" text="Onarım"/>
         <text name="ads_sell_dialog_washing_penalty" text="Yıkama"/>
         <text name="ads_sell_dialog_total" text="Toplam"/>
-        <text name="ads_mobile_workshop_low_maintainability" text="UYARI: Bakım kolaylığı yetersizliği nedeniyle, mobil atölyede %s için %s kullanılamamaktadır."/>
+        <text name="ads_mobile_workshop_low_maintainability" text="UYARI: Bakım kolaylığı yetersizliği nedeniyle %s, %s için mobil atölyede kullanılamamaktadır."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritik aşırı yük! Aracın yükünü derhal azaltın."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Eğitim modu"/>

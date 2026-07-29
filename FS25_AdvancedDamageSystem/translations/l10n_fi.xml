@@ -375,7 +375,7 @@
         <text name="ads_spec_duration_format_combined" text="%s ja %s"/>
         <text name="ads_spec_months_ago_unit" text="kuukautta sitten"/>
         <text name="ads_spec_months_ago_format" text="%s %s"/>
-        <text name="ads_spec_last_maintenance_until_format" text="%s asti %s"/>
+        <text name="ads_spec_last_maintenance_until_format" text="%s %s asti"/>
         <text name="ads_spec_service_interval_format" text="%s k/t"/>
         <text name="ads_spec_maintenance_complete_notification" text="valmis"/>
         <text name="ads_spec_maintenance_cancelled_notification" text="peruutettu"/>
