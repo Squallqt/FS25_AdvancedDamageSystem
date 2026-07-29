@@ -302,18 +302,23 @@ function ADS_MaintenanceLogDialog:populateCellForItemInSection(list, section, in
     if entry.isCompleted == false then
         descText = g_i18n:getText("ads_log_cancelled_desc")
     else
+        local partTypeSuffix = ""
+        if entry.optionTwo ~= nil and entry.optionTwo ~= "NONE" then
+            partTypeSuffix = " (" .. g_i18n:getText(entry.optionTwo) .. ")"
+        end
+
         -- repair
         if entry.type == S.REPAIR then
             local repairedPartsText = table.concat(partsNames, ", ")
             if repairedPartsText == "" then
                 repairedPartsText = g_i18n:getText("ads_log_repair_desc_generic")
             end
-            descText = repairedPartsText .. " (" .. g_i18n:getText(entry.optionTwo or "NONE") .. ")"
+            descText = repairedPartsText .. partTypeSuffix
 
         -- maintenance
         elseif entry.type == S.MAINTENANCE then
             descText = string.format(g_i18n:getText("ads_log_performed"), g_i18n:getText(entry.optionOne) .. " " .. g_i18n:getText("ads_ws_task_maintenance"))
-            descText = descText .. " (" .. g_i18n:getText(entry.optionTwo) .. ")"
+            descText = descText .. partTypeSuffix
             if #repairedParts > 0 then
                 descText = descText .. ". " .. string.format(g_i18n:getText("ads_log_inspection_desc_with_breakdowns"), table.concat(partsNames, ", "))
             end
