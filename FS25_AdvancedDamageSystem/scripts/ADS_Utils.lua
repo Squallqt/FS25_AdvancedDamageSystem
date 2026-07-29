@@ -1063,7 +1063,7 @@ end
 function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
     if serialized == nil or serialized == "" then return nil end
     local parts = {}
-    for part in string.gmatch(serialized, "([^|]+)") do
+    for part in string.gmatch(serialized .. "|", "(.-)|") do
         table.insert(parts, part)
     end
     if #parts < 11 then return nil end
