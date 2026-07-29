@@ -1040,17 +1040,12 @@ function AdvancedDamageSystem.initSpecialization()
     schemaSavegame:register(XMLValueType.FLOAT,  logKey .. "#price", "Price")
     schemaSavegame:register(XMLValueType.STRING, logKey .. "#date", "Date")
     
-    schemaSavegame:register(XMLValueType.FLOAT,  logKey .. "#hours", "Operating Hours (OLD)")
-    schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#aftermarket", "Is Aftermarket Parts (OLD)")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#breakdowns", "Selected Breakdowns List (OLD)")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#info", "Additional Info (OLD)")
     schemaSavegame:register(XMLValueType.STRING, logKey .. "#location", "Workshop Location")
     schemaSavegame:register(XMLValueType.STRING, logKey .. "#optionOne", "Option One")
     schemaSavegame:register(XMLValueType.STRING, logKey .. "#optionTwo", "Option Two")
     schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#optionThree", "Option Three")
     schemaSavegame:register(XMLValueType.STRING, logKey .. "#isVisible", "is Visible in Log")
     schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#isCompleted", "Is Completed")
-    schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#isLegacyEntry", "Legacy Migrated Entry Flag")
     local condKey = logKey .. ".conditionData"
     schemaSavegame:register(XMLValueType.INT,    condKey .. "#year", "Vehicle Year")
     schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#operatingHours", "Operating Hours")
@@ -1706,7 +1701,6 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
                 xmlFile:setValue(entryKey .. "#optionThree", entry.optionThree or false)
                 xmlFile:setValue(entryKey .. "#isVisible", tostring(ADS_Utils.normalizeBoolValue(entry.isVisible, true)))
                 xmlFile:setValue(entryKey .. "#isCompleted", ADS_Utils.normalizeBoolValue(entry.isCompleted, true))
-                xmlFile:setValue(entryKey .. "#isLegacyEntry", ADS_Utils.normalizeBoolValue(entry.isLegacyEntry, false))
 
                 if entry.conditionData then
                     local condKey = entryKey .. ".conditionData"
@@ -2404,16 +2398,14 @@ function AdvancedDamageSystem:onPostLoad(savegame)
                 conditionData = {}
             }
             local condKey = entryKey .. ".conditionData"
-            local hasConditionData = savegame.xmlFile:hasProperty(condKey)
 
-            if hasConditionData then
+            if savegame.xmlFile:hasProperty(condKey) then
                 entry.location = savegame.xmlFile:getValue(entryKey .. "#location", "UNKNOWN")
                 entry.optionOne = savegame.xmlFile:getValue(entryKey .. "#optionOne", "NONE")
                 entry.optionTwo = savegame.xmlFile:getValue(entryKey .. "#optionTwo", "NONE")
                 entry.optionThree = savegame.xmlFile:getValue(entryKey .. "#optionThree", false)
                 entry.isVisible = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isVisible", true), true)
                 entry.isCompleted = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isCompleted", true), true)
-                entry.isLegacyEntry = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isLegacyEntry", false), false)
 
                 entry.conditionData.year = savegame.xmlFile:getValue(condKey .. "#year", 0)
                 entry.conditionData.operatingHours = savegame.xmlFile:getValue(condKey .. "#operatingHours", 0)
@@ -2438,54 +2430,10 @@ function AdvancedDamageSystem:onPostLoad(savegame)
                 for _, indId in ipairs(indicatorIds) do
                     entry.conditionData.activeIndicators[indId] = true
                 end
-            else
-                -- COMPAT(0.8.5.0): migrate legacy maintenance log entry format (hours/aftermarket/breakdowns/info).
-                -- Remove this migration branch after legacy save migration window is over.
-                local legacyAftermarket = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#aftermarket", false), false)
-                local legacyOperatingHours = ADS_Utils.normalizeNumberValue(savegame.xmlFile:getValue(entryKey .. "#hours", 0), 0)
-                local legacyBreakdowns = ADS_Utils.parseCsvList(savegame.xmlFile:getValue(entryKey .. "#breakdowns", ""))
 
-                local optionOne = "NONE"
-                local optionTwo = legacyAftermarket and AdvancedDamageSystem.PART_TYPES.AFTERMARKET or AdvancedDamageSystem.PART_TYPES.OEM
-                local optionThree = false
-
-                if entry.type == AdvancedDamageSystem.STATUS.INSPECTION then
-                    optionOne = AdvancedDamageSystem.INSPECTION_TYPES.STANDARD
-                    optionTwo = "NONE"
-                elseif entry.type == AdvancedDamageSystem.STATUS.MAINTENANCE then
-                    optionOne = AdvancedDamageSystem.MAINTENANCE_TYPES.STANDARD
-                elseif entry.type == AdvancedDamageSystem.STATUS.REPAIR then
-                    optionOne = AdvancedDamageSystem.REPAIR_TYPES.MEDIUM
-                elseif entry.type == AdvancedDamageSystem.STATUS.OVERHAUL then
-                    optionOne = AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD
-                else
-                    optionTwo = "NONE"
-                end
-
-                entry.location = "UNKNOWN"
-                entry.optionOne = optionOne
-                entry.optionTwo = optionTwo
-                entry.optionThree = optionThree
-                entry.isVisible = true
-                entry.isCompleted = true
-                entry.isLegacyEntry = true
-
-                entry.conditionData.year = spec.year or 0
-                entry.conditionData.operatingHours = legacyOperatingHours
-                entry.conditionData.age = self.age or 0
-                entry.conditionData.condition = 1
-                entry.conditionData.service = 1
-                entry.conditionData.systems = {}
-                entry.conditionData.batterySoc = 1
-                entry.conditionData.activeBreakdowns = {}
-                entry.conditionData.selectedBreakdowns = legacyBreakdowns
-                entry.conditionData.activeEffects = {}
-                entry.conditionData.activeIndicators = {}
-                entry.conditionData.reliability = spec.reliability or 1
-                entry.conditionData.maintainability = spec.maintainability or 1
+                table.insert(spec.maintenanceLog, entry)
             end
 
-            table.insert(spec.maintenanceLog, entry)
             i = i + 1
         end
 
@@ -8204,7 +8152,6 @@ function AdvancedDamageSystem:addEntryToMaintenanceLog(maintenanceType, optionOn
         optionThree = optionThree,
         isVisible = false,
         isCompleted = isCompleted ~= false,
-        isLegacyEntry = false,
 
         conditionData = {
             year = spec.year,
@@ -8418,15 +8365,12 @@ function AdvancedDamageSystem:getActiveBreakdowns()
 end
 
 function AdvancedDamageSystem.getIsLogEntryHasReport(entry)
-    local isVisible = ADS_Utils.normalizeBoolValue(entry.isVisible, true)
     local isCompleted = ADS_Utils.normalizeBoolValue(entry.isCompleted, true)
-    local isLegacyEntry = ADS_Utils.normalizeBoolValue(entry.isLegacyEntry, false)
 
     return (entry.type ~= AdvancedDamageSystem.STATUS.REPAIR 
     and entry.optionOne ~= AdvancedDamageSystem.INSPECTION_TYPES.VISUAL 
     and entry.optionOne ~= "NONE" 
-    and isCompleted
-    and not isLegacyEntry)
+    and isCompleted)
 end
 
 function AdvancedDamageSystem.getIsCompleteReport(entry)

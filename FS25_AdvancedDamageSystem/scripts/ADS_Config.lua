@@ -1205,12 +1205,7 @@ function ADS_Config.loadFromXMLFile()
     if v ~= nil then ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = math.clamp(v, 0, 0.05) end
 
     v = getXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE")
-    if v ~= nil then
-        ADS_Config.FIELD_CARE.RAYCAST_DISTANCE = v
-    else
-        v = getXMLFloat(xmlFile, root .. ".JUMPER_CABLES_RAYCAST_DISTANCE")
-        if v ~= nil then ADS_Config.FIELD_CARE.RAYCAST_DISTANCE = v end
-    end
+    if v ~= nil then ADS_Config.FIELD_CARE.RAYCAST_DISTANCE = v end
 
     v = getXMLFloat(xmlFile, root .. ".JUMPER_CABLES_MAX_CONNECTION_DISTANCE")
     if v ~= nil then ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE = v end

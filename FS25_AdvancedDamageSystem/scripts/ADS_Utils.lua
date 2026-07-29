@@ -256,7 +256,7 @@ function ADS_Utils.deserializeBreakdowns(breakdownString)
         local id, stage, timer, isVisible, isSelected, isActive, resumeTimer, source = string.match(part, "([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
         
         if id then
-            breakdowns[id] = { 
+            breakdowns[id] = {
                 stage = tonumber(stage),
                 progressTimer = tonumber(timer),
                 isVisible = (tonumber(isVisible) == 1),
@@ -265,45 +265,6 @@ function ADS_Utils.deserializeBreakdowns(breakdownString)
                 resumeTimer = math.max(tonumber(resumeTimer) or 0, 0),
                 source = tonumber(source) or AdvancedDamageSystem.BREAKDOWN_SOURCES.RANDOM
             }
-        else
-            id, stage, timer, isVisible, isSelected, isActive, resumeTimer = string.match(part, "([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
-            if id then
-                breakdowns[id] = {
-                    stage = tonumber(stage),
-                    progressTimer = tonumber(timer),
-                    isVisible = (tonumber(isVisible) == 1),
-                    isSelectedForRepair = (tonumber(isSelected) == 1),
-                    isActive = (tonumber(isActive) == 1),
-                    resumeTimer = math.max(tonumber(resumeTimer) or 0, 0),
-                    source = AdvancedDamageSystem.BREAKDOWN_SOURCES.RANDOM
-                }
-            else
-                id, stage, timer, isVisible, isSelected = string.match(part, "([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
-                if id then
-                    breakdowns[id] = {
-                        stage = tonumber(stage),
-                        progressTimer = tonumber(timer),
-                        isVisible = (tonumber(isVisible) == 1),
-                        isSelectedForRepair = (tonumber(isSelected) == 1),
-                        isActive = true,
-                        resumeTimer = 0,
-                        source = AdvancedDamageSystem.BREAKDOWN_SOURCES.RANDOM
-                    }
-                else
-                    id, stage, timer = string.match(part, "([^,]+),([^,]+),([^,]+)")
-                    if id then
-                        breakdowns[id] = {
-                            stage = tonumber(stage),
-                            progressTimer = tonumber(timer),
-                            isVisible = false,
-                            isSelectedForRepair = true,
-                            isActive = true,
-                            resumeTimer = 0,
-                            source = AdvancedDamageSystem.BREAKDOWN_SOURCES.RANDOM
-                        }
-                    end
-                end
-            end
         end
     end
     return breakdowns
@@ -1042,7 +1003,6 @@ function ADS_Utils.serializeMaintenanceLogEntry(entry)
         tostring(entry.optionThree or false),
         tostring(ADS_Utils.normalizeBoolValue(entry.isVisible, true)),
         tostring(ADS_Utils.normalizeBoolValue(entry.isCompleted, true)),
-        tostring(ADS_Utils.normalizeBoolValue(entry.isLegacyEntry, false)),
         tostring(cd.year or 0),
         tostring(cd.operatingHours or 0),
         tostring(cd.age or 0),
@@ -1066,7 +1026,7 @@ function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
     for part in string.gmatch(serialized .. "|", "(.-)|") do
         table.insert(parts, part)
     end
-    if #parts < 11 then return nil end
+    if #parts < 10 then return nil end
 
     local result = {
         id = tonumber(parts[1]) or 0,
@@ -1079,24 +1039,23 @@ function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
         optionThree = ADS_Utils.normalizeBoolValue(parts[8], false),
         isVisible = ADS_Utils.normalizeBoolValue(parts[9], true),
         isCompleted = ADS_Utils.normalizeBoolValue(parts[10], true),
-        isLegacyEntry = ADS_Utils.normalizeBoolValue(parts[11], false),
         conditionData = {
-            year = tonumber(parts[12]) or 0,
-            operatingHours = tonumber(parts[13]) or 0,
-            age = tonumber(parts[14]) or 0,
-            condition = tonumber(parts[15]) or 1,
-            service = tonumber(parts[16]) or 1,
-            reliability = tonumber(parts[17]) or 1,
-            maintainability = tonumber(parts[18]) or 1,
-            systems = ADS_Utils.createSystemsSnapshot(ADS_Utils.deserializeSystemsState(ADS_Utils.decodeDelimitedString(parts[19] or ""))),
-            batterySoc = tonumber(parts[20]) or 1,
-            activeBreakdowns = ADS_Utils.deserializeBreakdowns(ADS_Utils.decodeDelimitedString(parts[22] or "")),
-            selectedBreakdowns = ADS_Utils.parseCsvList(ADS_Utils.decodeDelimitedString(parts[23] or "")),
-            activeEffects = ADS_Utils.deserializeEffectSnapshot(ADS_Utils.decodeDelimitedString(parts[21] or "")),
+            year = tonumber(parts[11]) or 0,
+            operatingHours = tonumber(parts[12]) or 0,
+            age = tonumber(parts[13]) or 0,
+            condition = tonumber(parts[14]) or 1,
+            service = tonumber(parts[15]) or 1,
+            reliability = tonumber(parts[16]) or 1,
+            maintainability = tonumber(parts[17]) or 1,
+            systems = ADS_Utils.createSystemsSnapshot(ADS_Utils.deserializeSystemsState(ADS_Utils.decodeDelimitedString(parts[18] or ""))),
+            batterySoc = tonumber(parts[19]) or 1,
+            activeBreakdowns = ADS_Utils.deserializeBreakdowns(ADS_Utils.decodeDelimitedString(parts[21] or "")),
+            selectedBreakdowns = ADS_Utils.parseCsvList(ADS_Utils.decodeDelimitedString(parts[22] or "")),
+            activeEffects = ADS_Utils.deserializeEffectSnapshot(ADS_Utils.decodeDelimitedString(parts[20] or "")),
             activeIndicators = {}
         }
     }
-    for _, indicatorId in ipairs(ADS_Utils.parseCsvList(ADS_Utils.decodeDelimitedString(parts[24] or ""))) do
+    for _, indicatorId in ipairs(ADS_Utils.parseCsvList(ADS_Utils.decodeDelimitedString(parts[23] or ""))) do
         if indicatorId ~= nil and indicatorId ~= "" then
             result.conditionData.activeIndicators[indicatorId] = true
         end
