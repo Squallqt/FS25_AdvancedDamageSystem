@@ -1374,7 +1374,7 @@ end
 
 function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMask)
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or spec.isExcludedVehicle then return end
+    if spec == nil then return end
 
     if not connection:getIsServer() then
         -- [1] State
@@ -1476,7 +1476,7 @@ end
 
 function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection)
     local spec = self.spec_AdvancedDamageSystem
-    if spec == nil or spec.isExcludedVehicle then return end
+    if spec == nil then return end
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
 
     if connection:getIsServer() then
