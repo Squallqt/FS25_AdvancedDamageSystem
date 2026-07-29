@@ -1199,12 +1199,7 @@ function ADS_Config.loadFromXMLFile()
     if v ~= nil then ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = v end
 
     v = getXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR")
-    if v ~= nil then
-        local percent = math.floor(v * 100 + 0.5)
-        if percent >= 0 and percent <= 5 then
-            ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = percent / 100
-        end
-    end
+    if v ~= nil then ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = math.clamp(v, 0, 0.05) end
 
     v = getXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE")
     if v ~= nil then
