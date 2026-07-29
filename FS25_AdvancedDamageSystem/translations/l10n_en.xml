@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Critical overload! Reduce the load on the vehicle immediately."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Tutorial mode"/>
-        <text name="ads_tutorialMode_tooltip" text="Shows tutorial tips during gameplay. Disabled in multiplayer."/>
+        <text name="ads_tutorialMode_tooltip" text="Shows tutorial tips during gameplay."/>
         <text name="ads_tutorialResetTips_label" text="Reset tips"/>
         <text name="ads_tutorialResetTips_text" text="Reset tips"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Reset tutorial tip history and show all tips again. Available only in singleplayer."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Reset tutorial tip history and show all tips again."/>
         <text name="ads_tutorialResetConfirm_title" text="Reset tutorial tips?"/>
         <text name="ads_tutorialResetConfirm_message" text="Reset tutorial tip history and show all tips again?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Welcome to Advanced Damage System"/>

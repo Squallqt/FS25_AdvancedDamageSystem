@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Критическая перегрузка! Немедленно снизьте нагрузку на технику."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Режим обучения"/>
-        <text name="ads_tutorialMode_tooltip" text="Показывает обучающие подсказки во время игры. В мультиплеере отключено."/>
+        <text name="ads_tutorialMode_tooltip" text="Показывает обучающие подсказки во время игры."/>
         <text name="ads_tutorialResetTips_label" text="Сбросить подсказки"/>
         <text name="ads_tutorialResetTips_text" text="Сбросить подсказки"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Сбрасывает историю обучающих подсказок и показывает их заново. Доступно только в одиночной игре."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Сбрасывает историю обучающих подсказок и показывает их заново."/>
         <text name="ads_tutorialResetConfirm_title" text="Сбросить подсказки?"/>
         <text name="ads_tutorialResetConfirm_message" text="Сбросить историю обучающих подсказок и показывать их заново?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Добро пожаловать в Advanced Damage System"/>

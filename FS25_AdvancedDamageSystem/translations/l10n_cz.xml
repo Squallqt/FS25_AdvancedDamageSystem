@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritické přetížení! Okamžitě snižte zatížení vozidla."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Režim tutoriálu"/>
-        <text name="ads_tutorialMode_tooltip" text="Zobrazuje tipy tutoriálu během hraní. V režimu více hráčů je zakázáno."/>
+        <text name="ads_tutorialMode_tooltip" text="Zobrazuje tipy tutoriálu během hraní."/>
         <text name="ads_tutorialResetTips_label" text="Resetovat tipy"/>
         <text name="ads_tutorialResetTips_text" text="Resetovat tipy"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Vymaže historii zobrazených tipů a začne je ukazovat znovu. Dostupné pouze v režimu jednoho hráče."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Vymaže historii zobrazených tipů a začne je ukazovat znovu."/>
         <text name="ads_tutorialResetConfirm_title" text="Resetovat tipy tutoriálu?"/>
         <text name="ads_tutorialResetConfirm_message" text="Přejete si resetovat historii tipů a začít je zobrazovat znovu?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Vítejte v Advanced Damage System"/>

@@ -850,6 +850,9 @@ local function markTutorialDataDirty(vehicle, spec)
     local wheelSlipTimer  = tonumber(spec.wheelSlipTutorialTimer)  or 0
     local brakeState  = spec.chassisBrakeState
     local hpMassRatio = brakeState ~= nil and (tonumber(brakeState.hpMassRatio) or 1000) or 1000
+    local trailerMass = brakeState ~= nil and (tonumber(brakeState.trailerMass) or 0) or 0
+    local hpGrossMassRatio = brakeState ~= nil and (tonumber(brakeState.hpGrossMassRatio) or 1000) or 1000
+    local isCranking  = spec.isCranking == true
     local steerState    = spec.chassisSteerState
     local groundContact = steerState ~= nil and (steerState.groundContact or 0) > 0 or false
     local isMoving      = steerState ~= nil and steerState.isMoving == true or false
@@ -865,6 +868,9 @@ local function markTutorialDataDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncTutorial_luggingTimer,    luggingTimer,    100.0) or
        syncFloatChanged(spec._lastSyncTutorial_wheelSlipTimer,  wheelSlipTimer,  100.0) or
        syncFloatChanged(spec._lastSyncTutorial_hpMassRatio,     hpMassRatio,     0.1)   or
+       syncFloatChanged(spec._lastSyncTutorial_trailerMass,     trailerMass,     0.01)  or
+       syncFloatChanged(spec._lastSyncTutorial_hpGrossMassRatio, hpGrossMassRatio, 0.1) or
+       spec._lastSyncTutorial_isCranking    ~= isCranking                              or
        spec._lastSyncTutorial_groundContact ~= groundContact                           or
        spec._lastSyncTutorial_isMoving      ~= isMoving                                or
        syncFloatChanged(spec._lastSyncTutorial_crankingTimer,   crankingTimer,   100.0) or
@@ -878,6 +884,9 @@ local function markTutorialDataDirty(vehicle, spec)
             spec._lastSyncTutorial_luggingTimer    = luggingTimer
             spec._lastSyncTutorial_wheelSlipTimer  = wheelSlipTimer
             spec._lastSyncTutorial_hpMassRatio     = hpMassRatio
+            spec._lastSyncTutorial_trailerMass     = trailerMass
+            spec._lastSyncTutorial_hpGrossMassRatio = hpGrossMassRatio
+            spec._lastSyncTutorial_isCranking      = isCranking
             spec._lastSyncTutorial_groundContact   = groundContact
             spec._lastSyncTutorial_isMoving        = isMoving
             spec._lastSyncTutorial_crankingTimer   = crankingTimer
@@ -1449,9 +1458,12 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipTutorialTimer, 0, 0, 3000))
             local brakeState = spec.chassisBrakeState
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpMassRatio or 1000, 1000, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.trailerMass or 0, 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpGrossMassRatio or 1000, 1000, 0, 10000))
             local steerState = spec.chassisSteerState
             streamWriteBool(streamId, steerState ~= nil and (steerState.groundContact or 0) > 0 or false)
             streamWriteBool(streamId, steerState ~= nil and steerState.isMoving == true or false)
+            streamWriteBool(streamId, spec.isCranking == true)
             local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(elecSys ~= nil and elecSys.crankingTimer or 0, 0, 0, 10000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.liftedMass, 0, 0))
@@ -1585,6 +1597,8 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
                 spec.chassisBrakeState = brakeState
             end
             brakeState.hpMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
+            brakeState.trailerMass = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            brakeState.hpGrossMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
             local steerState = spec.chassisSteerState
             if steerState == nil then
                 steerState = { prevPosition = nil, position = 0, deltaRate = 0, rateFactor = 0, groundContact = 0, isLowSpeedActive = false, isMoving = false }
@@ -1592,6 +1606,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             end
             steerState.groundContact = streamReadBool(streamId) and 1 or 0
             steerState.isMoving      = streamReadBool(streamId)
+            spec.isCranking          = streamReadBool(streamId)
             local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
             local crankingTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
             if elecSys ~= nil then

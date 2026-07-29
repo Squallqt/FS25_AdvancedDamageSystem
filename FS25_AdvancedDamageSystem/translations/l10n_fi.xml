@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kriittinen ylikuormitus! Vähennä ajoneuvon kuormaa välittömästi."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Opetustila"/>
-        <text name="ads_tutorialMode_tooltip" text="Näyttää opetusvihjaita pelin aikana. Ei käytettävissä moninpelissä."/>
+        <text name="ads_tutorialMode_tooltip" text="Näyttää opetusvihjaita pelin aikana."/>
         <text name="ads_tutorialResetTips_label" text="Nollaa vihjeet"/>
         <text name="ads_tutorialResetTips_text" text="Nollaa vihjeet"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Nollaa opetusvihjehistoria ja näytä kaikki vihjeet uudelleen. Saatavilla vain yksinpelissä."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Nollaa opetusvihjehistoria ja näytä kaikki vihjeet uudelleen."/>
         <text name="ads_tutorialResetConfirm_title" text="Nollataanko opetusvihj eet?"/>
         <text name="ads_tutorialResetConfirm_message" text="Nollataanko opetusvihjehistoria ja näytetäänkö kaikki vihjeet uudelleen?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Tervetuloa edistykselliseen vauriojärjestelmään"/>

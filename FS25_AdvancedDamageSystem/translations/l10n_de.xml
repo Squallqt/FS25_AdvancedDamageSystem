@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritische Überlastung! Verringern Sie sofort die Belastung der Maschine."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Tutorial-Modus"/>
-        <text name="ads_tutorialMode_tooltip" text="Zeigt Tutorial-Hinweise während des Spielens an. Im Mehrspielermodus deaktiviert."/>
+        <text name="ads_tutorialMode_tooltip" text="Zeigt Tutorial-Hinweise während des Spielens an."/>
         <text name="ads_tutorialResetTips_label" text="Hinweise zurücksetzen"/>
         <text name="ads_tutorialResetTips_text" text="Hinweise zurücksetzen"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Setzt den Verlauf der Tutorial-Hinweise zurück und zeigt alle Hinweise erneut an. Nur im Einzelspielermodus verfügbar."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Setzt den Verlauf der Tutorial-Hinweise zurück und zeigt alle Hinweise erneut an."/>
         <text name="ads_tutorialResetConfirm_title" text="Tutorial-Hinweise zurücksetzen?"/>
         <text name="ads_tutorialResetConfirm_message" text="Verlauf der Tutorial-Hinweise zurücksetzen und alle Hinweise erneut anzeigen?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Willkommen bei Advanced Damage System"/>

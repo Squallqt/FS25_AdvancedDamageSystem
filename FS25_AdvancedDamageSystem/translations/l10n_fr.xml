@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Surcharge critique ! Réduisez immédiatement la charge du véhicule."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Mode tutoriel"/>
-        <text name="ads_tutorialMode_tooltip" text="Affiche des conseils tutoriels pendant le jeu. Désactivé en multijoueur."/>
+        <text name="ads_tutorialMode_tooltip" text="Affiche des conseils tutoriels pendant le jeu."/>
         <text name="ads_tutorialResetTips_label" text="Réinitialiser les conseils"/>
         <text name="ads_tutorialResetTips_text" text="Réinitialiser les conseils"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Reinitialise l'historique des conseils du didacticiel et les affiche tous de nouveau. Disponible uniquement en solo."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Reinitialise l'historique des conseils du didacticiel et les affiche tous de nouveau."/>
         <text name="ads_tutorialResetConfirm_title" text="Réinitialiser les conseils tutoriels ?"/>
         <text name="ads_tutorialResetConfirm_message" text="Réinitialiser l'historique des conseils tutoriels et tous les réafficher ?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Bienvenue dans Advanced Damage System"/>

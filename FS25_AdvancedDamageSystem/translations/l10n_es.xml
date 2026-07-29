@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="¡Sobrecarga crítica! Reduzca de inmediato la carga sobre la máquina."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Modo tutorial"/>
-        <text name="ads_tutorialMode_tooltip" text="Muestra consejos del tutorial durante la partida. Desactivado en multijugador."/>
+        <text name="ads_tutorialMode_tooltip" text="Muestra consejos del tutorial durante la partida."/>
         <text name="ads_tutorialResetTips_label" text="Restablecer consejos"/>
         <text name="ads_tutorialResetTips_text" text="Restablecer consejos"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Restablece el historial de consejos del tutorial y vuelve a mostrar todos los consejos. Disponible solo en un jugador."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Restablece el historial de consejos del tutorial y vuelve a mostrar todos los consejos."/>
         <text name="ads_tutorialResetConfirm_title" text="¿Restablecer consejos del tutorial?"/>
         <text name="ads_tutorialResetConfirm_message" text="¿Restablecer el historial de consejos del tutorial y volver a mostrarlos todos?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Bienvenido a Advanced Damage System"/>

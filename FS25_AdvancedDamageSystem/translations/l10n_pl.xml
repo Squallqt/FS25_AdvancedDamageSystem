@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Krytyczne przeciążenie! Natychmiast zmniejsz obciążenie maszyny."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Tryb samouczka"/>
-        <text name="ads_tutorialMode_tooltip" text="Wyświetla wskazówki samouczka podczas gry. Wyłączone w trybie wieloosobowym."/>
+        <text name="ads_tutorialMode_tooltip" text="Wyświetla wskazówki samouczka podczas gry."/>
         <text name="ads_tutorialResetTips_label" text="Zresetuj wskazówki"/>
         <text name="ads_tutorialResetTips_text" text="Zresetuj wskazówki"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Resetuje historię wskazówek samouczka i ponownie pokazuje wszystkie wskazówki. Dostępne tylko w trybie jednoosobowym."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Resetuje historię wskazówek samouczka i ponownie pokazuje wszystkie wskazówki."/>
         <text name="ads_tutorialResetConfirm_title" text="Zresetować wskazówki samouczka?"/>
         <text name="ads_tutorialResetConfirm_message" text="Zresetować historię wskazówek samouczka i pokazać wszystkie ponownie?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Witamy w Advanced Damage System"/>

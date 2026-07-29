@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritik aşırı yük! Aracın yükünü derhal azaltın."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Eğitim modu"/>
-        <text name="ads_tutorialMode_tooltip" text="Oyun sırasında eğitim ipuçlarını gösterir. Çok oyunculu modda devre dışıdır."/>
+        <text name="ads_tutorialMode_tooltip" text="Oyun sırasında eğitim ipuçlarını gösterir."/>
         <text name="ads_tutorialResetTips_label" text="İpuçlarını Sıfırla"/>
         <text name="ads_tutorialResetTips_text" text="Sıfırla"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Öğretici ipucu geçmişini sıfırla ve tüm ipuçlarını yeniden göster. Yalnızca tek oyunculu modda kullanılabilir."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Öğretici ipucu geçmişini sıfırla ve tüm ipuçlarını yeniden göster."/>
         <text name="ads_tutorialResetConfirm_title" text="Öğretici ipuçlarını sıfırla?"/>
         <text name="ads_tutorialResetConfirm_message" text="Öğretici ipucu geçmişini sıfırlayıp tüm ipuçlarını yeniden göstermek ister misiniz?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Gelişmiş Hasar Sistemine Hoş Geldiniz"/>

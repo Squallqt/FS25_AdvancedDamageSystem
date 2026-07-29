@@ -676,10 +676,10 @@
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritikus túlterhelés! Azonnal csökkentsd a jármű terhelését."/>
         <!-- Tutorial -->
         <text name="ads_tutorialMode_label" text="Oktató mód"/>
-        <text name="ads_tutorialMode_tooltip" text="Játék közben oktató tippeket jelenít meg. Többjátékos módban letiltva."/>
+        <text name="ads_tutorialMode_tooltip" text="Játék közben oktató tippeket jelenít meg."/>
         <text name="ads_tutorialResetTips_label" text="Tippek visszaállítása"/>
         <text name="ads_tutorialResetTips_text" text="Tippek visszaállítása"/>
-        <text name="ads_tutorialResetTips_tooltip" text="Visszaállítja az oktató tippek előzményeit, és újra megjeleníti az összes tippet. Csak egyjátékos módban érhető el."/>
+        <text name="ads_tutorialResetTips_tooltip" text="Visszaállítja az oktató tippek előzményeit, és újra megjeleníti az összes tippet."/>
         <text name="ads_tutorialResetConfirm_title" text="Oktató tippek visszaállítása?"/>
         <text name="ads_tutorialResetConfirm_message" text="Visszaállítod az oktató tippek előzményeit, és újra megjeleníted az összes tippet?"/>
         <text name="ads_tutorial_welcome_dialog_title" text="Üdvözöl az Advanced Damage System"/>

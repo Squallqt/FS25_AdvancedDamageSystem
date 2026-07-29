@@ -365,12 +365,6 @@ end
 function ADS_InGameSettings.beginSettingsSession()
     ADS_InGameSettings.pendingConfig = buildPendingConfigFromAdsConfig()
     ADS_InGameSettings.ads_hasPendingSettingsChange = false
-
-    if isCurrentMissionMultiplayer() then
-        ADS_Config.TUTORIAL_MODE = false
-        ADS_InGameSettings.pendingConfig.tutorialMode = false
-    end
-
 end
 
 function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
@@ -823,22 +817,8 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
 
     local steps = ADS_InGameSettings.steps
     local pending = ADS_InGameSettings.pendingConfig or buildPendingConfigFromAdsConfig()
-    local isMultiplayer = isCurrentMissionMultiplayer()
     local tutorialOption = currentPage.ads_tutorialMode
-    local tutorialContainer = tutorialOption ~= nil and tutorialOption.parent or nil
     local tutorialResetButton = currentPage.ads_tutorialResetTips
-    local tutorialResetContainer = tutorialResetButton ~= nil and tutorialResetButton.parent or nil
-
-    if isMultiplayer then
-        pending.tutorialMode = false
-    end
-
-    if tutorialContainer ~= nil then
-        tutorialContainer:setVisible(not isMultiplayer)
-    end
-    if tutorialResetContainer ~= nil then
-        tutorialResetContainer:setVisible(not isMultiplayer)
-    end
 
     local function setIndex(element, valueList, targetValue)
         local bestIndex = 1
@@ -912,10 +892,10 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     local disableAll = not canChangeSettings
 
     if tutorialOption ~= nil then
-        tutorialOption:setDisabled(disableAll or isMultiplayer)
+        tutorialOption:setDisabled(disableAll)
     end
     if tutorialResetButton ~= nil then
-        tutorialResetButton:setDisabled(disableAll or isMultiplayer)
+        tutorialResetButton:setDisabled(disableAll)
     end
     currentPage.ads_serviceWear:setDisabled(disableAll)
     currentPage.ads_conditionWear:setDisabled(disableAll)
@@ -959,9 +939,6 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
         currentPage.ads_workshopCloseHour:setDisabled(true)
     end
 
-    if tutorialContainer ~= nil or tutorialResetContainer ~= nil then
-        currentPage.settingsLayout:invalidateLayout()
-    end
 end
 
 -- --- Callback Handlers --- --
