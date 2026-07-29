@@ -66,10 +66,6 @@
         <textAlignment value="center"/>
     </Profile>
     <Profile name="ads_dialogText" extends="fs25_dialogText" with="anchorTopLeft"/>
-    <Profile name="ads_greenText" extends="ads_dialogText">
-        <textSize value="14px"/>
-        <textColor value="$preset_fs25_colorGreen"/>
-    </Profile>
     <Profile name="ads_disclaimerText" extends="ads_dialogText">
         <textSize value="12px"/>
         <textColor value="$preset_fs25_colorMainLight"/>
@@ -110,13 +106,6 @@
         <imageColor value="$preset_fs25_colorGrey"/>
         <alternateBackgroundColor value="$preset_fs25_colorGreyDark_50"/>
     </Profile>
-    <Profile name="ads_tableListItemAlt" extends="baseReference" with="anchorTopStretchingX alternating">
-        <height value="32px"/>
-        <textSelectedColor value="$preset_fs25_colorMainLight"/>
-        <imageColor value="$preset_fs25_colorGrey"/>
-        <imageSelectedColor value="$preset_fs25_colorMainHighlight"/>
-        <alternateBackgroundColor value="$preset_fs25_colorGreyDark_50"/>
-    </Profile>
     <Profile name="ads_tableListItemSelected" extends="ads_tableListItem">
         <imageSelectedColor value="$preset_fs25_colorMainHighlight"/>
     </Profile>
@@ -133,22 +122,6 @@
         <textAlignment value="right"/>
         <textColor value="$preset_fs25_colorMainLight"/>
         <textDisabledColor value="$preset_colorDisabled"/>
-    </Profile>
-    <Profile name="ads_tableRowCellLeftAlt" extends="baseReference" with="anchorStretchingYLeft">
-        <textBold value="false"/>
-        <textSize value="16px"/>
-        <textAlignment value="left"/>
-        <textColor value="$preset_fs25_colorMainLight"/>
-        <textDisabledColor value="$preset_colorDisabled"/>
-        <textSelectedColor value="$preset_fs25_colorMainDark"/>
-    </Profile>
-    <Profile name="ads_tableRowCellRightAlt" extends="baseReference" with="anchorStretchingYLeft">
-        <textBold value="false"/>
-        <textSize value="16px"/>
-        <textAlignment value="right"/>
-        <textColor value="$preset_fs25_colorMainLight"/>
-        <textDisabledColor value="$preset_colorDisabled"/>
-        <textSelectedColor value="$preset_fs25_colorMainDark"/>
     </Profile>
     <Profile name="ads_tableRowCellLeftUpper" extends="baseReference" with="anchorStretchingYLeft">
         <textBold value="false"/>
@@ -207,16 +180,6 @@
     </Profile>
 
     <!-- Shared compact info tables -->
-    <Profile name="ads_dialogSeparator" extends="baseReference" with="anchorTopCenter">
-        <size value="500px 1dp"/>
-        <absoluteSizeOffset value="0px 0px"/>
-        <imageColor value="$preset_fs25_colorGreyLight_50"/>
-        <startImageSize value="30px 0px"/>
-        <startImageSliceId value="gui.list_divider"/>
-        <endImageSize value="0px 0px"/>
-        <endImageInvertX value="true"/>
-        <endImageSliceId value="gui.list_divider"/>
-    </Profile>
     <Profile name="ads_dialogInfoTable" extends="emptyPanel" with="anchorTopCenter"/>
     <Profile name="ads_dialogInfoRow" extends="baseReference" with="anchorTopStretchingX alternating">
         <height value="26px"/>
@@ -422,12 +385,6 @@
         <textAutoWidth value="false"/>
         <textAlignment value="right"/>
     </Profile>
-    <Profile name="ads_menuHeaderBright" extends="ads_menuHeaderButtonLeft">
-        <textColor value="$preset_colorWhite"/>
-    </Profile>
-    <Profile name="ads_menuHeaderRightBright" extends="ads_menuHeaderButtonRight">
-        <textColor value="$preset_colorWhite"/>
-    </Profile>
     <Profile name="ads_menuVehicleList" extends="emptyPanel" with="anchorStretchingYLeft pivotTopLeft">
         <position value="0px -34px"/>
         <absoluteSizeOffset value="0px 20px"/>
@@ -461,14 +418,6 @@
     </Profile>
     <Profile name="ads_menuTableRowCellFirstAlt" extends="ads_menuTableRowCellLeftAlt">
         <textOffset value="10px 0px"/>
-    </Profile>
-    <Profile name="ads_menuTableRowCellRightAlt" extends="baseReference" with="anchorStretchingYLeft">
-        <textBold value="false"/>
-        <textSize value="15px"/>
-        <textAlignment value="right"/>
-        <textColor value="$preset_fs25_colorMainLight"/>
-        <textDisabledColor value="$preset_colorDisabled"/>
-        <textSelectedColor value="$preset_fs25_colorMainDark"/>
     </Profile>
     <Profile name="ads_menuTableRowCellCenterAlt" extends="baseReference" with="anchorStretchingYLeft">
         <textBold value="false"/>
