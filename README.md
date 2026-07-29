@@ -182,9 +182,7 @@ Each system has its own set of wear factors that accelerate `Condition` loss and
 
 - **Cold Oil Factor:** Triggers during active hydraulic work when engine temperature is below `30C`. The effect becomes stronger as temperature gets lower.
 
-- **PTO Operation Factor:** Triggers when the PTO is active. In the current config, this factor is set to `0`, so it currently has no effect.
-
-- **Sharp PTO Angle Factor:** Triggers when the connected PTO angle exceeds `20` degrees. The effect becomes stronger as the angle increases.
+- **Sharp PTO Angle Factor:** Triggers when the connected PTO angle exceeds `30` degrees. The effect becomes stronger as the angle increases.
 
 ### Cooling
 

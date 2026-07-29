@@ -2,12 +2,12 @@
 local modDirectory = g_currentModDirectory
 
 ADS_Config = {
+    VER = 136,
+
     -- Enables or disables extensive debug logging in the console.
     -- When true, the mod will print detailed information about its calculations,
     -- such as wear rates, breakdown checks, and temperature changes.
     -- Set to false for normal gameplay to avoid performance impact and console spam.
-    VER = 136,
-
     DEBUG = false,
     TUTORIAL_MODE = true,
 

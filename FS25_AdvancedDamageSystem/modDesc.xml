@@ -63,7 +63,7 @@ Changelog 0.9.2.3:
 - Fixed ADS specialization being incorrectly applied to conveyorBelt
 - Fixed a bug that prevented changing the driving direction when pressing Space
 - Fixed a bug that prevented viewing the last report after an inspection
-- Added the console command ads_setOpertaingTime for setting operating hours, since Easy Development Controls cannot set operating hours for ADS vehicles
+- Added the console command ads_setOperatingTime for setting operating hours, since Easy Development Controls cannot set operating hours for ADS vehicles
 
 Changelog 0.9.2.2:
 - Added optional tutorial tips that help explain the mod mechanics and warn the player when something is being done incorrectly. Singleplayer only
@@ -190,7 +190,7 @@ Changelog 0.9.2.3:
 - Behoben: Die ADS-Spezialisierung wurde fälschlicherweise auf conveyorBelt angewendet
 - Ein Fehler wurde behoben, durch den die Fahrtrichtung beim Drücken der Leertaste nicht geändert werden konnte
 - Ein Fehler wurde behoben, durch den der letzte Bericht nach einer Inspektion nicht angezeigt werden konnte
-- Der Konsolenbefehl ads_setOpertaingTime zum Setzen der Betriebsstunden wurde hinzugefügt, da Easy Development Controls die Betriebsstunden für ADS-Fahrzeuge nicht setzen kann
+- Der Konsolenbefehl ads_setOperatingTime zum Setzen der Betriebsstunden wurde hinzugefügt, da Easy Development Controls die Betriebsstunden für ADS-Fahrzeuge nicht setzen kann
 
 Changelog 0.9.2.2:
 - Es wurden optionale Tutorial-Hinweise hinzugefügt, die helfen, die Mechaniken des Mods zu verstehen und den Spieler warnen, wenn etwas falsch gemacht wird. Nur im Einzelspieler
@@ -316,7 +316,7 @@ Changelog 0.9.2.3:
 - Correction de l'application incorrecte de la spécialisation ADS aux conveyorBelt
 - Correction d'un bug empêchant de changer le sens de conduite en appuyant sur Espace
 - Correction d'un bug empêchant de consulter le dernier rapport après une inspection
-- Ajout de la commande console ads_setOpertaingTime pour définir les heures de fonctionnement, car Easy Development Controls ne peut pas les définir pour les véhicules ADS
+- Ajout de la commande console ads_setOperatingTime pour définir les heures de fonctionnement, car Easy Development Controls ne peut pas les définir pour les véhicules ADS
 
 Changelog 0.9.2.2:
 - Ajout d'astuces de didacticiel optionnelles qui aident à comprendre les mécaniques du mod et avertissent le joueur lorsqu'il fait quelque chose de travers. Solo uniquement
