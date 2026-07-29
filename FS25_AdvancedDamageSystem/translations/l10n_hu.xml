@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="A nap azon órája, amikor a műhely kinyit. A javítások csak munkaidőben haladnak."/>
         <text name="ads_workshopCloseHour_label" text="Műhely zárási ideje"/>
         <text name="ads_workshopCloseHour_tooltip" text="A nap azon órája, amikor a műhely bezár. Ezután a javítási munkák szünetelnek."/>
-        <text name="ads_engineMaxHeat_label" text="Max. motorhő"/>
-        <text name="ads_engineMaxHeat_tooltip" text="A motor által maximális terhelésen termelt hő alapértéke. Magasabb értéknél a motor gyorsabban melegszik."/>
         <text name="ads_cloggingSpeed_label" text="Eltömődés sebessége"/>
         <text name="ads_cloggingSpeed_tooltip" text="Beállítja, milyen gyorsan tömődik el a hűtő és a levegőbeömlő porban, pelyvában és növényi maradványok között végzett munka során. Magasabb értéknél gyorsabban rakódik le a szennyeződés. 100%-on az eltömődés üteme nagyjából a szervizintervallum egyharmada."/>
         <text name="ads_fieldInspectionDuration_label" text="Átvizsgálás időtartama"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Súlyos levegőszivárgás az üzemanyagvezetékben. Az üzemanyag-ellátás folyamatossága megszakadozik, a motorakadozás erős, az indítás nagyon megbízhatatlan, és motorleállás valószínű."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kritikus levegőszivárgás az üzemanyagvezetékben. Az üzemanyag-ellátás nem tartható fenn, a motor indítása vagy további működtetése nem lehetséges."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Levegő az üzemanyagvezetékben"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Kopott szigetelés, időnkénti feszültségesések. Kisebb elektromos hibák figyelhetők meg."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Korrodált érintkezők és instabil generátorkimenet. A világítás meghibásodhat, a motor indítása megbízhatatlan."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Rövidzárlat kockázata. A kritikus rendszerek megbízhatatlanok, és a világítás teljesen kieshet."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Világításhiba"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="A fő kábelköteg meghibásodott. A jármű elektromos rendszere halott."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Az önindító nem reagál"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Enyhe karburátorszennyeződés. A motor nagy terhelés alatt időnként akadozik."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Eltömődött fúvókák. A motor gyakran dadog és veszít a teljesítményéből, különösen gyors gázadáskor."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Súlyos karburátoreltömődés. A motor nagyon egyenetlenül jár, gyakran leáll, és nehezen tartja a teljesítményt."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Üzemanyaghiány teljesen eltömődött karburátor miatt. A motor nem működik."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="A karburátor eltömődött"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="A betakarító- és feldolgozórendszer kopása. A terményfeldolgozás hatékonysága enyhén csökkent, ami kisebb hozamveszteséget okoz."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="A betakarító- és feldolgozórendszer közepes kopása. A terményfeldolgozás hatékonysága észrevehetően csökkent, ami mérhető hozamveszteséget okoz."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="A betakarító- és feldolgozórendszer súlyos kopása. A terményfeldolgozás hatékonysága jelentősen csökkent, ami nagy hozamveszteséget okoz."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="A kritikus kopás a betakarító- és feldolgozórendszer meghibásodását okozta. A betakarítás a rendszer javításáig nem lehetséges."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="A betakarító rendszer üzemképtelen"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="A belső csigák és elevátorláncok enyhe kopása. A belső szállítás során kis mennyiségű termény elvész."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Kopott csigalevelek és csúszó szállítószalagok fokozott szóródást okoznak a gépen belül. Időnként daráló zaj hallható."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Sérült elevátorlapátok és csigák nehezen mozgatják a terménytömeget, ami jelentős veszteséghez és komoly eltömődés kockázatához vezet."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="A terményáramlási rendszer egyik fő alkatrésze meghibásodott, súlyos dugulást okozva. A motor extrém terhelés alatt van."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Terményáramlási dugulás"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Megnyúlt hajtószíj. Időnkénti csúszás miatt az ürítési sebesség enyhén csökken."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Kopott hajtószíj és szíjtárcsák. Terhelés alatti jelentős csúszás észrevehetően csökkenti az ürítési sebességet."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Sérült hajtómű vagy erősen kopott szíj. A csiga nehezen forog, nagyon alacsony sebességgel működik."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Figyelem! A motor túlmelegszik."/>
         <text name="ads_spec_overheat_transmission_message" text="Figyelem! A váltó túlmelegszik."/>
         <text name="ads_spec_this_month" text="Ebben a hónapban"/>
-        <text name="ads_spec_months_ago" text="hónapja"/>
         <text name="ads_spec_never" text="Soha"/>
         <text name="ads_spec_op_hours_short" text="üó"/>
         <text name="ads_spec_tomorrow_at" text="holnap ekkor: "/>

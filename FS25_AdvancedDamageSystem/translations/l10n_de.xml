@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Die Stunde des Tages, zu der die Werkstatt öffnet. Reparaturen sind nur während der Arbeitszeiten aktiv."/>
         <text name="ads_workshopCloseHour_label" text="Werkstatt Schließzeit"/>
         <text name="ads_workshopCloseHour_tooltip" text="Die Stunde des Tages, zu der die Werkstatt schließt. Reparaturen werden nach dieser Zeit pausiert."/>
-        <text name="ads_engineMaxHeat_label" text="Max. Motorhitze"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Die Basiswärmeerzeugung des Motors bei maximaler Last. Höhere Werte lassen den Motor schneller aufheizen."/>
         <text name="ads_cloggingSpeed_label" text="Verschmutzungstempo"/>
         <text name="ads_cloggingSpeed_tooltip" text="Regelt, wie schnell sich Kühler und Lufteinlass bei der Arbeit in Staub, Spreu und Ernteresten zusetzen. Höhere Werte beschleunigen die Verschmutzung. Bei 100 % entspricht die Verschmutzungsgeschwindigkeit ungefähr einem Drittel des Wartungsintervalls."/>
         <text name="ads_fieldInspectionDuration_label" text="Dauer der Inspektion"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Starker Lufteintritt in der Kraftstoffleitung. Der Motor läuft sehr unruhig und die Gefahr von Motorabstellern ist hoch."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kritischer Defekt der Kraftstoffleitung mit starkem Lufteintritt. Der Motor kann nicht mehr korrekt mit Kraftstoff versorgt werden."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Luftleck in der Kraftstoffleitung"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Verschlissene Isolierung, gelegentliche Spannungsabfälle. Kleinere elektrische Störungen können beobachtet werden."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Korrodierte Kontakte und instabile Leistung der Lichtmaschine. Lichter können ausfallen, der Motorstart ist unzuverlässig."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Gefahr von Kurzschlüssen. Kritische Systeme sind unzuverlässig und die Lichter können komplett ausfallen."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Lichtausfall"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Hauptkabelbaum ausgefallen. Die Elektrik des Fahrzeugs ist tot."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Anlasser reagiert nicht"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Leichte Vergaserverschmutzung. Der Motor zögert gelegentlich unter starker Last."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Verstopfte Düsen. Der Motor stottert häufig und verliert an Leistung, besonders bei schnellem Gasgeben."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Starke Vergaserblockade. Der Motor läuft sehr unrund, geht häufig aus und hat Mühe, die Leistung zu halten."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Kraftstoffmangel durch einen komplett verstopften Vergaser. Der Motor läuft nicht."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Vergaser verstopft"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Leichter Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz sinkt leicht, was zu geringem Ertragsverlust führt."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Mäßiger Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz sinkt merklich, was zu messbarem Ertragsverlust führt."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Starker Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz ist deutlich reduziert, was zu hohem Ertragsverlust führt."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritischer Verschleiß hat zum Ausfall des Ernte- und Verarbeitungssystems geführt. Eine Ernte ist erst nach der Reparatur des Systems wieder möglich."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Ernteverarbeitungssystem außer Betrieb"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Leichter Verschleiß an internen Schnecken und Aufzugsketten. Eine geringe Menge Erntegut geht beim internen Transport verloren."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Verschlissene Schneckenwindungen und rutschende Förderbänder verursachen erhöhten Verlust im Inneren der Maschine. Gelegentlich sind Schleifgeräusche zu hören."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Beschädigte Elevatorpaddel und Schnecken haben Schwierigkeiten, die Erntemasse zu bewegen, was zu erheblichen Verlusten und der Gefahr einer großen Verstopfung führt."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Ein Hauptbestandteil des Materialflusssystems ist ausgefallen und hat eine schwere Verstopfung verursacht. Der Motor steht unter extremer Belastung."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Materialfluss blockiert"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Gedehnter Antriebsriemen. Gelegentliches Rutschen führt zu einer leichten Verringerung der Entladegeschwindigkeit."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Verschlissener Antriebsriemen und Riemenscheiben. Deutliches Rutschen unter Last verringert die Entladegeschwindigkeit merklich."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Beschädigtes Getriebe oder stark verschlissener Riemen. Die Schnecke dreht sich nur schwer und arbeitet mit sehr niedriger Geschwindigkeit."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Warnung! Motor überhitzt."/>
         <text name="ads_spec_overheat_transmission_message" text="Warnung! Getriebe überhitzt."/>
         <text name="ads_spec_this_month" text="Diesen Monat"/>
-        <text name="ads_spec_months_ago" text="Monaten"/>
         <text name="ads_spec_never" text="Nie"/>
         <text name="ads_spec_op_hours_short" text="Bst."/>
         <text name="ads_spec_tomorrow_at" text="morgen um "/>

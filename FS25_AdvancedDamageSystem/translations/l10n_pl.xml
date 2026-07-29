@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Godzina w ciągu dnia, o której warsztat się otwiera. Naprawy są wykonywane wyłącznie w godzinach pracy."/>
         <text name="ads_workshopCloseHour_label" text="Godziny zamknięcia warsztatu"/>
         <text name="ads_workshopCloseHour_tooltip" text="Godzina w ciągu dnia, o której warsztat się zamyka. Po tej godzinie naprawy zostają wstrzymane."/>
-        <text name="ads_engineMaxHeat_label" text="Maksymalna temperatura silnika"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Bazowe tempo generowania ciepła przez silnik przy maksymalnym obciążeniu. Wyższe wartości powodują szybsze nagrzewanie się silnika."/>
         <text name="ads_cloggingSpeed_label" text="Szybkość zapychania się"/>
         <text name="ads_cloggingSpeed_tooltip" text="Dostosuj, jak szybko chłodnica i dolot powietrza zapychają się podczas pracy w kurzu, plewach i resztkach roślinnych. Wyższe wartości powodują szybsze narastanie zanieczyszczeń. Przy 100% tempo zapychania wynosi około jednej trzeciej interwału serwisowego."/>
         <text name="ads_fieldInspectionDuration_label" text="Czas trwania inspekcji"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Zaawansowany wyciek powietrza w przewodzie paliwowym. Niestabilna praca i bardzo trudny rozruch."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Krytyczna nieszczelność w przewodzie paliwowym. Nie można utrzymać zasilania paliwem i uruchomienie silnika ani dalsza praca nie są możliwe."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Zapowietrzenie przewodu paliwowego"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Zużyta izolacja przewodów. Okresowe spadki napięcia i drobne zakłócenia elektryczne."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Skorodowane styki oraz niestabilna praca alternatora. Oświetlenie może przestać działać, a uruchomienie silnika jest zawodne."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Ryzyko zwarć. Systemy krytyczne są zawodne, a oświetlenie może całkowicie zawieść."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Awaria oświetlenia."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Główny przewód elektryczny uległ uszkodzeniu. Układ elektryczny pojazdu nie działa."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Rozrusznik nie reaguje."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Niewielkie zanieczyszczenie gaźnika. Silnik okazjonalnie wykazuje przygasanie przy dużym obciążeniu."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Dysze gaźnika są zatkane; silnik regularnie szarpie i traci moc przy szybkim dodaniu gazu."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Silne zanieczyszczenie gaźnika powoduje szarpanie silnika, częste gaśnięcia oraz problemy z utrzymaniem mocy."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Całkowicie zatkany gaźnik powoduje brak paliwa; silnik jest niezdolny do pracy."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Gaźnik jest zatkany."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Zużycie elementów systemu zbioru i obróbki skutkuje lekkim spadkiem wydajności przetwarzania i minimalnymi stratami plonów."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Umiarkowane zużycie elementów systemu zbioru i obróbki powoduje wyraźny spadek wydajności przetwarzania oraz mierzalne straty plonów."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Silne zużycie elementów systemu zbioru i obróbki skutkuje znacznym spadkiem wydajności i dużymi stratami plonów."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Krytyczne zużycie spowodowało awarię systemu zbioru i przetwarzania. Zbiór nie jest możliwy do czasu naprawy systemu."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="System przetwarzania plonów nie działa"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Wewnętrzne ślimaki i łańcuchy przenośnika wykazują lekkie zużycie, skutkujące nieznaczną utratą plonów."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Elementy transportu wewnętrznego, takie jak ślimaki i taśmy przenośnika, są zużyte, co powoduje większe wysypywanie plonów oraz sporadyczne hałasy mechaniczne."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Łopatki przenośnika i ślimaki są uszkodzone, przez co transport masy plonów jest utrudniony, co skutkuje znacznymi stratami i możliwością powstania zatoru."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Usterka głównego elementu transportu materiału prowadzi do silnego zatoru; silnik funkcjonuje pod dużym przeciążeniem."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Zator w przepływie materiału."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Niewłaściwie napięty pasek napędowy skutkuje okresowymi poślizgami i minimalnym spadkiem prędkości rozładunku."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Zużycie paska napędowego i kół pasowych skutkuje znacznymi poślizgami, które zauważalnie zmniejszają prędkość rozładunku."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Skrzynia biegów uszkodzona lub pasek napędowy mocno zużyty; ślimak obraca się powoli i z trudem."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Uwaga! Przegrzanie silnika."/>
         <text name="ads_spec_overheat_transmission_message" text="Uwaga! Przegrzanie skrzyni biegów."/>
         <text name="ads_spec_this_month" text="W tym miesiącu."/>
-        <text name="ads_spec_months_ago" text="mies. temu"/>
         <text name="ads_spec_never" text="Nigdy."/>
         <text name="ads_spec_op_hours_short" text="o/h"/>
         <text name="ads_spec_tomorrow_at" text="Jutro o godzinie "/>

@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Година дня, коли відкривається майстерня. Ремонт активний лише в робочі години."/>
         <text name="ads_workshopCloseHour_label" text="Час закриття майстерні"/>
         <text name="ads_workshopCloseHour_tooltip" text="Година дня, коли закривається майстерня. Ремонт буде призупинено після цього часу."/>
-        <text name="ads_engineMaxHeat_label" text="Макс. нагрів двигуна"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Базова швидкість виділення тепла двигуном при максимальному навантаженні. Вищі значення призведуть до швидшого нагрівання двигуна."/>
         <text name="ads_cloggingSpeed_label" text="Швидкість засмічення"/>
         <text name="ads_cloggingSpeed_tooltip" text="Регулює швидкість засмічення радіатора та повітрозабірника під час роботи в пилу, соломі та рослинних залишках. Вищі значення прискорюють засмічення. При 100% швидкість засмічення становить приблизно третину сервісного інтервалу."/>
         <text name="ads_fieldInspectionDuration_label" text="Тривалість огляду"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Сильне підсмоктування повітря. Безперервність подачі палива порушена, запуск вкрай ненадійний, двигун часто глохне."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Критичне підсмоктування повітря. Подача палива неможлива, запуск або подальша робота двигуна виключені."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Повітря в паливній системі"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Зношена ізоляція, епізодичні падіння напруги. Спостерігаються дрібні збої в електроніці."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Корозія контактів та нестабільна напруга генератора. Можливі відмови освітлення, запуск ненадійний."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Ризик короткого замикання. Критичні системи працюють ненадійно, світло може повністю згаснути."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Відмова освітлення"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Відмова головного джгута проводки. Електрична система транспортного засобу повністю мертва."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Стартер не реагує"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Невелике забруднення карбюратора. Двигун іноді «затинається» під великим навантаженням."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Засмічені жиклери. Двигун часто чхає і втрачає потужність, особливо при різкому відкритті дроселя."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Сильне засмічення карбюратора. Двигун працює дуже нерівномірно, часто глохне і ледь тримає потужність."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Паливне голодування через повністю забитий карбюратор. Двигун не працюватиме."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Карбюратор засмічений"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Знос системи збирання та обробки. Ефективність обробки врожаю злегка знижена, що призводить до незначних втрат."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Середній знос системи обробки. Ефективність помітно знижена, втрати врожаю стають відчутними."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Сильний знос системи обробки. Значне зниження ефективності, високі втрати врожаю."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Критичний знос спричинив відмову системи збирання та обробки. Збирання неможливе до ремонту системи."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Система обробки врожаю не працює"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Незначний знос внутрішніх шнеків та ланцюгів елеватора. Невелика кількість врожаю втрачається під час внутрішнього транспортування."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Зношені витки шнеків та проковзування конвеєрних стрічок викликають втрати всередині машини. Можливий періодичний скрегіт."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Пошкоджені лопаті елеватора та шнеки ледве справляються з масою врожаю, що призводить до значних втрат та ризику серйозного затору."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Основний компонент системи подачі матеріалу вийшов з ладу, викликавши серйозне блокування. Двигун працює з екстремальним навантаженням."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Затор у системі подачі"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Розтягнутий приводний ремінь. Епізодичне проковзування призводить до невеликого зниження швидкості вивантаження."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Зношений ремінь та шківи. Значне буксування під навантаженням помітно сповільнює вивантаження."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Пошкоджений редуктор або сильно зношений ремінь. Шнек ледве обертається, працюючи на дуже низькій швидкості."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Увага! Перегрів двигуна."/>
         <text name="ads_spec_overheat_transmission_message" text="Увага! Перегрів трансмісії."/>
         <text name="ads_spec_this_month" text="Цього місяця"/>
-        <text name="ads_spec_months_ago" text="міс. тому"/>
         <text name="ads_spec_never" text="Ніколи"/>
         <text name="ads_spec_op_hours_short" text="м/год"/>
         <text name="ads_spec_tomorrow_at" text="завтра о "/>

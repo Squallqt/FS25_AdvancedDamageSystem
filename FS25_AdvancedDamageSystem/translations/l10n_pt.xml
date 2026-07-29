@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Hora de abertura da oficina. As reparações são realizadas apenas durante o horário de funcionamento."/>
         <text name="ads_workshopCloseHour_label" text="Horário de fecho da oficina"/>
         <text name="ads_workshopCloseHour_tooltip" text="Hora de fecho da oficina. As reparações ficam suspensas após esta hora."/>
-        <text name="ads_engineMaxHeat_label" text="Calor máximo do motor"/>
-        <text name="ads_engineMaxHeat_tooltip" text="A taxa básica de calor gerada pelo motor em carga máxima. Valores mais elevados farão o motor aquecer mais rapidamente."/>
         <text name="ads_cloggingSpeed_label" text="Velocidade de entupimento"/>
         <text name="ads_cloggingSpeed_tooltip" text="Define a velocidade com que o radiador e a admissão de ar entopem ao trabalhar em poeira, palha fina e resíduos de colheita. Valores mais altos aceleram o entupimento. A 100%, a velocidade de entupimento corresponde a cerca de um terço do intervalo de manutenção."/>
         <text name="ads_fieldInspectionDuration_label" text="Duração da inspeção"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Entrada de ar severa na linha de combustível. O motor funciona de forma muito irregular e o risco de engasgo é alto."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Falha crítica da linha de combustível com grande entrada de ar. O motor não pode mais ser alimentado corretamente."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Entrada de ar na linha de combustível"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Isolamento elétrico desgastado, quedas de tensão ocasionais. Problemas elétricos menores podem ser observados."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Contactos corroídos e saída instável do alternador. As luzes podem deixar de funcionar e o arranque do motor torna-se irregular."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Risco de curtos-circuitos. Os sistemas críticos não são fiáveis e as luzes podem falhar completamente."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Falha na iluminação."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Falha da cablagem principal. O sistema elétrico do veículo deixou de funcionar."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="O motor de arranque não responde."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Leve contaminação do carburador. O motor às vezes engasga sob carga pesada."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Bicos obstruídos. O motor engasga frequentemente e perde potência, especialmente quando o acelerador é acionado rapidamente."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Obstrução grave do carburador. O motor funciona de forma muito irregular, engasga frequentemente e tem dificuldade em manter a potência."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Falta de combustível devido a um carburador completamente entupido. O motor não liga."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="O carburador está entupido."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Desgaste leve do sistema de colheita e processamento. A eficiência de processamento diminui ligeiramente, resultando em uma pequena perda de rendimento."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Desgaste moderado do sistema de colheita e processamento. A eficiência de processamento diminui notavelmente, resultando em uma perda de rendimento mensurável."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Desgaste severo do sistema de colheita e processamento. A eficiência de processamento é bastante reduzida, resultando em uma perda significativa de rendimento."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="O desgaste crítico provocou a avaria do sistema de colheita e processamento. Não é possível colher até que o sistema seja reparado."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Sistema de processamento da colheita fora de serviço"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Leve desgaste das roscas sem-fim internas e das correntes do elevador. Uma pequena quantidade de colheita é perdida durante o transporte interno."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="O desgaste das roscas sem-fim e o deslizamento das correias transportadoras resultam em aumento de derramamentos dentro da máquina. Ruídos de rangido podem ser ouvidos às vezes."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="As pás e as roscas sem-fim danificadas do elevador têm dificuldade em mover a massa da colheita, resultando em perdas significativas e risco de grande entupimento."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Um componente principal do sistema de fluxo de materiais falhou, causando um grande bloqueio. O motor está sob forte tensão."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Bloqueio do fluxo de materiais."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Correia de transmissão frouxa. Um deslizamento ocasional resulta em uma ligeira diminuição da velocidade de descarga."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Correia de transmissão e polias desgastadas. Um deslizamento significativo sob carga reduz sensivelmente a velocidade de descarga."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Caixa de velocidades danificada ou correia muito desgastada. O sem-fim tem dificuldade em rodar e funciona a uma velocidade muito baixa."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Aviso! Motor a sobreaquecer."/>
         <text name="ads_spec_overheat_transmission_message" text="Aviso! Transmissão a sobreaquecer."/>
         <text name="ads_spec_this_month" text="Este mês"/>
-        <text name="ads_spec_months_ago" text="meses atrás"/>
         <text name="ads_spec_never" text="Nunca"/>
         <text name="ads_spec_op_hours_short" text="h"/>
         <text name="ads_spec_tomorrow_at" text="amanhã às "/>

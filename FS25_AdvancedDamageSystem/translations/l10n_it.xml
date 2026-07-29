@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="L'ora del giorno in cui l'officina apre. Le riparazioni sono attive solo durante l'orario di lavoro."/>
         <text name="ads_workshopCloseHour_label" text="Orario chiusura officina"/>
         <text name="ads_workshopCloseHour_tooltip" text="L'ora del giorno in cui l'officina chiude. Le riparazioni verranno sospese dopo questo orario."/>
-        <text name="ads_engineMaxHeat_label" text="Calore max motore"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Il tasso base di calore generato dal motore al carico massimo. Valori più alti fanno riscaldare il motore più rapidamente."/>
         <text name="ads_cloggingSpeed_label" text="Velocità di intasamento"/>
         <text name="ads_cloggingSpeed_tooltip" text="Regola la velocità con cui radiatore e presa d'aria si intasano durante il lavoro in polvere, pula e residui colturali. Valori più alti accelerano l'accumulo di intasamento. Al 100%, la velocità di intasamento corrisponde a circa un terzo dell'intervallo di manutenzione."/>
         <text name="ads_fieldInspectionDuration_label" text="Durata ispezione"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Grave ingresso d'aria nella linea carburante. La continuità dell'alimentazione è compromessa, l'esitazione è marcata, l'avviamento è molto inaffidabile e gli spegnimenti sono probabili."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Ingresso d'aria critico nella linea carburante. L'alimentazione non può essere mantenuta e l'avviamento o il proseguimento del lavoro non sono possibili."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Aria nella linea carburante"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Isolamento usurato e occasionali cali di tensione. Si osservano piccoli malfunzionamenti elettrici."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Contatti corrosi e uscita instabile dell'alternatore. Le luci possono guastarsi e l'avviamento del motore è inaffidabile."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Rischio di cortocircuiti. I sistemi critici sono inaffidabili e le luci possono guastarsi completamente."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Guasto illuminazione"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Il cablaggio principale è guasto. L'impianto elettrico del veicolo è fuori servizio."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Il motorino di avviamento non risponde"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Leggera contaminazione del carburatore. Il motore esita occasionalmente sotto carico elevato."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Getti ostruiti. Il motore scoppietta spesso e perde potenza, soprattutto con accelerazioni brusche."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Grave ostruzione del carburatore. Il motore gira molto irregolare, si spegne spesso e fatica a mantenere potenza."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Mancanza di carburante dovuta a carburatore completamente ostruito. Il motore non funziona."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Carburatore ostruito"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Usura del sistema di raccolta e lavorazione. L'efficienza di lavorazione del raccolto è leggermente ridotta e provoca una piccola perdita di resa."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Usura moderata del sistema di raccolta e lavorazione. L'efficienza è sensibilmente ridotta e causa una perdita di resa misurabile."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Grave usura del sistema di raccolta e lavorazione. L'efficienza è fortemente ridotta e provoca elevate perdite di resa."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="L'usura critica ha causato il guasto del sistema di raccolta e lavorazione. Non è possibile raccogliere finché il sistema non viene riparato."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Sistema di lavorazione del raccolto fuori servizio"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Lieve usura delle coclee interne e delle catene dell'elevatore. Una piccola quantità di raccolto si perde durante il trasporto interno."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Spire coclea usurate e nastri trasportatori che slittano causano maggiori perdite all'interno della macchina. Possono sentirsi occasionali rumori di sfregamento."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Palette dell'elevatore e coclee danneggiate fanno fatica a spostare la massa di raccolto, causando perdite significative e rischio di forte intasamento."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Un componente principale del sistema di flusso del materiale è guasto, causando un grave blocco. Il motore è sottoposto a sforzo estremo."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Blocco flusso materiale"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Cinghia di trasmissione allungata. Slittamenti occasionali causano una lieve diminuzione della velocità di scarico."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Cinghia di trasmissione e pulegge usurate. Un forte slittamento sotto carico riduce sensibilmente la velocità di scarico."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Riduttore danneggiato o cinghia fortemente usurata. La coclea fatica a ruotare e lavora a velocità molto bassa."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Attenzione! Surriscaldamento del motore."/>
         <text name="ads_spec_overheat_transmission_message" text="Attenzione! Surriscaldamento della trasmissione."/>
         <text name="ads_spec_this_month" text="Questo mese"/>
-        <text name="ads_spec_months_ago" text="mesi fa"/>
         <text name="ads_spec_never" text="Mai"/>
         <text name="ads_spec_op_hours_short" text="o/h"/>
         <text name="ads_spec_tomorrow_at" text="domani alle "/>

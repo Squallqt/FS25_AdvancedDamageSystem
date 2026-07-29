@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Hodina, kdy se dílna otevírá. Opravy jsou aktivní pouze během pracovní doby."/>
         <text name="ads_workshopCloseHour_label" text="Zavírací doba dílny"/>
         <text name="ads_workshopCloseHour_tooltip" text="Hodina, kdy se dílna zavírá. Po této době budou opravy pozastaveny."/>
-        <text name="ads_engineMaxHeat_label" text="Max. teplota motoru"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Základní míra tepla generovaného motorem při maximálním zatížení. Vyšší hodnoty způsobí rychlejší zahřívání motoru."/>
         <text name="ads_cloggingSpeed_label" text="Rychlost zanášení"/>
         <text name="ads_cloggingSpeed_tooltip" text="Upravuje, jak rychle se zanáší chladič a sání vzduchu při práci v prachu, plevách a zbytcích plodin. Vyšší hodnoty způsobují rychlejší zanášení. Při 100 % odpovídá rychlost zanášení zhruba jedné třetině servisního intervalu."/>
         <text name="ads_fieldInspectionDuration_label" text="Doba trvání prohlídky"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Vážné přisávání vzduchu do vedení. Kontinuita dodávky paliva je přerušena, motor silně vynechává, startování nespolehlivé a hrozí zhasnutí."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kritické přisávání vzduchu. Dodávku paliva nelze udržet a nastartování nebo další provoz motoru není možný."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Vzduch v palivovém systému"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Opotřebovaná izolace, občasné poklesy napětí. Lze pozorovat drobné elektrické anomálie."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Zkorodované kontakty a nestabilní výkon alternátoru. Světla mohou selhávat, startování je nespolehlivé."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Riziko zkratu. Kritické systémy jsou nespolehlivé a osvětlení může zcela selhat."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Selhání osvětlení"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Selhání hlavního kabelového svazku. Elektrický systém vozidla je mrtvý."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Startér nereaguje"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Mírné znečištění karburátoru. Motor občas zaváhá pod velkým zatížením."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Ucpané trysky. Motor často kucká a ztrácí výkon, zejména při rychlém přidání plynu."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Vážné zanesení karburátoru. Motor běží velmi neklidně, často zhasíná a má potíže udržet výkon."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Nedostatek paliva kvůli zcela ucpanému karburátoru. Motor nepoběží."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Karburátor je ucpaný"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Opotřebení mláticího a separačního ústrojí. Účinnost zpracování plodin je mírně snížena, což vede k drobným ztrátám výnosu."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Střední opotřebení mláticího ústrojí. Účinnost zpracování je znatelně nižší, což způsobuje měřitelné ztráty na výnosu."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Silné opotřebení mláticího ústrojí. Účinnost zpracování je výrazně snížena, ztráty výnosu jsou vysoké."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritické opotřebení způsobilo poruchu sklízecího a zpracovatelského systému. Sklizeň není možná, dokud nebude systém opraven."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Systém zpracování sklizně mimo provoz"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Mírné opotřebení vnitřních šneků a řetězů dopravníků. Malé množství plodiny se ztrácí během vnitřního transportu."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Opotřebované závity šneků a prokluzující dopravníkové pásy způsobují zvýšené sypání plodiny uvnitř stroje. Můžete slyšet občasné skřípání."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Poškozené lopatky elevátoru a šneky mají potíže s přesunem masy plodiny, což vede k výrazným ztrátám a riziku velkého ucpání."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Hlavní součást systému toku materiálu selhala, což způsobilo vážné zablokování. Motor je pod extrémním zatížením."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Zablokování toku materiálu"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Vytahaný hnací řemen. Občasné prokluzování vede k mírnému snížení rychlosti vykládky."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Opotřebovaný hnací řemen a řemenice. Výrazné prokluzování pod zatížením znatelně snižuje rychlost vykládky."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Poškozená převodovka nebo silně opotřebovaný řemen. Šnek se otáčí jen s obtížemi a velmi nízkou rychlostí."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Varování! Přehřívání motoru."/>
         <text name="ads_spec_overheat_transmission_message" text="Varování! Přehřívání převodovky."/>
         <text name="ads_spec_this_month" text="Tento měsíc"/>
-        <text name="ads_spec_months_ago" text="měsíci"/>
         <text name="ads_spec_never" text="Nikdy"/>
         <text name="ads_spec_op_hours_short" text="mth"/>
         <text name="ads_spec_tomorrow_at" text="zítra v "/>

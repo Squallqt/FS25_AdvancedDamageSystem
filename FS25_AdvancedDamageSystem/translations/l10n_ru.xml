@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Час, в который открывается мастерская. Ремонтные работы проводятся только в рабочее время."/>
         <text name="ads_workshopCloseHour_label" text="Время закрытия мастерской"/>
         <text name="ads_workshopCloseHour_tooltip" text="Час, в который закрывается мастерская. Ремонтные работы будут приостановлены после этого времени."/>
-        <text name="ads_engineMaxHeat_label" text="Макс. нагрев двигателя"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Базовый уровень тепла, генерируемого двигателем при максимальной нагрузке. Более высокие значения заставят двигатель нагреваться быстрее."/>
         <text name="ads_cloggingSpeed_label" text="Скорость засорения"/>
         <text name="ads_cloggingSpeed_tooltip" text="Регулирует, как быстро радиатор и воздухозаборник засоряются во время работы в пыли, полове и растительных остатках. Более высокие значения ускоряют накопление засорения. При 100% скорость засорения составляет примерно треть от сервисного интервала."/>
         <text name="ads_fieldInspectionDuration_label" text="Длительность осмотра"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Сильный подсос воздуха в топливной магистрали. Двигатель работает очень неровно, риск остановки высок."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Критический дефект топливной магистрали с сильным подсосом воздуха. Двигатель больше не может нормально получать топливо."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Подсос воздуха в топливной магистрали"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Износ изоляции, периодические падения напряжения. Наблюдаются незначительные электрические сбои."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Коррозия контактов и нестабильная работа генератора. Освещение может отказывать, запуск двигателя ненадежен."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Риск коротких замыканий. Критически важные системы ненадежны, освещение может полностью отказать."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Отказ освещения"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Отказ основного жгута проводки. Электросистема техники не работает."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Стартер не реагирует"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Небольшое загрязнение карбюратора. Двигатель периодически 'захлебывается' под большой нагрузкой."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Засорение жиклеров. Двигатель часто 'чихает' и теряет мощность, особенно при резком нажатии на газ."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Сильное засорение карбюратора. Двигатель работает очень нестабильно, часто глохнет и с трудом поддерживает мощность."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Топливное голодание из-за полностью забитого карбюратора. Двигатель не будет работать."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Карбюратор засорен"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Небольшой износ системы уборки и обработки. Эффективность обработки слегка снижена, что вызывает малые потери урожая."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Умеренный износ системы уборки и обработки. Эффективность обработки заметно снижена, что приводит к ощутимым потерям урожая."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Сильный износ системы уборки и обработки. Эффективность обработки сильно снижена, что приводит к высоким потерям урожая."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Критический износ привёл к отказу системы уборки и обработки. Уборка невозможна до ремонта системы."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Система обработки урожая неисправна"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Небольшой износ внутренних шнеков и цепей элеватора. Небольшое количество урожая теряется при внутренней транспортировке."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Изношенные витки шнеков и проскальзывающие транспортерные ленты вызывают увеличение просыпей внутри машины. Слышен периодический скрежет."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Поврежденные лопатки элеватора и шнеки с трудом перемещают массу урожая, что ведет к значительным потерям и риску крупного затора."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Крупный компонент системы подачи материала вышел из строя, вызвав серьезный затор. Двигатель находится под экстремальной нагрузкой."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Затор системы подачи материала"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Растянутый приводной ремень. Периодическое проскальзывание приводит к небольшому снижению скорости выгрузки."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Износ приводного ремня и шкивов. Значительное проскальзывание под нагрузкой заметно снижает скорость выгрузки."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Поврежден редуктор или сильно изношен ремень. Шнек с трудом вращается, работая на очень низкой скорости."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Внимание! Перегрев двигателя."/>
         <text name="ads_spec_overheat_transmission_message" text="Внимание! Перегрев трансмиссии."/>
         <text name="ads_spec_this_month" text="В этом месяце"/>
-        <text name="ads_spec_months_ago" text="мес. назад"/>
         <text name="ads_spec_never" text="Никогда"/>
         <text name="ads_spec_op_hours_short" text="м/ч"/>
         <text name="ads_spec_tomorrow_at" text="завтра в "/>

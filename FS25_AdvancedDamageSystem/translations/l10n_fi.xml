@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Vuorokaudenaika, jolloin korjaamo avautuu. Korjaukset ovat aktiivisia vain aukioloaikana."/>
         <text name="ads_workshopCloseHour_label" text="Korjaamon sulkemisaika"/>
         <text name="ads_workshopCloseHour_tooltip" text="Vuorokaudenaika, jolloin korjaamo sulkeutuu. Korjaukset keskeytyvät tämän jälkeen."/>
-        <text name="ads_engineMaxHeat_label" text="Moottorin max. lämpö"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Moottorin tuottaman lämmön perusnopeus täydellä kuormalla. Suuremmat arvot aiheuttavat moottorin nopeamman lämpenemisen."/>
         <text name="ads_cloggingSpeed_label" text="Tukkeutumisnopeus"/>
         <text name="ads_cloggingSpeed_tooltip" text="Säätää, kuinka nopeasti jäähdytin ja ilmanotto tukkeutuvat pölyn, ruumenien ja sadonjätteiden joukossa. Suuremmat arvot nopeuttavat tukkeutumista. 100 %:lla tukkeutumisnopeus on noin kolmasosa huoltovälistä."/>
         <text name="ads_fieldInspectionDuration_label" text="Tarkastuksen kesto"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Vakava ilmavuoto polttoaineputkessa. Polttoaineen syötön jatkuvuus on häiriintynyt, moottorin epäröinti on voimakasta, käynnistys on erittäin epäluotettavaa ja moottorin sammuminen on todennäköistä."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kriittinen ilmavuoto polttoaineputkessa. Polttoaineen syöttöä ei voida ylläpitää eikä moottorin käynnistys tai jatkokäyttö ole mahdollista."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Ilmaa polttoaineputkessa"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Kulunut eristys, satunnaisia jännitepudotuksia. Pieniä sähköhäiriöitä voidaan havaita."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Korrodoituneet kontaktit ja epästabiili laturin lähtöjännite. Valot saattavat sammua, moottorin käynnistys on epäluotettavaa."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Oikosulkuriski. Kriittiset järjestelmät ovat epäluotettavia ja valot saattavat sammua kokonaan."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Valojen vaurio"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Pääjohtosnippu vikaantunut. Ajoneuvon sähköjärjestelmä on kuollut."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Käynnistin ei reagoi"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Lievä kaasuturin saastuminen. Moottori epäröi ajoittain raskaassa kuormituksessa."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Tukossa olevat suuttimet. Moottori sakkaa ja menettää tehoa usein, erityisesti kun kaasua painetaan nopeasti."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Vakava kaasuturin tukkeutuminen. Moottori käy erittäin epätasaisesti, sammuu usein ja kamppaillee tehon ylläpitämiseksi."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Polttoainen nälkiintyminen täysin tukossaan olevan kaasuttimen vuoksi. Moottori ei käy."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Kaasutinon tukossa"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on hieman alentunut aiheuttaen pienen sadonmenetyksen."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Kohtalainen puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on havaittavasti alentunut aiheuttaen mitattavan sadonmenetyksen."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Vakava puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on merkittävästi alentunut aiheuttaen suuren sadonmenetyksen."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kriittinen kuluminen on aiheuttanut puinti- ja käsittelyjärjestelmän vikaantumisen. Sadonkorjuu ei ole mahdollista ennen järjestelmän korjaamista."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Puinnin käsittelyjärjestelmä pois käytöstä"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Lievä sisäisten ruuvien ja elevaattoriketjujen kuluminen. Pieni määrä satoa menetetään sisäisessä kuljetuksessa."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Kuluneet ruuvilenkit ja liukuvat kuljettimet aiheuttavat lisääntynyttä sirottelua koneen sisällä. Satunnaista narskumismelua voi kuulla."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Vaurioituneet elevaattorilaput ja ruuvit kamppailevat satomassan siirtämiseksi, mikä johtaa merkittäviin häviöihin ja suuren tukoksen riskiin."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Merkittävä komponentti materiaalivirtausjärjestelmässä on vikaantunut aiheuttaen vakavan tukoksen. Moottori on äärimmäisessä rasituksessa."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Materiaalivirtauksen tukos"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Vetoremmin venyminen. Satunnainen luistaminen aiheuttaa lievän purkamisnopeuden alenemisen."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Kulunut vetoremi ja hihnapyörät. Merkittävä luistaminen kuormituksessa alentaa havaittavasti purkamisnopeutta."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Vaurioitunut vaihdelaatikko tai pahoin kulunut remi. Ruuvi kamppailee pyörimiseksi toimien erittäin alhaisella nopeudella."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Varoitus! Moottori ylikuumenee."/>
         <text name="ads_spec_overheat_transmission_message" text="Varoitus! Vaihteisto ylikuumenee."/>
         <text name="ads_spec_this_month" text="Tässä kuussa"/>
-        <text name="ads_spec_months_ago" text="kuukautta sitten"/>
         <text name="ads_spec_never" text="Ei koskaan"/>
         <text name="ads_spec_op_hours_short" text="k/t"/>
         <text name="ads_spec_tomorrow_at" text="huomenna kello "/>

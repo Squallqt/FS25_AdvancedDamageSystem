@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Atölyenin açıldığı saat. Onarım hizmetleri yalnızca çalışma saatleri içinde verilmektedir."/>
         <text name="ads_workshopCloseHour_label" text="Atölye Kapanış Saati"/>
         <text name="ads_workshopCloseHour_tooltip" text="Atölyenin kapandığı saat. Bu saatten sonra onarım işlemleri durdurulacaktır."/>
-        <text name="ads_engineMaxHeat_label" text="Maks. Motor Isısı"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Motorun maksimum yükte ürettiği ısının temel değeri. Daha yüksek değerler, motorun daha hızlı ısınmasına neden olur."/>
         <text name="ads_cloggingSpeed_label" text="Tıkanma Hızı"/>
         <text name="ads_cloggingSpeed_tooltip" text="Toz, saman ve mahsul artıkları içinde çalışırken radyatörün ve hava girişinin ne kadar hızlı tıkanacağını ayarlar. Daha yüksek değerler, tıkanmanın daha hızlı artmasına neden olur. %100 değerinde, tıkanma oranı bakım aralığının yaklaşık üçte biri kadardır."/>
         <text name="ads_fieldInspectionDuration_label" text="Denetim Süresi"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Yakıt hattında ciddi bir hava kaçağı var. Yakıt beslemesinin sürekliliği bozulmuş durumda; motorda belirgin bir tekleme var, çalıştırma işlemi son derece güvenilmez ve motorun stop etme olasılığı yüksek."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Yakıt hattında ciddi bir hava sızıntısı var. Yakıt beslemesi sağlanamıyor ve motorun çalıştırılması veya çalışmaya devam etmesi mümkün değil."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Yakıt hattında hava"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Yıpranmış yalıtım, ara sıra voltaj düşüşleri. Küçük elektriksel arızalar gözlemlenebilir."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Aşınmış kontaklar ve dengesiz alternatör çıkışı. Farlar yanmayabilir, motorun çalışması güvenilir olmayabilir."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Kısa devre riski. Kritik sistemler güvenilir değildir ve ışıklar tamamen sönebilir."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Işık arızası"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Ana kablo demeti arızalandı. Aracın elektrik sistemi çalışmıyor."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Marş motoru çalışmıyor"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Karbüratörde hafif bir kirlenme var. Motor, ağır yük altında ara sıra tekliyor."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Tıkanmış püskürtme uçları. Motor, özellikle gaz kolu hızlı bir şekilde açıldığında sık sık tekliyor ve güç kaybediyor."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Karbüratörde ciddi tıkanma. Motor çok düzensiz çalışıyor, sık sık stop ediyor ve güç seviyesini korumakta zorlanıyor."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Karbüratörün tamamen tıkanması nedeniyle yakıt beslemesi kesilmiştir. Motor çalışmaz."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Karbüratör tıkalı"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Hasat ve işleme sisteminde aşınma. Mahsul işleme verimliliği hafifçe düşer ve bu da küçük çaplı bir verim kaybına yol açar."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Hasat ve işleme sisteminde orta derecede aşınma. Mahsul işleme verimliliği gözle görülür şekilde azalır ve bu da ölçülebilir bir verim kaybına yol açar."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Hasat ve işleme sisteminde ciddi aşınma. Mahsul işleme verimliliği önemli ölçüde düşer ve bu da yüksek verim kaybına yol açar."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritik aşınma, hasat ve işleme sisteminin arızalanmasına neden oldu. Sistem onarılana kadar hasat yapılamaz."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Hasat işleme sistemi devre dışı"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="İç vidalarda ve elevatör zincirlerinde hafif aşınma görülmektedir. İç nakliye sırasında az miktarda mahsul kaybı yaşanmaktadır."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="Aşınmış burgu kanatları ve kayan konveyör bantları, makine içinde dökülmelerin artmasına neden olmaktadır. Ara sıra gıcırtı sesleri duyabilirsiniz."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Hasar görmüş elevatör kanatları ve helezonlar, mahsul kütlesini taşımakta zorlanıyor; bu durum, önemli kayıplara ve ciddi bir tıkanma riskine yol açıyor."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Malzeme akış sistemindeki önemli bir bileşen arızalandı ve bu da ciddi bir tıkanmaya neden oldu. Motor aşırı yük altında."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Malzeme Akışında Tıkanma"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Gerilmiş tahrik kayışı. Ara sıra meydana gelen kayma, boşaltma hızında hafif bir düşüşe neden olur."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Aşınmış tahrik kayışı ve kasnaklar. Yük altında meydana gelen belirgin kayma, boşaltma hızını gözle görülür şekilde düşürür."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Hasarlı vites kutusu veya aşırı aşınmış kayış. Burgu dönmekte zorlanıyor ve çok düşük bir hızda çalışıyor."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Uyarı! Motor aşırı ısınmış."/>
         <text name="ads_spec_overheat_transmission_message" text="Uyarı! Şanzıman aşırı ısınıyor."/>
         <text name="ads_spec_this_month" text="Bu ay"/>
-        <text name="ads_spec_months_ago" text="aylar önce"/>
         <text name="ads_spec_never" text="Yapılmadı"/>
         <text name="ads_spec_op_hours_short" text="o/h"/>
         <text name="ads_spec_tomorrow_at" text="yarın saat "/>

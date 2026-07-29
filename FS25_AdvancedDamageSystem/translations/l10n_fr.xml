@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="Heure d'ouverture de l'atelier. Les réparations sont effectuées uniquement pendant les heures ouvrables."/>
         <text name="ads_workshopCloseHour_label" text="Heure de fermeture de l'atelier"/>
         <text name="ads_workshopCloseHour_tooltip" text="Heure de fermeture de l'atelier. Les réparations seront suspendues après cette heure."/>
-        <text name="ads_engineMaxHeat_label" text="Chaleur max. moteur"/>
-        <text name="ads_engineMaxHeat_tooltip" text="Le taux de base de chaleur générée par le moteur à charge maximale. Des valeurs plus élevées feront chauffer le moteur plus rapidement."/>
         <text name="ads_cloggingSpeed_label" text="Vitesse d'encrassement"/>
         <text name="ads_cloggingSpeed_tooltip" text="Règle la vitesse à laquelle le radiateur et l'admission d'air s'encrassent lors du travail dans la poussière, la menue paille et les résidus de culture. Des valeurs plus élevées accélèrent l'encrassement. À 100 %, la vitesse d'encrassement correspond à environ un tiers de l'intervalle d'entretien."/>
         <text name="ads_fieldInspectionDuration_label" text="Durée de l’inspection"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Prise d'air sévère dans la conduite de carburant. Le moteur tourne très irrégulièrement et le risque de calage est élevé."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Défaillance critique de la conduite de carburant avec entrée d'air importante. Le moteur ne peut plus être alimenté correctement."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Prise d’air dans la conduite de carburant"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="Isolation électrique usée, chutes de tension occasionnelles. Des problèmes électriques mineurs peuvent être observés."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="Contacts corrodés et sortie instable de l'alternateur. Les phares peuvent ne plus fonctionner, le démarrage du moteur est aléatoire."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="Risque de courts-circuits. Les systèmes critiques ne sont pas fiables et les lumières peuvent tomber complètement en panne."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="Panne d'éclairage."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="Le faisceau de câbles principal est défectueux. Le système électrique du véhicule est hors service."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="Le démarreur ne répond pas."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="Légère contamination du carburateur. Le moteur hésite parfois sous une charge importante."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="Gicleurs obstrués. Le moteur tousse fréquemment et perd de la puissance, en particulier lorsque l'accélérateur est actionné rapidement."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="Obstruction grave du carburateur. Le moteur tourne très irrégulièrement, cale fréquemment et peine à maintenir sa puissance."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="Manque de carburant dû à un carburateur complètement encrassé. Le moteur ne démarre pas."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="Le carburateur est bouché."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Usure légère du système de récolte et de traitement. L'efficacité de traitement diminue légèrement, entraînant une faible perte de rendement."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Usure modérée du système de récolte et de traitement. L'efficacité de traitement diminue nettement, entraînant une perte de rendement mesurable."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Usure sévère du système de récolte et de traitement. L'efficacité de traitement est fortement réduite, entraînant une perte de rendement importante."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="L'usure critique a provoqué la défaillance du système de récolte et de traitement. La récolte est impossible tant que le système n'est pas réparé."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Système de traitement de récolte hors service"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="Légère usure des vis sans fin internes et des chaînes de l'élévateur. Une petite quantité de récolte est perdue lors du transport interne."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="L'usure des vis sans fin et le glissement des bandes transporteuses entraînent une augmentation des déversements à l'intérieur de la machine. Des bruits de grincement peuvent parfois être entendus."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="Les pales et les vis sans fin endommagées de l'élévateur ont du mal à déplacer la masse de récolte, ce qui entraîne des pertes importantes et un risque de bourrage majeur."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="Un composant majeur du système de flux des matériaux est tombé en panne, provoquant un blocage important. Le moteur est soumis à une forte contrainte."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="Blocage du flux des matériaux."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Courroie d'entraînement détendue. Un glissement occasionnel entraîne une légère diminution de la vitesse de déchargement."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Courroie d'entraînement et poulies usées. Un glissement important sous charge réduit sensiblement la vitesse de déchargement."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Boîte de vitesses endommagée ou courroie très usée. La vis peine à tourner, fonctionnant à très basse vitesse."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="Attention ! Surchauffe du moteur."/>
         <text name="ads_spec_overheat_transmission_message" text="Attention ! Surchauffe de la transmission."/>
         <text name="ads_spec_this_month" text="Ce mois-ci"/>
-        <text name="ads_spec_months_ago" text="mois plus tôt"/>
         <text name="ads_spec_never" text="Jamais"/>
         <text name="ads_spec_op_hours_short" text="h"/>
         <text name="ads_spec_tomorrow_at" text="demain à "/>

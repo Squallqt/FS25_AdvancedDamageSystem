@@ -14,8 +14,6 @@
         <text name="ads_workshopOpenHour_tooltip" text="정비소가 문을 여는 시간입니다. 수리는 업무 시간 중에만 진행됩니다."/>
         <text name="ads_workshopCloseHour_label" text="정비소 영업 종료 시간"/>
         <text name="ads_workshopCloseHour_tooltip" text="정비소가 문을 닫는 시간입니다. 이 시간 이후에는 수리가 일시 중지됩니다."/>
-        <text name="ads_engineMaxHeat_label" text="최대 엔진 발열"/>
-        <text name="ads_engineMaxHeat_tooltip" text="최대 부하 상태에서 엔진이 발생시키는 기본 발열량입니다. 값이 높을수록 엔진이 더 빨리 가열됩니다."/>
         <text name="ads_cloggingSpeed_label" text="이물질 축적 속도"/>
         <text name="ads_cloggingSpeed_tooltip" text="먼지나 왕겨, 작물 잔여물 속에서 작업할 때 라디에이터와 흡기구가 얼마나 빨리 막히는지를 조정합니다. 값이 높을수록 더 빨리 막힙니다. 100%일 때, 막힘 속도는 정비 주기의 약 1/3입니다."/>
         <text name="ads_fieldInspectionDuration_label" text="점검 소요 시간"/>
@@ -343,27 +341,11 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="연료 라인 심각한 공기 유입. 연료 공급 연속성이 깨져 심한 주춤거림, 시동 실패 및 잦은 정지가 발생합니다."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="치명적인 연료 라인 공기 유입. 연료 공급이 유지되지 않아 시동 및 운행이 불가능합니다."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="연료 라인 내 공기"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage1_description" text="절연 마모, 간헐적 전압 저하. 미세한 전기적 결함이 관찰됩니다."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage2_description" text="접점 부식 및 발전기 출력 불안정. 전등 고장이 발생하거나 시동이 불안정합니다."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_description" text="단락(합선) 위험. 핵심 시스템을 신뢰할 수 없으며 전등이 완전히 나갈 수 있습니다."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage3_message" text="조명 장치 고장"/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_description" text="메인 배선 뭉치 고장. 차량의 전기 시스템이 완전히 작동을 멈췄습니다."/>
-        <text name="ads_breakdowns_electrical_system_malfunction_stage4_message" text="스타터 반응 없음"/>
-        <text name="ads_breakdowns_carburetor_clogging_stage1_description" text="기화기 미세 오염. 무거운 부하 시 엔진이 가끔 주춤거립니다."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage2_description" text="제트 막힘. 가속 시 특히 엔진이 자주 털털거리며 출력을 상실합니다."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage3_description" text="기화기 심각한 차단. 엔진이 매우 거칠게 작동하고 자주 꺼지며 출력을 유지하지 못합니다."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_description" text="기화기 완전 막힘으로 인한 연료 기아 현상. 엔진이 작동하지 않습니다."/>
-        <text name="ads_breakdowns_carburetor_clogging_stage4_message" text="기화기 막힘"/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="수확 처리 시스템 마모. 처리 효율이 미세하게 감소하여 약간의 수확 손실이 발생합니다."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="수확 처리 시스템 보통 마모. 효율 감소로 인해 측정 가능한 수준의 수확 손실이 발생합니다."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="수확 처리 시스템 심각한 마모. 효율이 대폭 낮아져 높은 수확 손실이 발생합니다."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="심각한 마모로 수확 및 처리 시스템이 고장 났습니다. 시스템을 수리할 때까지 수확할 수 없습니다."/>
         <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="수확 처리 시스템 작동 불가"/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage1_description" text="내부 오거 및 엘리베이터 체인 미세 마모. 내부 이송 과정에서 소량의 작물이 유실됩니다."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage2_description" text="오거 날개 마모 및 컨베이어 벨트 미끄러짐으로 장비 내부 유출이 증가합니다. 가끔 긁히는 소음이 들릴 수 있습니다."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage3_description" text="엘리베이터 패들 및 오거 손상으로 작물 이송에 어려움을 겪으며, 상당한 유실과 심각한 막힘 위험이 있습니다."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_description" text="물질 유동 시스템의 핵심 부품 고장으로 심각한 막힘이 발생했습니다. 엔진에 극심한 무리가 가고 있습니다."/>
-        <text name="ads_breakdowns_material_flow_system_wear_stage4_message" text="물질 유동 시스템 막힘"/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="구동 벨트 늘어남. 간헐적 미끄러짐으로 하역 속도가 약간 감소합니다."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="구동 벨트 및 풀리 마모. 부하 시 현저한 미끄러짐으로 하역 속도가 뚜렷이 감소합니다."/>
         <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="기어박스 손상 또는 심한 벨트 마모. 오거가 겨우 회전하며 매우 낮은 속도로 작동합니다."/>
@@ -380,7 +362,6 @@
         <text name="ads_spec_overheat_engine_message" text="경고! 엔진 과열 중."/>
         <text name="ads_spec_overheat_transmission_message" text="경고! 변속기 과열 중."/>
         <text name="ads_spec_this_month" text="이번 달"/>
-        <text name="ads_spec_months_ago" text="개월 전"/>
         <text name="ads_spec_never" text="기록 없음"/>
         <text name="ads_spec_op_hours_short" text="시간"/>
         <text name="ads_spec_tomorrow_at" text="내일 "/>
