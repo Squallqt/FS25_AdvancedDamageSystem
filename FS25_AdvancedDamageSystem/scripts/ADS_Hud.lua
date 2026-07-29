@@ -324,7 +324,7 @@ function ADS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, seve
         return false
     end
 
-    g_soundManager:playSample(sample)
+    ADS_SoundManager.playSample(sample)
     runtimeState.lastSoundTime = now
     runtimeState.soundPlayedForCurrentActivation = true
     runtimeState.lastSoundSeverity = severity or 0
@@ -477,8 +477,8 @@ function ADS_Hud:setNotification(text, durationMs, title, playSound)
         or (g_time + math.max(parsedDurationMs or 3000, 0))
     panel.isVisible = true
 
-    if playSound and ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
-        g_soundManager:playSample(ADS_Main.samples.notification2D)
+    if playSound then
+        ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
     end
 end
 

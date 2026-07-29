@@ -2966,15 +2966,11 @@ local function syncStarterCrankingSample(vehicle)
 
     if shouldPlay then
         local pitchOffset = getStarterCrankingPitchOffset(activeEffect.extraData.preCrankVoltageV)
-        g_soundManager:setSamplePitchOffset(starterCrankingSample, pitchOffset)
-        if not g_soundManager:getIsSamplePlaying(starterCrankingSample) then
-            g_soundManager:playSample(starterCrankingSample)
-        end
+        ADS_SoundManager.setSamplePitchOffset(starterCrankingSample, pitchOffset)
+        ADS_SoundManager.setSamplePlaying(starterCrankingSample, true)
     else
-        if g_soundManager:getIsSamplePlaying(starterCrankingSample) then
-            g_soundManager:stopSample(starterCrankingSample, 0, 0)
-        end
-        g_soundManager:setSamplePitchOffset(starterCrankingSample, 0)
+        ADS_SoundManager.setSamplePlaying(starterCrankingSample, false, 0, 0)
+        ADS_SoundManager.setSamplePitchOffset(starterCrankingSample, 0)
     end
 end
 
@@ -2984,10 +2980,10 @@ local function playStarterCrankingEndSample(spec, pitchOffset)
         return
     end
 
-    g_soundManager:setSampleVolumeOffset(starterCrankingEndSample, 0)
-    if not g_soundManager:getIsSamplePlaying(starterCrankingEndSample) then
-        g_soundManager:setSamplePitchOffset(starterCrankingEndSample, pitchOffset or 0)
-        g_soundManager:playSample(starterCrankingEndSample)
+    ADS_SoundManager.setSampleVolumeOffset(starterCrankingEndSample, 0)
+    if not ADS_SoundManager.getIsSamplePlaying(starterCrankingEndSample) then
+        ADS_SoundManager.setSamplePitchOffset(starterCrankingEndSample, pitchOffset or 0)
+        ADS_SoundManager.playSample(starterCrankingEndSample)
     end
 end
 
@@ -3442,10 +3438,12 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
             local modifier = math.max(0.01, 1 + brakeEffect.value) 
             local origAxisForward = axisForward
             axisForward = axisForward * modifier
-            if brakeEffect.extraData ~= nil and vehicle:getLastSpeed() < 15 then
+            if vehicle.isServer and brakeEffect.extraData ~= nil and vehicle:getLastSpeed() < 15 then
                 if not brakeEffect.extraData.soundPlayed and math.abs(origAxisForward) > 0.999 then
                     if math.random() < math.abs(brakeEffect.value) then
-                        g_soundManager:playSample(spec_ads.samples['brakes' .. math.random(3)])
+                        local sampleIndex = math.random(3)
+                        ADS_SoundManager.playSample(spec_ads.samples["brakes" .. sampleIndex])
+                        ADS_EffectSyncEvent.send(vehicle, "BRAKE_FORCE_MODIFIER", "SOUND", 0, sampleIndex)
                     end
                     brakeEffect.extraData.soundPlayed = true
                     brakeEffect.extraData.timer = 1500
@@ -3453,9 +3451,9 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
             end
         end
 
-        if brakeEffect.extraData ~= nil and brakeEffect.extraData.timer > 0 then
+        if vehicle.isServer and brakeEffect.extraData ~= nil and brakeEffect.extraData.timer > 0 then
             brakeEffect.extraData.timer = brakeEffect.extraData.timer - dt
-        elseif brakeEffect.extraData ~= nil and brakeEffect.extraData.soundPlayed == true then
+        elseif vehicle.isServer and brakeEffect.extraData ~= nil and brakeEffect.extraData.soundPlayed == true then
             brakeEffect.extraData.soundPlayed = false
             brakeEffect.extraData.timer = 0
         end
@@ -4798,11 +4796,9 @@ ADS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
 
 local function adsStopAndResetNoiseSample(sample)
     if sample == nil then return end
-    if g_soundManager:getIsSamplePlaying(sample) then
-        g_soundManager:stopSample(sample, 0, 0)
-    end
-    g_soundManager:setSampleVolumeOffset(sample, 0)
-    g_soundManager:setSamplePitchOffset(sample, 0)
+    ADS_SoundManager.setSamplePlaying(sample, false, 0, 0)
+    ADS_SoundManager.setSampleVolumeOffset(sample, 0)
+    ADS_SoundManager.setSamplePitchOffset(sample, 0)
     if sample.adsOriginalLoops ~= nil then
         sample.loops = sample.adsOriginalLoops
     end
@@ -4902,11 +4898,9 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 sample.loops = 0
                 sample.volumeScale = sample.adsOriginalVolumeScale * baseVolumeScale
 
-                if not g_soundManager:getIsSamplePlaying(sample) then
-                    g_soundManager:playSample(sample)
-                end
+                ADS_SoundManager.setSamplePlaying(sample, true)
 
-                g_soundManager:setSampleVolumeOffset(sample, 0)
+                ADS_SoundManager.setSampleVolumeOffset(sample, 0)
                 local pitchOffset
                 if sampleName == "turboWhistle" then
                     local accelThreshold = 0.02
@@ -4926,7 +4920,7 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 else
                     pitchOffset = 0.24 * (rpmN ^ 1.35) + 0.04 * dynamicIntensity * rpmN
                 end
-                g_soundManager:setSamplePitchOffset(sample, pitchOffset)
+                ADS_SoundManager.setSamplePitchOffset(sample, pitchOffset)
             end
 
             addFuncToActive(vehicle, effectName, activeFunc)
@@ -5215,8 +5209,8 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
                 local easedT = t * t
                 local offset = math.max(-(baseVolume * easedT), -0.65)
 
-                if g_soundManager:getIsSamplePlaying(spec.samples.starterCrankingEnd) then
-                    g_soundManager:setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
+                if ADS_SoundManager.getIsSamplePlaying(spec.samples.starterCrankingEnd) then
+                    ADS_SoundManager.setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
                 end
             end
 
@@ -5255,20 +5249,8 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
             and vehicle.spec_AdvancedDamageSystem.activeEffects
             and vehicle.spec_AdvancedDamageSystem.activeEffects.ENGINE_HARD_START_MODIFIER
             or nil
-        local starterSample = (vehicle.spec_AdvancedDamageSystem
-            and vehicle.spec_AdvancedDamageSystem.samples
-            and vehicle.spec_AdvancedDamageSystem.samples.starter)
-            or nil
-
         if effect ~= nil and effect.extraData ~= nil then
             local extra = effect.extraData
-            if starterSample ~= nil and extra.soundPlaying == true then
-                g_soundManager:stopSample(starterSample, 0, 0)
-            end
-            if starterSample ~= nil and extra.originalLoops ~= nil then
-                starterSample.loops = extra.originalLoops
-            end
-            extra.soundPlaying = false
             extra.status = "IDLE"
             extra.timer = 0
             extra.preCrankVoltageV = nil
@@ -5410,10 +5392,9 @@ if VehicleMotor ~= nil and VehicleMotor.shiftGear ~= nil then
                     if effect.extraData.status == "FAILED" then return end
                     if vehicle.isServer and math.random() < effect.value then
                         effect.extraData.status = "FAILED"
-                        ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, 0, 0)
-                        if spec_ads and effect.value < 1.0 then
-                            g_soundManager:playSample(spec_ads.samples['transmissionShiftFailed' .. math.random(3)])
-                        end
+                        local sampleIndex = math.random(3)
+                        ADS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
+                        ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, 0)
                         return
                     end
                 end
@@ -5435,10 +5416,9 @@ if VehicleMotor ~= nil and VehicleMotor.selectGear ~= nil then
                     if activation then
                         if vehicle.isServer and math.random() < effect.value then
                             effect.extraData.status = "FAILED"
-                            ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, 0, 0)
-                            if spec_ads and effect.value < 1.0 then
-                                g_soundManager:playSample(spec_ads.samples['transmissionShiftFailed' .. math.random(3)])
-                            end
+                            local sampleIndex = math.random(3)
+                            ADS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
+                            ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, 0)
                             return
                         end
                     end
@@ -5468,11 +5448,9 @@ if VehicleMotor ~= nil and VehicleMotor.updateGear ~= nil then
                         self.gearChangeTimer = effect.extraData.duration
                         self.autoGearChangeTimer = effect.extraData.duration
 
-                        ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, 0, effect.extraData.duration)
-
-                        if spec_ads and effect.value < 1.0 then
-                            g_soundManager:playSample(spec_ads.samples['transmissionShiftFailed' .. math.random(3)])
-                        end
+                        local sampleIndex = math.random(3)
+                        ADS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
+                        ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, effect.extraData.duration)
                     end
                     if effect.value >= 1.0 then
                         self.targetGear = self.previousGear
@@ -5500,9 +5478,12 @@ ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
                     if effect.extraData.status == 'REJECTED' then
                         motor.targetGear = 0
                         effect.extraData.timer = effect.extraData.timer + dt
-                        if effect.extraData.timer >= effect.extraData.duration then
+                        if v.isServer and effect.extraData.timer >= effect.extraData.duration then
                             effect.extraData.status = 'IDLE'
-                            g_soundManager:playSample(vehicle.spec_AdvancedDamageSystem.samples['transmissionShiftFailed' .. math.random(3)])
+                            effect.extraData.timer = 0
+                            local sampleIndex = math.random(3)
+                            ADS_SoundManager.playSample(v.spec_AdvancedDamageSystem.samples["transmissionShiftFailed" .. sampleIndex])
+                            ADS_EffectSyncEvent.send(v, "GEAR_REJECTION_CHANCE", "IDLE", 0, sampleIndex)
                         end
 
                     elseif v.isServer and v:getMotorLoadPercentage() > 0.8 and effect.extraData.status == 'IDLE' then
@@ -5513,8 +5494,7 @@ ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
                                 motor:setGear(0, false)
 
                                 ADS_EffectSyncEvent.send(v, "GEAR_REJECTION_CHANCE", "REJECTED", 0)
-                                
-                                g_soundManager:playSample(v.spec_AdvancedDamageSystem.samples.gearDisengage1)
+                                ADS_SoundManager.playSample(v.spec_AdvancedDamageSystem.samples.gearDisengage1)
                                 if v:getIsActiveForInput(true) then
                                     g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_gear_disengage_message", 3000)) 
                                 end

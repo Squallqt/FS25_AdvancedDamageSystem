@@ -938,9 +938,7 @@ local function notifyParkBrakeChange(state)
         if state._lastNotifiedPark ~= nil then
             local key = state.parkBrake and "ads_drivetrain_notify_park_on" or "ads_drivetrain_notify_park_off"
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, g_i18n:getText(key))
-            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
-                g_soundManager:playSample(ADS_Main.samples.notification2D)
-            end
+            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
         end
         state._lastNotifiedPark = state.parkBrake
     end
@@ -975,9 +973,7 @@ local function updateLocalNotifications(vehicle, state, dt)
         if state._lastNotifiedMode ~= nil then
             local modeText = g_i18n:getText(ADS_Drivetrain.MODE_L10N[state.driveMode] or "ads_drivetrain_mode_4wd")
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, string.format(g_i18n:getText("ads_drivetrain_notify_mode"), modeText))
-            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
-                g_soundManager:playSample(ADS_Main.samples.notification2D)
-            end
+            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
         end
         state._lastNotifiedMode = state.driveMode
     end
@@ -989,9 +985,7 @@ local function updateLocalNotifications(vehicle, state, dt)
             local modeKey = state.autoEngaged and "ads_drivetrain_mode_4wd" or "ads_drivetrain_mode_4x2"
             local modeText = g_i18n:getText(modeKey)
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, string.format(g_i18n:getText("ads_drivetrain_notify_mode"), modeText))
-            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
-                g_soundManager:playSample(ADS_Main.samples.notification2D)
-            end
+            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
         end
         state._lastNotifiedAutoEngaged = state.autoEngaged
     end
@@ -1000,9 +994,7 @@ local function updateLocalNotifications(vehicle, state, dt)
         if state._lastNotifiedLock ~= nil then
             local key = state.diffLockEngaged and "ads_drivetrain_notify_lock_on" or "ads_drivetrain_notify_lock_off"
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, g_i18n:getText(key))
-            if ADS_Main ~= nil and ADS_Main.samples ~= nil and ADS_Main.samples.notification2D ~= nil then
-                g_soundManager:playSample(ADS_Main.samples.notification2D)
-            end
+            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
         end
         state._lastNotifiedLock = state.diffLockEngaged
     end

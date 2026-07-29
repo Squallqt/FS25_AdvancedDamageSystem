@@ -14,6 +14,46 @@ local function raiseFieldcareDirty(vehicle, spec)
     end
 end
 
+local function updateFieldInspectionSoundActive(vehicle, spec)
+    local isActive = next(spec.fieldInspectionActivePlayers) ~= nil
+    if spec.fieldInspectionSoundActive ~= isActive then
+        spec.fieldInspectionSoundActive = isActive
+        raiseFieldcareDirty(vehicle, spec)
+    end
+end
+
+function ADS_Consumptables:setFieldInspectionPlayerActive(player, isActive)
+    if not self.isServer or player == nil then
+        return
+    end
+
+    local spec = self.spec_AdvancedDamageSystem
+    if isActive then
+        spec.fieldInspectionActivePlayers[player] = g_time + ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
+    else
+        spec.fieldInspectionActivePlayers[player] = nil
+    end
+
+    updateFieldInspectionSoundActive(self, spec)
+end
+
+function ADS_Consumptables:updateFieldInspectionSound()
+    local spec = self.spec_AdvancedDamageSystem
+
+    if self.isServer then
+        for player, endTime in pairs(spec.fieldInspectionActivePlayers) do
+            if endTime <= g_time then
+                spec.fieldInspectionActivePlayers[player] = nil
+            end
+        end
+        updateFieldInspectionSoundActive(self, spec)
+    end
+
+    if self.isClient and spec.samples ~= nil then
+        ADS_SoundManager.setSamplePlaying(spec.samples.inspection, not spec.isExcludedVehicle and spec.fieldInspectionSoundActive)
+    end
+end
+
 -- ==========================================================
 --                      ENGINE
 -- ==========================================================
@@ -365,7 +405,6 @@ function ADS_Consumptables:startFieldVisualInspectionProcess()
     inspection.duration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
     inspection.startTime = g_time
     inspection.targetVehicle = self
-    inspection.wasSoundStarted = false
 
     local node = self.rootNode
     if (node == nil or node == 0) and self.components ~= nil and self.components[1] ~= nil then
@@ -373,10 +412,7 @@ function ADS_Consumptables:startFieldVisualInspectionProcess()
     end
     inspection.targetNode = node
 
-    if self.isClient and spec.samples ~= nil and spec.samples.inspection ~= nil then
-        g_soundManager:playSample(spec.samples.inspection)
-        inspection.wasSoundStarted = true
-    end
+    ADS_FieldInspectionEvent.send(self, true)
 
     if self.isClient and ADS_Hud ~= nil then
         ADS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), 0), inspection.duration)

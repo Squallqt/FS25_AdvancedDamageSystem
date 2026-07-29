@@ -48,6 +48,7 @@ local function adsCancelActiveInspection(reasonText)
     if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil then
         local spec = vehicle.spec_AdvancedDamageSystem
         local inspection = spec.fieldInspection
+        ADS_FieldInspectionEvent.send(vehicle, false)
 
         if inspection ~= nil then
             inspection.isActive = false
@@ -55,11 +56,6 @@ local function adsCancelActiveInspection(reasonText)
             inspection.startTime = 0
             inspection.targetNode = nil
             inspection.targetVehicle = nil
-            inspection.wasSoundStarted = false
-        end
-
-        if spec.samples ~= nil and spec.samples.inspection ~= nil then
-            g_soundManager:stopSample(spec.samples.inspection)
         end
     end
 
@@ -82,6 +78,7 @@ local function adsCompleteActiveInspection()
 
     local spec = vehicle.spec_AdvancedDamageSystem
     local inspection = spec.fieldInspection
+    ADS_FieldInspectionEvent.send(vehicle, false)
 
     if inspection ~= nil then
         inspection.isActive = false
@@ -89,7 +86,6 @@ local function adsCompleteActiveInspection()
         inspection.startTime = 0
         inspection.targetNode = nil
         inspection.targetVehicle = nil
-        inspection.wasSoundStarted = false
     end
 
     adsActiveInspectionVehicle = nil

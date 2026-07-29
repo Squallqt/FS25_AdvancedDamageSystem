@@ -47,8 +47,8 @@ function ADS_VehicleChangeStatusEvent:run(connection)
             if g_currentMission:getFarmId() == self.vehicle.ownerFarmId and g_currentMission ~= nil and g_currentMission.hud ~= nil then
                 g_currentMission.hud:addSideNotification({1, 1, 1, 1}, self.notificationText)
             end
-            if g_currentMission:getFarmId() == self.vehicle.ownerFarmId and ADS_Main.samples ~= nil and ADS_Main.samples.maintenanceCompleted2D ~= nil then
-                g_soundManager:playSample(ADS_Main.samples.maintenanceCompleted2D)
+            if g_currentMission:getFarmId() == self.vehicle.ownerFarmId then
+                ADS_SoundManager.playSample(ADS_Main.samples.maintenanceCompleted2D)
             end
         end
 

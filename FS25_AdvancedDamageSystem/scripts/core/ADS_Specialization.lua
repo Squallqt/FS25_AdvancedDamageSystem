@@ -774,11 +774,13 @@ local function markFieldcareDirty(vehicle, spec)
 
     if syncFloatChanged(spec._lastSyncFieldcare_radiatorClogging, spec.radiatorClogging, 0.005) or
        syncFloatChanged(spec._lastSyncFieldcare_airIntakeClogging, spec.airIntakeClogging, 0.005) or
-       syncFloatChanged(spec._lastSyncFieldcare_lubricationLevel, spec.lubricationLevel, 0.005) then
+       syncFloatChanged(spec._lastSyncFieldcare_lubricationLevel, spec.lubricationLevel, 0.005) or
+       spec._lastSyncFieldcare_inspectionSoundActive ~= spec.fieldInspectionSoundActive then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_fieldcare)
             spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
             spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
             spec._lastSyncFieldcare_lubricationLevel = spec.lubricationLevel
+            spec._lastSyncFieldcare_inspectionSoundActive = spec.fieldInspectionSoundActive
             return true
     end
 
@@ -1170,6 +1172,8 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     SpecializationUtil.registerFunction(vehicleType, "updateLubricationLevel", ADS_Consumptables.updateLubricationLevel)
     SpecializationUtil.registerFunction(vehicleType, "lubricateVehicle", ADS_Consumptables.lubricateVehicle)
     SpecializationUtil.registerFunction(vehicleType, "startFieldVisualInspectionProcess", ADS_Consumptables.startFieldVisualInspectionProcess)
+    SpecializationUtil.registerFunction(vehicleType, "setFieldInspectionPlayerActive", ADS_Consumptables.setFieldInspectionPlayerActive)
+    SpecializationUtil.registerFunction(vehicleType, "updateFieldInspectionSound", ADS_Consumptables.updateFieldInspectionSound)
 
     SpecializationUtil.registerFunction(vehicleType, "resetAiWorkerCruiseControlState", AdvancedDamageSystem.resetAiWorkerCruiseControlState)
     SpecializationUtil.registerFunction(vehicleType, "getAiWorkerImplementSpeedLimit", AdvancedDamageSystem.getAiWorkerImplementSpeedLimit)
@@ -1209,6 +1213,7 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     streamWriteString(streamId, spec.currentState or "")
     streamWriteString(streamId, spec.plannedState or "")
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.maintenanceTimer, 0, 0))
+    streamWriteBool(streamId, spec.startButtonHeld)
 
     -- [Group 2] Service context
     streamWriteString(streamId, spec.serviceOptionOne or "")
@@ -1239,6 +1244,7 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.radiatorClogging, 0, 0))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.airIntakeClogging, 0, 0))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
+    streamWriteBool(streamId, spec.fieldInspectionSoundActive)
 
     -- [Group 7] Wear
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.serviceLevel, 1.0, 0.001))
@@ -1279,6 +1285,7 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     spec.currentState = streamReadString(streamId)
     spec.plannedState = streamReadString(streamId)
     spec.maintenanceTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+    spec.startButtonHeld = streamReadBool(streamId)
 
     -- [Group 2] Service context
     spec.serviceOptionOne = streamReadString(streamId)
@@ -1334,6 +1341,7 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     spec.radiatorClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
     spec.airIntakeClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
     spec.lubricationLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+    spec.fieldInspectionSoundActive = streamReadBool(streamId)
 
     -- [Group 7] Wear
     spec.serviceLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.001)
@@ -1423,6 +1431,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.radiatorClogging, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.airIntakeClogging, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
+            streamWriteBool(streamId, spec.fieldInspectionSoundActive)
         end
 
         -- [7] Wear
@@ -1545,6 +1554,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec.radiatorClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             spec.airIntakeClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             spec.lubricationLevel = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+            spec.fieldInspectionSoundActive = streamReadBool(streamId)
         end
 
         -- [7] Wear
@@ -1818,6 +1828,8 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
     self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
     self.spec_AdvancedDamageSystem.lastLubricationGameTime = 0
+    self.spec_AdvancedDamageSystem.fieldInspectionSoundActive = false
+    self.spec_AdvancedDamageSystem.fieldInspectionActivePlayers = {}
 
     self.spec_AdvancedDamageSystem.batterySoc = 1.0
     self.spec_AdvancedDamageSystem.batteryChargeAh = nil
@@ -2213,7 +2225,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, _netMotorLoad, dynamicMotorLoad, wheelSlipIntensity
         self.spec_AdvancedDamageSystem.adsDirtyFlag_thermal = self:getNextDirtyFlag()           -- [4] rawEngineTemperature, rawTransmissionTemperature, thermostatState, transmissionThermostatState
         self.spec_AdvancedDamageSystem.adsDirtyFlag_electrical = self:getNextDirtyFlag()        -- [5] batterySoc, batteryChargeAh, batteryTerminalVoltageV, systemVoltageV
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_fieldcare = self:getNextDirtyFlag()         -- [6] radiatorClogging, airIntakeClogging, lubricationLevel
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_fieldcare = self:getNextDirtyFlag()         -- [6] radiatorClogging, airIntakeClogging, lubricationLevel, fieldInspectionSoundActive
         self.spec_AdvancedDamageSystem.adsDirtyFlag_wear = self:getNextDirtyFlag()              -- [7] serviceLevel, conditionLevel, systems[...].condition, systems[...].stress
         self.spec_AdvancedDamageSystem.adsDirtyFlag_breakdowns = self:getNextDirtyFlag()        -- [8] activeBreakdowns
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceProgress = self:getNextDirtyFlag()   -- [9] pendingProgressElapsedTime, pendingProgressTotalTime, pendingProgressStepIndex
@@ -2527,8 +2539,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         duration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
         startTime = 0,
         targetNode = nil,
-        targetVehicle = nil,
-        wasSoundStarted = false
+        targetVehicle = nil
     }
 
     -- Sounds Loading
@@ -2543,7 +2554,6 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         local root = self.rootNode
         local i3d = self.i3dMappings
         
-        spec.samples.starter = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "starter", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.starterCranking = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "starterCranking", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.starterCrankingEnd = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "starterCrankingEnd", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.alarm = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "alarm", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
@@ -2696,6 +2706,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
     spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
     spec._lastSyncFieldcare_lubricationLevel = spec.lubricationLevel
+    spec._lastSyncFieldcare_inspectionSoundActive = spec.fieldInspectionSoundActive
     --- [7] wear
     spec._lastSyncWear_serviceLevel = spec.serviceLevel
     spec._lastSyncWear_conditionLevel = spec.conditionLevel
@@ -3000,28 +3011,24 @@ local function syncOverheatProtection(vehicle, dt)
         if vehicle:getIsMotorStarted() then
             if (rawTransmissionTemp > 105 or rawEngineTemp > 105) and not overheatProtection then
                 vehicle:addBreakdown(overheatProtectionId, 1)
-                if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
-                    g_soundManager:playSample(spec.samples.alarm)
-                end
+                ADS_SoundManager.playSample(spec.samples.alarm)
+                ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
             elseif overheatProtection then
                 if vehicle:getCruiseControlState() ~= 0 then
                     vehicle:setCruiseControlState(0, true)
                 end
                 if (rawTransmissionTemp > 125 or rawEngineTemp > 125) and overheatProtection.stage < 4 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
-                        g_soundManager:playSample(spec.samples.alarm)
-                    end
+                    ADS_SoundManager.playSample(spec.samples.alarm)
+                    ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
                 elseif (rawTransmissionTemp > 115 or rawEngineTemp > 115) and overheatProtection.stage < 3 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
-                        g_soundManager:playSample(spec.samples.alarm)
-                    end
+                    ADS_SoundManager.playSample(spec.samples.alarm)
+                    ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
                 elseif (rawTransmissionTemp > 110 or rawEngineTemp > 110) and overheatProtection.stage < 2 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    if vehicle.getIsActiveForInput ~= nil and vehicle:getIsActiveForInput(true) then
-                        g_soundManager:playSample(spec.samples.alarm)
-                    end
+                    ADS_SoundManager.playSample(spec.samples.alarm)
+                    ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
                 end
             end
         end
@@ -3502,6 +3509,7 @@ end
 
 function AdvancedDamageSystem:onUpdate(dt, ...)
     local spec = self.spec_AdvancedDamageSystem
+    self:updateFieldInspectionSound()
     if spec.isExcludedVehicle then return end
 
     self:updateVehicleStateSnapshot(dt)
@@ -8017,8 +8025,8 @@ function AdvancedDamageSystem:completeService()
         g_currentMission.hud:addSideNotification({1, 1, 1, 1}, maintenanceCompletedText)
     end
 
-    if g_currentMission:getFarmId() == self.ownerFarmId and ADS_Main.samples ~= nil and ADS_Main.samples.maintenanceCompleted2D ~= nil then
-        g_soundManager:playSample(ADS_Main.samples.maintenanceCompleted2D)
+    if g_currentMission:getFarmId() == self.ownerFarmId then
+        ADS_SoundManager.playSample(ADS_Main.samples.maintenanceCompleted2D)
     end
 
 

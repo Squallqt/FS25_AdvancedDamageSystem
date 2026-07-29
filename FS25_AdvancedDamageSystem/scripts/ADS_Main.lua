@@ -1,5 +1,54 @@
 ADS_Main = {}
 
+ADS_SoundManager = {}
+
+function ADS_SoundManager.playSample(sample)
+    if sample ~= nil then
+        g_soundManager:playSample(sample)
+    end
+end
+
+function ADS_SoundManager.stopSample(sample, fadeDuration, force)
+    if sample == nil then
+        return
+    end
+
+    if fadeDuration == nil then
+        g_soundManager:stopSample(sample)
+    else
+        g_soundManager:stopSample(sample, fadeDuration, force or 0)
+    end
+end
+
+function ADS_SoundManager.getIsSamplePlaying(sample)
+    return sample ~= nil and g_soundManager:getIsSamplePlaying(sample)
+end
+
+function ADS_SoundManager.setSamplePlaying(sample, shouldPlay, fadeDuration, force)
+    if sample == nil then
+        return
+    end
+
+    local isPlaying = ADS_SoundManager.getIsSamplePlaying(sample)
+    if shouldPlay and not isPlaying then
+        ADS_SoundManager.playSample(sample)
+    elseif not shouldPlay and isPlaying then
+        ADS_SoundManager.stopSample(sample, fadeDuration, force)
+    end
+end
+
+function ADS_SoundManager.setSamplePitchOffset(sample, pitchOffset)
+    if sample ~= nil then
+        g_soundManager:setSamplePitchOffset(sample, pitchOffset)
+    end
+end
+
+function ADS_SoundManager.setSampleVolumeOffset(sample, volumeOffset)
+    if sample ~= nil then
+        g_soundManager:setSampleVolumeOffset(sample, volumeOffset)
+    end
+end
+
 local modDirectory = g_currentModDirectory
 local modName = g_currentModName
 
@@ -32,6 +81,7 @@ source(g_currentModDirectory .. "events/ADS_LogEntrySyncEvent.lua")
 source(g_currentModDirectory .. "events/ADS_ConsoleCommandEvent.lua")
 source(g_currentModDirectory .. "events/ADS_VehicleExclusionEvent.lua")
 source(g_currentModDirectory .. "events/ADS_StartButtonEvent.lua")
+source(g_currentModDirectory .. "events/ADS_FieldInspectionEvent.lua")
 source(g_currentModDirectory .. "events/ADS_HandToolSyncEvent.lua")
 source(g_currentModDirectory .. "events/ADS_JumperCablesEvent.lua")
 source(g_currentModDirectory .. "events/ADS_DrivetrainEvent.lua")

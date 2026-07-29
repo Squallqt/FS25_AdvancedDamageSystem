@@ -37,11 +37,6 @@ end
 
 
 function ADS_StartButtonEvent:run(connection)
-
-    if connection:getIsServer() then
-        return
-    end
-
     local vehicle = self.vehicle
     if vehicle == nil or not vehicle:getIsSynchronized() then
         return
@@ -55,11 +50,17 @@ function ADS_StartButtonEvent:run(connection)
     spec.startButtonDown = self.isDown
     spec.startButtonHeld = self.isHeld
     spec.startButtonUp = self.isUp
+
+    if not connection:getIsServer() then
+        g_server:broadcastEvent(ADS_StartButtonEvent.new(vehicle, self.isDown, self.isHeld, self.isUp), nil, connection, vehicle)
+    end
 end
 
 
 function ADS_StartButtonEvent.send(vehicle, isDown, isHeld, isUp)
-    if g_client ~= nil then
+    if g_server ~= nil then
+        g_server:broadcastEvent(ADS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp), nil, nil, vehicle)
+    elseif g_client ~= nil then
         g_client:getServerConnection():sendEvent(ADS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp))
     end
 end

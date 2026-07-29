@@ -45,7 +45,6 @@ end
 function ADS_EffectSyncEvent:run(connection)
     local isFromClient = connection ~= nil and not connection:getIsServer()
 
-
     local vehicle = self.vehicle
     if vehicle == nil or not vehicle:getIsSynchronized() then
         return
@@ -74,13 +73,17 @@ function ADS_EffectSyncEvent:run(connection)
         end
 
         if isFromClient and g_server ~= nil then
-            g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), connection, nil, vehicle)
+            g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), nil, connection, vehicle)
         end
 
     elseif self.effectId == "ENGINE_FAILURE" then
         if effect ~= nil then
             effect.extraData = effect.extraData or {}
             effect.extraData.status = self.status
+        end
+
+        if isFromClient and g_server ~= nil then
+            g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), nil, connection, vehicle)
         end
 
     elseif self.effectId == "PTO_AUTO_DISENGAGE_CHANCE" then
@@ -94,48 +97,59 @@ function ADS_EffectSyncEvent:run(connection)
             g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_pto_auto_disengage_message"), 4000)
         end
 
+    elseif self.effectId == "BRAKE_FORCE_MODIFIER" then
+        if self.status == "SOUND" then
+            ADS_SoundManager.playSample(spec.samples["brakes" .. self.extraInt])
+        end
+
+    elseif self.effectId == "OVERHEAT_PROTECTION" then
+        if self.status == "ALARM" then
+            ADS_SoundManager.playSample(spec.samples.alarm)
+        end
+
     elseif self.effectId == "GEAR_SHIFT_FAILURE_CHANCE" then
         if effect and effect.extraData then
             effect.extraData.status = self.status
             effect.extraData.timer  = self.timer
             local motor = vehicle:getMotor()
             if motor and self.extraFloat > 0 then
-                motor.gearChangeTimer    = self.extraFloat
+                motor.gearChangeTimer = self.extraFloat
                 motor.autoGearChangeTimer = self.extraFloat
             end
-            if vehicle.spec_AdvancedDamageSystem
-                and self.status == "FAILED"
-                and vehicle:getIsActiveForInput(true) then
-                local sampleIdx = math.random(3)
-                g_soundManager:playSample(spec.samples['transmissionShiftFailed' .. sampleIdx])
-            end
+        end
+        if self.status == "FAILED" then
+            ADS_SoundManager.playSample(spec.samples["transmissionShiftFailed" .. self.extraInt])
         end
 
     elseif self.effectId == "GEAR_REJECTION_CHANCE" then
         if effect and effect.extraData then
             effect.extraData.status = self.status
-            effect.extraData.timer  = self.timer
+            effect.extraData.timer = self.timer
             local motor = vehicle:getMotor()
-            if motor and motor.setGear then
+            if self.status == "REJECTED" and motor and motor.setGear then
                 motor:setGear(0, false)
             end
-            if vehicle:getIsActiveForInput(true) then
-                g_soundManager:playSample(spec.samples.gearDisengage1)
+            if self.status == "REJECTED" and vehicle:getIsActiveForInput(true) then
                 g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_gear_disengage_message"), 3000)
             end
+        end
+        if self.status == "REJECTED" then
+            ADS_SoundManager.playSample(spec.samples.gearDisengage1)
+        elseif self.status == "IDLE" and self.extraInt > 0 then
+            ADS_SoundManager.playSample(spec.samples["transmissionShiftFailed" .. self.extraInt])
         end
 
     elseif self.effectId == "LIGHTS_FLICKER_CHANCE" then
         if effect and effect.extraData then
             effect.extraData.maskBackup = self.extraInt > 0 and self.extraInt or effect.extraData.maskBackup
             effect.extraData.status = self.status
-            effect.extraData.timer  = self.timer
+            effect.extraData.timer = self.timer
         end
 
     elseif self.effectId == "ENGINE_HESITATION_CHANCE" then
         if effect and effect.extraData then
             effect.extraData.status = self.status
-            effect.extraData.timer  = self.timer
+            effect.extraData.timer = self.timer
             if self.status == "CHOKING" then
                 local cruiseState = vehicle:getCruiseControlState()
                 if cruiseState ~= 0 then
@@ -149,11 +163,9 @@ end
 
 
 function ADS_EffectSyncEvent.send(vehicle, effectId, status, timer, extraInt, extraFloat)
-
     if g_server ~= nil then
         g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat), nil, nil, vehicle)
     elseif g_client ~= nil and (effectId == "ENGINE_HARD_START_MODIFIER" or effectId == "ENGINE_FAILURE") then
         g_client:getServerConnection():sendEvent(ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat))
     end
 end
-
