@@ -1278,4 +1278,3 @@ function ADS_InGameMenuFrame:onShowMaintenanceLog()
         InfoDialog.show(g_i18n:getText("ads_ws_no_log_empty_message"))
     end
 end
-
