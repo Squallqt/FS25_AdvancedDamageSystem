@@ -121,8 +121,6 @@ function ADS_EffectSyncEvent:run(connection)
             end
             if vehicle:getIsActiveForInput(true) then
                 g_soundManager:playSample(spec.samples.gearDisengage1)
-            end
-            if vehicle:getIsActiveForInput(true) then
                 g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_gear_disengage_message"), 3000)
             end
         end

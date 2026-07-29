@@ -230,16 +230,18 @@ local function applyLubricationInspectionFindings(dialog, additionalLines)
     local lubricationLevel = math.clamp(tonumber(spec.lubricationLevel) or 0, 0, 1)
     local statusKey = nil
 
-    if lubricationLevel <= 0.15 then
+    local C = ADS_Config.FIELD_CARE
+
+    if lubricationLevel <= C.LUBRICATION_CRITICALLY_DRY_THRESHOLD then
         statusKey = "ads_inspection_status_critically_dry"
         appendAdditionalLine(additionalLines, "ads_inspection_hint_lubrication_stage4")
-    elseif lubricationLevel <= 0.35 then
+    elseif lubricationLevel <= C.LUBRICATION_VERY_DRY_THRESHOLD then
         statusKey = "ads_inspection_status_very_dry"
         appendAdditionalLine(additionalLines, "ads_inspection_hint_lubrication_stage3")
-    elseif lubricationLevel <= 0.60 then
+    elseif lubricationLevel <= C.LUBRICATION_DRY_THRESHOLD then
         statusKey = "ads_inspection_status_dry"
         appendAdditionalLine(additionalLines, "ads_inspection_hint_lubrication_stage2")
-    elseif lubricationLevel <= ADS_Config.FIELD_CARE.LUBRICATION_WARNING_THRESHOLD then
+    elseif lubricationLevel <= C.LUBRICATION_WARNING_THRESHOLD then
         statusKey = "ads_inspection_status_slightly_dry"
         appendAdditionalLine(additionalLines, "ads_inspection_hint_lubrication_stage1")
     end

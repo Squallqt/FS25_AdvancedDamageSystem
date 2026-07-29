@@ -1146,7 +1146,6 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
 
     if not vehicle.isServer then
         updateLocalNotifications(vehicle, state, dt)
-        updateDebugData(vehicle, state, spec)
         return
     end
 
