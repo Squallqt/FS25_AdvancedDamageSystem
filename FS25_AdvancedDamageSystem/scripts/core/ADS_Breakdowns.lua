@@ -12,6 +12,9 @@ end
 
 local loggedHookErrors = {}
 
+-- Speed in km/h below which a braking vehicle emits its brake sound, once per crossing.
+local BRAKE_SOUND_SPEED_THRESHOLD = 15
+
 -- Reports a wrapped engine call failure once per distinct error, regardless of debug mode.
 local function log_hook_error(context, err)
     local key = context .. "|" .. tostring(err)
@@ -3769,9 +3772,6 @@ ADS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
         log_dbg("Removing CVT_MAX_RATIO_MODIFIER effect.")
     end
 }
-
--- Speed in km/h below which a braking vehicle emits its brake sound, once per crossing.
-local BRAKE_SOUND_SPEED_THRESHOLD = 15
 
 -- Convergence rate of the transmission slip modifier, per second at full factor.
 local TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND = 0.9
