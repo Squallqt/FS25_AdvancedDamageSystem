@@ -3438,7 +3438,7 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
             local modifier = math.max(0.01, 1 + brakeEffect.value) 
             local origAxisForward = axisForward
             axisForward = axisForward * modifier
-            if vehicle.isServer and brakeEffect.extraData ~= nil and vehicle:getLastSpeed() < 15 then
+            if vehicle.isServer and brakeEffect.extraData ~= nil and vehicle:getLastSpeed() > 1 and vehicle:getLastSpeed() < 15 then
                 if not brakeEffect.extraData.soundPlayed and math.abs(origAxisForward) > 0.999 then
                     if math.random() < math.abs(brakeEffect.value) then
                         local sampleIndex = math.random(3)
