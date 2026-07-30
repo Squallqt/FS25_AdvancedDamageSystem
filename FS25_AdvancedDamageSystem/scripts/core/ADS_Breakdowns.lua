@@ -1275,7 +1275,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 repairPrice = 1.0 * breakdownPriceMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 effects = {
-                    { id = "TRANSMISSION_SLIP_EFFECT", value = 0.20, extraData = {accumulatedMod = 0.0}, aggregation = "max" },
+                    { id = "TRANSMISSION_SLIP_EFFECT", value = 0.20, aggregation = "max" },
                 }
             },
             {
@@ -1285,7 +1285,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 repairPrice = 2.0 * breakdownPriceMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 effects = {
-                     { id = "TRANSMISSION_SLIP_EFFECT", value = 0.40, extraData = {accumulatedMod = 0.0}, aggregation = "max" },
+                     { id = "TRANSMISSION_SLIP_EFFECT", value = 0.40, aggregation = "max" },
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.20, aggregation = "sum" }
                 },
                 indicators = {
@@ -1298,7 +1298,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 repairPrice = 4.0 * breakdownPriceMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 effects = { 
-                     { id = "TRANSMISSION_SLIP_EFFECT", value = 0.60, extraData = {accumulatedMod = 0.0}, aggregation = "max"},
+                     { id = "TRANSMISSION_SLIP_EFFECT", value = 0.60, aggregation = "max"},
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.50, aggregation = "sum" }
                 },
                 indicators = {
@@ -1311,7 +1311,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.MANUAL_TRANSMISSION_CLUTCH_WEAR,
                 effects = { 
-                     { id = "TRANSMISSION_SLIP_EFFECT", value = 1.0, extraData = {accumulatedMod = 0.0, message = "ads_breakdowns_transmission_slip_stage4_message", disableAi = true}, aggregation = "max" }
+                     { id = "TRANSMISSION_SLIP_EFFECT", value = 1.0, extraData = {message = "ads_breakdowns_transmission_slip_stage4_message", disableAi = true}, aggregation = "max" }
                 },
                 indicators = {
                 }
@@ -1482,7 +1482,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.CVT_CHAIN_WEAR,
                 repairPrice = 1.0 * breakdownPriceMultipliers.CVT_CHAIN_WEAR,
                 effects = {
-                    { id = "CVT_SLIP_EFFECT", value = 0.1, extraData = {accumulatedMod = 0.0}, aggregation = "max" },
+                    { id = "CVT_SLIP_EFFECT", value = 0.1, aggregation = "max" },
                     { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" }  
                 }
             },
@@ -1493,7 +1493,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.CVT_CHAIN_WEAR,
                 repairPrice = 2.0 * breakdownPriceMultipliers.CVT_CHAIN_WEAR,
                 effects = {
-                     { id = "CVT_SLIP_EFFECT", value = 0.2, extraData = {accumulatedMod = 0.0}, aggregation = "max" },
+                     { id = "CVT_SLIP_EFFECT", value = 0.2, aggregation = "max" },
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.20, aggregation = "sum" },
                      { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.1, aggregation = "sum" }
                 },
@@ -1508,7 +1508,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.CVT_CHAIN_WEAR,
                 repairPrice = 4.0 * breakdownPriceMultipliers.CVT_CHAIN_WEAR,
                 effects = { 
-                     { id = "CVT_SLIP_EFFECT", value = 0.5, extraData = {accumulatedMod = 0.0}, aggregation = "max" },
+                     { id = "CVT_SLIP_EFFECT", value = 0.5, aggregation = "max" },
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.25, aggregation = "sum" },
                      { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
                 },
@@ -1523,7 +1523,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.CVT_CHAIN_WEAR,
                 effects = { 
-                     { id = "CVT_SLIP_EFFECT", value = 1.0, extraData = {accumulatedMod = 0.0, message = "ads_breakdowns_cvt_chain_wear_stage4_message", disableAi = true}, aggregation = "max" }
+                     { id = "CVT_SLIP_EFFECT", value = 1.0, extraData = {message = "ads_breakdowns_cvt_chain_wear_stage4_message", disableAi = true}, aggregation = "max" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -1679,7 +1679,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.CVT_ADDON_MALFUNCTION,
                 effects = { 
-                    { id = "CVT_SLIP_EFFECT", value = 1.0, extraData = {accumulatedMod = 0.0, message = "ads_breakdowns_cvt_addon_malfunction_stage4_message", disableAi = true}, aggregation = "max" }
+                    { id = "CVT_SLIP_EFFECT", value = 1.0, extraData = {message = "ads_breakdowns_cvt_addon_malfunction_stage4_message", disableAi = true}, aggregation = "max" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -3722,13 +3722,12 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
                 return minRatio * 100, maxRatio * 100
             end
 
-            slipEffect.extraData = slipEffect.extraData or {}
-            slipEffect.extraData.accumulatedMod = slipEffect.extraData.accumulatedMod or 0
+            spec_ads.slipAccumulatedMod = spec_ads.slipAccumulatedMod or 0
 
             local nowMs = g_currentMission.time
-            local lastUpdateMs = tonumber(slipEffect.extraData.lastUpdateMs) or nowMs
+            local lastUpdateMs = spec_ads.slipLastUpdateMs or nowMs
             local dtSec = math.max((nowMs - lastUpdateMs) / 1000, 0)
-            slipEffect.extraData.lastUpdateMs = nowMs
+            spec_ads.slipLastUpdateMs = nowMs
             if dtSec > TRANSMISSION_SLIP_RESUME_GAP_SECONDS then dtSec = 0 end
 
             local speedFactor = math.min(self.vehicle:getLastSpeed() / (self:getMaximumForwardSpeed() * 3.6), 1.0)
@@ -3738,13 +3737,13 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
                 local accelerationFactor = math.min(math.max(0, motorAccel / self.motorRotationAccelerationLimit * 5), 1.0)
 
                 local step = TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND * dtSec * (1 - math.min(speedFactor, 0.9))
-                if slipEffect.extraData.accumulatedMod < accelerationFactor then
-                    slipEffect.extraData.accumulatedMod = math.min(slipEffect.extraData.accumulatedMod + step, 1.0)
+                if spec_ads.slipAccumulatedMod < accelerationFactor then
+                    spec_ads.slipAccumulatedMod = math.min(spec_ads.slipAccumulatedMod + step, 1.0)
                 else
-                    slipEffect.extraData.accumulatedMod = math.max(slipEffect.extraData.accumulatedMod - step, 0.0)
+                    spec_ads.slipAccumulatedMod = math.max(spec_ads.slipAccumulatedMod - step, 0.0)
                 end
 
-                local dynamicModifier = modifier * slipEffect.extraData.accumulatedMod
+                local dynamicModifier = modifier * spec_ads.slipAccumulatedMod
                 minRatio = minRatio * (1 + dynamicModifier)
                 maxRatio = maxRatio * (1 + dynamicModifier)
             end
@@ -3760,14 +3759,13 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
                 return minRatio * 100, maxRatio * 100
             end
 
-            cvtSlipEffect.extraData = cvtSlipEffect.extraData or {}
             local nowMs = g_currentMission.time
-            local lastUpdateMs = tonumber(cvtSlipEffect.extraData.lastUpdateMs) or nowMs
+            local lastUpdateMs = spec_ads.cvtSlipLastUpdateMs or nowMs
             local dtSec = math.max((nowMs - lastUpdateMs) / 1000, 0)
-            cvtSlipEffect.extraData.lastUpdateMs = nowMs
+            spec_ads.cvtSlipLastUpdateMs = nowMs
             if dtSec > TRANSMISSION_SLIP_RESUME_GAP_SECONDS then dtSec = 0 end
 
-            local lastAccelerationFactor = tonumber(cvtSlipEffect.extraData.lastAccelerationFactor) or 0
+            local lastAccelerationFactor = spec_ads.cvtSlipLastAccelerationFactor or 0
             local speedFactor = math.min(self.vehicle:getLastSpeed() / (self:getMaximumForwardSpeed() * 3.6 / 2), 1.0)
             local loadFactor = vehicle:getMotorLoadPercentage() + 0.2
             local massFactor = vehicle:getTotalMass() / vehicle:getTotalMass(true)
@@ -3780,7 +3778,7 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
                 if accelerationFactor < lastAccelerationFactor then
                     accelerationFactor = math.clamp(lastAccelerationFactor - decatPerSecond * dtSec, 0, 1)
                 end
-                cvtSlipEffect.extraData.lastAccelerationFactor = accelerationFactor
+                spec_ads.cvtSlipLastAccelerationFactor = accelerationFactor
                 isSliping = accelerationFactor >= 0.98 and speedFactor < 0.8
 
                 local clampMin = math.min(minRatio, minRatio * 10)

@@ -6244,7 +6244,6 @@ local function buildGeneralWearBreakdown(vehicle)
                             local multiplier = (1 - condition) ^ 3
                             return baseEffect * multiplier
                         end, 
-                        extraData = {accumulatedMod = 0.0}, 
                         aggregation = "max"
                     }
                     if effect ~= nil then table.insert(effects, effect) end
