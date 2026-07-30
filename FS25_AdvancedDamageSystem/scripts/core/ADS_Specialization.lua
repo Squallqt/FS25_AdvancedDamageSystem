@@ -1161,7 +1161,6 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     
     SpecializationUtil.registerFunction(vehicleType, "updateDrivetrain", ADS_Drivetrain.updateDrivetrain)
 
-    SpecializationUtil.registerFunction(vehicleType, "updateEngineConsumables", ADS_Consumptables.updateEngineConsumables)
     SpecializationUtil.registerFunction(vehicleType, "updateRadiatorClogging", ADS_Consumptables.updateRadiatorClogging)
     SpecializationUtil.registerFunction(vehicleType, "updateAirIntakeClogging", ADS_Consumptables.updateAirIntakeClogging)
     SpecializationUtil.registerFunction(vehicleType, "cleanRadiatorAndAirIntake", ADS_Consumptables.cleanRadiatorAndAirIntake)
@@ -1776,14 +1775,6 @@ function AdvancedDamageSystem:onLoad(savegame)
     ensureFactorStats(self.spec_AdvancedDamageSystem, self)
 
     --- engine consumptables
-    self.spec_AdvancedDamageSystem.engineLubricationLevel = 1.0
-    self.spec_AdvancedDamageSystem.motorOil = {
-        level = 1.0,
-        quality = 1.0,
-        contamination = 0.0,
-        dilution = 0.0
-    }
-    self.spec_AdvancedDamageSystem.oilFilterClogging = 0.0
     self.spec_AdvancedDamageSystem.airIntakeClogging = 0.0
 
     self.spec_AdvancedDamageSystem.extraConditionWear = 0
