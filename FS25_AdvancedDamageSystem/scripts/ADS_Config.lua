@@ -1019,8 +1019,6 @@ function ADS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".CLOGGING_SPEED",         ADS_Config.FIELD_CARE.CLOGGING_SPEED)
     setXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION", ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION)
     setXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR", ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR)
-    setXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE",        ADS_Config.FIELD_CARE.RAYCAST_DISTANCE)
-    setXMLFloat(xmlFile, root .. ".JUMPER_CABLES_MAX_CONNECTION_DISTANCE", ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE)
 
     -- DRIVETRAIN
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_ENABLED",           ADS_Config.DRIVETRAIN.ENABLED)
@@ -1203,12 +1201,6 @@ function ADS_Config.loadFromXMLFile()
 
     v = getXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR")
     if v ~= nil then ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = math.clamp(v, 0, 0.05) end
-
-    v = getXMLFloat(xmlFile, root .. ".RAYCAST_DISTANCE")
-    if v ~= nil then ADS_Config.FIELD_CARE.RAYCAST_DISTANCE = v end
-
-    v = getXMLFloat(xmlFile, root .. ".JUMPER_CABLES_MAX_CONNECTION_DISTANCE")
-    if v ~= nil then ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE = v end
 
     -- DRIVETRAIN
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_ENABLED")

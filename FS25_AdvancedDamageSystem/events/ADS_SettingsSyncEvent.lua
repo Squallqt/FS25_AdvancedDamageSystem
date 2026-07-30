@@ -51,8 +51,6 @@ function ADS_SettingsSyncEvent.new()
     self.cloggingSpeed             = ADS_Config.FIELD_CARE.CLOGGING_SPEED
     self.fieldInspectionDuration   = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
     self.lubricationReducePerOperatingHour = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR
-    self.raycastDistance           = ADS_Config.FIELD_CARE.RAYCAST_DISTANCE
-    self.jumperCablesMaxConnectionDistance = ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE
     self.debugMode                 = ADS_Config.DEBUG
     self.drivetrainEnabled         = ADS_Config.DRIVETRAIN.ENABLED
     self.drivetrainAllowAutoMode   = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE
@@ -100,8 +98,6 @@ function ADS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.cloggingSpeed          or 1.0)
     streamWriteFloat32(streamId, self.fieldInspectionDuration or 6000)
     streamWriteFloat32(streamId, self.lubricationReducePerOperatingHour)
-    streamWriteFloat32(streamId, self.raycastDistance        or 2.0)
-    streamWriteFloat32(streamId, self.jumperCablesMaxConnectionDistance or 12.0)
     streamWriteBool(streamId,    self.debugMode              or false)
     streamWriteBool(streamId,    self.drivetrainEnabled ~= false)
     streamWriteBool(streamId,    self.drivetrainAllowAutoMode ~= false)
@@ -147,8 +143,6 @@ function ADS_SettingsSyncEvent:readStream(streamId, connection)
     self.cloggingSpeed             = streamReadFloat32(streamId)
     self.fieldInspectionDuration   = streamReadFloat32(streamId)
     self.lubricationReducePerOperatingHour = streamReadFloat32(streamId)
-    self.raycastDistance           = streamReadFloat32(streamId)
-    self.jumperCablesMaxConnectionDistance = streamReadFloat32(streamId)
     self.debugMode                 = streamReadBool(streamId)
     self.drivetrainEnabled         = streamReadBool(streamId)
     self.drivetrainAllowAutoMode   = streamReadBool(streamId)
@@ -203,8 +197,6 @@ local function applyConfig(event)
     ADS_Config.FIELD_CARE.CLOGGING_SPEED                    = event.cloggingSpeed
     ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION         = event.fieldInspectionDuration
     ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = event.lubricationReducePerOperatingHour
-    ADS_Config.FIELD_CARE.RAYCAST_DISTANCE                   = event.raycastDistance
-    ADS_Config.FIELD_CARE.JUMPER_CABLES_MAX_CONNECTION_DISTANCE = event.jumperCablesMaxConnectionDistance
     ADS_Config.DEBUG                                        = event.debugMode
     ADS_Config.DRIVETRAIN.ENABLED                           = event.drivetrainEnabled ~= false
     ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE                   = event.drivetrainAllowAutoMode ~= false
