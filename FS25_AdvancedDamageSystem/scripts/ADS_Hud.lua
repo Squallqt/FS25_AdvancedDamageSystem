@@ -415,11 +415,16 @@ end
 -- =====================================================================================
 
 function ADS_Hud:draw()
-    if g_currentMission == nil or not g_currentMission.hud.isVisible then
+    if g_currentMission == nil then
         return
     end
 
-    self:setNotificationInputActive(self:hasClosableNotification())
+    local isHudVisible = g_currentMission.hud.isVisible
+    self:setNotificationInputActive(isHudVisible and self:hasClosableNotification())
+
+    if not isHudVisible then
+        return
+    end
 
     -- manager debug panel temporarily disabled
 
