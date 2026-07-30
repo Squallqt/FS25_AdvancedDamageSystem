@@ -277,10 +277,6 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
         valuesDiffer(pending.openHour, current.openHour) or
         valuesDiffer(pending.closeHour, current.closeHour)
 
-    if isCurrentMissionMultiplayer() then
-        pending.tutorialMode = false
-    end
-
     local tutorialModeChanged = valuesDiffer(pending.tutorialMode, current.tutorialMode)
     ADS_Config.TUTORIAL_MODE = pending.tutorialMode
     if tutorialModeChanged then
@@ -952,18 +948,16 @@ function ADS_InGameSettings:onTutorialModeChanged(state, optionElement)
     local pending = getPendingConfig()
     local newValue = false
 
-    if not isCurrentMissionMultiplayer() then
-        if optionElement ~= nil and optionElement.getIsChecked ~= nil then
-            newValue = optionElement:getIsChecked()
-        elseif ADS_InGameSettings.embeddedPage ~= nil
-            and ADS_InGameSettings.embeddedPage.ads_tutorialMode ~= nil
-            and ADS_InGameSettings.embeddedPage.ads_tutorialMode.getIsChecked ~= nil then
-            newValue = ADS_InGameSettings.embeddedPage.ads_tutorialMode:getIsChecked()
-        elseif BinaryOptionElement ~= nil and state == BinaryOptionElement.STATE_RIGHT then
-            newValue = true
-        elseif type(state) == "boolean" then
-            newValue = not state
-        end
+    if optionElement ~= nil and optionElement.getIsChecked ~= nil then
+        newValue = optionElement:getIsChecked()
+    elseif ADS_InGameSettings.embeddedPage ~= nil
+        and ADS_InGameSettings.embeddedPage.ads_tutorialMode ~= nil
+        and ADS_InGameSettings.embeddedPage.ads_tutorialMode.getIsChecked ~= nil then
+        newValue = ADS_InGameSettings.embeddedPage.ads_tutorialMode:getIsChecked()
+    elseif BinaryOptionElement ~= nil and state == BinaryOptionElement.STATE_RIGHT then
+        newValue = true
+    elseif type(state) == "boolean" then
+        newValue = not state
     end
 
     pending.tutorialMode = newValue
@@ -972,10 +966,6 @@ function ADS_InGameSettings:onTutorialModeChanged(state, optionElement)
 end
 
 function ADS_InGameSettings:onResetTutorialTipsClicked()
-    if isCurrentMissionMultiplayer() then
-        return
-    end
-
     YesNoDialog.show(function(shouldReset)
         if shouldReset then
             ADS_Config.resetTutorialMessages()
