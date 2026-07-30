@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Паливні форсунки"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Паливний фільтр"/>
         <text name="ads_breakdowns_part_fuel_line" text="Паливопровід"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Система обробки врожаю"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Вивантажувальний шнек"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Підлатано"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Дефект"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Вузол працює нормально, але діагностика виявила дефектну деталь. Через критично низький запас міцності рекомендована профілактична заміна, щоб уникнути раптової поломки."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Сильне підсмоктування повітря. Безперервність подачі палива порушена, запуск вкрай ненадійний, двигун часто глохне."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Критичне підсмоктування повітря. Подача палива неможлива, запуск або подальша робота двигуна виключені."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Повітря в паливній системі"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Знос системи збирання та обробки. Ефективність обробки врожаю злегка знижена, що призводить до незначних втрат."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Середній знос системи обробки. Ефективність помітно знижена, втрати врожаю стають відчутними."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Сильний знос системи обробки. Значне зниження ефективності, високі втрати врожаю."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Критичний знос спричинив відмову системи збирання та обробки. Збирання неможливе до ремонту системи."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Система обробки врожаю не працює"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Розтягнутий приводний ремінь. Епізодичне проковзування призводить до невеликого зниження швидкості вивантаження."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Зношений ремінь та шківи. Значне буксування під навантаженням помітно сповільнює вивантаження."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Пошкоджений редуктор або сильно зношений ремінь. Шнек ледве обертається, працюючи на дуже низькій швидкості."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Приводний ремінь порвався або редуктор заклинив. Вивантажувальний шнек повністю заблоковано."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Вивантажувальний шнек заклинив"/>
         <text name="ads_breakdowns_dead_battery_message" text="Заряд акумулятора вичерпано"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Недостатня напруга в системі"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Двигун заглох"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Система охолодження"/>
         <text name="ads_spec_system_electrical" text="Електросистема"/>
         <text name="ads_spec_system_chassis" text="Ходова частина"/>
-        <text name="ads_spec_system_workprocess" text="Робочі системи"/>
         <text name="ads_spec_system_fuel" text="Паливна система"/>
         <text name="ads_spec_state_ready" text="Готово"/>
         <text name="ads_spec_state_inspection" text="Огляд"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Поточна потужність"/>
         <text name="ads_report_system_condition_brakes" text="Ефективність гальм"/>
         <text name="ads_report_system_condition_transmission" text="Трансмісія"/>
-        <text name="ads_report_system_condition_harvest" text="Ефективність збирання"/>
         <text name="ads_report_system_condition_cooling" text="Ефективність охолодження"/>
         <text name="ads_report_system_condition_consumption" text="Витрата палива"/>
         <text name="ads_report_system_condition_hydraulic" text="Ефективність гідравліки"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Спекотна погода"/>
         <text name="ads_tutorial_hot_weather_message" text="Сьогодні справді спекотно. У таку погоду потрібно особливо пильно стежити за чистотою радіатора та не перевантажувати двигун — інакше перегрів буде лише питанням часу.&#10;&#10;Пам’ятайте: перевірити стан радіатора можна візуально (клавіша R), а очистити його — повітродувкою."/>
         <text name="ads_tutorial_wet_weather_title" text="Ну і погода!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Яка погода сьогодні... Волога шкодить проводці та електрообладнанню, тому знос електросистеми в таких умовах трохи вищий.&#10;&#10;Крім того, збирати врожай у таку погоду вкрай не рекомендовано — ви лише нашкодите своєму комбайну."/>
+        <text name="ads_tutorial_wet_weather_message" text="Яка погода сьогодні... Волога шкодить проводці та електрообладнанню, тому знос електросистеми в таких умовах трохи вищий."/>
         <text name="ads_tutorial_low_fuel_title" text="Мало палива"/>
         <text name="ads_tutorial_low_fuel_message" text="Схоже, у вас закінчується паливо. На перший погляд це не проблема, але чим менше палива в баку, тим важче працювати паливному насосу. Його навантаження зростає, що точно не сприяє довговічності."/>
         <text name="ads_tutorial_idle_deposit_title" text="Тривалий холостий хід"/>

@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Einspritzdüsen"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Kraftstofffilter"/>
         <text name="ads_breakdowns_part_fuel_line" text="Kraftstoffleitung"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Ernteverarbeitungssystem"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Abtankschnecke"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Provisorisch repariert"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Defekt"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Die Baugruppe funktioniert derzeit normal, aber die Diagnose hat ein defektes Teil festgestellt. Aufgrund der kritisch geringen Sicherheitsreserve wird ein vorsorglicher Austausch empfohlen, um einen plötzlichen Ausfall zu vermeiden."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Starker Lufteintritt in der Kraftstoffleitung. Der Motor läuft sehr unruhig und die Gefahr von Motorabstellern ist hoch."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kritischer Defekt der Kraftstoffleitung mit starkem Lufteintritt. Der Motor kann nicht mehr korrekt mit Kraftstoff versorgt werden."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Luftleck in der Kraftstoffleitung"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Leichter Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz sinkt leicht, was zu geringem Ertragsverlust führt."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Mäßiger Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz sinkt merklich, was zu messbarem Ertragsverlust führt."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Starker Verschleiß des Ernte- und Verarbeitungssystems. Die Verarbeitungseffizienz ist deutlich reduziert, was zu hohem Ertragsverlust führt."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritischer Verschleiß hat zum Ausfall des Ernte- und Verarbeitungssystems geführt. Eine Ernte ist erst nach der Reparatur des Systems wieder möglich."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Ernteverarbeitungssystem außer Betrieb"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Gedehnter Antriebsriemen. Gelegentliches Rutschen führt zu einer leichten Verringerung der Entladegeschwindigkeit."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Verschlissener Antriebsriemen und Riemenscheiben. Deutliches Rutschen unter Last verringert die Entladegeschwindigkeit merklich."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Beschädigtes Getriebe oder stark verschlissener Riemen. Die Schnecke dreht sich nur schwer und arbeitet mit sehr niedriger Geschwindigkeit."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Antriebsriemen gerissen oder Getriebe festgefressen. Die Abtankschnecke ist komplett blockiert."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Abtankschnecke blockiert"/>
         <text name="ads_breakdowns_dead_battery_message" text="Batterieladung erschöpft"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Unzureichende Bordspannung"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Motor abgewürgt"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Kühlsystem"/>
         <text name="ads_spec_system_electrical" text="Elektrik"/>
         <text name="ads_spec_system_chassis" text="Fahrwerk"/>
-        <text name="ads_spec_system_workprocess" text="Arbeitsorgane"/>
         <text name="ads_spec_system_fuel" text="Kraftstoffsystem"/>
         <text name="ads_spec_state_ready" text="Bereit"/>
         <text name="ads_spec_state_inspection" text="Inspektion"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Aktuelle Leistung"/>
         <text name="ads_report_system_condition_brakes" text="Bremseffizienz"/>
         <text name="ads_report_system_condition_transmission" text="Getriebe"/>
-        <text name="ads_report_system_condition_harvest" text="Ernteeffizienz"/>
         <text name="ads_report_system_condition_cooling" text="Kühlleistung"/>
         <text name="ads_report_system_condition_consumption" text="Kraftstoffverbrauch"/>
         <text name="ads_report_system_condition_hydraulic" text="Hydraulikeffizienz"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Heißes Wetter"/>
         <text name="ads_tutorial_hot_weather_message" text="Ganz schön heiß heute. Bei solchem Wetter sollten Sie besonders auf einen sauberen Kühler achten und den Motor möglichst nicht überlasten, sonst ist Überhitzung nur eine Frage der Zeit.&#10;&#10;Denken Sie daran: Den Kühlerzustand können Sie jederzeit mit einer Sichtprüfung kontrollieren, indem Sie die Taste R gedrückt halten, während Sie das Fahrzeug ansehen. Reinigen lässt er sich außerdem mit dem Druckluftgebläse."/>
         <text name="ads_tutorial_wet_weather_title" text="Nasses Wetter"/>
-        <text name="ads_tutorial_wet_weather_message" text="Was für ein Wetter. Feuchtigkeit setzt Verkabelung und elektrischen Komponenten zu, deshalb steigt der Verschleiß des elektrischen Systems unter solchen Bedingungen leicht an.&#10;&#10;Außerdem ist es dringend nicht zu empfehlen, bei diesem Wetter zu dreschen. Ihrem Mähdrescher schadet das nur."/>
+        <text name="ads_tutorial_wet_weather_message" text="Was für ein Wetter. Feuchtigkeit setzt Verkabelung und elektrischen Komponenten zu, deshalb steigt der Verschleiß des elektrischen Systems unter solchen Bedingungen leicht an."/>
         <text name="ads_tutorial_low_fuel_title" text="Wenig Kraftstoff"/>
         <text name="ads_tutorial_low_fuel_message" text="Es sieht so aus, als würde Ihnen bald der Kraftstoff ausgehen. Auf den ersten Blick wirkt das vielleicht nicht besonders schlimm, aber je weniger Kraftstoff im Tank bleibt, desto stärker wird die Kraftstoffpumpe belastet. Und das hilft ihrer Lebensdauer ganz sicher nicht."/>
         <text name="ads_tutorial_idle_deposit_title" text="Zu langer Leerlauf"/>

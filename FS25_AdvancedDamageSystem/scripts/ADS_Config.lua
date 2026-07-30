@@ -60,7 +60,6 @@ ADS_Config = {
             cooling=0.12, 
             electrical=0.10, 
             chassis=0.10, 
-            workProcess=0.10,
             fuel=0.08
         },
 
@@ -75,7 +74,6 @@ ADS_Config = {
             cooling=10.0, 
             electrical=10.0, 
             chassis=10.0, 
-            workProcess=10.0, 
             fuel=10.0
         },
 
@@ -186,12 +184,6 @@ ADS_Config = {
             BRAKE_MASS_TRUCK_RATIO_FULL_EFFECT = 3.0,
             BRAKE_MASS_SPEED_THRESHOLD = 2.0,
             BRAKE_PEDAL_THRESHOLD = 0.15,
-        },
-
-        WORKPROCESS_FACTOR_DATA = {
-            SERVICE_EXPIRED_MULTIPLIER = 2.0,
-            WORKPROCESSS_IDLING_MULTIPLIER = 0.5,
-            WET_CROP_FACTOR_MULTIPLIER = 1.0
         },
 
         FUEL_FACTOR_DATA = {

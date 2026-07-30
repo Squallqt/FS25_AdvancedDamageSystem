@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Топливные форсунки"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Топливный фильтр"/>
         <text name="ads_breakdowns_part_fuel_line" text="Топливная магистраль"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Система обработки урожая"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Выгрузной шнек"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Временно восстановлено"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Дефектная деталь"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Узел работает нормально, но диагностика выявила дефектную деталь. Из-за критически низкого запаса прочности рекомендуется профилактическая замена, чтобы избежать внезапной поломки."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Сильный подсос воздуха в топливной магистрали. Двигатель работает очень неровно, риск остановки высок."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Критический дефект топливной магистрали с сильным подсосом воздуха. Двигатель больше не может нормально получать топливо."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Подсос воздуха в топливной магистрали"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Небольшой износ системы уборки и обработки. Эффективность обработки слегка снижена, что вызывает малые потери урожая."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Умеренный износ системы уборки и обработки. Эффективность обработки заметно снижена, что приводит к ощутимым потерям урожая."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Сильный износ системы уборки и обработки. Эффективность обработки сильно снижена, что приводит к высоким потерям урожая."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Критический износ привёл к отказу системы уборки и обработки. Уборка невозможна до ремонта системы."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Система обработки урожая неисправна"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Растянутый приводной ремень. Периодическое проскальзывание приводит к небольшому снижению скорости выгрузки."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Износ приводного ремня и шкивов. Значительное проскальзывание под нагрузкой заметно снижает скорость выгрузки."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Поврежден редуктор или сильно изношен ремень. Шнек с трудом вращается, работая на очень низкой скорости."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Порвался приводной ремень или заклинило редуктор. Выгрузной шнек полностью заблокирован."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Выгрузной шнек заклинило"/>
         <text name="ads_breakdowns_dead_battery_message" text="Аккумулятор разряжен"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Недостаточное напряжение в сети"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Двигатель заглох"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Система охлаждения"/>
         <text name="ads_spec_system_electrical" text="Электросистема"/>
         <text name="ads_spec_system_chassis" text="Ходовая часть"/>
-        <text name="ads_spec_system_workprocess" text="Рабочие органы"/>
         <text name="ads_spec_system_fuel" text="Топливная система"/>
         <text name="ads_spec_state_ready" text="Готов"/>
         <text name="ads_spec_state_inspection" text="Осмотр"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Текущая мощность"/>
         <text name="ads_report_system_condition_brakes" text="Эффективность тормозов"/>
         <text name="ads_report_system_condition_transmission" text="Трансмиссия"/>
-        <text name="ads_report_system_condition_harvest" text="Эффективность уборки"/>
         <text name="ads_report_system_condition_cooling" text="Эффективность охлаждения"/>
         <text name="ads_report_system_condition_consumption" text="Расход топлива"/>
         <text name="ads_report_system_condition_hydraulic" text="Эффективность гидросистемы"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Жаркая погода"/>
         <text name="ads_tutorial_hot_weather_message" text="Ох, ну и жара сегодня. В такую погоду особенно тщательно нужно следить за чистотой радиатора и стараться не перегружать двигатель — иначе перегрев не заставит себя ждать.&#10;&#10;Помните: вы всегда можете проверить состояние радиатора с помощью визуального осмотра, удерживая клавишу R, глядя на технику, а также продуть его с помощью воздуходувки."/>
         <text name="ads_tutorial_wet_weather_title" text="Ну и погодка!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Ну и погодка! Влага плохо влияет на проводку и электрооборудование, поэтому износ электрической системы в такую погоду немного повышен.&#10;&#10;Кроме того, строго не рекомендуется убирать урожай в такую погоду — так вы только навредите своему комбайну."/>
+        <text name="ads_tutorial_wet_weather_message" text="Ну и погодка! Влага плохо влияет на проводку и электрооборудование, поэтому износ электрической системы в такую погоду немного повышен."/>
         <text name="ads_tutorial_low_fuel_title" text="Мало топлива"/>
         <text name="ads_tutorial_low_fuel_message" text="Похоже, у вас скоро закончится топливо. На первый взгляд это не самая большая проблема, но чем меньше топлива остаётся в баке, тем тяжелее приходится топливному насосу. Нагрузка на него растёт, а это точно не идёт на пользу его ресурсу."/>
         <text name="ads_tutorial_idle_deposit_title" text="Долгий холостой ход"/>

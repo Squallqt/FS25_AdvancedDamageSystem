@@ -112,7 +112,6 @@ function ADS_Tutorial:update(dt)
             local electricalSystemEnabled = isSystemEnabled("electrical")
             local chassisSystemEnabled = isSystemEnabled("chassis")
             local fuelSystemEnabled = isSystemEnabled("fuel")
-            local workprocessSystemEnabled = isSystemEnabled("workprocess")
             local vehicleMass = vehicle.getTotalMass ~= nil and (vehicle:getTotalMass(true) or 0) or 0
             local heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
             local heavyLiftThreshold = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
@@ -233,7 +232,7 @@ function ADS_Tutorial:update(dt)
 
             --- wet weather
             elseif not messagedData.WET_WEATHER
-                and (electricalSystemEnabled or workprocessSystemEnabled)
+                and electricalSystemEnabled
                 and (
                     localWeatherType == WeatherType.RAIN
                     or localWeatherType == WeatherType.SNOW

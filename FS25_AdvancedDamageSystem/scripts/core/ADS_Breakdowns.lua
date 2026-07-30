@@ -140,9 +140,7 @@ ADS_Breakdowns.PARTS = {
     FUEL_PUMP = "ads_breakdowns_part_fuel_pump",
     FUEL_INJECTORS = "ads_breakdowns_part_fuel_injectors",
     FUEL_FILTER = "ads_breakdowns_part_fuel_filter",
-    FUEL_LINE = "ads_breakdowns_part_fuel_line",
-    HARVEST_PROCESSING_SYSTEM = "ads_breakdowns_part_harvest_processing_system",
-    UNLOADING_AUGER = "ads_breakdowns_part_unloading_auger"
+    FUEL_LINE = "ads_breakdowns_part_fuel_line"
 }
 
 local parts = ADS_Breakdowns.PARTS
@@ -175,8 +173,6 @@ local breakdownPriceMultipliers = {
     FUEL_INJECTOR_MALFUNCTION = 0.80,
     FUEL_FILTER_CLOGGING = 0.35,
     FUEL_LINE_AIR_LEAK = 0.45,
-    HARVEST_PROCESSING_SYSTEM_WEAR = 0.85,
-    UNLOADING_AUGER_MALFUNCTION = 0.40,
 }
 
 local breakdownProgressMultipliers = {
@@ -207,8 +203,6 @@ local breakdownProgressMultipliers = {
     FUEL_INJECTOR_MALFUNCTION = 1.1,
     FUEL_FILTER_CLOGGING = 1.2,
     FUEL_LINE_AIR_LEAK = 0.8,
-    HARVEST_PROCESSING_SYSTEM_WEAR = 1.35,
-    UNLOADING_AUGER_MALFUNCTION = 1.2
 }
 
 local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
@@ -2709,170 +2703,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 }
             }
         }
-    },
-
-    -- workprocess system
-    HARVEST_PROCESSING_SYSTEM_WEAR  = {
-        isSelectable = true,
-        system = systems.WORKPROCESS,
-        part = parts.HARVEST_PROCESSING_SYSTEM,
-        isApplicable = function(vehicle)
-            local vtype = vehicle.type.name
-            if  vtype == 'combineDrivable' or
-                vtype == 'combineCutter' or
-                vtype == 'combineCutterFruitPreparer' or
-                vtype == 'cottonHarvester' or
-                vtype == 'riceHarvester' or
-                vtype == 'vineHarvester' then
-                    return true
-            end
-            return false
-        end,
-        probability = function(vehicle)
-            local weight = getBreakdownProbabilityWeightPercent(vehicle, systems.WORKPROCESS, {"lhf"}, {"wcf", "sf"})
-            if vehicle.getIsTurnedOn ~= nil and vehicle:getIsTurnedOn() then
-                return weight * 1.5
-            end
-            return weight
-        end,
-        isCanProgress = function(vehicle)
-            if vehicle.getIsTurnedOn ~= nil and vehicle:getIsTurnedOn() then
-                return true
-            else
-                return false
-            end
-        end,
-        stages = {
-            {
-                severity = "ads_breakdowns_severity_minor",
-                description = "ads_breakdowns_harvest_processing_system_wear_stage1_description",
-                detectionChance = 1.0,
-                progressMultiplier = 2.0 * breakdownProgressMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                repairPrice = 1.0 * breakdownPriceMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                effects = {
-                    { id = "YIELD_REDUCTION_MODIFIER", value = -0.05, aggregation = "sum" },
-                }
-            },
-            {
-                severity = "ads_breakdowns_severity_moderate",
-                description = "ads_breakdowns_harvest_processing_system_wear_stage2_description",
-                detectionChance = 1.0,
-                progressMultiplier = 1.0 * breakdownProgressMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                repairPrice = 2.0 * breakdownPriceMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                effects = {
-                    { id = "YIELD_REDUCTION_MODIFIER", value = -0.1, aggregation = "sum" },
-                },
-                indicators = {
-                    {  id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
-                }
-            },
-            { 
-                severity = "ads_breakdowns_severity_major",
-                description = "ads_breakdowns_harvest_processing_system_wear_stage3_description",
-                detectionChance = 1.0,
-                progressMultiplier = 0.5 * breakdownProgressMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                repairPrice = 4.0 * breakdownPriceMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                effects = { 
-                    { id = "YIELD_REDUCTION_MODIFIER", value = -0.2, aggregation = "sum" },
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
-                }
-            },
-            { 
-                severity = "ads_breakdowns_severity_critical",
-                description = "ads_breakdowns_harvest_processing_system_wear_stage4_description",
-                detectionChance = 1.0,
-                progressMultiplier = 0,
-                repairPrice = 8.0 * breakdownPriceMultipliers.HARVEST_PROCESSING_SYSTEM_WEAR,
-                effects = { 
-                    { id = "HARVEST_PROCESSING_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = 'ads_breakdowns_harvest_processing_system_wear_stage4_message', disableAi = true} },
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
-                }
-            }
-        }
-    },
-
-    UNLOADING_AUGER_MALFUNCTION = {
-        isSelectable = true,
-        system = systems.WORKPROCESS,
-        part = parts.UNLOADING_AUGER,
-        isApplicable = function(vehicle)
-            local vtype = vehicle.type.name
-            return (vtype == 'combineDrivable' or vtype == 'combineCutter') and vehicle.spec_pipe ~= nil
-        end,
-        probability = function(vehicle)
-            local weight = getBreakdownProbabilityWeightPercent(vehicle, systems.WORKPROCESS, {"lhf"}, {"wcf", "sf"})
-            if vehicle.getIsTurnedOn ~= nil and vehicle:getIsTurnedOn() then
-                if vehicle.spec_dischargeable.currentDischargeState ~= Dischargeable.DISCHARGE_STATE_OFF then
-                    return weight * 2.0
-                end
-                return weight * 1.25
-            end
-            return weight
-        end,
-        isCanProgress = function(vehicle)
-            if vehicle.getIsTurnedOn ~= nil and vehicle:getIsTurnedOn() then
-                return true
-            else
-                return false
-            end
-        end,
-        stages = {
-            {
-                severity = "ads_breakdowns_severity_minor",
-                description = "ads_breakdowns_unloading_auger_malfunction_stage1_description",
-                detectionChance = 1.0,
-                progressMultiplier = 2.0 * breakdownProgressMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                repairPrice = 1.0 * breakdownPriceMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                effects = {
-                    { id = "UNLOADING_SPEED_MODIFIER", value = -0.50, aggregation = "min" }
-                }
-            },
-            {
-                severity = "ads_breakdowns_severity_moderate",
-                description = "ads_breakdowns_unloading_auger_malfunction_stage2_description",
-                detectionChance = 1.0,
-                progressMultiplier = 1.0 * breakdownProgressMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                repairPrice = 2.0 * breakdownPriceMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                effects = {
-                    { id = "UNLOADING_SPEED_MODIFIER", value = -0.75, aggregation = "min" }
-                }
-            },
-            { 
-                severity = "ads_breakdowns_severity_major",
-                description = "ads_breakdowns_unloading_auger_malfunction_stage3_description",
-                detectionChance = 1.0,
-                progressMultiplier = 0.5 * breakdownProgressMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                repairPrice = 4.0 * breakdownPriceMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                effects = { 
-                    { id = "UNLOADING_SPEED_MODIFIER", value = -0.90, aggregation = "min" }
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
-                }
-            },
-            { 
-                severity = "ads_breakdowns_severity_critical",
-                description = "ads_breakdowns_unloading_auger_malfunction_stage4_description",
-                detectionChance = 1.0,
-                progressMultiplier = 0,
-                repairPrice = 8.0 * breakdownPriceMultipliers.UNLOADING_AUGER_MALFUNCTION,
-                effects = { 
-                     { id = "UNLOADING_AUGER_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = "ads_breakdowns_unloading_auger_malfunction_stage4_message"} }
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false },
-                }
-            }
-        }
-    },
-
-    -- TO-DO: WORKPROCESS_POWER_DEMAND_MODIFIER
-    -- TO-DO: ROLLING_RESISTANCE_MODIFIER
-    
+    }
 }
 
 local function wrapBreakdownApplicabilityByEnabledSystem()
@@ -3065,19 +2896,6 @@ function ADS_Breakdowns.setLightsTypesMask(self, superFunc, lightsTypesMask, for
         end  
         return
     end
-end
-
--- ==========================================================
--- UNLOADING_AUGER_FAILURE
-function ADS_Breakdowns.getIsDischargeNodeActiveOverwrite(vehicle, superFunc, dischargeNode, ...)
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
-    if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
-        local effect = spec_ads.activeEffects.UNLOADING_AUGER_FAILURE
-        if effect ~= nil then
-            return false
-        end
-    end
-    return superFunc(vehicle, dischargeNode, ...)
 end
 
 -- ==========================================================
@@ -4298,91 +4116,6 @@ function ADS_Breakdowns.getSpeedLimitOverwrite(vehicle, superFunc, onlyIfWorking
 end
 
 -- =========================================================
--- HARVEST_PROCESSING_FAILURE
-ADS_Breakdowns.EffectApplicators.HARVEST_PROCESSING_FAILURE = {
-    getEffectName = function()
-        return "HARVEST_PROCESSING_FAILURE"
-    end,
-    apply = function(vehicle, effectData, handler)
-        local effectName = handler.getEffectName()
-        local activeFunc = function(v)
-            local spec = v.spec_AdvancedDamageSystem
-            local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
-            if v.isServer and effect ~= nil and (tonumber(effect.value) or 0) > 0
-                    and v.getIsTurnedOn ~= nil and v:getIsTurnedOn() and v.setIsTurnedOn ~= nil then
-                v:setIsTurnedOn(false)
-            end
-        end
-
-        activeFunc(vehicle)
-        addFuncToActive(vehicle, effectName, activeFunc)
-    end,
-    remove = function(vehicle, handler)
-        removeFuncFromActive(vehicle, handler.getEffectName())
-    end
-}
-
--- =========================================================
--- YIELD_REDUCTION_MODIFIER
-ADS_Breakdowns.EffectApplicators.YIELD_REDUCTION_MODIFIER = {
-}
-
-function ADS_Breakdowns.addCutterAreaOverwrite(vehicle, superFunc, area, realArea, ...)
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
-    local workprocessDbg = spec_ads ~= nil and spec_ads.debugData ~= nil and spec_ads.debugData.workprocess or nil
-    if workprocessDbg ~= nil then
-        workprocessDbg.currentHarvestRatio = 1.0
-        workprocessDbg.currentHarvestPercent = 100.0
-    end
-
-    if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
-        local effect = spec_ads.activeEffects.YIELD_REDUCTION_MODIFIER
-        if effect ~= nil and effect.value ~= nil then
-            local spec_combine = vehicle.spec_combine
-            if spec_combine ~= nil then
-                local originalScale = spec_combine.threshingScale
-                local currentHarvestRatio = math.max(1 + effect.value, 0)
-                if workprocessDbg ~= nil then
-                    workprocessDbg.currentHarvestRatio = currentHarvestRatio
-                    workprocessDbg.currentHarvestPercent = currentHarvestRatio * 100
-                end
-                spec_combine.threshingScale = math.max(originalScale * currentHarvestRatio, 0)
-                local result = superFunc(vehicle, area, realArea, ...)
-                spec_combine.threshingScale = originalScale
-                return result
-            end
-        end
-    end
-    return superFunc(vehicle, area, realArea, ...)
-end
-
--- =========================================================
--- UNLOADING_SPEED_MODIFIER
-ADS_Breakdowns.EffectApplicators.UNLOADING_SPEED_MODIFIER = {
-}
-
-function ADS_Breakdowns.getDischargeNodeEmptyFactorOverwrite(vehicle, superFunc, dischargeNode, ...)
-    local originalFactor = superFunc(vehicle, dischargeNode, ...)
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
-    local workprocessDbg = spec_ads ~= nil and spec_ads.debugData ~= nil and spec_ads.debugData.workprocess or nil
-    local currentFactor = originalFactor
-
-    if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
-        local effect = spec_ads.activeEffects.UNLOADING_SPEED_MODIFIER
-        if effect ~= nil and effect.value ~= nil then
-            currentFactor = originalFactor * (1 + effect.value)
-        end
-    end
-
-    if workprocessDbg ~= nil then
-        workprocessDbg.lastUnloadOriginalFactor = originalFactor
-        workprocessDbg.lastUnloadFactor = currentFactor
-        workprocessDbg.lastUnloadPercent = originalFactor > 0 and (currentFactor / originalFactor) * 100 or 100
-    end
-
-    return currentFactor
-end
-
 -- ==========================================================
 -- CONDITION_WEAR_MODIFIER
 ADS_Breakdowns.EffectApplicators.CONDITION_WEAR_MODIFIER = {

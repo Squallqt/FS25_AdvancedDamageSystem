@@ -20,7 +20,6 @@ local DEBUG_SECTIONS = {
     "cooling",
     "electrical",
     "chassis",
-    "workprocess",
     "fuel",
     "battery",
     "radiator",

@@ -1771,7 +1771,6 @@ function ADS_Hud:drawActiveVehicleHUD()
     local electricalDbg = debugData.electrical or {}
     local chassisDbg = debugData.chassis or {}
     local fuelDbg = debugData.fuel or {}
-    local workprocessDbg = debugData.workprocess or {}
     local serviceDbg = debugData.service or {}
     local batteryDbg = debugData.battery or {}
     local drivetrainDbg = debugData.drivetrain or {}
@@ -1933,11 +1932,6 @@ function ADS_Hud:drawActiveVehicleHUD()
         fuelDbg.idleDepositFactor or 0,
         fuelDbg.highPressureFactor or 0
     ) * bcw
-    local workprocessMaxFactor = math.max(
-        workprocessDbg.expiredServiceFactor or 0,
-        workprocessDbg.wetCropFactor or 0
-    ) * bcw
-
     local factorStats = {}
     for rawSystemKey, rawStats in pairs(factorStatsSource) do
         if type(rawStats) == "table" then
@@ -2062,10 +2056,6 @@ function ADS_Hud:drawActiveVehicleHUD()
         { shortName = "hpf", statKey = "hpf", value = fuelDbg.highPressureFactor or 0, extraInfo = string.format("r: %.3f", fuelDbg.currentFuelUsageRatio or 0) }
     })
 
-    local workprocessLines = buildSystemLines("workprocess", workprocessDbg, workprocessMaxFactor, {
-        { shortName = "sf", statKey = "sf", value = workprocessDbg.expiredServiceFactor or 0 },
-        { shortName = "wcf", statKey = "wcf", value = workprocessDbg.wetCropFactor or 0 }
-    })
 
     local systemSections = {}
     if isSystemEnabled("engine") then
@@ -2088,9 +2078,6 @@ function ADS_Hud:drawActiveVehicleHUD()
     end
     if isSystemEnabled("fuel") then
         table.insert(systemSections, {title = "Fuel", lines = fuelLines})
-    end
-    if isSystemEnabled("workprocess") then
-        table.insert(systemSections, {title = "Work Process", lines = workprocessLines})
     end
 
     local engineTempLines = {}
@@ -2611,7 +2598,6 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
             electrical = "Electrical",
             chassis = "Chassis",
             fuel = "Fuel",
-            workprocess = "Work Process",
             materialFlow = "Material Flow"
         }
         return names[systemKey] or tostring(systemKey)
@@ -2727,9 +2713,7 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
         if type(rawStats) == "table" then
             local normalizedKey = tostring(rawSystemKey)
             local loweredKey = string.lower(normalizedKey)
-            if loweredKey == "workprocess" then
-                normalizedKey = "workprocess"
-            elseif loweredKey == "materialflow" then
+            if loweredKey == "materialflow" then
                 normalizedKey = "materialFlow"
             end
 
@@ -2748,7 +2732,7 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
 
     local orderedSystems = {
         "engine", "transmission", "hydraulics", "cooling",
-        "electrical", "chassis", "fuel", "workprocess", "materialFlow"
+        "electrical", "chassis", "fuel", "materialFlow"
     }
 
     local usedSystems = {}

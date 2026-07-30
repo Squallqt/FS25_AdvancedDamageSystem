@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Injetores de combustível"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Filtro de combustível"/>
         <text name="ads_breakdowns_part_fuel_line" text="Linha de combustível"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Sistema de processamento de colheita"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Sem-fim de descarga"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Remendado"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Defeituoso"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="A unidade funciona normalmente, mas o diagnóstico revelou uma peça defeituosa. Devido a uma margem de segurança crítica, a substituição preventiva é recomendada para evitar uma avaria repentina."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Entrada de ar severa na linha de combustível. O motor funciona de forma muito irregular e o risco de engasgo é alto."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Falha crítica da linha de combustível com grande entrada de ar. O motor não pode mais ser alimentado corretamente."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Entrada de ar na linha de combustível"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Desgaste leve do sistema de colheita e processamento. A eficiência de processamento diminui ligeiramente, resultando em uma pequena perda de rendimento."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Desgaste moderado do sistema de colheita e processamento. A eficiência de processamento diminui notavelmente, resultando em uma perda de rendimento mensurável."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Desgaste severo do sistema de colheita e processamento. A eficiência de processamento é bastante reduzida, resultando em uma perda significativa de rendimento."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="O desgaste crítico provocou a avaria do sistema de colheita e processamento. Não é possível colher até que o sistema seja reparado."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Sistema de processamento da colheita fora de serviço"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Correia de transmissão frouxa. Um deslizamento ocasional resulta em uma ligeira diminuição da velocidade de descarga."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Correia de transmissão e polias desgastadas. Um deslizamento significativo sob carga reduz sensivelmente a velocidade de descarga."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Caixa de velocidades danificada ou correia muito desgastada. O sem-fim tem dificuldade em rodar e funciona a uma velocidade muito baixa."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Correia de transmissão partida ou caixa de velocidades bloqueada. O sem-fim de descarga está completamente bloqueado."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Sem-fim de descarga bloqueado"/>
         <text name="ads_breakdowns_dead_battery_message" text="Bateria descarregada"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Tensão do sistema insuficiente"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Motor morreu"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Sistema de arrefecimento"/>
         <text name="ads_spec_system_electrical" text="Sistema elétrico"/>
         <text name="ads_spec_system_chassis" text="Chassis"/>
-        <text name="ads_spec_system_workprocess" text="Órgãos de trabalho"/>
         <text name="ads_spec_system_fuel" text="Sistema de combustível"/>
         <text name="ads_spec_state_ready" text="Pronto"/>
         <text name="ads_spec_state_inspection" text="Inspeção"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Potência atual"/>
         <text name="ads_report_system_condition_brakes" text="Eficiência dos travões"/>
         <text name="ads_report_system_condition_transmission" text="Transmissão"/>
-        <text name="ads_report_system_condition_harvest" text="Eficiência da colheita"/>
         <text name="ads_report_system_condition_cooling" text="Eficiência de arrefecimento"/>
         <text name="ads_report_system_condition_consumption" text="Consumo de combustível"/>
         <text name="ads_report_system_condition_hydraulic" text="Eficiência hidráulica"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Tempo quente"/>
         <text name="ads_tutorial_hot_weather_message" text="Está realmente muito calor hoje. Com um clima assim, precisa de vigiar a limpeza do radiador com ainda mais atenção e evitar sobrecarregar o motor, caso contrário o sobreaquecimento será apenas uma questão de tempo.&#10;&#10;Lembre-se: pode sempre verificar o estado do radiador com uma inspeção visual, mantendo premida a tecla R enquanto olha para a máquina, e também pode limpá-lo com o soprador de ar comprimido."/>
         <text name="ads_tutorial_wet_weather_title" text="Que tempo!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Que tempo hoje. A humidade faz mal à cablagem e ao equipamento elétrico, por isso o desgaste do sistema elétrico é um pouco maior nestas condições.&#10;&#10;Além disso, é fortemente desaconselhado colher com um tempo assim, pois só vai prejudicar a sua ceifeira-debulhadora."/>
+        <text name="ads_tutorial_wet_weather_message" text="Que tempo hoje. A humidade faz mal à cablagem e ao equipamento elétrico, por isso o desgaste do sistema elétrico é um pouco maior nestas condições."/>
         <text name="ads_tutorial_low_fuel_title" text="Pouco combustível"/>
         <text name="ads_tutorial_low_fuel_message" text="Parece que está prestes a ficar sem combustível. À primeira vista isto pode não parecer um grande problema, mas quanto menos combustível resta no depósito, mais a bomba de combustível tem de trabalhar. A carga sobre ela aumenta, e isso certamente não ajuda a sua vida útil."/>
         <text name="ads_tutorial_idle_deposit_title" text="Ralenti prolongado"/>

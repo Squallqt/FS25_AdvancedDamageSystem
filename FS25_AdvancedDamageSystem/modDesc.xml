@@ -22,7 +22,7 @@ Changelog 0.9.3.0 [WIP]:
 - Fixed locked hook-lift containers being classified as towed and continuously lifted loads; they now count as carried vehicle mass
 - Removed unnecessary debug log spam from routine UI and config updates
 - Extended lubrication to all non-road ADS machines; lubrication points gradually dry out during operation and prolonged inactivity, while insufficient lubrication increases chassis wear
-- Reworked harvester wear: mechanical yield losses are now tied only to the harvest-processing failure, while a critical failure stops harvesting
+- Removed the work process system entirely, with the harvest processing wear and the unloading auger malfunction. Its wear ignored how much crop was actually being handled, its condition never counted toward overall vehicle condition, and its stress built ten times slower than every other system. A harvesting wear model driven by real throughput is planned for a later version
 - Reworked cold-engine wear to start only at the dashboard's high-load threshold, with RPM as a secondary factor; brief throttle inputs no longer trigger repeated warnings
 - Fixed the debug HUD showing missing or incorrect values for the controlled vehicle on dedicated servers]]></en>
 
@@ -40,7 +40,7 @@ Changelog 0.9.3.0 [WIP]:
 - Verriegelte Hakenliftcontainer werden nicht mehr als gezogene und dauerhaft angehobene Lasten eingestuft, sondern als getragene Fahrzeugmasse
 - Unnötige Debug-Log-Ausgaben aus routinemäßigen UI- und Konfigurationsaktualisierungen entfernt
 - Betriebsstundenabhängige Schmierung auf alle ADS-Arbeitsmaschinen außerhalb der Straßenkategorien erweitert; nach längerer Stilllegung ist vor der Wiederinbetriebnahme eine Schmierung erforderlich, und unzureichende Schmierung erhöht den Fahrwerksverschleiß
-- Verschleiß von Erntemaschinen überarbeitet: Mechanische Ernteverluste entstehen nur noch durch den Defekt des Ernteverarbeitungssystems; ein kritischer Ausfall stoppt die Ernte
+- Arbeitssystem vollständig entfernt, zusammen mit dem Verschleiß der Ernteverarbeitung und der Störung der Entladeschnecke. Sein Verschleiß ignorierte die tatsächlich verarbeitete Erntemenge, sein Zustand floss nie in den Gesamtzustand des Fahrzeugs ein, und sein Stress stieg zehnmal langsamer als bei allen anderen Systemen. Ein Verschleißmodell für die Ernte auf Basis des echten Durchsatzes ist für eine spätere Version geplant
 - Verschleiß bei kaltem Motor überarbeitet: Er beginnt erst an der Hochlastschwelle der Armaturenbrettanzeige, die Drehzahl wirkt nur zusätzlich; kurze Gasstöße lösen keine wiederholten Warnungen mehr aus
 - Fehlende oder fehlerhafte Werte im Debug-HUD für das gesteuerte Fahrzeug auf dedizierten Servern behoben]]></de>
         
@@ -58,7 +58,7 @@ Changelog 0.9.3.0 [WIP] :
 - Correction des caissons hook-lift verrouillés classés comme charges tractées et continuellement levées ; ils comptent désormais comme masse portée par le véhicule
 - Suppression de logs de debug inutiles lors des mises à jour d'interface et de configuration
 - Extension du graissage à toutes les machines ADS hors catégories routières ; les points de graissage s'assèchent progressivement pendant le travail et les immobilisations prolongées, tandis qu'un graissage insuffisant augmente l'usure du châssis
-- Refonte de l'usure des machines de récolte : les pertes mécaniques de rendement proviennent uniquement de la panne du système de traitement, tandis qu'une défaillance critique arrête la récolte
+- Retrait complet du système de travail, avec l'usure du traitement de récolte et le dysfonctionnement de la vis de déchargement. Son usure ignorait la quantité réellement traitée, son état n'a jamais compté dans l'état général du véhicule, et son stress montait dix fois plus lentement que celui de tous les autres systèmes. Un modèle d'usure de récolte piloté par le débit réel est prévu pour une version ultérieure
 - Refonte de l'usure moteur à froid : elle commence uniquement au seuil de forte charge du HUD, le régime n'étant qu'un facteur aggravant ; les brèves impulsions d'accélérateur ne déclenchent plus d'avertissements répétés
 - Correction de valeurs manquantes ou erronées dans le panneau de debug du véhicule contrôlé sur serveur dédié
 

@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Befecskendezők"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Üzemanyagszűrő"/>
         <text name="ads_breakdowns_part_fuel_line" text="Üzemanyagvezeték"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Betakarító- és feldolgozórendszer"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Ürítőcsiga"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Ideiglenesen javítva"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Hibás"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Az egység normálisan működik, de a diagnosztika hibás alkatrészt talált. A kritikusan alacsony biztonsági tartalék miatt megelőző csere ajánlott a hirtelen meghibásodás elkerülésére."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Súlyos levegőszivárgás az üzemanyagvezetékben. Az üzemanyag-ellátás folyamatossága megszakadozik, a motorakadozás erős, az indítás nagyon megbízhatatlan, és motorleállás valószínű."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kritikus levegőszivárgás az üzemanyagvezetékben. Az üzemanyag-ellátás nem tartható fenn, a motor indítása vagy további működtetése nem lehetséges."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Levegő az üzemanyagvezetékben"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="A betakarító- és feldolgozórendszer kopása. A terményfeldolgozás hatékonysága enyhén csökkent, ami kisebb hozamveszteséget okoz."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="A betakarító- és feldolgozórendszer közepes kopása. A terményfeldolgozás hatékonysága észrevehetően csökkent, ami mérhető hozamveszteséget okoz."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="A betakarító- és feldolgozórendszer súlyos kopása. A terményfeldolgozás hatékonysága jelentősen csökkent, ami nagy hozamveszteséget okoz."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="A kritikus kopás a betakarító- és feldolgozórendszer meghibásodását okozta. A betakarítás a rendszer javításáig nem lehetséges."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="A betakarító rendszer üzemképtelen"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Megnyúlt hajtószíj. Időnkénti csúszás miatt az ürítési sebesség enyhén csökken."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Kopott hajtószíj és szíjtárcsák. Terhelés alatti jelentős csúszás észrevehetően csökkenti az ürítési sebességet."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Sérült hajtómű vagy erősen kopott szíj. A csiga nehezen forog, nagyon alacsony sebességgel működik."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Elszakadt hajtószíj vagy megszorult hajtómű. Az ürítőcsiga teljesen beszorult."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Az ürítőcsiga beszorult"/>
         <text name="ads_breakdowns_dead_battery_message" text="Az akkumulátor lemerült"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Elégtelen rendszerfeszültség"/>
         <text name="ads_breakdowns_engine_stalled_message" text="A motor lefulladt"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Hűtőrendszer"/>
         <text name="ads_spec_system_electrical" text="Elektromos rendszer"/>
         <text name="ads_spec_system_chassis" text="Alváz"/>
-        <text name="ads_spec_system_workprocess" text="Munkarendszerek"/>
         <text name="ads_spec_system_fuel" text="Üzemanyagrendszer"/>
         <text name="ads_spec_state_ready" text="Kész"/>
         <text name="ads_spec_state_inspection" text="Átvizsgálás"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Aktuális teljesítmény"/>
         <text name="ads_report_system_condition_brakes" text="Fékhatás"/>
         <text name="ads_report_system_condition_transmission" text="Váltó"/>
-        <text name="ads_report_system_condition_harvest" text="Betakarítási hatékonyság"/>
         <text name="ads_report_system_condition_cooling" text="Hűtési hatékonyság"/>
         <text name="ads_report_system_condition_consumption" text="Üzemanyag-fogyasztás"/>
         <text name="ads_report_system_condition_hydraulic" text="Hidraulika hatékonysága"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Forró időjárás"/>
         <text name="ads_tutorial_hot_weather_message" text="Hát, ma igazán meleg van. Ilyen időben különösen figyelned kell a hűtő tisztaságára, és kerülnöd kell a motor túlterhelését — különben a túlmelegedés csak idő kérdése.&#10;&#10;Ne feledd: a hűtő állapotát bármikor ellenőrizheted vizuális átvizsgálással, ha a gépre nézve nyomva tartod az R billentyűt, és meg is tisztíthatod a Légfúvóval."/>
         <text name="ads_tutorial_wet_weather_title" text="Micsoda idő!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Micsoda idő van ma. A nedvesség rosszat tesz a kábelezésnek és az elektromos berendezéseknek, ezért ilyen körülmények között az elektromos rendszer kopása kissé magasabb.&#10;&#10;Ráadásul ilyen időben az aratás erősen ellenjavallt — csak kárt teszel a kombájnban."/>
+        <text name="ads_tutorial_wet_weather_message" text="Micsoda idő van ma. A nedvesség rosszat tesz a kábelezésnek és az elektromos berendezéseknek, ezért ilyen körülmények között az elektromos rendszer kopása kissé magasabb."/>
         <text name="ads_tutorial_low_fuel_title" text="Kevés üzemanyag"/>
         <text name="ads_tutorial_low_fuel_message" text="Úgy tűnik, hamarosan kifogysz az üzemanyagból. Elsőre ez talán nem tűnik nagy problémának, de minél kevesebb üzemanyag marad a tartályban, annál keményebben kell dolgoznia az üzemanyag-szivattyúnak. Nő a terhelése, ami biztosan nem tesz jót az élettartamának."/>
         <text name="ads_tutorial_idle_deposit_title" text="Hosszan tartó alapjárat"/>

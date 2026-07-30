@@ -32,7 +32,7 @@ If you do not want to read the full guide at the bottom of this page but still w
    As a general rule: if something would be harmful to the machine in real life, it is harmful in ADS too.
 
 ## Features
-- **Complete Replacement of the Vanilla Damage System:** Every vehicle in the game is now divided into multiple individual systems: engine, transmission, hydraulics, cooling system, fuel system, working systems, electrical system, and chassis. Each system tracks how the machine is actually being used. For example, chassis wear increases faster if you drive quickly over rough terrain. The harsher the operating conditions, the faster wear builds up and the more often breakdowns occur.
+- **Complete Replacement of the Vanilla Damage System:** Every vehicle in the game is now divided into multiple individual systems: engine, transmission, hydraulics, cooling system, fuel system, electrical system, and chassis. Each system tracks how the machine is actually being used. For example, chassis wear increases faster if you drive quickly over rough terrain. The harsher the operating conditions, the faster wear builds up and the more often breakdowns occur.
 - **Regular Maintenance Becomes Essential:** Scheduled service is now required to prevent accelerated wear and avoid costly failures.
 - **Dynamic Breakdowns:** Dozens of different failures tied to specific systems, each with its own gameplay effects and consequences.
 - **Fully Reworked Workshop Menu and Logic:** The workshop now supports inspection, repair, maintenance, and overhaul. Each procedure has configurable options and takes time to complete, so there is no one-click repair.
@@ -42,6 +42,10 @@ If you do not want to read the full guide at the bottom of this page but still w
 - **Pre-Operation Inspection:** Before heading to the field, vehicles need to be inspected and serviced at the start of each shift: greasing components, blowing out the radiator and air intakes, and carrying out other essential routine procedures.
 
   ... More information below in the guide
+
+## Removed Features
+
+Some mechanics have been deliberately removed from ADS. If you remember a feature and can no longer find it, [REMOVED_FEATURES.md](REMOVED_FEATURES.md) records what was removed, why, and whether existing saves are affected.
 
 ## Installation
 
@@ -88,7 +92,7 @@ This guide will help you understand all aspects of the mod.
 
 ## 1. Core Mechanics: Condition, Stress and Service
 
-Each vehicle can contain all or only some of the following systems: engine, transmission, hydraulics, cooling system, fuel system, working systems, electrical system, and chassis. Every system has two key parameters: `Condition` and `Stress`.
+Each vehicle can contain all or only some of the following systems: engine, transmission, hydraulics, cooling system, fuel system, electrical system, and chassis. Every system has two key parameters: `Condition` and `Stress`.
 
 ### ⚙️ Condition
 
@@ -219,12 +223,6 @@ Each system has its own set of wear factors that accelerate `Condition` loss and
 - **Idle Deposit Factor:** Triggers after `60` seconds of idling. The effect continues to grow up to `600` seconds of idling.
 
 - **High Pressure Factor:** Triggers when engine load exceeds `90%`. The effect becomes stronger as load gets closer to `100%`.
-
-### Work Process
-
-- **Wet Crop Factor:** Triggers when the machine is turned on, harvesting is in progress, and the weather is wet.
-
-- **Lubrication Factor:** Triggers when the machine requires lubrication and its lubrication points fall below the serviceable range. The effect becomes stronger as lubrication level drops.
 
 ## 3. Breakdowns
 
@@ -393,21 +391,6 @@ In ADS, your vehicles can suffer real breakdowns. Some failures are minor and on
 > * *Applicable to:* All non-electric vehicles.
 > * *Symptoms:* Unstable fuel supply, difficult starting, hesitation, and engine stalls caused by air entering the system.
 > * *Critical Effect:* **Critical air leak.** The engine cannot maintain fuel supply and will not run reliably.
->
-> ---
->
-> ### 🌾 Work Process Systems
->
-> #### Harvest Processing System Wear
-> * *Applicable to:* Combines, cotton harvesters, rice harvesters, vine harvesters, and related harvesting machines.
-> * *Symptoms:* Reduced crop processing efficiency and progressively increasing yield loss during harvesting.
-> * *Critical Effect:* **Critical processing wear.** Yield loss becomes extreme during operation.
->
-> #### Unloading Auger Malfunction
-> * *Applicable to:* Combines with unloading auger systems.
-> * *Symptoms:* Progressive unloading slowdown caused by belt, pulley, or gearbox wear in the auger drive.
-> * *Critical Effect:* **Unloading auger failure.** Grain unloading becomes unavailable until repaired.
-> 
 > </details>
 
 #### Chance and Severity of Breakdowns

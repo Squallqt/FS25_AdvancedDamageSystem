@@ -35,7 +35,6 @@ AdvancedDamageSystem = {
         COOLING = "ads_spec_system_cooling",
         ELECTRICAL = "ads_spec_system_electrical",
         CHASSIS = "ads_spec_system_chassis",
-        WORKPROCESS = "ads_spec_system_workprocess",
         FUEL = "ads_spec_system_fuel",
         [1] = "ads_spec_system_engine",
         [2] = "ads_spec_system_transmission",
@@ -43,8 +42,7 @@ AdvancedDamageSystem = {
         [4] = "ads_spec_system_cooling",
         [5] = "ads_spec_system_electrical",
         [6] = "ads_spec_system_chassis",
-        [7] = "ads_spec_system_workprocess",
-        [8] = "ads_spec_system_fuel"
+        [7] = "ads_spec_system_fuel"
     },
 
     BREAKDOWN_SOURCES = {
@@ -209,7 +207,6 @@ AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
     coldFuelFactor = "cff",
     idleDepositFactor = "idf",
     highPressureFactor = "hpf",
-    wetCropFactor = "wcf",
     lubricationFactor = "lubf",
     instantDamageFactor = "idfg"
 }
@@ -1086,10 +1083,7 @@ function AdvancedDamageSystem.registerOverwrittenFunctions(vehicleType)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "setLightsTypesMask", ADS_Breakdowns.setLightsTypesMask)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSpeedLimit", ADS_Breakdowns.getSpeedLimitOverwrite)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateVehiclePhysics", ADS_Breakdowns.updateVehiclePhysics)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDischargeNodeActive", ADS_Breakdowns.getIsDischargeNodeActiveOverwrite)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateConsumers", ADS_Breakdowns.updateConsumersOverwrite)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "addCutterArea", ADS_Breakdowns.addCutterAreaOverwrite)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getDischargeNodeEmptyFactor", ADS_Breakdowns.getDischargeNodeEmptyFactorOverwrite)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSellPrice", AdvancedDamageSystem.getSellPrice)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateMotorTemperature", AdvancedDamageSystem.updateMotorTemperature)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "setOperatingTime", AdvancedDamageSystem.setOperatingTime)
@@ -1140,7 +1134,6 @@ function AdvancedDamageSystem.registerFunctions(vehicleType)
     SpecializationUtil.registerFunction(vehicleType, "updateElectricalSystem", AdvancedDamageSystem.updateElectricalSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateChassisSystem", AdvancedDamageSystem.updateChassisSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateFuelSystem", AdvancedDamageSystem.updateFuelSystem)
-    SpecializationUtil.registerFunction(vehicleType, "updateWorkProcessSystem", AdvancedDamageSystem.updateWorkProcessSystem)
     SpecializationUtil.registerFunction(vehicleType, "applyInstantDamageToSystem", AdvancedDamageSystem.applyInstantDamageToSystem)
     
     SpecializationUtil.registerFunction(vehicleType, "isUnderService", AdvancedDamageSystem.isUnderService)
@@ -1768,7 +1761,6 @@ function AdvancedDamageSystem:onLoad(savegame)
         cooling = { name = AdvancedDamageSystem.SYSTEMS.COOLING, condition = 1.0, stress = 0.0, enabled = true },
         electrical = { name = AdvancedDamageSystem.SYSTEMS.ELECTRICAL, condition = 1.0, stress = 0.0, enabled = true },
         chassis = { name = AdvancedDamageSystem.SYSTEMS.CHASSIS, condition = 1.0, stress = 0.0, enabled = true },
-        workprocess = { name = AdvancedDamageSystem.SYSTEMS.WORKPROCESS, condition = 1.0, stress = 0.0, enabled = true },
         fuel = { name = AdvancedDamageSystem.SYSTEMS.FUEL, condition = 1.0, stress = 0.0, enabled = true }
     }
     self.spec_AdvancedDamageSystem.factorStats = createEmptyFactorStats(self.spec_AdvancedDamageSystem.systems)
@@ -1992,21 +1984,6 @@ function AdvancedDamageSystem:onLoad(savegame)
             brakePedal = 0,
             parkingBrakeFactor = 0,
             parkingBrakeActive = 0,
-            breakdownProbability = 0,
-            critBreakdownProbability = 0
-        },
-
-        workprocess = {
-            condition = 0,
-            stress = 0,
-            totalWearRate = 0,
-            expiredServiceFactor = 0,
-            wetCropFactor = 0,
-            currentHarvestRatio = 1.0,
-            currentHarvestPercent = 100.0,
-            lastUnloadOriginalFactor = 1.0,
-            lastUnloadFactor = 1.0,
-            lastUnloadPercent = 100.0,
             breakdownProbability = 0,
             critBreakdownProbability = 0
         },
@@ -2584,22 +2561,6 @@ function AdvancedDamageSystem:onPostLoad(savegame)
             elseif systemData.name == AdvancedDamageSystem.SYSTEMS.FUEL then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
-                end
-            --- disables workprocess systems for tractors, cars etc.
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.WORKPROCESS then
-                local vtype = vehicle.type.name
-                if  vtype ~= 'combineDrivable' and
-                    vtype ~= 'combineCutter' and 
-                    vtype ~= 'combineCutterFruitPreparer' and -- add to yield sensor breakdown and test
-                    vtype ~= 'cottonHarvester' and -- add to yield sensor breakdown and test
-                    vtype ~= 'riceHarvester' and -- add to yield sensor breakdown and test
-                    vtype ~= 'vineHarvester' then -- add to yield sensor breakdown and test
-
-                        systemData.enabled = false
-                        -- ricePlanter
-                        -- balerDrivable
-                        -- selfPropelledMower
-                        -- woodHarvester
                 end
             else
                 systemData.enabled = true
@@ -3588,7 +3549,6 @@ function AdvancedDamageSystem:adsUpdate(dt, isWorkshopOpen)
         self:updateElectricalSystem(dt)
         self:updateChassisSystem(dt)
         self:updateFuelSystem(dt)
-        self:updateWorkProcessSystem(dt)
         -- condtition
         self:updateConditionLevel()
         -- general wear
@@ -6113,55 +6073,6 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         idleTimer = tonumber(fuelState.idleTimer or 0) or 0,
         fuelLevel = fuelLevel,
         fuelTemperature = fuelTemperature
-    })
-end
-
-function AdvancedDamageSystem:updateWorkProcessSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.workprocess.name)
-    local systemData = ensureSystemData(spec, systemKey)
-    local expiredServiceFactor = 0
-    local wetCropFactor = 0
-    local C = ADS_Config.CORE.WORKPROCESS_FACTOR_DATA
-    local wearRate = 1.0
-
-    if not systemData.enabled then
-        return
-    end
-
-    local isMotorStarted = self.getIsMotorStarted ~= nil and self:getIsMotorStarted()
-    local isTurnedOn = self.getIsTurnedOn ~= nil and self:getIsTurnedOn()
-
-    local currentWeather = ADS_Main.currentWeather
-    local isHail = (WeatherType.HAIL ~= nil and currentWeather == WeatherType.HAIL) or (WeatherType.HALL ~= nil and currentWeather == WeatherType.HALL)
-    local isWetWeather = currentWeather == WeatherType.RAIN or currentWeather == WeatherType.SNOW or isHail
-    local isHarvestingInProcess = spec.isHarvesting == true
-
-    if isMotorStarted and not spec.isElectricVehicle then
-        if not isTurnedOn then
-            wearRate = wearRate * C.WORKPROCESSS_IDLING_MULTIPLIER
-        end
-
-        -- wetCrop
-        if isTurnedOn and isWetWeather and isHarvestingInProcess then
-            wetCropFactor = C.WET_CROP_FACTOR_MULTIPLIER
-            wearRate = wearRate + wetCropFactor
-        end
-
-        -- service
-        expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER)
-        wearRate = wearRate + expiredServiceFactor
-    else
-        if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
-        else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER 
-        end
-    end
-
-    self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
-        expiredServiceFactor = expiredServiceFactor,
-        wetCropFactor = wetCropFactor
     })
 end
 

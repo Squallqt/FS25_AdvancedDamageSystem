@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Polttoaineruiskut"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Polttoainesuodatin"/>
         <text name="ads_breakdowns_part_fuel_line" text="Polttoaineputki"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Puintijärjestelmä"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Purkuruuvi"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Paikkaus"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Viallinen"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Yksikkö toimii normaalisti, mutta diagnostiikka on paljastanut viallisen osan. Kriittisesti matalan turvamarginaalin vuoksi suositellaan ennaltaehkäisevää vaihtoa äkillisen vian välttämiseksi."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Vakava ilmavuoto polttoaineputkessa. Polttoaineen syötön jatkuvuus on häiriintynyt, moottorin epäröinti on voimakasta, käynnistys on erittäin epäluotettavaa ja moottorin sammuminen on todennäköistä."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kriittinen ilmavuoto polttoaineputkessa. Polttoaineen syöttöä ei voida ylläpitää eikä moottorin käynnistys tai jatkokäyttö ole mahdollista."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Ilmaa polttoaineputkessa"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on hieman alentunut aiheuttaen pienen sadonmenetyksen."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Kohtalainen puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on havaittavasti alentunut aiheuttaen mitattavan sadonmenetyksen."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Vakava puinti- ja prosessointijärjestelmän kuluminen. Sadon käsittelytehokkuus on merkittävästi alentunut aiheuttaen suuren sadonmenetyksen."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kriittinen kuluminen on aiheuttanut puinti- ja käsittelyjärjestelmän vikaantumisen. Sadonkorjuu ei ole mahdollista ennen järjestelmän korjaamista."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Puinnin käsittelyjärjestelmä pois käytöstä"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Vetoremmin venyminen. Satunnainen luistaminen aiheuttaa lievän purkamisnopeuden alenemisen."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Kulunut vetoremi ja hihnapyörät. Merkittävä luistaminen kuormituksessa alentaa havaittavasti purkamisnopeutta."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Vaurioitunut vaihdelaatikko tai pahoin kulunut remi. Ruuvi kamppailee pyörimiseksi toimien erittäin alhaisella nopeudella."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Vetoremi katkennut tai vaihdelaatikko jumiutunut. Purkuruuvi on täysin jumiutunut."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Purkuruuvi jumiutunut"/>
         <text name="ads_breakdowns_dead_battery_message" text="Akku tyhjentynyt"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Järjestelmän jännite riittämätön"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Moottori sammunut"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Jäähdytysjärjestelmä"/>
         <text name="ads_spec_system_electrical" text="Sähköjärjestelmä"/>
         <text name="ads_spec_system_chassis" text="Alusta"/>
-        <text name="ads_spec_system_workprocess" text="Työskentelyjärjestelmät"/>
         <text name="ads_spec_system_fuel" text="Polttoainejärjestelmä"/>
         <text name="ads_spec_state_ready" text="Valmis"/>
         <text name="ads_spec_state_inspection" text="Tarkastus"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Nykyinen teho"/>
         <text name="ads_report_system_condition_brakes" text="Jarrujen tehokkuus"/>
         <text name="ads_report_system_condition_transmission" text="Vaihteisto"/>
-        <text name="ads_report_system_condition_harvest" text="Puinnin tehokkuus"/>
         <text name="ads_report_system_condition_cooling" text="Jäähdytyksen tehokkuus"/>
         <text name="ads_report_system_condition_consumption" text="Polttoaineen kulutus"/>
         <text name="ads_report_system_condition_hydraulic" text="Hydrauliikan tehokkuus"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Kuuma sää"/>
         <text name="ads_tutorial_hot_weather_message" text="No, tänään on todella kuumaa. Tällaisella säällä täytyy seurata jäähdyttimen puhtautta erityisen tarkasti ja välttää moottorin ylikuormittamista — muuten ylikuumeneminen on vain ajan kysymys.&#10;&#10;Muista: voit aina tarkistaa jäähdyttimen kunnon visuaalisella tarkastuksella pitämällä R-näppäintä pohjassa konetta katsoessasi, ja voit myös puhdistaa sen paineilmapuhaltimella."/>
         <text name="ads_tutorial_wet_weather_title" text="Huhhuh mikä keli!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Vitsi mikä keli tänään! Kosteus on haitallista johdotukselle ja sähkölaitteille, joten sähköjärjestelmän kuluminen on näissä olosuhteissa hieman suurempaa.&#10;&#10;Lisäksi tällaisessa säässä puintitiintyö on voimakkaasti suositeltavaa välttää — teet vain vahinkoa kombillesi."/>
+        <text name="ads_tutorial_wet_weather_message" text="Vitsi mikä keli tänään! Kosteus on haitallista johdotukselle ja sähkölaitteille, joten sähköjärjestelmän kuluminen on näissä olosuhteissa hieman suurempaa."/>
         <text name="ads_tutorial_low_fuel_title" text="Vähän polttoainetta"/>
         <text name="ads_tutorial_low_fuel_message" text="Näyttää siltä, että polttoaine on kohta lopussa. Ensi silmäyksellä tämä ei välttämättä vaikuta suurelta ongelmalta, mutta mitä vähemmän polttoainetta säiliössä on jäljellä, sitä kovemmin polttoainepumppu joutuu työskentelemään. Sen kuorma kasvaa, eikä se varsinkaan auta sen käyttöikää."/>
         <text name="ads_tutorial_idle_deposit_title" text="Pitkä joutokäynti"/>

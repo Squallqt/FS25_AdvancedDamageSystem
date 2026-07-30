@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Wtryski paliwowe"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Filtr paliwa"/>
         <text name="ads_breakdowns_part_fuel_line" text="Przewód paliwowy"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="System przetwarzania zbiorów"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Przenośnik ślimakowy"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Naprawiony"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Wadliwy"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Jednostka działa normalnie, jednak diagnostyka wykazała wadliwą część. Ze względu na krytycznie niski margines bezpieczeństwa zaleca się jej profilaktyczną wymianę, aby uniknąć nagłej awarii."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Zaawansowany wyciek powietrza w przewodzie paliwowym. Niestabilna praca i bardzo trudny rozruch."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Krytyczna nieszczelność w przewodzie paliwowym. Nie można utrzymać zasilania paliwem i uruchomienie silnika ani dalsza praca nie są możliwe."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Zapowietrzenie przewodu paliwowego"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Zużycie elementów systemu zbioru i obróbki skutkuje lekkim spadkiem wydajności przetwarzania i minimalnymi stratami plonów."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Umiarkowane zużycie elementów systemu zbioru i obróbki powoduje wyraźny spadek wydajności przetwarzania oraz mierzalne straty plonów."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Silne zużycie elementów systemu zbioru i obróbki skutkuje znacznym spadkiem wydajności i dużymi stratami plonów."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Krytyczne zużycie spowodowało awarię systemu zbioru i przetwarzania. Zbiór nie jest możliwy do czasu naprawy systemu."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="System przetwarzania plonów nie działa"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Niewłaściwie napięty pasek napędowy skutkuje okresowymi poślizgami i minimalnym spadkiem prędkości rozładunku."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Zużycie paska napędowego i kół pasowych skutkuje znacznymi poślizgami, które zauważalnie zmniejszają prędkość rozładunku."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Skrzynia biegów uszkodzona lub pasek napędowy mocno zużyty; ślimak obraca się powoli i z trudem."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Awaria napędu (pasek lub skrzynia biegów) skutkuje całkowitym unieruchomieniem ślimaka rozładunkowego."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Ślimak rozładunkowy zablokowany."/>
         <text name="ads_breakdowns_dead_battery_message" text="Akumulator całkowicie rozładowany"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Niedobór napięcia w układzie elektrycznym"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Silnik zgasł."/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Układ chłodzenia."/>
         <text name="ads_spec_system_electrical" text="Układ elektryczny."/>
         <text name="ads_spec_system_chassis" text="Podwozie"/>
-        <text name="ads_spec_system_workprocess" text="Układy robocze."/>
         <text name="ads_spec_system_fuel" text="Układ paliwowy."/>
         <text name="ads_spec_state_ready" text="Gotowy"/>
         <text name="ads_spec_state_inspection" text="Przegląd techniczny"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Aktualna moc"/>
         <text name="ads_report_system_condition_brakes" text="Sprawność hamulców"/>
         <text name="ads_report_system_condition_transmission" text="Skrzynia biegów"/>
-        <text name="ads_report_system_condition_harvest" text="Efektywność zbioru"/>
         <text name="ads_report_system_condition_cooling" text="Sprawność chłodzenia"/>
         <text name="ads_report_system_condition_consumption" text="Zużycie paliwa"/>
         <text name="ads_report_system_condition_hydraulic" text="Sprawność hydrauliki"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Upalna pogoda"/>
         <text name="ads_tutorial_hot_weather_message" text="Dziś jest naprawdę gorąco. Przy takiej pogodzie trzeba szczególnie pilnować czystości chłodnicy i unikać przeciążania silnika, bo przegrzanie będzie tylko kwestią czasu.&#10;&#10;Pamiętaj: stan chłodnicy zawsze możesz sprawdzić wizualnie, przytrzymując klawisz R i patrząc na maszynę, a także oczyścić ją za pomocą urządzenia do przedmuchiwania powietrzem."/>
         <text name="ads_tutorial_wet_weather_title" text="Co za pogoda"/>
-        <text name="ads_tutorial_wet_weather_message" text="Ale dziś pogoda. Wilgoć szkodzi przewodom i osprzętowi elektrycznemu, więc w takich warunkach zużycie instalacji elektrycznej jest nieco większe.&#10;&#10;Co więcej, zdecydowanie nie zaleca się prowadzenia zbiorów przy takiej pogodzie, bo tylko zaszkodzisz swojemu kombajnowi."/>
+        <text name="ads_tutorial_wet_weather_message" text="Ale dziś pogoda. Wilgoć szkodzi przewodom i osprzętowi elektrycznemu, więc w takich warunkach zużycie instalacji elektrycznej jest nieco większe."/>
         <text name="ads_tutorial_low_fuel_title" text="Mało paliwa"/>
         <text name="ads_tutorial_low_fuel_message" text="Wygląda na to, że zaraz skończy Ci się paliwo. Na pierwszy rzut oka może to nie wydawać się dużym problemem, ale im mniej paliwa zostaje w zbiorniku, tym ciężej musi pracować pompa paliwa. Jej obciążenie rośnie, a to z pewnością nie służy jej żywotności."/>
         <text name="ads_tutorial_idle_deposit_title" text="Długa praca na biegu jałowym"/>

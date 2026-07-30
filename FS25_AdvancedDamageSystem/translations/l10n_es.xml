@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Inyectores de combustible"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Filtro de combustible"/>
         <text name="ads_breakdowns_part_fuel_line" text="Línea de combustible"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Sistema de procesamiento de cosecha"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Sinfín de descarga"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Parcheado"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Defectuoso"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="La unidad funciona con normalidad, pero el diagnóstico ha revelado una pieza defectuosa. Debido a un margen de seguridad críticamente bajo, se recomienda el reemplazo preventivo para evitar una falla repentina."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Entrada de aire severa en la línea de combustible. La continuidad del suministro de combustible se interrumpe, la vacilación del motor es pronunciada, el arranque es muy poco fiable y es probable que el motor se cale."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Entrada de aire crítica en la línea de combustible. No se puede mantener el suministro de combustible y no es posible arrancar ni continuar operando."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Aire en la línea de combustible"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Desgaste del sistema de cosecha y procesamiento. La eficiencia de procesamiento de cultivos se reduce ligeramente, resultando en una pérdida menor de rendimiento."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Desgaste moderado del sistema de cosecha y procesamiento. La eficiencia de procesamiento de cultivos se reduce notablemente, resultando en una pérdida de rendimiento medible."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Desgaste severo del sistema de cosecha y procesamiento. La eficiencia de procesamiento de cultivos se reduce significativamente, resultando en una alta pérdida de rendimiento."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="El desgaste crítico ha provocado la avería del sistema de cosecha y procesamiento. No es posible cosechar hasta que se repare el sistema."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Sistema de procesamiento de cosecha fuera de servicio"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Correa de transmisión estirada. El deslizamiento ocasional resulta en una ligera disminución de la velocidad de descarga."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Correa y poleas de transmisión desgastadas. Un deslizamiento significativo bajo carga reduce notablemente la velocidad de descarga."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Caja de cambios dañada o correa muy desgastada. El sinfín tiene dificultades para girar, operando a una velocidad muy baja."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="La correa de transmisión se rompió o la caja de cambios se agarrotó. El sinfín de descarga está completamente atascado."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Sinfín de descarga atascado"/>
         <text name="ads_breakdowns_dead_battery_message" text="Carga de la batería agotada"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Voltaje del sistema insuficiente"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Motor calado"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Sistema de Refrigeración"/>
         <text name="ads_spec_system_electrical" text="Sistema Eléctrico"/>
         <text name="ads_spec_system_chassis" text="Chasis"/>
-        <text name="ads_spec_system_workprocess" text="Sistemas de Trabajo"/>
         <text name="ads_spec_system_fuel" text="Sistema de Combustible"/>
         <text name="ads_spec_state_ready" text="Listo"/>
         <text name="ads_spec_state_inspection" text="Inspección"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Potencia actual"/>
         <text name="ads_report_system_condition_brakes" text="Eficiencia de frenos"/>
         <text name="ads_report_system_condition_transmission" text="Transmisión"/>
-        <text name="ads_report_system_condition_harvest" text="Eficiencia de cosecha"/>
         <text name="ads_report_system_condition_cooling" text="Eficiencia de refrigeración"/>
         <text name="ads_report_system_condition_consumption" text="Consumo de combustible"/>
         <text name="ads_report_system_condition_hydraulic" text="Eficiencia hidráulica"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Tiempo caluroso"/>
         <text name="ads_tutorial_hot_weather_message" text="Hoy hace muchísimo calor. Con un tiempo así, debes vigilar especialmente la limpieza del radiador y evitar sobrecargar el motor; de lo contrario, el sobrecalentamiento será solo cuestión de tiempo.&#10;&#10;Recuerda: siempre puedes comprobar el estado del radiador con una inspección visual manteniendo pulsada la tecla R mientras miras la máquina, y también puedes limpiarlo con el Soplador de Aire."/>
         <text name="ads_tutorial_wet_weather_title" text="Vaya tiempo"/>
-        <text name="ads_tutorial_wet_weather_message" text="Vaya tiempo hace hoy. La humedad perjudica el cableado y el equipo eléctrico, por lo que el desgaste del sistema eléctrico es ligeramente mayor en estas condiciones.&#10;&#10;Además, está muy desaconsejado cosechar con un tiempo así: solo perjudicarás a tu cosechadora."/>
+        <text name="ads_tutorial_wet_weather_message" text="Vaya tiempo hace hoy. La humedad perjudica el cableado y el equipo eléctrico, por lo que el desgaste del sistema eléctrico es ligeramente mayor en estas condiciones."/>
         <text name="ads_tutorial_low_fuel_title" text="Poco combustible"/>
         <text name="ads_tutorial_low_fuel_message" text="Parece que estás a punto de quedarte sin combustible. A primera vista quizá no parezca un gran problema, pero cuanto menos combustible queda en el depósito, más tiene que trabajar la bomba de combustible. Su carga aumenta, y eso desde luego no ayuda a su vida útil."/>
         <text name="ads_tutorial_idle_deposit_title" text="Ralentí prolongado"/>

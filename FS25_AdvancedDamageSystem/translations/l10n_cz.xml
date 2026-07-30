@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Vstřikovače paliva"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Palivový filtr"/>
         <text name="ads_breakdowns_part_fuel_line" text="Palivové vedení"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Mláticí ústrojí"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Vyprazdňovací šnek"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Záplatováno"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Vadný"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Jednotka funguje normálně, ale diagnostika odhalila vadnou součástku. Kvůli kriticky nízké bezpečnostní rezervě se doporučuje preventivní výměna, aby se předešlo náhlému selhání."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Vážné přisávání vzduchu do vedení. Kontinuita dodávky paliva je přerušena, motor silně vynechává, startování nespolehlivé a hrozí zhasnutí."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Kritické přisávání vzduchu. Dodávku paliva nelze udržet a nastartování nebo další provoz motoru není možný."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Vzduch v palivovém systému"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Opotřebení mláticího a separačního ústrojí. Účinnost zpracování plodin je mírně snížena, což vede k drobným ztrátám výnosu."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Střední opotřebení mláticího ústrojí. Účinnost zpracování je znatelně nižší, což způsobuje měřitelné ztráty na výnosu."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Silné opotřebení mláticího ústrojí. Účinnost zpracování je výrazně snížena, ztráty výnosu jsou vysoké."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritické opotřebení způsobilo poruchu sklízecího a zpracovatelského systému. Sklizeň není možná, dokud nebude systém opraven."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Systém zpracování sklizně mimo provoz"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Vytahaný hnací řemen. Občasné prokluzování vede k mírnému snížení rychlosti vykládky."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Opotřebovaný hnací řemen a řemenice. Výrazné prokluzování pod zatížením znatelně snižuje rychlost vykládky."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Poškozená převodovka nebo silně opotřebovaný řemen. Šnek se otáčí jen s obtížemi a velmi nízkou rychlostí."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Hnací řemen praskl nebo se převodovka zadřela. Vykládací šnek je zcela zablokován."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Vykládací šnek zablokován"/>
         <text name="ads_breakdowns_dead_battery_message" text="Baterie je vybitá"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Nedostatečné systémové napětí"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Motor zhasl"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Chladicí systém"/>
         <text name="ads_spec_system_electrical" text="Elektrický systém"/>
         <text name="ads_spec_system_chassis" text="Podvozek"/>
-        <text name="ads_spec_system_workprocess" text="Pracovní systémy"/>
         <text name="ads_spec_system_fuel" text="Palivová soustava"/>
         <text name="ads_spec_state_ready" text="Připraveno"/>
         <text name="ads_spec_state_inspection" text="Prohlídka"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Aktuální výkon"/>
         <text name="ads_report_system_condition_brakes" text="Účinnost brzd"/>
         <text name="ads_report_system_condition_transmission" text="Převodovka"/>
-        <text name="ads_report_system_condition_harvest" text="Účinnost sklizně"/>
         <text name="ads_report_system_condition_cooling" text="Účinnost chlazení"/>
         <text name="ads_report_system_condition_consumption" text="Spotřeba paliva"/>
         <text name="ads_report_system_condition_hydraulic" text="Účinnost hydrauliky"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Horké počasí"/>
         <text name="ads_tutorial_hot_weather_message" text="Dnes je opravdu horko. V takovém počasí musíte obzvláště bedlivě sledovat čistotu chladiče a vyhýbat se přetěžování motoru – jinak je přehřátí jen otázkou času.&#10;&#10;Nezapomeňte: stav chladiče můžete vždy zkontrolovat vizuálně (podržte R při pohledu na stroj) a vyčistit jej můžete vzduchovým dmychadlem."/>
         <text name="ads_tutorial_wet_weather_title" text="To je ale počasí!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Dnešní počasí nestojí za nic. Vlhkost nesvědčí kabeláži a elektronice, takže opotřebení elektrického systému je v těchto podmínkách o něco vyšší.&#10;&#10;Navíc se v tomto počasí důrazně nedoporučuje sklízet úrodu – svému kombajnu tím jen uškodíte."/>
+        <text name="ads_tutorial_wet_weather_message" text="Dnešní počasí nestojí za nic. Vlhkost nesvědčí kabeláži a elektronice, takže opotřebení elektrického systému je v těchto podmínkách o něco vyšší."/>
         <text name="ads_tutorial_low_fuel_title" text="Málo paliva"/>
         <text name="ads_tutorial_low_fuel_message" text="Vypadá to, že vám dochází palivo. Na první pohled se to nemusí zdát jako velký problém, ale čím méně paliva v nádrži zbývá, tím více se namáhá palivové čerpadlo. Jeho zatížení roste, což mu na životnosti rozhodně nepřidá."/>
         <text name="ads_tutorial_idle_deposit_title" text="Dlouhý volnoběh"/>

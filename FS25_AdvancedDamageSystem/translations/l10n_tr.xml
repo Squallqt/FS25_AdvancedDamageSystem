@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Yakıt enjektörleri"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Yakıt filtresi"/>
         <text name="ads_breakdowns_part_fuel_line" text="Yakıt hattı"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Hasat işleme sistemi"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Boşaltma burgusu"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Yamalandı"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Arızalı"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="Cihaz normal şekilde çalışıyor, ancak arıza teşhisi sonucunda bir parçanın arızalı olduğu tespit edildi. Güvenlik marjının kritik derecede düşük olması nedeniyle, ani bir arızayı önlemek için önleyici olarak değiştirilmesi tavsiye edilmektedir."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Yakıt hattında ciddi bir hava kaçağı var. Yakıt beslemesinin sürekliliği bozulmuş durumda; motorda belirgin bir tekleme var, çalıştırma işlemi son derece güvenilmez ve motorun stop etme olasılığı yüksek."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Yakıt hattında ciddi bir hava sızıntısı var. Yakıt beslemesi sağlanamıyor ve motorun çalıştırılması veya çalışmaya devam etmesi mümkün değil."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Yakıt hattında hava"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Hasat ve işleme sisteminde aşınma. Mahsul işleme verimliliği hafifçe düşer ve bu da küçük çaplı bir verim kaybına yol açar."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Hasat ve işleme sisteminde orta derecede aşınma. Mahsul işleme verimliliği gözle görülür şekilde azalır ve bu da ölçülebilir bir verim kaybına yol açar."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Hasat ve işleme sisteminde ciddi aşınma. Mahsul işleme verimliliği önemli ölçüde düşer ve bu da yüksek verim kaybına yol açar."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Kritik aşınma, hasat ve işleme sisteminin arızalanmasına neden oldu. Sistem onarılana kadar hasat yapılamaz."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Hasat işleme sistemi devre dışı"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Gerilmiş tahrik kayışı. Ara sıra meydana gelen kayma, boşaltma hızında hafif bir düşüşe neden olur."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Aşınmış tahrik kayışı ve kasnaklar. Yük altında meydana gelen belirgin kayma, boşaltma hızını gözle görülür şekilde düşürür."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Hasarlı vites kutusu veya aşırı aşınmış kayış. Burgu dönmekte zorlanıyor ve çok düşük bir hızda çalışıyor."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Tahrik kayışı kopmuş veya şanzıman sıkışmış. Boşaltma helezonu tamamen sıkışmış."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Boşaltma Burgusu Sıkışmış"/>
         <text name="ads_breakdowns_dead_battery_message" text="Pil şarjı bitti"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Sistem gerilimi yetersiz"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Motor durdu"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Soğutma Sistemi"/>
         <text name="ads_spec_system_electrical" text="Elektrik Sistemi"/>
         <text name="ads_spec_system_chassis" text="Şasi"/>
-        <text name="ads_spec_system_workprocess" text="Çalışma Sistemleri"/>
         <text name="ads_spec_system_fuel" text="Yakıt Sistemi"/>
         <text name="ads_spec_state_ready" text="Hazır"/>
         <text name="ads_spec_state_inspection" text="Muayene"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Mevcut Güç"/>
         <text name="ads_report_system_condition_brakes" text="Fren Verimliliği"/>
         <text name="ads_report_system_condition_transmission" text="Şanzıman"/>
-        <text name="ads_report_system_condition_harvest" text="Hasat Verimliliği"/>
         <text name="ads_report_system_condition_cooling" text="Soğutma Verimliliği"/>
         <text name="ads_report_system_condition_consumption" text="Yakıt Tüketimi"/>
         <text name="ads_report_system_condition_hydraulic" text="Hidrolik Verimlilik"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Sıcak Hava"/>
         <text name="ads_tutorial_hot_weather_message" text="Bugün hava gerçekten çok sıcak. Böyle havalarda, radyatörün temizliğine özellikle dikkat etmeli ve motoru aşırı yüklemekten kaçınmalısınız — aksi takdirde motorun aşırı ısınması an meselesi olur.&#10;&#10;Unutmayın: Makineye bakarken R tuşunu basılı tutarak radyatörün durumunu her zaman gözle kontrol edebilirsiniz; ayrıca Hava Üfleyici ile de temizleyebilirsiniz."/>
         <text name="ads_tutorial_wet_weather_title" text="Ne hava ama!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Bugün hava ne de kötü. Nem, kablolara ve elektrikli ekipmanlara zarar verir; bu nedenle bu koşullarda elektrik sistemindeki aşınma biraz daha fazla olur.&#10;&#10;Üstelik, bu tür havalarda hasat yapmanız kesinlikle tavsiye edilmez — biçerdöverinize sadece zarar verirsiniz."/>
+        <text name="ads_tutorial_wet_weather_message" text="Bugün hava ne de kötü. Nem, kablolara ve elektrikli ekipmanlara zarar verir; bu nedenle bu koşullarda elektrik sistemindeki aşınma biraz daha fazla olur."/>
         <text name="ads_tutorial_low_fuel_title" text="Yakıt Seviyesi Düşük"/>
         <text name="ads_tutorial_low_fuel_message" text="Görünüşe göre yakıtınız bitmek üzere. İlk bakışta bu çok büyük bir sorun gibi görünmeyebilir, ancak depoda ne kadar az yakıt kalırsa, yakıt pompasının o kadar fazla çalışması gerekir. Üzerindeki yük artar ve bu durum, pompanın kullanım ömrüne kesinlikle zarar verir."/>
         <text name="ads_tutorial_idle_deposit_title" text="Uzun Süreli Rölantide Çalışma"/>

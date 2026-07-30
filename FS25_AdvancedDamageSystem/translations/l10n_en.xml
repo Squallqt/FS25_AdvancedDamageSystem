@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Fuel injectors"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Fuel filter"/>
         <text name="ads_breakdowns_part_fuel_line" text="Fuel line"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Harvest processing system"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Unloading auger"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Patched"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Defective"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="The unit is functioning normally, but diagnostics have revealed a defective part. Due to a critically low safety margin, preventive replacement is recommended to avoid sudden failure."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Severe air leak in the fuel line. Fuel supply continuity is disrupted, engine hesitation is pronounced, starting is highly unreliable, and engine stalls are likely."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Critical air leak in the fuel line. Fuel supply cannot be maintained and engine start or further operation is not possible."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Air in fuel line"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Wear of the harvesting and processing system. Crop processing efficiency is slightly reduced, resulting in minor yield loss."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Moderate wear of the harvesting and processing system. Crop processing efficiency is noticeably reduced, resulting in measurable yield loss."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Severe wear of the harvesting and processing system. Crop processing efficiency is significantly reduced, resulting in high yield loss."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="Critical wear has caused the harvesting and processing system to fail. Harvesting is impossible until the system is repaired."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Harvest processing system out of service"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Stretched drive belt. Occasional slipping results in a slight decrease in unloading speed."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Worn drive belt and pulleys. Significant slipping under load noticeably reduces unloading speed."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Damaged gearbox or heavily worn belt. The auger struggles to turn, operating at a very low speed."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Drive belt snapped or gearbox seized. The unloading auger is completely jammed."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Unloading Auger Jammed"/>
         <text name="ads_breakdowns_dead_battery_message" text="Battery charge depleted"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Insufficient system voltage"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Engine stalled"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Cooling System"/>
         <text name="ads_spec_system_electrical" text="Electrical System"/>
         <text name="ads_spec_system_chassis" text="Chassis"/>
-        <text name="ads_spec_system_workprocess" text="Work Systems"/>
         <text name="ads_spec_system_fuel" text="Fuel System"/>
         <text name="ads_spec_state_ready" text="Ready"/>
         <text name="ads_spec_state_inspection" text="Inspection"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Current Power"/>
         <text name="ads_report_system_condition_brakes" text="Brakes Efficiency"/>
         <text name="ads_report_system_condition_transmission" text="Transmission"/>
-        <text name="ads_report_system_condition_harvest" text="Harvest Efficiency"/>
         <text name="ads_report_system_condition_cooling" text="Cooling Efficiency"/>
         <text name="ads_report_system_condition_consumption" text="Fuel Consumption"/>
         <text name="ads_report_system_condition_hydraulic" text="Hydraulic Efficiency"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Hot Weather"/>
         <text name="ads_tutorial_hot_weather_message" text="Well, it is really hot today. In weather like this, you need to watch radiator cleanliness especially closely and avoid overloading the engine — otherwise overheating is only a matter of time.&#10;&#10;Remember: you can always check the radiator condition with a visual inspection by holding the R key while looking at the machine, and you can also clean it with the Air Blower."/>
         <text name="ads_tutorial_wet_weather_title" text="What a Weather!"/>
-        <text name="ads_tutorial_wet_weather_message" text="What a weather today. Moisture is bad for wiring and electrical equipment, so wear on the electrical system is slightly higher in these conditions.&#10;&#10;On top of that, harvesting in weather like this is strongly discouraged — you will only do harm to your combine."/>
+        <text name="ads_tutorial_wet_weather_message" text="What a weather today. Moisture is bad for wiring and electrical equipment, so wear on the electrical system is slightly higher in these conditions."/>
         <text name="ads_tutorial_low_fuel_title" text="Low Fuel"/>
         <text name="ads_tutorial_low_fuel_message" text="It looks like you are about to run out of fuel. At first glance this may not seem like a major problem, but the less fuel remains in the tank, the harder the fuel pump has to work. Its load increases, and that certainly does not help its service life."/>
         <text name="ads_tutorial_idle_deposit_title" text="Extended Idling"/>

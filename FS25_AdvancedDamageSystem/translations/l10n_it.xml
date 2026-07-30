@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Iniettori carburante"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Filtro carburante"/>
         <text name="ads_breakdowns_part_fuel_line" text="Linea carburante"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Sistema di lavorazione del raccolto"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Coclea di scarico"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Provvisorio"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Difettoso"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="L'unità funziona normalmente, ma la diagnostica ha rilevato un componente difettoso. A causa del margine di sicurezza criticamente basso, si consiglia la sostituzione preventiva per evitare un guasto improvviso."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Grave ingresso d'aria nella linea carburante. La continuità dell'alimentazione è compromessa, l'esitazione è marcata, l'avviamento è molto inaffidabile e gli spegnimenti sono probabili."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Ingresso d'aria critico nella linea carburante. L'alimentazione non può essere mantenuta e l'avviamento o il proseguimento del lavoro non sono possibili."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Aria nella linea carburante"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Usura del sistema di raccolta e lavorazione. L'efficienza di lavorazione del raccolto è leggermente ridotta e provoca una piccola perdita di resa."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Usura moderata del sistema di raccolta e lavorazione. L'efficienza è sensibilmente ridotta e causa una perdita di resa misurabile."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Grave usura del sistema di raccolta e lavorazione. L'efficienza è fortemente ridotta e provoca elevate perdite di resa."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="L'usura critica ha causato il guasto del sistema di raccolta e lavorazione. Non è possibile raccogliere finché il sistema non viene riparato."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Sistema di lavorazione del raccolto fuori servizio"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Cinghia di trasmissione allungata. Slittamenti occasionali causano una lieve diminuzione della velocità di scarico."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Cinghia di trasmissione e pulegge usurate. Un forte slittamento sotto carico riduce sensibilmente la velocità di scarico."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Riduttore danneggiato o cinghia fortemente usurata. La coclea fatica a ruotare e lavora a velocità molto bassa."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Cinghia di trasmissione spezzata o riduttore grippato. La coclea di scarico è completamente bloccata."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Coclea di scarico bloccata"/>
         <text name="ads_breakdowns_dead_battery_message" text="Batteria scarica"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Tensione impianto insufficiente"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Motore spento"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Sistema di raffreddamento"/>
         <text name="ads_spec_system_electrical" text="Impianto elettrico"/>
         <text name="ads_spec_system_chassis" text="Telaio"/>
-        <text name="ads_spec_system_workprocess" text="Organi di lavoro"/>
         <text name="ads_spec_system_fuel" text="Impianto di alimentazione"/>
         <text name="ads_spec_state_ready" text="Pronto"/>
         <text name="ads_spec_state_inspection" text="Ispezione"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Potenza attuale"/>
         <text name="ads_report_system_condition_brakes" text="Efficienza frenante"/>
         <text name="ads_report_system_condition_transmission" text="Trasmissione"/>
-        <text name="ads_report_system_condition_harvest" text="Efficienza di raccolta"/>
         <text name="ads_report_system_condition_cooling" text="Efficienza raffreddamento"/>
         <text name="ads_report_system_condition_consumption" text="Consumo carburante"/>
         <text name="ads_report_system_condition_hydraulic" text="Efficienza idraulica"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Clima caldo"/>
         <text name="ads_tutorial_hot_weather_message" text="Oggi fa davvero molto caldo. Con un clima simile devi controllare con ancora più attenzione la pulizia del radiatore ed evitare di sovraccaricare il motore, altrimenti il surriscaldamento sarà solo questione di tempo.&#10;&#10;Ricorda: puoi sempre controllare lo stato del radiatore con un'ispezione visiva tenendo premuto il tasto R mentre guardi la macchina, e puoi anche pulirlo con il soffiatore ad aria."/>
         <text name="ads_tutorial_wet_weather_title" text="Che tempo!"/>
-        <text name="ads_tutorial_wet_weather_message" text="Che tempo oggi. L'umidità fa male al cablaggio e ai componenti elettrici, quindi in queste condizioni l'usura dell'impianto elettrico aumenta leggermente.&#10;&#10;Inoltre, è fortemente sconsigliato raccogliere con un tempo simile: finiresti solo per danneggiare la tua mietitrebbia."/>
+        <text name="ads_tutorial_wet_weather_message" text="Che tempo oggi. L'umidità fa male al cablaggio e ai componenti elettrici, quindi in queste condizioni l'usura dell'impianto elettrico aumenta leggermente."/>
         <text name="ads_tutorial_low_fuel_title" text="Poco carburante"/>
         <text name="ads_tutorial_low_fuel_message" text="Sembra che tu stia per finire il carburante. A prima vista potrebbe non sembrare un grosso problema, ma meno carburante resta nel serbatoio, più la pompa carburante deve lavorare. Il suo carico aumenta e questo di certo non aiuta la sua durata."/>
         <text name="ads_tutorial_idle_deposit_title" text="Minimo prolungato"/>

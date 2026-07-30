@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="Injecteurs de carburant"/>
         <text name="ads_breakdowns_part_fuel_filter" text="Filtre à carburant"/>
         <text name="ads_breakdowns_part_fuel_line" text="Conduite de carburant"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="Système de traitement de récolte"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="Vis de déchargement"/>
         <text name="ads_breakdowns_quick_fix_stage" text="Bricolé"/>
         <text name="ads_breakdowns_defected_parts_stage" text="Défectueux"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="L'unité fonctionne normalement, mais le diagnostic a révélé une pièce défectueuse. En raison d'une marge de sécurité critique, un remplacement préventif est recommandé pour éviter une panne soudaine."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="Prise d'air sévère dans la conduite de carburant. Le moteur tourne très irrégulièrement et le risque de calage est élevé."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="Défaillance critique de la conduite de carburant avec entrée d'air importante. Le moteur ne peut plus être alimenté correctement."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="Prise d’air dans la conduite de carburant"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="Usure légère du système de récolte et de traitement. L'efficacité de traitement diminue légèrement, entraînant une faible perte de rendement."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="Usure modérée du système de récolte et de traitement. L'efficacité de traitement diminue nettement, entraînant une perte de rendement mesurable."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="Usure sévère du système de récolte et de traitement. L'efficacité de traitement est fortement réduite, entraînant une perte de rendement importante."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="L'usure critique a provoqué la défaillance du système de récolte et de traitement. La récolte est impossible tant que le système n'est pas réparé."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="Système de traitement de récolte hors service"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="Courroie d'entraînement détendue. Un glissement occasionnel entraîne une légère diminution de la vitesse de déchargement."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="Courroie d'entraînement et poulies usées. Un glissement important sous charge réduit sensiblement la vitesse de déchargement."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="Boîte de vitesses endommagée ou courroie très usée. La vis peine à tourner, fonctionnant à très basse vitesse."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="Courroie d'entraînement cassée ou boîte de vitesses grippée. La vis de déchargement est complètement bloquée."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="Vis de déchargement bloquée"/>
         <text name="ads_breakdowns_dead_battery_message" text="Batterie déchargée"/>
         <text name="ads_breakdowns_voltage_sag_message" text="Tension système insuffisante"/>
         <text name="ads_breakdowns_engine_stalled_message" text="Moteur calé"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="Système de refroidissement"/>
         <text name="ads_spec_system_electrical" text="Système électrique"/>
         <text name="ads_spec_system_chassis" text="Châssis"/>
-        <text name="ads_spec_system_workprocess" text="Organes de travail"/>
         <text name="ads_spec_system_fuel" text="Système de carburant"/>
         <text name="ads_spec_state_ready" text="Prêt"/>
         <text name="ads_spec_state_inspection" text="Inspection"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="Puissance actuelle"/>
         <text name="ads_report_system_condition_brakes" text="Efficacité des freins"/>
         <text name="ads_report_system_condition_transmission" text="Transmission"/>
-        <text name="ads_report_system_condition_harvest" text="Efficacité de la récolte"/>
         <text name="ads_report_system_condition_cooling" text="Efficacité de refroidissement"/>
         <text name="ads_report_system_condition_consumption" text="Consommation de carburant"/>
         <text name="ads_report_system_condition_hydraulic" text="Efficacité hydraulique"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="Temps chaud"/>
         <text name="ads_tutorial_hot_weather_message" text="Il fait vraiment très chaud aujourd'hui. Par ce temps, il faut surveiller de près la propreté du radiateur et éviter de surcharger le moteur, sinon la surchauffe n'est qu'une question de temps.&#10;&#10;N'oubliez pas : vous pouvez toujours vérifier l'état du radiateur par une inspection visuelle en maintenant la touche R en regardant la machine, et vous pouvez aussi le nettoyer avec le souffleur d'air comprimé."/>
         <text name="ads_tutorial_wet_weather_title" text="Quel temps !"/>
-        <text name="ads_tutorial_wet_weather_message" text="Quel temps aujourd'hui. L'humidité nuit au câblage et aux équipements électriques, si bien que l'usure du système électrique augmente légèrement dans ces conditions.&#10;&#10;En plus de cela, il est fortement déconseillé de récolter par un temps pareil : vous ne ferez que nuire à votre moissonneuse-batteuse."/>
+        <text name="ads_tutorial_wet_weather_message" text="Quel temps aujourd'hui. L'humidité nuit au câblage et aux équipements électriques, si bien que l'usure du système électrique augmente légèrement dans ces conditions."/>
         <text name="ads_tutorial_low_fuel_title" text="Carburant bas"/>
         <text name="ads_tutorial_low_fuel_message" text="On dirait que vous allez bientôt manquer de carburant. À première vue cela ne semble pas très grave, mais moins il reste de carburant dans le réservoir, plus la pompe à carburant doit forcer. Sa charge augmente, et cela n'aide certainement pas sa durée de vie."/>
         <text name="ads_tutorial_idle_deposit_title" text="Ralenti prolongé"/>

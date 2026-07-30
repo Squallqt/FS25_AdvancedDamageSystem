@@ -193,8 +193,6 @@
         <text name="ads_breakdowns_part_fuel_injectors" text="연료 인젝터"/>
         <text name="ads_breakdowns_part_fuel_filter" text="연료 필터"/>
         <text name="ads_breakdowns_part_fuel_line" text="연료 라인"/>
-        <text name="ads_breakdowns_part_harvest_processing_system" text="수확 처리 시스템"/>
-        <text name="ads_breakdowns_part_unloading_auger" text="하역 오거"/>
         <text name="ads_breakdowns_quick_fix_stage" text="임시 수리됨"/>
         <text name="ads_breakdowns_defected_parts_stage" text="결함 있음"/>
         <text name="ads_breakdowns_defected_parts_detected_description" text="장치는 정상 작동 중이나 점검 결과 결함 부품이 발견되었습니다. 안전 여유치가 매우 낮으므로 갑작스러운 고장을 방지하기 위해 예방적 교체를 권장합니다."/>
@@ -341,16 +339,6 @@
         <text name="ads_breakdowns_fuel_line_air_leak_stage3_description" text="연료 라인 심각한 공기 유입. 연료 공급 연속성이 깨져 심한 주춤거림, 시동 실패 및 잦은 정지가 발생합니다."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_description" text="치명적인 연료 라인 공기 유입. 연료 공급이 유지되지 않아 시동 및 운행이 불가능합니다."/>
         <text name="ads_breakdowns_fuel_line_air_leak_stage4_message" text="연료 라인 내 공기"/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage1_description" text="수확 처리 시스템 마모. 처리 효율이 미세하게 감소하여 약간의 수확 손실이 발생합니다."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage2_description" text="수확 처리 시스템 보통 마모. 효율 감소로 인해 측정 가능한 수준의 수확 손실이 발생합니다."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage3_description" text="수확 처리 시스템 심각한 마모. 효율이 대폭 낮아져 높은 수확 손실이 발생합니다."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_description" text="심각한 마모로 수확 및 처리 시스템이 고장 났습니다. 시스템을 수리할 때까지 수확할 수 없습니다."/>
-        <text name="ads_breakdowns_harvest_processing_system_wear_stage4_message" text="수확 처리 시스템 작동 불가"/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage1_description" text="구동 벨트 늘어남. 간헐적 미끄러짐으로 하역 속도가 약간 감소합니다."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage2_description" text="구동 벨트 및 풀리 마모. 부하 시 현저한 미끄러짐으로 하역 속도가 뚜렷이 감소합니다."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage3_description" text="기어박스 손상 또는 심한 벨트 마모. 오거가 겨우 회전하며 매우 낮은 속도로 작동합니다."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_description" text="구동 벨트 단절 또는 기어박스 고착. 하역 오거가 완전히 멈췄습니다."/>
-        <text name="ads_breakdowns_unloading_auger_malfunction_stage4_message" text="하역 오거 멈춤"/>
         <text name="ads_breakdowns_dead_battery_message" text="배터리 방전됨"/>
         <text name="ads_breakdowns_voltage_sag_message" text="시스템 전압 부족"/>
         <text name="ads_breakdowns_engine_stalled_message" text="엔진 정지됨"/>
@@ -392,7 +380,6 @@
         <text name="ads_spec_system_cooling" text="냉각 시스템"/>
         <text name="ads_spec_system_electrical" text="전기 시스템"/>
         <text name="ads_spec_system_chassis" text="섀시"/>
-        <text name="ads_spec_system_workprocess" text="작업 시스템"/>
         <text name="ads_spec_system_fuel" text="연료 시스템"/>
         <text name="ads_spec_state_ready" text="준비됨"/>
         <text name="ads_spec_state_inspection" text="점검"/>
@@ -503,7 +490,6 @@
         <text name="ads_report_system_condition_power" text="현재 출력"/>
         <text name="ads_report_system_condition_brakes" text="브레이크 효율"/>
         <text name="ads_report_system_condition_transmission" text="변속기"/>
-        <text name="ads_report_system_condition_harvest" text="수확 효율"/>
         <text name="ads_report_system_condition_cooling" text="냉각 효율"/>
         <text name="ads_report_system_condition_consumption" text="연료 소비량"/>
         <text name="ads_report_system_condition_hydraulic" text="유압 효율"/>
@@ -711,7 +697,7 @@
         <text name="ads_tutorial_hot_weather_title" text="더운 날씨"/>
         <text name="ads_tutorial_hot_weather_message" text="오늘은 정말 덥네요. 이런 날씨에는 라디에이터 청결 상태를 더욱 세심하게 확인하고 엔진 과부하를 피해야 합니다. 그렇지 않으면 과열은 시간문제입니다.&#10;&#10;기억하세요. 차량을 바라보며 R 키를 길게 눌러 시각 점검으로 라디에이터 상태를 확인할 수 있고, 에어 블로워로 청소도 할 수 있습니다."/>
         <text name="ads_tutorial_wet_weather_title" text="정말 궂은 날씨"/>
-        <text name="ads_tutorial_wet_weather_message" text="오늘 날씨가 참 안 좋네요. 습기는 배선과 전기 장비에 좋지 않기 때문에 이런 조건에서는 전기 시스템의 마모가 약간 더 빨라집니다.&#10;&#10;게다가 이런 날씨에 수확 작업을 하는 것은 강력히 권장되지 않습니다. 콤바인만 망가뜨리게 될 것입니다."/>
+        <text name="ads_tutorial_wet_weather_message" text="오늘 날씨가 참 안 좋네요. 습기는 배선과 전기 장비에 좋지 않기 때문에 이런 조건에서는 전기 시스템의 마모가 약간 더 빨라집니다."/>
         <text name="ads_tutorial_low_fuel_title" text="연료 부족"/>
         <text name="ads_tutorial_low_fuel_message" text="곧 연료가 바닥날 것 같습니다. 처음에는 큰 문제가 아닌 것처럼 보여도, 탱크에 남은 연료가 적을수록 연료 펌프는 더 힘들게 작동해야 합니다. 그만큼 부담이 커지고, 이는 수명에 전혀 도움이 되지 않습니다."/>
         <text name="ads_tutorial_idle_deposit_title" text="장시간 공회전"/>
