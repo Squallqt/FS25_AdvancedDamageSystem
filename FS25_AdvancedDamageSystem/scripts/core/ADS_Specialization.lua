@@ -1603,6 +1603,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
                 spec.chassisBrakeState = brakeState
             end
             brakeState.hpMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
+            brakeState.hpTrailerMassRatio = brakeState.hpMassRatio
             brakeState.trailerMass = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             brakeState.hpGrossMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
             local steerState = spec.chassisSteerState

@@ -612,7 +612,6 @@ function ADS_Tutorial:update(dt)
                 messagedData.POOR_PARTS = true
                 self.messageDowntime = downtimeAfterMessage
 
-            --- idle and downtime
             end
         end
     end
