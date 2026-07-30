@@ -185,87 +185,6 @@ function ADS_Tutorial:update(dt)
                 messagedData.AGE_DEGRADATION = true
                 self.messageDowntime = downtimeAfterMessage
 
-            -- ==========================================================
-            -- SERVICE
-            -- ==========================================================
-            --- service due soon
-            elseif not messagedData.SERVICE_DUE_SOON and (serviceInterval >= 0.9 and serviceInterval < 1.0) then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_service_due_soon_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_service_due_soon_title"),
-                    true
-                )
-                messagedData.SERVICE_DUE_SOON = true
-                self.messageDowntime = downtimeAfterMessage
-
-            --- service interval expired
-            elseif not messagedData.SERVICE_INTERVAL_EXPIRED and serviceInterval >= 1.01 then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_service_interval_expired_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_service_interval_expired_title"),
-                    true
-                )
-                messagedData.SERVICE_INTERVAL_EXPIRED = true
-                self.messageDowntime = downtimeAfterMessage
-
-            --- needs repair
-            elseif not messagedData.NEEDS_REPAIR and isMotorStarted and vehicle:hasBreakdown() then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_needs_repair_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_needs_repair_title"),
-                    true
-                )
-                messagedData.NEEDS_REPAIR = true
-                self.messageDowntime = downtimeAfterMessage
-
-            elseif not messagedData.NEEDS_OVERHAUL and vehicle:getConditionLevel() < 0.19 then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_needs_overhaul_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_needs_overhaul_title"),
-                    true
-                )
-                messagedData.NEEDS_OVERHAUL = true
-                self.messageDowntime = downtimeAfterMessage
-
-            elseif not messagedData.NEEDS_PREVENTIVE
-                and isMotorStarted
-                and preventiveRiskSystem ~= nil then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_needs_preventive_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_needs_preventive_title"),
-                    true
-                )
-                messagedData.NEEDS_PREVENTIVE = true
-                self.messageDowntime = downtimeAfterMessage
-
-            --- poor consumables
-            elseif not messagedData.POOR_CONSUMABLES and vehicle:hasBreakdown("MAINTENANCE_WITH_POOR_QUALITY_CONSUMABLES") then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_poor_consumables_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_poor_consumables_title"),
-                    true
-                )
-                messagedData.POOR_CONSUMABLES = true
-                self.messageDowntime = downtimeAfterMessage
-
-            --- poor parts
-            elseif not messagedData.POOR_PARTS and hasPoorPartsBreakdown then
-                ADS_Hud.showNotification(
-                    string.format(g_i18n:getText("ads_tutorial_poor_parts_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("ads_tutorial_poor_parts_title"),
-                    true
-                )
-                messagedData.POOR_PARTS = true
-                self.messageDowntime = downtimeAfterMessage
-
-            --- idle and downtime
             elseif not messagedData.IDLE_AND_DOWNTIME and isMotorStarted and spec.fuelState.idleTimer > 30 then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_idle_and_downtime_message"),
@@ -607,6 +526,87 @@ function ADS_Tutorial:update(dt)
                 )
                 messagedData.PTO_SHARP_ANGLE = true
                 self.messageDowntime = downtimeAfterMessage
+            -- ==========================================================
+            -- SERVICE
+            -- ==========================================================
+            --- service due soon
+            elseif not messagedData.SERVICE_DUE_SOON and (serviceInterval >= 0.9 and serviceInterval < 1.0) then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_service_due_soon_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_service_due_soon_title"),
+                    true
+                )
+                messagedData.SERVICE_DUE_SOON = true
+                self.messageDowntime = downtimeAfterMessage
+
+            --- service interval expired
+            elseif not messagedData.SERVICE_INTERVAL_EXPIRED and serviceInterval >= 1.01 then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_service_interval_expired_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_service_interval_expired_title"),
+                    true
+                )
+                messagedData.SERVICE_INTERVAL_EXPIRED = true
+                self.messageDowntime = downtimeAfterMessage
+
+            --- needs repair
+            elseif not messagedData.NEEDS_REPAIR and isMotorStarted and vehicle:hasBreakdown() then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_needs_repair_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_needs_repair_title"),
+                    true
+                )
+                messagedData.NEEDS_REPAIR = true
+                self.messageDowntime = downtimeAfterMessage
+
+            elseif not messagedData.NEEDS_OVERHAUL and vehicle:getConditionLevel() < 0.19 then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_needs_overhaul_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_needs_overhaul_title"),
+                    true
+                )
+                messagedData.NEEDS_OVERHAUL = true
+                self.messageDowntime = downtimeAfterMessage
+
+            elseif not messagedData.NEEDS_PREVENTIVE
+                and isMotorStarted
+                and preventiveRiskSystem ~= nil then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_needs_preventive_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_needs_preventive_title"),
+                    true
+                )
+                messagedData.NEEDS_PREVENTIVE = true
+                self.messageDowntime = downtimeAfterMessage
+
+            --- poor consumables
+            elseif not messagedData.POOR_CONSUMABLES and vehicle:hasBreakdown("MAINTENANCE_WITH_POOR_QUALITY_CONSUMABLES") then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_poor_consumables_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_poor_consumables_title"),
+                    true
+                )
+                messagedData.POOR_CONSUMABLES = true
+                self.messageDowntime = downtimeAfterMessage
+
+            --- poor parts
+            elseif not messagedData.POOR_PARTS and hasPoorPartsBreakdown then
+                ADS_Hud.showNotification(
+                    string.format(g_i18n:getText("ads_tutorial_poor_parts_message"), vehicle:getFullName()),
+                    0,
+                    g_i18n:getText("ads_tutorial_poor_parts_title"),
+                    true
+                )
+                messagedData.POOR_PARTS = true
+                self.messageDowntime = downtimeAfterMessage
+
+            --- idle and downtime
             end
         end
     end
