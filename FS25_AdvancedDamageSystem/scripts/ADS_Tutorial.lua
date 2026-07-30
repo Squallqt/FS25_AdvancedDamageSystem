@@ -186,7 +186,7 @@ function ADS_Tutorial:update(dt)
                 messagedData.HEAVY_TRAILER = true
                 self.messageDowntime = downtimeAfterMessage
 
-            --- wheel slip
+            --- age degradation
             elseif not messagedData.AGE_DEGRADATION and vehicle:getConditionLevel() < 0.66 then
                 ADS_Hud.showNotification(
                     string.format(g_i18n:getText("ads_tutorial_age_degradation_message"), vehicle:getFullName()),
@@ -342,6 +342,7 @@ function ADS_Tutorial:update(dt)
                 messagedData.ENGINE_OVERHEAT = true
                 self.messageDowntime = downtimeAfterMessage
 
+            --- wheel slip
             elseif not messagedData.WHEEL_SLIP and transmissionSystemEnabled and isMotorStarted and spec.wheelSlipIntensity ~= nil and spec.wheelSlipIntensity > 0.9 and spec.wheelSlipTutorialTimer ~= nil and spec.wheelSlipTutorialTimer >= 3000 then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_wheel_slip_message"),
