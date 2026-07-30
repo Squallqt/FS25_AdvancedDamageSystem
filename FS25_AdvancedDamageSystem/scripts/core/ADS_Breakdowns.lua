@@ -1929,7 +1929,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.BRAKE_MALFUNCTION,
                 repairPrice = 1.0 * breakdownPriceMultipliers.BRAKE_MALFUNCTION,
                 effects = {
-                    { id = "BRAKE_FORCE_MODIFIER", value = -0.30, aggregation = "min",  extraData = {timer = 0, soundPlayed = false} }
+                    { id = "BRAKE_FORCE_MODIFIER", value = -0.30, aggregation = "min",  extraData = {} }
                 }
             },
             {
@@ -1939,7 +1939,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.BRAKE_MALFUNCTION,
                 repairPrice = 2.0 * breakdownPriceMultipliers.BRAKE_MALFUNCTION,
                 effects = {
-                    { id = "BRAKE_FORCE_MODIFIER", value = -0.45, aggregation = "min",  extraData = {timer = 0, soundPlayed = false} }
+                    { id = "BRAKE_FORCE_MODIFIER", value = -0.45, aggregation = "min",  extraData = {} }
                 },
                 indicators = {
                     { id = db.BRAKES, color = color.WARNING, switchOn = true, switchOff = false }
@@ -1952,7 +1952,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.BRAKE_MALFUNCTION,
                 repairPrice = 4.0 * breakdownPriceMultipliers.BRAKE_MALFUNCTION,
                 effects = { 
-                    { id = "BRAKE_FORCE_MODIFIER", value = -0.70, aggregation = "min",  extraData = {timer = 0, soundPlayed = false} }
+                    { id = "BRAKE_FORCE_MODIFIER", value = -0.70, aggregation = "min",  extraData = {} }
                 },
                 indicators = {
                     { id = db.BRAKES, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -1965,7 +1965,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.BRAKE_MALFUNCTION,
                 effects = { 
-                    { id = "BRAKE_FORCE_MODIFIER", value = -1.0, aggregation = "min", extraData = {message = "ads_breakdowns_brake_malfunction_stage4_message", disableAi = true, timer = 0, soundPlayed = false} }
+                    { id = "BRAKE_FORCE_MODIFIER", value = -1.0, aggregation = "min", extraData = {message = "ads_breakdowns_brake_malfunction_stage4_message", disableAi = true} }
                 },
                 indicators = {
                     { id = db.BRAKES, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -3438,24 +3438,19 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
             local modifier = math.max(0.01, 1 + brakeEffect.value) 
             local origAxisForward = axisForward
             axisForward = axisForward * modifier
-            if vehicle.isServer and brakeEffect.extraData ~= nil and vehicle:getLastSpeed() > 1 and vehicle:getLastSpeed() < 15 then
-                if not brakeEffect.extraData.soundPlayed and math.abs(origAxisForward) > 0.999 then
-                    if math.random() < math.abs(brakeEffect.value) then
-                        local sampleIndex = math.random(3)
-                        ADS_SoundManager.playSample(spec_ads.samples["brakes" .. sampleIndex])
-                        ADS_EffectSyncEvent.send(vehicle, "BRAKE_FORCE_MODIFIER", "SOUND", 0, sampleIndex)
-                    end
-                    brakeEffect.extraData.soundPlayed = true
-                    brakeEffect.extraData.timer = 1500
+            if vehicle.isServer and brakeEffect.extraData ~= nil then
+                local speed = vehicle:getLastSpeed()
+                local previousSpeed = brakeEffect.extraData.previousSpeed or speed
+                brakeEffect.extraData.previousSpeed = speed
+
+                if previousSpeed >= BRAKE_SOUND_SPEED_THRESHOLD and speed < BRAKE_SOUND_SPEED_THRESHOLD
+                    and math.abs(origAxisForward) > 0.999
+                    and math.random() < math.abs(brakeEffect.value) then
+                    local sampleIndex = math.random(3)
+                    ADS_SoundManager.playSample(spec_ads.samples["brakes" .. sampleIndex])
+                    ADS_EffectSyncEvent.send(vehicle, "BRAKE_FORCE_MODIFIER", "SOUND", 0, sampleIndex)
                 end
             end
-        end
-
-        if vehicle.isServer and brakeEffect.extraData ~= nil and brakeEffect.extraData.timer > 0 then
-            brakeEffect.extraData.timer = brakeEffect.extraData.timer - dt
-        elseif vehicle.isServer and brakeEffect.extraData ~= nil and brakeEffect.extraData.soundPlayed == true then
-            brakeEffect.extraData.soundPlayed = false
-            brakeEffect.extraData.timer = 0
         end
     end
 
@@ -3774,6 +3769,9 @@ ADS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
         log_dbg("Removing CVT_MAX_RATIO_MODIFIER effect.")
     end
 }
+
+-- Speed in km/h below which a braking vehicle emits its brake sound, once per crossing.
+local BRAKE_SOUND_SPEED_THRESHOLD = 15
 
 -- Convergence rate of the transmission slip modifier, per second at full factor.
 local TRANSMISSION_SLIP_CONVERGENCE_PER_SECOND = 0.9
