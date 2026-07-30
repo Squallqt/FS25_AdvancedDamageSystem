@@ -732,7 +732,7 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
     state.parkBrake = parkBrake
 
     if changed then
-        ADS_DrivetrainEvent.sendEvent(vehicle, driveMode, diffLockRequested, parkBrake, noEventSend)
+        ADS_DrivetrainEvent.sendEvent(vehicle, noEventSend)
     end
 
     if vehicle.isServer then
@@ -744,6 +744,13 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
         if changed and spec ~= nil and spec.adsDirtyFlag_drivetrain ~= nil then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
         end
+    end
+end
+
+local function syncOwnerState(vehicle)
+    local ownerConnection = vehicle:getOwnerConnection()
+    if ownerConnection ~= nil then
+        ADS_DrivetrainEvent.sendState(vehicle, ownerConnection)
     end
 end
 
@@ -1145,7 +1152,9 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
 
     local externallyManaged = ADS_Drivetrain.isExternallyManaged(vehicle)
     local parkExternallyManaged = ADS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
-    if state.externallyManaged ~= externallyManaged or state.parkExternallyManaged ~= parkExternallyManaged then
+    local managementChanged = state.externallyManaged ~= externallyManaged
+        or state.parkExternallyManaged ~= parkExternallyManaged
+    if managementChanged then
         state.externallyManaged = externallyManaged
         state.parkExternallyManaged = parkExternallyManaged
         if spec.adsDirtyFlag_drivetrain ~= nil then
@@ -1173,6 +1182,9 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
                 vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
             end
         end
+        if managementChanged or hadWindupState then
+            syncOwnerState(vehicle)
+        end
         return
     end
 
@@ -1197,12 +1209,15 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     applyDifferentialLock(vehicle, state)
 
     local windupQuantized = math.floor(sanitizeNumber(state.windupStress, 0, 0, 1) * 255 + 0.5)
-    if (prevAutoEngaged ~= state.autoEngaged
+    local physicalStateChanged = prevAutoEngaged ~= state.autoEngaged
         or prevDiffLockEngaged ~= state.diffLockEngaged
         or prevWindupActive ~= state.windupActive
-        or prevWindupQuantized ~= windupQuantized)
-        and spec.adsDirtyFlag_drivetrain ~= nil then
+        or prevWindupQuantized ~= windupQuantized
+    if physicalStateChanged and spec.adsDirtyFlag_drivetrain ~= nil then
         vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
+    end
+    if managementChanged or physicalStateChanged then
+        syncOwnerState(vehicle)
     end
 
     updateLocalNotifications(vehicle, state, dt)

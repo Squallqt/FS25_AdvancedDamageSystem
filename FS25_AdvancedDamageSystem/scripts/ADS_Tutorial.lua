@@ -64,6 +64,11 @@ function ADS_Tutorial:update(dt)
         return
     end
 
+    if g_gui:getIsGuiVisible() then
+        self.vehicle = nil
+        return
+    end
+
     self.timer = self.timer + dt
     self.messageDowntime = math.max(self.messageDowntime - dt, 0)
 
