@@ -2994,13 +2994,9 @@ end
 -- SELF_DISAPPEARING_BREAKDOWN_EFFECT
 ADS_Breakdowns.EffectApplicators.SELF_DISAPPEARING_BREAKDOWN_EFFECT = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying SELF_DISAPPEARING_BREAKDOWN_EFFECT")
         vehicle:removeBreakdown(effectData.extraData.breakdownId)
     end,
 
-    remove = function(vehicle, handler)
-        log_dbg("Removing SELF_DISAPPEARING_BREAKDOWN_EFFECT effect.")
-    end
 }
 
 -- ==========================================================
@@ -3010,7 +3006,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
         return "ENGINE_FAILURE"
     end,
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_FAILURE effect.")
         local effectName = handler.getEffectName()
         local spec = vehicle.spec_AdvancedDamageSystem
         local activeFunc = function(v, dt)
@@ -3041,7 +3036,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
     remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_FAILURE effect.")
         syncStarterCrankingSample(vehicle)
         removeFuncFromActive(vehicle, handler.getEffectName())
     end,
@@ -3051,16 +3045,12 @@ ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
 -- LIGHTS_FAILURE
 ADS_Breakdowns.EffectApplicators.LIGHTS_FAILURE = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying LIGHTS_FAILURE effect")
         local currentLightMask = vehicle:getLightsTypesMask()
         if currentLightMask ~= 0 then
             vehicle:setLightsTypesMask(0, true, true)
         end
     end,
 
-    remove = function(vehicle, handler)
-        log_dbg("Removing LIGHTS_FAILURE effect")
-    end
 }
 
 function ADS_Breakdowns.setLightsTypesMask(self, superFunc, lightsTypesMask, force, noEventSend)
@@ -3079,15 +3069,6 @@ end
 
 -- ==========================================================
 -- UNLOADING_AUGER_FAILURE
-ADS_Breakdowns.EffectApplicators.UNLOADING_AUGER_FAILURE = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying UNLOADING_AUGER_FAILURE:", effectData.value)
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing UNLOADING_AUGER_FAILURE effect.")
-    end
-}
-
 function ADS_Breakdowns.getIsDischargeNodeActiveOverwrite(vehicle, superFunc, dischargeNode, ...)
     local spec_ads = vehicle.spec_AdvancedDamageSystem
     if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
@@ -3104,7 +3085,6 @@ end
 ADS_Breakdowns.EffectApplicators.PTO_FAILURE = {
     getEffectName = function() return "PTO_FAILURE" end,
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying PTO_FAILURE effect.")
         local effectName = handler.getEffectName()
 
         local function forceDisablePtoConsumers(rootVehicle)
@@ -3153,7 +3133,6 @@ ADS_Breakdowns.EffectApplicators.PTO_FAILURE = {
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
     remove = function(vehicle, handler)
-        log_dbg("Removing PTO_FAILURE effect.")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -3271,45 +3250,20 @@ local function getWheelSeizureTargetWheel(vehicle)
 end
 
 -- ENGINE_LIMP_EFFECT
-ADS_Breakdowns.EffectApplicators.ENGINE_LIMP_EFFECT = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_LIMP_EFFECT:", effectData.value)
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_LIMP_EFFECT effect.")
-    end
-}
-
 -- BRAKE_FORCE_MODIFIER
 ADS_Breakdowns.EffectApplicators.BRAKE_FORCE_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying BRAKE_FORCE_MODIFIER:", effectData.value)
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing BRAKE_FORCE_MODIFIER effect.")
-    end
 }
 
 -- STEERING_STATIC_BIAS_EFFECT
 ADS_Breakdowns.EffectApplicators.STEERING_STATIC_BIAS_EFFECT = {
-    apply = function(vehicle, effectData, handler)
-    end,
-    remove = function(vehicle, handler)
-    end
 }
 
 -- STEERING_SENSITIVITY_MODIFIER
 ADS_Breakdowns.EffectApplicators.STEERING_SENSITIVITY_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-    end,
-    remove = function(vehicle, handler)
-    end
 }
 
 -- WHEEL_SEIZURE_EFFECT
 ADS_Breakdowns.EffectApplicators.WHEEL_SEIZURE_EFFECT = {
-    apply = function(vehicle, effectData, handler)
-    end,
     remove = function(vehicle, handler)
         if vehicle.spec_AdvancedDamageSystem ~= nil then
             vehicle.spec_AdvancedDamageSystem.wheelSeizureTargetIndex = nil
@@ -3322,7 +3276,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
     getEffectName = function() return "ENGINE_HESITATION_CHANCE" end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_HESITATION_CHANCE effect")
 
         local effectName = handler.getEffectName()
         local activeFunc = function(v, dt)
@@ -3355,7 +3308,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_HESITATION_CHANCE")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -3500,12 +3452,10 @@ end
 -- ENGINE_TORQUE_MODIFIER
 ADS_Breakdowns.EffectApplicators.ENGINE_TORQUE_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_TORQUE_MODIFIER:", effectData.value)
         vehicle:updateMotorProperties()
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_TORQUE_MODIFIER effect.")
         vehicle:updateMotorProperties()
     end
 }
@@ -3530,13 +3480,7 @@ end
 -- ==========================================================
 -- PTO_TORQUE_TRANSFER_MODIFIER
 ADS_Breakdowns.EffectApplicators.PTO_TORQUE_TRANSFER_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying PTO_TORQUE_TRANSFER_MODIFIER:", effectData.value)
-    end,
 
-    remove = function(vehicle, handler)
-        log_dbg("Removing PTO_TORQUE_TRANSFER_MODIFIER effect.")
-    end
 }
 
 if PowerConsumer ~= nil and PowerConsumer.getTotalConsumedPtoTorque ~= nil then
@@ -3577,12 +3521,6 @@ end
 -- ==========================================================
 -- FUEL_CONSUMPTION_MODIFIER
 ADS_Breakdowns.EffectApplicators.FUEL_CONSUMPTION_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying FUEL_CONSUMPTION_MODIFIER:", effectData.value)
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing FUEL_CONSUMPTION_MODIFIER effect.")
-    end
 }
 
 function ADS_Breakdowns.updateConsumers(vehicle, dt, accInput)
@@ -3724,7 +3662,6 @@ end
 -- TRANSMISSION_SLIP_EFFECT
 ADS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying TRANSMISSION_SLIP_EFFECT:", effectData.value)
         local motor = vehicle:getMotor()
         if motor == nil then return end
 
@@ -3736,7 +3673,6 @@ ADS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing TRANSMISSION_SLIP_EFFECT effect.")
         local motor = vehicle:getMotor()
         if motor == nil then return end
 
@@ -3750,12 +3686,8 @@ ADS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
 
 -- CVT_SLIP_EFFECT
 ADS_Breakdowns.EffectApplicators.CVT_SLIP_EFFECT = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying CVT_SLIP_EFFECT:", effectData.value)
-    end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing CVT_SLIP_EFFECT effect.")
         local motor = vehicle:getMotor()
         if motor ~= nil then
             motor:setExternalTorqueVirtualMultiplicator(1)
@@ -3765,12 +3697,6 @@ ADS_Breakdowns.EffectApplicators.CVT_SLIP_EFFECT = {
 
 -- CVT_MAX_RATIO_MODIFIER
 ADS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying CVT_MAX_RATIO_MODIFIER:", effectData.value)
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing CVT_MAX_RATIO_MODIFIER effect.")
-    end
 }
 
 -- Convergence rate of the transmission slip modifier, per second at full factor.
@@ -3891,7 +3817,6 @@ ADS_Breakdowns.EffectApplicators.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT:", effectData.value)
 
         local effectName = handler.getEffectName()
 
@@ -3926,7 +3851,6 @@ ADS_Breakdowns.EffectApplicators.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT effect.")
 
         local effectName = handler.getEffectName()
         if vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] ~= nil then
@@ -4024,13 +3948,7 @@ end
 
 -- HYDRAULIC_SPEED_MODIFIER
 ADS_Breakdowns.EffectApplicators.HYDRAULIC_SPEED_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying HYDRAULIC_SPEED_MODIFIER effect")
-    end,
 
-    remove = function(vehicle, handler)
-        log_dbg("Removing HYDRAULIC_SPEED_MODIFIER effect.")
-    end
 }
 
 -- HYDRAULIC_HOLD_DRIFT_EFFEC
@@ -4040,7 +3958,6 @@ ADS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying HYDRAULIC_HOLD_DRIFT_EFFECT:", effectData.value)
         local activeFunc = function(v, dt) 
             if v.spec_attacherJoints and v.spec_attacherJoints.attachedImplements and next(v.spec_attacherJoints.attachedImplements) ~= nil then
                 for _, implementData in pairs(v.spec_attacherJoints.attachedImplements) do
@@ -4081,7 +3998,6 @@ ADS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing HYDRAULIC_HOLD_DRIFT_EFFECT effect.")
         if vehicle.spec_attacherJoints ~= nil and vehicle.spec_attacherJoints.attachedImplements ~= nil then
             for _, implementData in pairs(vehicle.spec_attacherJoints.attachedImplements) do
                 if implementData.object ~= nil then
@@ -4341,13 +4257,7 @@ end
 -- =========================================================
 -- MAX_SPEED_MODIFIER
 ADS_Breakdowns.EffectApplicators.MAX_SPEED_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying MAX_SPEED_MODIFIER effect")
-    end,
 
-    remove = function(vehicle, handler)
-        log_dbg("Removing MAX_SPEED_MODIFIER effect.")
-    end
 }
 
 function ADS_Breakdowns.getSpeedLimitOverwrite(vehicle, superFunc, onlyIfWorking)
@@ -4417,12 +4327,6 @@ ADS_Breakdowns.EffectApplicators.HARVEST_PROCESSING_FAILURE = {
 -- =========================================================
 -- YIELD_REDUCTION_MODIFIER
 ADS_Breakdowns.EffectApplicators.YIELD_REDUCTION_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying YIELD_REDUCTION_MODIFIER effect")
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing YIELD_REDUCTION_MODIFIER effect.")
-    end
 }
 
 function ADS_Breakdowns.addCutterAreaOverwrite(vehicle, superFunc, area, realArea, ...)
@@ -4457,12 +4361,6 @@ end
 -- =========================================================
 -- UNLOADING_SPEED_MODIFIER
 ADS_Breakdowns.EffectApplicators.UNLOADING_SPEED_MODIFIER = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying UNLOADING_SPEED_MODIFIER effect")
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing UNLOADING_SPEED_MODIFIER effect.")
-    end
 }
 
 function ADS_Breakdowns.getDischargeNodeEmptyFactorOverwrite(vehicle, superFunc, dischargeNode, ...)
@@ -4491,13 +4389,11 @@ end
 -- CONDITION_WEAR_MODIFIER
 ADS_Breakdowns.EffectApplicators.CONDITION_WEAR_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying CONDITION_WEAR_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraConditionWear = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing CONDITION_WEAR_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraConditionWear = 0
     end
@@ -4506,13 +4402,11 @@ ADS_Breakdowns.EffectApplicators.CONDITION_WEAR_MODIFIER = {
 -- SERVICE_WEAR_MODIFIER
 ADS_Breakdowns.EffectApplicators.SERVICE_WEAR_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying SERVICE_WEAR_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraServiceWear = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing SERVICE_WEAR_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraServiceWear = 0
     end
@@ -4521,13 +4415,11 @@ ADS_Breakdowns.EffectApplicators.SERVICE_WEAR_MODIFIER = {
 -- ENGINE_HEAT_MODIFIER
 ADS_Breakdowns.EffectApplicators.ENGINE_HEAT_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_HEAT_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraEngineHeat = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_HEAT_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraEngineHeat = 0
     end
@@ -4536,13 +4428,11 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HEAT_MODIFIER = {
 -- TRANASMISSION_HEAT_MODIFIER
 ADS_Breakdowns.EffectApplicators.TRANASMISSION_HEAT_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying TRANASMISSION_HEAT_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraTransmissionHeat = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing TRANASMISSION_HEAT_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraTransmissionHeat = 0
     end
@@ -4551,13 +4441,11 @@ ADS_Breakdowns.EffectApplicators.TRANASMISSION_HEAT_MODIFIER = {
 -- THERMOSTAT_HEALTH_MODIFIER
 ADS_Breakdowns.EffectApplicators.THERMOSTAT_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying THERMOSTAT_HEALTH_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.thermostatHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing THERMOSTAT_HEALTH_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.thermostatHealth = 1.0
     end
@@ -4566,13 +4454,11 @@ ADS_Breakdowns.EffectApplicators.THERMOSTAT_HEALTH_MODIFIER = {
 -- RADIATOR_HEALTH_MODIFIER
 ADS_Breakdowns.EffectApplicators.RADIATOR_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying RADIATOR_HEALTH_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.radiatorHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing RADIATOR_HEALTH_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.radiatorHealth = 1.0
     end
@@ -4581,13 +4467,11 @@ ADS_Breakdowns.EffectApplicators.RADIATOR_HEALTH_MODIFIER = {
 -- BATTERY_HEALTH_MODIFIER
 ADS_Breakdowns.EffectApplicators.BATTERY_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying BATTERY_HEALTH_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.batteryHealth = math.max(1.0 + effectData.value, 0.0001)
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing BATTERY_HEALTH_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.batteryHealth = 1.0
     end
@@ -4596,13 +4480,11 @@ ADS_Breakdowns.EffectApplicators.BATTERY_HEALTH_MODIFIER = {
 -- ALTERNATOR_HEALTH_MODIFIER
 ADS_Breakdowns.EffectApplicators.ALTERNATOR_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ALTERNATOR_HEALTH_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.alternatorHealth = math.max(1.0 + effectData.value, 0.0001)
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing ALTERNATOR_HEALTH_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.alternatorHealth = 1.0
     end
@@ -4611,13 +4493,11 @@ ADS_Breakdowns.EffectApplicators.ALTERNATOR_HEALTH_MODIFIER = {
 -- FAN_CLUTCH_MODIFIER
 ADS_Breakdowns.EffectApplicators.FAN_CLUTCH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying FAN_CLUTCH_MODIFIER:", effectData.value)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.fanClutchHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing FAN_CLUTCH_MODIFIER effect.")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.fanClutchHealth = 1.0
     end
@@ -4626,7 +4506,6 @@ ADS_Breakdowns.EffectApplicators.FAN_CLUTCH_MODIFIER = {
 -- THERMOSTAT_STUCK_EFFECT
 ADS_Breakdowns.EffectApplicators.THERMOSTAT_STUCK_EFFECT = {
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying THERMOSTAT_STUCK_EFFECT")
         local spec = vehicle.spec_AdvancedDamageSystem
 
 
@@ -4636,7 +4515,6 @@ ADS_Breakdowns.EffectApplicators.THERMOSTAT_STUCK_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing THERMOSTAT_STUCK_EFFECT")
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.thermostatStuckedPosition = nil
     end
@@ -4650,7 +4528,6 @@ ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying IDLE_HUNTING_EFFECT effect")
 
         local effectName = handler.getEffectName()
         local motor = vehicle:getMotor()
@@ -4674,7 +4551,6 @@ ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing IDLE_HUNTING_EFFECT effect")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -4683,7 +4559,6 @@ ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
 -- DARK_EXHAUST_EFFECT
 ADS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {    
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying DARK_EXHAUST_EFFECT effect")
         local originalMinRpmColorName = "exhaustEffectsMinRpmColor"
         local originalMaxRpmColorName = "exhaustEffectsMaxRpmColor"
         local effect = vehicle.spec_motorized.exhaustEffects[#vehicle.spec_motorized.exhaustEffects]
@@ -4720,7 +4595,6 @@ ADS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing DARK_EXHAUST_EFFECT effect")
         local originalMinRpmColorName = "exhaustEffectsMinRpmColor"
         local originalMaxRpmColorName = "exhaustEffectsMaxRpmColor"
         local originalMinRpmColorValue = vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMinRpmColorName]
@@ -4751,7 +4625,6 @@ ADS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ELECTRICAL_CONTACT_RESISTANCE_EFFECT effect")
 
         local effectName = handler.getEffectName()
 
@@ -4784,7 +4657,6 @@ ADS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing ELECTRICAL_CONTACT_RESISTANCE_EFFECT effect")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -4957,7 +4829,6 @@ ADS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying CVT_PRESSURE_DROP_CHANCE:", effectData.value)
         local motor = vehicle:getMotor()
         if motor == nil then return end
         if motor.minForwardGearRatio == nil then return end
@@ -5006,7 +4877,6 @@ ADS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
 ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
     getEffectName = function() return "ENGINE_STALLS_CHANCE" end,
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_STALLS_CHANCE effect.")
         local effectName = handler.getEffectName()
         local activeFunc = function(v, dt)
 
@@ -5032,7 +4902,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
     remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_STALLS_CHANCE effect.")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end,
 }
@@ -5042,7 +4911,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
 ADS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
     getEffectName = function() return "PTO_AUTO_DISENGAGE_CHANCE" end,
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying PTO_AUTO_DISENGAGE_CHANCE effect.")
         local effectName = handler.getEffectName()
 
         local function hasActivePtoLoad(rootVehicle)
@@ -5134,7 +5002,6 @@ ADS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
     remove = function(vehicle, handler)
-        log_dbg("Removing PTO_AUTO_DISENGAGE_CHANCE effect.")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -5170,7 +5037,6 @@ end
 ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
     getEffectName = function() return "ENGINE_HARD_START_MODIFIER" end,
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying ENGINE_HARD_START_MODIFIER effect")
         local effectName = handler.getEffectName()
 
         local activeFunc = function(v, dt)
@@ -5244,7 +5110,6 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
     remove = function(vehicle, handler)
-        log_dbg("Removing ENGINE_HARD_START_MODIFIER effect.")
         local effect = vehicle.spec_AdvancedDamageSystem
             and vehicle.spec_AdvancedDamageSystem.activeEffects
             and vehicle.spec_AdvancedDamageSystem.activeEffects.ENGINE_HARD_START_MODIFIER
@@ -5349,7 +5214,6 @@ ADS_Breakdowns.EffectApplicators.GEAR_SHIFT_FAILURE_CHANCE = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying GEAR_SHIFT_FAILURE_CHANCE:", effectData.value)
 
         local effectName = handler.getEffectName()
 
@@ -5372,7 +5236,6 @@ ADS_Breakdowns.EffectApplicators.GEAR_SHIFT_FAILURE_CHANCE = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing GEAR_SHIFT_FAILURE_CHANCE effect.")
 
         local effectName = handler.getEffectName()
         if vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] ~= nil then
@@ -5468,7 +5331,6 @@ end
 ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
     getEffectName = function() return "GEAR_REJECTION_CHANCE" end,
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying GEAR_REJECTION_CHANCE effect")
         local effectName = handler.getEffectName()
         local activeFunc = function(v, dt)
             if v:getIsMotorStarted() then
@@ -5507,7 +5369,6 @@ ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
     remove = function(vehicle, handler)
-        log_dbg("Removing GEAR_REJECTION_CHANCE effect")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -5520,7 +5381,6 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
     end,
 
     apply = function(vehicle, effectData, handler)
-        log_dbg("Applying LIGHTS_FLICKER_CHANCE effect")
 
         local effectName = handler.getEffectName()
 
@@ -5559,7 +5419,6 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
     end,
 
     remove = function(vehicle, handler)
-        log_dbg("Removing LIGHTS_FLICKER_CHANCE effect")
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -5567,12 +5426,6 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
 -- =========================================================
 -- EMPTY_EFFECT
 ADS_Breakdowns.EffectApplicators.EMPTY_EFFECT = {
-    apply = function(vehicle, effectData, handler)
-        log_dbg("Applying EMPTY_EFFECT effect")
-    end,
-    remove = function(vehicle, handler)
-        log_dbg("Removing EMPTY_EFFECT effect.")
-    end
 }
 
 -- ==========================================================
