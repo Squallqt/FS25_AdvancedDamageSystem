@@ -11,7 +11,7 @@ function ADS_TutorialStateEvent.new(state)
     local self = ADS_TutorialStateEvent.emptyNew()
     self.state = ADS_Config.createTutorialState(
         state ~= nil and state.tutorialMode,
-        state ~= nil and state.welcomeVersionSeen,
+        state ~= nil and state.welcomeMessageSeen,
         state ~= nil and state.messages
     )
     return self
@@ -19,7 +19,7 @@ end
 
 function ADS_TutorialStateEvent:writeStream(streamId, connection)
     streamWriteBool(streamId, self.state.tutorialMode)
-    streamWriteString(streamId, self.state.welcomeVersionSeen)
+    streamWriteBool(streamId, self.state.welcomeMessageSeen)
     for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
         streamWriteBool(streamId, self.state.messages[messageId])
     end
@@ -28,11 +28,11 @@ end
 function ADS_TutorialStateEvent:readStream(streamId, connection)
     local messages = {}
     local tutorialMode = streamReadBool(streamId)
-    local welcomeVersionSeen = streamReadString(streamId)
+    local welcomeMessageSeen = streamReadBool(streamId)
     for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
         messages[messageId] = streamReadBool(streamId)
     end
-    self.state = ADS_Config.createTutorialState(tutorialMode, welcomeVersionSeen, messages)
+    self.state = ADS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
     self:run(connection)
 end
 

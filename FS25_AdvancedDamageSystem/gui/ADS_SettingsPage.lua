@@ -715,10 +715,6 @@ function ADS_InGameSettings:activateEmbeddedSettingsPage(page)
 
     self:updateADSPageVisibility(page)
 
-    if not canChangeADSSettings() then
-        return
-    end
-
     self:initializeSettingsPageControls(page)
     if page.settingsSlider ~= nil and page.settingsSlider.setDataElement ~= nil then
         page.settingsSlider:setDataElement(page.settingsLayout)
@@ -760,19 +756,17 @@ function ADS_InGameSettings:updateADSPageVisibility(targetPage)
         return
     end
 
-    local canChangeSettings = canChangeADSSettings()
-
     if page.noPermissionText ~= nil then
-        page.noPermissionText:setVisible(not canChangeSettings)
+        page.noPermissionText:setVisible(false)
     end
     if page.settingsLayout ~= nil then
-        page.settingsLayout:setVisible(canChangeSettings and page.ads_initSettingsMenuDone == true)
+        page.settingsLayout:setVisible(page.ads_initSettingsMenuDone == true)
     end
     if page.settingsSliderBox ~= nil then
-        page.settingsSliderBox:setVisible(canChangeSettings and page.ads_initSettingsMenuDone == true)
+        page.settingsSliderBox:setVisible(page.ads_initSettingsMenuDone == true)
     end
     if page.settingsTooltipSeparator ~= nil then
-        page.settingsTooltipSeparator:setVisible(canChangeSettings and page.ads_initSettingsMenuDone == true)
+        page.settingsTooltipSeparator:setVisible(page.ads_initSettingsMenuDone == true)
     end
 end
 
@@ -814,7 +808,6 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     local steps = ADS_InGameSettings.steps
     local pending = ADS_InGameSettings.pendingConfig or buildPendingConfigFromAdsConfig()
     local tutorialOption = currentPage.ads_tutorialMode
-    local tutorialResetButton = currentPage.ads_tutorialResetTips
 
     local function setIndex(element, valueList, targetValue)
         local bestIndex = 1
@@ -887,12 +880,6 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     local canChangeSettings = canChangeADSSettings()
     local disableAll = not canChangeSettings
 
-    if tutorialOption ~= nil then
-        tutorialOption:setDisabled(disableAll)
-    end
-    if tutorialResetButton ~= nil then
-        tutorialResetButton:setDisabled(disableAll)
-    end
     currentPage.ads_serviceWear:setDisabled(disableAll)
     currentPage.ads_conditionWear:setDisabled(disableAll)
     currentPage.ads_downtimeWear:setDisabled(disableAll)
@@ -918,6 +905,10 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
     currentPage.ads_drivetrainParkBrakeEnabled:setDisabled(disableAll)
     currentPage.ads_drivetrainParkBrakeAuto:setDisabled(disableAll or not pending.drivetrainParkBrakeEnabled)
     currentPage.ads_thermalSensitivity:setDisabled(disableAll)
+    currentPage.ads_temperatureChangeSpeed:setDisabled(disableAll)
+    currentPage.ads_radiatorDirtInfluence:setDisabled(disableAll)
+    currentPage.ads_warmingBoostPower:setDisabled(disableAll)
+    currentPage.ads_coolingSlowdownPower:setDisabled(disableAll)
     currentPage.ads_cloggingSpeed:setDisabled(disableAll)
     currentPage.ads_fieldInspectionDuration:setDisabled(disableAll)
     currentPage.ads_lubricationReducePerOperatingHour:setDisabled(disableAll)

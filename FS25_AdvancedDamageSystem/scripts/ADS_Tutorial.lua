@@ -89,10 +89,9 @@ function ADS_Tutorial:update(dt)
     if self.messageDowntime <= 0 then
 
         --- GLOBAL MESSAGES
-        local currentModVersion = ADS_Config.getCurrentModVersion()
-        if ADS_Config.WELCOME_VERSION_SEEN ~= currentModVersion then
+        if not ADS_Config.WELCOME_MESSAGE_SEEN then
             self:showMessage(g_i18n:getText("ads_tutorial_welcome_message"), false, 5000)
-            ADS_Config.WELCOME_VERSION_SEEN = currentModVersion
+            ADS_Config.WELCOME_MESSAGE_SEEN = true
         end
 
         --- VEHICLE MESSAGES

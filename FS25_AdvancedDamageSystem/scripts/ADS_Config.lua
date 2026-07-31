@@ -1,6 +1,4 @@
 
-local modDirectory = g_currentModDirectory
-
 ADS_Config = {
     VER = 136,
 
@@ -748,24 +746,6 @@ function ADS_Config.resetTutorialMessages()
     end
 end
 
-function ADS_Config.getCurrentModVersion()
-    if ADS_Config.currentModVersion ~= nil then
-        return ADS_Config.currentModVersion
-    end
-
-    local version = ""
-    if modDirectory ~= nil then
-        local xmlFile = loadXMLFile("adsModDescVersion", modDirectory .. "modDesc.xml")
-        if xmlFile ~= nil and xmlFile ~= 0 then
-            version = getXMLString(xmlFile, "modDesc.version") or ""
-            delete(xmlFile)
-        end
-    end
-
-    ADS_Config.currentModVersion = version
-    return ADS_Config.currentModVersion
-end
-
 ADS_Config.TUTORIAL_MESSAGE_IDS = {}
 for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
     table.insert(ADS_Config.TUTORIAL_MESSAGE_IDS, messageId)
@@ -776,10 +756,10 @@ ADS_Config.TUTORIAL_PLAYER_STATES = {}
 ADS_Config.TUTORIAL_STATE_LOADED = false
 ADS_Config.TUTORIAL_LOCAL_USER_ID = nil
 
-function ADS_Config.createTutorialState(tutorialMode, welcomeVersionSeen, messages)
+function ADS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
     local state = {
         tutorialMode = tutorialMode ~= false,
-        welcomeVersionSeen = tostring(welcomeVersionSeen or ""),
+        welcomeMessageSeen = welcomeMessageSeen == true,
         messages = {}
     }
 
@@ -793,7 +773,7 @@ end
 function ADS_Config.captureTutorialState()
     return ADS_Config.createTutorialState(
         ADS_Config.TUTORIAL_MODE,
-        ADS_Config.WELCOME_VERSION_SEEN,
+        ADS_Config.WELCOME_MESSAGE_SEEN,
         ADS_Config.TUTORIAL_MESSAGES
     )
 end
@@ -801,12 +781,12 @@ end
 function ADS_Config.applyTutorialState(state)
     local normalized = ADS_Config.createTutorialState(
         state ~= nil and state.tutorialMode,
-        state ~= nil and state.welcomeVersionSeen,
+        state ~= nil and state.welcomeMessageSeen,
         state ~= nil and state.messages
     )
 
     ADS_Config.TUTORIAL_MODE = normalized.tutorialMode
-    ADS_Config.WELCOME_VERSION_SEEN = normalized.welcomeVersionSeen
+    ADS_Config.WELCOME_MESSAGE_SEEN = normalized.welcomeMessageSeen
     for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
         ADS_Config.TUTORIAL_MESSAGES[messageId] = normalized.messages[messageId]
     end
@@ -815,7 +795,7 @@ end
 
 function ADS_Config.resetLocalTutorialState()
     ADS_Config.TUTORIAL_MODE = true
-    ADS_Config.WELCOME_VERSION_SEEN = ""
+    ADS_Config.WELCOME_MESSAGE_SEEN = false
     for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
         ADS_Config.TUTORIAL_MESSAGES[messageId] = false
     end
@@ -837,14 +817,14 @@ function ADS_Config.getTutorialPlayerState(uniqueUserId)
         state = ADS_Config.createTutorialState()
         ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId] = state
     end
-    return ADS_Config.createTutorialState(state.tutorialMode, state.welcomeVersionSeen, state.messages)
+    return ADS_Config.createTutorialState(state.tutorialMode, state.welcomeMessageSeen, state.messages)
 end
 
 function ADS_Config.setTutorialPlayerState(uniqueUserId, state)
     if uniqueUserId == nil or uniqueUserId == "" or state == nil then return end
     ADS_Config.TUTORIAL_PLAYER_STATES[tostring(uniqueUserId)] = ADS_Config.createTutorialState(
         state.tutorialMode,
-        state.welcomeVersionSeen,
+        state.welcomeMessageSeen,
         state.messages
     )
 end
@@ -895,7 +875,7 @@ local function saveTutorialPlayerStates(xmlFile, root)
         local key = string.format("%s.tutorialPlayers.player(%d)", root, index - 1)
         setXMLString(xmlFile, key .. "#uniqueUserId", uniqueUserId)
         setXMLBool(xmlFile, key .. ".tutorialMode", state.tutorialMode)
-        setXMLString(xmlFile, key .. ".welcomeVersionSeen", state.welcomeVersionSeen)
+        setXMLBool(xmlFile, key .. ".welcomeMessageSeen", state.welcomeMessageSeen)
         for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
             setXMLBool(xmlFile, key .. ".messages." .. messageId, state.messages[messageId] == true)
         end
@@ -917,7 +897,7 @@ local function loadTutorialPlayerStates(xmlFile, root)
         end
         ADS_Config.setTutorialPlayerState(uniqueUserId, {
             tutorialMode = getXMLBool(xmlFile, key .. ".tutorialMode"),
-            welcomeVersionSeen = getXMLString(xmlFile, key .. ".welcomeVersionSeen"),
+            welcomeMessageSeen = getXMLBool(xmlFile, key .. ".welcomeMessageSeen"),
             messages = messages
         })
         index = index + 1
