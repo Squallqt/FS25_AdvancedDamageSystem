@@ -155,15 +155,6 @@ function ADS_Hud:new()
         commands = nil
     }
 
-    self.managerDebugPanel = {
-        x = 0.766,
-        y = 0.70,
-        width = 0.22,
-        padding = 0.01,
-        lineHeight = 0.012,
-        isVisible = false
-    }
-
     self.text = {
         headerSize = 0.014,
         normalSize = 0.010,
@@ -425,8 +416,6 @@ function ADS_Hud:draw()
     if not isHudVisible then
         return
     end
-
-    -- manager debug panel temporarily disabled
 
     self:drawNotificationPanel()
 
@@ -2889,78 +2878,6 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
 
     setTextColor(1, 1, 1, 1)
 end
-
--- =====================================================================================
---                             DEBAG HUD INACTIVE
--- =====================================================================================
-
-function ADS_Hud:drawManagerHUD()
-    if ADS_Main == nil or ADS_Main.vehicles == nil or next(ADS_Main.vehicles) == nil then
-        return
-    end
-
-    local panel = self.managerDebugPanel
-    local textSettings = self.text
-
-    local vehicleLines = {}
-    for vehicleId, vehicle in pairs(ADS_Main.vehicles) do
-        if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil then
-            local line = string.format("%s | s: %.2f%% | s: %.2f%%",
-                                        vehicle:getFullName(),
-                                        vehicle:getServiceLevel() * 100,
-                                        vehicle:getConditionLevel() * 100)
-            table.insert(vehicleLines, line)
-        end
-    end
-
-    if #vehicleLines == 0 then
-        return
-    end
-
-    table.sort(vehicleLines)
-
-    local maxVehicleLines = 20
-    local shownVehicleCount = math.min(#vehicleLines, maxVehicleLines)
-    local hiddenVehicleCount = math.max(#vehicleLines - shownVehicleCount, 0)
-    local hasOverflowLine = hiddenVehicleCount > 0
-
-    local totalLines = shownVehicleCount + 1 + (hasOverflowLine and 1 or 0)
-    local dynamicHeight = (panel.padding * 2) + textSettings.headerSize + (totalLines * panel.lineHeight)
-    local panelY = panel.y - dynamicHeight
-
-    self:drawPanelBackground(
-        panel.x,
-        panelY,
-        panel.width,
-        dynamicHeight,
-        {0, 0, 0, 0.7}
-    )
-
-    setTextColor(unpack(textSettings.color))
-    
-    local textStartX = panel.x + panel.padding
-    local currentY = panel.y - panel.padding - 0.005
-
-    setTextAlignment(RenderText.ALIGN_LEFT)
-    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_TOP)
-    setTextBold(true)
-    renderText(textStartX, currentY, textSettings.headerSize, "ADS Monitored Vehicles")
-    setTextBold(false)
-
-    for i = 1, shownVehicleCount do
-        local line = vehicleLines[i]
-        currentY = currentY - panel.lineHeight
-        renderText(textStartX, currentY, textSettings.normalSize, line)
-    end
-
-    if hasOverflowLine then
-        currentY = currentY - panel.lineHeight
-        renderText(textStartX, currentY, textSettings.normalSize, string.format("and %d more vehicles...", hiddenVehicleCount))
-    end
-
-    setTextColor(1, 1, 1, 1)
-end
-
 
 -- =====================================================================================
 --                             DAMAGE BAR CONTROL
