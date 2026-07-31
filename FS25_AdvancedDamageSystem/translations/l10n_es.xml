@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Sulfatación moderada de la batería. La capacidad efectiva de la batería se reduce significativamente y el arranque del motor es difícil."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Sulfatación severa de la batería. La capacidad utilizable de la batería es críticamente baja y el rendimiento de arranque es inestable."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Sulfatación crítica de la batería. La capacidad efectiva de la batería es casi nula y el rendimiento de arranque es insuficiente para un arranque fiable del motor."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Potencia de arranque de la batería insuficiente"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Mal funcionamiento del regulador del alternador. La salida de carga se reduce, lo que resulta en una menor eficiencia de carga de la batería."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Mal funcionamiento moderado del regulador del alternador. La salida de carga es inestable y reducida, causando una mala carga de la batería y mayores pérdidas de voltaje en el sistema eléctrico."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Mal funcionamiento severo del regulador del alternador. La salida de carga se reduce críticamente, el suministro de voltaje es inestable y el sistema eléctrico opera con grandes pérdidas."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Fallo completo del regulador del alternador. La carga de la batería está ausente y el sistema eléctrico opera solo con la reserva restante de la batería."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Fallo del sistema de carga"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Cojinetes del turbo desgastados. Se escucha un ligero silbido y hay una leve pérdida de potencia a altas RPM."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Pérdida de aceite en los sellos del turbo. Pérdida notable de potencia, mayor consumo de combustible."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Álabes de la turbina dañados. Pérdida severa de potencia y riesgo de calada del motor bajo carga pesada."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Fuga moderada de refrigerante. La eficiencia del sistema de refrigeración se reduce y la temperatura de operación del motor aumenta más rápidamente bajo carga."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Fuga severa de refrigerante. La eficiencia del sistema de refrigeración se reduce significativamente y es probable que se sobrecaliente bajo carga."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Fuga crítica de refrigerante. La eficiencia del sistema de refrigeración se reduce críticamente y no se puede mantener una temperatura segura del motor."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Fuga de refrigerante crítica"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Mal funcionamiento del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce ligeramente y hay ruido anormal del embrague."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Mal funcionamiento moderado del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce y el ruido del embrague es claramente audible."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Mal funcionamiento severo del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce significativamente y el ruido del embrague es severo."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Fallo crítico del embrague del ventilador. La eficiencia del ventilador de refrigeración se reduce críticamente y no se puede garantizar un flujo de aire adecuado a través del sistema de refrigeración."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Fallo del embrague del ventilador"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Obstrucción del filtro de combustible. El flujo de combustible está restringido, causando una ligera vacilación del motor bajo carga y una reducción menor del par del motor."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Obstrucción moderada del filtro de combustible. La restricción del flujo de combustible es notable, la vacilación del motor bajo carga es frecuente, el par del motor se reduce y pueden ocurrir caladas."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Obstrucción severa del filtro de combustible. El flujo de combustible está críticamente restringido, la vacilación del motor es pronunciada, el par del motor está muy reducido y es probable que el motor se cale."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Avanzado"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Seleccionar tipo de inspección"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Reparar fallos encontrados"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Seleccionar nivel de mantenimiento"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Seleccionar calidad de consumibles"/>
         <text name="ads_option_menu_option_one_title_repair" text="Seleccionar tipo de reparación"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Se utilizan para conectar baterías de vehículos y arrancar motores descargados"/>
         <text name="ads_jumper_cables_action" text="Conectar/desconectar Cables de Arranque"/>
         <text name="ads_jumper_cables_connected" text="Cables de Arranque conectados a %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Los Cables de Arranque ya están conectados a %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="El vehículo no es adecuado para conectar Cables de Arranque"/>
         <text name="ads_jumper_cables_both_already_connected" text="Los Cables de Arranque ya están conectados a %s y %s"/>
         <text name="ads_jumper_cables_disconnected" text="Cables de Arranque desconectados de %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s está demasiado lejos de %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Inspección de vehículo"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Inspeccionar vehículo"/>
         <text name="ads_field_inspection_hold_to_start" text="Mantenga para iniciar la inspección"/>
-        <text name="ads_field_inspection_starting" text="Iniciando inspección..."/>
         <text name="ads_field_inspection_progress" text="Realizando inspección visual... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Inspección cancelada"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Detenga el motor antes de la inspección"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Horas"/>
         <text name="ads_ingame_menu_header_condition" text="Condición"/>
         <text name="ads_ingame_menu_header_interval" text="Interv."/>
-        <text name="ads_ingame_menu_header_service_status" text="Inspec./Serv."/>
         <text name="ads_ingame_menu_header_last_inspection" text="Inspec."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Manten."/>
         <text name="ads_ingame_menu_header_cost" text="Gastos"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="No hay vehículos sin ADS"/>
         <text name="ads_ingame_menu_empty_active" text="No hay vehículos ADS"/>
         <text name="ads_ingame_menu_empty_service" text="No hay vehículos en mantenimiento"/>
-        <text name="ads_sell_dialog_costs_title" text="Costes adicionales"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Mantenimiento vencido"/>
         <text name="ads_sell_dialog_repair_penalty" text="Reparación"/>
         <text name="ads_sell_dialog_washing_penalty" text="Lavado"/>
-        <text name="ads_sell_dialog_total" text="Total"/>
         <text name="ads_mobile_workshop_low_maintainability" text="ADVERTENCIA: %s no está disponible para %s en el taller móvil debido a baja mantenibilidad."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="¡Sobrecarga crítica! Reduzca de inmediato la carga sobre la máquina."/>
         <!-- Tutorial -->

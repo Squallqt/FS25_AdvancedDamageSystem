@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Solfatazione moderata della batteria. La capacità effettiva è fortemente ridotta e l'avviamento del motore è difficoltoso."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Forte solfatazione della batteria. La capacità utilizzabile è criticamente bassa e la potenza di spunto è instabile."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Solfatazione critica della batteria. La capacità effettiva è quasi nulla e la potenza di avviamento non basta per un avvio affidabile del motore."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Potenza di avviamento insufficiente"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Malfunzionamento del regolatore dell'alternatore. La corrente di carica è ridotta e la batteria si ricarica meno efficacemente."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Malfunzionamento moderato del regolatore dell'alternatore. L'uscita di carica è instabile e ridotta, con scarsa ricarica della batteria e maggiori perdite di tensione nell'impianto elettrico."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Grave malfunzionamento del regolatore dell'alternatore. La corrente di carica è criticamente ridotta, la tensione è instabile e l'impianto elettrico lavora con forti perdite."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Guasto completo del regolatore dell'alternatore. La batteria non viene più ricaricata e l'impianto elettrico funziona solo con la carica residua."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Guasto sistema di ricarica"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Cuscinetti del turbocompressore usurati. Si percepisce un leggero fischio e c'è una lieve perdita di potenza ad alto regime."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Tenute del turbo che perdono. Perdita di potenza evidente e aumento del consumo di carburante."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Palette della turbina danneggiate. Grave perdita di potenza e rischio di spegnimento del motore sotto carico elevato."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Perdita moderata di liquido refrigerante. L'efficienza del sistema di raffreddamento diminuisce e la temperatura motore sale più rapidamente sotto carico."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Grave perdita di liquido refrigerante. L'efficienza del raffreddamento è fortemente ridotta e il surriscaldamento sotto carico è probabile."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Perdita critica di liquido refrigerante. L'efficienza del sistema di raffreddamento è criticamente ridotta e non è possibile mantenere una temperatura motore sicura."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Perdita refrigerante critica"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Malfunzionamento del giunto ventola. L'efficienza della ventola di raffreddamento è leggermente ridotta ed è presente rumorosità anomala."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Malfunzionamento moderato del giunto ventola. L'efficienza della ventola è ridotta e la rumorosità del giunto è chiaramente percepibile."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Grave malfunzionamento del giunto ventola. L'efficienza della ventola è fortemente ridotta e la rumorosità è marcata."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Guasto critico del giunto ventola. L'efficienza della ventola è criticamente ridotta e non può più essere garantito un flusso d'aria adeguato nel sistema di raffreddamento."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Guasto giunto ventola"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Intasamento del filtro carburante. Il flusso di carburante è limitato, con lieve esitazione del motore sotto carico e una piccola riduzione della coppia."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Intasamento moderato del filtro carburante. La limitazione del flusso è evidente, l'esitazione sotto carico è frequente, la coppia motore diminuisce e possono verificarsi spegnimenti."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Grave intasamento del filtro carburante. Il flusso è criticamente limitato, l'esitazione è marcata, la coppia motore è fortemente ridotta e gli spegnimenti sono probabili."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Approfondita"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Seleziona il tipo di ispezione"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Ripara i difetti rilevati"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Seleziona il livello di manutenzione"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Seleziona la qualità dei materiali di consumo"/>
         <text name="ads_option_menu_option_one_title_repair" text="Seleziona il tipo di riparazione"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Utilizzati per collegare le batterie dei veicoli e avviare motori con batteria scarica"/>
         <text name="ads_jumper_cables_action" text="Collega/scollega i cavi di avviamento"/>
         <text name="ads_jumper_cables_connected" text="Cavi di avviamento collegati a %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Cavi di avviamento già collegati a %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Il veicolo non è adatto al collegamento dei cavi di avviamento"/>
         <text name="ads_jumper_cables_both_already_connected" text="Cavi di avviamento già collegati a %s e %s"/>
         <text name="ads_jumper_cables_disconnected" text="Cavi di avviamento scollegati da %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s è troppo lontano da %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Ispezione del veicolo"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="Chiudi"/>
-        <text name="ads_field_inspection_action" text="Ispeziona il veicolo"/>
         <text name="ads_field_inspection_hold_to_start" text="Tieni premuto per avviare l'ispezione"/>
-        <text name="ads_field_inspection_starting" text="Avvio dell'ispezione..."/>
         <text name="ads_field_inspection_progress" text="Ispezione visiva in corso... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Ispezione annullata"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Spegni il motore prima dell'ispezione"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Ore"/>
         <text name="ads_ingame_menu_header_condition" text="Condizione"/>
         <text name="ads_ingame_menu_header_interval" text="Interv."/>
-        <text name="ads_ingame_menu_header_service_status" text="Ispez./Manut."/>
         <text name="ads_ingame_menu_header_last_inspection" text="Ispez."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Manut."/>
         <text name="ads_ingame_menu_header_cost" text="Gestione"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Nessun veicolo senza ADS"/>
         <text name="ads_ingame_menu_empty_active" text="Nessun veicolo ADS"/>
         <text name="ads_ingame_menu_empty_service" text="Nessun veicolo in manutenzione"/>
-        <text name="ads_sell_dialog_costs_title" text="Costi aggiuntivi"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Manutenzione scaduta"/>
         <text name="ads_sell_dialog_repair_penalty" text="Riparazione"/>
         <text name="ads_sell_dialog_washing_penalty" text="Lavaggio"/>
-        <text name="ads_sell_dialog_total" text="Totale"/>
         <text name="ads_mobile_workshop_low_maintainability" text="WARNING: %s non è disponibile per %s nell'officina mobile a causa della bassa manutenibilità."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Sovraccarico critico! Riduci immediatamente il carico sulla macchina."/>
         <!-- Tutorial -->

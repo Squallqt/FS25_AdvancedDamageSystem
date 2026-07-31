@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Середня сульфатація акумулятора. Ефективна ємність значно знижена, запуск двигуна утруднений."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Сильна сульфатація акумулятора. Корисна ємність критично низька, робота стартера нестабільна."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Критична сульфатація акумулятора. Ефективна ємність майже відсутня, потужності стартера недостатньо для надійного запуску."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Недостатньо пускової потужності АКБ"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Несправність регулятора генератора. Потужність зарядки знижена, що погіршує ефективність зарядки акумулятора."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Середня несправність регулятора. Зарядка нестабільна, що призводить до поганої зарядки АКБ та втрат напруги в системі."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Сильна несправність регулятора. Зарядка критично знижена, напруга нестабільна, електрична система працює з великими втратами."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Повна відмова регулятора генератора. Зарядка акумулятора відсутня, система працює лише на залишках резерву АКБ."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Відмова системи зарядки"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Знос підшипників турбіни. Чутне слабке свистіння, невелика втрата потужності на високих обертах."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Витік ущільнювачів турбіни. Помітна втрата потужності, підвищена витрата палива."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Пошкодження лопатей турбіни. Сильна втрата потужності та ризик зупинки двигуна під великим навантаженням."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Середній витік антифризу. Температура двигуна під навантаженням зростає швидше."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Сильний витік антифризу. Ефективність охолодження значно впала, перегрів під навантаженням дуже ймовірний."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Критичний витік охолоджуючої рідини. Безпечна температура двигуна не може бути забезпечена."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Критичний витік антифризу"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Несправність муфти вентилятора. Ефективність обдування злегка знижена, присутній аномальний шум муфти."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Середня несправність муфти вентилятора. Ефективність охолодження знижена, шум муфти чітко чутно."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Сильна несправність муфти вентилятора. Обдування значно погіршилося, шум муфти дуже сильний."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Критична відмова муфти вентилятора. Ефективність охолодження критично низька, потік повітря через радіатор не забезпечується."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Відмова муфти вентилятора"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Засмічення паливного фільтра. Потік палива обмежений, що викликає легкі перебої під навантаженням та невелике падіння моменту."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Середнє засмічення фільтра. Перебої в роботі часті, потужність двигуна знижена, можливі зупинки."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Сильне засмічення паливного фільтра. Потік палива критично обмежений, крутний момент сильно впав, зупинки двигуна дуже ймовірні."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Поглиблений"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Оберіть тип огляду"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Ремонт виявлених несправностей"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Оберіть рівень обслуговування"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Оберіть якість витратних матеріалів"/>
         <text name="ads_option_menu_option_one_title_repair" text="Оберіть тип ремонту"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Використовуються для з'єднання акумуляторів та запуску двигуна від іншого засобу"/>
         <text name="ads_jumper_cables_action" text="Під'єднати/від'єднати дроти"/>
         <text name="ads_jumper_cables_connected" text="Пускові дроти під'єднано до %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Пускові дроти вже під'єднані до %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Техніка не підходить для під'єднання пускових дротів"/>
         <text name="ads_jumper_cables_both_already_connected" text="Пускові дроти вже з'єднують %s та %s"/>
         <text name="ads_jumper_cables_disconnected" text="Пускові дроти від'єднано від %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s занадто далеко від %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Огляд техніки"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Оглянути техніку"/>
         <text name="ads_field_inspection_hold_to_start" text="Утримуйте для початку огляду"/>
-        <text name="ads_field_inspection_starting" text="Початок огляду..."/>
         <text name="ads_field_inspection_progress" text="Виконується візуальний огляд... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Огляд скасовано"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Зупиніть двигун перед оглядом"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Години"/>
         <text name="ads_ingame_menu_header_condition" text="Стан"/>
         <text name="ads_ingame_menu_header_interval" text="Інтервал"/>
-        <text name="ads_ingame_menu_header_service_status" text="Оглянуто/Обслужено"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Огляд"/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Сервіс"/>
         <text name="ads_ingame_menu_header_cost" text="Утримання"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Техніки без підтримки ADS не знайдено"/>
         <text name="ads_ingame_menu_empty_active" text="Техніки ADS не знайдено"/>
         <text name="ads_ingame_menu_empty_service" text="Зараз немає техніки на обслуговуванні"/>
-        <text name="ads_sell_dialog_costs_title" text="Додаткові витрати"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Прострочене ТО"/>
         <text name="ads_sell_dialog_repair_penalty" text="Ремонт"/>
         <text name="ads_sell_dialog_washing_penalty" text="Мийка"/>
-        <text name="ads_sell_dialog_total" text="Разом"/>
         <text name="ads_mobile_workshop_low_maintainability" text="УВАГА: %s недоступний для %s у мобільній майстерні через низьку ремонтопридатність."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Критичне перевантаження! Негайно зменште навантаження на машину."/>
         <!-- Tutorial -->

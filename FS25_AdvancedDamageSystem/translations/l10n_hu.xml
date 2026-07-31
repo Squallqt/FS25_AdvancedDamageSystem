@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Közepes akkumulátor-szulfátosodás. A tényleges akkumulátorkapacitás jelentősen csökkent, a motor indítása nehezebb."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Súlyos akkumulátor-szulfátosodás. A használható kapacitás kritikusan alacsony, az indítózási teljesítmény instabil."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Kritikus akkumulátor-szulfátosodás. A tényleges kapacitás szinte megszűnt, az indítózási teljesítmény nem elegendő a megbízható motorindításhoz."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Elégtelen akkumulátoros indítóerő"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Generátorszabályzó-meghibásodás. A töltőáram csökkent, emiatt romlik az akkumulátor töltési hatékonysága."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Közepes generátorszabályzó-meghibásodás. A töltés instabil és csökkent, ami gyenge akkumulátortöltést és nagyobb feszültségveszteséget okoz az elektromos rendszerben."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Súlyos generátorszabályzó-meghibásodás. A töltés kritikusan csökkent, a feszültségellátás instabil, az elektromos rendszer pedig jelentős veszteségekkel működik."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Teljes generátorszabályzó-hiba. Nincs akkumulátortöltés, az elektromos rendszer kizárólag a megmaradt akkumulátortartalékról működik."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Töltőrendszer-hiba"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Kopott turbócsapágyak. Halk fütyülő hang hallható, és magas fordulaton enyhe teljesítményvesztés jelentkezik."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Szivárgó turbótömítések. Érezhető teljesítményvesztés és megnövekedett üzemanyag-fogyasztás."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Sérült turbinalapátok. Súlyos teljesítményvesztés és motorleállási kockázat nagy terhelés alatt."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Közepes hűtőfolyadék-szivárgás. A hűtőrendszer hatékonysága csökkent, és a motor üzemi hőmérséklete terhelés alatt gyorsabban emelkedik."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Súlyos hűtőfolyadék-szivárgás. A hűtőrendszer hatékonysága jelentősen csökkent, és terhelés alatt túlmelegedés valószínű."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Kritikus hűtőfolyadék-szivárgás. A hűtőrendszer hatékonysága kritikusan csökkent, és a biztonságos motorhőmérséklet nem tartható fenn."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Kritikus hűtőfolyadék-szivárgás"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Ventilátorkuplung-meghibásodás. A hűtőventilátor hatékonysága enyhén csökkent, és rendellenes ventilátorkuplung-zaj hallható."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Közepes ventilátorkuplung-meghibásodás. A hűtőventilátor hatékonysága csökkent, a ventilátorkuplung zaja jól hallható."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Súlyos ventilátorkuplung-meghibásodás. A hűtőventilátor hatékonysága jelentősen csökkent, a ventilátorkuplung zaja erős."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Kritikus ventilátorkuplung-hiba. A hűtőventilátor hatékonysága kritikusan csökkent, és a hűtőrendszeren átáramló megfelelő levegő nem biztosítható."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Ventilátorkuplung-hiba"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Üzemanyagszűrő-eltömődés. Az üzemanyagáramlás korlátozott, ami terhelés alatt enyhe motorakadozást és kisebb nyomatékcsökkenést okoz."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Közepes üzemanyagszűrő-eltömődés. Az üzemanyagáramlás korlátozása észrevehető, terhelés alatt gyakori a motorakadozás, a nyomaték csökkent, és motorleállás is előfordulhat."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Súlyos üzemanyagszűrő-eltömődés. Az üzemanyagáramlás kritikusan korlátozott, a motorakadozás erős, a nyomaték jelentősen csökkent, és motorleállás valószínű."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Haladó"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Átvizsgálás típusának kiválasztása"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Feltárt hibák javítása"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Karbantartási szint kiválasztása"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Fogyóanyagok minőségének kiválasztása"/>
         <text name="ads_option_menu_option_one_title_repair" text="Javítás típusának kiválasztása"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Járműakkumulátorok összekötésére és lemerült motorok bebikázására használható"/>
         <text name="ads_jumper_cables_action" text="Indítókábel csatlakoztatása/leválasztása"/>
         <text name="ads_jumper_cables_connected" text="Indítókábel csatlakoztatva ehhez: %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Az indítókábel már csatlakoztatva van ehhez: %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="A jármű nem alkalmas indítókábel csatlakoztatására"/>
         <text name="ads_jumper_cables_both_already_connected" text="Az indítókábel már csatlakoztatva van ehhez: %s és %s"/>
         <text name="ads_jumper_cables_disconnected" text="Indítókábel leválasztva erről: %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s túl messze van ettől: %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Jármű átvizsgálása"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Jármű átvizsgálása"/>
         <text name="ads_field_inspection_hold_to_start" text="Tartsd nyomva az átvizsgálás indításához"/>
-        <text name="ads_field_inspection_starting" text="Átvizsgálás indítása..."/>
         <text name="ads_field_inspection_progress" text="Vizuális átvizsgálás folyamatban... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Átvizsgálás megszakítva"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Átvizsgálás előtt állítsd le a motort"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Üzemóra"/>
         <text name="ads_ingame_menu_header_condition" text="Állapot"/>
         <text name="ads_ingame_menu_header_interval" text="Intervallum"/>
-        <text name="ads_ingame_menu_header_service_status" text="Átvizsgálva/szervizelve"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Átvizsg."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Szerviz"/>
         <text name="ads_ingame_menu_header_cost" text="Fenntartás"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Nincs elérhető nem ADS jármű"/>
         <text name="ads_ingame_menu_empty_active" text="Nincs elérhető ADS jármű"/>
         <text name="ads_ingame_menu_empty_service" text="Jelenleg nincs jármű szervizben"/>
-        <text name="ads_sell_dialog_costs_title" text="További költségek"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Lejárt karbantartás"/>
         <text name="ads_sell_dialog_repair_penalty" text="Javítás"/>
         <text name="ads_sell_dialog_washing_penalty" text="Mosás"/>
-        <text name="ads_sell_dialog_total" text="Összesen"/>
         <text name="ads_mobile_workshop_low_maintainability" text="FIGYELEM: %s nem érhető el ehhez: %s a mobil műhelyben az alacsony javíthatóság miatt."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritikus túlterhelés! Azonnal csökkentsd a jármű terhelését."/>
         <!-- Tutorial -->

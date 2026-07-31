@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Mäßige Batteriesulfatierung. Die nutzbare Batteriekapazität ist deutlich reduziert und das Starten des Motors wird erschwert."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Starke Batteriesulfatierung. Die nutzbare Batteriekapazität ist kritisch niedrig und die Startleistung instabil."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Kritische Batteriesulfatierung. Die effektive Batteriekapazität ist nahezu nicht mehr vorhanden und die Startleistung reicht für einen zuverlässigen Motorstart nicht aus."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Unzureichende Startleistung der Batterie"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Fehlfunktion des Lichtmaschinenreglers. Die Ladeleistung ist reduziert, wodurch die Batterie schlechter geladen wird."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Mäßige Fehlfunktion des Lichtmaschinenreglers. Die Ladeleistung ist instabil und reduziert, was zu schlechter Batterieladung und erhöhten Spannungsverlusten im Bordnetz führt."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Schwere Fehlfunktion des Lichtmaschinenreglers. Die Ladeleistung ist kritisch reduziert, die Spannungsversorgung instabil und das elektrische System arbeitet mit erheblichen Verlusten."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Vollständiger Ausfall des Lichtmaschinenreglers. Die Batterie wird nicht mehr geladen und das Bordnetz arbeitet nur noch aus der verbleibenden Batteriereserve."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Ausfall des Ladesystems"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Verschlissene Turbolager. Ein leises Pfeifen ist zu hören, und es gibt einen leichten Leistungsverlust bei hohen Drehzahlen."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Undichte Turboladerdichtungen. Spürbarer Leistungsverlust, erhöhter Kraftstoffverbrauch."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Beschädigte Turbinenschaufeln. Starker Leistungsverlust und Gefahr des Motorabwürgens unter hoher Last."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Mäßiges Leck im Kühlmittelkreislauf. Die Kühlleistung sinkt deutlich und die Motortemperatur steigt schneller an."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Starkes Leck im Kühlmittelkreislauf. Der Kühlverlust ist erheblich und die Überhitzungsgefahr steigt stark."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Kritischer Ausfall des Kühlsystems. Es steht nicht mehr genügend Kühlmittel für einen sicheren Motorbetrieb zur Verfügung."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Kühlmittelverlust"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Leichter Ausfall der Lüfterkupplung. Der Lüfter reagiert träger und die Kühlung ist leicht eingeschränkt."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Mäßiger Ausfall der Lüfterkupplung. Die Lüfterzuschaltung erfolgt unregelmäßig und die Kühlleistung sinkt deutlich."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Schwerer Ausfall der Lüfterkupplung. Der Lüfter liefert nicht mehr ausreichend Luftdurchsatz und der Motor überhitzt leichter."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Kritischer Ausfall der Lüfterkupplung. Der Lüfter kann die notwendige Kühlleistung nicht mehr bereitstellen."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Ausfall der Lüfterkupplung"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Leichte Verstopfung des Kraftstofffilters. Der Kraftstoffdurchfluss sinkt unter hoher Last geringfügig."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Mäßige Verstopfung des Kraftstofffilters. Unter Last wird die Kraftstoffversorgung spürbar eingeschränkt, die Leistung sinkt und der Motor verschluckt sich gelegentlich."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Starke Verstopfung des Kraftstofffilters. Die Kraftstoffversorgung ist stark eingeschränkt, die Leistung bricht deutlich ein und Motorabsteller sind möglich."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Gründlich"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Wählen Sie den Inspektionstyp aus"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Beheben Sie festgestellte Fehler"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Wartungsstufe auswählen"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Wählen Sie die Qualität der Verbrauchsmaterialien"/>
         <text name="ads_option_menu_option_one_title_repair" text="Wählen Sie die Reparaturart aus"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Werden verwendet, um Fahrzeugbatterien zu verbinden und Motoren mit entladener Batterie per Starthilfe zu starten"/>
         <text name="ads_jumper_cables_action" text="Starthilfekabel anschließen/abklemmen"/>
         <text name="ads_jumper_cables_connected" text="Starthilfekabel mit %s verbunden"/>
-        <text name="ads_jumper_cables_already_connected" text="Starthilfekabel bereits mit %s verbunden"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Dieses Fahrzeug ist nicht für den Anschluss von Starthilfekabeln geeignet"/>
         <text name="ads_jumper_cables_both_already_connected" text="Starthilfekabel bereits mit %s und %s verbunden"/>
         <text name="ads_jumper_cables_disconnected" text="Starthilfekabel von %s getrennt"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s ist zu weit von %s entfernt"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Fahrzeuginspektion"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Fahrzeug inspizieren"/>
         <text name="ads_field_inspection_hold_to_start" text="Gedrückt halten, um die Inspektion zu starten"/>
-        <text name="ads_field_inspection_starting" text="Inspektion wird gestartet..."/>
         <text name="ads_field_inspection_progress" text="Sichtprüfung läuft... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Inspektion abgebrochen"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Motor vor der Inspektion abstellen"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Std."/>
         <text name="ads_ingame_menu_header_condition" text="Zustand"/>
         <text name="ads_ingame_menu_header_interval" text="Interv."/>
-        <text name="ads_ingame_menu_header_service_status" text="Geprüft/Gewartet"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Geprüft"/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Gewart."/>
         <text name="ads_ingame_menu_header_cost" text="Unterh."/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Keine Fahrzeuge ohne ADS vorhanden"/>
         <text name="ads_ingame_menu_empty_active" text="Keine ADS-Fahrzeuge vorhanden"/>
         <text name="ads_ingame_menu_empty_service" text="Keine Fahrzeuge im Service"/>
-        <text name="ads_sell_dialog_costs_title" text="Zusatzkosten"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Überfällige Wartung"/>
         <text name="ads_sell_dialog_repair_penalty" text="Reparatur"/>
         <text name="ads_sell_dialog_washing_penalty" text="Reinigung"/>
-        <text name="ads_sell_dialog_total" text="Gesamt"/>
         <text name="ads_mobile_workshop_low_maintainability" text="WARNUNG: %s ist für %s in der mobilen Werkstatt wegen geringer Wartungsfreundlichkeit nicht verfügbar."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritische Überlastung! Verringern Sie sofort die Belastung der Maschine."/>
         <!-- Tutorial -->

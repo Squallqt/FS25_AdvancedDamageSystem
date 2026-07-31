@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="배터리 설페이션 보통 진행. 배터리 용량이 현저히 줄어들고 엔진 시동이 어렵습니다."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="심각한 배터리 설페이션. 가용 용량이 치명적으로 낮고 크랭킹 성능이 불안정합니다."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="치명적인 배터리 설페이션. 유효 용량이 거의 없으며 엔진 시동을 위한 크랭킹 성능이 부족합니다."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="배터리 시동 전압 부족"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="발전기 레귤레이터 오작동. 충전 출력이 감소하여 배터리 충전 효율이 떨어집니다."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="보통 수준의 레귤레이터 오작동. 충전 출력이 불안정하고 감소하여 배터리 충전 불량 및 전압 손실이 발생합니다."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="심각한 레귤레이터 오작동. 충전 출력이 치명적으로 낮고 전압 공급이 불안정하여 큰 손실이 발생합니다."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="레귤레이터 완전 고장. 배터리 충전이 되지 않으며 배터리 잔량으로만 작동합니다."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="충전 시스템 고장"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="터보 베어링 마모. 미세한 휘슬 소리가 들리며 고 RPM에서 약간의 출력 손실이 발생합니다."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="터보 씰 누설. 뚜렷한 출력 손실과 연료 소비 증가가 관찰됩니다."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="터빈 블레이드 손상. 심각한 출력 손실과 고부하 시 엔진 정지 위험이 있습니다."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="보통 수준의 냉각수 누수. 부하 시 엔진 온도가 더 빨리 상승합니다."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="심각한 냉각수 누수. 효율이 대폭 감소하여 부하 시 과열 가능성이 높습니다."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="치명적인 냉각수 누수. 냉각 효율을 상실하여 안전한 온도를 유지할 수 없습니다."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="냉각수 누수 치명적"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="팬 클러치 오작동. 냉각 팬 효율이 약간 떨어지고 비정상적인 소음이 발생합니다."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="보통 수준의 팬 클러치 오작동. 냉각 팬 효율 저하와 함께 소음이 뚜렷하게 들립니다."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="심각한 팬 클러치 오작동. 효율이 대폭 감소하고 소음이 매우 심해집니다."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="치명적인 팬 클러치 고장. 효율을 거의 상실하여 적절한 공기 흐름을 보장할 수 없습니다."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="팬 클러치 고장"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="연료 필터 막힘. 연료 흐름이 제한되어 부하 시 엔진이 미세하게 주춤거리며 토크가 약간 줄어듭니다."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="연료 필터 보통 막힘. 연료 제한이 뚜렷하며 빈번한 주춤거림, 토크 감소 및 정지가 발생할 수 있습니다."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="연료 필터 심각한 막힘. 연료 흐름이 치명적으로 제한되어 심한 주춤거림과 대폭적인 토크 감소, 잦은 정지가 발생합니다."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="정밀 수리"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="점검 유형 선택"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="발견된 결함 수리"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="정비 수준 선택"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="소모품 품질 선택"/>
         <text name="ads_option_menu_option_one_title_repair" text="수리 유형 선택"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="차량 배터리를 연결하여 방전된 엔진의 시동을 거는 데 사용됩니다"/>
         <text name="ads_jumper_cables_action" text="점프 케이블 연결/분리"/>
         <text name="ads_jumper_cables_connected" text="점프 케이블이 %s에 연결되었습니다"/>
-        <text name="ads_jumper_cables_already_connected" text="점프 케이블이 이미 %s에 연결되어 있습니다"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="점프 케이블을 연결하기에 적합하지 않은 차량입니다"/>
         <text name="ads_jumper_cables_both_already_connected" text="점프 케이블이 이미 %s와(과) %s에 연결되어 있습니다"/>
         <text name="ads_jumper_cables_disconnected" text="점프 케이블이 %s에서 분리되었습니다"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s와(과) %s 사이가 너무 멉니다"/>
         <text name="input_ADS_FIELD_INSPECTION" text="차량 점검"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="확인"/>
-        <text name="ads_field_inspection_action" text="차량 점검하기"/>
         <text name="ads_field_inspection_hold_to_start" text="길게 눌러 점검 시작"/>
-        <text name="ads_field_inspection_starting" text="점검 시작 중..."/>
         <text name="ads_field_inspection_progress" text="육안 점검 수행 중... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="점검 취소됨"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="점검 전에 엔진을 정지하십시오"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="가동 시간"/>
         <text name="ads_ingame_menu_header_condition" text="상태"/>
         <text name="ads_ingame_menu_header_interval" text="주기"/>
-        <text name="ads_ingame_menu_header_service_status" text="점검/정비"/>
         <text name="ads_ingame_menu_header_last_inspection" text="점검일"/>
         <text name="ads_ingame_menu_header_last_maintenance" text="정비일"/>
         <text name="ads_ingame_menu_header_cost" text="유지비"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="ADS 미적용 차량이 없습니다"/>
         <text name="ads_ingame_menu_empty_active" text="ADS 차량이 없습니다"/>
         <text name="ads_ingame_menu_empty_service" text="현재 정비 중인 차량이 없습니다"/>
-        <text name="ads_sell_dialog_costs_title" text="추가 비용"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="정비 기한 초과 위약금"/>
         <text name="ads_sell_dialog_repair_penalty" text="수리비 공제"/>
         <text name="ads_sell_dialog_washing_penalty" text="세척비 공제"/>
-        <text name="ads_sell_dialog_total" text="합계"/>
         <text name="ads_mobile_workshop_low_maintainability" text="경고: 정비 용이성이 낮아 이동식 정비소에서 %s 작업을 %s에 대해 수행할 수 없습니다."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="치명적 과부하! 즉시 차량의 부하를 줄이십시오."/>
         <!-- Tutorial -->

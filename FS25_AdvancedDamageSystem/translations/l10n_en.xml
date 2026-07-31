@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Moderate battery sulfation. Effective battery capacity is significantly reduced and engine starting is difficult."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Severe battery sulfation. Usable battery capacity is critically low and cranking performance is unstable."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Critical battery sulfation. Effective battery capacity is almost absent and cranking performance is insufficient for reliable engine start."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Insufficient battery cranking power"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Alternator regulator malfunction. Charging output is reduced, resulting in lower battery charging efficiency."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Moderate alternator regulator malfunction. Charging output is unstable and reduced, causing poor battery charging and increased voltage losses in the electrical system."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Severe alternator regulator malfunction. Charging output is critically reduced, voltage supply is unstable, and the electrical system operates with major losses."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Complete alternator regulator failure. Battery charging is absent and the electrical system is operating only from the remaining battery reserve."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Charging system failure"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Worn turbo bearings. A faint whistling sound can be heard, and there's a slight loss of power at high RPM."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Leaking turbo seals. Noticeable power loss, increased fuel consumption."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Damaged turbine blades. Severe power loss and a risk of engine stalls under heavy load."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Moderate coolant leak. Cooling system efficiency is reduced and engine operating temperature rises more quickly under load."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Severe coolant leak. Cooling system efficiency is significantly reduced and overheating under load is likely."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Critical coolant leak. Cooling system efficiency is critically reduced and safe engine temperature cannot be maintained."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Coolant leak critical"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Fan clutch malfunction. Cooling fan efficiency is slightly reduced and abnormal fan clutch noise is present."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Moderate fan clutch malfunction. Cooling fan efficiency is reduced and fan clutch noise is clearly audible."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Severe fan clutch malfunction. Cooling fan efficiency is significantly reduced and fan clutch noise is severe."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Critical fan clutch failure. Cooling fan efficiency is critically reduced and adequate airflow through the cooling system cannot be ensured."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Fan clutch failure"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Fuel filter clogging. Fuel flow is restricted, causing slight engine hesitation under load and a minor reduction in engine torque."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Moderate fuel filter clogging. Fuel flow restriction is noticeable, engine hesitation under load is frequent, engine torque is reduced, and engine stalls may occur."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Severe fuel filter clogging. Fuel flow is critically restricted, engine hesitation is pronounced, engine torque is heavily reduced, and engine stalls are likely."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Advanced"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Select inspection type"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Repair discovered faults"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Select maintenance level"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Select consumables quality"/>
         <text name="ads_option_menu_option_one_title_repair" text="Select repair type"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Used to connect vehicle batteries and jump-start engines with discharged batteries"/>
         <text name="ads_jumper_cables_action" text="Connect/disconnect jumper cables"/>
         <text name="ads_jumper_cables_connected" text="Jumper cables connected to %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Jumper cables already connected to %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Vehicle is not suitable for connecting jumper cables"/>
         <text name="ads_jumper_cables_both_already_connected" text="Jumper cables already connected to %s and %s"/>
         <text name="ads_jumper_cables_disconnected" text="Jumper cables disconnected from %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s is too far from %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Vehicle inspection"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Inspect vehicle"/>
         <text name="ads_field_inspection_hold_to_start" text="Hold to start inspection"/>
-        <text name="ads_field_inspection_starting" text="Starting inspection..."/>
         <text name="ads_field_inspection_progress" text="Performing visual inspection... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Inspection cancelled"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Stop the engine before inspection"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Hours"/>
         <text name="ads_ingame_menu_header_condition" text="Condition"/>
         <text name="ads_ingame_menu_header_interval" text="Interval"/>
-        <text name="ads_ingame_menu_header_service_status" text="Inspected/Serviced"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Inspect."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Service."/>
         <text name="ads_ingame_menu_header_cost" text="Upkeep"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="No non-ADS vehicles available"/>
         <text name="ads_ingame_menu_empty_active" text="No ADS vehicles available"/>
         <text name="ads_ingame_menu_empty_service" text="No vehicles are currently in service"/>
-        <text name="ads_sell_dialog_costs_title" text="Additional costs"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Overdue maintenance"/>
         <text name="ads_sell_dialog_repair_penalty" text="Repair"/>
         <text name="ads_sell_dialog_washing_penalty" text="Washing"/>
-        <text name="ads_sell_dialog_total" text="Total"/>
         <text name="ads_mobile_workshop_low_maintainability" text="WARNING: %s is unavailable for %s in the mobile workshop due to low maintainability."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Critical overload! Reduce the load on the vehicle immediately."/>
         <!-- Tutorial -->

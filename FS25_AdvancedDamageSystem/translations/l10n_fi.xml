@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Kohtalainen akun sulfatoituminen. Todellinen akun kapasiteetti on merkittävästi alentunut ja moottorin käynnistys on vaikeutunut."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Vakava akun sulfatoituminen. Käyttökelpoinen akun kapasiteetti on kriittisen alhainen ja käynnistysteho on epästabiili."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Kriittinen akun sulfatoituminen. Todellinen akun kapasiteetti on lähes nolla eikä käynnistysteho riitä luotettavaan moottorin käynnistykseen."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Akun käynnistysteho riittämätön"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Laturin säätimen toimintahäiriö. Latausvirta on alentunut, mikä vähentää akun lataustehokkuutta."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Kohtalainen laturin säätimen toimintahäiriö. Latausvirta on epästabiili ja alentunut, mikä aiheuttaa heikon akun latauksen ja lisääntyneitä jännitehäviöitä sähköjärjestelmässä."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Vakava laturin säätimen toimintahäiriö. Latausvirta on kriittisen alhainen, jännitesyöttö on epästabiili ja sähköjärjestelmä toimii merkittävien häviöiden kanssa."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Täydellinen laturin säätimen vaurio. Akun lataus on lakannut ja sähköjärjestelmä toimii vain jäljellä olevalla akkuvarauksella."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Laturijärjestelmän vaurio"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Turboahdinlaakerien kuluminen. Kuuluu heikko vinkuna ja pienehkö tehonlasku suurilla kierroksilla."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Turboahdintiivisteiden vuoto. Havaittava tehonlasku ja lisääntynyt polttoaineen kulutus."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Turbiinin siipien vaurio. Vakava tehonlasku ja moottorin sammumisriski raskaassa kuormituksessa."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Kohtalainen jäähdytysnesteen vuoto. Jäähdytysjärjestelmän tehokkuus on alentunut ja moottorin käyttölämpötila nousee nopeammin kuormituksessa."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Vakava jäähdytysnesteen vuoto. Jäähdytysjärjestelmän tehokkuus on merkittävästi alentunut ja ylikuumeneminen kuormituksessa on todennäköistä."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Kriittinen jäähdytysnesteen vuoto. Jäähdytysjärjestelmän tehokkuus on kriittisen alhainen eikä turvallista moottorin lämpötilaa voida ylläpitää."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Jäähdytysnesteen vuoto kriittistä"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on hieman alentunut ja epänormaalia tuuletinkytkimen melua esiintyy."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Kohtalainen tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on alentunut ja tuuletinkytkimen melu on selvästi kuultavissa."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Vakava tuuletinkytkimen toimintahäiriö. Jäähdytystuulettimen tehokkuus on merkittävästi alentunut ja tuuletinkytkimen melu on vakavaa."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Kriittinen tuuletinkytkimen vaurio. Jäähdytystuulettimen tehokkuus on kriittisen alhainen eikä riittävää ilmavirtausta jäähdytysjärjestelmän läpi voida taata."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Tuuletinkytkimen vaurio"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Polttoainesuodattimen tukkeutuminen. Polttoaineen virtaus on rajoittunut aiheuttaen lievää moottorin epäröintiä kuormituksessa ja pientä moottorin vääntömomentin alenemista."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Kohtalainen polttoainesuodattimen tukkeutuminen. Polttoaineen virtauksen rajoitus on havaittava, moottorin epäröinti kuormituksessa on tiheää, moottorin vääntömomentti on alentunut ja moottorin sammuminen on mahdollista."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Vakava polttoainesuodattimen tukkeutuminen. Polttoaineen virtaus on kriittisen rajoittunut, moottorin epäröinti on voimakasta, moottorin vääntömomentti on voimakkaasti alentunut ja moottorin sammuminen on todennäköistä."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Edistynyt"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Valitse tarkastustyyppi"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Korjaa havaitut viat"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Valitse huoltotaso"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Valitse kulutustarvikkeiden laatu"/>
         <text name="ads_option_menu_option_one_title_repair" text="Valitse korjaustyyppi"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Käytetään ajoneuvojen akkujen yhdistämiseen ja tyhjän akun käynnistämiseen"/>
         <text name="ads_jumper_cables_action" text="Yhdistä/irrota käynnistyskaapelit"/>
         <text name="ads_jumper_cables_connected" text="Käynnistyskaapelit yhdistetty kohteeseen %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Käynnistyskaapelit on jo yhdistetty kohteeseen %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Ajoneuvo ei sovellu käynnistyskaapeleiden kytkemiseen"/>
         <text name="ads_jumper_cables_both_already_connected" text="Käynnistyskaapelit on jo yhdistetty kohteisiin %s ja %s"/>
         <text name="ads_jumper_cables_disconnected" text="Käynnistyskaapelit irrotettu kohteesta %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s on liian kaukana kohteesta %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Ajoneuvon tarkastus"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Tarkasta ajoneuvo"/>
         <text name="ads_field_inspection_hold_to_start" text="Pidä pohjassa aloittaaksesi tarkastuksen"/>
-        <text name="ads_field_inspection_starting" text="Aloitetaan tarkastus..."/>
         <text name="ads_field_inspection_progress" text="Suoritetaan visuaalista tarkastusta... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Tarkastus peruutettu"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Sammuta moottori ennen tarkastusta"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Tunnit"/>
         <text name="ads_ingame_menu_header_condition" text="Kunto"/>
         <text name="ads_ingame_menu_header_interval" text="Väli"/>
-        <text name="ads_ingame_menu_header_service_status" text="Tarkastettu/Huollettu"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Tarkast."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Huolto."/>
         <text name="ads_ingame_menu_header_cost" text="Ylläpito"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Ei ADS-järjestelmän ulkopuolisia ajoneuvoja saatavilla"/>
         <text name="ads_ingame_menu_empty_active" text="Ei ADS-ajoneuvoja saatavilla"/>
         <text name="ads_ingame_menu_empty_service" text="Yhtään ajoneuvoa ei ole tällä hetkellä huollossa"/>
-        <text name="ads_sell_dialog_costs_title" text="Lisäkustannukset"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Myöhässä oleva huolto"/>
         <text name="ads_sell_dialog_repair_penalty" text="Korjaus"/>
         <text name="ads_sell_dialog_washing_penalty" text="Pesu"/>
-        <text name="ads_sell_dialog_total" text="Yhteensä"/>
         <text name="ads_mobile_workshop_low_maintainability" text="VAROITUS: %s ei ole saatavilla kohteelle %s liikkuvassa korjaamossa alhaisen huollettavuuden vuoksi."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kriittinen ylikuormitus! Vähennä ajoneuvon kuormaa välittömästi."/>
         <!-- Tutorial -->

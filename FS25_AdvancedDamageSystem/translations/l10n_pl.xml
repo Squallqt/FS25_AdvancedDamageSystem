@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Akumulator umiarkowanie zasiarczony. Spadek pojemności i problemy z uruchomieniem silnika."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Zaawansowane zasiarczenie baterii. Krytycznie ograniczona pojemność i problemy z rozruchem."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Krytyczne zasiarczenie akumulatora. Efektywna pojemność jest niemal zerowa, a wydajność rozruchowa niewystarczająca do niezawodnego uruchomienia silnika."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Niewystarczająca moc rozruchowa akumulatora"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Nieprawidłowe działanie regulatora alternatora. Ograniczone ładowanie akumulatora."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Umiarkowana awaria regulatora alternatora. Wyjście ładowania jest niestabilne i obniżone, co powoduje słabe ładowanie akumulatora oraz zwiększone straty napięcia w układzie elektrycznym."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Zaawansowana awaria regulatora alternatora. Bardzo niskie ładowanie i poważna niestabilność systemu elektrycznego."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Całkowita awaria regulatora alternatora. Brak ładowania akumulatora, a układ elektryczny działa wyłącznie na pozostałej rezerwie energii akumulatora."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Awaria układu ładowania"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Zużycie łożysk turbiny. Lekki świst i nieznaczny spadek mocy przy wysokich obrotach."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Przeciekające uszczelnienia turbo. Wyraźny spadek mocy i wyższe spalanie."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Uszkodzenie wirnika turbiny. Silna utrata mocy i możliwość gaśnięcia silnika."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Umiarkowany wyciek płynu chłodzącego. Sprawność układu chłodzenia jest obniżona, a temperatura pracy silnika szybciej rośnie pod obciążeniem."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Silny wyciek płynu chłodzącego. Znacznie pogorszona wydajność chłodzenia i ryzyko przegrzewania silnika."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Krytyczny wyciek płynu chłodzącego. Sprawność układu chłodzenia jest krytycznie obniżona i nie można utrzymać bezpiecznej temperatury pracy silnika."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Krytyczna utrata płynu chłodzącego"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Usterka sprzęgła wentylatora. Sprawność wentylatora chłodzącego jest nieznacznie obniżona, a występuje nietypowy hałas sprzęgła."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Umiarkowana usterka sprzęgła wentylatora. Sprawność wentylatora chłodzącego jest obniżona, a hałas sprzęgła jest wyraźnie słyszalny."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Zaawansowana niesprawność sprzęgła wentylatora chłodzenia. Wyraźnie obniżona wydajność i intensywny hałas."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Awaria krytyczna sprzęgła wentylatora. Brak zapewnienia prawidłowego chłodzenia silnika z powodu niewystarczającego przepływu powietrza."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Awaria sprzęgła wentylatora"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Zatkanie filtra paliwa. Przepływ paliwa jest ograniczony, co powoduje lekkie szarpanie silnika pod obciążeniem oraz niewielki spadek momentu obrotowego."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Średnie zatkanie filtra paliwa. Wyraźne ograniczenie przepływu, spadek mocy i częste szarpanie silnika."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Silne zatkanie filtra paliwa. Znaczne ograniczenie przepływu, duży spadek mocy i częste gaśnięcie silnika."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Zaawansowany"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Wybierz typ przeglądu"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Naprawa zidentyfikowanych uszkodzeń"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Wybierz poziom obsługi technicznej"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Wybierz jakość materiałów eksploatacyjnych"/>
         <text name="ads_option_menu_option_one_title_repair" text="Wybierz typ naprawy"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Używane do łączenia akumulatorów pojazdów i uruchamiania silników z rozładowanym akumulatorem"/>
         <text name="ads_jumper_cables_action" text="Podłącz/odłącz kable rozruchowe"/>
         <text name="ads_jumper_cables_connected" text="Kable rozruchowe podłączone do %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Kable rozruchowe są już podłączone do %s"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Brak możliwości użycia kabli rozruchowych w tym pojeździe"/>
         <text name="ads_jumper_cables_both_already_connected" text="Przewody rozruchowe są już podłączone do %s i %s"/>
         <text name="ads_jumper_cables_disconnected" text="Kable rozruchowe odłączone od %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="Odległość między %s a %s jest zbyt duża"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Badanie stanu technicznego pojazdu"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Dokonaj przeglądu pojazdu"/>
         <text name="ads_field_inspection_hold_to_start" text="Przytrzymaj, aby rozpocząć przegląd"/>
-        <text name="ads_field_inspection_starting" text="Rozpoczynanie inspekcji..."/>
         <text name="ads_field_inspection_progress" text="Wykonywanie inspekcji wizualnej... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Inspekcja anulowana"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Wyłącz silnik przed rozpoczęciem inspekcji"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Godziny"/>
         <text name="ads_ingame_menu_header_condition" text="Kondycja"/>
         <text name="ads_ingame_menu_header_interval" text="Interwał"/>
-        <text name="ads_ingame_menu_header_service_status" text="Przegl./Serwis"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Sprawdz."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Serwis."/>
         <text name="ads_ingame_menu_header_cost" text="Utrzym."/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Brak pojazdów bez ADS"/>
         <text name="ads_ingame_menu_empty_active" text="Brak pojazdów ADS"/>
         <text name="ads_ingame_menu_empty_service" text="Brak pojazdów w serwisie"/>
-        <text name="ads_sell_dialog_costs_title" text="Opłaty dodatkowe"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Zaległa konserwacja"/>
         <text name="ads_sell_dialog_repair_penalty" text="Naprawa"/>
         <text name="ads_sell_dialog_washing_penalty" text="Mycie"/>
-        <text name="ads_sell_dialog_total" text="Całkowity"/>
         <text name="ads_mobile_workshop_low_maintainability" text="OSTRZEŻENIE: %s jest niedostępne dla %s w mobilnym warsztacie z powodu niskiej serwisowalności."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Krytyczne przeciążenie! Natychmiast zmniejsz obciążenie maszyny."/>
         <!-- Tutorial -->

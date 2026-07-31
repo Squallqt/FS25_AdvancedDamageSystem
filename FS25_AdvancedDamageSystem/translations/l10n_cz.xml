@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Střední sulfatace baterie. Efektivní kapacita baterie je výrazně snížena a startování motoru je obtížné."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Silná sulfatace baterie. Použitelná kapacita baterie je kriticky nízká a startovací výkon je nestabilní."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Kritická sulfatace baterie. Efektivní kapacita baterie téměř chybí a startovací výkon je nedostatečný pro spolehlivé nastartování motoru."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Nedostatečný startovací proud baterie"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Porucha regulátoru alternátoru. Nabíjecí výkon je snížen, což vede k nižší účinnosti nabíjení baterie."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Střední porucha regulátoru alternátoru. Nabíjení je nestabilní a snížené, což způsobuje špatné dobíjení baterie a zvýšené ztráty napětí v elektrickém systému."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Vážná porucha regulátoru alternátoru. Nabíjecí výkon je kriticky snížen, dodávka napětí je nestabilní a elektrický systém pracuje s velkými ztrátami."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Úplné selhání regulátoru alternátoru. Baterie se nedobíjí a elektrický systém funguje pouze ze zbývající rezervy baterie."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Selhání systému nabíjení"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Opotřebená ložiska turba. Je slyšet slabé pískání a dochází k mírné ztrátě výkonu při vysokých otáčkách."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Netěsnící těsnění turba. Znatelná ztráta výkonu a zvýšená spotřeba paliva."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Poškozené lopatky turbíny. Silná ztráta výkonu a riziko zhasnutí motoru při velkém zatížení."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Střední únik chladicí kapaliny. Účinnost chlazení klesá a provozní teplota motoru pod zatížením roste rychleji."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Vážný únik chladicí kapaliny. Účinnost chlazení je výrazně snížena a hrozí přehřívání pod zatížením."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Kritický únik chladicí kapaliny. Účinnost chlazení je kriticky nízká a nelze udržet bezpečnou teplotu motoru."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Kritický únik chladicí kapaliny"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Porucha spojky ventilátoru. Účinnost ventilátoru je mírně snížena a spojka vydává abnormální hluk."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Střední porucha spojky ventilátoru. Účinnost chlazení je nižší a hluk spojky je jasně slyšitelný."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Vážná porucha spojky ventilátoru. Účinnost chlazení je výrazně snížena a hluk spojky je velmi silný."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Kritické selhání spojky ventilátoru. Účinnost chlazení je kriticky nízká a nelze zajistit dostatečné proudění vzduchu systémem."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Selhání spojky ventilátoru"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Zanesení palivového filtru. Průtok paliva je omezen, což způsobuje mírné vynechávání motoru pod zátěží a pokles točivého momentu."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Střední zanesení palivového filtru. Omezení průtoku paliva je znatelné, vynechávání motoru časté, točivý moment klesá a motor může zhasínat."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Vážné zanesení palivového filtru. Průtok paliva je kriticky omezen, vynechávání motoru je výrazné a motor pravděpodobně zhasne."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="Pokročilá"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Vyberte typ prohlídky"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Opravit zjištěné závady"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Vyberte úroveň údržby"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Vyberte kvalitu provozních kapalin"/>
         <text name="ads_option_menu_option_one_title_repair" text="Vyberte typ opravy"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Používají se k propojení baterií vozidel a nastartování vybitých motorů"/>
         <text name="ads_jumper_cables_action" text="Připojit/odpojit startovací kabely"/>
         <text name="ads_jumper_cables_connected" text="Startovací kabely připojeny k %s"/>
-        <text name="ads_jumper_cables_already_connected" text="Startovací kabely jsou již k %s připojeny"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Vozidlo není vhodné pro připojení startovacích kabelů"/>
         <text name="ads_jumper_cables_both_already_connected" text="Startovací kabely jsou již připojeny k %s a %s"/>
         <text name="ads_jumper_cables_disconnected" text="Startovací kabely odpojeny od %s"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s je příliš daleko od %s"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Prohlídka vozidla"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="OK"/>
-        <text name="ads_field_inspection_action" text="Prohlédnout vozidlo"/>
         <text name="ads_field_inspection_hold_to_start" text="Podržte pro zahájení prohlídky"/>
-        <text name="ads_field_inspection_starting" text="Zahajování prohlídky..."/>
         <text name="ads_field_inspection_progress" text="Provádění vizuální prohlídky... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Prohlídka zrušena"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Před prohlídkou vypněte motor"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Mh"/>
         <text name="ads_ingame_menu_header_condition" text="Stav"/>
         <text name="ads_ingame_menu_header_interval" text="Interval"/>
-        <text name="ads_ingame_menu_header_service_status" text="Prohlídka/Servis"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Prohlídka"/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Servis"/>
         <text name="ads_ingame_menu_header_cost" text="Údržba"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="Nejsou k dispozici žádná vozidla bez ADS"/>
         <text name="ads_ingame_menu_empty_active" text="Nejsou k dispozici žádná ADS vozidla"/>
         <text name="ads_ingame_menu_empty_service" text="V servisu aktuálně nejsou žádná vozidla"/>
-        <text name="ads_sell_dialog_costs_title" text="Dodatečné náklady"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Zanedbaná údržba"/>
         <text name="ads_sell_dialog_repair_penalty" text="Oprava"/>
         <text name="ads_sell_dialog_washing_penalty" text="Mytí"/>
-        <text name="ads_sell_dialog_total" text="Celkem"/>
         <text name="ads_mobile_workshop_low_maintainability" text="VAROVÁNÍ: %s není v mobilní dílně k dispozici pro %s kvůli nízké udržovatelnosti."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritické přetížení! Okamžitě snižte zatížení vozidla."/>
         <!-- Tutorial -->

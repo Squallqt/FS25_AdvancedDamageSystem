@@ -221,12 +221,10 @@
         <text name="ads_breakdowns_battery_sulfation_stage2_description" text="Orta derecede akü sülfatlanması. Akünün etkin kapasitesi önemli ölçüde azalmıştır ve motorun çalıştırılması zordur."/>
         <text name="ads_breakdowns_battery_sulfation_stage3_description" text="Aşırı akü sülfatlanması. Akünün kullanılabilir kapasitesi kritik derecede düşük ve marş performansı dengesiz."/>
         <text name="ads_breakdowns_battery_sulfation_stage4_description" text="Aşırı akü sülfatlanması. Akünün etkin kapasitesi neredeyse tamamen kaybolmuştur ve marş performansı, motorun güvenilir bir şekilde çalıştırılması için yetersizdir."/>
-        <text name="ads_breakdowns_battery_sulfation_stage4_message" text="Pil marş gücü yetersiz"/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage1_description" text="Alternatör regülatöründe arıza. Şarj çıkışı azalmış olup, bu da akü şarj verimliliğinin düşmesine neden olmaktadır."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage2_description" text="Alternatör regülatöründe orta derecede arıza. Şarj çıkışı dengesiz ve düşüktür; bu durum, akünün yetersiz şarj olmasına ve elektrik sisteminde voltaj kayıplarının artmasına neden olmaktadır."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage3_description" text="Alternatör regülatöründe ciddi bir arıza. Şarj çıkışı ciddi ölçüde azalmış, voltaj beslemesi dengesiz ve elektrik sistemi büyük kayıplarla çalışıyor."/>
         <text name="ads_breakdowns_alternator_regulator_failure_stage4_description" text="Alternatör regülatöründe tam arıza. Akü şarjı gerçekleşmiyor ve elektrik sistemi yalnızca akünün kalan rezerviyle çalışıyor."/>
-        <text name="ads_breakdowns_alternator_regulator_failure_stage4_message" text="Şarj sistemi arızası"/>
         <text name="ads_breakdowns_turbocharger_wear_stage1_description" text="Aşınmış turbo yatakları. Hafif bir ıslık sesi duyuluyor ve yüksek devirlerde hafif bir güç kaybı yaşanıyor."/>
         <text name="ads_breakdowns_turbocharger_wear_stage2_description" text="Turbo contalarında sızıntı. Belirgin güç kaybı, artan yakıt tüketimi."/>
         <text name="ads_breakdowns_turbocharger_wear_stage3_description" text="Hasarlı türbin kanatları. Ağır yük altında ciddi güç kaybı ve motorun durma riski."/>
@@ -323,12 +321,10 @@
         <text name="ads_breakdowns_coolant_leak_stage2_description" text="Orta derecede soğutma sıvısı sızıntısı. Soğutma sisteminin verimliliği düşer ve yük altında motorun çalışma sıcaklığı daha hızlı yükselir."/>
         <text name="ads_breakdowns_coolant_leak_stage3_description" text="Ciddi soğutma sıvısı sızıntısı. Soğutma sisteminin verimliliği önemli ölçüde azalmıştır ve yük altında aşırı ısınma olasılığı yüksektir."/>
         <text name="ads_breakdowns_coolant_leak_stage4_description" text="Ciddi soğutma sıvısı sızıntısı. Soğutma sisteminin verimliliği ciddi şekilde azalmıştır ve motorun güvenli sıcaklığı korunamamaktadır."/>
-        <text name="ads_breakdowns_coolant_leak_stage4_message" text="Soğutma sıvısı sızıntısı – kritik durum"/>
         <text name="ads_breakdowns_fan_clutch_failure_stage1_description" text="Fan kavramasında arıza. Soğutma fanının verimliliği biraz azalmıştır ve fan kavramasından anormal bir ses gelmektedir."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage2_description" text="Orta derecede fan kavraması arızası. Soğutma fanının verimliliği düşmüştür ve fan kavramasından gelen ses açıkça duyulmaktadır."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage3_description" text="Fan kavramasında ciddi bir arıza. Soğutma fanının verimliliği önemli ölçüde azalmış ve fan kavramasından gelen gürültü oldukça şiddetlidir."/>
         <text name="ads_breakdowns_fan_clutch_failure_stage4_description" text="Fan kavramasında ciddi arıza. Soğutma fanının verimliliği ciddi ölçüde azalmıştır ve soğutma sisteminden yeterli hava akışı sağlanamamaktadır."/>
-        <text name="ads_breakdowns_fan_clutch_failure_stage4_message" text="Fan kavraması arızası"/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage1_description" text="Yakıt filtresinin tıkanması. Yakıt akışı kısıtlandığından, yük altında motorda hafif bir duraksama ve motor torkunda küçük bir azalma meydana gelir."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage2_description" text="Yakıt filtresinde orta derecede tıkanma. Yakıt akışında belirgin bir kısıtlama hissedilir, yük altında motorda sık sık duraksama görülür, motor torku azalır ve motorun stop etmesi söz konusu olabilir."/>
         <text name="ads_breakdowns_fuel_filter_clogging_stage3_description" text="Yakıt filtresinde ciddi tıkanma. Yakıt akışı ciddi şekilde kısıtlanmıştır; motorda belirgin bir tekleme hissedilir, motor torku önemli ölçüde azalmıştır ve motorun stop etme olasılığı yüksektir."/>
@@ -424,7 +420,6 @@
         <text name="ads_spec_repair_type_advanced" text="İleri Düzey"/>
         <!-- Service Options -->
         <text name="ads_option_menu_option_one_title_inspection" text="Denetim türünü seçin"/>
-        <text name="ads_option_menu_option_two_title_inspection" text="Tespit edilen arızaları onarın"/>
         <text name="ads_option_menu_option_one_title_maintenance" text="Bakım seviyesini seçin"/>
         <text name="ads_option_menu_option_two_title_maintenance" text="Sarf malzemelerinin kalitesini seçin"/>
         <text name="ads_option_menu_option_one_title_repair" text="Onarım türünü seçin"/>
@@ -537,7 +532,6 @@
         <text name="ads_jumper_cables_function" text="Araç akülerini birbirine bağlamak ve aküsü boşalmış motorlara takviye ile marş vermek için kullanılır"/>
         <text name="ads_jumper_cables_action" text="Bağlantı kablolarını takın/çıkarın"/>
         <text name="ads_jumper_cables_connected" text="%s’ye bağlanan akü kablosu"/>
-        <text name="ads_jumper_cables_already_connected" text="%s'ye atlama kabloları zaten bağlı"/>
         <text name="ads_jumper_cables_impossible_to_connect" text="Araç, akü kablosu bağlamak için uygun değildir"/>
         <text name="ads_jumper_cables_both_already_connected" text="Akü kabloları %s ve %s'ye zaten bağlı"/>
         <text name="ads_jumper_cables_disconnected" text="%s'den akü bağlantı kabloları çıkarıldı"/>
@@ -545,9 +539,7 @@
         <text name="ads_jumper_cables_is_too_far" text="%s, %s’den çok uzakta"/>
         <text name="input_ADS_FIELD_INSPECTION" text="Araç muayenesi"/>
         <text name="input_ADS_CLOSE_NOTIFICATION" text="Tamam"/>
-        <text name="ads_field_inspection_action" text="Aracı kontrol et"/>
         <text name="ads_field_inspection_hold_to_start" text="Denetime başlamak için basılı tutun"/>
-        <text name="ads_field_inspection_starting" text="Denetime başlanıyor..."/>
         <text name="ads_field_inspection_progress" text="Görsel inceleme yapılıyor... %d%%"/>
         <text name="ads_field_inspection_cancelled" text="Denetim iptal edildi"/>
         <text name="ads_field_inspection_engine_must_be_stopped" text="Muayene öncesinde motoru durdurun"/>
@@ -639,7 +631,6 @@
         <text name="ads_ingame_menu_header_working_hours" text="Çalışma Saatleri"/>
         <text name="ads_ingame_menu_header_condition" text="Durum"/>
         <text name="ads_ingame_menu_header_interval" text="Aralık"/>
-        <text name="ads_ingame_menu_header_service_status" text="Kontrol Edildi/Bakımı Yapıldı"/>
         <text name="ads_ingame_menu_header_last_inspection" text="Kontrol edin."/>
         <text name="ads_ingame_menu_header_last_maintenance" text="Hizmet."/>
         <text name="ads_ingame_menu_header_cost" text="Bakım"/>
@@ -653,11 +644,9 @@
         <text name="ads_ingame_menu_empty_other" text="ADS olmayan araç mevcut değil"/>
         <text name="ads_ingame_menu_empty_active" text="Mevcut ADS aracı yok"/>
         <text name="ads_ingame_menu_empty_service" text="Şu anda hizmet veren araç bulunmamaktadır"/>
-        <text name="ads_sell_dialog_costs_title" text="Ek masraflar"/>
         <text name="ads_sell_dialog_overdue_maintenance_penalty" text="Gecikmiş bakım"/>
         <text name="ads_sell_dialog_repair_penalty" text="Onarım"/>
         <text name="ads_sell_dialog_washing_penalty" text="Yıkama"/>
-        <text name="ads_sell_dialog_total" text="Toplam"/>
         <text name="ads_mobile_workshop_low_maintainability" text="UYARI: Bakım kolaylığı yetersizliği nedeniyle %s, %s için mobil atölyede kullanılamamaktadır."/>
         <text name="ads_breakdowns_overload_breakdown_stage2_message" text="Kritik aşırı yük! Aracın yükünü derhal azaltın."/>
         <!-- Tutorial -->
