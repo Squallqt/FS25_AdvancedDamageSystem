@@ -360,7 +360,6 @@
         <text name="ads_spec_months_ago_unit" text="hónapja"/>
         <text name="ads_spec_months_ago_format" text="%s %s"/>
         <text name="ads_spec_last_maintenance_until_format" text="%s eddig: %s"/>
-        <text name="ads_spec_service_interval_format" text="%s üó"/>
         <text name="ads_spec_maintenance_complete_notification" text="befejezve"/>
         <text name="ads_spec_maintenance_cancelled_notification" text="megszakítva"/>
         <text name="ads_spec_inspection_issues_detected_notification" text="%s probléma észlelve"/>

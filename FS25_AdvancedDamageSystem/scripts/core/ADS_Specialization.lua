@@ -8266,11 +8266,6 @@ function AdvancedDamageSystem:getCurrentStatus()
     return self.spec_AdvancedDamageSystem.currentState
 end
 
-function AdvancedDamageSystem:setNewStatus(status)
-    self.spec_AdvancedDamageSystem.currentState = status
-    ADS_VehicleChangeStatusEvent.send(self)
-end
-
 function AdvancedDamageSystem:getActiveBreakdowns()
     return self.spec_AdvancedDamageSystem.activeBreakdowns
 end
@@ -8344,36 +8339,6 @@ function AdvancedDamageSystem:getLastMaintenanceDate()
             return entry.date
         end
     end
-end
-
-function AdvancedDamageSystem:getLastInspectionOperatingHours()
-    local spec = self.spec_AdvancedDamageSystem
-    if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
-        return 0
-    end
-
-    for i = #spec.maintenanceLog, 1, -1 do
-        local entry = spec.maintenanceLog[i]
-        if AdvancedDamageSystem.getIsLogEntryHasReport(entry) then
-            return entry.conditionData.operatingHours
-        end
-    end
-    return 0
-end
-
-function AdvancedDamageSystem:getLastMaintenanceOperatingHours()
-    local spec = self.spec_AdvancedDamageSystem
-    if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
-        return 0
-    end
-
-    for i = #spec.maintenanceLog, 1, -1 do
-        local entry = spec.maintenanceLog[i]
-        if entry.type == AdvancedDamageSystem.STATUS.MAINTENANCE or entry.type == AdvancedDamageSystem.STATUS.OVERHAUL then
-            return entry.conditionData.operatingHours
-        end
-    end
-    return 0
 end
 
 function AdvancedDamageSystem:getMaintenanceInterval()

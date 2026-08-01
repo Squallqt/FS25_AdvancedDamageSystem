@@ -360,7 +360,6 @@
         <text name="ads_spec_months_ago_unit" text="mois plus tôt"/>
         <text name="ads_spec_months_ago_format" text="%s %s"/>
         <text name="ads_spec_last_maintenance_until_format" text="%s jusqu'à %s"/>
-        <text name="ads_spec_service_interval_format" text="%s h"/>
         <text name="ads_spec_maintenance_complete_notification" text="terminée"/>
         <text name="ads_spec_maintenance_cancelled_notification" text="annulé"/>
         <text name="ads_spec_inspection_issues_detected_notification" text="%s problème(s) détecté(s)"/>

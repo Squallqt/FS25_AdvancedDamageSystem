@@ -155,15 +155,6 @@ function ADS_Utils.tableToString(tbl)
     return "{ " .. table.concat(parts, ", ") .. " }"
 end
 
-function ADS_Utils.getKeyByValue(tbl, value)
-    for key, val in pairs(tbl) do
-        if val == value then
-            return key
-        end
-    end
-    return nil
-end
-
 -- number key
 function ADS_Utils.getIndexByValue(tbl, value)
     for key, val in pairs(tbl) do
@@ -400,17 +391,6 @@ end
 
 function ADS_Utils.formatOperatingHours(currentHours, intervalHours)
     return string.format("%.1f / %.1f %s", currentHours, intervalHours, g_i18n:getText('ads_spec_op_hours_short'))
-end
-
-
-function ADS_Utils.getFormattedServiceIntervalText(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
-    local interval = ((spec.baseServiceLevel / ADS_Config.CORE.BASE_SERVICE_WEAR) / 2) * spec.reliability
-    local roundedInterval = math.floor(interval * 2 + 0.5) / 2
-    if roundedInterval % 1 == 0 then
-        return string.format(g_i18n:getText('ads_spec_service_interval_format'), string.format("%.0f", roundedInterval))
-    end
-    return string.format(g_i18n:getText('ads_spec_service_interval_format'), string.format("%.1f", roundedInterval))
 end
 
 -- others ---------------------------------------------------------------

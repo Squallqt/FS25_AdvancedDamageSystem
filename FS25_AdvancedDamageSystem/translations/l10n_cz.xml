@@ -360,7 +360,6 @@
         <text name="ads_spec_months_ago_unit" text="měsíci"/>
         <text name="ads_spec_months_ago_format" text="před %s %s"/>
         <text name="ads_spec_last_maintenance_until_format" text="%s do %s"/>
-        <text name="ads_spec_service_interval_format" text="%s mth"/>
         <text name="ads_spec_maintenance_complete_notification" text="dokončeno"/>
         <text name="ads_spec_maintenance_cancelled_notification" text="zrušeno"/>
         <text name="ads_spec_inspection_issues_detected_notification" text="detekováno problémů: %s"/>
