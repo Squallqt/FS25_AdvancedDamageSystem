@@ -249,6 +249,24 @@ end
 --                  LUBRICATION
 -- ==========================================================
 
+function ADS_Consumptables:onLubricationPeriodChanged()
+    local C = ADS_Config.FIELD_CARE
+    local spec = self.spec_AdvancedDamageSystem
+    if not self.isServer or spec == nil or spec.isExcludedVehicle or not spec.isVehicleNeedLubricate then
+        return
+    end
+
+    if not spec.lubricationUsedThisPeriod then
+        spec.lubricationLevel = math.max(
+            (tonumber(spec.lubricationLevel) or 1.0) - C.LUBRICATION_REDUCE_PER_PERIOD,
+            0
+        )
+        raiseFieldcareDirty(self, spec)
+    end
+
+    spec.lubricationUsedThisPeriod = false
+end
+
 function ADS_Consumptables:updateLubricationLevel(operatingDt, motorState)
     local C = ADS_Config.FIELD_CARE
     local spec = self.spec_AdvancedDamageSystem
@@ -256,21 +274,8 @@ function ADS_Consumptables:updateLubricationLevel(operatingDt, motorState)
         return
     end
 
-    local currentGameTime = ADS_Utils.getCurrentGameTime()
-    local isMotorRunning = motorState == MotorState.ON
-    local periodDuration = ADS_Utils.getCurrentPeriodDuration()
-    local completedPeriods = math.floor((currentGameTime - spec.lastLubricationGameTime) / periodDuration)
-
-    if completedPeriods > 0 then
-        spec.lubricationLevel = math.max(
-            spec.lubricationLevel - completedPeriods * C.LUBRICATION_REDUCE_PER_PERIOD,
-            0
-        )
-        spec.lastLubricationGameTime = spec.lastLubricationGameTime + completedPeriods * periodDuration
-    end
-
-    if isMotorRunning then
-        spec.lastLubricationGameTime = currentGameTime
+    if motorState == MotorState.ON then
+        spec.lubricationUsedThisPeriod = true
     end
 
     spec.lubricationLevel = math.max(
@@ -284,7 +289,7 @@ function ADS_Consumptables:lubricateVehicle()
     local spec = self.spec_AdvancedDamageSystem
 
     spec.lubricationLevel = math.min(spec.lubricationLevel + C.LUBRICATION_RESTORE_PER_USE, 1.0)
-    spec.lastLubricationGameTime = ADS_Utils.getCurrentGameTime()
+    spec.lubricationUsedThisPeriod = true
 
     --- tutorial message
     if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then

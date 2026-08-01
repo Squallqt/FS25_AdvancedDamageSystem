@@ -1,16 +1,5 @@
 ADS_Utils = {}
 
-local MILLISECONDS_PER_GAME_DAY = 24 * 60 * 60 * 1000
-
-function ADS_Utils.getCurrentGameTime()
-    local environment = g_currentMission.environment
-    return environment.currentMonotonicDay * MILLISECONDS_PER_GAME_DAY + environment.dayTime
-end
-
-function ADS_Utils.getCurrentPeriodDuration()
-    return g_currentMission.environment.daysPerPeriod * MILLISECONDS_PER_GAME_DAY
-end
-
 function ADS_Utils.getLockedHookLiftContainer(vehicle)
     local hookLift = vehicle ~= nil and vehicle.spec_hookLiftTrailer or nil
     local attachedContainer = hookLift ~= nil and hookLift.attachedContainer or nil

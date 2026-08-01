@@ -564,7 +564,7 @@ You can buy a `Grease Gun` in the shop and use it to lubricate the vehicle befor
 
 - **When to use:** Before a working day or before demanding seasonal operations. Properly lubricating a combine before harvest is one of the easiest ways to avoid an inconvenient breakdown in the middle of the field.
 
-Each complete period without use reduces the lubrication level by `10%`. Operating the machine, applying grease, or completing any workshop procedure other than inspection restarts the inactivity interval.
+At the end of each period, the lubrication level is reduced by `10%` only if the machine was not operated, greased, or serviced during that entire period. Inspection alone does not count as use.
 
 ## 6. Reliability and Maintainability
 

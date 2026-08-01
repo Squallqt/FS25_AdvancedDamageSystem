@@ -520,6 +520,8 @@ function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
 
     if spec.isExcludedVehicle then
         spec.pendingSideNotifications = {}
+    else
+        spec.lubricationUsedThisPeriod = true
     end
 
     self:recalculateAndApplyEffects()
@@ -1000,7 +1002,7 @@ function AdvancedDamageSystem.initSpecialization()
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#radiatorClogging", "Radiator clogging level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airIntakeClogging", "Air intake clogging level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lubricationLevel", "Lubrication level")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lubricationAge", "Game time elapsed since last lubrication")
+    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#lubricationUsedThisPeriod", "Whether the vehicle was used during the current period")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#thermostatState", "Engine Thermostat Position")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionThermostatState", "Transmission Thermostat Position")
     schemaSavegame:register(XMLValueType.STRING, baseKey .. "#serviceOptionOne", "Current Service Option One")
@@ -1651,7 +1653,7 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#radiatorClogging", math.max(spec.radiatorClogging or 0, 0))
         xmlFile:setValue(key .. "#airIntakeClogging", math.max(spec.airIntakeClogging or 0, 0))
         xmlFile:setValue(key .. "#lubricationLevel", math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
-        xmlFile:setValue(key .. "#lubricationAge", math.max(ADS_Utils.getCurrentGameTime() - (spec.lastLubricationGameTime or 0), 0))
+        xmlFile:setValue(key .. "#lubricationUsedThisPeriod", spec.lubricationUsedThisPeriod == true)
         xmlFile:setValue(key .. "#thermostatState", AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#transmissionThermostatState", AdvancedDamageSystem.sanitizeNumber(spec.transmissionThermostatState, 0.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#serviceOptionOne", spec.serviceOptionOne or "")
@@ -1806,7 +1808,7 @@ function AdvancedDamageSystem:onLoad(savegame)
 
     self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
     self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
-    self.spec_AdvancedDamageSystem.lastLubricationGameTime = 0
+    self.spec_AdvancedDamageSystem.lubricationUsedThisPeriod = true
     self.spec_AdvancedDamageSystem.fieldInspectionSoundActive = false
     self.spec_AdvancedDamageSystem.fieldInspectionActivePlayers = {}
 
@@ -2251,7 +2253,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         spec.radiatorClogging = math.max(savegame.xmlFile:getValue(key .. "#radiatorClogging", spec.radiatorClogging), 0)
         spec.airIntakeClogging = math.max(savegame.xmlFile:getValue(key .. "#airIntakeClogging", spec.airIntakeClogging), 0)
         spec.lubricationLevel = math.clamp(savegame.xmlFile:getValue(key .. "#lubricationLevel", spec.lubricationLevel), 0.0, 1.0)
-        spec.lubricationAge = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#lubricationAge", 0), 0, 0)
+        spec.lubricationUsedThisPeriod = savegame.xmlFile:getValue(key .. "#lubricationUsedThisPeriod", true)
         spec.thermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
         spec.transmissionThermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
         if spec.engTermPID ~= nil then
@@ -2846,9 +2848,6 @@ local function registerVehicle(vehicle)
 
             local spec = vehicle.spec_AdvancedDamageSystem
             if spec == nil then return end
-
-            spec.lastLubricationGameTime = ADS_Utils.getCurrentGameTime() - (spec.lubricationAge or 0)
-            spec.lubricationAge = nil
 
             --- Registration in ADS_Main.vehicles
             ADS_Main.vehicles[vehicle.uniqueId] = vehicle
@@ -7830,7 +7829,7 @@ function AdvancedDamageSystem:completeService()
         spec.radiatorClogging = 0
         spec.airIntakeClogging = 0
         spec.lubricationLevel = 1.0
-        spec.lastLubricationGameTime = ADS_Utils.getCurrentGameTime()
+        spec.lubricationUsedThisPeriod = true
     end
 
     local function resetVehicleRepaintWear(vehicle)

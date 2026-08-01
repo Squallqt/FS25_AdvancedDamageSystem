@@ -461,6 +461,16 @@ function ADS_Main:forceWorkshopUpdate(forceNotify)
     end
 end
 
+function ADS_Main:onPeriodChanged()
+    if not g_currentMission:getIsServer() then
+        return
+    end
+
+    for _, vehicle in pairs(self.vehicles) do
+        ADS_Consumptables.onLubricationPeriodChanged(vehicle)
+    end
+end
+
 
 function ADS_Main:update(dt)
     if g_currentMission ~= nil and g_currentMission.getIsClient ~= nil and g_currentMission:getIsClient() then
@@ -560,6 +570,10 @@ function ADS_Main:loadMap()
     ADS_Config.loadFromXMLFile()
     self:tryRegisterShopMenuPage()
 
+    if g_currentMission:getIsServer() then
+        g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, self.onPeriodChanged, self)
+    end
+
     local soundsXmlFile = loadXMLFile("adsSounds2D", Utils.getFilename("sounds/ads_sounds.xml", modDirectory))
     self.samples = {
         notification2D = g_soundManager:loadSample2DFromXML(soundsXmlFile, "sounds", "notification2D", modDirectory, 1, AudioGroup.GUI),
@@ -569,6 +583,7 @@ function ADS_Main:loadMap()
 end
 
 function ADS_Main:deleteMap()
+    g_messageCenter:unsubscribe(MessageType.PERIOD_CHANGED, self)
     self.shopMenuPageInstalled = false
     ADS_Main.guiProfilesLoaded = nil
     ADS_Config._loaded = nil
