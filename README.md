@@ -263,7 +263,7 @@ In ADS, your vehicles can suffer real breakdowns. Some failures are minor and on
 > ### ⚙️ Engine Systems
 >
 > #### Turbocharger Wear
-> * *Applicable to:* Currently only enabled for the `Fiat 160-90 DT`.
+> * *Applicable to:* Non-electric vehicles with an engine of `56 kW` (`75 hp`) or more, the emissions power band above which a modern engine needs forced induction.
 > * *Symptoms:* Turbo whistle, noticeable power loss at high RPM, rising fuel consumption, and possible engine stalls under heavy load.
 > * *Critical Effect:* **Catastrophic turbo failure.** The engine loses most of its power and is at serious risk of further damage.
 >

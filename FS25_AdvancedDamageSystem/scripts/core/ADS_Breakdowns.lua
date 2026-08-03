@@ -1007,14 +1007,13 @@ ADS_Breakdowns.BreakdownRegistry = {
     },
 
     -- engine
-    TURBOCHARGER_MALFUNCTION = { -- TO-DO: add names
+    TURBOCHARGER_MALFUNCTION = {
         isSelectable = true,
         system = systems.ENGINE,
         part = parts.TURBOCHARGER,
         isApplicable = function(vehicle)
-            local name = vehicle:getFullName()
-            if name == "Fiat 160-90 DT" then return true end
-            return false
+            local motor = vehicle:getMotor()
+            return (motor.peakMotorPower or 0) >= ADS_Config.CORE.TURBO_MIN_POWER_KW
         end,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.ENGINE, {"hmf", "mlf"}, {"aicf", "sf"})
@@ -1074,7 +1073,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.50, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.60, aggregation = "sum" },
-                    { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" }, },
+                    { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
                 },
                 inspection = {
                     { additional = "ads_inspection_hint_turbocharger_malfunction_stage4" },
@@ -1084,6 +1083,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
+        }
     },
 
     OIL_PUMP_MALFUNCTION = {

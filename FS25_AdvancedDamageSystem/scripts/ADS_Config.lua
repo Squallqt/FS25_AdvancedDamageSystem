@@ -245,6 +245,9 @@ ADS_Config = {
         RELIABILITY_YEAR_FACTOR = 0.01,
         RELIABILITY_YEAR_FACTOR_THRESHOLD = 2000,
 
+        -- Engine power in kW at and above which a vehicle counts as turbocharged.
+        TURBO_MIN_POWER_KW = 56,
+
         BASE_BREAKDOWN_PROGRESS_TIME = 1 * 3600000,
         BREAKDOWN_PROBABILITIES = {
             STRESS_THRESHOLD = 0.5,
