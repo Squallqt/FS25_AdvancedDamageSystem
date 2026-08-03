@@ -2911,6 +2911,8 @@ end
 --                             DAMAGE BAR CONTROL
 -- =====================================================================================
 
+local INSPECTED_DAMAGE_CEILING = 0.9
+
 local originalSpeedMeterDisplayDraw = SpeedMeterDisplay.draw
 SpeedMeterDisplay.draw = function(self, ...)
     local vehicle = self.vehicle
@@ -2972,8 +2974,10 @@ SpeedMeterDisplay.draw = function(self, ...)
         if selectedTool.getServiceLevel ~= nil then
             local condition, isCompleteInspection = vehicle:getLastInspectedCondition()
             condition = math.clamp(condition or 0, 0, 1)
-            if isCompleteInspection then
-                customDamageAmount = 1 - condition
+            if isCompleteInspection == nil then
+                customDamageAmount = 1.0
+            elseif isCompleteInspection then
+                customDamageAmount = math.min(1 - condition, INSPECTED_DAMAGE_CEILING)
             elseif condition > 0.8 then
                 customDamageAmount = 0.0
             elseif condition > 0.6 then
@@ -2983,7 +2987,7 @@ SpeedMeterDisplay.draw = function(self, ...)
             elseif condition > 0.2 then
                 customDamageAmount = 0.75
             else
-                customDamageAmount = 1.0
+                customDamageAmount = INSPECTED_DAMAGE_CEILING
             end
         else
             customDamageAmount = selectedTool:getDamageAmount()
