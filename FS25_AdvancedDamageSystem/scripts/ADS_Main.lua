@@ -386,7 +386,7 @@ function ADS_Main.populateCellForItemInSection(self, superFunc, list, section, i
             superFunc(self, list, section, index, cell)
             local condition, isCompleteInspection = vehicle:getLastInspectedCondition()
             cell:getAttribute("damage"):setText(ADS_Utils.formatCondition(condition, isCompleteInspection))
-            cell:getAttribute("damage"):setTextColor(ADS_Utils.getValueColor(condition, 0.8, 0.6, 0.4, 0.2, false))
+            cell:getAttribute("damage"):setTextColor(ADS_Utils.getConditionColor(condition, isCompleteInspection))
         else
             superFunc(self, list, section, index, cell)
         end

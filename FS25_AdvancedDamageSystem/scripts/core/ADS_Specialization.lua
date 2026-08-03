@@ -2855,13 +2855,14 @@ local function registerVehicle(vehicle)
     
             --- if first mod load or used vehicle
             if vehicle.isServer then
-                    if (vehicle:getFormattedOperatingTime() > 0.01 and spec.conditionLevel == spec.baseConditionLevel) then
+                    local isUsedVehicle = vehicle:getFormattedOperatingTime() > 0.01 and spec.conditionLevel == spec.baseConditionLevel
+                    if isUsedVehicle then
                         -- Used vehicle logic
                         initializeVehicleConditionFromVanillaPrice(vehicle, true)
                     end
 
-                    --- if first mod load and vehicle has no maintenance log, add initial entry with current condition and service levels
-                    if (spec.maintenanceLog == nil or #spec.maintenanceLog == 0) then
+                    --- Initial report for a new vehicle only, a used one stays uninspected.
+                    if not isUsedVehicle and (spec.maintenanceLog == nil or #spec.maintenanceLog == 0) then
                         vehicle:addEntryToMaintenanceLog(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
                     end
             end

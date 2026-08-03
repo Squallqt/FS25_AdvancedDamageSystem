@@ -305,11 +305,14 @@ end
 -- condition and service levels -----------------------------
 
 function ADS_Utils.formatCondition(condition, isCompleteInspection)
+    local STATES = AdvancedDamageSystem.STATES
+    if isCompleteInspection == nil then
+        return g_i18n:getText(STATES.UNKNOWN)
+    end
     if isCompleteInspection then
         return string.format("%.0f%%", condition * 100)
     end
     local damage = 1.0 - condition
-    local STATES = AdvancedDamageSystem.STATES
     if damage > 0.8 then
         return g_i18n:getText(STATES.TERRIBLE)
     elseif damage > 0.6 then
@@ -330,11 +333,15 @@ function ADS_Utils.getServiceIntervalRemainingRatio(service)
 end
 
 function ADS_Utils.formatService(service, isCompleteInspection)
+    local STATES = AdvancedDamageSystem.STATES
+    -- No report in the log.
+    if isCompleteInspection == nil then
+        return g_i18n:getText(STATES.UNKNOWN)
+    end
     if isCompleteInspection then
         return string.format("%.0f%%", ADS_Utils.getServiceIntervalRemainingRatio(service) * 100)
     end
     service = tonumber(service) or 0.0
-    local STATES = AdvancedDamageSystem.STATES
     if service >= 0.9 then
         return g_i18n:getText(STATES.OPTIMAL)
     elseif service >= 0.7 then
@@ -442,8 +449,10 @@ local COLOR_GREEN  = {0.3, 0.7, 0.0, 1.0}    -- green
 local COLOR_YELLOW = {0.85, 0.78, 0.2, 1.0}  -- yellow
 local COLOR_ORANGE = {0.85, 0.5, 0.15, 1.0}  -- orange
 local COLOR_RED    = {0.8, 0.2, 0.2, 1.0}    -- red
+local COLOR_UNKNOWN = {0.5, 0.5, 0.5, 1.0}   -- grey
 
 local DEFAULT_COLOR_LEVELS = {0.8, 0.6, 0.4, 0.2}
+local SERVICE_COLOR_LEVELS = {0.9, 0.5, 0.2, 0.001}
 
 local function lerpColor(a, b, t)
     return {
@@ -488,6 +497,24 @@ function ADS_Utils.getValueColor(value, ideal, high, mid, low, smooth)
     end
 
     return c[1], c[2], c[3], c[4]
+end
+
+function ADS_Utils.getConditionColor(condition, isCompleteInspection)
+    if isCompleteInspection == nil then
+        return unpack(COLOR_UNKNOWN)
+    end
+
+    local ideal, high, mid, low = unpack(DEFAULT_COLOR_LEVELS)
+    return ADS_Utils.getValueColor(condition, ideal, high, mid, low, false)
+end
+
+function ADS_Utils.getServiceColor(service, isCompleteInspection)
+    if isCompleteInspection == nil then
+        return unpack(COLOR_UNKNOWN)
+    end
+
+    local ideal, high, mid, low = unpack(SERVICE_COLOR_LEVELS)
+    return ADS_Utils.getValueColor(ADS_Utils.getServiceIntervalRemainingRatio(service), ideal, high, mid, low, isCompleteInspection)
 end
 
 function ADS_Utils.getValueColorInverted(value, ideal, low, mid, high, smooth)
