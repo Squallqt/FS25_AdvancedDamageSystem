@@ -30,7 +30,19 @@ function ADS_Hud:new()
         icon = g_overlayManager:createOverlay("ads_DashboardHud.wheelSlip", 0, 0, 0, 0)
     }
 
-    -- 4WD / diff lock indicator
+    self.dashExtension = {
+        leftHalf = g_overlayManager:createOverlay("gui.speedBg", 0, 0, 0, 0),
+        rightHalf = g_overlayManager:createOverlay("gui.speedBg", 0, 0, 0, 0),
+        strip = g_overlayManager:createOverlay("gui.speedBg", 0, 0, 0, 0)
+    }
+    local bgUvs = self.dashExtension.leftHalf.uvs
+    local uMidBottom = (bgUvs[1] + bgUvs[5]) * 0.5
+    local uMidTop = (bgUvs[3] + bgUvs[7]) * 0.5
+    local uHalfPx = (bgUvs[5] - bgUvs[1]) / 232 * 0.5
+    self.dashExtension.leftHalf:setUVs({bgUvs[1], bgUvs[2], bgUvs[3], bgUvs[4], uMidBottom, bgUvs[6], uMidTop, bgUvs[8]})
+    self.dashExtension.rightHalf:setUVs({uMidBottom, bgUvs[2], uMidTop, bgUvs[4], bgUvs[5], bgUvs[6], bgUvs[7], bgUvs[8]})
+    self.dashExtension.strip:setUVs({uMidBottom - uHalfPx, bgUvs[2], uMidTop - uHalfPx, bgUvs[4], uMidBottom + uHalfPx, bgUvs[6], uMidTop + uHalfPx, bgUvs[8]})
+
     self.drivetrainHud = {
         icons = {
             drivelineOpen    = { overlay = g_overlayManager:createOverlay("ads_DashboardHud.drivelineOpen", 0, 0, 0, 0),    aspect = 45 / 59, height = 21 },
@@ -40,7 +52,6 @@ function ADS_Hud:new()
         }
     }
 
-    -- Parking brake indicator
     self.parkBrakeHud = {
         icon = g_overlayManager:createOverlay("ads_DashboardHud.parkBrake", 0, 0, 0, 0)
     }
@@ -76,6 +87,11 @@ function ADS_Hud:new()
             icon = g_overlayManager:createOverlay("ads_DashboardHud.warning", 0, 0, 0, 0),
             year = 1990
         },
+        preheat = {
+            name = 'preheat',
+            icon = g_overlayManager:createOverlay("ads_DashboardHud.preheat", 0, 0, 0, 0),
+            visualOnly = true
+        },
         service = {
             name = 'service',
             icon = g_overlayManager:createOverlay("ads_DashboardHud.service", 0, 0, 0, 0),
@@ -100,12 +116,7 @@ function ADS_Hud:new()
         oil =           { cooldownMs = 1800, sampleName = "warning" }
     }
 
-    self.engineTempText = {}
-    self.motorLoadText = {}
-    self.batteryVoltageText = {}
-    self.tsTempText = {
-        year = 1950
-    }
+    self.indicatorValueText = {}
 
     self.fuelConsoText = {}
 
@@ -174,6 +185,13 @@ function ADS_Hud:delete()
     self.wheelSlipHud.icon = nil
     self.parkBrakeHud.icon:delete()
     self.parkBrakeHud.icon = nil
+
+    if self.dashExtension ~= nil then
+        self.dashExtension.leftHalf:delete()
+        self.dashExtension.rightHalf:delete()
+        self.dashExtension.strip:delete()
+        self.dashExtension = nil
+    end
 
     for _, icon in pairs(self.drivetrainHud.icons) do
         icon.overlay:delete()
@@ -764,36 +782,58 @@ end
 
 function ADS_Hud:storeScaledValues()
 
-    self.indicators.battery.offsetX, self.indicators.battery.offsetY = self:scalePixelValuesToScreenVector(23, -33)
-    local batteryWidth, batteryHeight = self:scalePixelValuesToScreenVector(19, 19)
-    self.indicators.battery.icon:setDimension(batteryWidth, batteryHeight)
+    self.dashExtension.stretchWidth = self:scalePixelToScreenWidth(25)
 
-    self.indicators.oil.offsetX, self.indicators.oil.offsetY = self:scalePixelValuesToScreenVector(22, -30)
-    local oilWidth, oilHeight = self:scalePixelValuesToScreenVector(19, 19)
+    local indicatorSize = 19
+    local indicatorValueSize = 9
+    local indicatorWidth, indicatorHeight = self:scalePixelValuesToScreenVector(indicatorSize, indicatorSize)
+    local indicatorLayout = {
+    {indicator = self.indicators.brakes,       offsetX = -91.125,  offsetY =  55.000},
+        {indicator = self.indicators.engine,       offsetX = -106.445, offsetY =  35.250, valueOffsetX = -5.875, valueOffsetY = -3.847, maxTextWidth = 27.232},
+        {indicator = self.indicators.coolant,      offsetX = -116.136, offsetY =   4.488, valueOffsetX = -1.125, valueOffsetY = -4.507, maxTextWidth = 29.528},
+        {indicator = self.indicators.transmission, offsetX = -114.629, offsetY = -27.732, valueOffsetX = 2.632,  valueOffsetY = -4.417, maxTextWidth = 27.858},
+        {indicator = self.indicators.battery,      offsetX = -102.186, offsetY = -58.003, valueOffsetX = -0.625, valueOffsetY = -1.826, maxTextWidth = 25.975}
+    }
+
+    for _, layout in ipairs(indicatorLayout) do
+        local indicator = layout.indicator
+        indicator.offsetX, indicator.offsetY = self:scalePixelValuesToScreenVector(layout.offsetX, layout.offsetY)
+        indicator.icon:setDimension(indicatorWidth, indicatorHeight)
+
+        if layout.valueOffsetY ~= nil then
+            indicator.valueOffsetX, indicator.valueOffsetY = self:scalePixelValuesToScreenVector(
+                layout.valueOffsetX,
+                layout.valueOffsetY
+            )
+            indicator.valueMaxWidth = self:scalePixelToScreenWidth(layout.maxTextWidth)
+        end
+    end
+
+    local oilWidth, oilHeight = self:scalePixelValuesToScreenVector(22, 22)
+    local speedMeter = g_currentMission.hud.speedMeter
+    local serviceAnchorY = (
+        speedMeter.gaugeTextOffsets[4].offsetY
+        + speedMeter.gaugeTextOffsets[7].offsetY
+    ) * 0.5
+    local warningRowCenterY = serviceAnchorY - self:scalePixelToScreenHeight(10)
+    self.indicators.oil.offsetX = self:scalePixelToScreenWidth(28) - oilWidth * (37 / 72)
+    self.indicators.oil.offsetY = warningRowCenterY - oilHeight * (35 / 72)
     self.indicators.oil.icon:setDimension(oilWidth, oilHeight)
 
-    self.indicators.engine.offsetX, self.indicators.engine.offsetY = self:scalePixelValuesToScreenVector(-45, 10)
-    local engineWidth, engineHeight = self:scalePixelValuesToScreenVector(16, 16)
-    self.indicators.engine.icon:setDimension(engineWidth, engineHeight)
-
-    self.indicators.transmission.offsetX, self.indicators.transmission.offsetY = self:scalePixelValuesToScreenVector(30, -13)
-    local transmissionWidth, transmissionHeight = self:scalePixelValuesToScreenVector(19, 19)
-    self.indicators.transmission.icon:setDimension(transmissionWidth, transmissionHeight)
-
-    self.indicators.brakes.offsetX, self.indicators.brakes.offsetY = self:scalePixelValuesToScreenVector(-45, -32)
-    local brakesWidth, brakesHeight = self:scalePixelValuesToScreenVector(19, 19)
-    self.indicators.brakes.icon:setDimension(brakesWidth, brakesHeight)
-
-    self.indicators.warning.offsetX, self.indicators.warning.offsetY = self:scalePixelValuesToScreenVector(25, 8)
-    local warningWidth, warningHeight = self:scalePixelValuesToScreenVector(19, 19)
+    local warningWidth, warningHeight = self:scalePixelValuesToScreenVector(18, 18)
+    self.indicators.warning.offsetX = -warningWidth * (37 / 72)
+    self.indicators.warning.offsetY = warningRowCenterY - warningHeight * (35.5 / 72)
     self.indicators.warning.icon:setDimension(warningWidth, warningHeight)
 
-    self.indicators.coolant.offsetX, self.indicators.coolant.offsetY = self:scalePixelValuesToScreenVector(-10, 37)
-    local coolantWidth, coolantHeight = self:scalePixelValuesToScreenVector(19, 19)
-    self.indicators.coolant.icon:setDimension(coolantWidth, coolantHeight)
+    local preheatWidth = oilWidth * (64 / 69)
+    local preheatHeight = oilHeight * (40 / 43)
+    self.indicators.preheat.offsetX = self:scalePixelToScreenWidth(-28) - preheatWidth * (35.5 / 72)
+    self.indicators.preheat.offsetY = warningRowCenterY - preheatHeight * (35.5 / 72)
+    self.indicators.preheat.icon:setDimension(preheatWidth, preheatHeight)
 
-    self.indicators.service.offsetX, self.indicators.service.offsetY = self:scalePixelValuesToScreenVector(-13, 39)
-    local serviceWidth, serviceHeight = self:scalePixelValuesToScreenVector(27, 9)
+    local serviceWidth, serviceHeight = self:scalePixelValuesToScreenVector(42, 10)
+    self.indicators.service.offsetX = -serviceWidth * 0.5
+    self.indicators.service.offsetY = serviceAnchorY
     self.indicators.service.icon:setDimension(serviceWidth, serviceHeight)
 
     self.wheelSlipHud.offsetX, self.wheelSlipHud.offsetY = self:scalePixelValuesToScreenVector(47, -76)
@@ -818,17 +858,7 @@ function ADS_Hud:storeScaledValues()
         self.parkBrakeHud.offsetY = self:scalePixelToScreenHeight(0)
     end
 
-    self.engineTempText.offsetX, self.engineTempText.offsetY = self:scalePixelValuesToScreenVector(0, 36)
-	self.engineTempText.size = self:scalePixelToScreenHeight(9)
-
-    self.motorLoadText.offsetX, self.motorLoadText.offsetY = self:scalePixelValuesToScreenVector(-39, 4)
-	self.motorLoadText.size = self:scalePixelToScreenHeight(9)
-
-    self.batteryVoltageText.offsetX, self.batteryVoltageText.offsetY = self:scalePixelValuesToScreenVector(37, 4)
-	self.batteryVoltageText.size = self:scalePixelToScreenHeight(9)
-
-    self.tsTempText.offsetX, self.tsTempText.offsetY = self:scalePixelValuesToScreenVector(38, 3)
-	self.tsTempText.size = self:scalePixelToScreenHeight(8)
+    self.indicatorValueText.size = self:scalePixelToScreenHeight(indicatorValueSize)
 
     self.fuelConsoText.offsetX, self.fuelConsoText.offsetY = self:scalePixelValuesToScreenVector(8, 1)
     self.fuelConsoText.size = self:scalePixelToScreenHeight(10)
@@ -885,16 +915,17 @@ function ADS_Hud:drawDashboard()
                 end
             end
 
-            local isNotHeated =
-            (spec.engineTemperature < ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD) or
-            (hasCVTTransmission(vehicle) and not hasCVTAddon(vehicle) and spec.transmissionTemperature < ADS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD) or
-            (hasCVTAddon(vehicle) and spec.transmissionTemperature < 55)
+            local isEngineNotHeated = spec.engineTemperature < ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
+            local isTransmissionNotHeated =
+                (hasCVTTransmission(vehicle) and not hasCVTAddon(vehicle) and spec.transmissionTemperature < ADS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD) or
+                (hasCVTAddon(vehicle) and spec.transmissionTemperature < 55)
 
-            if hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and isNotHeated then targetColor = colors.COOL
+            if hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and isEngineNotHeated then targetColor = colors.COOL
             elseif hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and spec.engineTemperature > 99 and spec.engineTemperature < 110 then targetColor = colors.WARNING
             elseif hudIndicatorId == self.indicators.coolant.name and spec.engineTemperature > 110 then targetColor = colors.CRITICAL end
-            if hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and spec.transmissionTemperature > 99 and spec.transmissionTemperature < 110 then targetColor = colors.WARNING
-            elseif hudIndicatorId == self.indicators.coolant.name and spec.transmissionTemperature > 110 then targetColor = colors.CRITICAL end
+            if hudIndicatorId == self.indicators.transmission.name and targetColor == colors.DEFAULT and isTransmissionNotHeated then targetColor = colors.COOL
+            elseif hudIndicatorId == self.indicators.transmission.name and targetColor == colors.DEFAULT and spec.transmissionTemperature > 99 and spec.transmissionTemperature < 110 then targetColor = colors.WARNING
+            elseif hudIndicatorId == self.indicators.transmission.name and spec.transmissionTemperature > 110 then targetColor = colors.CRITICAL end
 
             if hudIndicatorId == self.indicators.service.name and isServiceOverdue then targetColor = colors.WARNING end
             if hudIndicatorId == self.indicators.oil.name and spec.serviceLevel < 0.2 then targetColor = colors.WARNING end
@@ -912,14 +943,6 @@ function ADS_Hud:drawDashboard()
         return targetColor
     end
 
-    local coolantTargetColor = calculateIndicatorTargetColor(self.indicators.coolant.name, false)
-    local coolantSlotVisible = not spec.isElectricVehicle and self.indicators.coolant.year < spec.year
-    local serviceVisible = vehicle:getMotorState() ~= 1
-        and isServiceOverdue
-        and self.indicators.service.year < spec.year
-        and coolantSlotVisible
-        and coolantTargetColor == colors.DEFAULT
-
     g_currentMission.hud.speedMeter.speedTextSize = self:scalePixelToScreenHeight(43)
     local speedBgX, speedBgY = g_currentMission.hud.speedMeter.speedBg:getPosition()
     local posX = speedBgX + g_currentMission.hud.speedMeter.speedGaugeCenterOffsetX
@@ -927,33 +950,17 @@ function ADS_Hud:drawDashboard()
 
     for hudIndicatorId, hudIndicatorData in pairs(self.indicators) do
         local icon = hudIndicatorData.icon
-        local targetColor = calculateIndicatorTargetColor(hudIndicatorId, true)
+        local targetColor = hudIndicatorData.visualOnly and colors.DEFAULT
+            or calculateIndicatorTargetColor(hudIndicatorId, true)
         local isIndicatorVisible = true
 
         icon:setPosition(posX + hudIndicatorData.offsetX, posY + hudIndicatorData.offsetY)
-        if (hudIndicatorId == self.indicators.coolant.name and spec.isElectricVehicle)
-            or hudIndicatorId == self.indicators.oil.name
-            or hudIndicatorId == self.indicators.transmission.name then
+        if hudIndicatorData.visualOnly then
+            isIndicatorVisible = true
+        elseif hudIndicatorId == self.indicators.coolant.name and spec.isElectricVehicle then
             isIndicatorVisible = false
         else
-            if vehicle:getLastSpeed() >= 99.9 then
-                if  hudIndicatorId == self.indicators.brakes.name or 
-                    hudIndicatorId == self.indicators.engine.name or
-                    hudIndicatorId == self.indicators.warning.name or
-                    hudIndicatorId == self.indicators.battery.name then
-                        isIndicatorVisible = false
-                else
-                    isIndicatorVisible = hudIndicatorData.year < spec.year
-                end
-            else
-                isIndicatorVisible = hudIndicatorData.year < spec.year
-            end
-        end
-
-        if hudIndicatorId == self.indicators.coolant.name and serviceVisible then
-            isIndicatorVisible = false
-        elseif hudIndicatorId == self.indicators.service.name then
-            isIndicatorVisible = serviceVisible
+            isIndicatorVisible = hudIndicatorData.year < spec.year
         end
 
         icon:setVisible(isIndicatorVisible)
@@ -979,11 +986,10 @@ function ADS_Hud:drawDashboard()
         tempSign = "°F"
     end
 
-    local tempText = ""
+    local tempText = string.format("%.0f%s", engineTemp, tempSign)
+    local transTempText = nil
     if hasCVTTransmission(vehicle) or hasCVTAddon(vehicle) then
-        tempText = string.format("%.0f%s | %.0f%s" , engineTemp, tempSign, transTemp, tempSign)
-    else
-        tempText = string.format("%.1f%s", engineTemp, tempSign)
+        transTempText = string.format("%.0f%s", transTemp, tempSign)
     end
 
     local batteryVoltageText = string.format("%.1f%s", systemVoltageV, voltageSing)
@@ -1000,17 +1006,39 @@ function ADS_Hud:drawDashboard()
     end
 
     if not spec.isElectricVehicle then
-        setTextColor(1, 1, 1, 1)
         setTextAlignment(RenderText.ALIGN_CENTER)
-        setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_TOP)
+        setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
         setTextBold(true)
-        renderText(posX + self.engineTempText.offsetX, posY + self.engineTempText.offsetY, self.engineTempText.size, tempText)
-        if vehicle:getLastSpeed() < 100 then
-            setTextColor(motorLoadTextColor[1], motorLoadTextColor[2], motorLoadTextColor[3], motorLoadTextColor[4])
-            renderText(posX + self.motorLoadText.offsetX, posY + self.motorLoadText.offsetY, self.motorLoadText.size, motorText)
-            setTextColor(batteryVoltageTextColor[1], batteryVoltageTextColor[2], batteryVoltageTextColor[3], batteryVoltageTextColor[4])
-            renderText(posX + self.batteryVoltageText.offsetX, posY + self.batteryVoltageText.offsetY, self.batteryVoltageText.size, batteryVoltageText)
+
+        local function renderIndicatorValue(indicator, value, color)
+            if value == nil or not indicator.icon.visible then
+                return
+            end
+
+            local iconX, iconY = indicator.icon:getPosition()
+            local valueSize = self.indicatorValueText.size
+            local valueWidth = getTextWidth(valueSize, value)
+            if indicator.valueMaxWidth ~= nil and valueWidth > indicator.valueMaxWidth then
+                valueSize = valueSize * indicator.valueMaxWidth / valueWidth
+            end
+            local valueCenterX = iconX + indicator.icon.width * 0.5 + indicator.valueOffsetX
+            local valueY = iconY + indicator.valueOffsetY
+
+            setTextColor(color[1], color[2], color[3], color[4])
+            renderText(
+                valueCenterX,
+                valueY,
+                valueSize,
+                value
+            )
         end
+
+        local defaultTextColor = {1, 1, 1, 1}
+        renderIndicatorValue(self.indicators.coolant, tempText, defaultTextColor)
+        renderIndicatorValue(self.indicators.transmission, transTempText, defaultTextColor)
+        renderIndicatorValue(self.indicators.engine, motorText, motorLoadTextColor)
+        renderIndicatorValue(self.indicators.battery, batteryVoltageText, batteryVoltageTextColor)
+        setTextColor(1, 1, 1, 1)
     end
 
     if ADS_Drivetrain == nil or not ADS_Drivetrain.getIsRoadVehicleCategory(vehicle) then
@@ -2895,6 +2923,39 @@ SpeedMeterDisplay.draw = function(self, ...)
         return originalSpeedMeterDisplayDraw(self, ...)
     end
 
+    local adsHud = ADS_Main ~= nil and ADS_Main.hud or nil
+    local dashExt = nil
+    if spec ~= nil and adsHud ~= nil and adsHud.dashExtension ~= nil and adsHud.dashExtension.stretchWidth ~= nil then
+        dashExt = adsHud.dashExtension
+
+        local extScaleWidth = self.gearBarScaleWidth
+        if vehicle.spec_motorized ~= nil then
+            extScaleWidth = extScaleWidth + self.fuelBarScaleWidth
+        end
+        if vehicle.getDamageAmount ~= nil and vehicle:getDamageAmount() ~= nil then
+            extScaleWidth = extScaleWidth + self.repairBarScaleWidth
+        end
+
+        local basePosX, basePosY = self:getPosition()
+        local speedBgX = basePosX - self.speedBgRight.width - extScaleWidth - self.speedBg.width
+
+        local halfWidth = self.speedBg.width * 0.5
+        local fullHeight = self.speedBg.height
+        dashExt.leftHalf:setDimension(halfWidth, fullHeight)
+        dashExt.rightHalf:setDimension(halfWidth, fullHeight)
+        dashExt.strip:setDimension(dashExt.stretchWidth, fullHeight)
+
+        dashExt.leftHalf:setPosition(speedBgX - dashExt.stretchWidth, basePosY)
+        dashExt.strip:setPosition(speedBgX + halfWidth - dashExt.stretchWidth, basePosY)
+        dashExt.rightHalf:setPosition(speedBgX + halfWidth, basePosY)
+
+        dashExt.leftHalf:render()
+        dashExt.strip:render()
+        dashExt.rightHalf:render()
+
+        self.speedBg:setVisible(false)
+    end
+
     local selectedTool = nil
     local useCustomValue = false
     local customDamageAmount = 0
@@ -2944,6 +3005,10 @@ SpeedMeterDisplay.draw = function(self, ...)
     end
 
     local ok, result = pcall(originalSpeedMeterDisplayDraw, self, ...)
+
+    if dashExt ~= nil then
+        self.speedBg:setVisible(true)
+    end
 
     if useCustomValue then
         for vehicleInstance, originalMethod in pairs(originalGetDamageMethods) do

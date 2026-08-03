@@ -249,14 +249,22 @@ function ADS_Main.hookRepairButton(screenInstance, vehicle)
 end
 
 
-local function getReliability(storeItem)
+local function getReliability(storeItem, vehicle)
+    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+        return nil
+    end
+
     if storeItem.specs.power ~= nil then
         local reliability = AdvancedDamageSystem.getBrandReliability(nil, storeItem)
         return ADS_Utils.formatReliability(reliability)
     end
 end
 
-local function getMaintainability(storeItem)
+local function getMaintainability(storeItem, vehicle)
+    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+        return nil
+    end
+
     if storeItem.specs.power ~= nil then
         local _, maintainability = AdvancedDamageSystem.getBrandReliability(nil, storeItem)
         return ADS_Utils.formatMaintainability(maintainability)

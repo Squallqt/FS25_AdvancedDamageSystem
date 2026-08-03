@@ -1283,6 +1283,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.20, aggregation = "sum" }
                 },
                 indicators = {
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1296,6 +1297,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.50, aggregation = "sum" }
                 },
                 indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1308,6 +1310,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "TRANSMISSION_SLIP_EFFECT", value = 1.0, extraData = {message = "ads_breakdowns_transmission_slip_stage4_message", disableAi = true}, aggregation = "max" }
                 },
                 indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
@@ -1350,6 +1353,9 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = {
                      { id = "GEAR_SHIFT_FAILURE_CHANCE", value = 0.20, extraData = {timer = 0, status = 'IDLE', duration = 1800}, aggregation = "max"},
                      { id = "GEAR_REJECTION_CHANCE", value = 10.0, extraData = {timer = 0, status = 'IDLE', duration = 2000 }, aggregation = "min"}
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1361,6 +1367,9 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = { 
                      { id = "GEAR_SHIFT_FAILURE_CHANCE", value = 0.50, extraData = {timer = 0, status = 'IDLE', duration = 2200}, aggregation = "max"},
                      { id = "GEAR_REJECTION_CHANCE", value = 3.0, extraData = {timer = 0, status = 'IDLE', duration = 2000 }, aggregation = "min"}
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1371,6 +1380,9 @@ ADS_Breakdowns.BreakdownRegistry = {
                 repairPrice = 8.0 * breakdownPriceMultipliers.MANUAL_TRANSMISSION_SYNCHRONIZER_MALFUNCTION,
                 effects = { 
                      { id = "GEAR_SHIFT_FAILURE_CHANCE", value = 1.00, extraData = {timer = 0, status = 'IDLE', duration = 2200, message = "ads_breakdowns_transmission_synchronizer_malfunction_stage4_message", disableAi = true}, aggregation = "max"}
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
@@ -1413,7 +1425,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT", value = 0.5, extraData = {timer = 0, status = "IDLE", duration = 1000, backup = 0}, aggregation = "max"}
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1429,7 +1441,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     { additional = "ads_inspection_hint_powershift_hydraulic_pump_malfunction_stage3" },
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1445,7 +1457,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     { additional = "ads_inspection_hint_powershift_hydraulic_pump_malfunction_stage4" },
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
@@ -1492,7 +1504,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.1, aggregation = "sum" }
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1507,7 +1519,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1520,7 +1532,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                      { id = "CVT_SLIP_EFFECT", value = 1.0, extraData = {message = "ads_breakdowns_cvt_chain_wear_stage4_message", disableAi = true}, aggregation = "max" }
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
@@ -1570,7 +1582,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1589,7 +1601,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     { additional = "ads_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage3" },
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1609,7 +1621,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     { additional = "ads_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage4" },
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
@@ -1651,7 +1663,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = { 
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1663,7 +1675,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = { 
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             },
             { 
@@ -1676,7 +1688,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                     { id = "CVT_SLIP_EFFECT", value = 1.0, extraData = {message = "ads_breakdowns_cvt_addon_malfunction_stage4_message", disableAi = true}, aggregation = "max" }
                 },
                 indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
