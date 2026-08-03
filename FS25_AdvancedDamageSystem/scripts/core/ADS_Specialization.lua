@@ -1790,7 +1790,6 @@ function AdvancedDamageSystem:onLoad(savegame)
 
     self.spec_AdvancedDamageSystem.maintenanceLog = {}
     
-    self.spec_AdvancedDamageSystem.fuelUsage    = 0
     self.spec_AdvancedDamageSystem._fuelUsageRaw  = 0
     self.spec_AdvancedDamageSystem.lastBlinkingWarningMessage = ""
     self.spec_AdvancedDamageSystem.blinkingWarningTimer = 0
@@ -3215,8 +3214,6 @@ local function syncFuelConsumption(vehicle)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then return end
 
-    -- Fuel consumption sync (same approach as DashboardLive):
-    -- Server: capture raw lastFuelUsage every frame for dirty-flag network sync.
     if vehicle.isServer and vehicle.spec_motorized ~= nil then
         if vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted() then
             spec._fuelUsageRaw = AdvancedDamageSystem.sanitizeNumber(vehicle.spec_motorized.lastFuelUsage, 0, 0, 10000)
@@ -3224,14 +3221,8 @@ local function syncFuelConsumption(vehicle)
             spec._fuelUsageRaw = 0
         end
     end
-    -- Dedicated client: inject synced raw value into spec_motorized.lastFuelUsage
-    -- so Motorized's own fuelUsageBuffer picks it up every frame (identical to DashboardLive).
     if vehicle.isClient and not vehicle.isServer and vehicle.spec_motorized ~= nil then
         vehicle.spec_motorized.lastFuelUsage = AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000)
-    end
-    -- Display: always read Motorized's own smoothed value (identical to dashboard gauge).
-    if vehicle.isClient and vehicle.spec_motorized ~= nil then
-        spec.fuelUsage = AdvancedDamageSystem.sanitizeNumber(vehicle.spec_motorized.lastFuelUsageDisplay, 0, 0, 10000)
     end
 end
 

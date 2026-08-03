@@ -29,6 +29,9 @@ function ADS_Hud:new()
     self.wheelSlipHud = {
         icon = g_overlayManager:createOverlay("ads_DashboardHud.wheelSlip", 0, 0, 0, 0)
     }
+    self.fuelConsumptionHud = {
+        icon = g_overlayManager:createOverlay("ads_DashboardHud.fuelConsumption", 0, 0, 0, 0)
+    }
 
     self.dashExtension = {
         leftHalf = g_overlayManager:createOverlay("gui.speedBg", 0, 0, 0, 0),
@@ -118,8 +121,6 @@ function ADS_Hud:new()
 
     self.indicatorValueText = {}
 
-    self.fuelConsoText = {}
-
     self.loadMassText = {}
 
     self.notificationPanel = {
@@ -183,6 +184,8 @@ function ADS_Hud:delete()
     self.notificationDividerOverlay = nil
     self.wheelSlipHud.icon:delete()
     self.wheelSlipHud.icon = nil
+    self.fuelConsumptionHud.icon:delete()
+    self.fuelConsumptionHud.icon = nil
     self.parkBrakeHud.icon:delete()
     self.parkBrakeHud.icon = nil
 
@@ -443,8 +446,7 @@ function ADS_Hud:draw()
 
     if self.vehicle ~= nil then
         self:drawDashboard()
-        self:drawFuelConsumption()
-        self:drawLoadMass()
+        self:drawTelemetryCards()
     end
 end
 
@@ -860,14 +862,19 @@ function ADS_Hud:storeScaledValues()
 
     self.indicatorValueText.size = self:scalePixelToScreenHeight(indicatorValueSize)
 
-    self.fuelConsoText.offsetX, self.fuelConsoText.offsetY = self:scalePixelValuesToScreenVector(8, 1)
-    self.fuelConsoText.size = self:scalePixelToScreenHeight(10)
-
     self.wheelSlipHud.textOffsetX, self.wheelSlipHud.textOffsetY = self:scalePixelValuesToScreenVector(59, -78)
     self.wheelSlipHud.textSize = self:scalePixelToScreenHeight(9)
 
     self.loadMassText.size = self:scalePixelToScreenHeight(13)
     self.loadMassText.paddingH, self.loadMassText.paddingV = self:scalePixelValuesToScreenVector(10, 4)
+    self.telemetryCardGap = self:scalePixelToScreenWidth(4)
+    self.telemetryCardVerticalGap = self:scalePixelToScreenHeight(4)
+
+    local fuelIconWidth, fuelIconHeight = self:scalePixelValuesToScreenVector(14, 15)
+    self.fuelConsumptionHud.icon:setDimension(fuelIconWidth, fuelIconHeight)
+    self.fuelConsumptionHud.width = fuelIconWidth
+    self.fuelConsumptionHud.height = fuelIconHeight
+    self.fuelConsumptionHud.iconGap = self:scalePixelToScreenWidth(6)
 end
 
 function ADS_Hud:drawDashboard()
@@ -1178,64 +1185,179 @@ function ADS_Hud:drawParkBrakeDisplay(vehicle)
 end
 
 -- =====================================================================================
---                          FUEL CONSUMPTION HUD
+--                          TELEMETRY CARDS HUD
 -- =====================================================================================
 
-function ADS_Hud:drawFuelConsumption()
+function ADS_Hud:drawTelemetryCards()
+    local speedMeter = g_currentMission.hud.speedMeter
+    if speedMeter == nil or speedMeter.speedBg == nil then
+        return
+    end
+
+    local cardRightX = speedMeter:getPosition()
+    cardRightX = self:drawLoadMass(cardRightX) or cardRightX
+    local consumptionLeftX, consumptionY, consumptionH = self:drawFuelConsumption(cardRightX)
+    if consumptionLeftX ~= nil then
+        self:drawWorkRate(
+            consumptionLeftX,
+            consumptionY + consumptionH + (self.telemetryCardVerticalGap or 0)
+        )
+    end
+end
+
+function ADS_Hud:getWorkRate()
+    local vehicle = self.vehicle
+    if vehicle == nil then
+        return 0, 0
+    end
+
+    local speed = vehicle.getLastSpeed ~= nil and (tonumber(vehicle:getLastSpeed()) or 0) or 0
+    local width = vehicle.getAttacherToolWorkingWidth ~= nil and (tonumber(vehicle:getAttacherToolWorkingWidth()) or 0) or 0
+    local guidanceSpec = vehicle.spec_globalPositioningSystem
+    if guidanceSpec ~= nil and guidanceSpec.guidanceData ~= nil and guidanceSpec.guidanceData.width ~= nil then
+        width = tonumber(guidanceSpec.guidanceData.width) or width
+    end
+
+    return speed, (speed * width) / 10
+end
+
+function ADS_Hud:drawWorkRate(cardLeftX, cardBottomY)
+    local vehicle = self.vehicle
+    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+        return
+    end
+
+    local _, workRate = self:getWorkRate()
+    local size = self.loadMassText.size or 0.01
+    local padH = self.loadMassText.paddingH or 0
+    local padV = self.loadMassText.paddingV or 0
+    local unitGap = self:scalePixelToScreenWidth(4)
+    local valueStr = string.format("%.1f", workRate)
+    local unitStr = "ha/h"
+    local valueWidth = getTextWidth(size, valueStr)
+    local unitWidth = getTextWidth(size, unitStr)
+    local textWidth = valueWidth + unitGap + unitWidth
+    local textHeight = getTextHeight(size, valueStr)
+    local panelH = textHeight + padV * 2
+    local panelW = textWidth + padH * 2
+    local panelX = cardLeftX
+    local panelY = cardBottomY
+    local textX = panelX + padH
+    local textY = panelY + panelH * 0.5 + self:scalePixelToScreenHeight(2)
+
+    local bg = HUD.COLOR.BACKGROUND
+    drawFilledRectRound(panelX, panelY, panelW, panelH, 0.35, bg[1], bg[2], bg[3], bg[4])
+
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
+    setTextBold(true)
+    setTextColor(1, 1, 1, 1)
+    renderText(textX, textY, size, valueStr)
+    setTextBold(false)
+    setTextColor(1, 1, 1, 0.55)
+    renderText(textX + valueWidth + unitGap, textY, size, unitStr)
+
+    setTextColor(1, 1, 1, 1)
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+end
+
+function ADS_Hud:drawFuelConsumption(cardRightX)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil or vehicle.spec_motorized == nil then
         return
     end
-    local sm = g_currentMission.hud.speedMeter
-    if sm == nil or sm.fuelIcon == nil then
-        return
-    end
 
-    local fuelLevel, fuelCapacity, fuelType = SpeedMeterDisplay.getVehicleFuelLevelAndCapacity(vehicle)
+    local _, fuelCapacity, fuelType = SpeedMeterDisplay.getVehicleFuelLevelAndCapacity(vehicle)
     if fuelCapacity == nil or fuelCapacity <= 0 then
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
-    local consumption = 0
+    local motorizedSpec = vehicle.spec_motorized
+    local consumptionPerHour = 0
+    local rawConsumptionPerHour = 0
     if vehicle:getIsMotorStarted() then
-        if spec.isExcludedVehicle then
-            consumption = vehicle.spec_motorized.lastFuelUsageDisplay or vehicle.spec_motorized.lastFuelUsage or 0
-        else
-            consumption = spec.fuelUsage or 0
-        end
+        consumptionPerHour = math.max(tonumber(motorizedSpec.lastFuelUsageDisplay or motorizedSpec.lastFuelUsage) or 0, 0)
+        rawConsumptionPerHour = math.max(tonumber(motorizedSpec.lastFuelUsage) or 0, 0)
     end
 
-    local isElectric  = (fuelType == FillType.ELECTRICCHARGE)
-    local unit        = isElectric and "kW" or "L/h"
+    local speed, workRate = self:getWorkRate()
+    local consumptionPerArea = 0
+    if speed > 0.9 and workRate > 0 then
+        consumptionPerArea = rawConsumptionPerHour / workRate
+    end
 
-    local fuelIconX, fuelIconY = sm.fuelIcon:getPosition()
-    local fuelIconW = sm.fuelIcon.width or 0
-    local centerX = fuelIconX + fuelIconW * 0.5
-    local textY   = fuelIconY + self.fuelConsoText.offsetY
+    local isElectric = fuelType == FillType.ELECTRICCHARGE
+    local isMethane = fuelType == FillType.METHANE
+    local perHourUnit = isElectric and "kW" or (isMethane and "kg/h" or "L/h")
+    local perAreaUnit = isElectric and "kWh/ha" or (isMethane and "kg/ha" or "L/ha")
+    local perHourStr = string.format("%.1f", consumptionPerHour)
+    local perAreaStr = string.format("%.1f", consumptionPerArea)
 
-    local valueStr = string.format("%.1f", consumption)
-    local gap = 0.002
+    local speedMeter = g_currentMission.hud.speedMeter
+    local size = self.loadMassText.size or 0.01
+    local padH = self.loadMassText.paddingH or 0
+    local padV = self.loadMassText.paddingV or 0
+    local iconWidth = self.fuelConsumptionHud.width or 0
+    local iconHeight = self.fuelConsumptionHud.height or 0
+    local iconGap = self.fuelConsumptionHud.iconGap or 0
+    local unitGap = self:scalePixelToScreenWidth(4)
+    local separatorGap = self:scalePixelToScreenWidth(20)
+    local perHourValueWidth = getTextWidth(size, perHourStr)
+    local perHourUnitWidth = getTextWidth(size, perHourUnit)
+    local perAreaValueWidth = getTextWidth(size, perAreaStr)
+    local perAreaUnitWidth = getTextWidth(size, perAreaUnit)
+    local perHourWidth = perHourValueWidth + unitGap + perHourUnitWidth
+    local perAreaWidth = perAreaValueWidth + unitGap + perAreaUnitWidth
+    local fullWidth = iconWidth + iconGap + perHourWidth + separatorGap + perAreaWidth
+    local textHeight = getTextHeight(size, perHourStr)
+    local panelH = textHeight + padV * 2
+    local panelW = fullWidth + padH * 2
+    local _, smBottomY = speedMeter:getPosition()
+    local panelX = cardRightX - panelW
+    local panelY = (smBottomY - panelH) * 0.5
+    local startX = panelX + padH
+    local textX = startX + iconWidth + iconGap
+    local textY = panelY + panelH * 0.5 + self:scalePixelToScreenHeight(2)
 
+    local bg = HUD.COLOR.BACKGROUND
+    drawFilledRectRound(panelX, panelY, panelW, panelH, 0.35, bg[1], bg[2], bg[3], bg[4])
+
+    local icon = self.fuelConsumptionHud.icon
+    local green = HUD.COLOR.ACTIVE
+    icon:setPosition(startX, panelY + (panelH - iconHeight) * 0.5)
+    icon:setColor(green[1], green[2], green[3], green[4])
+    icon:setVisible(true)
+    icon:render()
+
+    local separatorLineW = 1 / g_screenWidth
+    local separatorLineH = panelH * 0.55
+    local separatorLineX = textX + perHourWidth + separatorGap * 0.5 - separatorLineW * 0.5
+    local separatorLineY = panelY + (panelH - separatorLineH) * 0.5
+    self:drawNotificationDivider(separatorLineX, separatorLineY, separatorLineW, separatorLineH, green)
+
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
     setTextBold(true)
-    local valueWidth = getTextWidth(self.fuelConsoText.size, valueStr)
-    local unitWidth  = getTextWidth(self.fuelConsoText.size, unit)
-    local totalWidth = valueWidth + gap + unitWidth
-    local startX = centerX - totalWidth * 0.5
-
-    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_TOP)
-    setTextAlignment(RenderText.ALIGN_LEFT)
-
-    setTextColor(1, 0.4287, 0.0006, 1)
-    renderText(startX, textY, self.fuelConsoText.size, valueStr)
-
     setTextColor(1, 1, 1, 1)
-    renderText(startX + valueWidth + gap, textY, self.fuelConsoText.size, unit)
-
+    renderText(textX, textY, size, perHourStr)
     setTextBold(false)
+    setTextColor(1, 1, 1, 0.55)
+    renderText(textX + perHourValueWidth + unitGap, textY, size, perHourUnit)
+
+    textX = textX + perHourWidth + separatorGap
+    setTextBold(true)
     setTextColor(1, 1, 1, 1)
-    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+    renderText(textX, textY, size, perAreaStr)
+    setTextBold(false)
+    setTextColor(1, 1, 1, 0.55)
+    renderText(textX + perAreaValueWidth + unitGap, textY, size, perAreaUnit)
+
+    setTextColor(1, 1, 1, 1)
     setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+
+    return panelX, panelY, panelH
 end
 
 -- =====================================================================================
@@ -1276,20 +1398,20 @@ function ADS_Hud:getStableDisplayMass(cacheKey, massTons)
     return cachedMass
 end
 
-function ADS_Hud:drawLoadMass()
+function ADS_Hud:drawLoadMass(cardRightX)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.getTotalMass == nil then
-        return
+        return cardRightX
     end
 
     local spec = vehicle.spec_AdvancedDamageSystem
-    if spec == nil or spec.isExcludedVehicle then
-        return
+    if spec == nil then
+        return cardRightX
     end
 
     local speedMeter = g_currentMission.hud.speedMeter
     if speedMeter == nil or speedMeter.speedBg == nil then
-        return
+        return cardRightX
     end
 
     local selfMass  = tonumber(vehicle:getTotalMass(true)) or 0
@@ -1301,7 +1423,7 @@ function ADS_Hud:drawLoadMass()
 
     local loadColor = HUD.COLOR.ACTIVE
 
-    if towedMass > 0.1 then
+    if spec.isExcludedVehicle ~= true and towedMass > 0.1 then
         local motor      = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
         local horsepower = math.max(((motor ~= nil and motor.peakMotorPower) or 0) * 1.36, 0.001)
         local isTruck    = spec.isTruck == true
@@ -1327,7 +1449,7 @@ function ADS_Hud:drawLoadMass()
         loadColor = self:getLoadSeverityColor(math.max(trailerSeverity, liftSeverity))
     end
 
-    local smRightX, smBottomY = g_currentMission.hud.speedMeter:getPosition()
+    local _, smBottomY = g_currentMission.hud.speedMeter:getPosition()
     local padH = self.loadMassText.paddingH or 0
     local padV = self.loadMassText.paddingV or 0
     local size = self.loadMassText.size or 0.01
@@ -1359,7 +1481,7 @@ function ADS_Hud:drawLoadMass()
     local textHeight = getTextHeight(size, totalValue)
     local panelH = textHeight + padV * 2
     local panelW = fullW + padH * 2
-    local panelX = smRightX - panelW
+    local panelX = cardRightX - panelW
     local panelY = (smBottomY - panelH) * 0.5
     local startX = panelX + padH
     local textY  = panelY + panelH * 0.5 + self:scalePixelToScreenHeight(2)
@@ -1409,6 +1531,8 @@ function ADS_Hud:drawLoadMass()
     setTextColor(1, 1, 1, 1)
     setTextAlignment(RenderText.ALIGN_LEFT)
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+
+    return panelX - (self.telemetryCardGap or 0)
 end
 
 -- =====================================================================================

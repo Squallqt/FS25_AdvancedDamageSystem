@@ -22,5 +22,6 @@
       <slice id="diffLockCenter" uvs="524px 730px 44px 59px" />
       <slice id="diffLockRear" uvs="636px 730px 44px 59px" />
       <slice id="parkBrake" uvs="321px 162px 64px 51px" />
+      <slice id="fuelConsumption" uvs="951px 817px 43px 46px" />
    </slices>
 </texture>
