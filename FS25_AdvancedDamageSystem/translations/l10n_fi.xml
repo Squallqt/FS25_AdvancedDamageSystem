@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="CVT-ketju"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="CVT-hydrauliohjausventtiili"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Vaihteiston termostaatti"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Hydraulipumppu"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Hydraulisylinteri"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Voimanottokytkin"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Täydellinen CVT-vaihteiston vaurio. Jatkokäyttö on mahdotonta ennen vaihteiston korjausta."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="CVT-vaihteiston vaurio"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="CVT-hydrauliohjauksen vaurio"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Vaihteistoöljyn termostaatti alkaa vikaantua. Vaihteisto saavuttaa käyttölämpötilan hitaammin ja säätö on hidasta."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Vaihteiston termostaatin vaste on heikko. Öljyn lämpötilan säätö on epävakaa ja kuluminen kiihtyy."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Vaihteiston termostaatti liikkuu enää tuskin lainkaan. Öljyn lämpötila heittelee voimakkaasti ja kuormituksessa uhkaa ylikuumeneminen."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Vaihteiston termostaatin täydellinen vaurio. Venttiili on jumiutunut paikalleen eikä vaihteistoöljy saavuta enää oikeaa lämpötilaa."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Moottorin termostaatti alkaa vikaantua. Moottori lämpenee hitaammin optimaaliseen lämpötilaan tai käy hieman liian kuumana."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Termostaatin toiminta on heikko. Moottorin lämpötilansäätö on epästabiili ja lisää kulumista."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Termostaatti on jumiutunut kiinni. Moottori ylikuumenee jatkuvasti kuormituksessa."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Hihnan/ketjun luistaminen"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Välityssuhde rajoittunut"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Paineen epävakaus"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Termostaatti heikentynyt"/>
         <text name="ads_report_transmission_failed" text="Vikaantunut"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Laturin maksimaalinen virta"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Akun varaus"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Moottorin ylikuumeneminen"/>
         <text name="ads_tutorial_engine_overheat_message" text="Moottori alkaa ylikuumentua. Tämä voi tapahtua yhdestä tai useammasta syystä: moottori on raskaassa kuormituksessa, jäähdytin on tukossa, sää on kuuma tai ajoneuvon jäähdytysjärjestelmässä on vika.&#10;&#10;Pysy valppaana: ylikuumeneminen on yksi tuhoisimmista tekijöistä mistä tahansa koneelle. Se ei vahingoita vain moottoria: jäähdytysjärjestelmä joutuu äärirajoilleen, ja lämpö moottoritilassa kiihdyttää johdotuksen ja sähkökomponenttien rapautumista."/>
         <text name="ads_tutorial_cvt_overheat_title" text="CVT:n ylikuumeneminen"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="CVT alkaa ylikuumentua. Tämä voi tapahtua yhdestä tai useammasta syystä: vaihteisto on liiallisessa kuormituksessa, jäähdytin on tukossa tai sää on erittäin kuuma. Esimerkiksi saattaa olla, että vedät liian raskasta auraa tai hinaat ylikuormitettua perävaunua.&#10;&#10;Pysy valppaana: ylikuumeneminen on yksi tuhoisimmista asioista, joita CVT-vaihteistolle voi tapahtua."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="CVT alkaa ylikuumentua. Tämä voi tapahtua yhdestä tai useammasta syystä: vaihteisto on liiallisessa kuormituksessa, jäähdytin on tukossa sää on erittäin kuuma tai vaihteiston jäähdytysjärjestelmässä on vika. Esimerkiksi saattaa olla, että vedät liian raskasta auraa tai hinaat ylikuormitettua perävaunua.&#10;&#10;Pysy valppaana: ylikuumeneminen on yksi tuhoisimmista asioista, joita CVT-vaihteistolle voi tapahtua."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Raskas perävaunu"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Hinattava kuorma saattaa olla liian raskas tälle ajoneuvolle. Voit jatkaa ajamista, mutta vaihteisto ja voimansiirto kuormittuvat tavallista enemmän.&#10;&#10;ADS käyttää kahta ohjearvoa: traktori tarvitsee vähintään 10 hv hinattavan massan tonnia kohti ja kuorma-auto vähintään 6 hv yhdistelmän kokonaismassan tonnia kohti. Kun arvo alittuu moottorin suurella kuormituksella, vaihteiston kuluminen lisääntyy."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Jousitus rasituksessa"/>

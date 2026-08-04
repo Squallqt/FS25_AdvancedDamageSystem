@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Ланцюг варіатора (CVT)"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Гідроклапан управління варіатором"/>
         <text name="ads_breakdowns_part_cvt" text="Варіатор (CVT)"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Термостат трансмісії"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Гідравлічний насос"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Гідроциліндр"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Муфта ВВП"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Повна відмова варіатора. Подальша експлуатація неможлива до ремонту трансмісії."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Відмова трансмісії варіатора"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Відмова гідроуправління варіатора"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Термостат мастила трансмісії починає виходити з ладу. Коробка довше виходить на робочу температуру, а регулювання стає млявим."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Слабкий відгук термостата трансмісії. Регулювання температури мастила нестабільне, знос зростає."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Термостат трансмісії майже не рухається. Температура мастила сильно коливається, під навантаженням ймовірний перегрів."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Повна відмова термостата трансмісії. Клапан заклинив в одному положенні, мастило коробки більше не досягає потрібної температури."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Термостат двигуна починає виходити з ладу. Двигун довше прогрівається або працює на дещо підвищеній температурі."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Погана реакція термостата. Регулювання температури нестабільне, що прискорює знос."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Термостат заклинив у закритому стані. Двигун буде постійно перегріватися під навантаженням."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Буксування ременя/ланцюга"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Діапазон обмежено"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Нестабільність тиску"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Несправний термостат"/>
         <text name="ads_report_transmission_failed" text="Відмова"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Макс. струм генератора"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Заряд акумулятора"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Перегрів двигуна"/>
         <text name="ads_tutorial_engine_overheat_message" text="Двигун починає перегріватися. Це може статися через велике навантаження, забитий радіатор, спеку або несправність системи охолодження.&#10;&#10;Будьте пильні: перегрів — один із найруйнівніших факторів. Він шкодить не лише двигуну: система охолодження працює на межі, а висока температура під капотом прискорює деградацію проводки та електроніки."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Перегрів варіатора (CVT)"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="Варіатор починає перегріватися. Причини: надмірне навантаження на трансмісію, забитий радіатор або сильна спека. Наприклад, ви тягнете занадто важкий плуг або перевантажений причіп.&#10;&#10;Будьте уважні: перегрів — це найгірше, що може статися з трансмісією типу CVT."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="Варіатор починає перегріватися. Причини: надмірне навантаження на трансмісію, забитий радіатор сильна спека або несправність системи охолодження трансмісії. Наприклад, ви тягнете занадто важкий плуг або перевантажений причіп.&#10;&#10;Будьте уважні: перегрів — це найгірше, що може статися з трансмісією типу CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Важкий причіп"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Схоже, буксируване навантаження може бути завеликим для цієї техніки. Ви можете продовжувати рух, але трансмісія та привід зазнаватимуть підвищеного навантаження.&#10;&#10;ADS використовує два правила: трактору потрібно щонайменше 10 к.с. на тонну буксируваної маси, а вантажівці — щонайменше 6 к.с. на тонну повної маси автопоїзда. Нижче відповідного значення за високого навантаження двигуна знос трансмісії збільшується."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Навантаження на підвіску"/>

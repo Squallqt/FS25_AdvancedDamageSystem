@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Otomatik Şanzıman(CVT) zinciri"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Otomatik Şanzıman(CVT) hidrolik kontrol valfi"/>
         <text name="ads_breakdowns_part_cvt" text="Otomatik Şanzıman(CVT)"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Şanzıman termostatı"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Hidrolik pompa"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Hidrolik silindir"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Kuyruk mili(PTO) kavraması"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="CVT şanzımanı tamamen arızalandı. Şanzıman onarılana kadar araç kullanılamaz."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Otomatik Şanzıman(CVT) arızası"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Otomatik Şanzıman(CVT) hidrolik kontrol arızası"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Şanzıman yağı termostatı arızalanmaya başlıyor. Şanzımanın çalışma sıcaklığına ulaşması daha uzun sürüyor ve regülasyonu yavaşlıyor."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Şanzıman termostatının tepkisi zayıf. Yağ sıcaklığı regülasyonu dengesiz ve aşınmayı artırıyor."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Şanzıman termostatı neredeyse hiç hareket etmiyor. Yağ sıcaklığı çok dalgalanıyor ve yük altında aşırı ısınma olasıdır."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Şanzıman termostatının tamamen arızalanması. Valf bulunduğu konumda sıkışmış ve şanzıman yağı artık doğru sıcaklığa ulaşmıyor."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Motor termostatı arızalanmaya başlıyor. Motorun optimum sıcaklığa ulaşması daha uzun sürüyor ya da motor biraz fazla ısınarak çalışıyor."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Termostatın tepki süresi uzundur. Motor sıcaklığının düzenlenmesi dengesizdir ve bu da aşınmayı artırmaktadır."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Termostat kapalı konumda sıkışmış durumda. Motor, yük altında sürekli olarak aşırı ısınacaktır."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Kayış/Zincir Kayması"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Oran Düşürüldü"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Basınç Dengesizliği"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Termostat zayıflamış"/>
         <text name="ads_report_transmission_failed" text="Başarısız"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Maksimum Alternatör Akımı"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Pil Şarjı"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Motorun Aşırı Isınması"/>
         <text name="ads_tutorial_engine_overheat_message" text="Motor aşırı ısınmaya başlıyor. Bunun bir veya birkaç nedeni olabilir: motorun aşırı yüklenmesi, radyatörün tıkanması, havanın sıcak olması veya aracın soğutma sisteminde bir arıza olması.&#10;&#10;Dikkatli olun: Aşırı ısınma, herhangi bir makine için en yıkıcı faktörlerden biridir. Bu durum sadece motora zarar vermekle kalmaz: soğutma sistemi sınırlarına kadar zorlanır ve motor bölmesindeki ısı, kabloların ve elektrikli bileşenlerin aşınmasını hızlandırır."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Otomatik Şanzıman(CVT) Aşırı Isınması"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="Otomatik Şanzıman(CVT) aşırı ısınmaya başlıyor. Bunun bir veya birkaç nedeni olabilir: şanzıman aşırı yük altında, radyatör tıkanmış ya da hava çok sıcak. Örneğin, çok ağır bir kar küreyici çekiyor ya da aşırı yüklü bir römork çekiyor olabilirsiniz.&#10;&#10;Dikkatli olun: Aşırı ısınma, bir Otomatik Şanzımana(CVT) olabilecek en yıkıcı sorunlardan biridir."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="Otomatik Şanzıman(CVT) aşırı ısınmaya başlıyor. Bunun bir veya birkaç nedeni olabilir: şanzıman aşırı yük altında, radyatör tıkanmış hava çok sıcak ya da şanzımanın soğutma sisteminde bir arıza var. Örneğin, çok ağır bir kar küreyici çekiyor ya da aşırı yüklü bir römork çekiyor olabilirsiniz.&#10;&#10;Dikkatli olun: Aşırı ısınma, bir Otomatik Şanzımana(CVT) olabilecek en yıkıcı sorunlardan biridir."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Ağır Römork"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Çekilen yük bu araç için fazla ağır olabilir. Sürmeye devam edebilirsiniz, ancak şanzıman ve aktarma organları daha fazla zorlanacaktır.&#10;&#10;ADS iki ölçüt kullanır: traktörlerde çekilen her ton için en az 10 HP, kamyonlarda ise toplam kombinasyon ağırlığının her tonu için en az 6 HP gerekir. Motor yükü yüksekken ilgili değerin altına düşülürse şanzıman aşınması artar."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Süspansiyon Gerilim Altında"/>

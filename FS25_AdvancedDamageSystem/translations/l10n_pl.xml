@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Łańcuch bezstopniowej skrzyni CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Zawór hydrauliczny skrzyni CVT"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Termostat skrzyni biegów"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Pompa hydrauliczna"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Siłownik hydrauliczny"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Sprzęgło wałka WOM"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Całkowita awaria przekładni CVT. Dalsza eksploatacja jest niemożliwa do czasu naprawy."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Awaria przekładni CVT"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Usterka sterowania hydraulicznego CVT"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Termostat oleju skrzyni zaczyna się zużywać. Skrzynia dłużej osiąga temperaturę pracy, a regulacja jest opieszała."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Słaba reakcja termostatu skrzyni. Regulacja temperatury oleju jest niestabilna i zwiększa zużycie."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Termostat skrzyni prawie się nie porusza. Temperatura oleju mocno się waha, a pod obciążeniem grozi przegrzanie."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Termostat skrzyni całkowicie niesprawny. Zawór zaciął się w jednej pozycji, a olej skrzyni nie osiąga już właściwej temperatury."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Zużywający się termostat silnika. Wydłużony czas nagrzewania lub delikatne przegrzewanie."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Niesprawna praca termostatu. Niestabilna kontrola temperatury silnika i zwiększone zużycie."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Termostat zacięty w pozycji zamkniętej. Ciągłe przegrzewanie silnika pod obciążeniem."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Przeskakiwanie paska/łańcucha"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Ograniczony zakres przełożeń"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Niestabilność ciśnienia"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Osłabiony termostat"/>
         <text name="ads_report_transmission_failed" text="Awaria"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Maksymalny prąd ładowania alternatora"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Poziom naładowania akumulatora"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Przegrzewanie silnika"/>
         <text name="ads_tutorial_engine_overheat_message" text="Silnik zaczyna się przegrzewać. Może się to zdarzyć z jednego lub kilku powodów: silnik pracuje pod dużym obciążeniem, chłodnica jest zapchana, jest gorąco albo w układzie chłodzenia pojazdu występuje usterka.&#10;&#10;Zachowaj czujność: przegrzanie to jeden z najbardziej niszczących czynników dla każdej maszyny. Nie szkodzi tylko silnikowi: układ chłodzenia pracuje na granicy swoich możliwości, a ciepło w komorze silnika przyspiesza degradację przewodów i podzespołów elektrycznych."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Przegrzewanie CVT"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="Przekładnia CVT zaczyna się przegrzewać. Może się to zdarzyć z jednego lub kilku powodów: skrzynia jest nadmiernie obciążona, chłodnica jest zapchana albo pogoda jest bardzo gorąca. Na przykład możesz ciągnąć zbyt ciężki pług lub holować przeładowaną przyczepę.&#10;&#10;Uważaj: przegrzanie to jedna z najbardziej niszczących rzeczy, jakie mogą spotkać przekładnię CVT."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="Przekładnia CVT zaczyna się przegrzewać. Może się to zdarzyć z jednego lub kilku powodów: skrzynia jest nadmiernie obciążona, chłodnica jest zapchana pogoda jest bardzo gorąca albo w układzie chłodzenia skrzyni występuje usterka. Na przykład możesz ciągnąć zbyt ciężki pług lub holować przeładowaną przyczepę.&#10;&#10;Uważaj: przegrzanie to jedna z najbardziej niszczących rzeczy, jakie mogą spotkać przekładnię CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Ciężka przyczepa"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Holowany ładunek może być zbyt ciężki dla tego pojazdu. Możesz jechać dalej, ale skrzynia biegów i układ napędowy będą pracować pod większym obciążeniem.&#10;&#10;ADS stosuje dwie wartości: ciągnik potrzebuje co najmniej 10 HP na tonę holowanej masy, a ciężarówka co najmniej 6 HP na tonę całkowitej masy zestawu. Poniżej odpowiedniej wartości i przy dużym obciążeniu silnika zużycie przekładni wzrasta."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Zawieszenie pod obciążeniem"/>

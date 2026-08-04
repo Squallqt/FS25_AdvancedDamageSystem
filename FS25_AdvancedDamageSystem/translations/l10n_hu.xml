@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="CVT lánc"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="CVT hidraulikus vezérlőszelep"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Váltó termosztátja"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Hidraulikaszivattyú"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Hidraulikahenger"/>
         <text name="ads_breakdowns_part_pto_clutch" text="TLT-kuplung"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Teljes CVT váltóhiba. A további használat a váltó javításáig lehetetlen."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="CVT váltóhiba"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="CVT hidraulikus vezérléshiba"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="A váltóolaj termosztátja kezd meghibásodni. A váltó lassabban éri el az üzemi hőmérsékletet, és a szabályozása lomha."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="A váltó termosztátjának gyenge a válasza. Az olaj hőmérsékletének szabályozása instabil, ami növeli a kopást."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="A váltó termosztátja alig mozdul. Az olaj hőmérséklete erősen ingadozik, és terhelés alatt túlmelegpedés fenyeget."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="A váltó termosztátjának teljes meghibásodása. A szelep beragadt egy állásban, és a váltóolaj már nem éri el a megfelelő hőmérsékletet."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="A motor termosztátja kezd meghibásodni. A motor lassabban éri el az üzemi hőmérsékletet, vagy kissé túl melegen jár."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="A termosztát reakciója gyenge. A motor hőmérséklet-szabályozása instabil, ami növeli a kopást."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="A termosztát zárt állásban beragadt. A motor terhelés alatt folyamatosan túl fog melegedni."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Szíj/lánc csúszás"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Áttétel korlátozva"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Nyomás instabil"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Gyengülő termosztát"/>
         <text name="ads_report_transmission_failed" text="Meghibásodott"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Max. generátoráram"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Akkumulátor töltöttsége"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Motor túlmelegedése"/>
         <text name="ads_tutorial_engine_overheat_message" text="A motor kezd túlmelegedni. Ennek egy vagy több oka is lehet: a motor nagy terhelés alatt van, a hűtő eltömődött, forró az időjárás, vagy hiba van a jármű hűtőrendszerében.&#10;&#10;Légy résen: a túlmelegedés az egyik legpusztítóbb tényező bármilyen gépnél. Nemcsak a motort károsítja: a hűtőrendszert is a határára kényszeríti, és a motortér hője felgyorsítja a kábelezés és az elektromos alkatrészek öregedését."/>
         <text name="ads_tutorial_cvt_overheat_title" text="CVT túlmelegedés"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="A CVT kezd túlmelegedni. Ennek egy vagy több oka is lehet: a váltó túlzott terhelés alatt van, a hűtő eltömődött, vagy nagyon meleg az idő. Például lehet, hogy túl nehéz ekét húzol, vagy túlterhelt pótkocsit vontatsz.&#10;&#10;Légy résen: a túlmelegedés az egyik legpusztítóbb dolog, ami egy CVT váltóval történhet."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="A CVT kezd túlmelegedni. Ennek egy vagy több oka is lehet: a váltó túlzott terhelés alatt van, a hűtő eltömődött, nagyon meleg az idő, vagy hiba van a váltó hűtőrendszerében. Például lehet, hogy túl nehéz ekét húzol, vagy túlterhelt pótkocsit vontatsz.&#10;&#10;Légy résen: a túlmelegedés az egyik legpusztítóbb dolog, ami egy CVT váltóval történhet."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Nehéz pótkocsi"/>
         <text name="ads_tutorial_heavy_trailer_message" text="A vontatott terhelés túl nehéz lehet ehhez a járműhöz. Tovább haladhatsz, de a sebességváltó és a hajtáslánc nagyobb terhelést kap.&#10;&#10;Az ADS két irányértéket használ: traktoroknál legalább 10 LE szükséges a vontatott tömeg minden tonnájára, teherautóknál pedig legalább 6 LE a járműszerelvény össztömegének minden tonnájára. A megfelelő érték alatt, nagy motorterhelésnél nő a sebességváltó kopása."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Futómű terhelés alatt"/>

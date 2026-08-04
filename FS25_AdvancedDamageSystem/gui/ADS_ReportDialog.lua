@@ -668,6 +668,17 @@ function ADS_ReportDialog:updateScreen()
         )
     end
 
+    local transThermostatStuckValue = getTransmissionEffectValue(activeEffects, "TRANSMISSION_THERMOSTAT_STUCK_EFFECT")
+    local transThermostatHealthValue = getTransmissionEffectValue(activeEffects, "TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER")
+    if (transThermostatStuckValue ~= nil or transThermostatHealthValue ~= nil) and not hasTransmissionIssues then
+        hasTransmissionIssues = true
+        addTransmissionTextSpec(
+            "ads_report_system_condition_transmission",
+            transThermostatStuckValue ~= nil and "ads_report_transmission_failed" or "ads_report_transmission_thermostat_degraded",
+            transThermostatStuckValue ~= nil and 0.0 or (1.0 + transThermostatHealthValue)
+        )
+    end
+
     if not hasTransmissionIssues then
         addTransmissionTextSpec(
             "ads_report_system_condition_transmission",

@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Catena CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Valvola di comando idraulica CVT"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Termostato del cambio"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Pompa idraulica"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Cilindro idraulico"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Frizione PDF"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Guasto completo della trasmissione CVT. Un ulteriore utilizzo è impossibile fino alla riparazione."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Trasmissione CVT guasta"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Guasto comando idraulico CVT"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Il termostato dell'olio del cambio inizia a guastarsi. Il cambio impiega più tempo a raggiungere la temperatura di esercizio e la regolazione è lenta."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Risposta scadente del termostato del cambio. La regolazione della temperatura dell'olio è instabile e aumenta l'usura."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Il termostato del cambio si muove a malapena. La temperatura dell'olio oscilla molto e sotto carico il surriscaldamento è probabile."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Guasto completo del termostato del cambio. La valvola è bloccata in posizione e l'olio del cambio non raggiunge più la temperatura corretta."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Il termostato motore inizia a guastarsi. Il motore impiega più tempo a raggiungere la temperatura ottimale oppure lavora leggermente più caldo del normale."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="La risposta del termostato è insufficiente. La regolazione della temperatura motore è instabile e l'usura aumenta."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Il termostato è bloccato in chiusura. Il motore si surriscalda costantemente sotto carico."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Slittamento cinghia/catena"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Rapporto ridotto"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Instabilità pressione"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Termostato degradato"/>
         <text name="ads_report_transmission_failed" text="Guasta"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Corrente massima alternatore"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Carica batteria"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Surriscaldamento motore"/>
         <text name="ads_tutorial_engine_overheat_message" text="Il motore sta iniziando a surriscaldarsi. Questo può accadere per una o più ragioni: il motore è sotto forte carico, il radiatore è ostruito, fa caldo oppure c'è un guasto nel sistema di raffreddamento del veicolo.&#10;&#10;Resta all'erta: il surriscaldamento è uno dei fattori più distruttivi per qualsiasi macchina. Non danneggia solo il motore: il sistema di raffreddamento lavora al limite e il calore nel vano motore accelera il degrado del cablaggio e dei componenti elettrici."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Surriscaldamento CVT"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="La trasmissione CVT sta iniziando a surriscaldarsi. Questo può accadere per una o più ragioni: la trasmissione è sotto carico eccessivo, il radiatore è ostruito oppure il clima è molto caldo. Ad esempio, potresti stare trainando un aratro troppo pesante o un rimorchio sovraccarico.&#10;&#10;Fai attenzione: il surriscaldamento è una delle cose più distruttive che possano capitare a una trasmissione CVT."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="La trasmissione CVT sta iniziando a surriscaldarsi. Questo può accadere per una o più ragioni: la trasmissione è sotto carico eccessivo, il radiatore è ostruito il clima è molto caldo oppure c'è un guasto nel sistema di raffreddamento del cambio. Ad esempio, potresti stare trainando un aratro troppo pesante o un rimorchio sovraccarico.&#10;&#10;Fai attenzione: il surriscaldamento è una delle cose più distruttive che possano capitare a una trasmissione CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Rimorchio pesante"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Il carico trainato sembra troppo pesante per questo veicolo. Puoi continuare a guidare, ma la trasmissione e la catena cinematica saranno sottoposte a uno sforzo maggiore.&#10;&#10;ADS usa due riferimenti: i trattori richiedono almeno 10 HP per tonnellata trainata, mentre i camion richiedono almeno 6 HP per tonnellata di peso totale della combinazione. Sotto il valore applicabile e con un carico motore elevato, l'usura della trasmissione aumenta."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Sospensioni sotto stress"/>

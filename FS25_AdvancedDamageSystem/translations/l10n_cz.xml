@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Řetěz CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Hydraulický ventil CVT"/>
         <text name="ads_breakdowns_part_cvt" text="CVT převodovka"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Termostat převodovky"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Hydraulické čerpadlo"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Hydraulický válec"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Spojka vývodové hřídele (PTO)"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Úplné selhání převodovky CVT. Další provoz není možný, dokud nebude převodovka opravena."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Selhání převodovky CVT"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Selhání hydraulického řízení CVT"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Termostat oleje převodovky začíná selhávat. Převodovka déle dosahuje provozní teploty a její regulace je pomalá."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Slabá odezva termostatu převodovky. Regulace teploty oleje je nestabilní a zvyšuje opotřebení."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Termostat převodovky se téměř nepohybuje. Teplota oleje výrazně kolísá a pod zatížením hrozí přehřátí."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Úplné selhání termostatu převodovky. Ventil zůstal zaseknutý v poloze a olej převodovky již nedosahuje správné teploty."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Termostat motoru začíná selhávat. Motoru trvá déle, než dosáhne optimální teploty, nebo se mírně přehřívá."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Odezva termostatu je špatná. Regulace teploty motoru je nestabilní, což zvyšuje opotřebení."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Termostat zůstal zaseknutý v zavřené poloze. Motor se bude pod zatížením neustále přehřívat."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Prokluz řemenu/řetězu"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Omezený rozsah poměrů"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Nestabilita tlaku"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Vadný termostat"/>
         <text name="ads_report_transmission_failed" text="Selhání"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Max. proud alternátoru"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Nabití baterie"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Přehřívání motoru"/>
         <text name="ads_tutorial_engine_overheat_message" text="Motor se začíná přehřívat. Může to mít několik příčin: motor je pod velkým zatížením, chladič je ucpaný, je horké počasí nebo je závada přímo v chladicím systému.&#10;&#10;Buďte ve střehu: přehřátí je jedním z nejničivějších faktorů pro každý stroj. Neškodí jen motoru, ale i chladicí soustavě, a vysoká teplota pod kapotou urychluje degradaci kabeláže a elektroniky."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Přehřívání CVT"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="Převodovka CVT se začíná přehřívat. Příčinou může být nadměrné zatížení, ucpaný chladič nebo velmi horké počasí. Například můžete táhnout příliš těžký pluh nebo přetížený přívěs.&#10;&#10;Pozor: přehřátí je pro CVT převodovku jednou z nejhorších věcí, co se může stát."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="Převodovka CVT se začíná přehřívat. Příčinou může být nadměrné zatížení, ucpaný chladič velmi horké počasí nebo závada v chladicím okruhu převodovky. Například můžete táhnout příliš těžký pluh nebo přetížený přívěs.&#10;&#10;Pozor: přehřátí je pro CVT převodovku jednou z nejhorších věcí, co se může stát."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Těžký přívěs"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Tažený náklad může být pro toto vozidlo příliš těžký. Můžete pokračovat v jízdě, ale převodovka a hnací ústrojí budou více namáhány.&#10;&#10;ADS používá dvě hodnoty: traktor potřebuje alespoň 10 koní na tunu tažené hmotnosti, zatímco nákladní vůz alespoň 6 koní na tunu celkové hmotnosti soupravy. Pod příslušnou hodnotou a při vysokém zatížení motoru se opotřebení převodovky zvyšuje."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Namáhání podvozku"/>

@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Цепь CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Гидравлический клапан управления CVT"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Термостат трансмиссии"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Гидравлический насос"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Гидроцилиндр"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Муфта ВОМ"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Полный отказ вариаторной трансмиссии. Дальнейшая эксплуатация невозможна до ремонта."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Отказ трансмиссии CVT"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Отказ гидравлического распределителя"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Термостат масла трансмиссии начинает выходить из строя. Коробка дольше выходит на рабочую температуру, а регулировка становится вялой."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Плохой отклик термостата трансмиссии. Регулировка температуры масла нестабильна, износ растёт."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Термостат трансмиссии почти не двигается. Температура масла сильно колеблется, под нагрузкой вероятен перегрев."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Полный отказ термостата трансмиссии. Клапан заклинил в одном положении, масло коробки больше не выходит на нужную температуру."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Термостат двигателя начинает выходить из строя. Двигатель дольше прогревается до оптимальной температуры или работает немного горячее."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Плохая реакция термостата. Регулирование температуры двигателя нестабильно, что увеличивает износ."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Термостат заклинил в закрытом положении. Двигатель будет постоянно перегреваться под нагрузкой."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Проскальзывание ремня/цепи"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Передаточное отношение ограничено"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Нестабильное давление"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Неисправный термостат"/>
         <text name="ads_report_transmission_failed" text="Неисправна"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Макс. ток генератора"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Заряд аккумулятора"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Перегрев двигателя"/>
         <text name="ads_tutorial_engine_overheat_message" text="Двигатель начинает перегреваться. Это может происходить по одной или сразу по нескольким причинам: двигатель сильно нагружен, радиатор загрязнён, на улице жарко или в системе охлаждения техники есть неисправность.&#10;&#10;Будьте начеку: перегрев — один из самых разрушительных факторов для техники. Страдает не только двигатель: система охлаждения работает на пределе, а нагрев подкапотного пространства ускоряет деградацию проводки и электрики."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Перегрев CVT"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="CVT начинает перегреваться. Это может происходить по одной или сразу по нескольким причинам: на коробку идёт слишком большая нагрузка, радиатор загрязнён или на улице стоит сильная жара. Например, вы можете тянуть слишком тяжёлый плуг или буксировать слишком тяжёлый прицеп.&#10;&#10;Будьте начеку: перегрев - одна из самых разрушительных вещей для коробки CVT."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="CVT начинает перегреваться. Это может происходить по одной или сразу по нескольким причинам: на коробку идёт слишком большая нагрузка, радиатор загрязнён на улице стоит сильная жара или в системе охлаждения коробки есть неисправность. Например, вы можете тянуть слишком тяжёлый плуг или буксировать слишком тяжёлый прицеп.&#10;&#10;Будьте начеку: перегрев - одна из самых разрушительных вещей для коробки CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Тяжёлый прицеп"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Похоже, буксируемая нагрузка может быть слишком велика для этой техники. Вы можете продолжать движение, но трансмиссия и привод будут испытывать повышенную нагрузку.&#10;&#10;ADS использует два правила: трактору требуется не менее 10 л.с. на тонну буксируемой массы, а тягачу — не менее 6 л.с. на тонну полной массы автопоезда. Если при высокой нагрузке двигателя соответствующее значение ниже нормы, износ трансмиссии увеличивается."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Подвеска под ударом"/>

@@ -166,23 +166,23 @@ Each system has its own set of wear factors that accelerate `Condition` loss and
 
 ### Transmission
 
-- **Pull Overload Factor:** Triggers when engine load is above `82%` and the vehicle is moving faster than `0.5 km/h`. The effect builds up over time and reaches its maximum after `30` seconds of continuous overload.
+- **Pull Overload Factor:** Triggers when engine load is above `85%` and the vehicle is moving. The longer you hold the engine there, the more it hurts, building up over as much as `90` seconds. The heavier the overload, the worse it gets.
 
-- **Lugging Factor:** Triggers when engine load is above `80%`, RPM load is below `80%`, and the vehicle is moving faster than `0.5 km/h`. The effect becomes stronger as the gap between load and RPM increases.
+- **Lugging Factor:** Triggers when engine load is above `80%`, RPM load is below `60%`, and the vehicle is moving faster than `0.5 km/h`. The effect becomes stronger as the gap between load and RPM increases.
 
-- **Wheel Slip Factor:** Triggers when wheel slip exceeds `30%`. The effect becomes stronger as slip increases.
+- **Wheel Slip Factor:** Triggers when the wheels turn more than `5%` faster than the tractor actually moves, at working speeds below `20 km/h` and above `50%` engine load. Turning does not count, since wheels always scrub a little in a corner. The more the wheels spin, the worse it gets.
 
-- **Cold Transmission Factor:** Applies only to CVT transmissions. Triggers when transmission temperature is below `50C` and RPM load is above `75%`. This factor does not apply to AI vehicles.
+- **Cold Transmission Factor:** Applies only to CVT transmissions. Triggers when transmission temperature is below `45C` and RPM load is above `75%`. This factor does not apply to AI vehicles.
 
-- **Overheated Transmission Factor:** Applies only to CVT transmissions. Triggers when transmission temperature is above `95C` and engine load is above `30%`. The effect becomes stronger as temperature increases.
+- **Overheated Transmission Factor:** Applies only to CVT transmissions. Triggers when transmission temperature is above `100C` and engine load is above `30%`. The effect becomes stronger as temperature increases.
 
-- **Heavy Trailer Factor:** Activates when the mass of the towed trailer exceeds the tractor's own mass by more than `1.2x`.
+- **Heavy Trailer Factor:** Activates when the tractor has less than `10 hp` for every tonne it tows, while pulling above `70%` engine load. Full effect at `5 hp` per tonne. Trucks are judged on their whole combined weight instead: `6 hp` per tonne, full effect at `3`.
 
 ### Hydraulics
 
 - **Operating Factor:** Triggers during active hydraulic work. The effect becomes stronger as the working mass ratio increases.
 
-- **Heavy Lift Factor:** Triggers when lifted mass exceeds `30%` of the vehicle's mass. The effect becomes stronger as lifted mass increases.
+- **Heavy Lift Factor:** Triggers when lifted mass exceeds `60%` of the vehicle's mass. The effect becomes stronger as lifted mass increases.
 
 - **Cold Oil Factor:** Triggers during active hydraulic work when engine temperature is below `30C`. The effect becomes stronger as temperature gets lower.
 
@@ -190,7 +190,7 @@ Each system has its own set of wear factors that accelerate `Condition` loss and
 
 ### Cooling
 
-- **High Cooling Load Factor:** Triggers when thermostat state exceeds `90%`. The effect becomes stronger as cooling effort increases.
+- **High Cooling Load Factor:** Triggers when thermostat state exceeds `85%`. The effect becomes stronger as cooling effort increases.
 
 - **Overheat Factor:** Triggers when engine temperature exceeds `95C`. The effect becomes stronger as temperature increases.
 
@@ -305,6 +305,11 @@ In ADS, your vehicles can suffer real breakdowns. Some failures are minor and on
 > * *Applicable to:* Vehicles with CVT transmissions.
 > * *Symptoms:* Hydraulic pressure drops, reduced engine torque, restricted ratio range, rising transmission heat, and unstable CVT operation.
 > * *Critical Effect:* **Control valve failure.** The transmission falls into a severely restricted emergency mode.
+>
+> #### Transmission Thermostat Malfunction
+> * *Applicable to:* Vehicles with CVT transmissions.
+> * *Symptoms:* Slow warm-up and sluggish regulation at first, then wide oil temperature swings and overheating under load.
+> * *Critical Effect:* **Transmission thermostat failure.** The valve sticks in position and transmission oil no longer reaches the correct temperature.
 >
 > ---
 >

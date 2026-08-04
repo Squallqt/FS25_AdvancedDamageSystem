@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="CVT 체인"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="CVT 유압 제어 밸브"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="변속기 서모스탷"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="유압 펌프"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="유압 실린더"/>
         <text name="ads_breakdowns_part_pto_clutch" text="PTO 클러치"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="CVT 변속기 완전 고장. 수리 전까지 더 이상의 운행이 불가능합니다."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="CVT 변속기 고장"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="CVT 유압 제어 고장"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="변속기 오일 서모스탷 고장 시작. 변속기가 작동 온도에 도달하는 시간이 길어지고 온도 조절이 둔해집니다."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="변속기 서모스탷의 반응이 나쁘니다. 오일 온도 조절이 불안정해져 마모가 빨라집니다."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="변속기 서모스탷이 거의 움직이지 않습니다. 오일 온도가 크게 변동하며 부하 시 과열될 수 있습니다."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="변속기 서모스탷 완전 고장. 밸브가 한 위치에 고착되어 변속기 오일이 적정 온도에 도달하지 못합니다."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="엔진 서모스탯 고장 시작. 적정 온도 도달 시간이 길어지거나 약간 과열됩니다."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="서모스탯 반응 불량. 엔진 온도 조절이 불안정하여 마모가 증가합니다."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="서모스탯이 닫힌 채로 고착되었습니다. 부하 시 엔진이 계속 과열됩니다."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="벨트/체인 슬립"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="변속비 제한"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="압력 불안정"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="서모스탷 성능 저하"/>
         <text name="ads_report_transmission_failed" text="고장남"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="최대 발전기 전류"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="배터리 충전량"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="엔진 과열"/>
         <text name="ads_tutorial_engine_overheat_message" text="엔진이 과열되기 시작했습니다. 원인은 하나 이상일 수 있습니다. 엔진이 큰 부하를 받고 있거나, 라디에이터가 막혔거나, 날씨가 덥거나, 차량 냉각 시스템에 이상이 있을 수 있습니다.&#10;&#10;주의하세요. 과열은 모든 기계에 가장 치명적인 요인 중 하나입니다. 엔진만 손상되는 것이 아닙니다. 냉각 시스템은 한계까지 밀리며, 엔진룸의 열은 배선과 전기 부품의 열화를 가속합니다."/>
         <text name="ads_tutorial_cvt_overheat_title" text="CVT 과열"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="CVT 변속기가 과열되기 시작했습니다. 원인은 하나 이상일 수 있습니다. 변속기에 과도한 부하가 걸렸거나, 라디에이터가 막혔거나, 날씨가 매우 덥기 때문일 수 있습니다. 예를 들어 너무 무거운 쟁기를 끌고 있거나 과적된 트레일러를 견인하고 있을 수도 있습니다.&#10;&#10;주의하세요. 과열은 CVT 변속기에 일어날 수 있는 가장 치명적인 문제 중 하나입니다."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="CVT 변속기가 과열되기 시작했습니다. 원인은 하나 이상일 수 있습니다. 변속기에 과도한 부하가 걸렸거나, 라디에이터가 막혔거나, 날씨가 매우 덥거나, 변속기 냉각 시스템에 이상이 있을 수 있습니다. 예를 들어 너무 무거운 쟁기를 끌고 있거나 과적된 트레일러를 견인하고 있을 수도 있습니다.&#10;&#10;주의하세요. 과열은 CVT 변속기에 일어날 수 있는 가장 치명적인 문제 중 하나입니다."/>
         <text name="ads_tutorial_heavy_trailer_title" text="무거운 트레일러"/>
         <text name="ads_tutorial_heavy_trailer_message" text="견인 하중이 이 차량에 비해 너무 무거울 수 있습니다. 계속 주행할 수는 있지만 변속기와 구동계의 부담이 증가합니다.&#10;&#10;ADS는 두 가지 기준을 사용합니다. 트랙터는 견인 중량 1톤당 최소 10마력, 트럭은 총 조합 중량 1톤당 최소 6마력이 필요합니다. 엔진 부하가 높은 상태에서 해당 기준보다 낮으면 변속기 마모가 증가합니다."/>
         <text name="ads_tutorial_chassis_vibration_title" text="서스펜션 부담 증가"/>

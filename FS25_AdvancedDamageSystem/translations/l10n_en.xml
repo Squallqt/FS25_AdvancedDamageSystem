@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="CVT chain"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="CVT hydraulic control valve"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Transmission thermostat"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Hydraulic pump"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Hydraulic cylinder"/>
         <text name="ads_breakdowns_part_pto_clutch" text="PTO clutch"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Complete CVT transmission failure. Further operation is impossible until the transmission is repaired."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="CVT transmission failure"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="CVT hydraulic control failure"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="The transmission oil thermostat is beginning to fail. The transmission takes longer to reach operating temperature and its regulation is sluggish."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Poor transmission thermostat response. Oil temperature regulation is unstable, increasing wear."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="The transmission thermostat barely moves. Oil temperature swings widely and overheating is likely under load."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Complete transmission thermostat failure. The valve is stuck in position, transmission oil no longer reaches the correct temperature."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Engine thermostat is beginning to fail. The engine takes longer to reach optimal temperature or runs slightly hot."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Thermostat response is poor. Engine temperature regulation is unstable, increasing wear."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="The thermostat is stuck closed. The engine will constantly overheat under load."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Belt/Chain Slip"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Ratio Reduced"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Pressure Instability"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Thermostat Degraded"/>
         <text name="ads_report_transmission_failed" text="Failed"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Max Alternator Current"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Battery Charge"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Engine Overheating"/>
         <text name="ads_tutorial_engine_overheat_message" text="The engine is starting to overheat. This can happen for one or several reasons: the engine is under heavy load, the radiator is clogged, the weather is hot, or there is a fault in the vehicle's cooling system.&#10;&#10;Stay alert: overheating is one of the most destructive factors for any machine. It does not only harm the engine: the cooling system is pushed to its limit, and heat in the engine bay accelerates the degradation of wiring and electrical components."/>
         <text name="ads_tutorial_cvt_overheat_title" text="CVT Overheating"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="The CVT is starting to overheat. This can happen for one or several reasons: the transmission is under excessive load, the radiator is clogged, or the weather is very hot. For example, you may be pulling a plow that is too heavy or towing an overloaded trailer.&#10;&#10;Stay alert: overheating is one of the most destructive things that can happen to a CVT transmission."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="The CVT is starting to overheat. This can happen for one or several reasons: the transmission is under excessive load, the radiator is clogged, the weather is very hot, or there is a fault in the transmission's cooling system. For example, you may be pulling a plow that is too heavy or towing an overloaded trailer.&#10;&#10;Stay alert: overheating is one of the most destructive things that can happen to a CVT transmission."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Heavy Trailer"/>
         <text name="ads_tutorial_heavy_trailer_message" text="It looks like the towing load may be too heavy for this vehicle. You can keep driving, but the transmission and driveline will be under increased stress.&#10;&#10;ADS uses two guidelines: tractors need at least 10 HP per ton of towed mass, while trucks need at least 6 HP per ton of total combination weight. Falling below the applicable value under high engine load increases transmission wear."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Suspension Under Stress"/>

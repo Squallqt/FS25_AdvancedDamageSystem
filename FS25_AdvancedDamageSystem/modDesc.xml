@@ -28,7 +28,9 @@ Changelog 0.9.3.0 [WIP]:
 - Integrated ADS dashboard indicators into an extended native speedometer layout, with values aligned to their corresponding icons
 - Separated engine and transmission thermal alerts and routed transmission breakdowns to the dedicated transmission indicator; excluded vehicles keep the unmodified native HUD
 - Dashboard indicators no longer disappear at high speed, and the inactive service indicator remains visible in gray
-- Turbocharger wear now applies to every engine of 56 kW (75 hp) or more, instead of a single tractor model]]></en>
+- Turbocharger wear now applies to every engine of 56 kW (75 hp) or more, instead of a single tractor model
+- Added a transmission thermostat breakdown on CVT gearboxes: the valve loses response over three stages, then sticks in position and transmission oil no longer reaches the correct temperature
+- Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C]]></en>
 
         <de><![CDATA[Advanced Damage System fügt Farming Simulator 25 ein tiefgehendes System für Verschleiß, Ausfälle, Diagnose, Wartung und Reparatur von Fahrzeugen hinzu. Anstelle eines einzigen allgemeinen Zustandswerts besteht jede Maschine aus mehreren einzelnen Systemen mit eigenem Zustand, eigenen Verschleißfaktoren, Stressaufbau und Ausfallrisiko. Fahrverhalten und Art der Defekte hängen von Einsatzbedingungen, Belastung, Temperatur und Wartungsqualität ab.
 
@@ -50,7 +52,9 @@ Changelog 0.9.3.0 [WIP]:
 - ADS-Armaturenbrettanzeigen in ein erweitertes natives Tachometer-Layout integriert und Werte an den zugehörigen Symbolen ausgerichtet
 - Thermische Warnungen für Motor und Getriebe getrennt und Getriebestörungen der eigenen Getriebeanzeige zugeordnet; ausgeschlossene Fahrzeuge behalten das unveränderte native HUD
 - Armaturenbrettanzeigen verschwinden nicht mehr bei hoher Geschwindigkeit, und die inaktive Wartungsanzeige bleibt grau sichtbar
-- Turboladerverschleiß betrifft jetzt jeden Motor ab 56 kW (75 PS) statt nur eines einzigen Traktormodells]]></de>
+- Turboladerverschleiß betrifft jetzt jeden Motor ab 56 kW (75 PS) statt nur eines einzigen Traktormodells
+- Störung des Getriebethermostats für CVT-Getriebe hinzugefügt: Das Ventil verliert über drei Stufen an Ansprechverhalten, klemmt dann in seiner Position und das Getriebeöl erreicht die richtige Temperatur nicht mehr
+- CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C]]></de>
         
         <fr><![CDATA[Advanced Damage System ajoute à Farming Simulator 25 un système approfondi d'usure, de pannes, de diagnostic, d'entretien et de réparation des véhicules. Au lieu de reposer sur une seule valeur générale d'état, chaque machine est composée de plusieurs systèmes distincts ayant leur propre état, leurs propres facteurs d'usure, leur accumulation de stress et leur risque de panne. Le comportement de la machine et la nature des défaillances dépendent des conditions d'utilisation, de la charge, de la température et de la qualité de l'entretien.
 
@@ -73,6 +77,8 @@ Changelog 0.9.3.0 [WIP] :
 - Séparation des alertes thermiques moteur et transmission et attribution des pannes de transmission au témoin dédié ; les véhicules exclus conservent le HUD natif non modifié
 - Les témoins du tableau de bord ne disparaissent plus à haute vitesse et le témoin d'entretien inactif reste visible en gris
 - L'usure du turbocompresseur concerne désormais tout moteur de 56 kW (75 ch) ou plus, au lieu d'un seul modèle de tracteur
+- Ajout d'une panne de thermostat de transmission sur les boîtes CVT : la vanne perd sa réactivité sur trois stades, puis se bloque en position et l'huile de boîte n'atteint plus la bonne température
+- Recalibrage des températures de boîte CVT sur les données réelles d'huile de transmission : le thermostat régule désormais à 85 °C au lieu de 75 °C, et l'usure par surchauffe démarre à 100 °C au lieu de 95 °C
 
 Changelog 0.9.2.7:
 - Refonte des facteurs Heavy Trailer et Brake Mass : les tracteurs utilisent 10 ch par tonne de masse tractée, tandis que les camions utilisent 6 ch par tonne de poids total roulant

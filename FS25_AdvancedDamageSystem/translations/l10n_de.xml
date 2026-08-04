@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="CVT-Kette"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="CVT-Hydraulikregelventil"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Getriebethermostat"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Hydraulikpumpe"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Hydraulikzylinder"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Zapfwellenkupplung"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Vollständiger Ausfall des CVT-Getriebes. Ein weiterer Betrieb ist bis zur Reparatur nicht möglich."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="CVT-Getriebe ausgefallen"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Ausfall des Hydraulikregelventils"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Der Getriebeölthermostat beginnt auszufallen. Das Getriebe braucht länger bis zur Betriebstemperatur und regelt träge."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Schlechtes Ansprechverhalten des Getriebethermostats. Die Öltemperaturregelung ist instabil und erhöht den Verschleiß."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Der Getriebethermostat bewegt sich kaum noch. Die Öltemperatur schwankt stark und unter Last droht Überhitzung."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Totalausfall des Getriebethermostats. Das Ventil klemmt in seiner Position und das Getriebeöl erreicht die richtige Temperatur nicht mehr."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Motorthermostat beginnt auszufallen. Der Motor braucht länger, um die optimale Temperatur zu erreichen, oder läuft etwas zu heiß."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="Schlechte Reaktion des Thermostats. Die Motortemperaturregelung ist instabil, was den Verschleiß erhöht."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Der Thermostat klemmt in geschlossener Position. Der Motor wird unter Last ständig überhitzen."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Riemen-/Kettenschlupf"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Übersetzung begrenzt"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Druckinstabilität"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Thermostat beeinträchtigt"/>
         <text name="ads_report_transmission_failed" text="Ausgefallen"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Max. Lichtmaschinenstrom"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Batterieladung"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Motor überhitzt"/>
         <text name="ads_tutorial_engine_overheat_message" text="Der Motor beginnt zu überhitzen. Das kann einen oder mehrere Gründe haben: Der Motor steht unter hoher Last, der Kühler ist verschmutzt, das Wetter ist heiß oder es gibt einen Defekt im Kühlsystem des Fahrzeugs.&#10;&#10;Bleiben Sie wachsam: Überhitzung ist einer der zerstörerischsten Faktoren für jede Maschine. Nicht nur der Motor leidet darunter. Das Kühlsystem arbeitet am Limit, und die Hitze im Motorraum beschleunigt die Alterung von Verkabelung und elektrischen Komponenten."/>
         <text name="ads_tutorial_cvt_overheat_title" text="CVT überhitzt"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="Das CVT-Getriebe beginnt zu überhitzen. Das kann einen oder mehrere Gründe haben: Das Getriebe steht unter zu hoher Last, der Kühler ist verschmutzt oder das Wetter ist sehr heiß. Zum Beispiel ziehen Sie vielleicht einen zu schweren Pflug oder schleppen einen überladenen Anhänger.&#10;&#10;Bleiben Sie aufmerksam: Überhitzung gehört zu den zerstörerischsten Belastungen für ein CVT-Getriebe."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="Das CVT-Getriebe beginnt zu überhitzen. Das kann einen oder mehrere Gründe haben: Das Getriebe steht unter zu hoher Last, der Kühler ist verschmutzt das Wetter ist sehr heiß oder es gibt einen Defekt im Kühlsystem des Getriebes. Zum Beispiel ziehen Sie vielleicht einen zu schweren Pflug oder schleppen einen überladenen Anhänger.&#10;&#10;Bleiben Sie aufmerksam: Überhitzung gehört zu den zerstörerischsten Belastungen für ein CVT-Getriebe."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Schwerer Anhänger"/>
         <text name="ads_tutorial_heavy_trailer_message" text="Die gezogene Last scheint für dieses Fahrzeug zu hoch zu sein. Sie können weiterfahren, aber Getriebe und Antriebsstrang werden stärker belastet.&#10;&#10;ADS verwendet zwei Richtwerte: Traktoren benötigen mindestens 10 PS pro Tonne gezogener Masse, Lkw mindestens 6 PS pro Tonne Gesamtzuggewicht. Wird der jeweilige Wert bei hoher Motorlast unterschritten, steigt der Getriebeverschleiß."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Fahrwerk unter Belastung"/>

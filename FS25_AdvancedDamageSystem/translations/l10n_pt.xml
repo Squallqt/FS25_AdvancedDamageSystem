@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Corrente do CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Válvula de controlo hidráulico do CVT"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Termostato da transmissão"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Bomba hidráulica"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Cilindro hidráulico"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Embraiagem da TDF"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Falha completa da transmissão CVT. Qualquer utilização posterior é impossível até à reparação."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Transmissão CVT fora de serviço"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Falha na válvula de controlo hidráulico"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="O termostato do óleo da transmissão começa a apresentar falhas. A transmissão demora mais tempo a atingir a temperatura de serviço e a sua regulação é lenta."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Fraca resposta do termostato da transmissão. A regulação da temperatura do óleo é instável, aumentando o desgaste."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="O termostato da transmissão quase não se move. A temperatura do óleo varia muito e o sobreaquecimento é provável sob carga."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Falha total do termostato da transmissão. A válvula está bloqueada na posição e o óleo da transmissão já não atinge a temperatura correta."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="O termostato do motor começa a apresentar falhas. O motor leva mais tempo para atingir sua temperatura ideal ou opera a uma temperatura ligeiramente elevada."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="A resposta do termóstato é deficiente. A regulação da temperatura do motor é instável, o que aumenta o desgaste."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="O termóstato está bloqueado na posição fechada. O motor sobreaquecerá constantemente sob carga."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Deslizamento correia/corrente"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Relação reduzida"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Instabilidade de pressão"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Termostato degradado"/>
         <text name="ads_report_transmission_failed" text="Falhou"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Corrente máxima do alternador"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Carga da bateria"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Sobreaquecimento do motor"/>
         <text name="ads_tutorial_engine_overheat_message" text="O motor está a começar a sobreaquecer. Isto pode acontecer por um ou vários motivos: o motor está sob carga pesada, o radiador está obstruído, o clima está quente ou há uma falha no sistema de arrefecimento do veículo.&#10;&#10;Fique atento: o sobreaquecimento é um dos fatores mais destrutivos para qualquer máquina. Ele não prejudica só o motor: o sistema de arrefecimento é levado ao limite, e o calor no compartimento do motor acelera a degradação da cablagem e dos componentes elétricos."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Sobreaquecimento da CVT"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="A transmissão CVT está a começar a sobreaquecer. Isto pode acontecer por um ou vários motivos: a transmissão está sob carga excessiva, o radiador está obstruído ou o clima está muito quente. Por exemplo, pode estar a puxar um arado demasiado pesado ou a rebocar um atrelado sobrecarregado.&#10;&#10;Fique atento: o sobreaquecimento é uma das coisas mais destrutivas que podem acontecer a uma transmissão CVT."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="A transmissão CVT está a começar a sobreaquecer. Isto pode acontecer por um ou vários motivos: a transmissão está sob carga excessiva, o radiador está obstruído o clima está muito quente ou há uma falha no sistema de arrefecimento da transmissão. Por exemplo, pode estar a puxar um arado demasiado pesado ou a rebocar um atrelado sobrecarregado.&#10;&#10;Fique atento: o sobreaquecimento é uma das coisas mais destrutivas que podem acontecer a uma transmissão CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Atrelado pesado"/>
         <text name="ads_tutorial_heavy_trailer_message" text="A carga rebocada parece ser demasiado pesada para este veículo. Pode continuar a conduzir, mas a transmissão e o sistema de tração ficarão sob maior esforço.&#10;&#10;O ADS usa duas referências: os tratores precisam de pelo menos 10 HP por tonelada rebocada, enquanto os camiões precisam de pelo menos 6 HP por tonelada de peso bruto combinado. Abaixo do valor aplicável, com elevada carga do motor, o desgaste da transmissão aumenta."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Suspensão sob esforço"/>

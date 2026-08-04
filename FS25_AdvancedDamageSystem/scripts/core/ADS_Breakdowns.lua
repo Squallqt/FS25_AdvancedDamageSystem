@@ -127,6 +127,7 @@ ADS_Breakdowns.PARTS = {
     CVT_CHAIN = "ads_breakdowns_part_cvt_chain",
     CVT_HYDRAULIC_CONTROL_VALVE = "ads_breakdowns_part_cvt_hydraulic_control_valve",
     CVT = "ads_breakdowns_part_cvt",
+    TRANSMISSION_THERMOSTAT = "ads_breakdowns_part_transmission_thermostat",
     HYDRAULIC_PUMP = "ads_breakdowns_part_hydraulic_pump",
     HYDRAULIC_CYLINDER = "ads_breakdowns_part_hydraulic_cylinder",
     PTO_CLUTCH = "ads_breakdowns_part_pto_clutch",
@@ -159,6 +160,7 @@ local breakdownPriceMultipliers = {
     CVT_CHAIN_WEAR = 2.60,
     CVT_HYDRAULIC_CONTROL_VALVE_MALFUNCTION = 2.80,
     CVT_ADDON_MALFUNCTION = 3.0,
+    TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.20,
     HYDRAULIC_PUMP_MALFUNCTION = 0.90,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 1.0,
     PTO_CLUTCH_SLIP = 1.25,
@@ -189,6 +191,7 @@ local breakdownProgressMultipliers = {
     CVT_CHAIN_WEAR = 1.2,
     CVT_HYDRAULIC_CONTROL_VALVE_MALFUNCTION = 1.1,
     CVT_ADDON_MALFUNCTION = 1.4,
+    TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.3,
     HYDRAULIC_PUMP_MALFUNCTION = 1.1,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 0.6,
     PTO_CLUTCH_SLIP = 0.75,
@@ -1620,6 +1623,76 @@ ADS_Breakdowns.BreakdownRegistry = {
                 },
                 inspection = {
                     { additional = "ads_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage4" },
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
+    TRANSMISSION_THERMOSTAT_MALFUNCTION = {
+        isSelectable = true,
+        system = systems.TRANSMISSION,
+        part = parts.TRANSMISSION_THERMOSTAT,
+        isApplicable = function(vehicle)
+            if hasCVTAddon(vehicle) then return false end
+            local motor = vehicle:getMotor()
+            if not motor then return false end
+            if motor.minForwardGearRatio == nil then return false end
+            return true
+        end,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.TRANSMISSION, {"hotf", "ctf"}, {"pof", "lf"})
+        end,
+        isCanProgress = function(vehicle)
+            return vehicle:getIsMotorStarted()
+        end,
+        stages = {
+            {
+                severity = "ads_breakdowns_severity_minor",
+                description = "ads_breakdowns_transmission_thermostat_malfunction_stage1_description",
+                detectionChance = 1.0,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                repairPrice = 1.0 * breakdownPriceMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER", value = -0.3, aggregation = "min"}
+                }
+            },
+            {
+                severity = "ads_breakdowns_severity_moderate",
+                description = "ads_breakdowns_transmission_thermostat_malfunction_stage2_description",
+                detectionChance = 1.0,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                repairPrice = 2.0 * breakdownPriceMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER", value = -0.6, aggregation = "min"}
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "ads_breakdowns_severity_major",
+                description = "ads_breakdowns_transmission_thermostat_malfunction_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                repairPrice = 4.0 * breakdownPriceMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER", value = -0.8, aggregation = "min"}
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "ads_breakdowns_severity_critical",
+                description = "ads_breakdowns_transmission_thermostat_malfunction_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.TRANSMISSION_THERMOSTAT_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_THERMOSTAT_STUCK_EFFECT", value = -1.0, aggregation = "min"}
                 },
                 indicators = {
                     { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -4261,6 +4334,35 @@ ADS_Breakdowns.EffectApplicators.THERMOSTAT_STUCK_EFFECT = {
     remove = function(vehicle, handler)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.thermostatStuckedPosition = nil
+    end
+}
+
+-- TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER
+ADS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER = {
+    apply = function(vehicle, effectData, handler)
+        local spec = vehicle.spec_AdvancedDamageSystem
+        spec.transmissionThermostatHealth = math.max(1.0 + effectData.value, 0.1)
+    end,
+
+    remove = function(vehicle, handler)
+        local spec = vehicle.spec_AdvancedDamageSystem
+        spec.transmissionThermostatHealth = 1.0
+    end
+}
+
+-- TRANSMISSION_THERMOSTAT_STUCK_EFFECT
+ADS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_STUCK_EFFECT = {
+    apply = function(vehicle, effectData, handler)
+        local spec = vehicle.spec_AdvancedDamageSystem
+
+        if spec.transmissionThermostatStuckedPosition == nil or spec.transmissionThermostatStuckedPosition < 0 then
+            spec.transmissionThermostatStuckedPosition = spec.transmissionThermostatState
+        end
+    end,
+
+    remove = function(vehicle, handler)
+        local spec = vehicle.spec_AdvancedDamageSystem
+        spec.transmissionThermostatStuckedPosition = nil
     end
 }
 

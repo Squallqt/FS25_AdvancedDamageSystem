@@ -179,6 +179,7 @@
         <text name="ads_breakdowns_part_cvt_chain" text="Chaîne de CVT"/>
         <text name="ads_breakdowns_part_cvt_hydraulic_control_valve" text="Distributeur hydraulique de CVT"/>
         <text name="ads_breakdowns_part_cvt" text="CVT"/>
+        <text name="ads_breakdowns_part_transmission_thermostat" text="Thermostat de transmission"/>
         <text name="ads_breakdowns_part_hydraulic_pump" text="Pompe hydraulique"/>
         <text name="ads_breakdowns_part_hydraulic_cylinder" text="Vérin hydraulique"/>
         <text name="ads_breakdowns_part_pto_clutch" text="Embrayage de PDF"/>
@@ -283,6 +284,10 @@
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_description" text="Défaillance complète de la transmission CVT. Toute utilisation ultérieure est impossible jusqu’à la réparation."/>
         <text name="ads_breakdowns_cvt_addon_malfunction_stage4_message" text="Transmission CVT hors service"/>
         <text name="ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Défaillance du distributeur hydraulique"/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Le thermostat d'huile de transmission commence à faiblir. La boîte met plus de temps à atteindre sa température de service et sa régulation manque de réactivité."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Mauvaise réponse du thermostat de transmission. La régulation de la température d'huile est instable et accélère l'usure."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Le thermostat de transmission ne bouge presque plus. La température d'huile varie fortement et la surchauffe est probable sous charge."/>
+        <text name="ads_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Défaillance totale du thermostat de transmission. La vanne est bloquée en position, l'huile de boîte n'atteint plus la bonne température."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage1_description" text="Le thermostat du moteur commence à présenter des défaillances. Le moteur met plus de temps à atteindre sa température optimale ou fonctionne à une température légèrement élevée."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage2_description" text="La réponse du thermostat est médiocre. La régulation de la température du moteur est instable, ce qui augmente l'usure."/>
         <text name="ads_breakdowns_thermostat_malfunction_stage3_description" text="Le thermostat est bloqué en position fermée. Le moteur surchauffera constamment sous la charge."/>
@@ -494,6 +499,7 @@
         <text name="ads_report_transmission_cvt_slipping" text="Patinage courroie/chaîne"/>
         <text name="ads_report_transmission_cvt_ratio_limited" text="Rapport réduit"/>
         <text name="ads_report_transmission_cvt_pressure_instability" text="Instabilité de pression"/>
+        <text name="ads_report_transmission_thermostat_degraded" text="Thermostat dégradé"/>
         <text name="ads_report_transmission_failed" text="Défaillante"/>
         <text name="ads_report_vehicle_spec_max_alternator_current" text="Courant maximal de l'alternateur"/>
         <text name="ads_report_vehicle_spec_battery_charge" text="Charge de la batterie"/>
@@ -693,7 +699,7 @@
         <text name="ads_tutorial_engine_overheat_title" text="Surchauffe moteur"/>
         <text name="ads_tutorial_engine_overheat_message" text="Le moteur commence à surchauffer. Cela peut arriver pour une ou plusieurs raisons : le moteur est fortement sollicité, le radiateur est encrassé, il fait chaud ou le système de refroidissement du véhicule présente un défaut.&#10;&#10;Restez vigilant : la surchauffe est l'un des facteurs les plus destructeurs pour une machine. Elle ne nuit pas seulement au moteur : le système de refroidissement travaille à sa limite, et la chaleur dans le compartiment moteur accélère la dégradation du câblage et des composants électriques."/>
         <text name="ads_tutorial_cvt_overheat_title" text="Surchauffe de la CVT"/>
-        <text name="ads_tutorial_cvt_overheat_message" text="La transmission CVT commence à surchauffer. Cela peut arriver pour une ou plusieurs raisons : la transmission subit une charge excessive, le radiateur est encrassé ou la météo est très chaude. Par exemple, vous tirez peut-être une charrue trop lourde ou vous remorquez une remorque surchargée.&#10;&#10;Restez attentif : la surchauffe est l'une des choses les plus destructrices qui puissent arriver à une transmission CVT."/>
+        <text name="ads_tutorial_cvt_overheat_message" text="La transmission CVT commence à surchauffer. Cela peut arriver pour une ou plusieurs raisons : la transmission subit une charge excessive, le radiateur est encrassé, la météo est très chaude ou le circuit de refroidissement de la transmission présente un défaut. Par exemple, vous tirez peut-être une charrue trop lourde ou vous remorquez une remorque surchargée.&#10;&#10;Restez attentif : la surchauffe est l'une des choses les plus destructrices qui puissent arriver à une transmission CVT."/>
         <text name="ads_tutorial_heavy_trailer_title" text="Remorque trop lourde"/>
         <text name="ads_tutorial_heavy_trailer_message" text="La charge tractée semble trop lourde pour ce véhicule. Vous pouvez continuer à rouler, mais la transmission et la chaîne cinématique subiront davantage de contraintes.&#10;&#10;ADS utilise deux repères : un tracteur nécessite au moins 10 ch par tonne de masse tractée, tandis qu'un camion nécessite au moins 6 ch par tonne de poids total roulant. Sous la valeur applicable et à forte charge moteur, l'usure de la transmission augmente."/>
         <text name="ads_tutorial_chassis_vibration_title" text="Châssis sous contrainte"/>
