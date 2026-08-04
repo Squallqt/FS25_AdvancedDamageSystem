@@ -7524,6 +7524,51 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
     end
 end
 
+local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, optionTwo, optionTwoKey)
+    if breakdownId == nil or vehicle:getActiveBreakdowns()[breakdownId] == nil then
+        return
+    end
+
+    table.insert(spec.pendingSelectedBreakdowns, breakdownId)
+
+    local C = ADS_Config.MAINTENANCE
+    local breakdownDef = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+    local systemName = breakdownDef ~= nil and breakdownDef.system or nil
+    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemName)
+    local systemData = (systemKey ~= nil and systemKey ~= "" and spec.systems ~= nil) and spec.systems[systemKey] or nil
+
+    if optionOne == AdvancedDamageSystem.REPAIR_TYPES.LOW then
+        local random = math.random()
+        local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
+        vehicle:suspendBreakdown(breakdownId, ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (random + 0.5))
+    else
+        local stage = vehicle:getActiveBreakdowns()[breakdownId].stage
+        vehicle:removeBreakdown(breakdownId)
+        if systemData ~= nil then
+            markRepairStressReduction(spec, systemKey, optionOne)
+        else
+            log_dbg(string.format("Repair effect skipped: missing system mapping for breakdown '%s' (system='%s')", tostring(breakdownId), tostring(systemName)))
+        end
+
+        --- roll for defected parts
+        if optionTwo ~= AdvancedDamageSystem.PART_TYPES.PREMIUM then
+            local defectChance = C.PARTS_BREAKDOWN_CHANCES[optionTwoKey]
+            if math.random() < defectChance then
+                local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
+                vehicle:addBreakdown(breakdownId, {
+                    stage = stage,
+                    isVisible = false,
+                    isSelectedForRepair = true,
+                    isActive = false,
+                    resumeTimer = ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (math.random() + 0.5),
+                    progressTimer = 0,
+                    source = AdvancedDamageSystem.BREAKDOWN_SOURCES.POOR_PARTS
+                })
+            end
+        end
+    end
+end
+
 function AdvancedDamageSystem:processService(dt)
     local spec = self.spec_AdvancedDamageSystem
     local states = AdvancedDamageSystem.STATUS
@@ -7595,45 +7640,7 @@ function AdvancedDamageSystem:processService(dt)
             while spec.pendingProgressStepIndex < targetStep do
                 spec.pendingProgressStepIndex = spec.pendingProgressStepIndex + 1
                 local breakdownId = spec.pendingRepairQueue[spec.pendingProgressStepIndex]
-                if breakdownId ~= nil and self:getActiveBreakdowns()[breakdownId] ~= nil then
-                    table.insert(spec.pendingSelectedBreakdowns, breakdownId)
-
-                    local breakdownDef = ADS_Breakdowns.BreakdownRegistry[breakdownId]
-                    local systemName = breakdownDef ~= nil and breakdownDef.system or nil
-                    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemName)
-                    local systemData = (systemKey ~= nil and systemKey ~= "" and spec.systems ~= nil) and spec.systems[systemKey] or nil
-        
-                    if optionOne == AdvancedDamageSystem.REPAIR_TYPES.LOW then
-                        local random = math.random()
-                        local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
-                        self:suspendBreakdown(breakdownId, ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale* (random + 0.5))
-                    else
-                        local stage = self:getActiveBreakdowns()[breakdownId].stage
-                        self:removeBreakdown(breakdownId)
-                        if systemData ~= nil then
-                            markRepairStressReduction(spec, systemKey, optionOne)
-                        else
-                            log_dbg(string.format("Repair effect skipped: missing system mapping for breakdown '%s' (system='%s')", tostring(breakdownId), tostring(systemName)))
-                        end
-                        --- roll for defected parts
-                        if optionTwo ~= AdvancedDamageSystem.PART_TYPES.PREMIUM then
-                            local defectChance = C.PARTS_BREAKDOWN_CHANCES[optionTwoKey]
-                            if math.random() < defectChance then
-                                local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
-                                self:addBreakdown(breakdownId, {
-                                    stage = stage,
-                                    isVisible = false,
-                                    isSelectedForRepair = true,
-                                    isActive = false,
-                                    resumeTimer =  ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (math.random() + 0.5),
-                                    progressTimer = 0,
-                                    source = AdvancedDamageSystem.BREAKDOWN_SOURCES.POOR_PARTS
-                                })
-                            end
-                        end
-                    end
-                    
-                end
+                processPendingRepairStep(self, spec, breakdownId, optionOne, optionTwo, optionTwoKey)
             end
         end
 
@@ -7742,6 +7749,18 @@ function AdvancedDamageSystem:completeService()
             self:removeBreakdown(table.unpack(idsToRepair))
         end
     elseif serviceType == states.REPAIR then
+        local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local repairQueue = spec.pendingRepairQueue or {}
+        spec.pendingProgressStepIndex = math.max(math.floor(tonumber(spec.pendingProgressStepIndex) or 0), 0)
+
+        while spec.pendingProgressStepIndex < #repairQueue do
+            spec.pendingProgressStepIndex = spec.pendingProgressStepIndex + 1
+            local breakdownId = repairQueue[spec.pendingProgressStepIndex]
+            processPendingRepairStep(self, spec, breakdownId, optionOne, optionTwo, optionTwoKey)
+        end
+
+        selectedBreakdowns = ADS_Utils.shallowCopy(spec.pendingSelectedBreakdowns or {})
+
         for systemKey, targetStress in pairs(spec.pendingRepairSystemStressTarget or {}) do
             local systemData = spec.systems[systemKey]
             if systemData ~= nil then
