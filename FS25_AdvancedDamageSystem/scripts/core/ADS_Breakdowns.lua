@@ -248,11 +248,12 @@ local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
         return 0
     end
 
+    local factorKeys = AdvancedDamageSystem.FACTOR_STATS_KEYS
     local numerator = 0
     local denominator = 0
     for statKey, statValue in pairs(systemStats) do
-        local numericValue = math.max(tonumber(statValue) or 0, 0)
-        if statKey ~= "total" and statKey ~= "stress" then
+        if factorKeys[statKey] then
+            local numericValue = math.max(tonumber(statValue) or 0, 0)
             denominator = denominator + numericValue
             for _, alias in ipairs(requestedAliases) do
                 if statKey == alias then

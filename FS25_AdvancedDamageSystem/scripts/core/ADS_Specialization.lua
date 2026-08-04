@@ -211,6 +211,11 @@ AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
     instantDamageFactor = "idfg"
 }
 
+AdvancedDamageSystem.FACTOR_STATS_KEYS = {}
+for _, alias in pairs(AdvancedDamageSystem.FACTOR_STATS_ALIASES) do
+    AdvancedDamageSystem.FACTOR_STATS_KEYS[alias] = true
+end
+
 -- ==========================================================
 --                          HELPER FUNCTIONS
 -- ==========================================================
@@ -5511,7 +5516,6 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         wheelSlipFactor = wheelSlipFactor,
         drivetrainWindupFactor = drivetrainWindupFactor,
         coldTransFactor = coldTransFactor,
-        coldMotorFactor = coldTransFactor,
         hotTransFactor = hotTransFactor
     })
 end

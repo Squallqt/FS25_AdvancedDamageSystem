@@ -2018,7 +2018,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         transmissionDbg.luggingFactor or 0,
         transmissionDbg.wheelSlipFactor or 0,
         transmissionDbg.drivetrainWindupFactor or 0,
-        transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor or 0,
+        transmissionDbg.coldTransFactor or 0,
         transmissionDbg.hotTransFactor or 0
     ) * bcw
     local hydraulicsMaxFactor = math.max(
@@ -2136,7 +2136,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         { shortName = "lf", statKey = "lf", value = transmissionDbg.luggingFactor or 0 },
         { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0, extraInfo = string.format("c: %.2f", avgTireGroundFrictionCoeff) },
         { shortName = "dwf", statKey = "dwf", value = transmissionDbg.drivetrainWindupFactor or 0, extraInfo = string.format("w: %.1f%% lock: %s", asPercent(drivetrainDbg.windupStress or 0), (drivetrainDbg.diffLockEngaged == true) and "Y" or "N") },
-        { shortName = "ctf", statKey = "ctf", value = (transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor) or 0 },
+        { shortName = "ctf", statKey = "ctf", value = transmissionDbg.coldTransFactor or 0 },
         { shortName = "hotf", statKey = "hotf", value = transmissionDbg.hotTransFactor or 0 }
     })
 

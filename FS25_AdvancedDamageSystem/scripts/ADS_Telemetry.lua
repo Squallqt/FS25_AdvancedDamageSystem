@@ -359,7 +359,7 @@ function ADS_Telemetry:collectTransmissionSystemInfo(vehicle)
         wheelSlipFactor = tonumber(transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0) or 0,
         wheelSlipIntensity = tonumber(spec.wheelSlipIntensity or 0) or 0,
         avgTireGroundFrictionCoeff = tonumber(spec.avgTireGroundFrictionCoeff or 0) or 0,
-        coldTransFactor = tonumber((transmissionDbg.coldTransFactor or transmissionDbg.coldMotorFactor) or 0) or 0,
+        coldTransFactor = tonumber(transmissionDbg.coldTransFactor or 0) or 0,
         hotTransFactor = tonumber(transmissionDbg.hotTransFactor or 0) or 0
     }
 end
