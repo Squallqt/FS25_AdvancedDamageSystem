@@ -61,6 +61,8 @@ function ADS_Thermal:updateThermalSystems(dt)
 
     local spec = self.spec_AdvancedDamageSystem
     local vehicleHaveCVT = hasCVTTransmission(self)
+    local hasActiveCVTAddon = hasCVTAddon(self)
+    local hasTransmissionTemperature = vehicleHaveCVT or hasActiveCVTAddon
 
     local isMotorStarted = self:getIsMotorStarted()
     local motorLoad = sanitizeNumber(spec.dynamicMotorLoad or self:getMotorLoadPercentage(), 0, 0, 1.5)
@@ -81,7 +83,7 @@ function ADS_Thermal:updateThermalSystems(dt)
 
     if (spec.engineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.engineTemperature = eviromentTemp end
     if (spec.rawEngineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawEngineTemperature = eviromentTemp end
-    if vehicleHaveCVT then
+    if hasTransmissionTemperature then
         if (spec.transmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.transmissionTemperature = eviromentTemp end
         if (spec.rawTransmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawTransmissionTemperature = eviromentTemp end
     end
@@ -90,12 +92,10 @@ function ADS_Thermal:updateThermalSystems(dt)
         self:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, eviromentTemp, dirt)
     end
 
-    if vehicleHaveCVT then
-        if hasCVTAddon(self) then
-            spec.rawTransmissionTemperature = sanitizeNumber(self.spec_motorized.motorTemperature.value, spec.rawEngineTemperature, -80, 180)
-        else
-            self:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
-        end
+    if hasActiveCVTAddon then
+        spec.rawTransmissionTemperature = sanitizeNumber(self.spec_motorized.motorTemperature.value, spec.rawEngineTemperature, -80, 180)
+    elseif vehicleHaveCVT then
+        self:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
     else
         spec.rawTransmissionTemperature = -99
     end
@@ -115,7 +115,7 @@ function ADS_Thermal:getSmoothedTemperature(dt)
         local weather = g_currentMission.environment.weather.forecast:getCurrentWeather()
         eviromentTemp = sanitizeNumber(weather ~= nil and weather.temperature or nil, 20, -80, 80)
     end
-    local vehicleHaveCVT = hasCVTTransmission(self)
+    local hasTransmissionTemperature = hasCVTTransmission(self) or hasCVTAddon(self)
     local snapThreshold = 5.0
 
     local rawEngineTemperature = sanitizeNumber(spec.rawEngineTemperature, eviromentTemp, -80, 160)
@@ -126,7 +126,7 @@ function ADS_Thermal:getSmoothedTemperature(dt)
         spec.engineTemperature = math.max(currentEngineTemperature + alpha * (rawEngineTemperature - currentEngineTemperature), eviromentTemp)
     end
 
-    if vehicleHaveCVT then
+    if hasTransmissionTemperature then
         local rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature, eviromentTemp, -80, 180)
         local currentTransmissionTemperature = sanitizeNumber(spec.transmissionTemperature, rawTransmissionTemperature, -80, 180)
         if math.abs(rawTransmissionTemperature - currentTransmissionTemperature) >= snapThreshold then
