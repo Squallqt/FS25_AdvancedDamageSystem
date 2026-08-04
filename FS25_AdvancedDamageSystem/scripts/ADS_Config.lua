@@ -579,6 +579,20 @@ ADS_Config = {
         PARKBRAKE_AUTO_MODE = true
     },
 
+    PREHEAT = {
+        LAMP_TEST_DURATION_MS = 1000,
+        MAX_AUTOMATIC_CRANK_MS = 10000,
+        ACTIVATION_TEMPERATURE_C = 8,
+        WAIT_TIME_CURVE = {
+            {-15, 15000},
+            {-10, 10000},
+            {-5, 5000},
+            {0, 5000},
+            {5, 2000},
+            {8, 0}
+        }
+    },
+
     ELECTRICAL = {
         BATTERY_NOMINAL_CAPACITY = 150,
         BATTERY_USABLE_CAPACITY_FACTOR = 0.1,
@@ -592,6 +606,7 @@ ADS_Config = {
         OCV_FULL_V = 12.7,
         BATTERY_LOAD_DROP_MIN_V = 12.2,
         BATTERY_CRANK_CURRENT_A = 250,
+        GLOW_CIRCUIT_PROXY_LOAD_A = 50,
         BATTERY_CHARGE_RISE_PER_20A_V = 0.18,
         BATTERY_CHARGE_RISE_MAX_V = 1.6,
         BATTERY_CHARGE_TARGET_MAX_V = 14.4,
@@ -730,6 +745,7 @@ ADS_Config = {
         DRIVETRAIN_WINDUP = false,
         STEERING = false,
         CRANKING = false,
+        PREHEAT = false,
         BATTERY_LOW = false,
         HARD_START = false,
         CRITICAL_FAILURE = false,

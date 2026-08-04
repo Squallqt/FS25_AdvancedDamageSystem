@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Freio de estacionamento acionado!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Tensão na transmissão"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Você está fazendo curva em solo de boa aderência com o bloqueio do diferencial acionado. Na curva, as rodas internas e externas percorrem distâncias diferentes, mas o bloqueio do diferencial as força a girar na mesma velocidade: a transmissão fica sob tensão e o desgaste aumenta. Solte o bloqueio antes de fazer curvas."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Velas aquecedoras"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Início da degradação das velas aquecedoras. As partidas a frio ficam mais lentas; as partidas a quente não são afetadas."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Várias velas estão fracas ou inoperantes. A partida a frio é difícil e o motor pode funcionar de forma irregular até aquecer."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Falha grave das velas aquecedoras. A partida a frio é muito pouco confiável e o funcionamento irregular persiste durante o aquecimento."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Falha completa do sistema de pré-aquecimento. Quando o pré-aquecimento é necessário, o motor não atinge a temperatura de partida e não liga."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="A resistência das velas começa a diferir entre os cilindros."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Uma ou mais velas apresentam resistência ou consumo de corrente anormais."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Várias velas estão com o circuito aberto ou não atingem mais a temperatura de funcionamento."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="O circuito de pré-aquecimento não consegue fornecer o calor necessário para uma partida a frio."/>
+        <text name="ads_preheat_ignition_message" text="Ignição ligada: pré-aquecimento em andamento"/>
+        <text name="ads_preheat_system_failure_message" text="Falha no sistema de pré-aquecimento: partida a frio indisponível"/>
+        <text name="ads_preheat_start_failed_message" text="O motor não ligou: desligue a ignição antes de tentar novamente"/>
+        <text name="ads_tutorial_preheat_title" text="Pré-aquecimento diesel"/>
+        <text name="ads_tutorial_preheat_message" text="Com o motor diesel frio, um toque no comando de partida liga a ignição e inicia automaticamente o ciclo das velas. As luzes do painel executam o autoteste e, depois, a luz de pré-aquecimento permanece acesa até o motor estar pronto. Não repita o comando: o motor de partida é acionado automaticamente quando a luz se apaga."/>
     </texts>
 </l10n>

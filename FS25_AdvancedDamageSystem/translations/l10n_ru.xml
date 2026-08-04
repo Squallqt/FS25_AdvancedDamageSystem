@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Затянут стояночный тормоз!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Нагрузка на трансмиссию"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Вы поворачиваете на поверхности с хорошим сцеплением с включённой блокировкой дифференциала. В повороте внутренние и внешние колёса проходят разные расстояния, но блокировка дифференциала заставляет их вращаться с одинаковой скоростью: трансмиссия испытывает нагрузку, а износ коробки передач ускоряется. Выключайте блокировку перед поворотами."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Свечи накаливания"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Начальный износ свечей накаливания. Холодный запуск становится медленнее, запуск прогретого двигателя не меняется."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Несколько свечей накаливания ослаблены или неисправны. Холодный запуск затруднён, двигатель может работать неровно до прогрева."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Серьёзная неисправность свечей накаливания. Холодный запуск крайне ненадёжен, а неровная работа сохраняется во время прогрева."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Полный отказ системы предпускового подогрева. Когда подогрев необходим, двигатель не достигает температуры запуска и не запускается."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Сопротивление свечей накаливания начинает различаться между цилиндрами."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Одна или несколько свечей имеют ненормальное сопротивление или потребление тока."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="В цепи нескольких свечей имеется обрыв, либо они больше не достигают рабочей температуры."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Цепь накаливания не может обеспечить тепло, необходимое для холодного запуска."/>
+        <text name="ads_preheat_ignition_message" text="Зажигание включено: идёт предпусковой подогрев"/>
+        <text name="ads_preheat_system_failure_message" text="Отказ системы накаливания: холодный запуск невозможен"/>
+        <text name="ads_preheat_start_failed_message" text="Двигатель не запустился: выключите зажигание перед новой попыткой"/>
+        <text name="ads_tutorial_preheat_title" text="Предпусковой подогрев дизеля"/>
+        <text name="ads_tutorial_preheat_message" text="При холодном дизельном двигателе одно нажатие команды запуска включает зажигание и автоматически запускает цикл накаливания. Контрольные лампы панели выполняют самопроверку, затем лампа предпускового подогрева горит до готовности двигателя. Не повторяйте команду: стартер включится автоматически после того, как лампа погаснет."/>
     </texts>
 </l10n>

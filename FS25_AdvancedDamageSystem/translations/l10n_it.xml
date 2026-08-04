@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Freno di stazionamento inserito!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Sollecitazione della trasmissione"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Stai sterzando su un terreno con molta aderenza con il blocco del differenziale inserito. In curva le ruote interne ed esterne percorrono distanze diverse, ma il blocco del differenziale le costringe a girare alla stessa velocità: la trasmissione viene sollecitata e la sua usura aumenta. Rilascia il blocco prima di sterzare."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Candelette"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Inizio del degrado delle candelette. Gli avviamenti a freddo diventano più lenti, mentre quelli a caldo restano normali."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Diverse candelette sono deboli o guaste. L'avviamento a freddo è difficile e il motore può girare irregolarmente finché non si scalda."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Guasto grave delle candelette. L'avviamento a freddo è molto inaffidabile e il funzionamento irregolare continua durante il riscaldamento."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Guasto completo del sistema di preriscaldamento. Quando il preriscaldamento è necessario, il motore non raggiunge la temperatura di avviamento e non parte."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="La resistenza delle candelette comincia a differire tra i cilindri."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Una o più candelette mostrano una resistenza o un assorbimento di corrente anomali."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Diverse candelette hanno il circuito interrotto o non raggiungono più la temperatura di esercizio."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Il circuito di preriscaldamento non riesce a fornire il calore necessario per un avviamento a freddo."/>
+        <text name="ads_preheat_ignition_message" text="Quadro acceso: preriscaldamento in corso"/>
+        <text name="ads_preheat_system_failure_message" text="Guasto del sistema di preriscaldamento: avviamento a freddo non disponibile"/>
+        <text name="ads_preheat_start_failed_message" text="Il motore non si è avviato: spegni il quadro prima di riprovare"/>
+        <text name="ads_tutorial_preheat_title" text="Preriscaldamento diesel"/>
+        <text name="ads_tutorial_preheat_message" text="Con un motore diesel freddo, una pressione del comando di avviamento accende il quadro e avvia automaticamente il ciclo delle candelette. Le spie del cruscotto eseguono l'autotest, poi la spia di preriscaldamento resta accesa finché il motore non è pronto. Non ripetere il comando: il motorino di avviamento si inserisce automaticamente quando la spia si spegne."/>
     </texts>
 </l10n>

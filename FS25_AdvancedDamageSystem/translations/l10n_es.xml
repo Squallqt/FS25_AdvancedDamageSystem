@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="¡Freno de estacionamiento accionado!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Tensión de la transmisión"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Estás girando sobre suelo con buen agarre con el bloqueo de diferencial activado. En una curva, las ruedas interiores y exteriores recorren distancias diferentes, pero el bloqueo del diferencial las obliga a girar a la misma velocidad: la transmisión se tensa y su desgaste aumenta. Suelta el bloqueo antes de girar."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Bujías de precalentamiento"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Desgaste inicial de las bujías de precalentamiento. Los arranques en frío son más lentos; los arranques en caliente no se ven afectados."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Varias bujías están debilitadas o averiadas. El arranque en frío es difícil y el motor puede funcionar de forma irregular hasta calentarse."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Fallo grave de las bujías de precalentamiento. El arranque en frío es muy poco fiable y el funcionamiento irregular persiste durante el calentamiento."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Fallo completo del sistema de precalentamiento. Cuando se necesita precalentar, el motor no alcanza la temperatura de arranque y no arranca."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="La resistencia de las bujías empieza a diferir entre cilindros."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Una o varias bujías presentan una resistencia o un consumo de corriente anómalos."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Varias bujías tienen el circuito abierto o ya no alcanzan su temperatura de funcionamiento."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="El circuito de precalentamiento no puede proporcionar el calor necesario para un arranque en frío."/>
+        <text name="ads_preheat_ignition_message" text="Contacto encendido: precalentamiento en curso"/>
+        <text name="ads_preheat_system_failure_message" text="Fallo del sistema de precalentamiento: arranque en frío no disponible"/>
+        <text name="ads_preheat_start_failed_message" text="El motor no arrancó: apaga el contacto antes de volver a intentarlo"/>
+        <text name="ads_tutorial_preheat_title" text="Precalentamiento diésel"/>
+        <text name="ads_tutorial_preheat_message" text="Con el motor diésel frío, una pulsación del mando de arranque enciende el contacto e inicia automáticamente el ciclo de precalentamiento. Los testigos del cuadro realizan su autocomprobación y, después, el testigo de precalentamiento permanece encendido hasta que el motor está listo. No repitas la orden: el motor de arranque se acciona automáticamente cuando el testigo se apaga."/>
     </texts>
 </l10n>

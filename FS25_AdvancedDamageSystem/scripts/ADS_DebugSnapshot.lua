@@ -167,6 +167,16 @@ function ADS_DebugSnapshot.build(vehicle)
     end
 
     local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+    local preheatState = tonumber(spec.preheatState) or ADS_Preheat.STATE.IDLE
+    local glowHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER or nil
+    local glowHardStartStatus = glowHardStartEffect ~= nil
+        and glowHardStartEffect.extraData ~= nil
+        and glowHardStartEffect.extraData.status
+        or "NONE"
+    local glowHardStartBlocked = glowHardStartEffect ~= nil
+        and glowHardStartEffect.extraData ~= nil
+        and glowHardStartEffect.extraData.blockStart == true
+        and spec.preheatWasRequired == true
 
     return {
         debugData = copyDebugData(spec.debugData),
@@ -183,6 +193,21 @@ function ADS_DebugSnapshot.build(vehicle)
             acceleratorPedal = tonumber(motor ~= nil and motor.lastAcceleratorPedal or 0) or 0,
             isCranking = spec.isCranking == true,
             batteryTempC = tonumber(spec.batteryTempC) or 0,
+            preheatState = preheatState,
+            preheatStateName = ADS_Preheat.getStateName(preheatState),
+            preheatIsDiesel = ADS_Preheat.isDieselVehicle(vehicle),
+            preheatEngineTemperatureC = ADS_Preheat.getEngineTemperatureC(vehicle),
+            preheatLampTestActive = spec.preheatLampTestActive == true,
+            preheatLampTestRemainingMs = tonumber(spec.preheatLampTestRemainingMs) or 0,
+            preheatRemainingMs = tonumber(spec.preheatRemainingMs) or 0,
+            preheatRequiredMs = tonumber(spec.preheatRequiredMs) or 0,
+            preheatWasRequired = spec.preheatWasRequired == true,
+            preheatAutomaticCrank = spec.preheatAutomaticCrank == true,
+            preheatAutomaticCrankElapsedMs = tonumber(spec.preheatAutomaticCrankElapsedMs) or 0,
+            preheatGlowPlugFailureSeverity = ADS_Preheat.getGlowPlugFailureSeverity(vehicle),
+            preheatColdStartFaultSeverity = tonumber(spec.preheatColdStartFaultSeverity) or 0,
+            preheatGlowHardStartStatus = tostring(glowHardStartStatus),
+            preheatGlowHardStartBlocked = glowHardStartBlocked,
             pendingServicePrice = tonumber(spec.pendingServicePrice),
             pendingSelectedBreakdowns = copyPlainValue(spec.pendingSelectedBreakdowns or {}),
             pendingInspectionQueue = copyPlainValue(spec.pendingInspectionQueue or {}),

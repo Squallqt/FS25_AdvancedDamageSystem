@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Zatažená parkovací brzda!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Namáhání pohonu"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Zatáčíte na přilnavém povrchu se zapnutou uzávěrkou diferenciálu. V zatáčce urazí vnitřní a vnější kola různé vzdálenosti, ale uzávěrka diferenciálu je nutí točit se stejnou rychlostí: pohonné ústrojí se napíná a zvyšuje se opotřebení převodovky. Před zatáčením uzávěrku uvolněte."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Žhavicí svíčky"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Počínající opotřebení žhavicích svíček. Studené starty se prodlužují, teplé starty zůstávají beze změny."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Několik žhavicích svíček je oslabených nebo nefunkčních. Studený start je obtížný a motor může běžet nepravidelně, dokud se nezahřeje."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Vážná porucha žhavicích svíček. Studený start je velmi nespolehlivý a nepravidelný chod přetrvává během zahřívání."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Úplná porucha systému žhavení. Když je předehřev nutný, motor nedosáhne startovací teploty a nenastartuje."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Odpor žhavicích svíček se mezi válci začíná lišit."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Jedna nebo více svíček vykazuje neobvyklý odpor nebo odběr proudu."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Několik svíček má přerušený obvod nebo již nedosahuje provozní teploty."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Žhavicí obvod nedokáže dodat teplo potřebné pro studený start."/>
+        <text name="ads_preheat_ignition_message" text="Zapalování zapnuto: probíhá předehřev"/>
+        <text name="ads_preheat_system_failure_message" text="Porucha systému žhavení: studený start není možný"/>
+        <text name="ads_preheat_start_failed_message" text="Motor nenastartoval: před dalším pokusem vypněte zapalování"/>
+        <text name="ads_tutorial_preheat_title" text="Předehřev vznětového motoru"/>
+        <text name="ads_tutorial_preheat_message" text="U studeného vznětového motoru jedno stisknutí ovladače startu zapne zapalování a automaticky zahájí žhavicí cyklus. Kontrolky na palubní desce provedou autotest a poté zůstane kontrolka předehřevu svítit, dokud není motor připraven. Povel neopakujte: startér se zapne automaticky po zhasnutí kontrolky."/>
     </texts>
 </l10n>

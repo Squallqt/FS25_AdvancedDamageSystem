@@ -10,7 +10,7 @@
     <description>
         <en><![CDATA[Advanced Damage System adds a deep vehicle wear, failure, diagnostics, maintenance, and repair system to Farming Simulator 25. Instead of relying on a single generic condition value, each machine is built around multiple individual systems with their own condition, wear factors, stress accumulation, and risk of failure. Vehicle behaviour and the nature of breakdowns depend on operating conditions, load, temperature, and service quality.
 
-The mod includes a temperature model for key systems, advanced battery and alternator simulation, realistic breakdown logic, expanded workshop workflows, service reports, maintenance history, and pre-shift inspections. As a result, vehicle management becomes a strategic part of gameplay: service takes time, poor operation increases the risk of failures, and neglecting machine condition can disrupt critical field work. A responsible farmer who looks after equipment, services it on time, and avoids unnecessary abuse will keep the fleet reliable and avoid serious problems during the season.
+The mod includes a temperature model for key systems, advanced battery, alternator, and diesel preheating simulation, realistic breakdown logic, expanded workshop workflows, service reports, maintenance history, and pre-shift inspections. As a result, vehicle management becomes a strategic part of gameplay: service takes time, poor operation increases the risk of failures, and neglecting machine condition can disrupt critical field work. A responsible farmer who looks after equipment, services it on time, and avoids unnecessary abuse will keep the fleet reliable and avoid serious problems during the season.
 
 Changelog 0.9.3.0 [WIP]:
 - Fixed & improved translations
@@ -30,11 +30,12 @@ Changelog 0.9.3.0 [WIP]:
 - Dashboard indicators no longer disappear at high speed, and the inactive service indicator remains visible in gray
 - Turbocharger wear now applies to every engine of 56 kW (75 hp) or more, instead of a single tractor model
 - Added a transmission thermostat breakdown on CVT gearboxes: the valve loses response over three stages, then sticks in position and transmission oil no longer reaches the correct temperature
-- Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C]]></en>
+- Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C
+- Added automatic temperature-based diesel preheating: one start request runs the lamp check and glow cycle before cranking, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown]]></en>
 
         <de><![CDATA[Advanced Damage System fügt Farming Simulator 25 ein tiefgehendes System für Verschleiß, Ausfälle, Diagnose, Wartung und Reparatur von Fahrzeugen hinzu. Anstelle eines einzigen allgemeinen Zustandswerts besteht jede Maschine aus mehreren einzelnen Systemen mit eigenem Zustand, eigenen Verschleißfaktoren, Stressaufbau und Ausfallrisiko. Fahrverhalten und Art der Defekte hängen von Einsatzbedingungen, Belastung, Temperatur und Wartungsqualität ab.
 
-Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batterie- und Lichtmaschinensimulation, realistische Ausfalllogik, erweiterte Werkstattabläufe, Serviceberichte, Wartungshistorie und Vorschicht-Inspektionen. Dadurch wird Fahrzeugmanagement zu einem strategischen Teil des Gameplays: Wartung kostet Zeit, falscher Einsatz erhöht das Ausfallrisiko, und vernachlässigter Maschinenzustand kann wichtige Feldarbeiten gefährden. Ein verantwortungsvoller Landwirt, der seine Technik pflegt, rechtzeitig wartet und unnötige Überlastung vermeidet, hält seinen Fuhrpark zuverlässig und vermeidet ernsthafte Probleme in der Saison.
+Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batterie-, Lichtmaschinen- und Diesel-Vorglühsimulation, realistische Ausfalllogik, erweiterte Werkstattabläufe, Serviceberichte, Wartungshistorie und Vorschicht-Inspektionen. Dadurch wird Fahrzeugmanagement zu einem strategischen Teil des Gameplays: Wartung kostet Zeit, falscher Einsatz erhöht das Ausfallrisiko, und vernachlässigter Maschinenzustand kann wichtige Feldarbeiten gefährden. Ein verantwortungsvoller Landwirt, der seine Technik pflegt, rechtzeitig wartet und unnötige Überlastung vermeidet, hält seinen Fuhrpark zuverlässig und vermeidet ernsthafte Probleme in der Saison.
 
 Changelog 0.9.3.0 [WIP]:
 - Übersetzungen korrigiert und verbessert
@@ -54,11 +55,12 @@ Changelog 0.9.3.0 [WIP]:
 - Armaturenbrettanzeigen verschwinden nicht mehr bei hoher Geschwindigkeit, und die inaktive Wartungsanzeige bleibt grau sichtbar
 - Turboladerverschleiß betrifft jetzt jeden Motor ab 56 kW (75 PS) statt nur eines einzigen Traktormodells
 - Störung des Getriebethermostats für CVT-Getriebe hinzugefügt: Das Ventil verliert über drei Stufen an Ansprechverhalten, klemmt dann in seiner Position und das Getriebeöl erreicht die richtige Temperatur nicht mehr
-- CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C]]></de>
+- CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C
+- Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt: Ein Startbefehl führt vor dem Anlassen den Lampentest und Glühzyklus aus, einschließlich Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung]]></de>
         
         <fr><![CDATA[Advanced Damage System ajoute à Farming Simulator 25 un système approfondi d'usure, de pannes, de diagnostic, d'entretien et de réparation des véhicules. Au lieu de reposer sur une seule valeur générale d'état, chaque machine est composée de plusieurs systèmes distincts ayant leur propre état, leurs propres facteurs d'usure, leur accumulation de stress et leur risque de panne. Le comportement de la machine et la nature des défaillances dépendent des conditions d'utilisation, de la charge, de la température et de la qualité de l'entretien.
 
-Le mod comprend un modèle thermique pour les systèmes clés, une simulation avancée de la batterie et de l'alternateur, une logique de pannes réaliste, des procédures d'atelier étendues, des rapports d'intervention, un historique d'entretien et des inspections avant prise de poste. La gestion du matériel devient ainsi une dimension stratégique du gameplay : l'entretien prend du temps, une mauvaise utilisation augmente le risque de panne, et négliger l'état des machines peut compromettre des travaux de campagne essentiels. Un agriculteur consciencieux qui surveille son matériel, l'entretient à temps et évite les mauvais traitements inutiles conservera une flotte fiable et évitera de graves problèmes en saison.
+Le mod comprend un modèle thermique pour les systèmes clés, une simulation avancée de la batterie, de l'alternateur et du préchauffage diesel, une logique de pannes réaliste, des procédures d'atelier étendues, des rapports d'intervention, un historique d'entretien et des inspections avant prise de poste. La gestion du matériel devient ainsi une dimension stratégique du gameplay : l'entretien prend du temps, une mauvaise utilisation augmente le risque de panne, et négliger l'état des machines peut compromettre des travaux de campagne essentiels. Un agriculteur consciencieux qui surveille son matériel, l'entretient à temps et évite les mauvais traitements inutiles conservera une flotte fiable et évitera de graves problèmes en saison.
 
 Changelog 0.9.3.0 [WIP] :
 - Correction & amélioration des traductions
@@ -79,6 +81,7 @@ Changelog 0.9.3.0 [WIP] :
 - L'usure du turbocompresseur concerne désormais tout moteur de 56 kW (75 ch) ou plus, au lieu d'un seul modèle de tracteur
 - Ajout d'une panne de thermostat de transmission sur les boîtes CVT : la vanne perd sa réactivité sur trois stades, puis se bloque en position et l'huile de boîte n'atteint plus la bonne température
 - Recalibrage des températures de boîte CVT sur les données réelles d'huile de transmission : le thermostat régule désormais à 85 °C au lieu de 75 °C, et l'usure par surchauffe démarre à 100 °C au lieu de 95 °C
+- Ajout du préchauffage diesel automatique selon la température : une impulsion de démarrage lance le contrôle des voyants et le cycle de préchauffage avant le démarreur, avec charge batterie, témoin dédié, didacticiel et panne de bougies en quatre stades
 
 Changelog 0.9.2.7:
 - Refonte des facteurs Heavy Trailer et Brake Mass : les tracteurs utilisent 10 ch par tonne de masse tractée, tandis que les camions utilisent 6 ch par tonne de poids total roulant

@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Затягнуто стоянкове гальмо!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Навантаження на трансмісію"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Ви повертаєте на поверхні з добрим зчепленням з увімкненим блокуванням диференціала. У повороті внутрішні та зовнішні колеса проходять різні відстані, але блокування диференціала змушує їх обертатися з однаковою швидкістю: трансмісія зазнає навантаження, а зношення коробки передач прискорюється. Вимикайте блокування перед поворотами."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Свічки розжарювання"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Початкове зношення свічок розжарювання. Холодний запуск стає повільнішим, запуск прогрітого двигуна не змінюється."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Кілька свічок розжарювання ослаблені або несправні. Холодний запуск ускладнений, а двигун може працювати нерівно до прогрівання."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Серйозна несправність свічок розжарювання. Холодний запуск дуже ненадійний, а нерівна робота зберігається під час прогрівання."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Повна відмова системи передпускового підігріву. Коли підігрів потрібний, двигун не досягає температури запуску й не запускається."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Опір свічок розжарювання починає відрізнятися між циліндрами."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Одна або кілька свічок мають ненормальний опір або споживання струму."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="У колі кількох свічок є обрив або вони більше не досягають робочої температури."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Коло розжарювання не може забезпечити тепло, необхідне для холодного запуску."/>
+        <text name="ads_preheat_ignition_message" text="Запалювання ввімкнено: триває передпусковий підігрів"/>
+        <text name="ads_preheat_system_failure_message" text="Відмова системи розжарювання: холодний запуск неможливий"/>
+        <text name="ads_preheat_start_failed_message" text="Двигун не запустився: вимкніть запалювання перед новою спробою"/>
+        <text name="ads_tutorial_preheat_title" text="Передпусковий підігрів дизеля"/>
+        <text name="ads_tutorial_preheat_message" text="За холодного дизельного двигуна одне натискання команди запуску вмикає запалювання й автоматично запускає цикл розжарювання. Контрольні лампи панелі виконують самоперевірку, після чого лампа передпускового підігріву світиться до готовності двигуна. Не повторюйте команду: стартер увімкнеться автоматично після згасання лампи."/>
     </texts>
 </l10n>

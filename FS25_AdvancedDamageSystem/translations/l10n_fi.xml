@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Seisontajarru kytketty!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Voimansiirron rasitus"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Käännyt pitävällä alustalla tasauspyörästön lukko kytkettynä. Kaarteessa sisä- ja ulkopyörät kulkevat eri matkat, mutta tasauspyörästön lukko pakottaa ne pyörimään samalla nopeudella: voimansiirto kuormittuu ja vaihteiston kuluminen lisääntyy. Vapauta lukko ennen kääntymistä."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Hehkutulpat"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Hehkutulppien kuluminen on alkanut. Kylmäkäynnistys hidastuu, mutta lämpimän moottorin käynnistys ei muutu."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Useita hehkutulppia on heikentynyt tai rikkoutunut. Kylmäkäynnistys on vaikeaa ja moottori voi käydä epätasaisesti lämpenemiseen asti."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Vakava hehkutulppavika. Kylmäkäynnistys on erittäin epävarmaa ja epätasainen käynti jatkuu lämpenemisen aikana."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Hehkutusjärjestelmä on rikkoutunut kokonaan. Kun hehkutusta tarvitaan, moottori ei saavuta käynnistyslämpötilaa eikä käynnisty."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Hehkutulppien vastusarvot alkavat poiketa sylinterien välillä."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Yhden tai useamman hehkutulpan vastus tai virrankulutus on poikkeava."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Usean hehkutulpan virtapiiri on katkennut tai tulpat eivät enää saavuta käyttölämpötilaa."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Hehkutuspiiri ei pysty tuottamaan kylmäkäynnistyksen vaatimaa lämpöä."/>
+        <text name="ads_preheat_ignition_message" text="Virta kytketty: hehkutus käynnissä"/>
+        <text name="ads_preheat_system_failure_message" text="Hehkutusjärjestelmän vika: kylmäkäynnistys ei ole mahdollista"/>
+        <text name="ads_preheat_start_failed_message" text="Moottori ei käynnistynyt: katkaise virta ennen uutta yritystä"/>
+        <text name="ads_tutorial_preheat_title" text="Dieselin hehkutus"/>
+        <text name="ads_tutorial_preheat_message" text="Kun dieselmoottori on kylmä, käynnistysohjaimen yksi painallus kytkee virran ja aloittaa hehkutuksen automaattisesti. Kojelaudan merkkivalot suorittavat itsetestin, minkä jälkeen hehkutuksen merkkivalo palaa, kunnes moottori on valmis. Älä paina uudelleen: käynnistin kytkeytyy automaattisesti merkkivalon sammuttua."/>
     </texts>
 </l10n>

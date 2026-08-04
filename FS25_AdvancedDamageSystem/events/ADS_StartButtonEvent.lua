@@ -52,6 +52,9 @@ function ADS_StartButtonEvent:run(connection)
     spec.startButtonUp = self.isUp
 
     if not connection:getIsServer() then
+        if self.isDown and vehicle.isServer then
+            ADS_Preheat.requestStart(vehicle)
+        end
         g_server:broadcastEvent(ADS_StartButtonEvent.new(vehicle, self.isDown, self.isHeld, self.isUp), nil, connection, vehicle)
     end
 end

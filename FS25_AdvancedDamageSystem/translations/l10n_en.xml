@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Parking brake engaged!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Driveline Stress"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="You are turning on high-grip ground with the differential lock engaged. Inside and outside wheels travel different distances in a curve, but the differential lock forces them to rotate at the same speed: the driveline comes under stress and transmission wear increases. Release the differential lock before turning."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Glow plugs"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Early glow plug degradation. Cold starts are becoming slower; warm starts remain unaffected."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Several glow plugs are weak or inoperative. Cold starts are difficult and the engine may idle unevenly until it warms up."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Severe glow plug failure. Cold starting is highly unreliable and rough running persists during warm-up."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Complete glow plug system failure. When preheating is required, the engine cannot reach starting temperature and will not start."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Glow plug resistance is beginning to differ between cylinders."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="One or more glow plugs show abnormal resistance or current draw."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Multiple glow plugs are open-circuit or no longer reach operating temperature."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="The glow plug circuit cannot deliver the heat required for a cold start."/>
+        <text name="ads_preheat_ignition_message" text="Ignition on: preheating in progress"/>
+        <text name="ads_preheat_system_failure_message" text="Glow plug system failure: cold start unavailable"/>
+        <text name="ads_preheat_start_failed_message" text="Engine did not start: switch the ignition off before retrying"/>
+        <text name="ads_tutorial_preheat_title" text="Diesel Preheating"/>
+        <text name="ads_tutorial_preheat_message" text="On a cold diesel engine, one press of the start control switches on the ignition and begins the automatic glow-plug cycle. The dashboard lamps perform their self-test, then the preheat lamp remains on until the engine is ready. Do not repeat the command: the starter engages automatically when the lamp goes out."/>
     </texts>
 </l10n>

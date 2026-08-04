@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Zaciągnięty hamulec postojowy!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Obciążenie układu napędowego"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Skręcasz na przyczepnym podłożu z załączoną blokadą dyferencjału. W zakręcie koła po wewnętrznej i zewnętrznej stronie pokonują różne odległości, ale blokada mechanizmu różnicowego wymusza tę samą prędkość obrotową: układ napędowy zostaje obciążony, zwiększając zużycie skrzyni biegów. Zwalniaj blokadę przed skręcaniem."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Świece żarowe"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Początkowe zużycie świec żarowych. Rozruch na zimno trwa dłużej, a rozruch ciepłego silnika pozostaje bez zmian."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Kilka świec żarowych jest osłabionych lub niesprawnych. Rozruch na zimno jest utrudniony, a silnik może pracować nierówno do czasu rozgrzania."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Poważna awaria świec żarowych. Rozruch na zimno jest bardzo niepewny, a nierówna praca utrzymuje się podczas rozgrzewania."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Całkowita awaria układu świec żarowych. Gdy podgrzewanie jest wymagane, silnik nie osiąga temperatury rozruchu i nie uruchamia się."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Rezystancja świec żarowych zaczyna różnić się między cylindrami."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Jedna lub więcej świec ma nieprawidłową rezystancję albo pobór prądu."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Kilka świec ma przerwany obwód lub nie osiąga już temperatury roboczej."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Obwód świec żarowych nie może dostarczyć ciepła wymaganego do rozruchu na zimno."/>
+        <text name="ads_preheat_ignition_message" text="Zapłon włączony: trwa podgrzewanie"/>
+        <text name="ads_preheat_system_failure_message" text="Awaria układu świec żarowych: rozruch na zimno niemożliwy"/>
+        <text name="ads_preheat_start_failed_message" text="Silnik nie uruchomił się: wyłącz zapłon przed kolejną próbą"/>
+        <text name="ads_tutorial_preheat_title" text="Podgrzewanie silnika Diesla"/>
+        <text name="ads_tutorial_preheat_message" text="Przy zimnym silniku Diesla jedno naciśnięcie sterowania rozruchem włącza zapłon i automatycznie rozpoczyna cykl świec żarowych. Kontrolki deski rozdzielczej wykonują autotest, a następnie kontrolka podgrzewania pozostaje włączona do chwili gotowości silnika. Nie naciskaj ponownie: rozrusznik włączy się automatycznie po zgaśnięciu kontrolki."/>
     </texts>
 </l10n>

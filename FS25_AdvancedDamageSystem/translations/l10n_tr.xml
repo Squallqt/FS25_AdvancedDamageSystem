@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="El freni çekili!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Aktarma organları gerilimi"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Diferansiyel kilidi devredeyken tutuşu yüksek zeminde dönüyorsunuz. Virajda iç ve dış tekerlekler farklı mesafeler kat eder, ancak diferansiyel kilidi onları aynı hızda dönmeye zorlar: aktarma organları gerilim altında kalır ve şanzıman aşınması artar. Dönmeden önce kilidi bırakın."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Kızdırma bujileri"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Kızdırma bujilerinde ilk aşama yıpranma. Soğuk çalıştırma yavaşlar, sıcak çalıştırma etkilenmez."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Birden fazla kızdırma bujisi zayıf veya arızalı. Soğuk çalıştırma zordur ve motor ısınana kadar düzensiz rölantide çalışabilir."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Ciddi kızdırma bujisi arızası. Soğuk çalıştırma son derece güvenilmezdir ve ısınma sırasında düzensiz çalışma devam eder."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Ön ısıtma sistemi tamamen arızalı. Ön ısıtma gerektiğinde motor çalıştırma sıcaklığına ulaşamaz ve çalışmaz."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Kızdırma bujilerinin direnci silindirler arasında farklılaşmaya başlıyor."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Bir veya daha fazla kızdırma bujisi anormal direnç ya da akım çekişi gösteriyor."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Birden fazla kızdırma bujisinin devresi açık veya bujiler artık çalışma sıcaklığına ulaşmıyor."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Ön ısıtma devresi soğuk çalıştırma için gereken ısıyı sağlayamıyor."/>
+        <text name="ads_preheat_ignition_message" text="Kontak açık: ön ısıtma sürüyor"/>
+        <text name="ads_preheat_system_failure_message" text="Ön ısıtma sistemi arızası: soğuk çalıştırma kullanılamıyor"/>
+        <text name="ads_preheat_start_failed_message" text="Motor çalışmadı: yeniden denemeden önce kontağı kapatın"/>
+        <text name="ads_tutorial_preheat_title" text="Dizel ön ısıtma"/>
+        <text name="ads_tutorial_preheat_message" text="Soğuk bir dizel motorda, çalıştırma kumandasına bir kez basmak kontağı açar ve kızdırma döngüsünü otomatik olarak başlatır. Gösterge paneli lambaları kendi testini yapar, ardından motor hazır olana kadar ön ısıtma lambası yanar. Komutu tekrarlamayın: lamba söndüğünde marş motoru otomatik olarak devreye girer."/>
     </texts>
 </l10n>

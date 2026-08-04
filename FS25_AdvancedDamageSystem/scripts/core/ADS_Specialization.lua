@@ -163,6 +163,7 @@ end
 
 source(g_currentModDirectory .. "scripts/core/ADS_Thermal.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Electrical.lua")
+source(g_currentModDirectory .. "scripts/core/ADS_Preheat.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Breakdowns.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Consumptables.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Drivetrain.lua")
@@ -748,12 +749,20 @@ local function markElectricalDirty(vehicle, spec)
     if syncFloatChanged(spec._lastSyncElectrical_batterySoc, spec.batterySoc, 0.01) or
        syncFloatChanged(spec._lastSyncElectrical_batteryChargeAh, spec.batteryChargeAh, 0.01) or
        syncFloatChanged(spec._lastSyncElectrical_batteryTerminalVoltage, spec.batteryTerminalVoltageV, 0.01) or
-       syncFloatChanged(spec._lastSyncElectrical_systemVoltage, spec.systemVoltageV, 0.01) then
+       syncFloatChanged(spec._lastSyncElectrical_systemVoltage, spec.systemVoltageV, 0.01) or
+       spec._lastSyncElectrical_preheatState ~= spec.preheatState or
+       spec._lastSyncElectrical_preheatLampTestActive ~= spec.preheatLampTestActive or
+       spec._lastSyncElectrical_preheatWasRequired ~= spec.preheatWasRequired or
+       spec._lastSyncElectrical_preheatColdStartFaultSeverity ~= spec.preheatColdStartFaultSeverity then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_electrical)
             spec._lastSyncElectrical_batterySoc = spec.batterySoc
             spec._lastSyncElectrical_batteryChargeAh = spec.batteryChargeAh
             spec._lastSyncElectrical_batteryTerminalVoltage = spec.batteryTerminalVoltageV
             spec._lastSyncElectrical_systemVoltage = spec.systemVoltageV
+            spec._lastSyncElectrical_preheatState = spec.preheatState
+            spec._lastSyncElectrical_preheatLampTestActive = spec.preheatLampTestActive
+            spec._lastSyncElectrical_preheatWasRequired = spec.preheatWasRequired
+            spec._lastSyncElectrical_preheatColdStartFaultSeverity = spec.preheatColdStartFaultSeverity
             return true
     end
 
@@ -1222,6 +1231,10 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryTerminalVoltageV, 12.7, 0, 30))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.systemVoltageV, 12.7, 0, 30))
+    streamWriteUInt8(streamId, math.floor(AdvancedDamageSystem.sanitizeNumber(spec.preheatState, ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.FAILED)))
+    streamWriteBool(streamId, spec.preheatLampTestActive == true)
+    streamWriteBool(streamId, spec.preheatWasRequired == true)
+    streamWriteUInt8(streamId, math.floor(AdvancedDamageSystem.sanitizeNumber(spec.preheatColdStartFaultSeverity, 0, 0, 4)))
 
     -- [Group 6] Field care
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.radiatorClogging, 0, 0))
@@ -1318,6 +1331,10 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     spec.rawBatteryTerminalVoltageV = spec.batteryTerminalVoltageV
     spec.systemVoltageV = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec.batteryTerminalVoltageV, 0, 30)
     spec.rawSystemVoltageV = spec.systemVoltageV
+    spec.preheatState = math.floor(AdvancedDamageSystem.sanitizeNumber(streamReadUInt8(streamId), ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.FAILED))
+    spec.preheatLampTestActive = streamReadBool(streamId)
+    spec.preheatWasRequired = streamReadBool(streamId)
+    spec.preheatColdStartFaultSeverity = math.floor(AdvancedDamageSystem.sanitizeNumber(streamReadUInt8(streamId), 0, 0, 4))
 
     -- [Group 6] Field care
     spec.radiatorClogging = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
@@ -1405,6 +1422,10 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryTerminalVoltageV, 12.7, 0, 30))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.systemVoltageV, 12.7, 0, 30))
+            streamWriteUInt8(streamId, math.floor(AdvancedDamageSystem.sanitizeNumber(spec.preheatState, ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.FAILED)))
+            streamWriteBool(streamId, spec.preheatLampTestActive == true)
+            streamWriteBool(streamId, spec.preheatWasRequired == true)
+            streamWriteUInt8(streamId, math.floor(AdvancedDamageSystem.sanitizeNumber(spec.preheatColdStartFaultSeverity, 0, 0, 4)))
         end
 
         -- [6] Field care
@@ -1527,6 +1548,10 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec.rawBatteryTerminalVoltageV = spec.batteryTerminalVoltageV
             spec.systemVoltageV = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec.batteryTerminalVoltageV, 0, 30)
             spec.rawSystemVoltageV = spec.systemVoltageV
+            spec.preheatState = math.floor(AdvancedDamageSystem.sanitizeNumber(streamReadUInt8(streamId), ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.IDLE, ADS_Preheat.STATE.FAILED))
+            spec.preheatLampTestActive = streamReadBool(streamId)
+            spec.preheatWasRequired = streamReadBool(streamId)
+            spec.preheatColdStartFaultSeverity = math.floor(AdvancedDamageSystem.sanitizeNumber(streamReadUInt8(streamId), 0, 0, 4))
         end
 
         -- [6] Field care
@@ -1791,6 +1816,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.startButtonDown = false
     self.spec_AdvancedDamageSystem.startButtonHeld = false
     self.spec_AdvancedDamageSystem.startButtonUp = false
+    ADS_Preheat.initSpec(self)
 
     self.spec_AdvancedDamageSystem.drivetrainActionEvents = {}
     ADS_Drivetrain.initSpec(self)
@@ -2178,7 +2204,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceContext = self:getNextDirtyFlag()    -- [2] serviceOptionOne, serviceOptionTwo, serviceOptionThree, workshopType
         self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, dynamicMotorLoad, wheelSlipIntensity
         self.spec_AdvancedDamageSystem.adsDirtyFlag_thermal = self:getNextDirtyFlag()           -- [4] rawEngineTemperature, rawTransmissionTemperature, thermostatState, transmissionThermostatState
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_electrical = self:getNextDirtyFlag()        -- [5] batterySoc, batteryChargeAh, batteryTerminalVoltageV, systemVoltageV
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_electrical = self:getNextDirtyFlag()        -- [5] battery state, voltage, preheat state
         self.spec_AdvancedDamageSystem.adsDirtyFlag_fieldcare = self:getNextDirtyFlag()         -- [6] radiatorClogging, airIntakeClogging, lubricationLevel, fieldInspectionSoundActive
         self.spec_AdvancedDamageSystem.adsDirtyFlag_wear = self:getNextDirtyFlag()              -- [7] serviceLevel, conditionLevel, systems[...].condition, systems[...].stress
         self.spec_AdvancedDamageSystem.adsDirtyFlag_breakdowns = self:getNextDirtyFlag()        -- [8] activeBreakdowns
@@ -2490,6 +2516,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec.rawTransmissionTemperature = spec.transmissionTemperature
 
     spec.isElectricVehicle = getIsElectricVehicle(self)
+    spec.isDieselVehicle = ADS_Preheat.isDieselVehicle(self)
     spec.hydraulicsMoveAlphaCache = {}
     spec.hydraulicsLiftRatioCache = {}
 
@@ -2593,6 +2620,10 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec._lastSyncElectrical_batteryChargeAh = spec.batteryChargeAh
     spec._lastSyncElectrical_batteryTerminalVoltage = spec.batteryTerminalVoltageV
     spec._lastSyncElectrical_systemVoltage = spec.systemVoltageV
+    spec._lastSyncElectrical_preheatState = spec.preheatState
+    spec._lastSyncElectrical_preheatLampTestActive = spec.preheatLampTestActive
+    spec._lastSyncElectrical_preheatWasRequired = spec.preheatWasRequired
+    spec._lastSyncElectrical_preheatColdStartFaultSeverity = spec.preheatColdStartFaultSeverity
     --- [6] fieldcare
     spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
     spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
@@ -2658,6 +2689,17 @@ function AdvancedDamageSystem:onLeaveVehicle(wasEntered)
     if hadStartInput then
         ADS_StartButtonEvent.send(self, false, false, false)
     end
+
+    if self.isServer
+        and not self:getIsMotorStarted()
+        and spec.preheatState ~= ADS_Preheat.STATE.IDLE then
+        ADS_Breakdowns.cancelStarterCranking(self)
+        ADS_Preheat.reset(self, false)
+        if self:getMotorState() ~= MotorState.OFF then
+            self:setMotorState(MotorState.OFF)
+        end
+        self:raiseDirtyFlags(spec.adsDirtyFlag_electrical)
+    end
 end
 
 function AdvancedDamageSystem.updateStartButtonActionEvents(self)
@@ -2689,7 +2731,7 @@ function AdvancedDamageSystem.updateStartButtonActionEvents(self)
                 g_inputBinding:setActionEventTextVisibility(actionEventId, not automaticMotorStartEnabled)
 
                 local motorState = self:getMotorState()
-                if motorState == MotorState.STARTING or motorState == MotorState.ON then
+                if motorState == MotorState.STARTING or motorState == MotorState.ON or ADS_Preheat.isFailed(self) then
                     g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_VERY_LOW)
                     g_inputBinding:setActionEventText(actionEventId, motorizedSpec.turnOffText)
                 else
@@ -3398,6 +3440,7 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
 
     self:updateVehicleStateSnapshot(dt)
     AdvancedDamageSystem.updateStartButtonActionEvents(self)
+    ADS_Preheat.update(self, dt)
 
     local updateDelay = ADS_Config.ON_UPDATE_DELAY
     spec.onUpdateTimer = spec.onUpdateTimer + dt
@@ -3824,10 +3867,12 @@ local function updateStarterState(vehicle)
     end
 
     local engineHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.ENGINE_HARD_START_MODIFIER or nil
+    local glowPlugHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER or nil
     local engineFailedEffect = spec.activeEffects ~= nil and spec.activeEffects.ENGINE_FAILURE or nil
 
-    local isCranking = vehicle:getMotorState() == 3 or 
+    local isCranking = vehicle:getMotorState() == MotorState.STARTING or
         (engineHardStartEffect ~= nil and engineHardStartEffect.extraData ~= nil and engineHardStartEffect.extraData.status ~= nil and (engineHardStartEffect.extraData.status == "CRANKING" or engineHardStartEffect.extraData.status == "PASSED")) or 
+        (glowPlugHardStartEffect ~= nil and glowPlugHardStartEffect.extraData ~= nil and glowPlugHardStartEffect.extraData.status ~= nil and (glowPlugHardStartEffect.extraData.status == "CRANKING" or glowPlugHardStartEffect.extraData.status == "PASSED")) or
         (engineFailedEffect ~= nil and engineFailedEffect.extraData ~= nil and engineFailedEffect.extraData.status ~= nil and engineFailedEffect.extraData.status == "CRANKING")
 
     spec.isCranking = isCranking
@@ -7095,7 +7140,8 @@ function AdvancedDamageSystem:recalculateAndApplyIndicators()
                         aggregatedIndicatorData[id] = {
                             color = indicatorDef.color,
                             switchOnConditions = {},
-                            switchOffConditions = {}
+                            switchOffConditions = {},
+                            blinkWhileActive = false
                         }
                     end
 
@@ -7114,6 +7160,7 @@ function AdvancedDamageSystem:recalculateAndApplyIndicators()
                     if indicatorDef.switchOff then
                         table.insert(currentData.switchOffConditions, indicatorDef.switchOff)
                     end
+                    currentData.blinkWhileActive = currentData.blinkWhileActive or indicatorDef.blinkWhileActive == true
                 end
             end
         end
@@ -7123,6 +7170,7 @@ function AdvancedDamageSystem:recalculateAndApplyIndicators()
         local finalIndicator = {
             color = data.color,
             isActive = false,
+            blinkWhileActive = data.blinkWhileActive,
         }
 
         finalIndicator.switchOn = function(vehicle)

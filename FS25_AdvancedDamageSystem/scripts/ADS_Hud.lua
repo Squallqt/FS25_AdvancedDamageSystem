@@ -99,8 +99,7 @@ function ADS_Hud:new()
         },
         preheat = {
             name = 'preheat',
-            icon = g_overlayManager:createOverlay("ads_DashboardHud.preheat", 0, 0, 0, 0),
-            visualOnly = true
+            icon = g_overlayManager:createOverlay("ads_DashboardHud.preheat", 0, 0, 0, 0)
         },
         service = {
             name = 'service',
@@ -122,6 +121,7 @@ function ADS_Hud:new()
         battery =       { cooldownMs = 1800, sampleName = "warning" },
         coolant =       { cooldownMs = 1800, sampleName = "warning" },
         warning =       { cooldownMs = 1400, sampleName = "warning" },
+        preheat =       { cooldownMs = 1800, sampleName = "warning" },
         service =       { cooldownMs = 2500, sampleName = "warning" },
         oil =           { cooldownMs = 1800, sampleName = "warning" }
     }
@@ -262,7 +262,7 @@ end
 function ADS_Hud:startIndicatorBlink(indicatorId)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
     local vehicle = self.vehicle
-    if vehicle == nil or vehicle.getMotorState == nil or vehicle:getMotorState() ~= 4 then
+    if vehicle == nil or vehicle.getMotorState == nil or vehicle:getMotorState() ~= MotorState.ON then
         runtimeState.blinkActive = false
         runtimeState.blinkStartTime = 0
         return
@@ -274,7 +274,7 @@ function ADS_Hud:startIndicatorBlink(indicatorId)
     runtimeState.blinkStartTime = now
 end
 
-function ADS_Hud:applyIndicatorBlink(indicatorId, targetColor)
+function ADS_Hud:applyIndicatorBlink(indicatorId, targetColor, blinkWhileActive)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
     local colors = ADS_Breakdowns ~= nil and ADS_Breakdowns.COLORS or nil
     local vehicle = self.vehicle
@@ -282,7 +282,7 @@ function ADS_Hud:applyIndicatorBlink(indicatorId, targetColor)
         return targetColor
     end
 
-    if vehicle == nil or vehicle.getMotorState == nil or vehicle:getMotorState() ~= 4 then
+    if vehicle == nil or vehicle.getMotorState == nil or vehicle:getMotorState() ~= MotorState.ON then
         runtimeState.blinkActive = false
         runtimeState.blinkStartTime = 0
         return targetColor
@@ -294,7 +294,7 @@ function ADS_Hud:applyIndicatorBlink(indicatorId, targetColor)
     local elapsed = math.max(now - (runtimeState.blinkStartTime or 0), 0)
     local phaseIndex = math.floor(elapsed / blinkIntervalMs)
 
-    if phaseIndex >= totalPhases then
+    if not blinkWhileActive and phaseIndex >= totalPhases then
         runtimeState.blinkActive = false
         return targetColor
     end
@@ -317,7 +317,7 @@ function ADS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, seve
         return false
     end
 
-    if vehicle.getMotorState == nil or vehicle:getMotorState() ~= 4 then
+    if vehicle.getMotorState == nil or vehicle:getMotorState() ~= MotorState.ON then
         return false
     end
 
@@ -896,11 +896,15 @@ function ADS_Hud:drawDashboard()
     local activeIndicators = spec.activeIndicators
     local serviceInterval = (self.vehicle:getHoursSinceLastMaintenance() or 0) / (self.vehicle:getMaintenanceInterval() or 5)
     local isServiceOverdue = serviceInterval > 1.0
+    local motorState = vehicle:getMotorState()
+    local preheatState = spec.preheatState or ADS_Preheat.STATE.IDLE
+    local isLampTestActive = ADS_Preheat.isLampTestActive(vehicle)
 
     local function calculateIndicatorTargetColor(hudIndicatorId, mutateActiveState)
         local targetColor = colors.DEFAULT
+        local isRoutineIgnitionIndicator = false
 
-        if vehicle:getMotorState() ~= 1 then
+        if motorState ~= MotorState.OFF then
             local activeData = activeIndicators[hudIndicatorId]
             if activeData then
                 local isActive = activeData.isActive
@@ -945,8 +949,19 @@ function ADS_Hud:drawDashboard()
             if hudIndicatorId == self.indicators.service.name and isServiceOverdue then targetColor = colors.WARNING end
             if hudIndicatorId == self.indicators.oil.name and spec.serviceLevel < 0.2 then targetColor = colors.WARNING end
 
-            if vehicle:getMotorState() == 2 or vehicle:getMotorState() == 3 then
+            if isLampTestActive then
                 targetColor = colors.WARNING
+                isRoutineIgnitionIndicator = true
+            elseif hudIndicatorId == self.indicators.preheat.name
+                    and preheatState == ADS_Preheat.STATE.PREHEATING
+                    and targetColor == colors.DEFAULT then
+                targetColor = colors.WARNING
+                isRoutineIgnitionIndicator = true
+            elseif (motorState == MotorState.IGNITION or motorState == MotorState.STARTING)
+                    and (hudIndicatorId == self.indicators.battery.name or hudIndicatorId == self.indicators.oil.name)
+                    and targetColor == colors.DEFAULT then
+                targetColor = colors.WARNING
+                isRoutineIgnitionIndicator = true
             end
         else
             local activeData = activeIndicators[hudIndicatorId]
@@ -955,7 +970,7 @@ function ADS_Hud:drawDashboard()
             end
         end
 
-        return targetColor
+        return targetColor, isRoutineIgnitionIndicator
     end
 
     g_currentMission.hud.speedMeter.speedTextSize = self:scalePixelToScreenHeight(43)
@@ -965,26 +980,27 @@ function ADS_Hud:drawDashboard()
 
     for hudIndicatorId, hudIndicatorData in pairs(self.indicators) do
         local icon = hudIndicatorData.icon
-        local targetColor = hudIndicatorData.visualOnly and colors.DEFAULT
-            or calculateIndicatorTargetColor(hudIndicatorId, true)
+        local targetColor, isRoutineIgnitionIndicator = calculateIndicatorTargetColor(hudIndicatorId, true)
+        local activeIndicatorData = activeIndicators[hudIndicatorId]
         local isIndicatorVisible = true
 
         icon:setPosition(posX + hudIndicatorData.offsetX, posY + hudIndicatorData.offsetY)
-        if hudIndicatorData.visualOnly then
-            isIndicatorVisible = true
+        if hudIndicatorId == self.indicators.preheat.name and not spec.isDieselVehicle then
+            isIndicatorVisible = false
         elseif hudIndicatorId == self.indicators.coolant.name and spec.isElectricVehicle then
             isIndicatorVisible = false
-        else
+        elseif hudIndicatorId ~= self.indicators.preheat.name then
             isIndicatorVisible = hudIndicatorData.year < spec.year
         end
 
         icon:setVisible(isIndicatorVisible)
 
         local isAudibleIndicator = targetColor ~= colors.DEFAULT and targetColor ~= colors.COOL
-        local shouldActivateIndicator = isIndicatorVisible and isAudibleIndicator
+        local shouldActivateIndicator = isIndicatorVisible and isAudibleIndicator and not isRoutineIgnitionIndicator
         self:syncIndicatorActivation(hudIndicatorId, shouldActivateIndicator, targetColor)
 
-        local displayColor = self:applyIndicatorBlink(hudIndicatorId, targetColor)
+        local blinkWhileActive = activeIndicatorData ~= nil and activeIndicatorData.blinkWhileActive == true
+        local displayColor = isRoutineIgnitionIndicator and targetColor or self:applyIndicatorBlink(hudIndicatorId, targetColor, blinkWhileActive)
         icon:setColor(unpack(displayColor))
         icon:render()
     end
@@ -2333,7 +2349,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     ), {0.9, 1.0, 0.9, 1}, 0.95)
 
     addLine(batteryLines, string.format(
-        "Alternator: %.1fA (raw: %.1fA | k %.2f) - Loads: %.1fA (base: %.1fA | lights: %.1fA | cabFan: %.1fA | winHeat: %.1fA | pulse: %.1fA | crank: %.1fA)",
+        "Alternator: %.1fA (raw: %.1fA | k %.2f) - Loads: %.1fA (base: %.1fA | lights: %.1fA | cabFan: %.1fA | winHeat: %.1fA | glowProxy: %.1fA | pulse: %.1fA | crank: %.1fA)",
         iAlt,
         batteryDbg.iAltRaw or iAlt,
         batteryDbg.altFactor or 0,
@@ -2342,8 +2358,58 @@ function ADS_Hud:drawActiveVehicleHUD()
         batteryDbg.lightsLoadA or 0,
         batteryDbg.cabFanA or 0,
         batteryDbg.winterHeaterA or 0,
+        batteryDbg.preheatLoadA or 0,
         batteryDbg.peakPulseA or 0,
         batteryDbg.crankingLoadA or 0
+    ), {0.85, 0.95, 1.0, 1}, 0.95)
+
+    local preheatState = tonumber(getDebugStateValue("preheatState", spec.preheatState)) or ADS_Preheat.STATE.IDLE
+    local preheatStateName = tostring(getDebugStateValue("preheatStateName", ADS_Preheat.getStateName(preheatState)))
+    local preheatIsDiesel = getDebugStateValue("preheatIsDiesel", ADS_Preheat.isDieselVehicle(vehicle)) == true
+    local preheatEngineTemperatureC = tonumber(getDebugStateValue("preheatEngineTemperatureC", ADS_Preheat.getEngineTemperatureC(vehicle))) or 0
+    local preheatLampTestActive = getDebugStateValue("preheatLampTestActive", spec.preheatLampTestActive == true) == true
+    local preheatLampTestRemainingMs = tonumber(getDebugStateValue("preheatLampTestRemainingMs", spec.preheatLampTestRemainingMs)) or 0
+    local preheatRemainingMs = tonumber(getDebugStateValue("preheatRemainingMs", spec.preheatRemainingMs)) or 0
+    local preheatRequiredMs = tonumber(getDebugStateValue("preheatRequiredMs", spec.preheatRequiredMs)) or 0
+    local preheatWasRequired = getDebugStateValue("preheatWasRequired", spec.preheatWasRequired == true) == true
+    local preheatAutomaticCrank = getDebugStateValue("preheatAutomaticCrank", spec.preheatAutomaticCrank == true) == true
+    local preheatAutomaticCrankElapsedMs = tonumber(getDebugStateValue("preheatAutomaticCrankElapsedMs", spec.preheatAutomaticCrankElapsedMs)) or 0
+    local preheatGlowPlugFailureSeverity = tonumber(getDebugStateValue("preheatGlowPlugFailureSeverity", ADS_Preheat.getGlowPlugFailureSeverity(vehicle))) or 0
+    local preheatColdStartFaultSeverity = tonumber(getDebugStateValue("preheatColdStartFaultSeverity", spec.preheatColdStartFaultSeverity)) or 0
+    local glowHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER or nil
+    local localGlowHardStartStatus = glowHardStartEffect ~= nil
+        and glowHardStartEffect.extraData ~= nil
+        and glowHardStartEffect.extraData.status
+        or "NONE"
+    local preheatGlowHardStartStatus = tostring(getDebugStateValue("preheatGlowHardStartStatus", localGlowHardStartStatus))
+    local localGlowHardStartBlocked = glowHardStartEffect ~= nil
+        and glowHardStartEffect.extraData ~= nil
+        and glowHardStartEffect.extraData.blockStart == true
+        and spec.preheatWasRequired == true
+    local preheatGlowHardStartBlocked = getDebugStateValue("preheatGlowHardStartBlocked", localGlowHardStartBlocked) == true
+
+    addLine(batteryLines, string.format(
+        "Preheat: %s (%d) | diesel: %s | engine: %.1fC | required: %.1fs | remaining: %.1fs | requested cold: %s",
+        preheatStateName,
+        preheatState,
+        tostring(preheatIsDiesel),
+        preheatEngineTemperatureC,
+        preheatRequiredMs / 1000,
+        preheatRemainingMs / 1000,
+        tostring(preheatWasRequired)
+    ), {0.9, 1.0, 0.9, 1}, 0.95)
+
+    addLine(batteryLines, string.format(
+        "Preheat control: lamp test %s (%.1fs) | auto crank %s (%.1f/%.1fs) | glow fault %d | cold fault %d | glow starter %s | blocked %s",
+        tostring(preheatLampTestActive),
+        preheatLampTestRemainingMs / 1000,
+        tostring(preheatAutomaticCrank),
+        preheatAutomaticCrankElapsedMs / 1000,
+        ADS_Config.PREHEAT.MAX_AUTOMATIC_CRANK_MS / 1000,
+        preheatGlowPlugFailureSeverity,
+        preheatColdStartFaultSeverity,
+        preheatGlowHardStartStatus,
+        tostring(preheatGlowHardStartBlocked)
     ), {0.85, 0.95, 1.0, 1}, 0.95)
 
     if (batteryDbg.externalConnected or 0) > 0 then

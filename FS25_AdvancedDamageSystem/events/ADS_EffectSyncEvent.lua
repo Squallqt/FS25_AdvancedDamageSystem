@@ -65,11 +65,12 @@ function ADS_EffectSyncEvent:run(connection)
             g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_engine_stalled_message"), 5000)
         end
 
-    elseif self.effectId == "ENGINE_HARD_START_MODIFIER" then
+    elseif self.effectId == "ENGINE_HARD_START_MODIFIER" or self.effectId == "GLOW_PLUG_HARD_START_MODIFIER" then
         if effect ~= nil then
             effect.extraData = effect.extraData or {}
             effect.extraData.status = self.status
             effect.extraData.timer = self.timer
+            effect.extraData.automaticCrank = self.extraInt == 1
         end
 
         if isFromClient and g_server ~= nil then
@@ -80,6 +81,7 @@ function ADS_EffectSyncEvent:run(connection)
         if effect ~= nil then
             effect.extraData = effect.extraData or {}
             effect.extraData.status = self.status
+            effect.extraData.automaticCrank = self.extraInt == 1
         end
 
         if isFromClient and g_server ~= nil then
@@ -165,7 +167,7 @@ end
 function ADS_EffectSyncEvent.send(vehicle, effectId, status, timer, extraInt, extraFloat)
     if g_server ~= nil then
         g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat), nil, nil, vehicle)
-    elseif g_client ~= nil and (effectId == "ENGINE_HARD_START_MODIFIER" or effectId == "ENGINE_FAILURE") then
+    elseif g_client ~= nil and (effectId == "ENGINE_HARD_START_MODIFIER" or effectId == "GLOW_PLUG_HARD_START_MODIFIER" or effectId == "ENGINE_FAILURE") then
         g_client:getServerConnection():sendEvent(ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat))
     end
 end

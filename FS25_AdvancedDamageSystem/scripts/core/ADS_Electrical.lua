@@ -214,13 +214,17 @@ local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
         crankingA = ADS_Config.ELECTRICAL.BATTERY_CRANK_CURRENT_A * (0.8 + math.random() * 0.4)
     end
 
+    local preheatA = ADS_Preheat.isHeating(vehicle)
+        and (C.GLOW_CIRCUIT_PROXY_LOAD_A or 0)
+        or 0
+
     -- pulse
     local isPeakPulse = math.random() > 0.95
     local nominalPulse = isPeakPulse and (20 + spec.extraCurrentPeak) or (2 + spec.extraCurrentPeak)
     local pulseA = isMotorStarted and (nominalPulse * math.random()) or 0
 
     -- total
-    local iLoads = baseLoadA + lightsLoadA + cabFanA + winterHeaterA + crankingA + pulseA
+    local iLoads = baseLoadA + lightsLoadA + cabFanA + winterHeaterA + crankingA + preheatA + pulseA
 
     if ADS_Config.DEBUG then
         local dbg = spec.debugData.battery
@@ -231,6 +235,7 @@ local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
         dbg.winterHeaterA = winterHeaterA
         dbg.peakPulseA = pulseA
         dbg.crankingLoadA = crankingA
+        dbg.preheatLoadA = preheatA
     end
 
     spec.iLoads = iLoads
@@ -434,6 +439,18 @@ function ADS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engine
     end
 end
 
+function ADS_Electrical.getEnvironmentTemperatureC()
+    local defaultTemperature = ADS_Config.ELECTRICAL.AMBIENT_DEFAULT_C or 15
+    local weather = g_currentMission ~= nil
+        and g_currentMission.environment ~= nil
+        and g_currentMission.environment.weather ~= nil
+        and g_currentMission.environment.weather.forecast ~= nil
+        and g_currentMission.environment.weather.forecast:getCurrentWeather()
+        or nil
+
+    return sanitizeNumber(weather ~= nil and weather.temperature or nil, defaultTemperature, -80, 80)
+end
+
 local function buildBatteryContext(vehicle, dtS)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil then
@@ -442,14 +459,7 @@ local function buildBatteryContext(vehicle, dtS)
 
     local isMotorStarted = vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted() or false
 
-    local environmentTemp = 15
-    if g_currentMission ~= nil
-        and g_currentMission.environment ~= nil
-        and g_currentMission.environment.weather ~= nil
-        and g_currentMission.environment.weather.forecast ~= nil then
-        local weather = g_currentMission.environment.weather.forecast:getCurrentWeather()
-        environmentTemp = sanitizeNumber(weather ~= nil and weather.temperature or nil, 15, -80, 80)
-    end
+    local environmentTemp = ADS_Electrical.getEnvironmentTemperatureC()
 
     spec.batteryTempC = sanitizeNumber(spec.batteryTempC, environmentTemp, -80, 85)
     local capF, rintF = getBatteryTempFactors(spec.batteryTempC)
@@ -1003,12 +1013,19 @@ function ADS_Electrical:syncDeadBatteryEffect()
                 self:addBreakdown(breakdownId)
                 if spec.isCranking ~= nil and spec.isCranking then
                     local engineHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.ENGINE_HARD_START_MODIFIER or nil
+                    local glowPlugHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER or nil
                     local engineFailedEffect = spec.activeEffects ~= nil and spec.activeEffects.ENGINE_FAILURE or nil
                     if engineHardStartEffect ~= nil and engineHardStartEffect.extraData ~= nil and engineHardStartEffect.extraData.status ~= nil then
                         engineHardStartEffect.extraData.status = "IDLE"
+                        engineHardStartEffect.extraData.automaticCrank = false
+                    end
+                    if glowPlugHardStartEffect ~= nil and glowPlugHardStartEffect.extraData ~= nil and glowPlugHardStartEffect.extraData.status ~= nil then
+                        glowPlugHardStartEffect.extraData.status = "IDLE"
+                        glowPlugHardStartEffect.extraData.automaticCrank = false
                     end
                     if engineFailedEffect ~= nil and engineFailedEffect.extraData ~= nil and engineFailedEffect.extraData.status ~= nil then
                         engineFailedEffect.extraData.status = "IDLE"
+                        engineFailedEffect.extraData.automaticCrank = false
                     end
                 end
             end
@@ -1031,7 +1048,7 @@ function ADS_Electrical:syncVoltageSagEffect(dt)
     local isCranking = spec.isCranking ~= nil and spec.isCranking
     local breakdownId = 'VOLTAGE_SAG'
     local systemVoltageV = sanitizeNumber(spec.rawSystemVoltageV or spec.systemVoltageV, 12.7, 0, 30)
-    local isVoltageSagging = (motorState == 1 and systemVoltageV < 12.0 and not isCranking) or (motorState == 4 and systemVoltageV < 13.0)
+    local isVoltageSagging = (motorState == MotorState.OFF and systemVoltageV < 12.0 and not isCranking) or (motorState == MotorState.ON and systemVoltageV < 13.0)
     local clearToRemove = not isCranking
 
     if isVoltageSagging then

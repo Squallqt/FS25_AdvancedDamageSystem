@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Behúzott rögzítőfék!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Hajtáslánc-terhelés"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Tapadós talajon kanyarodik bekapcsolt differenciálzárral. Kanyarban a belső és külső kerekek eltérő utat tesznek meg, de a differenciálzár azonos fordulatszámra kényszeríti őket: a hajtáslánc terhelés alá kerül, és fokozódik a váltó kopása. Oldja ki a zárat, mielőtt kanyarodna."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Izzítógyertyák"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Az izzítógyertyák kezdeti elhasználódása. A hidegindítás lassabbá válik, a melegindítás változatlan marad."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Több izzítógyertya gyenge vagy működésképtelen. A hidegindítás nehéz, és a motor bemelegedésig egyenetlenül járhat."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Súlyos izzítógyertya-hiba. A hidegindítás nagyon megbízhatatlan, és a motor a bemelegedés alatt egyenetlenül jár."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Az előizzító rendszer teljes meghibásodása. Ha előizzítás szükséges, a motor nem éri el az indítási hőmérsékletet és nem indul el."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Az izzítógyertyák ellenállása kezd eltérni a hengerek között."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Egy vagy több izzítógyertya rendellenes ellenállást vagy áramfelvételt mutat."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Több izzítógyertya áramköre szakadt, vagy már nem éri el az üzemi hőmérsékletet."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Az előizzító áramkör nem képes biztosítani a hidegindításhoz szükséges hőt."/>
+        <text name="ads_preheat_ignition_message" text="Gyújtás bekapcsolva: előizzítás folyamatban"/>
+        <text name="ads_preheat_system_failure_message" text="Előizzító rendszer hiba: hidegindítás nem lehetséges"/>
+        <text name="ads_preheat_start_failed_message" text="A motor nem indult el: újabb próbálkozás előtt kapcsolja ki a gyújtást"/>
+        <text name="ads_tutorial_preheat_title" text="Dízel előizzítás"/>
+        <text name="ads_tutorial_preheat_message" text="Hideg dízelmotornál az indításvezérlő egyszeri megnyomása bekapcsolja a gyújtást és automatikusan elindítja az izzítási ciklust. A műszerfal lámpái elvégzik az öntesztet, majd az előizzítás jelzőfénye addig világít, amíg a motor készen nem áll. Ne ismételje meg a parancsot: az önindító a jelzőfény kialvásakor automatikusan bekapcsol."/>
     </texts>
 </l10n>

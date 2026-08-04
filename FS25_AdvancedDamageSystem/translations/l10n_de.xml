@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Feststellbremse angezogen!"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Antriebsstrangbelastung"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Sie lenken auf griffigem Boden mit eingelegter Differentialsperre. In einer Kurve legen die kurveninneren und kurvenäußeren Räder unterschiedliche Strecken zurück, doch die Differentialsperre zwingt sie zur gleichen Drehzahl: Der Antriebsstrang wird belastet und der Getriebeverschleiß steigt. Lösen Sie die Sperre vor Kurvenfahrten."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Glühkerzen"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Beginnende Alterung der Glühkerzen. Kaltstarts dauern länger, Warmstarts bleiben unbeeinträchtigt."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Mehrere Glühkerzen sind geschwächt oder ausgefallen. Kaltstarts sind schwierig und der Motor kann bis zum Warmlaufen unruhig laufen."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Schwerer Glühkerzenausfall. Kaltstarts sind äußerst unzuverlässig und der Motor läuft während der Warmlaufphase unruhig."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Vollständiger Ausfall des Vorglühsystems. Wenn Vorglühen erforderlich ist, erreicht der Motor die Starttemperatur nicht und startet nicht."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="Die Widerstandswerte der Glühkerzen beginnen sich zwischen den Zylindern zu unterscheiden."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Eine oder mehrere Glühkerzen zeigen einen ungewöhnlichen Widerstand oder eine ungewöhnliche Stromaufnahme."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Mehrere Glühkerzen haben eine Stromkreisunterbrechung oder erreichen ihre Betriebstemperatur nicht mehr."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Der Glühstromkreis kann die für einen Kaltstart erforderliche Wärme nicht liefern."/>
+        <text name="ads_preheat_ignition_message" text="Zündung ein: Vorglühen läuft"/>
+        <text name="ads_preheat_system_failure_message" text="Vorglühsystem ausgefallen: Kaltstart nicht möglich"/>
+        <text name="ads_preheat_start_failed_message" text="Motor nicht gestartet: Zündung vor erneutem Versuch ausschalten"/>
+        <text name="ads_tutorial_preheat_title" text="Diesel-Vorglühen"/>
+        <text name="ads_tutorial_preheat_message" text="Bei kaltem Dieselmotor schaltet ein Druck auf die Starttaste die Zündung ein und startet automatisch den Vorglühzyklus. Die Kontrollleuchten führen ihren Selbsttest durch; danach bleibt die Vorglühleuchte an, bis der Motor startbereit ist. Die Taste nicht erneut drücken: Der Anlasser wird automatisch betätigt, sobald die Leuchte erlischt."/>
     </texts>
 </l10n>

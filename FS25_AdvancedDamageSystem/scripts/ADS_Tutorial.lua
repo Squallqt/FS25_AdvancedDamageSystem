@@ -406,13 +406,27 @@ function ADS_Tutorial:update(dt)
             -- ==========================================================
             -- ELECTRICAL
             -- ========================================================== 
+            --- Diesel preheating
+            elseif not messagedData.PREHEAT
+                and electricalSystemEnabled
+                and ADS_Preheat.isHeating(vehicle) then
+                ADS_Hud.showNotification(
+                    g_i18n:getText("ads_tutorial_preheat_message"),
+                    0,
+                    g_i18n:getText("ads_tutorial_preheat_title"),
+                    true
+                )
+                messagedData.PREHEAT = true
+                self.messageDowntime = downtimeAfterMessage
+
             --- cranking`
             elseif not messagedData.CRANKING
                 and electricalSystemEnabled
                 and not spec.isElectricVehicle
                 and spec.systems.electrical.crankingTimer ~= nil
                 and spec.systems.electrical.crankingTimer >= 9000
-                and not vehicle:hasEffect("ENGINE_HARD_START_MODIFIER") then
+                and not vehicle:hasEffect("ENGINE_HARD_START_MODIFIER")
+                and not vehicle:hasEffect("GLOW_PLUG_HARD_START_MODIFIER") then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_cranking_message"),
                     0,
@@ -441,7 +455,9 @@ function ADS_Tutorial:update(dt)
             --- hard start
             elseif not messagedData.HARD_START
                 and (engineSystemEnabled or electricalSystemEnabled or fuelSystemEnabled)
-                and vehicle:hasEffect("ENGINE_HARD_START_MODIFIER")
+                and (vehicle:hasEffect("ENGINE_HARD_START_MODIFIER")
+                    or (vehicle:hasEffect("GLOW_PLUG_HARD_START_MODIFIER")
+                        and ADS_Preheat.shouldApplyGlowPlugHardStart(vehicle)))
                 and not isMotorStarted then
                 ADS_Hud.showNotification(
                     string.format(g_i18n:getText("ads_tutorial_hard_start_message"), vehicle:getFullName()),

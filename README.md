@@ -38,6 +38,7 @@ If you do not want to read the full guide at the bottom of this page but still w
 - **Fully Reworked Workshop Menu and Logic:** The workshop now supports inspection, repair, maintenance, and overhaul. Each procedure has configurable options and takes time to complete, so there is no one-click repair.
 - **Realistic Thermal Simulation:** Engines need proper warm-up, and they can overheat under heavy load in hot conditions. Ignoring temperature can lead to serious consequences.
 - **Realistic Battery and Alternator Simulation:** The battery can now discharge, and the alternator can fail, leading to difficult engine starts. However, you can always jump-start a vehicle from another machine.
+- **Temperature-Based Diesel Preheating:** One start command runs the lamp check and temperature-based glow cycle before automatic cranking. Glow-plug failures affect cold starting and warm-up.
 - **Vehicle-Specific Characteristics:** Vehicles differ by brand and production year in Reliability (affecting wear rate, breakdown probability, and service intervals) and Maintainability (affecting service cost and service time). Premium brands are generally more reliable than budget alternatives, while older machines are often mechanically simpler and therefore more maintainable.
 - **Pre-Operation Inspection:** Before heading to the field, vehicles need to be inspected and serviced at the start of each shift: greasing components, blowing out the radiator and air intakes, and carrying out other essential routine procedures.
 
@@ -252,6 +253,11 @@ In ADS, your vehicles can suffer real breakdowns. Some failures are minor and on
 > * *Applicable to:* All vehicles.
 > * *Symptoms:* Reduced effective battery capacity, weak electrical reserve under load, unstable cranking, and progressively harder engine starts.
 > * *Critical Effect:* **Battery capacity is almost gone.** Cranking performance becomes too weak for reliable starting.
+>
+> #### Glow Plug Failure
+> * *Applicable to:* Diesel vehicles.
+> * *Symptoms:* Progressively slower and less reliable cold starts, abnormal glow-plug resistance or current draw, and uneven idle during cold warm-up. Warm starts can remain normal in the early stage.
+> * *Critical Effect:* **Complete glow-system failure.** When the engine temperature requires preheating, the engine cannot start until the fault is repaired.
 >
 > #### Alternator Regulator Failure
 > * *Applicable to:* All vehicles.

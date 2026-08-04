@@ -758,5 +758,20 @@
         <text name="ads_drivetrain_warning_parkbrake" text="Frein de parking serré !"/>
         <text name="ads_tutorial_drivetrain_windup_title" text="Contrainte de transmission"/>
         <text name="ads_tutorial_drivetrain_windup_message" text="Vous braquez sur un sol adhérent avec le blocage de différentiel engagé. Dans une courbe, les roues intérieures et extérieures parcourent des distances différentes, mais le blocage de différentiel les force à tourner à la même vitesse : la transmission se met sous contrainte et son usure s'accélère. Libérez le blocage avant de braquer."/>
+        <!-- Diesel preheating -->
+        <text name="ads_breakdowns_part_glow_plugs" text="Bougies de préchauffage"/>
+        <text name="ads_breakdowns_glow_plug_failure_stage1_description" text="Début de dégradation des bougies de préchauffage. Les démarrages à froid deviennent plus lents, tandis que les démarrages à chaud restent normaux."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage2_description" text="Plusieurs bougies de préchauffage sont faibles ou hors service. Les démarrages à froid sont difficiles et le ralenti peut être irrégulier jusqu'à la montée en température."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage3_description" text="Défaillance sévère des bougies de préchauffage. Le démarrage à froid devient très incertain et le fonctionnement irrégulier persiste pendant la chauffe."/>
+        <text name="ads_breakdowns_glow_plug_failure_stage4_description" text="Panne complète du système de préchauffage. Lorsque le préchauffage est nécessaire, le moteur ne peut pas atteindre la température de démarrage et ne démarre pas."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage1" text="La résistance des bougies de préchauffage commence à différer d'un cylindre à l'autre."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage2" text="Une ou plusieurs bougies présentent une résistance ou une consommation de courant anormale."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage3" text="Plusieurs bougies sont en circuit ouvert ou n'atteignent plus leur température de fonctionnement."/>
+        <text name="ads_inspection_hint_glow_plug_failure_stage4" text="Le circuit de préchauffage ne peut plus fournir la chaleur nécessaire à un démarrage à froid."/>
+        <text name="ads_preheat_ignition_message" text="Contact mis : préchauffage en cours"/>
+        <text name="ads_preheat_system_failure_message" text="Panne du système de préchauffage : démarrage à froid impossible"/>
+        <text name="ads_preheat_start_failed_message" text="Le moteur n'a pas démarré : coupez le contact avant de réessayer"/>
+        <text name="ads_tutorial_preheat_title" text="Préchauffage diesel"/>
+        <text name="ads_tutorial_preheat_message" text="Sur un moteur diesel froid, une impulsion sur la commande de démarrage met le contact et lance automatiquement le cycle de préchauffage. Les voyants du tableau de bord effectuent leur contrôle, puis le voyant de préchauffage reste allumé jusqu'à ce que le moteur soit prêt. Ne répétez pas la commande : le démarreur s'engage automatiquement lorsque le voyant s'éteint."/>
     </texts>
 </l10n>

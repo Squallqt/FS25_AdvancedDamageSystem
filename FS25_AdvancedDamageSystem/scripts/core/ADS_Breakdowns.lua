@@ -34,7 +34,8 @@ ADS_Breakdowns.DASHBOARD = {
     BATTERY = "battery",
     COOLANT = "coolant",
     SERVICE = "service",
-    OIL = "oil"
+    OIL = "oil",
+    PREHEAT = "preheat"
 }
 
 ADS_Breakdowns.COLORS = {
@@ -46,6 +47,18 @@ ADS_Breakdowns.COLORS = {
 
 local color = ADS_Breakdowns.COLORS
 local db = ADS_Breakdowns.DASHBOARD
+
+local glowPlugFailureIndicator = {
+    id = db.PREHEAT,
+    color = color.WARNING,
+    switchOn = function(vehicle)
+        return vehicle ~= nil and vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted()
+    end,
+    switchOff = function(vehicle)
+        return vehicle == nil or vehicle.getIsMotorStarted == nil or not vehicle:getIsMotorStarted()
+    end,
+    blinkWhileActive = true
+}
 
 ADS_Breakdowns.COLOR_PRIORITY = {
     [color.CRITICAL] = 3,
@@ -115,6 +128,7 @@ ADS_Breakdowns.PARTS = {
     CONSUMABLES = "ads_breakdowns_part_consumables",
     ENGINE = "ads_breakdowns_part_engine",
     BATTERY = "ads_breakdowns_part_battery",
+    GLOW_PLUGS = "ads_breakdowns_part_glow_plugs",
     ECU = "ads_breakdowns_part_ecu",
     WIRING = "ads_breakdowns_part_wiring",
     ALTERNATOR_REGULATOR = "ads_breakdowns_part_alternator_regulator",
@@ -150,6 +164,7 @@ local breakdownPriceMultipliers = {
     ECU_MALFUNCTION = 0.60,
     CORRODED_WIRING = 0.45,
     BATTERY_SULFATION = 0.50,
+    GLOW_PLUG_FAILURE = 0.45,
     ALTERNATOR_REGULATOR_FAILURE = 0.75,
     TURBOCHARGER_MALFUNCTION = 1.00, -- 1% price
     OIL_PUMP_MALFUNCTION = 1.50,
@@ -181,6 +196,7 @@ local breakdownProgressMultipliers = {
     ECU_MALFUNCTION = 1.00, -- 3.5 hours
     CORRODED_WIRING = 0.9,
     BATTERY_SULFATION = 1.4,
+    GLOW_PLUG_FAILURE = 1.0,
     ALTERNATOR_REGULATOR_FAILURE = 1.1,
     TURBOCHARGER_MALFUNCTION = 1.1,
     OIL_PUMP_MALFUNCTION = 1.3,
@@ -933,6 +949,91 @@ ADS_Breakdowns.BreakdownRegistry = {
                 },
                 indicators = {
                     { id = db.BATTERY, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
+    GLOW_PLUG_FAILURE = {
+        isSelectable = true,
+        system = systems.ELECTRICAL,
+        part = parts.GLOW_PLUGS,
+        isApplicable = function(vehicle)
+            return ADS_Preheat.isDieselVehicle(vehicle)
+        end,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.ELECTRICAL, {"crf", "idfg"}, {"sf"})
+        end,
+        stages = {
+            {
+                severity = "ads_breakdowns_severity_minor",
+                description = "ads_breakdowns_glow_plug_failure_stage1_description",
+                detectionChance = 0.5,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.GLOW_PLUG_FAILURE,
+                repairPrice = 1.0 * breakdownPriceMultipliers.GLOW_PLUG_FAILURE,
+                effects = {
+                    { id = "GLOW_PLUG_FAILURE", value = 1, aggregation = "max" },
+                    { id = "GLOW_PLUG_HARD_START_MODIFIER", value = 2, aggregation = "max", extraData = { timer = 0, status = "IDLE" } }
+                },
+                inspection = {
+                    { additional = "ads_inspection_hint_glow_plug_failure_stage1" }
+                },
+                indicators = {
+                    glowPlugFailureIndicator
+                }
+            },
+            {
+                severity = "ads_breakdowns_severity_moderate",
+                description = "ads_breakdowns_glow_plug_failure_stage2_description",
+                detectionChance = 0.75,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.GLOW_PLUG_FAILURE,
+                repairPrice = 2.0 * breakdownPriceMultipliers.GLOW_PLUG_FAILURE,
+                effects = {
+                    { id = "GLOW_PLUG_FAILURE", value = 2, aggregation = "max" },
+                    { id = "GLOW_PLUG_HARD_START_MODIFIER", value = 4, aggregation = "max", extraData = { timer = 0, status = "IDLE" } },
+                    { id = "GLOW_PLUG_COLD_IDLE_EFFECT", value = 0.05, aggregation = "max", extraData = { timer = 0, period = 1800 } }
+                },
+                inspection = {
+                    { additional = "ads_inspection_hint_glow_plug_failure_stage2" }
+                },
+                indicators = {
+                    glowPlugFailureIndicator
+                }
+            },
+            {
+                severity = "ads_breakdowns_severity_major",
+                description = "ads_breakdowns_glow_plug_failure_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.GLOW_PLUG_FAILURE,
+                repairPrice = 4.0 * breakdownPriceMultipliers.GLOW_PLUG_FAILURE,
+                effects = {
+                    { id = "GLOW_PLUG_FAILURE", value = 3, aggregation = "max" },
+                    { id = "GLOW_PLUG_HARD_START_MODIFIER", value = 8, aggregation = "max", extraData = { timer = 0, status = "IDLE" } },
+                    { id = "GLOW_PLUG_COLD_IDLE_EFFECT", value = 0.10, aggregation = "max", extraData = { timer = 0, period = 1500 } }
+                },
+                inspection = {
+                    { additional = "ads_inspection_hint_glow_plug_failure_stage3" }
+                },
+                indicators = {
+                    glowPlugFailureIndicator
+                }
+            },
+            {
+                severity = "ads_breakdowns_severity_critical",
+                description = "ads_breakdowns_glow_plug_failure_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.GLOW_PLUG_FAILURE,
+                effects = {
+                    { id = "GLOW_PLUG_FAILURE", value = 4, aggregation = "max" },
+                    { id = "GLOW_PLUG_HARD_START_MODIFIER", value = 8, aggregation = "max", extraData = { timer = 0, status = "IDLE", blockStart = true } },
+                    { id = "GLOW_PLUG_COLD_IDLE_EFFECT", value = 0.10, aggregation = "max", extraData = { timer = 0, period = 1500 } }
+                },
+                inspection = {
+                    { additional = "ads_inspection_hint_glow_plug_failure_stage4" }
+                },
+                indicators = {
+                    glowPlugFailureIndicator
                 }
             }
         }
@@ -2867,7 +2968,18 @@ local function getActiveStarterCrankingEffect(spec)
         return engineHardStart
     end
 
+    local glowPlugHardStart = spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER
+    if glowPlugHardStart ~= nil and glowPlugHardStart.extraData ~= nil and glowPlugHardStart.extraData.status == "CRANKING" then
+        return glowPlugHardStart
+    end
+
     return nil
+end
+
+local function getIsStarterRequestActive(vehicle, effect)
+    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    return spec ~= nil and (spec.startButtonHeld == true
+        or (effect ~= nil and effect.extraData ~= nil and effect.extraData.automaticCrank == true))
 end
 
 local function syncStarterCrankingSample(vehicle)
@@ -2882,7 +2994,8 @@ local function syncStarterCrankingSample(vehicle)
     end
 
     local activeEffect = getActiveStarterCrankingEffect(spec)
-    local shouldPlay = activeEffect ~= nil and spec.startButtonHeld == true and not vehicle:getIsMotorStarted()
+    local startRequestActive = getIsStarterRequestActive(vehicle, activeEffect)
+    local shouldPlay = activeEffect ~= nil and startRequestActive and not vehicle:getIsMotorStarted()
 
     if shouldPlay then
         local pitchOffset = getStarterCrankingPitchOffset(activeEffect.extraData.preCrankVoltageV)
@@ -2941,9 +3054,11 @@ ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
                 v:stopMotor()
             end
             if currentEffect.extraData.status ~= nil and currentEffect.extraData.status == 'CRANKING' then
-                if not spec.startButtonHeld then
+                local startRequestActive = getIsStarterRequestActive(v, currentEffect)
+                if not startRequestActive then
                     currentEffect.extraData.status = 'IDLE'
                     currentEffect.extraData.preCrankVoltageV = nil
+                    currentEffect.extraData.automaticCrank = false
                     ADS_EffectSyncEvent.send(v, effectName, "IDLE", 0, 0, 0)
                 end
             end
@@ -4368,6 +4483,27 @@ ADS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_STUCK_EFFECT = {
 
 -- ==========================================================
 -- IDLE_HUNTING_EFFECT
+local function updateIdleHuntingMotor(motor, effectData, dt, rpmBackup, shouldHunt, allowRestore, resetWhenInactive)
+    if shouldHunt then
+        if rpmBackup == nil or rpmBackup == 0 then
+            rpmBackup = motor.minRpm
+        end
+        effectData.extraData.timer = (effectData.extraData.timer or 0) + dt
+        motor.minRpm = rpmBackup * (1 + effectData.value * math.sin(2 * math.pi * effectData.extraData.timer / effectData.extraData.period))
+    else
+        local restored = false
+        if allowRestore and rpmBackup ~= nil and rpmBackup ~= 0 and rpmBackup ~= motor.minRpm then
+            motor.minRpm = rpmBackup
+            restored = true
+        end
+        if resetWhenInactive or restored then
+            effectData.extraData.timer = 0
+        end
+    end
+
+    return rpmBackup
+end
+
 ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
     getEffectName = function()
         return "IDLE_HUNTING_EFFECT" 
@@ -4380,23 +4516,87 @@ ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
         effectData.extraData.rpmBackup = motor.minRpm
 
         local activeFunc = function(v, dt)
-            if v:getIsMotorStarted() and v:getLastSpeed() < 0.01 then
-                if effectData.extraData.rpmBackup == 0 then
-                    effectData.extraData.rpmBackup = motor.minRpm
-                end
-                effectData.extraData.timer = effectData.extraData.timer + dt
-                motor.minRpm = effectData.extraData.rpmBackup * (1 + effectData.value * math.sin(2 * math.pi * effectData.extraData.timer / effectData.extraData.period))
-            else
-                if effectData.extraData.rpmBackup ~= 0 and  effectData.extraData.rpmBackup ~= motor.minRpm then
-                    motor.minRpm = effectData.extraData.rpmBackup
-                    effectData.extraData.timer = 0
-                end
-            end
+            effectData.extraData.rpmBackup = updateIdleHuntingMotor(
+                motor,
+                effectData,
+                dt,
+                effectData.extraData.rpmBackup,
+                v:getIsMotorStarted() and v:getLastSpeed() < 0.01,
+                true,
+                false
+            )
         end
         addFuncToActive(vehicle, effectName, activeFunc)
     end,
 
     remove = function(vehicle, handler)
+        removeFuncFromActive(vehicle, handler.getEffectName())
+    end
+}
+
+-- ==========================================================
+-- GLOW_PLUG_COLD_IDLE_EFFECT
+ADS_Breakdowns.EffectApplicators.GLOW_PLUG_COLD_IDLE_EFFECT = {
+    getEffectName = function()
+        return "GLOW_PLUG_COLD_IDLE_EFFECT"
+    end,
+
+    apply = function(vehicle, effectData, handler)
+        local effectName = handler.getEffectName()
+        local motor = vehicle:getMotor()
+        local spec = vehicle.spec_AdvancedDamageSystem
+        if spec.glowPlugColdIdleRpmBackup == nil then
+            spec.glowPlugColdIdleRpmBackup = motor.minRpm
+        end
+        local activeFunc = function(v, dt)
+            local spec = v.spec_AdvancedDamageSystem
+            local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
+            if effect == nil or effect.extraData == nil then
+                return
+            end
+
+            local coldThreshold = ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
+            local engineTemperature = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, coldThreshold, -80, 160)
+            local otherIdleHuntingEffect = spec.activeEffects.IDLE_HUNTING_EFFECT
+            local otherIdleHuntingActive = otherIdleHuntingEffect ~= nil
+            local shouldHunt = spec.preheatColdStartFaultSeverity >= 2
+                and engineTemperature < coldThreshold
+                and v:getIsMotorStarted()
+                and v:getLastSpeed() < 0.01
+                and not otherIdleHuntingActive
+
+            if otherIdleHuntingActive and spec.glowPlugColdIdleRpmBackup ~= nil then
+                otherIdleHuntingEffect.extraData = otherIdleHuntingEffect.extraData or {}
+                otherIdleHuntingEffect.extraData.rpmBackup = spec.glowPlugColdIdleRpmBackup
+            end
+
+            spec.glowPlugColdIdleRpmBackup = updateIdleHuntingMotor(
+                motor,
+                effect,
+                dt,
+                spec.glowPlugColdIdleRpmBackup,
+                shouldHunt,
+                not otherIdleHuntingActive,
+                true
+            )
+
+        end
+
+        addFuncToActive(vehicle, effectName, activeFunc)
+    end,
+
+    remove = function(vehicle, handler)
+        local spec = vehicle.spec_AdvancedDamageSystem
+        local motor = vehicle:getMotor()
+        if spec ~= nil and spec.glowPlugColdIdleRpmBackup ~= nil then
+            local otherIdleHuntingEffect = spec.activeEffects.IDLE_HUNTING_EFFECT
+            if otherIdleHuntingEffect ~= nil then
+                otherIdleHuntingEffect.extraData = otherIdleHuntingEffect.extraData or {}
+                otherIdleHuntingEffect.extraData.rpmBackup = spec.glowPlugColdIdleRpmBackup
+            end
+            motor.minRpm = spec.glowPlugColdIdleRpmBackup
+        end
+        spec.glowPlugColdIdleRpmBackup = nil
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
@@ -4880,94 +5080,112 @@ local function tryStartMotor(dt, value, engTemp, batV)
     return false
 end
 
+local function applyHardStartModifier(vehicle, effectName)
+    local activeFunc = function(v, dt)
+        local spec = v.spec_AdvancedDamageSystem
+        if spec == nil then return end
+        local effect = spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
+        if effect == nil or effect.extraData == nil then
+            return
+        end
+
+        local motorStartDelay = 1500
+        local startFadeMs = 0
+        local endFadeMs = -1500
+        local crankingPitchOffset = 0
+
+        if effect.extraData.status == "CRANKING" then
+            if effect.extraData.preCrankVoltageV == nil then
+                effect.extraData.preCrankVoltageV = spec.batteryTerminalVoltageV or spec.batteryOpenCircuitVoltageV or 12.2
+            end
+
+            crankingPitchOffset = getStarterCrankingPitchOffset(effect.extraData.preCrankVoltageV)
+        elseif effect.extraData.preCrankVoltageV ~= nil then
+            crankingPitchOffset = getStarterCrankingPitchOffset(effect.extraData.preCrankVoltageV)
+        end
+
+        effect.extraData.timer = math.max((effect.extraData.timer or 0) - dt, endFadeMs)
+
+        if v.isClient and effect.extraData.status == "PASSED" then
+            playStarterCrankingEndSample(spec, crankingPitchOffset)
+        end
+
+        if effect.extraData.timer <= startFadeMs and effect.extraData.timer >= endFadeMs then
+            local baseVolume = spec.samples.starterCrankingEnd.current.volume or 2.0
+            local t = math.clamp(math.abs(effect.extraData.timer / endFadeMs), 0, 1)
+            local easedT = t * t
+            local offset = math.max(-(baseVolume * easedT), -0.65)
+
+            if ADS_SoundManager.getIsSamplePlaying(spec.samples.starterCrankingEnd) then
+                ADS_SoundManager.setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
+            end
+        end
+
+        if effect.extraData.timer <= 0 and effect.extraData.status == "PASSED" then
+            v:startMotor(false, true)
+            effect.extraData.status = "IDLE"
+            effect.extraData.preCrankVoltageV = nil
+            effect.extraData.automaticCrank = false
+        end
+
+        local startRequestActive = getIsStarterRequestActive(v, effect)
+        if not v:getIsMotorStarted() and startRequestActive and effect.extraData.status == "CRANKING" then
+            local rawEngineTemp = spec.rawEngineTemperature or spec.engineTemperature or -99
+            if v.isServer
+                and effect.extraData.blockStart ~= true
+                and tryStartMotor(dt, effect.value, rawEngineTemp, effect.extraData.preCrankVoltageV) then
+                effect.extraData.timer = motorStartDelay
+                effect.extraData.status = "PASSED"
+                ADS_Preheat.onCrankPassed(v)
+                if v.isClient then
+                    playStarterCrankingEndSample(spec, crankingPitchOffset)
+                end
+                ADS_EffectSyncEvent.send(v, effectName, "PASSED", motorStartDelay, 0, 0)
+            end
+        elseif not startRequestActive and effect.extraData.status == "CRANKING" then
+            effect.extraData.status = "IDLE"
+            effect.extraData.preCrankVoltageV = nil
+            effect.extraData.automaticCrank = false
+        end
+
+        syncStarterCrankingSample(v)
+    end
+
+    addFuncToActive(vehicle, effectName, activeFunc)
+end
+
+local function removeHardStartModifier(vehicle, effectName)
+    local effect = vehicle.spec_AdvancedDamageSystem
+        and vehicle.spec_AdvancedDamageSystem.activeEffects
+        and vehicle.spec_AdvancedDamageSystem.activeEffects[effectName]
+        or nil
+    if effect ~= nil and effect.extraData ~= nil then
+        effect.extraData.status = "IDLE"
+        effect.extraData.timer = 0
+        effect.extraData.preCrankVoltageV = nil
+        effect.extraData.automaticCrank = false
+    end
+    syncStarterCrankingSample(vehicle)
+    removeFuncFromActive(vehicle, effectName)
+end
+
 ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
     getEffectName = function() return "ENGINE_HARD_START_MODIFIER" end,
     apply = function(vehicle, effectData, handler)
-        local effectName = handler.getEffectName()
-
-        local activeFunc = function(v, dt)
-            local spec = v.spec_AdvancedDamageSystem
-            if spec == nil then return end
-            local effect = spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
-            if effect == nil or effect.extraData == nil then
-                return
-            end
-            
-            local motorStartDelay = 1500
-            local startFadeMs = 0
-            local endFadeMs = -1500
-            local crankingPitchOffset = 0
-
-            if effect.extraData.status == 'CRANKING' then
-                if effect.extraData.preCrankVoltageV == nil then
-                    effect.extraData.preCrankVoltageV = spec.batteryTerminalVoltageV or spec.batteryOpenCircuitVoltageV or 12.2
-                end
-
-                crankingPitchOffset = getStarterCrankingPitchOffset(effect.extraData.preCrankVoltageV)
-            elseif effect.extraData.preCrankVoltageV ~= nil then
-                crankingPitchOffset = getStarterCrankingPitchOffset(effect.extraData.preCrankVoltageV)
-            end
-
-            effect.extraData.timer = math.max((effect.extraData.timer or 0) - dt, endFadeMs)
-
-            if v.isClient and effect.extraData.status == 'PASSED' then
-                playStarterCrankingEndSample(spec, crankingPitchOffset)
-            end
-
-            -- starterCrankingEnd fade
-            if effect.extraData.timer <= startFadeMs and effect.extraData.timer >= endFadeMs then
-                local baseVolume = spec.samples.starterCrankingEnd.current.volume or 2.0
-                local t = math.clamp(math.abs(effect.extraData.timer / endFadeMs), 0, 1)
-                local easedT = t * t
-                local offset = math.max(-(baseVolume * easedT), -0.65)
-
-                if ADS_SoundManager.getIsSamplePlaying(spec.samples.starterCrankingEnd) then
-                    ADS_SoundManager.setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
-                end
-            end
-
-            -- start motor after motorStartDelay
-            if effect.extraData.timer <= 0 and effect.extraData.status == 'PASSED' then
-                v:startMotor(false, true)
-                effect.extraData.status = 'IDLE'
-                effect.extraData.preCrankVoltageV = nil
-            end
-
-            if not v:getIsMotorStarted() and spec.startButtonHeld and effect.extraData.status == 'CRANKING' then
-                local rawEngineTemp = spec.rawEngineTemperature or spec.engineTemperature or -99
-                if v.isServer and tryStartMotor(dt, effect.value, rawEngineTemp, effect.extraData.preCrankVoltageV) then
-                    effect.extraData.timer = motorStartDelay
-                    effect.extraData.status = 'PASSED'
-                    if v.isClient then
-                        playStarterCrankingEndSample(spec, crankingPitchOffset)
-                    end
-                    ADS_EffectSyncEvent.send(vehicle, handler.getEffectName(), "PASSED", motorStartDelay, 0, 0)
-                end
-
-            elseif not spec.startButtonHeld and effect.extraData.status == 'CRANKING' then
-                if effect.extraData.status == 'CRANKING' then 
-                    effect.extraData.status = 'IDLE'
-                    effect.extraData.preCrankVoltageV = nil
-                end
-            end
-
-            syncStarterCrankingSample(v)
-        end
-        addFuncToActive(vehicle, effectName, activeFunc)
+        applyHardStartModifier(vehicle, handler.getEffectName())
     end,
     remove = function(vehicle, handler)
-        local effect = vehicle.spec_AdvancedDamageSystem
-            and vehicle.spec_AdvancedDamageSystem.activeEffects
-            and vehicle.spec_AdvancedDamageSystem.activeEffects.ENGINE_HARD_START_MODIFIER
-            or nil
-        if effect ~= nil and effect.extraData ~= nil then
-            local extra = effect.extraData
-            extra.status = "IDLE"
-            extra.timer = 0
-            extra.preCrankVoltageV = nil
-        end
-        syncStarterCrankingSample(vehicle)
-        removeFuncFromActive(vehicle, handler.getEffectName())
+        removeHardStartModifier(vehicle, handler.getEffectName())
+    end
+}
+
+ADS_Breakdowns.EffectApplicators.GLOW_PLUG_HARD_START_MODIFIER = {
+    getEffectName = function() return "GLOW_PLUG_HARD_START_MODIFIER" end,
+    apply = function(vehicle, effectData, handler)
+        applyHardStartModifier(vehicle, handler.getEffectName())
+    end,
+    remove = function(vehicle, handler)
+        removeHardStartModifier(vehicle, handler.getEffectName())
     end
 }
 
@@ -4995,6 +5213,13 @@ function ADS_Breakdowns.onStartButtonAction(self, actionName, inputValue, callba
     end
 
     if spec.startButtonDown then
+        local wasPreheatFailed = ADS_Preheat.isFailed(self)
+        ADS_Preheat.requestStart(self)
+
+        if wasPreheatFailed then
+            return
+        end
+
         local automaticMotorStartEnabled = g_currentMission ~= nil
             and g_currentMission.missionInfo ~= nil
             and g_currentMission.missionInfo.automaticMotorStartEnabled == true
@@ -5013,19 +5238,42 @@ function ADS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
     local spec = self.spec_AdvancedDamageSystem
     local engineFailure = spec and spec.activeEffects.ENGINE_FAILURE
     local engineHardStart = spec and spec.activeEffects.ENGINE_HARD_START_MODIFIER
+    local glowPlugHardStart = spec and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER
+    if glowPlugHardStart ~= nil and not ADS_Preheat.shouldApplyGlowPlugHardStart(self) then
+        glowPlugHardStart = nil
+    end
+    local isGlowPlugStartBlocked = glowPlugHardStart ~= nil
+        and glowPlugHardStart.extraData.blockStart == true
+
+    if ADS_Preheat.shouldDeferStart(self, passed) then
+        return
+    end
+
+    local selectedHardStart = engineHardStart
+    local selectedHardStartId = "ENGINE_HARD_START_MODIFIER"
+    if glowPlugHardStart ~= nil
+        and (isGlowPlugStartBlocked
+            or selectedHardStart == nil
+            or glowPlugHardStart.value > selectedHardStart.value) then
+        selectedHardStart = glowPlugHardStart
+        selectedHardStartId = "GLOW_PLUG_HARD_START_MODIFIER"
+    end
+
     local automaticMotorStartEnabled = g_currentMission ~= nil
         and g_currentMission.missionInfo ~= nil
         and g_currentMission.missionInfo.automaticMotorStartEnabled == true
-    local hasManualStartInput = spec ~= nil and (spec.startButtonHeld == true or spec.startButtonDown == true)
+    local hasManualStartInput = spec ~= nil and (spec.startButtonHeld == true
+        or spec.startButtonDown == true
+        or ADS_Preheat.isAutomaticCrankActive(self))
     local isAutomaticStartAttempt = automaticMotorStartEnabled and not hasManualStartInput
 
 
-    if self.spec_AdvancedDamageSystem == nil or (engineFailure == nil and engineHardStart == nil) or passed then
+    if spec == nil or (engineFailure == nil and selectedHardStart == nil) or passed then
         superFunc(self, noEventSend)
         return
     end
 
-    if self:getIsAIActive() and not engineFailure then
+    if self:getIsAIActive() and not engineFailure and not isGlowPlugStartBlocked then
         superFunc(self, noEventSend)
         return
     end
@@ -5035,20 +5283,46 @@ function ADS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
             if isAutomaticStartAttempt then
                 return
             end
-            engineFailure.extraData.status = 'CRANKING'
-            ADS_EffectSyncEvent.send(self, 'ENGINE_FAILURE', "CRANKING", 0, 0, 0)
+            if engineFailure.extraData.status == 'IDLE' then
+                local automaticCrank = ADS_Preheat.isAutomaticCrankActive(self)
+                engineFailure.extraData.status = 'CRANKING'
+                engineFailure.extraData.automaticCrank = automaticCrank
+                ADS_EffectSyncEvent.send(self, 'ENGINE_FAILURE', "CRANKING", 0, automaticCrank and 1 or 0, 0)
+            end
         end
         return
     end
 
-    if engineHardStart and engineHardStart.extraData.status == 'IDLE' then
+    if selectedHardStart and selectedHardStart.extraData.status == 'IDLE' then
         if isAutomaticStartAttempt then
             return
         end
-        engineHardStart.extraData.status = 'CRANKING'
-        ADS_EffectSyncEvent.send(self, 'ENGINE_HARD_START_MODIFIER', "CRANKING", 0, 0, 0)
+        local automaticCrank = ADS_Preheat.isAutomaticCrankActive(self)
+        selectedHardStart.extraData.status = 'CRANKING'
+        selectedHardStart.extraData.automaticCrank = automaticCrank
+        ADS_EffectSyncEvent.send(self, selectedHardStartId, "CRANKING", 0, automaticCrank and 1 or 0, 0)
         return
     end
+end
+
+function ADS_Breakdowns.cancelStarterCranking(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    if spec == nil or spec.activeEffects == nil then
+        return
+    end
+
+    for _, effectId in ipairs({ "ENGINE_FAILURE", "ENGINE_HARD_START_MODIFIER", "GLOW_PLUG_HARD_START_MODIFIER" }) do
+        local effect = spec.activeEffects[effectId]
+        if effect ~= nil and effect.extraData ~= nil and effect.extraData.status == "CRANKING" then
+            effect.extraData.status = "IDLE"
+            effect.extraData.timer = 0
+            effect.extraData.preCrankVoltageV = nil
+            effect.extraData.automaticCrank = false
+            ADS_EffectSyncEvent.send(vehicle, effectId, "IDLE", 0, 0, 0)
+        end
+    end
+
+    syncStarterCrankingSample(vehicle)
 end
 
 
@@ -5282,9 +5556,7 @@ function ADS_Breakdowns.getCanMotorRun(self, superFunc)
     end
 
     if (spec and spec.activeEffects.ENGINE_FAILURE) then
-        if spec.activeEffects.ENGINE_FAILURE.extraData.starter  then
-            return superFunc(self)
-        else
+        if not spec.activeEffects.ENGINE_FAILURE.extraData.starter then
             return false
         end
     elseif self:isUnderService() then
@@ -5293,6 +5565,11 @@ function ADS_Breakdowns.getCanMotorRun(self, superFunc)
         end
         return false
     end
+
+    if ADS_Preheat.shouldBlockMotorRun(self) then
+        return false
+    end
+
     return superFunc(self)
 end
 
