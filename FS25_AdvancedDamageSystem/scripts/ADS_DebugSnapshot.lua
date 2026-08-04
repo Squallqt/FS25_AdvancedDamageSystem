@@ -166,6 +166,8 @@ function ADS_DebugSnapshot.build(vehicle)
         return nil
     end
 
+    local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+
     return {
         debugData = copyDebugData(spec.debugData),
         factorStats = copyFactorStats(spec.factorStats),
@@ -178,6 +180,7 @@ function ADS_DebugSnapshot.build(vehicle)
             activeDraftMaxForce = tonumber(spec.activeDraftMaxForce) or 0,
             activeDraftEffectiveForceCap = tonumber(spec.activeDraftEffectiveForceCap) or 0,
             chassisBrakePedal = tonumber(spec.chassisBrakeState ~= nil and spec.chassisBrakeState.pedal or 0) or 0,
+            acceleratorPedal = tonumber(motor ~= nil and motor.lastAcceleratorPedal or 0) or 0,
             isCranking = spec.isCranking == true,
             batteryTempC = tonumber(spec.batteryTempC) or 0,
             pendingServicePrice = tonumber(spec.pendingServicePrice),

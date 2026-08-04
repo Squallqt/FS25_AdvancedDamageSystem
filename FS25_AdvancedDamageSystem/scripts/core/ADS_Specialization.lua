@@ -626,14 +626,6 @@ local function getSyncOperatingTime(vehicle)
     return tonumber(vehicle.operatingTime) or 0
 end
 
-local function getSyncMotorLoad(vehicle)
-    if vehicle == nil or vehicle.getMotorLoadPercentage == nil then
-        return 0
-    end
-
-    return tonumber(vehicle:getMotorLoadPercentage()) or 0
-end
-
 local function serializeBreakdownsForDirtyCheck(breakdownsTable)
     local parts = {}
 
@@ -703,21 +695,18 @@ local function markTelemetryDirty(vehicle, spec)
 
     local operatingTime = getSyncOperatingTime(vehicle)
     local realOperatingTime = spec.realOperatingTime or 0
-    local motorLoad = getSyncMotorLoad(vehicle)
     local dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
     local wheelSlip = tonumber(spec.wheelSlipIntensity) or 0
 
     if syncFloatChanged(spec._lastSyncTelemetry_operatingTime, operatingTime, 1.0) or
        syncFloatChanged(spec._lastSyncTelemetry_realOperatingTime, realOperatingTime, 1.0) or
        syncFloatChanged(spec._lastSyncTelemetry_fuelUsageRaw, spec._fuelUsageRaw, 0.3) or
-       syncFloatChanged(spec._lastSyncTelemetry_motorLoad, motorLoad, 0.01) or
        syncFloatChanged(spec._lastSyncTelemetry_dynamicMotorLoad, dynamicMotorLoad, 0.01) or
        syncFloatChanged(spec._lastSyncTelemetry_wheelSlip, wheelSlip, 0.01) then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_telemetry)
             spec._lastSyncTelemetry_operatingTime = operatingTime
             spec._lastSyncTelemetry_realOperatingTime = realOperatingTime
             spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
-            spec._lastSyncTelemetry_motorLoad = motorLoad
             spec._lastSyncTelemetry_dynamicMotorLoad = dynamicMotorLoad
             spec._lastSyncTelemetry_wheelSlip = wheelSlip
             return true
@@ -1215,7 +1204,6 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(getSyncOperatingTime(self), 0, 0))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.realOperatingTime, getSyncOperatingTime(self), 0))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
-    streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(self:getMotorLoadPercentage(), 0, 0, 1.5))
     streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
 
     -- [Group 4] Thermal
@@ -1294,8 +1282,7 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     end
     local syncFuelRaw = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
     spec._fuelUsageRaw = syncFuelRaw
-    spec._netMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
-    spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec._netMotorLoad, 0, 1.5)
+    spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
     spec.dynamicMotorLoad = spec._netDynamicMotorLoad
     if not self.isServer and self.spec_motorized ~= nil then
         self.spec_motorized.lastFuelUsage = syncFuelRaw
@@ -1395,7 +1382,6 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(getSyncOperatingTime(self), 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.realOperatingTime, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(self:getMotorLoadPercentage(), 0, 0, 1.5))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 1))
         end
@@ -1505,8 +1491,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
                 spec.realOperatingTime = currentOperatingTime
             end
             spec._fuelUsageRaw = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 10000)
-            spec._netMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
-            spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), spec._netMotorLoad, 0, 1.5)
+            spec._netDynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
             spec.dynamicMotorLoad = spec._netDynamicMotorLoad
             spec.wheelSlipIntensity = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
         end
@@ -1830,7 +1815,6 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.rawEngineTemperature = -99
     self.spec_AdvancedDamageSystem._netTargetEngineTemp = nil
     self.spec_AdvancedDamageSystem._smoothedMotorLoad = 0
-    self.spec_AdvancedDamageSystem._netMotorLoad = 0
     self.spec_AdvancedDamageSystem._netDynamicMotorLoad = 0
     self.spec_AdvancedDamageSystem.radiatorHealth = 1.0
     self.spec_AdvancedDamageSystem.fanClutchHealth = 1.0
@@ -2187,7 +2171,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     if self.isServer then
         self.spec_AdvancedDamageSystem.adsDirtyFlag_state = self:getNextDirtyFlag()             -- [1] currentState, plannedState, maintenanceTimer
         self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceContext = self:getNextDirtyFlag()    -- [2] serviceOptionOne, serviceOptionTwo, serviceOptionThree, workshopType
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, _netMotorLoad, dynamicMotorLoad, wheelSlipIntensity
+        self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, dynamicMotorLoad, wheelSlipIntensity
         self.spec_AdvancedDamageSystem.adsDirtyFlag_thermal = self:getNextDirtyFlag()           -- [4] rawEngineTemperature, rawTransmissionTemperature, thermostatState, transmissionThermostatState
         self.spec_AdvancedDamageSystem.adsDirtyFlag_electrical = self:getNextDirtyFlag()        -- [5] batterySoc, batteryChargeAh, batteryTerminalVoltageV, systemVoltageV
         self.spec_AdvancedDamageSystem.adsDirtyFlag_fieldcare = self:getNextDirtyFlag()         -- [6] radiatorClogging, airIntakeClogging, lubricationLevel, fieldInspectionSoundActive
@@ -2593,7 +2577,6 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec._lastSyncTelemetry_operatingTime = getSyncOperatingTime(self)
     spec._lastSyncTelemetry_realOperatingTime = spec.realOperatingTime
     spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
-    spec._lastSyncTelemetry_motorLoad  = getSyncMotorLoad(self)
     spec._lastSyncTelemetry_dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
     --- [4] thermal
     spec._lastSyncThermal_rawEngineTemperature = spec.rawEngineTemperature
@@ -3394,12 +3377,7 @@ local function getSmoothedMotorLoad(vehicle, dt)
     if spec == nil then return end
 
     if vehicle:getIsMotorStarted() then
-        local rawLoad
-        if vehicle.isServer then
-            rawLoad = math.max(vehicle:getMotorLoadPercentage() or 0, 0)
-        else
-            rawLoad = math.max(spec._netMotorLoad or 0, 0)
-        end
+        local rawLoad = math.max(vehicle:getMotorLoadPercentage() or 0, 0)
         local loadTau = 300
         local loadAlpha = math.min(dt / (loadTau + dt), 1)
         spec._smoothedMotorLoad = (spec._smoothedMotorLoad or 0) + loadAlpha * (rawLoad - (spec._smoothedMotorLoad or 0))

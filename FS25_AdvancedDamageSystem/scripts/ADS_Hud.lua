@@ -18,10 +18,17 @@ ADS_Hud.ROUNDED_PANEL_UV = {
 }
 ADS_Hud.COLOR_GAME_GREEN = HUD.COLOR.ACTIVE
 ADS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME = "ADS_NOTIFICATION"
+ADS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED = 0.009
+ADS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED = 0.0035
+ADS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED = 0.0015
 
 function ADS_Hud:new()
 	local self = ADS_Hud:superClass().new(ADS_Hud_mt)
 	self.vehicle = nil
+    self.telemetryDisplayValues = {
+        consumptionPerArea = 0,
+        motorLoad = 0
+    }
 
     self.roundedPanelOverlay = Overlay.new(self.modDirectory .. "hud/panelRounded.dds", 0, 0, 0, 0)
 
@@ -68,7 +75,7 @@ function ADS_Hud:new()
         transmission = {
             name = 'transmission',
             icon = g_overlayManager:createOverlay("ads_DashboardHud.transmission", 0, 0, 0, 0),
-            year = 2000,
+            year = 1990,
         },
         brakes = {
             name = 'brakes',
@@ -225,6 +232,8 @@ function ADS_Hud:setVehicle(vehicle)
         self.activeVehicleDebugCache.vehicle = nil
         self.activeVehicleDebugCache.panel = nil
         self.activeVehicleDebugCache.commands = nil
+        self.telemetryDisplayValues.consumptionPerArea = 0
+        self.telemetryDisplayValues.motorLoad = 0
     end
 
     self.vehicle = vehicle
@@ -868,7 +877,6 @@ function ADS_Hud:storeScaledValues()
     self.loadMassText.size = self:scalePixelToScreenHeight(13)
     self.loadMassText.paddingH, self.loadMassText.paddingV = self:scalePixelValuesToScreenVector(10, 4)
     self.telemetryCardGap = self:scalePixelToScreenWidth(4)
-    self.telemetryCardVerticalGap = self:scalePixelToScreenHeight(4)
 
     local fuelIconWidth, fuelIconHeight = self:scalePixelValuesToScreenVector(14, 15)
     self.fuelConsumptionHud.icon:setDimension(fuelIconWidth, fuelIconHeight)
@@ -982,7 +990,16 @@ function ADS_Hud:drawDashboard()
     end
 
     local engineTemp, transTemp, systemVoltageV = spec.engineTemperature, spec.transmissionTemperature, spec.systemVoltageV
-    local motorLoad = math.min(spec.dynamicMotorLoad or spec._smoothedMotorLoad or 0, 1)
+    local motorLoad = 0
+    if vehicle:getIsMotorStarted() then
+        local targetMotorLoad = math.clamp(tonumber(spec.dynamicMotorLoad) or 0, 0, 1)
+        local currentMotorLoad = math.clamp(tonumber(self.telemetryDisplayValues.motorLoad) or 0, 0, 1)
+        local interpolationSpeed = targetMotorLoad < 0.8
+            and ADS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED
+            or ADS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED
+        motorLoad = self:interpolateTelemetryValue(currentMotorLoad, targetMotorLoad, interpolationSpeed)
+    end
+    self.telemetryDisplayValues.motorLoad = motorLoad
 
     local tempSign = "°C"
     local voltageSing = "V"
@@ -1196,16 +1213,10 @@ function ADS_Hud:drawTelemetryCards()
 
     local cardRightX = speedMeter:getPosition()
     cardRightX = self:drawLoadMass(cardRightX) or cardRightX
-    local consumptionLeftX, consumptionY, consumptionH = self:drawFuelConsumption(cardRightX)
-    if consumptionLeftX ~= nil then
-        self:drawWorkRate(
-            consumptionLeftX,
-            consumptionY + consumptionH + (self.telemetryCardVerticalGap or 0)
-        )
-    end
+    self:drawFuelConsumption(cardRightX)
 end
 
-function ADS_Hud:getWorkRate()
+function ADS_Hud:getConsumptionAreaRate()
     local vehicle = self.vehicle
     if vehicle == nil then
         return 0, 0
@@ -1221,45 +1232,14 @@ function ADS_Hud:getWorkRate()
     return speed, (speed * width) / 10
 end
 
-function ADS_Hud:drawWorkRate(cardLeftX, cardBottomY)
-    local vehicle = self.vehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
-        return
+function ADS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolationSpeed)
+    if currentValue == targetValue then
+        return targetValue
     end
 
-    local _, workRate = self:getWorkRate()
-    local size = self.loadMassText.size or 0.01
-    local padH = self.loadMassText.paddingH or 0
-    local padV = self.loadMassText.paddingV or 0
-    local unitGap = self:scalePixelToScreenWidth(4)
-    local valueStr = string.format("%.1f", workRate)
-    local unitStr = "ha/h"
-    local valueWidth = getTextWidth(size, valueStr)
-    local unitWidth = getTextWidth(size, unitStr)
-    local textWidth = valueWidth + unitGap + unitWidth
-    local textHeight = getTextHeight(size, valueStr)
-    local panelH = textHeight + padV * 2
-    local panelW = textWidth + padH * 2
-    local panelX = cardLeftX
-    local panelY = cardBottomY
-    local textX = panelX + padH
-    local textY = panelY + panelH * 0.5 + self:scalePixelToScreenHeight(2)
-
-    local bg = HUD.COLOR.BACKGROUND
-    drawFilledRectRound(panelX, panelY, panelW, panelH, 0.35, bg[1], bg[2], bg[3], bg[4])
-
-    setTextAlignment(RenderText.ALIGN_LEFT)
-    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
-    setTextBold(true)
-    setTextColor(1, 1, 1, 1)
-    renderText(textX, textY, size, valueStr)
-    setTextBold(false)
-    setTextColor(1, 1, 1, 0.55)
-    renderText(textX + valueWidth + unitGap, textY, size, unitStr)
-
-    setTextColor(1, 1, 1, 1)
-    setTextAlignment(RenderText.ALIGN_LEFT)
-    setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
+    local direction = math.sign(targetValue - currentValue)
+    local limitFunc = direction < 0 and math.max or math.min
+    return limitFunc(currentValue + interpolationSpeed * direction * (tonumber(g_currentDt) or 0), targetValue)
 end
 
 function ADS_Hud:drawFuelConsumption(cardRightX)
@@ -1281,11 +1261,17 @@ function ADS_Hud:drawFuelConsumption(cardRightX)
         rawConsumptionPerHour = math.max(tonumber(motorizedSpec.lastFuelUsage) or 0, 0)
     end
 
-    local speed, workRate = self:getWorkRate()
+    local speed, areaRate = self:getConsumptionAreaRate()
     local consumptionPerArea = 0
-    if speed > 0.9 and workRate > 0 then
-        consumptionPerArea = rawConsumptionPerHour / workRate
+    if speed > 0.9 and areaRate > 0 then
+        consumptionPerArea = rawConsumptionPerHour / areaRate
     end
+    consumptionPerArea = self:interpolateTelemetryValue(
+        self.telemetryDisplayValues.consumptionPerArea,
+        consumptionPerArea,
+        ADS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED
+    )
+    self.telemetryDisplayValues.consumptionPerArea = consumptionPerArea
 
     local isElectric = fuelType == FillType.ELECTRICCHARGE
     local isMethane = fuelType == FillType.METHANE
@@ -1356,8 +1342,6 @@ function ADS_Hud:drawFuelConsumption(cardRightX)
     setTextColor(1, 1, 1, 1)
     setTextAlignment(RenderText.ALIGN_LEFT)
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
-
-    return panelX, panelY, panelH
 end
 
 -- =====================================================================================
@@ -2278,7 +2262,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     local currentSpeed = tonumber(vehicle:getLastSpeed()) or 0
     local avgSpeed = tonumber(getDebugStateValue("avgSpeed", spec.avgSpeed)) or 0
     local avgAbsDiffAcc = tonumber(getDebugStateValue("avgAbsDiffAcc", spec.avgAbsDiffAcc)) or 0
-    local acceleratorPedal = tonumber(motor.lastAcceleratorPedal or 0) or 0
+    local acceleratorPedal = tonumber(getDebugStateValue("acceleratorPedal", motor.lastAcceleratorPedal)) or 0
     local brakePedal = tonumber(getDebugStateValue("chassisBrakePedal", (spec.chassisBrakeState or {}).pedal)) or 0
     local dynamicLoadDeltaPct = motorLoad > 0 and ((dynamicMotorLoad - motorLoad) / motorLoad) * 100 or 0
     local targetGear = (motor.targetGear or 0) * (motor.currentDirection or 1)

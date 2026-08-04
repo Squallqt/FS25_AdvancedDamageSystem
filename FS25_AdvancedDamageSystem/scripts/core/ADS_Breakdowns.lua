@@ -38,7 +38,7 @@ ADS_Breakdowns.DASHBOARD = {
 }
 
 ADS_Breakdowns.COLORS = {
-    DEFAULT = {1, 1, 1, 0.03},
+    DEFAULT = Dashboard.COLORS.GREY,
     COOL = { 0.0097, 0.4287, 0.6445, 1 },
     WARNING  = { 1, 0.4287, 0.0006, 1 },
     CRITICAL = {0.8069, 0.0097, 0.0097, 1}
@@ -4468,7 +4468,7 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 local lastRpm = (motor.getLastModulatedMotorRpm ~= nil and tonumber(motor:getLastModulatedMotorRpm())) or tonumber(motor.lastMotorRpm) or minRpm
                 local rpmN = math.clamp((lastRpm - minRpm) / (maxRpm - minRpm), 0, 1)
                 local loadN = math.clamp(tonumber(v:getMotorLoadPercentage()) or 0, 0, 1)
-                local accelN = math.clamp(math.abs(tonumber(motor.lastAcceleratorPedal) or 0), 0, 1)
+                local boostN = math.clamp(tonumber(motor.lastTurboScale) or 0, 0, 1)
                 local hotN = math.clamp(((tonumber(spec_ads.engineTemperature) or 0) - 70) / 40, 0, 1)
                 local speedMps = tonumber(v:getLastSpeed()) or 0
 
@@ -4479,9 +4479,9 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 dynamicIntensity = math.clamp(dynamicIntensity, 0, 1.6)
 
                 local gate = 1
-                if gateMode == "accel" then
-                    local accelThreshold = 0.02
-                    local targetGate = math.clamp((accelN - accelThreshold) / (1 - accelThreshold), 0, 1)
+                if gateMode == "boost" then
+                    local boostThreshold = 0.02
+                    local targetGate = math.clamp((boostN - boostThreshold) / (1 - boostThreshold), 0, 1)
                     gate = adsUpdateNoiseGate(spec_ads, effectName, targetGate, dt)
                     baseVolumeScale = baseVolumeScale * gate
                 elseif gateMode == "speed" then
@@ -4493,7 +4493,7 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 end
 
                 if baseVolumeScale <= 0.02 then
-                    if (gateMode == "accel" or gateMode == "speed") and gate > 0.001 then
+                    if (gateMode == "boost" or gateMode == "speed") and gate > 0.001 then
                         baseVolumeScale = 0.02
                     else
                         adsStopAndResetNoiseSample(sample)
@@ -4518,9 +4518,9 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 ADS_SoundManager.setSampleVolumeOffset(sample, 0)
                 local pitchOffset
                 if sampleName == "turboWhistle" then
-                    local accelThreshold = 0.02
-                    local accelGate = math.clamp((accelN - accelThreshold) / (1 - accelThreshold), 0, 1)
-                    pitchOffset = (0.20 * accelGate + 0.16 * (rpmN ^ 1.20) * accelGate + 0.03 * loadN * accelGate) * gate
+                    local boostThreshold = 0.02
+                    local boostGate = math.clamp((boostN - boostThreshold) / (1 - boostThreshold), 0, 1)
+                    pitchOffset = (0.20 * boostGate + 0.16 * (rpmN ^ 1.20) * boostGate + 0.03 * loadN * boostGate) * gate
                 elseif sampleName == "fanNoice" then
                     pitchOffset = 0
                 elseif sampleName == "wheelHubBearingNoise" then
@@ -4557,7 +4557,7 @@ end
 
 ADS_Breakdowns.EffectApplicators.ENGINE_KNOCKING_NOISE_EFFECT = createEngineNoiseEffectApplicator("ENGINE_KNOCKING_NOISE_EFFECT", "engineKnocking", nil)
 ADS_Breakdowns.EffectApplicators.VALVE_TRAIN_NOISE_EFFECT = createEngineNoiseEffectApplicator("VALVE_TRAIN_NOISE_EFFECT", "valveTrainNoise", nil)
-ADS_Breakdowns.EffectApplicators.TURBO_WHISTLE_NOISE_EFFECT = createEngineNoiseEffectApplicator("TURBO_WHISTLE_NOISE_EFFECT", "turboWhistle", "accel")
+ADS_Breakdowns.EffectApplicators.TURBO_WHISTLE_NOISE_EFFECT = createEngineNoiseEffectApplicator("TURBO_WHISTLE_NOISE_EFFECT", "turboWhistle", "boost")
 ADS_Breakdowns.EffectApplicators.FAN_CLUTCH_NOISE_EFFECT = createEngineNoiseEffectApplicator("FAN_CLUTCH_NOISE_EFFECT", "fanNoice", nil)
 ADS_Breakdowns.EffectApplicators.VIBRATION_NOISE_EFFECT = createEngineNoiseEffectApplicator("VIBRATION_NOISE_EFFECT", "vibrationNoice", "speed")
 ADS_Breakdowns.EffectApplicators.WHEEL_HUB_BEARING_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_HUB_BEARING_NOISE_EFFECT", "wheelHubBearingNoise", "speed")
