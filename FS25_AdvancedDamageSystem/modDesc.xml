@@ -31,7 +31,9 @@ Changelog 0.9.3.0 [WIP]:
 - Turbocharger wear now applies to every engine of 56 kW (75 hp) or more, instead of a single tractor model
 - Added a transmission thermostat breakdown on CVT gearboxes: the valve loses response over three stages, then sticks in position and transmission oil no longer reaches the correct temperature
 - Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C
-- Added automatic temperature-based diesel preheating: one start request runs the lamp check and glow cycle before cranking, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown]]></en>
+- Added automatic temperature-based diesel preheating: one start request runs the lamp check and glow cycle before cranking, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
+- Vehicle exclusions now follow what a machine can actually do instead of its type name; any automatic exclusion can be reverted with ads_setExcluded false, except on electric vehicles
+- Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for ADS]]></en>
 
         <de><![CDATA[Advanced Damage System fügt Farming Simulator 25 ein tiefgehendes System für Verschleiß, Ausfälle, Diagnose, Wartung und Reparatur von Fahrzeugen hinzu. Anstelle eines einzigen allgemeinen Zustandswerts besteht jede Maschine aus mehreren einzelnen Systemen mit eigenem Zustand, eigenen Verschleißfaktoren, Stressaufbau und Ausfallrisiko. Fahrverhalten und Art der Defekte hängen von Einsatzbedingungen, Belastung, Temperatur und Wartungsqualität ab.
 
@@ -56,7 +58,9 @@ Changelog 0.9.3.0 [WIP]:
 - Turboladerverschleiß betrifft jetzt jeden Motor ab 56 kW (75 PS) statt nur eines einzigen Traktormodells
 - Störung des Getriebethermostats für CVT-Getriebe hinzugefügt: Das Ventil verliert über drei Stufen an Ansprechverhalten, klemmt dann in seiner Position und das Getriebeöl erreicht die richtige Temperatur nicht mehr
 - CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C
-- Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt: Ein Startbefehl führt vor dem Anlassen den Lampentest und Glühzyklus aus, einschließlich Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung]]></de>
+- Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt: Ein Startbefehl führt vor dem Anlassen den Lampentest und Glühzyklus aus, einschließlich Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung
+- Fahrzeugausschlüsse richten sich jetzt nach den tatsächlichen Fähigkeiten einer Maschine statt nach ihrem Typnamen; jeder automatische Ausschluss lässt sich mit ads_setExcluded false aufheben, außer bei Elektrofahrzeugen
+- Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für ADS installiert war]]></de>
         
         <fr><![CDATA[Advanced Damage System ajoute à Farming Simulator 25 un système approfondi d'usure, de pannes, de diagnostic, d'entretien et de réparation des véhicules. Au lieu de reposer sur une seule valeur générale d'état, chaque machine est composée de plusieurs systèmes distincts ayant leur propre état, leurs propres facteurs d'usure, leur accumulation de stress et leur risque de panne. Le comportement de la machine et la nature des défaillances dépendent des conditions d'utilisation, de la charge, de la température et de la qualité de l'entretien.
 
@@ -82,6 +86,8 @@ Changelog 0.9.3.0 [WIP] :
 - Ajout d'une panne de thermostat de transmission sur les boîtes CVT : la vanne perd sa réactivité sur trois stades, puis se bloque en position et l'huile de boîte n'atteint plus la bonne température
 - Recalibrage des températures de boîte CVT sur les données réelles d'huile de transmission : le thermostat régule désormais à 85 °C au lieu de 75 °C, et l'usure par surchauffe démarre à 100 °C au lieu de 95 °C
 - Ajout du préchauffage diesel automatique selon la température : une impulsion de démarrage lance le contrôle des voyants et le cycle de préchauffage avant le démarreur, avec charge batterie, témoin dédié, didacticiel et panne de bougies en quatre stades
+- Les exclusions de véhicules reposent désormais sur les capacités réelles d'une machine au lieu de son nom de type ; toute exclusion automatique peut être annulée avec ads_setExcluded false, sauf sur les véhicules électriques
+- Les millésimes des véhicules sont désormais déterminés par le mod lui-même ; Vehicle Years n'est plus requis et peut être désinstallé s'il n'était installé que pour ADS
 
 Changelog 0.9.2.7:
 - Refonte des facteurs Heavy Trailer et Brake Mass : les tracteurs utilisent 10 ch par tonne de masse tractée, tandis que les camions utilisent 6 ch par tonne de poids total roulant
@@ -229,7 +235,4 @@ Changelog 0.9.0.0:
         </actionBinding>
     </inputBinding>
     <l10n filenamePrefix="translations/l10n"/>
-    <dependencies>
-        <dependency>FS25_Vehicle_Years</dependency>
-    </dependencies>
 </modDesc>

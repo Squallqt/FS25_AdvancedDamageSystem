@@ -54,6 +54,8 @@ local modName = g_currentModName
 
 source(g_currentModDirectory .. "scripts/ADS_Config.lua")
 source(g_currentModDirectory .. "scripts/ADS_Utils.lua")
+source(g_currentModDirectory .. "scripts/ADS_VehicleYearsData.lua")
+source(g_currentModDirectory .. "scripts/ADS_VehicleYears.lua")
 source(g_currentModDirectory .. "scripts/ADS_DebugSnapshot.lua")
 source(g_currentModDirectory .. "scripts/ADS_Leasing.lua")
 source(g_currentModDirectory .. "scripts/ADS_Tutorial.lua")

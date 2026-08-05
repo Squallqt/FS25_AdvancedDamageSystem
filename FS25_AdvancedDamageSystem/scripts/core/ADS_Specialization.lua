@@ -1807,7 +1807,7 @@ function AdvancedDamageSystem:onLoad(savegame)
     
     self.spec_AdvancedDamageSystem.reliability = 1.0
     self.spec_AdvancedDamageSystem.maintainability = 1.0
-    self.spec_AdvancedDamageSystem.year = 2000
+    self.spec_AdvancedDamageSystem.year = ADS_VehicleYears.DEFAULT_YEAR
 
     self.spec_AdvancedDamageSystem.activeBreakdowns = {}
     self.spec_AdvancedDamageSystem.activeEffects = {}
@@ -2910,10 +2910,10 @@ local function registerVehicle(vehicle)
                     end
             end
 
-            --- Updating vehicle's year from Vehicle Years mod
+            --- Updating vehicle's production year
             local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-            if storeItem ~= nil and storeItem.specs ~= nil and storeItem.specs.year ~= nil and tonumber(storeItem.specs.year) ~= nil then
-                    spec.year = tonumber(storeItem.specs.year)
+            if storeItem ~= nil then
+                spec.year = ADS_VehicleYears.getYear(storeItem)
             end
 
             --- Updating vehicle's reliability and maintainability
@@ -8474,7 +8474,7 @@ function AdvancedDamageSystem:getOverhaulPerformedCount()
 end
 
 function AdvancedDamageSystem.getBrandReliability(vehicle, storeItem)
-    local year = 2005
+    local year = ADS_VehicleYears.DEFAULT_YEAR
     local brandName = 'LIZARD'
     local name = 'LIZARD'
 
@@ -8485,24 +8485,16 @@ function AdvancedDamageSystem.getBrandReliability(vehicle, storeItem)
             return 1.0, 1.0
         end
 
-        local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-        if storeItem.specs ~= nil and storeItem.specs.year ~= nil then
-            local newYear =  tonumber(storeItem.specs.year)
-            if newYear ~= nil then
-                year = newYear
-            end
-        end
         brandName = brand.name
+        storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
 
     elseif storeItem ~= nil then
         name = storeItem.name
         brandName = storeItem.brandNameRaw
-        if storeItem.specs ~= nil and storeItem.specs.year ~= nil then
-            local newYear =  tonumber(storeItem.specs.year)
-            if newYear ~= nil then
-                year = newYear
-            end
-        end
+    end
+
+    if storeItem ~= nil then
+        year = ADS_VehicleYears.getYear(storeItem)
     end
 
     local yearFactor = 0
