@@ -585,29 +585,6 @@ local function getIsVehicleNeedBlowOut(vehicle)
     return true
 end
 
-local function computeSystemSyncHash(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
-    if spec == nil then
-        return 0
-    end
-
-    local systemHash = 0
-
-    local sortedKeys = {}
-    for sysKey, _ in pairs(spec.systems) do
-        table.insert(sortedKeys, sysKey)
-    end
-    table.sort(sortedKeys)
-    for i, sysKey in ipairs(sortedKeys) do
-        local sysData = spec.systems[sysKey]
-            local c = sysData.condition or 0
-            local s = sysData.stress    or 0
-            local e = sysData.enabled ~= false and 1 or 0
-            systemHash = systemHash + (c + s * 0.001 + e * 0.0001) * i
-    end
-    return systemHash
-end
-
 local function getSafeMissionTimeScale()
     local missionInfo = g_currentMission ~= nil and g_currentMission.missionInfo or nil
     local timeScale = (missionInfo and missionInfo.timeScale) or 1
@@ -620,6 +597,8 @@ end
 -- ==========================================================
 --                         DIRTY FLAGS HELPERS
 -- ==========================================================
+
+local SYSTEM_SYNC_EPSILON = 0.001
 
 local function canRaiseDirtyFlag(vehicle, spec, flag)
     return vehicle ~= nil and vehicle.isServer and spec ~= nil and flag ~= nil
@@ -794,20 +773,60 @@ local function markFieldcareDirty(vehicle, spec)
     return false
 end
 
+local function getSystemsSyncChanged(spec)
+    local lastSystems = spec._lastSyncWear_systems
+    if lastSystems == nil then
+        return true
+    end
+
+    local count = 0
+    for sysKey, sysData in pairs(spec.systems) do
+        count = count + 1
+
+        local last = lastSystems[sysKey]
+        if last == nil then
+            return true
+        end
+
+        if syncFloatChanged(last.condition, sysData.condition, SYSTEM_SYNC_EPSILON) or
+           syncFloatChanged(last.stress, sysData.stress, SYSTEM_SYNC_EPSILON) or
+           last.enabled ~= (sysData.enabled ~= false) then
+            return true
+        end
+    end
+
+    return count ~= spec._lastSyncWear_systemsCount
+end
+
+local function captureSystemsSync(spec)
+    local snapshot = {}
+    local count = 0
+
+    for sysKey, sysData in pairs(spec.systems) do
+        snapshot[sysKey] = {
+            condition = sysData.condition,
+            stress = sysData.stress,
+            enabled = sysData.enabled ~= false
+        }
+        count = count + 1
+    end
+
+    spec._lastSyncWear_systems = snapshot
+    spec._lastSyncWear_systemsCount = count
+end
+
 local function markWearDirty(vehicle, spec)
     if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_wear) then
         return false
     end
 
-    local systemsHash = computeSystemSyncHash(vehicle)
-
     if syncFloatChanged(spec._lastSyncWear_serviceLevel, spec.serviceLevel, 0.001) or
        syncFloatChanged(spec._lastSyncWear_conditionLevel, spec.conditionLevel, 0.001) or
-       spec._lastSyncWear_systemsHash ~= systemsHash then
+       getSystemsSyncChanged(spec) then
             vehicle:raiseDirtyFlags(spec.adsDirtyFlag_wear)
             spec._lastSyncWear_serviceLevel = spec.serviceLevel
             spec._lastSyncWear_conditionLevel = spec.conditionLevel
-            spec._lastSyncWear_systemsHash = systemsHash
+            captureSystemsSync(spec)
             return true
     end
 
@@ -2646,7 +2665,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     --- [7] wear
     spec._lastSyncWear_serviceLevel = spec.serviceLevel
     spec._lastSyncWear_conditionLevel = spec.conditionLevel
-    spec._lastSyncWear_systemsHash = computeSystemSyncHash(self)
+    captureSystemsSync(spec)
     --- [8] breakdowns
     spec._lastSyncBreakdowns_serialized = ADS_Utils.serializeBreakdowns(spec.activeBreakdowns or {})
     --- [9] service
