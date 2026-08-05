@@ -409,12 +409,14 @@ local function ensureLayout(vehicle, state)
         state.layout = nil
         state.hasControl = false
         state.hasCenterDiff = false
+        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
         return false
     end
 
     state.layout = ADS_Drivetrain.buildLayout(vehicle)
     state.hasControl = state.layout ~= nil
     state.hasCenterDiff = state.layout ~= nil and state.layout.centerIdx0 ~= nil
+    AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
     return state.layout ~= nil
 end
 
@@ -434,12 +436,10 @@ local function getEffectiveFourWheelDrive(state)
     return false
 end
 
---- True when the installed graph drives both axles through a center differential.
 local function getIsNativeLock(layout, fourWheelDrive)
     return fourWheelDrive and layout.centerIdx0 ~= nil
 end
 
---- Speed ratio a differential must run at for the given lock state.
 local function getTargetSpeedRatio(original, lockEngaged, nativeLock)
     local C = getConfig()
 
@@ -731,10 +731,6 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
     state.diffLockRequested = diffLockRequested
     state.parkBrake = parkBrake
 
-    if changed then
-        ADS_DrivetrainEvent.sendEvent(vehicle, noEventSend)
-    end
-
     if vehicle.isServer then
         if state.driveMode ~= ADS_Drivetrain.MODE.AUTO then
             state.autoEngaged = false
@@ -743,13 +739,8 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
         if changed then
             AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
         end
-    end
-end
-
-local function syncOwnerState(vehicle)
-    local ownerConnection = vehicle:getOwnerConnection()
-    if ownerConnection ~= nil then
-        ADS_DrivetrainEvent.sendState(vehicle, ownerConnection)
+    elseif changed then
+        ADS_DrivetrainEvent.sendEvent(vehicle, noEventSend)
     end
 end
 
@@ -1175,9 +1166,6 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
             state.windupWearFactor = 0
             AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
         end
-        if managementChanged or hadWindupState then
-            syncOwnerState(vehicle)
-        end
         return
     end
 
@@ -1208,9 +1196,6 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         or prevWindupQuantized ~= windupQuantized
     if physicalStateChanged then
         AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
-    end
-    if managementChanged or physicalStateChanged then
-        syncOwnerState(vehicle)
     end
 
     updateLocalNotifications(vehicle, state, dt)

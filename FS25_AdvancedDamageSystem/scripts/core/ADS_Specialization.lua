@@ -1097,7 +1097,6 @@ function AdvancedDamageSystem.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onDelete", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", AdvancedDamageSystem)
     SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", AdvancedDamageSystem)
@@ -2696,15 +2695,6 @@ end
 -- ==========================================================
 --                        EVENTS
 -- ==========================================================
-
-function AdvancedDamageSystem:onEnterVehicle(isControlling)
-    if self.isServer then
-        local ownerConnection = self:getOwnerConnection()
-        if ownerConnection ~= nil then
-            ADS_DrivetrainEvent.sendState(self, ownerConnection)
-        end
-    end
-end
 
 function AdvancedDamageSystem:onLeaveVehicle(wasEntered)
     local spec = self.spec_AdvancedDamageSystem
