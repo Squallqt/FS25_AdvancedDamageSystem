@@ -740,9 +740,8 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
             state.autoEngaged = false
             state._autoConditionTimer = 0
         end
-        local spec = vehicle.spec_AdvancedDamageSystem
-        if changed and spec ~= nil and spec.adsDirtyFlag_drivetrain ~= nil then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
+        if changed then
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
         end
     end
 end
@@ -926,9 +925,7 @@ local function updateWindupModel(vehicle, state, spec, dt)
             vehicle:applyInstantDamageToSystem(AdvancedDamageSystem.SYSTEMS.TRANSMISSION, C.WINDUP_INSTANT_DAMAGE)
             state._windupDamageLatched = true
             state.windupStress = 0.5
-            if spec.adsDirtyFlag_wear ~= nil then
-                vehicle:raiseDirtyFlags(spec.adsDirtyFlag_wear)
-            end
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.WEAR)
         end
     end
 
@@ -1157,9 +1154,7 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     if managementChanged then
         state.externallyManaged = externallyManaged
         state.parkExternallyManaged = parkExternallyManaged
-        if spec.adsDirtyFlag_drivetrain ~= nil then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
-        end
+        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
     end
 
     if not getConfig().ENABLED or externallyManaged then
@@ -1178,9 +1173,7 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         if hadWindupState then
             state.windupStress = 0
             state.windupWearFactor = 0
-            if spec.adsDirtyFlag_drivetrain ~= nil then
-                vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
-            end
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
         end
         if managementChanged or hadWindupState then
             syncOwnerState(vehicle)
@@ -1213,8 +1206,8 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         or prevDiffLockEngaged ~= state.diffLockEngaged
         or prevWindupActive ~= state.windupActive
         or prevWindupQuantized ~= windupQuantized
-    if physicalStateChanged and spec.adsDirtyFlag_drivetrain ~= nil then
-        vehicle:raiseDirtyFlags(spec.adsDirtyFlag_drivetrain)
+    if physicalStateChanged then
+        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
     end
     if managementChanged or physicalStateChanged then
         syncOwnerState(vehicle)

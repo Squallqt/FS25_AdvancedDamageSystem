@@ -28,6 +28,20 @@ AdvancedDamageSystem = {
         WORKHORSE = "ads_spec_state_workhorse"
     },
 
+    SYNC_GROUP = {
+        STATE = 1,
+        SERVICE_CONTEXT = 2,
+        TELEMETRY = 4,
+        THERMAL = 8,
+        ELECTRICAL = 16,
+        FIELDCARE = 32,
+        WEAR = 64,
+        BREAKDOWNS = 128,
+        SERVICE_PROGRESS = 256,
+        TUTORIAL_DATA = 512,
+        DRIVETRAIN = 1024
+    },
+
     SYSTEMS = {
         ENGINE = "ads_spec_system_engine",
         TRANSMISSION = "ads_spec_system_transmission",
@@ -485,30 +499,19 @@ local function refreshExclusionState(spec)
     end
 end
 
-local function raiseAllADSDirtyFlags(vehicle, spec)
-    if not vehicle.isServer then
+AdvancedDamageSystem.SYNC_GROUP_ALL = 2047
+
+function AdvancedDamageSystem.raiseADSDirty(vehicle, groupBits)
+    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    if spec == nil or not vehicle.isServer or spec.adsDirtyFlag == nil then
         return
     end
 
-    local dirtyFlags = {
-        spec.adsDirtyFlag_state,
-        spec.adsDirtyFlag_serviceContext,
-        spec.adsDirtyFlag_telemetry,
-        spec.adsDirtyFlag_thermal,
-        spec.adsDirtyFlag_electrical,
-        spec.adsDirtyFlag_fieldcare,
-        spec.adsDirtyFlag_wear,
-        spec.adsDirtyFlag_breakdowns,
-        spec.adsDirtyFlag_serviceProgress,
-        spec.adsDirtyFlag_tutorialData,
-        spec.adsDirtyFlag_drivetrain
-    }
-
-    for _, dirtyFlag in ipairs(dirtyFlags) do
-        if dirtyFlag ~= nil then
-            vehicle:raiseDirtyFlags(dirtyFlag)
-        end
+    for connection, mask in pairs(spec.adsPendingByConnection) do
+        spec.adsPendingByConnection[connection] = bit32.bor(mask, groupBits)
     end
+
+    vehicle:raiseDirtyFlags(spec.adsDirtyFlag)
 end
 
 function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
@@ -536,7 +539,7 @@ function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
     end
 
     self:recalculateAndApplyEffects()
-    raiseAllADSDirtyFlags(self, spec)
+    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP_ALL)
 
     if self.isClient and ADS_Main ~= nil and ADS_Main.hud ~= nil
             and g_localPlayer ~= nil and g_localPlayer.getCurrentVehicle ~= nil
@@ -600,8 +603,8 @@ end
 
 local SYSTEM_SYNC_EPSILON = 0.001
 
-local function canRaiseDirtyFlag(vehicle, spec, flag)
-    return vehicle ~= nil and vehicle.isServer and spec ~= nil and flag ~= nil
+local function canRaiseDirtyFlag(vehicle, spec)
+    return vehicle ~= nil and vehicle.isServer and spec ~= nil and spec.adsDirtyFlag ~= nil
 end
 
 local function getSyncOperatingTime(vehicle)
@@ -641,14 +644,14 @@ local function syncFloatChanged(a, b, epsilon)
 end
 
 local function markStateDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_state) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
     if spec._lastSyncState_currentState ~= spec.currentState or
        spec._lastSyncState_plannedState ~= spec.plannedState or
        syncFloatChanged(spec._lastSyncState_maintenanceTimer, spec.maintenanceTimer, 1.0) then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_state)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.STATE)
             spec._lastSyncState_currentState = spec.currentState
             spec._lastSyncState_plannedState = spec.plannedState
             spec._lastSyncState_maintenanceTimer = spec.maintenanceTimer
@@ -659,7 +662,7 @@ local function markStateDirty(vehicle, spec)
 end
 
 local function markServiceContextDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_serviceContext) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
@@ -667,7 +670,7 @@ local function markServiceContextDirty(vehicle, spec)
        spec._lastSyncServiceContext_optionTwo ~= spec.serviceOptionTwo or
        spec._lastSyncServiceContext_optionThree ~= spec.serviceOptionThree or
        spec._lastSyncServiceContext_workshopType ~= spec.workshopType then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_serviceContext)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
             spec._lastSyncServiceContext_optionOne = spec.serviceOptionOne
             spec._lastSyncServiceContext_optionTwo = spec.serviceOptionTwo
             spec._lastSyncServiceContext_optionThree = spec.serviceOptionThree
@@ -679,7 +682,7 @@ local function markServiceContextDirty(vehicle, spec)
 end
 
 local function markTelemetryDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_telemetry) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
@@ -693,7 +696,7 @@ local function markTelemetryDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncTelemetry_fuelUsageRaw, spec._fuelUsageRaw, 0.3) or
        syncFloatChanged(spec._lastSyncTelemetry_dynamicMotorLoad, dynamicMotorLoad, 0.01) or
        syncFloatChanged(spec._lastSyncTelemetry_wheelSlip, wheelSlip, 0.01) then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_telemetry)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY)
             spec._lastSyncTelemetry_operatingTime = operatingTime
             spec._lastSyncTelemetry_realOperatingTime = realOperatingTime
             spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
@@ -706,7 +709,7 @@ local function markTelemetryDirty(vehicle, spec)
 end
 
 local function markThermalDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_thermal) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
@@ -714,7 +717,7 @@ local function markThermalDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncThermal_rawTransmissionTemperature, spec.rawTransmissionTemperature, 0.05) or
        syncFloatChanged(spec._lastSyncThermal_thermostatState, spec.thermostatState, 0.05) or
        syncFloatChanged(spec._lastSyncThermal_transmissionThermostatState, spec.transmissionThermostatState, 0.05) then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_thermal)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.THERMAL)
             spec._lastSyncThermal_rawEngineTemperature = spec.rawEngineTemperature
             spec._lastSyncThermal_rawTransmissionTemperature = spec.rawTransmissionTemperature
             spec._lastSyncThermal_thermostatState = spec.thermostatState
@@ -726,7 +729,7 @@ local function markThermalDirty(vehicle, spec)
 end
 
 local function markElectricalDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_electrical) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
@@ -738,7 +741,7 @@ local function markElectricalDirty(vehicle, spec)
        spec._lastSyncElectrical_preheatLampTestActive ~= spec.preheatLampTestActive or
        spec._lastSyncElectrical_preheatWasRequired ~= spec.preheatWasRequired or
        spec._lastSyncElectrical_preheatColdStartFaultSeverity ~= spec.preheatColdStartFaultSeverity then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_electrical)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
             spec._lastSyncElectrical_batterySoc = spec.batterySoc
             spec._lastSyncElectrical_batteryChargeAh = spec.batteryChargeAh
             spec._lastSyncElectrical_batteryTerminalVoltage = spec.batteryTerminalVoltageV
@@ -754,7 +757,7 @@ local function markElectricalDirty(vehicle, spec)
 end
 
 local function markFieldcareDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_fieldcare) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
@@ -762,7 +765,7 @@ local function markFieldcareDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncFieldcare_airIntakeClogging, spec.airIntakeClogging, 0.005) or
        syncFloatChanged(spec._lastSyncFieldcare_lubricationLevel, spec.lubricationLevel, 0.005) or
        spec._lastSyncFieldcare_inspectionSoundActive ~= spec.fieldInspectionSoundActive then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_fieldcare)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
             spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
             spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
             spec._lastSyncFieldcare_lubricationLevel = spec.lubricationLevel
@@ -816,14 +819,14 @@ local function captureSystemsSync(spec)
 end
 
 local function markWearDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_wear) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
     if syncFloatChanged(spec._lastSyncWear_serviceLevel, spec.serviceLevel, 0.001) or
        syncFloatChanged(spec._lastSyncWear_conditionLevel, spec.conditionLevel, 0.001) or
        getSystemsSyncChanged(spec) then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_wear)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.WEAR)
             spec._lastSyncWear_serviceLevel = spec.serviceLevel
             spec._lastSyncWear_conditionLevel = spec.conditionLevel
             captureSystemsSync(spec)
@@ -834,13 +837,13 @@ local function markWearDirty(vehicle, spec)
 end
 
 local function markBreakdownsDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_breakdowns) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
     local serializedBreakdowns = serializeBreakdownsForDirtyCheck(spec.activeBreakdowns)
     if spec._lastSyncBreakdowns_serialized ~= serializedBreakdowns then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
             spec._lastSyncBreakdowns_serialized = serializedBreakdowns
             return true
     end
@@ -849,14 +852,14 @@ local function markBreakdownsDirty(vehicle, spec)
 end
 
 local function markServiceProgressDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_serviceProgress) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
     if syncFloatChanged(spec._lastSyncServiceProgress_elapsed, spec.pendingProgressElapsedTime,500.0) or
        spec._lastSyncServiceProgress_step ~= spec.pendingProgressStepIndex or
        syncFloatChanged(spec._lastSyncServiceProgress_total, spec.pendingProgressTotalTime, 500.0) then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_serviceProgress)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS)
             spec._lastSyncServiceProgress_elapsed = spec.pendingProgressElapsedTime
             spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
             spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
@@ -867,7 +870,7 @@ local function markServiceProgressDirty(vehicle, spec)
 end
 
 local function markTutorialDataDirty(vehicle, spec)
-    if not canRaiseDirtyFlag(vehicle, spec, spec.adsDirtyFlag_tutorialData) then
+    if not canRaiseDirtyFlag(vehicle, spec) then
         return false
     end
 
@@ -906,7 +909,7 @@ local function markTutorialDataDirty(vehicle, spec)
        spec._lastSyncTutorial_isPtoActive    ~= isPtoActive                            or
        spec._lastSyncTutorial_hasConnectedPto ~= hasConnectedPto                       or
        syncFloatChanged(spec._lastSyncTutorial_ptoAngle,        ptoAngle,        0.5) then
-            vehicle:raiseDirtyFlags(spec.adsDirtyFlag_tutorialData)
+            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TUTORIAL_DATA)
             spec._lastSyncTutorial_idleTimer       = idleTimer
             spec._lastSyncTutorial_fuelLevel       = fuelLevel
             spec._lastSyncTutorial_luggingTimer    = luggingTimer
@@ -1222,6 +1225,10 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     local spec = self.spec_AdvancedDamageSystem
     if spec == nil then return end
 
+    if spec.adsPendingByConnection ~= nil then
+        spec.adsPendingByConnection[connection] = 0
+    end
+
     if streamWriteBool(streamId, spec.isExcludedByUser ~= nil) then
         streamWriteBool(streamId, spec.isExcludedByUser)
     end
@@ -1413,15 +1420,18 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
     if spec == nil then return end
 
     if not connection:getIsServer() then
+        local pending = spec.adsPendingByConnection[connection] or 0
+        spec.adsPendingByConnection[connection] = 0
+
         -- [1] State
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_state) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.STATE) ~= 0) then
             streamWriteString(streamId, spec.currentState or "")
             streamWriteString(streamId, spec.plannedState or "")
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.maintenanceTimer, 0, 0))
         end
 
         -- [2] Service context
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_serviceContext) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT) ~= 0) then
             streamWriteString(streamId, spec.serviceOptionOne or "")
             streamWriteString(streamId, spec.serviceOptionTwo or "")
             streamWriteBool(streamId, spec.serviceOptionThree or false)
@@ -1429,7 +1439,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         end
 
         -- [3] Telemetry
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_telemetry) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY) ~= 0) then
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(getSyncOperatingTime(self), 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.realOperatingTime, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
@@ -1438,7 +1448,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         end
 
         -- [4] Thermal
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_thermal) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.THERMAL) ~= 0) then
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature, 20, -80, 160))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature, 20, -80, 180))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0, 0, 1))
@@ -1446,7 +1456,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         end
 
         -- [5] Electrical
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_electrical) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL) ~= 0) then
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batterySoc, 1.0, 0, 1))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.batteryTerminalVoltageV, 12.7, 0, 30))
@@ -1458,7 +1468,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         end
 
         -- [6] Field care
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_fieldcare) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE) ~= 0) then
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.radiatorClogging, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.airIntakeClogging, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
@@ -1466,31 +1476,31 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         end
 
         -- [7] Wear
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_wear) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.WEAR) ~= 0) then
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.serviceLevel, 1.0, 0.001))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.conditionLevel, 1.0, 0.001, 1.0))
             streamWriteString(streamId, ADS_Utils.serializeSystemsState(spec.systems))
         end
 
         -- [8] Breakdowns
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_breakdowns) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS) ~= 0) then
             streamWriteString(streamId, ADS_Utils.serializeBreakdowns(spec.activeBreakdowns or {}))
         end
 
         -- [9] Service progress
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_serviceProgress) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS) ~= 0) then
             streamWriteInt32(streamId, spec.pendingProgressStepIndex or 0)
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressTotalTime, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.pendingProgressElapsedTime, 0, 0))
         end
 
         -- [11] Drivetrain
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_drivetrain) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN) ~= 0) then
             ADS_Drivetrain.writeStreamState(self, streamId)
         end
 
         -- [10] Tutorial data (MP clients only)
-        if streamWriteBool(streamId, bitAND(dirtyMask, spec.adsDirtyFlag_tutorialData) ~= 0) then
+        if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.TUTORIAL_DATA) ~= 0) then
             local fuelState = spec.fuelState
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.idleTimer or 0, 0, 0, 600))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.level or 0, 0, 0, 1))
@@ -2230,19 +2240,10 @@ function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.pendingRepairSystemStressStartRatio = {}
 
 
-    -- Dirty flags for network differential sync
     if self.isServer then
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_state = self:getNextDirtyFlag()             -- [1] currentState, plannedState, maintenanceTimer
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceContext = self:getNextDirtyFlag()    -- [2] serviceOptionOne, serviceOptionTwo, serviceOptionThree, workshopType
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_telemetry = self:getNextDirtyFlag()         -- [3] operatingTime, _fuelUsageRaw, dynamicMotorLoad, wheelSlipIntensity
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_thermal = self:getNextDirtyFlag()           -- [4] rawEngineTemperature, rawTransmissionTemperature, thermostatState, transmissionThermostatState
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_electrical = self:getNextDirtyFlag()        -- [5] battery state, voltage, preheat state
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_fieldcare = self:getNextDirtyFlag()         -- [6] radiatorClogging, airIntakeClogging, lubricationLevel, fieldInspectionSoundActive
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_wear = self:getNextDirtyFlag()              -- [7] serviceLevel, conditionLevel, systems[...].condition, systems[...].stress
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_breakdowns = self:getNextDirtyFlag()        -- [8] activeBreakdowns
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_serviceProgress = self:getNextDirtyFlag()   -- [9] pendingProgressElapsedTime, pendingProgressTotalTime, pendingProgressStepIndex
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_tutorialData = self:getNextDirtyFlag()        -- [10] tutorial-only data for MP clients
-        self.spec_AdvancedDamageSystem.adsDirtyFlag_drivetrain = self:getNextDirtyFlag()          -- [11] driveMode, autoEngaged, diffLockRequested, diffLockEngaged, windupActive, windupStress
+        local spec = self.spec_AdvancedDamageSystem
+        spec.adsDirtyFlag = self:getNextDirtyFlag()
+        spec.adsPendingByConnection = {}
     end
 end
 
@@ -2731,7 +2732,7 @@ function AdvancedDamageSystem:onLeaveVehicle(wasEntered)
         if self:getMotorState() ~= MotorState.OFF then
             self:setMotorState(MotorState.OFF)
         end
-        self:raiseDirtyFlags(spec.adsDirtyFlag_electrical)
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
     end
 end
 
@@ -6713,9 +6714,7 @@ function AdvancedDamageSystem:addBreakdown(breakdownId, stageOrOptions)
     
     self:recalculateAndApplyEffects()
 
-    if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-        self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-    end
+    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
 end
 
 function AdvancedDamageSystem:suspendBreakdown(breakdownId, resumeTimer)
@@ -6735,9 +6734,7 @@ function AdvancedDamageSystem:suspendBreakdown(breakdownId, resumeTimer)
 
     self:recalculateAndApplyEffects()
 
-    if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-        self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-    end
+    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
 end
 
 function AdvancedDamageSystem:removeBreakdown(...)
@@ -6751,9 +6748,7 @@ function AdvancedDamageSystem:removeBreakdown(...)
     if #idsToRemove == 0 then
         spec.activeBreakdowns = {}
         self:recalculateAndApplyEffects()
-        if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
         return
     end
 
@@ -6767,9 +6762,7 @@ function AdvancedDamageSystem:removeBreakdown(...)
     
     if removedCount > 0 then
         self:recalculateAndApplyEffects()
-        if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
     end
 end
 
@@ -6863,10 +6856,7 @@ function AdvancedDamageSystem:changeBreakdownStage(breakdownId, targetStageOrRev
         breakdown.stage = targetStage
         self:recalculateAndApplyEffects()
 
-        -- Sync breakdown stage change
-        if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
     end
 end
 
@@ -6935,10 +6925,7 @@ function AdvancedDamageSystem:processBreakdowns(dt)
     if effectsNeedRecalculation then
         self:recalculateAndApplyEffects()
 
-        -- Sync breakdown stage progression
-        if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
     end
 end
 
@@ -6976,9 +6963,7 @@ function AdvancedDamageSystem:processGeneralWearBreakdown()
     end
 
     if needToRecalculate and isGeneralWearShouldBe then
-        if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
         self:recalculateAndApplyEffects()
         spec._prevConditionLevel = self:getConditionLevel()
     end
@@ -7080,7 +7065,6 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
                                         local newStarter = newExtraData.starter == true
 
                                         if existingStarter and not newStarter then
-                                            -- Non-starter failures should win over starter-driven causes.
                                             existingEffect.extraData = newExtraData
                                         else
                                             existingEffect.extraData.starter = existingStarter or newStarter
@@ -7107,14 +7091,11 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
         end
     end
 
-    -- Remove unknown breakdowns safely after iteration completes
     if #unknownBreakdownIds > 0 then
         for _, unknownId in ipairs(unknownBreakdownIds) do
             spec.activeBreakdowns[unknownId] = nil
         end
-        if self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
     end
 
     spec.activeEffects = aggregatedEffects
@@ -7598,11 +7579,9 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
         resetPendingServiceProgress(spec)
     end
 
-    if self.isServer and spec.adsDirtyFlag_state ~= nil then
-        self:raiseDirtyFlags(spec.adsDirtyFlag_state)
-        self:raiseDirtyFlags(spec.adsDirtyFlag_serviceProgress)
-        self:raiseDirtyFlags(spec.adsDirtyFlag_serviceContext)
-    end
+    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.STATE
+        + AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS
+        + AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
 end
 
 local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, optionTwo, optionTwoKey)
@@ -7631,7 +7610,6 @@ local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, o
             log_dbg(string.format("Repair effect skipped: missing system mapping for breakdown '%s' (system='%s')", tostring(breakdownId), tostring(systemName)))
         end
 
-        --- roll for defected parts
         if optionTwo ~= AdvancedDamageSystem.PART_TYPES.PREMIUM then
             local defectChance = C.PARTS_BREAKDOWN_CHANCES[optionTwoKey]
             if math.random() < defectChance then
@@ -7663,7 +7641,6 @@ function AdvancedDamageSystem:processService(dt)
         return
     end
 
-    -- timer progress
     local timeScale = getSafeMissionTimeScale()
     local prevTimer = spec.maintenanceTimer or 0
     spec.maintenanceTimer = (spec.maintenanceTimer or 0) - dt * timeScale
@@ -7678,7 +7655,6 @@ function AdvancedDamageSystem:processService(dt)
     local optionTwo = spec.serviceOptionTwo
     local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
 
-    -- inspection effect
     if serviceType == states.INSPECTION or serviceType == states.MAINTENANCE then
         local steps = #spec.pendingInspectionQueue
         local breakdownsRevealed = false
@@ -7708,12 +7684,10 @@ function AdvancedDamageSystem:processService(dt)
                 end
             end
         end
-        -- Sync newly-revealed breakdowns
-        if breakdownsRevealed and self.isServer and spec.adsDirtyFlag_breakdowns ~= nil then
-            self:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
+        if breakdownsRevealed then
+            AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
         end
 
-    -- repair effect
     elseif serviceType == states.REPAIR then
         local steps = #spec.pendingRepairQueue
         if steps > 0 and spec.pendingProgressTotalTime > 0 then
@@ -7738,7 +7712,6 @@ function AdvancedDamageSystem:processService(dt)
         spec.serviceLevel = math.max(spec.pendingMaintenanceServiceStart, interpolatedService)
         applyPendingPreventiveStressInterpolation(spec, ratio)
     
-    --- overhaul
     elseif serviceType == states.OVERHAUL and spec.pendingProgressTotalTime > 0 then
         local ratio = math.min(math.max(spec.pendingProgressElapsedTime / spec.pendingProgressTotalTime, 0), 1)
         local hasPerSystemTargets = spec.pendingOverhaulSystemStart ~= nil and next(spec.pendingOverhaulSystemStart) ~= nil and spec.pendingOverhaulSystemTarget ~= nil and next(spec.pendingOverhaulSystemTarget) ~= nil
@@ -7756,7 +7729,6 @@ function AdvancedDamageSystem:processService(dt)
         end
     end
 
-    -- work done
     if (spec.maintenanceTimer or 0) <= 0 then
         spec.maintenanceTimer = 0
         if serviceType == states.MAINTENANCE and math.random() < C.PARTS_BREAKDOWN_CHANCES[optionTwoKey] then
@@ -7789,7 +7761,6 @@ function AdvancedDamageSystem:completeService()
         spec.batteryChargeAh = effectiveCapacityAh
     end
 
-    --- charge battery
     if serviceType == states.MAINTENANCE and spec.pendingMaintenanceServiceTarget ~= nil then
         local maintenanceStart = spec.pendingMaintenanceServiceStart or spec.serviceLevel
         spec.serviceLevel = math.max(maintenanceStart, spec.pendingMaintenanceServiceTarget)
@@ -7869,8 +7840,6 @@ function AdvancedDamageSystem:completeService()
         end
 
         if optionThree and needRepair then
-            -- Planned repair should have a concrete queue. Ensure discovered/selected visible
-            -- breakdowns are marked for repair before the next service starts.
             for _, breakdownId in ipairs(plannedRepairCandidateIds) do
                 local breakdown = self:getActiveBreakdowns()[breakdownId]
                 if breakdown ~= nil and breakdown.isVisible then
@@ -7890,12 +7859,10 @@ function AdvancedDamageSystem:completeService()
         lastEntry.isVisible = true
     end
 
-    -- unpark vehicle
     if self.spec_enterable ~= nil and self.spec_enterable.setIsTabbable ~= nil then 
         self.spec_enterable:setIsTabbable(true)
     end
 
-    -- clean vehicle
     if serviceType ~= states.INSPECTION then
         if not isMobileWorkshop then
             self:setDirtAmount(0)
@@ -7921,12 +7888,10 @@ function AdvancedDamageSystem:completeService()
         end
     end
 
-    -- repaint vehicle
     if serviceType == states.OVERHAUL and optionThree == true then
         resetVehicleRepaintWear(self)
     end
 
-    -- cvt addon repair
     if serviceType == states.REPAIR or serviceType == states.OVERHAUL and spec.pendingSelectedBreakdowns.CVT_ADDON_MALFUNCTION ~= nil then
         local systemData = spec.systems.transmission
         if systemData.stress > 0.25 then
@@ -7951,7 +7916,6 @@ function AdvancedDamageSystem:completeService()
         end
     end
 
-    -- Host-side notification: only if host owns the vehicle (clients get it via ADS_VehicleChangeStatusEvent)
     if g_currentMission.hud ~= nil and g_currentMission.hud.addSideNotification ~= nil
             and self:getOwnerFarmId() == g_currentMission:getFarmId() then
         g_currentMission.hud:addSideNotification({1, 1, 1, 1}, maintenanceCompletedText)
@@ -7962,7 +7926,6 @@ function AdvancedDamageSystem:completeService()
     end
 
 
-    -- Sync maintenance log to all clients via dedicated event
     if self.isServer then
         local lastEntry = spec.maintenanceLog and spec.maintenanceLog[#spec.maintenanceLog]
         if lastEntry ~= nil then
@@ -7976,11 +7939,9 @@ function AdvancedDamageSystem:completeService()
     spec.serviceOptionTwo = nil
     spec.serviceOptionThree = false
 
-    if self.isServer and spec.adsDirtyFlag_state ~= nil then
-        self:raiseDirtyFlags(spec.adsDirtyFlag_state)
-        self:raiseDirtyFlags(spec.adsDirtyFlag_serviceProgress)
-        self:raiseDirtyFlags(spec.adsDirtyFlag_serviceContext)
-    end
+    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.STATE
+        + AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS
+        + AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
 
     if spec.plannedState ~= states.READY then
         local nextWork = spec.plannedState
@@ -8076,13 +8037,11 @@ function AdvancedDamageSystem:cancelService()
     end
 
     local cancelText = string.format("%s: %s %s", self:getFullName(), g_i18n:getText(serviceType), g_i18n:getText("ads_spec_maintenance_cancelled_notification"))
-    -- Host-side notification: only if host owns the vehicle (clients get it via ADS_VehicleChangeStatusEvent)
     if g_currentMission.hud ~= nil and g_currentMission.hud.addSideNotification ~= nil
             and self:getOwnerFarmId() == g_currentMission:getFarmId() then
         g_currentMission.hud:addSideNotification({1, 1, 1, 1}, cancelText)
     end
 
-    -- Sync maintenance log to all clients via dedicated event
     if self.isServer then
         local lastEntry = spec.maintenanceLog and spec.maintenanceLog[#spec.maintenanceLog]
         if lastEntry ~= nil then
@@ -8098,11 +8057,9 @@ function AdvancedDamageSystem:cancelService()
     spec.serviceOptionTwo = nil
     spec.serviceOptionThree = false
 
-    if self.isServer and spec.adsDirtyFlag_state ~= nil then
-        self:raiseDirtyFlags(spec.adsDirtyFlag_state)
-        self:raiseDirtyFlags(spec.adsDirtyFlag_serviceProgress)
-        self:raiseDirtyFlags(spec.adsDirtyFlag_serviceContext)
-    end
+    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.STATE
+        + AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS
+        + AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
 
     ADS_VehicleChangeStatusEvent.send(self, cancelText)
 end
@@ -8595,7 +8552,6 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
     local workshopKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.WORKSHOP, workshopType)
     local ownWorkshopDiscount = ADS_Config.WORKSHOP.PRICE_MULTIPLIERS[workshopKey] or 1.0
 
-    -- inspection
     if maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
         local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
         local inspectionPrice = math.ceil(math.max((C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.INSPECTION_PRICE_MULTIPLIERS[key] * price * 0.001 * ownWorkshopDiscount / 10) / spec.maintainability, 2)) * 10
@@ -8606,7 +8562,6 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
         log_dbg(string.format("Calculated inspection price: %.2f (base price: %.2f, multiplier: %.4f, own workshop discount: %.2f, maintainability: %.2f)", inspectionPrice, price, C.INSPECTION_PRICE_MULTIPLIERS[key] * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * 0.0005, ownWorkshopDiscount, spec.maintainability))
         return inspectionPrice
         
-    -- maintenance
     elseif maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
         local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
         local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
@@ -8614,7 +8569,6 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
         log_dbg(string.format("Calculated maintenance price: %.2f (base price: %.2f, multiplier: %.2f, own workshop discount: %.2f, age factor: %.2f, maintainability: %.2f)", maintenancePrice, price, C.MAINTENANCE_PRICE_MULTIPLIERS[key] * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.PARTS_PRICE_MULTIPLIERS[optionTwoKey], ownWorkshopDiscount, ageFactor, spec.maintainability))
         return  maintenancePrice
 
-    -- overhaul
     elseif maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
         local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
         local overhaulPrice = 0
@@ -8636,7 +8590,6 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
         log_dbg(string.format("Calculated overhaul price: %.2f (base price: %.2f, multiplier: %.2f, own workshop discount: %.2f, maintainability: %.2f)", overhaulPrice, price, C.OVERHAUL_PRICE_MULTIPLIERS[key] * C.GLOBAL_SERVICE_PRICE_MULTIPLIER, ownWorkshopDiscount, spec.maintainability))
         return overhaulPrice
     
-    -- repair
     elseif maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
         if self:isWarrantyRepairCovered(optionOne, optionTwo) then
             return 0
@@ -8701,7 +8654,6 @@ function AdvancedDamageSystem:getServiceDuration(maintenanceType, optionOne, opt
         workDurationHours = spec.maintenanceTimer / 3600000
     else
         local totalDurationMs = 0
-        -- inspection
         if maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
             if C.INSTANT_INSPECTION and optionOne == AdvancedDamageSystem.INSPECTION_TYPES.VISUAL then
                 optionOne = AdvancedDamageSystem.INSPECTION_TYPES.STANDARD
@@ -8712,11 +8664,9 @@ function AdvancedDamageSystem:getServiceDuration(maintenanceType, optionOne, opt
             else
                 totalDurationMs = C.INSPECTION_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.INSPECTION_TIME_MULTIPLIERS[key] / spec.maintainability
             end
-        -- maintenance
         elseif maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
             local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
             totalDurationMs = C.MAINTENANCE_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.MAINTENANCE_TIME_MULTIPLIERS[key] / spec.maintainability
-        -- overhaul
         elseif maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
             local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
             totalDurationMs = C.OVERHAUL_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.OVERHAUL_TIME_MULTIPLIERS[key] / spec.maintainability
@@ -8730,7 +8680,6 @@ function AdvancedDamageSystem:getServiceDuration(maintenanceType, optionOne, opt
             if optionThree then
                 totalDurationMs = totalDurationMs + C.REPAINT_TIME
             end
-        -- repair
         elseif maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
             local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
             local repairCount = 0
@@ -9030,9 +8979,7 @@ local function syncConsoleCloggingState(vehicle, spec, parent, key)
         end
     end
 
-    if vehicle.isServer and spec.adsDirtyFlag_fieldcare ~= nil then
-        vehicle:raiseDirtyFlags(spec.adsDirtyFlag_fieldcare)
-    end
+    AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
 
     return true
 end
@@ -9869,7 +9816,6 @@ function AdvancedDamageSystem.ConsoleCommands:finishMaintance()
     end
 
     if spec.currentState ~= AdvancedDamageSystem.STATUS.READY then
-        -- Fallback for rare edge-cases where processService didn't finalize.
         spec.pendingProgressElapsedTime = spec.pendingProgressTotalTime or 0
         spec.maintenanceTimer = 0
         vehicle:completeService()
@@ -10382,9 +10328,7 @@ function AdvancedDamageSystem.ConsoleCommands:setOperatingTime(rawArgs)
     spec._allowAdsOperatingTimeWrite = false
     spec.realOperatingTime = operatingTimeMs
 
-    if vehicle.isServer and spec.adsDirtyFlag_telemetry ~= nil then
-        vehicle:raiseDirtyFlags(spec.adsDirtyFlag_telemetry)
-    end
+    AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY)
 
     print(string.format(
         "ADS: Operating time for '%s' changed: %.2f h -> %.2f h (%.0f ms).",

@@ -338,9 +338,7 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
                 ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
 
                 local spec = vehicle.spec_AdvancedDamageSystem
-                if vehicle.isServer and spec.adsDirtyFlag_electrical ~= nil then
-                    vehicle:raiseDirtyFlags(spec.adsDirtyFlag_electrical)
-                end
+                AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
             end
         end
     end

@@ -98,33 +98,15 @@ function ADS_ConsoleCommandEvent:run(connection)
 
     if self.vehicle ~= nil and self.vehicle.spec_AdvancedDamageSystem ~= nil then
         local spec = self.vehicle.spec_AdvancedDamageSystem
-        if spec.adsDirtyFlag_state ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_state)
-        end
-        if spec.adsDirtyFlag_serviceContext ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_serviceContext)
-        end
-        if spec.adsDirtyFlag_telemetry ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_telemetry)
-        end
-        if spec.adsDirtyFlag_thermal ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_thermal)
-        end
-        if spec.adsDirtyFlag_electrical ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_electrical)
-        end
-        if spec.adsDirtyFlag_fieldcare ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_fieldcare)
-        end
-        if spec.adsDirtyFlag_wear ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_wear)
-        end
-        if spec.adsDirtyFlag_breakdowns ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_breakdowns)
-        end
-        if spec.adsDirtyFlag_serviceProgress ~= nil then
-            self.vehicle:raiseDirtyFlags(spec.adsDirtyFlag_serviceProgress)
-        end
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.STATE)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.THERMAL)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.WEAR)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS)
     end
 
     if self.commandName == "setConfigVar" then

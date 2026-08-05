@@ -4,21 +4,11 @@ ADS_Consumptables = ADS_Consumptables or {}
 --                  HELPER FUNCTIONS
 -- ==========================================================
 
-local function raiseFieldcareDirty(vehicle, spec)
-    if vehicle ~= nil
-        and vehicle.isServer
-        and spec ~= nil
-        and spec.adsDirtyFlag_fieldcare ~= nil
-        and vehicle.raiseDirtyFlags ~= nil then
-        vehicle:raiseDirtyFlags(spec.adsDirtyFlag_fieldcare)
-    end
-end
-
 local function updateFieldInspectionSoundActive(vehicle, spec)
     local isActive = next(spec.fieldInspectionActivePlayers) ~= nil
     if spec.fieldInspectionSoundActive ~= isActive then
         spec.fieldInspectionSoundActive = isActive
-        raiseFieldcareDirty(vehicle, spec)
+        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
     end
 end
 
@@ -53,13 +43,6 @@ function ADS_Consumptables:updateFieldInspectionSound()
         ADS_SoundManager.setSamplePlaying(spec.samples.inspection, not spec.isExcludedVehicle and spec.fieldInspectionSoundActive)
     end
 end
-
--- ==========================================================
---                      ENGINE
--- ==========================================================
-
-
-
 
 -- ==========================================================
 --          RADIATOR AND AIR INTAKE CLOGGING
@@ -235,13 +218,12 @@ function ADS_Consumptables:cleanRadiatorAndAirIntake(dt)
     spec.radiatorClogging = math.max(prevRadiatorClogging - cleaningDelta, 0)
     spec.airIntakeClogging = math.max(prevAirIntakeClogging - cleaningDelta, 0)
 
-    --- tutorial message
     if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED ~= nil and not ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED then
         ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED = true
     end
 
     if self.isServer then
-        raiseFieldcareDirty(self, spec)
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
     end
 end
 
@@ -261,7 +243,7 @@ function ADS_Consumptables:onLubricationPeriodChanged()
             (tonumber(spec.lubricationLevel) or 1.0) - C.LUBRICATION_REDUCE_PER_PERIOD,
             0
         )
-        raiseFieldcareDirty(self, spec)
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
     end
 
     spec.lubricationUsedThisPeriod = false
@@ -291,13 +273,12 @@ function ADS_Consumptables:lubricateVehicle()
     spec.lubricationLevel = math.min(spec.lubricationLevel + C.LUBRICATION_RESTORE_PER_USE, 1.0)
     spec.lubricationUsedThisPeriod = true
 
-    --- tutorial message
     if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then
         ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION = true
     end
 
     if self.isServer then
-        raiseFieldcareDirty(self, spec)
+        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
     end
 end
 
