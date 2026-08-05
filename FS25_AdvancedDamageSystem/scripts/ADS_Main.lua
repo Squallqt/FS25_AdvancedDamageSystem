@@ -112,46 +112,40 @@ function ADS_Main.initSpec()
     TypeManager.finalizeTypes = Utils.appendedFunction(TypeManager.finalizeTypes, ADS_Main.registerSpecializationToVehicles)
 end
 
+local ADS_REQUIRED_SPECIALIZATIONS = {"motorized", "wheels", "enterable"}
+
+local ADS_REJECTED_SPECIALIZATIONS = {"attachable", "pushHandTool", "locomotive", "motorbike"}
+
+local function getIsTypeManagedByADS(vehicleType)
+	local specializations = vehicleType.specializationsByName
+	if specializations.AdvancedDamageSystem ~= nil then
+		return false
+	end
+
+	for _, name in ipairs(ADS_REQUIRED_SPECIALIZATIONS) do
+		if specializations[name] == nil then
+			return false
+		end
+	end
+
+	for _, name in ipairs(ADS_REJECTED_SPECIALIZATIONS) do
+		if specializations[name] ~= nil then
+			return false
+		end
+	end
+
+	return true
+end
+
 function ADS_Main.registerSpecializationToVehicles()
 	local specName = "AdvancedDamageSystem"
-	for vehicleType, vehicle in pairs(g_vehicleTypeManager.types) do
-		if vehicle ~= nil and 
-            not string.find(string.lower(vehicleType), "handtool") and
-            not string.find(string.lower(vehicleType), "pushable") and
-            not string.find(string.lower(vehicleType), "portable") and
-            not string.find(string.lower(vehicleType), "taczka") and
-            not string.find(vehicleType, "FS25_lsfmFarmEquipmentPack") and
-            not string.find(vehicleType, "FS25_FillablePallet") and
-            not string.find(vehicleType, "FS25_ASM_FarmyardTrailerDolly") and
-            vehicleType ~= "motorbike" and 
-            vehicleType ~= "inlineWrapper" and 
-            not string.find(string.lower(vehicleType), "locomotive", 1, true) and
-            vehicleType ~= "conveyorBelt" and 
-            vehicleType ~= "pickupConveyorBelt" and 
-            vehicleType ~= "woodCrusherTrailermotorized" and 
-            vehicleType ~= "baleWrapper" and 
-            vehicleType ~= "craneTrailer" and
-            vehicleType ~= "highPressureWasher" and
-            vehicleType ~= "pdlc_highlandsFishingPack.cargoBoat" and
-            vehicleType ~= "pdlc_highlandsFishingPack.boat" then
+	local specObject = g_specializationManager:getSpecializationObjectByName(specName)
 
-			local ismotorized = false;
-			local hasNotADS = true;
-			for name, spec in pairs(vehicle.specializationsByName) do
-				if name == "motorized" then
-					ismotorized = true;
-				elseif name == "AdvancedDamageSystem" then
-					hasNotADS = false;
-				end
-			end
-			if hasNotADS and ismotorized then
-				local specObject = g_specializationManager:getSpecializationObjectByName(specName);
-				if specObject then
-                    vehicle.specializationsByName[specName] = specObject;
-				    table.insert(vehicle.specializationNames, specName);
-				    table.insert(vehicle.specializations, specObject);
-                end
-			end
+	for _, vehicleType in pairs(g_vehicleTypeManager.types) do
+		if getIsTypeManagedByADS(vehicleType) then
+			vehicleType.specializationsByName[specName] = specObject
+			table.insert(vehicleType.specializationNames, specName)
+			table.insert(vehicleType.specializations, specObject)
 		end
 	end
 end

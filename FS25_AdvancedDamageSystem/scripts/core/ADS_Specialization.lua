@@ -469,15 +469,20 @@ local function getIsElectricVehicle(vehicle)
     return hasElectricConsumer and not hasCombustionConsumer
 end
 
-local function getIsExcludedFromADS(vehicle)
-    local vehicleName = vehicle:getFullName()
-    if getIsElectricVehicle(vehicle) or
-            vehicleName == 'Lizard Old Bike' or
-            vehicleName == 'Lizard Mountain Bike' or
-            vehicleName == 'Lizard Motorized Bike' then
-        return true
+local function getIsUnsupportedVehicle(vehicle)
+    return getIsElectricVehicle(vehicle)
+end
+
+local function getIsAuxiliaryMachine(vehicle)
+    return not vehicle:getIsTabbable()
+end
+
+local function refreshExclusionState(spec)
+    if spec.isExcludedByUser ~= nil then
+        spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByUser
+    else
+        spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByRule
     end
-    return false
 end
 
 local function raiseAllADSDirtyFlags(vehicle, spec)
@@ -522,7 +527,7 @@ function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
     end
 
     spec.isExcludedByUser = requestedValue
-    spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByUser
+    refreshExclusionState(spec)
 
     if spec.isExcludedVehicle then
         spec.pendingSideNotifications = {}
@@ -989,7 +994,7 @@ function AdvancedDamageSystem.initSpecialization()
     schema:setXMLSpecializationType("AdvancedDamageSystem")
 
     local baseKey = "vehicles.vehicle(?).AdvancedDamageSystem"
-    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#isExcludedByUser", "User-controlled ADS exclusion flag")
+    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#userExclusion", "User decision overriding the automatic exclusion, absent when the user has no opinion")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#service", "Service Level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#condition", "Condition Level")
     schemaSavegame:register(XMLValueType.STRING, baseKey .. "#breakdowns", "Active Breakdowns")
@@ -1198,7 +1203,9 @@ function AdvancedDamageSystem:onWriteStream(streamId, connection)
     local spec = self.spec_AdvancedDamageSystem
     if spec == nil then return end
 
-    streamWriteBool(streamId, spec.isExcludedByUser == true)
+    if streamWriteBool(streamId, spec.isExcludedByUser ~= nil) then
+        streamWriteBool(streamId, spec.isExcludedByUser)
+    end
     streamWriteBool(streamId, spec.isExcludedVehicle == true)
     if spec.isExcludedVehicle then return end
 
@@ -1272,7 +1279,10 @@ function AdvancedDamageSystem:onReadStream(streamId, connection)
     local spec = self.spec_AdvancedDamageSystem
     if spec == nil then return end
 
-    spec.isExcludedByUser = streamReadBool(streamId)
+    spec.isExcludedByUser = nil
+    if streamReadBool(streamId) then
+        spec.isExcludedByUser = streamReadBool(streamId)
+    end
     spec.isExcludedVehicle = streamReadBool(streamId)
     if spec.isExcludedVehicle then return end
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
@@ -1642,7 +1652,9 @@ end
 function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
     local spec = self.spec_AdvancedDamageSystem
     if spec ~= nil and not spec.isExcludedByDefault then
-        xmlFile:setValue(key .. "#isExcludedByUser", spec.isExcludedByUser == true)
+        if spec.isExcludedByUser ~= nil then
+            xmlFile:setValue(key .. "#userExclusion", spec.isExcludedByUser)
+        end
         local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
         local realOperatingTime = spec.realOperatingTime
         if (realOperatingTime == nil or realOperatingTime <= 0) and currentOperatingTime > 0 then
@@ -1754,7 +1766,8 @@ end
 function AdvancedDamageSystem:onLoad(savegame)
     self.spec_AdvancedDamageSystem.isExcludedVehicle = false
     self.spec_AdvancedDamageSystem.isExcludedByDefault = false
-    self.spec_AdvancedDamageSystem.isExcludedByUser = false
+    self.spec_AdvancedDamageSystem.isExcludedByRule = false
+    self.spec_AdvancedDamageSystem.isExcludedByUser = nil
     self.spec_AdvancedDamageSystem.isElectricVehicle = false
     self.spec_AdvancedDamageSystem.isTruck = getIsTruck(self)
     self.spec_AdvancedDamageSystem.isVehicleNeedLubricate = false
@@ -2218,13 +2231,14 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     local spec = self.spec_AdvancedDamageSystem
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
 
-    spec.isExcludedByDefault = getIsExcludedFromADS(self)
-    spec.isExcludedByUser = false
+    spec.isExcludedByDefault = getIsUnsupportedVehicle(self)
+    spec.isExcludedByRule = getIsAuxiliaryMachine(self)
+    spec.isExcludedByUser = nil
     if savegame ~= nil then
-        local exclusionKey = savegame.key .. ".AdvancedDamageSystem#isExcludedByUser"
-        spec.isExcludedByUser = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(exclusionKey, false), false)
+        local exclusionKey = savegame.key .. ".AdvancedDamageSystem#userExclusion"
+        spec.isExcludedByUser = savegame.xmlFile:getValue(exclusionKey)
     end
-    spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByUser
+    refreshExclusionState(spec)
     if spec.isExcludedByDefault then return end
 
     if spec ~= nil and savegame ~= nil then
@@ -10517,9 +10531,10 @@ function AdvancedDamageSystem.ConsoleCommands:setExcluded(rawArgs)
 
     if rawValue == nil then
         print(string.format(
-            "ADS: '%s' exclusion state: user=%s, default=%s, effective=%s. Usage: ads_setExcluded <true|false>",
+            "ADS: '%s' exclusion state: user=%s, rule=%s, unsupported=%s, effective=%s. Usage: ads_setExcluded <true|false>",
             vehicle:getFullName(),
-            tostring(spec.isExcludedByUser == true),
+            tostring(spec.isExcludedByUser),
+            tostring(spec.isExcludedByRule == true),
             tostring(spec.isExcludedByDefault == true),
             tostring(spec.isExcludedVehicle == true)
         ))
@@ -10538,7 +10553,7 @@ function AdvancedDamageSystem.ConsoleCommands:setExcluded(rawArgs)
 
     local changed, reason = vehicle:setADSUserExcluded(isExcluded)
     if reason == "default" then
-        print(string.format("ADS: '%s' is excluded automatically and cannot be changed by this command.", vehicle:getFullName()))
+        print(string.format("ADS: '%s' is not supported by ADS and cannot be managed.", vehicle:getFullName()))
         return
     end
 
