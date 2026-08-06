@@ -1518,7 +1518,7 @@ function ADS_Hud:drawLoadMass(cardRightX)
 end
 
 -- =====================================================================================
---                              DEBAG HUD ACTIVE
+--                              DEBUG HUD ACTIVE
 -- =====================================================================================
 
 function ADS_Hud:renderActiveVehicleDebugCache(cache)

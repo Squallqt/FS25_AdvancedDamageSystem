@@ -182,7 +182,6 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
     local states = AdvancedDamageSystem.STATUS
     local vehicleState = self:getCurrentStatus()
     local C = ADS_Config.MAINTENANCE
-    local selectedBreakdowns = {}
     local totalTimeMs = 0
     local repairPrice = nil
 
@@ -269,7 +268,6 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
             end
         end
 
-        selectedBreakdowns = idsToRepair
         spec.pendingRepairQueue = ADS_Utils.shallowCopy(idsToRepair)
         totalTimeMs = C.REPAIR_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.REPAIR_TIME_MULTIPLIERS[key] * #idsToRepair
         repairPrice = self:getServicePrice(type, optionOne, optionTwo, optionThree)
@@ -286,19 +284,6 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
             if (targetOverhaulSystemKey == nil or targetOverhaulSystemKey == "") and type(optionTwo) == "string" then
                 targetOverhaulSystemKey = string.lower(optionTwo)
             end
-        end
-
-        if next(spec.activeBreakdowns) ~= nil then
-            local idsToRepair = {}
-            for id, _ in pairs(spec.activeBreakdowns) do
-                if ADS_Breakdowns.BreakdownRegistry[id] and ADS_Breakdowns.BreakdownRegistry[id].isSelectable then
-                    local breakdownSystemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, ADS_Breakdowns.BreakdownRegistry[id].system)
-                    if optionOne ~= AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL or targetOverhaulSystemKey == breakdownSystemKey then
-                        table.insert(idsToRepair, id)
-                    end
-                end
-            end
-            selectedBreakdowns = idsToRepair
         end
 
         local overhaulPerformedCount = self:getOverhaulPerformedCount()
