@@ -8058,7 +8058,7 @@ function AdvancedDamageSystem:addEntryToMaintenanceLog(maintenanceType, optionOn
     local spec = self.spec_AdvancedDamageSystem
     if not spec then return end
 
-    local entryId = (#spec.maintenanceLog or 0) + 1
+    local entryId = #spec.maintenanceLog + 1
     local env = g_currentMission.environment
     local selectedBreakdowns = ADS_Utils.shallowCopy(spec.pendingSelectedBreakdowns or {})
     local systemsSnapshot = ADS_Utils.createSystemsSnapshot(spec.systems)
@@ -9589,11 +9589,10 @@ function AdvancedDamageSystem.ConsoleCommands:setService(rawArgs)
     if not found and vehicle.isServer then
         vehicle:addEntryToMaintenanceLog(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
         local entry = spec.maintenanceLog[#spec.maintenanceLog]
-        if entry then
-            entry.conditionData.operatingHours = targetOpHours
-            entry.conditionData.service = value
-            entry.isVisible = false
-        end
+        entry.conditionData.operatingHours = targetOpHours
+        entry.conditionData.service = value
+        entry.isVisible = false
+        ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
     end
 
     print(string.format("ADS: Set Service level for '%s' to %.2f.", vehicle:getFullName(), value))
@@ -9631,12 +9630,11 @@ function AdvancedDamageSystem.ConsoleCommands:resetVehicle()
     if not found and vehicle.isServer then
         vehicle:addEntryToMaintenanceLog(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
         local entry = spec.maintenanceLog[#spec.maintenanceLog]
-        if entry then
-            entry.conditionData.operatingHours = currentHours
-            entry.conditionData.condition = 1.0
-            entry.conditionData.service = 1.0
-            entry.isVisible = false
-        end
+        entry.conditionData.operatingHours = currentHours
+        entry.conditionData.condition = 1.0
+        entry.conditionData.service = 1.0
+        entry.isVisible = false
+        ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
     end
 
     print(string.format("ADS: Fully reset state for '%s'.", vehicle:getFullName()))

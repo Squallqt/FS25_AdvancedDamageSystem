@@ -1,11 +1,3 @@
--- ADS_LogEntrySyncEvent
--- Server-to-client broadcast event. Sends a new maintenance log entry
--- to all connected clients so their local log stays in sync.
--- Replaces the former dirty-flag group [5] (adsDirtyFlag_meta) which was
--- prone to 32-bit bitmask overflow on heavily-specialised vehicles and
--- also lost entries for 3+ player sessions (pending queue cleared after
--- the first connection write).
-
 ADS_LogEntrySyncEvent = {}
 local ADS_LogEntrySyncEvent_mt = Class(ADS_LogEntrySyncEvent, Event)
 
@@ -51,14 +43,18 @@ function ADS_LogEntrySyncEvent:run(connection)
 
     local entry = ADS_Utils.deserializeMaintenanceLogEntry(self.serializedEntry)
     if entry ~= nil then
+        for i, existingEntry in ipairs(spec.maintenanceLog) do
+            if existingEntry.id == entry.id then
+                spec.maintenanceLog[i] = entry
+                return
+            end
+        end
+
         table.insert(spec.maintenanceLog, entry)
     end
 end
 
 
---- Broadcast a log entry from server to all clients.
---- @param vehicle table  The vehicle that owns the log.
---- @param entry   table  The log entry table (will be serialized internally).
 function ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
     if g_server ~= nil and entry ~= nil then
         local serialized = ADS_Utils.serializeMaintenanceLogEntry(entry)
