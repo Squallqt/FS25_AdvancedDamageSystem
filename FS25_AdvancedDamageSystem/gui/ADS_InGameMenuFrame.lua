@@ -485,22 +485,37 @@ function ADS_InGameMenuFrame:updateDetailBoxVisibility()
 end
 
 function ADS_InGameMenuFrame:updateScreenEdgeSliders()
-    local sliderBoxes = {
-        self.activeTableSliderBox,
-        self.serviceTableSliderBox,
-        self.otherTableSliderBox,
-        self.settingsSliderBox
-    }
+    if self.screenEdgeSliderBoxes == nil then
+        self.screenEdgeSliderBoxes = {
+            self.activeTableSliderBox,
+            self.serviceTableSliderBox,
+            self.otherTableSliderBox,
+            self.settingsSliderBox
+        }
+        self.screenEdgeSliderSizes = {}
+    end
 
-    for _, sliderBox in ipairs(sliderBoxes) do
+    for _, sliderBox in ipairs(self.screenEdgeSliderBoxes) do
         if sliderBox ~= nil and sliderBox.absSize ~= nil and sliderBox.absSize[1] ~= nil and sliderBox.absSize[2] ~= nil then
-            local x = 1 - sliderBox.absSize[1] - ADS_InGameMenuFrame.SCREEN_EDGE_SLIDER_MARGIN_X
-            local y = 0.5 - sliderBox.absSize[2] * 0.5
+            local width, height = sliderBox.absSize[1], sliderBox.absSize[2]
+            local lastSize = self.screenEdgeSliderSizes[sliderBox]
 
-            sliderBox:setAbsolutePosition(x, y)
+            if lastSize == nil or lastSize[1] ~= width or lastSize[2] ~= height then
+                local x = 1 - width - ADS_InGameMenuFrame.SCREEN_EDGE_SLIDER_MARGIN_X
+                local y = 0.5 - height * 0.5
 
-            for _, child in ipairs(sliderBox.elements) do
-                child:updateAbsolutePosition()
+                sliderBox:setAbsolutePosition(x, y)
+
+                for _, child in ipairs(sliderBox.elements) do
+                    child:updateAbsolutePosition()
+                end
+
+                if lastSize == nil then
+                    lastSize = {}
+                    self.screenEdgeSliderSizes[sliderBox] = lastSize
+                end
+                lastSize[1] = width
+                lastSize[2] = height
             end
         end
     end
