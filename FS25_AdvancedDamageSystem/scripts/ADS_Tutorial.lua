@@ -121,7 +121,7 @@ function ADS_Tutorial:update(dt)
             local chassisBrakeState = spec.chassisBrakeState or {}
             local isTruck = spec.isTruck == true
             local heavyTrailerMass = math.max(tonumber(chassisBrakeState.trailerMass or 0) or 0, 0)
-            local tractorHeavyTrailerRatio = tonumber(chassisBrakeState.hpTrailerMassRatio or chassisBrakeState.hpMassRatio or 1000) or 1000
+            local tractorHeavyTrailerRatio = tonumber(chassisBrakeState.hpTrailerMassRatio or 1000) or 1000
             local truckHeavyTrailerRatio = tonumber(chassisBrakeState.hpGrossMassRatio or 1000) or 1000
             local tractorHeavyTrailerThreshold = (tonumber(transmissionConfig.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0) * 0.8
             local truckHeavyTrailerThreshold = (tonumber(transmissionConfig.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0) * 0.8

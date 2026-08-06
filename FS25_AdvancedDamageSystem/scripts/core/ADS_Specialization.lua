@@ -880,7 +880,7 @@ local function markTutorialDataDirty(vehicle, spec)
     local luggingTimer    = tonumber(spec.luggingTutorialTimer)    or 0
     local wheelSlipTimer  = tonumber(spec.wheelSlipTutorialTimer)  or 0
     local brakeState  = spec.chassisBrakeState
-    local hpMassRatio = brakeState ~= nil and (tonumber(brakeState.hpMassRatio) or 1000) or 1000
+    local hpTrailerMassRatio = brakeState ~= nil and (tonumber(brakeState.hpTrailerMassRatio) or 1000) or 1000
     local trailerMass = brakeState ~= nil and (tonumber(brakeState.trailerMass) or 0) or 0
     local hpGrossMassRatio = brakeState ~= nil and (tonumber(brakeState.hpGrossMassRatio) or 1000) or 1000
     local isCranking  = spec.isCranking == true
@@ -898,7 +898,7 @@ local function markTutorialDataDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncTutorial_fuelLevel,       fuelLevel,       0.01)  or
        syncFloatChanged(spec._lastSyncTutorial_luggingTimer,    luggingTimer,    100.0) or
        syncFloatChanged(spec._lastSyncTutorial_wheelSlipTimer,  wheelSlipTimer,  100.0) or
-       syncFloatChanged(spec._lastSyncTutorial_hpMassRatio,     hpMassRatio,     0.1)   or
+       syncFloatChanged(spec._lastSyncTutorial_hpTrailerMassRatio, hpTrailerMassRatio, 0.1) or
        syncFloatChanged(spec._lastSyncTutorial_trailerMass,     trailerMass,     0.01)  or
        syncFloatChanged(spec._lastSyncTutorial_hpGrossMassRatio, hpGrossMassRatio, 0.1) or
        spec._lastSyncTutorial_isCranking    ~= isCranking                              or
@@ -914,7 +914,7 @@ local function markTutorialDataDirty(vehicle, spec)
             spec._lastSyncTutorial_fuelLevel       = fuelLevel
             spec._lastSyncTutorial_luggingTimer    = luggingTimer
             spec._lastSyncTutorial_wheelSlipTimer  = wheelSlipTimer
-            spec._lastSyncTutorial_hpMassRatio     = hpMassRatio
+            spec._lastSyncTutorial_hpTrailerMassRatio = hpTrailerMassRatio
             spec._lastSyncTutorial_trailerMass     = trailerMass
             spec._lastSyncTutorial_hpGrossMassRatio = hpGrossMassRatio
             spec._lastSyncTutorial_isCranking      = isCranking
@@ -1506,7 +1506,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.luggingTutorialTimer, 0, 0, 5000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipTutorialTimer, 0, 0, 3000))
             local brakeState = spec.chassisBrakeState
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpMassRatio or 1000, 1000, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpTrailerMassRatio or 1000, 1000, 0, 10000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.trailerMass or 0, 0, 0))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpGrossMassRatio or 1000, 1000, 0, 10000))
             local steerState = spec.chassisSteerState
@@ -1646,11 +1646,10 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec.wheelSlipTutorialTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 3000)
             local brakeState = spec.chassisBrakeState
             if brakeState == nil then
-                brakeState = { pedal = 0, massRatio = 0, hpMassRatio = 1000, isBraking = false, isBrakingByAxis = false }
+                brakeState = { pedal = 0, massRatio = 0, hpTrailerMassRatio = 1000, isBraking = false, isBrakingByAxis = false }
                 spec.chassisBrakeState = brakeState
             end
-            brakeState.hpMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
-            brakeState.hpTrailerMassRatio = brakeState.hpMassRatio
+            brakeState.hpTrailerMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
             brakeState.trailerMass = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             brakeState.hpGrossMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
             local steerState = spec.chassisSteerState
@@ -2193,7 +2192,6 @@ function AdvancedDamageSystem:onLoad(savegame)
         massRatio = 0,
         trailerMass = 0,
         totalMass = 0,
-        hpMassRatio = 1000,
         hpTrailerMassRatio = 1000,
         hpGrossMassRatio = 1000,
         isBraking = false,
@@ -4558,7 +4556,6 @@ local function updateChassisBrakingState(vehicle)
     brakeState.massRatio = 0
     brakeState.trailerMass = 0
     brakeState.totalMass = 0
-    brakeState.hpMassRatio = 1000
     brakeState.hpTrailerMassRatio = 1000
     brakeState.hpGrossMassRatio = 1000
     brakeState.isBraking = false
@@ -4573,16 +4570,12 @@ local function updateChassisBrakingState(vehicle)
     brakeState.totalMass = totalMass
     brakeState.hpTrailerMassRatio = horsepower / math.max(trailerMass, 0.01)
     brakeState.hpGrossMassRatio = horsepower / math.max(totalMass, 0.01)
-    -- Keep the legacy field for chassis braking and third-party integrations.
-    brakeState.hpMassRatio = brakeState.hpTrailerMassRatio
 
     local drivable = vehicle.spec_drivable
     if drivable == nil or vehicle.spec_wheels == nil then
         return
     end
 
-    -- This is the effective brake pedal after the game has already processed
-    -- updateVehiclePhysics / wheel physics, so brake breakdown modifiers are reflected here.
     local brakePedalRaw = tonumber(vehicle.spec_wheels.brakePedal) or 0
     local axisForward = tonumber(drivable.axisForward or drivable.axisForwardSend or (drivable.lastInputValues and drivable.lastInputValues.axisForward) or 0) or 0
     local movingDirection = tonumber(vehicle.movingDirection) or 0
@@ -4931,9 +4924,6 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
         return
     end
 
-    -- Courseplay deliberately requests a full stop while a Precision Farming
-    -- soil sample is being taken. Do not let the ADS load controller override
-    -- that stop or retain load stress from the stationary sampling operation.
     if getIsSoilSamplingActive(self) then
         self:resetAiWorkerCruiseControlState(false)
         return
@@ -5394,9 +5384,9 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     local brakeState = spec.chassisBrakeState or {}
     local isTruck = spec.isTruck == true
     local trailerMass = math.max(tonumber(brakeState.trailerMass or 0) or 0, 0)
-    local hpMassRatio = isTruck
+    local hpHeavyTrailerRatio = isTruck
         and (tonumber(brakeState.hpGrossMassRatio or 100) or 100)
-        or (tonumber(brakeState.hpTrailerMassRatio or brakeState.hpMassRatio or 100) or 100)
+        or (tonumber(brakeState.hpTrailerMassRatio or 100) or 100)
     local heavyTrailerRatioThreshold = isTruck
         and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0)
         or (tonumber(C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0)
@@ -5503,8 +5493,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         -- heavy trailer factor
-        if trailerMass > 0.1 and hpMassRatio < heavyTrailerRatioThreshold and motorLoad > C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD and speed > 0.5 then
-            heavyTrailerFactor = ADS_Utils.calculateQuadraticMultiplier(hpMassRatio, heavyTrailerRatioThreshold, true, heavyTrailerFullEffectRatio)
+        if trailerMass > 0.1 and hpHeavyTrailerRatio < heavyTrailerRatioThreshold and motorLoad > C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD and speed > 0.5 then
+            heavyTrailerFactor = ADS_Utils.calculateQuadraticMultiplier(hpHeavyTrailerRatio, heavyTrailerRatioThreshold, true, heavyTrailerFullEffectRatio)
             local loadRange = math.max(1.0 - C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD, 0.001)
             local loadRatio = math.clamp((motorLoad - C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD) / loadRange, 0, 1.0)
             heavyTrailerFactor = math.max(heavyTrailerFactor * C.HEAVY_TRAILER_MULTIPLIER * loadRatio, 0)
@@ -5579,7 +5569,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         pullOverloadTimerMin = systemData.pullOverloadTimerMin,
         pullOverloadTimerMax = systemData.pullOverloadTimerMax,
         heavyTrailerFactor = heavyTrailerFactor,
-        heavyTrailerMassRatio = hpMassRatio,
+        heavyTrailerMassRatio = hpHeavyTrailerRatio,
         heavyTrailerMassBasis = isTruck and "gcw" or "trailer",
         luggingFactor = luggingFactor,
         wheelSlipFactor = wheelSlipFactor,
@@ -5926,7 +5916,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
     local trailerMass = math.max(tonumber(brakeState.trailerMass or 0) or 0, 0)
     local hpBrakeMassRatio = isTruck
         and (tonumber(brakeState.hpGrossMassRatio or 100) or 100)
-        or (tonumber(brakeState.hpTrailerMassRatio or brakeState.hpMassRatio or 100) or 100)
+        or (tonumber(brakeState.hpTrailerMassRatio or 100) or 100)
     local brakePedal = tonumber(brakeState.pedal or 0) or 0
     local C = ADS_Config.CORE.CHASSIS_FACTOR_DATA
     local brakeMassRatioThreshold = isTruck
