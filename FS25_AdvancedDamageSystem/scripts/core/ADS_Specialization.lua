@@ -7497,7 +7497,7 @@ function AdvancedDamageSystem:processService(dt)
     local serviceType = spec.currentState
     local optionOne = spec.serviceOptionOne
     local optionTwo = spec.serviceOptionTwo
-    local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+    local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo)
 
     if serviceType == states.INSPECTION or serviceType == states.MAINTENANCE then
         local steps = #spec.pendingInspectionQueue
@@ -7645,7 +7645,7 @@ function AdvancedDamageSystem:completeService()
             self:removeBreakdown(table.unpack(idsToRepair))
         end
     elseif serviceType == states.REPAIR then
-        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo)
         local repairQueue = spec.pendingRepairQueue or {}
         spec.pendingProgressStepIndex = math.max(math.floor(tonumber(spec.pendingProgressStepIndex) or 0), 0)
 
@@ -8408,7 +8408,7 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
         
     elseif maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
         local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
-        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo)
         local maintenancePrice = math.ceil(math.max((C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.MAINTENANCE_PRICE_MULTIPLIERS[key] * C.PARTS_PRICE_MULTIPLIERS[optionTwoKey] * ownWorkshopDiscount * price * ageFactor * 0.01 / 10) / spec.maintainability, 2)) * 10
         log_dbg(string.format("Calculated maintenance price: %.2f (base price: %.2f, multiplier: %.2f, own workshop discount: %.2f, age factor: %.2f, maintainability: %.2f)", maintenancePrice, price, C.MAINTENANCE_PRICE_MULTIPLIERS[key] * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.PARTS_PRICE_MULTIPLIERS[optionTwoKey], ownWorkshopDiscount, ageFactor, spec.maintainability))
         return  maintenancePrice
@@ -8440,7 +8440,7 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
         end
 
         local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
-        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo)
         local repairPrice = 0
         local activeBreakdowns = self:getActiveBreakdowns()
         
