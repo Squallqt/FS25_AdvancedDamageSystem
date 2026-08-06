@@ -932,8 +932,8 @@ function adsHandTools:onUpdate(dt)
         end
 
         if self.isClient then
-            local currentAirIntakeClogging = tonumber(vehicleSpec ~= nil and vehicleSpec.airIntakeClogging or 0) or 0
-            local currentRadiatorClogging = tonumber(vehicleSpec ~= nil and vehicleSpec.radiatorClogging or 0) or 0
+            local currentAirIntakeClogging = vehicleSpec ~= nil and vehicleSpec.airIntakeClogging or 0
+            local currentRadiatorClogging = vehicleSpec ~= nil and vehicleSpec.radiatorClogging or 0
             local hasCleaningDust = currentAirIntakeClogging > 0 or currentRadiatorClogging > 0
             local dustScale = math.max((currentAirIntakeClogging + currentRadiatorClogging) / 20, 0.01)
             local dustLifespan = math.clamp((currentAirIntakeClogging + currentRadiatorClogging) * 1200, 600, 1200)

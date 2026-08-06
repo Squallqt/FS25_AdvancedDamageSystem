@@ -91,7 +91,7 @@ local function getVehicleOperatingHoursValue(vehicle)
         return tonumber(vehicle:getFormattedOperatingTime()) or 0
     end
 
-    local operatingTimeMs = tonumber(vehicle.getOperatingTime ~= nil and vehicle:getOperatingTime() or vehicle.operatingTime or 0) or 0
+    local operatingTimeMs = vehicle:getOperatingTime()
     local minutes = operatingTimeMs / (1000 * 60)
     local hours = math.floor(minutes / 60)
     local tenths = math.floor((minutes - hours * 60) / 6)
@@ -199,7 +199,7 @@ local function buildOtherVehicleRow(vehicle)
     local priceText = g_i18n:formatMoney(currentValue, 0, true, false)
     local priceValue = currentValue
     local operatingHours = getVehicleOperatingHoursValue(vehicle)
-    local damageAmount = tonumber(vehicle.getDamageAmount ~= nil and vehicle:getDamageAmount() or vehicle.damageAmount or 0) or 0
+    local damageAmount = vehicle.getDamageAmount ~= nil and vehicle:getDamageAmount() or 0
     local conditionValue = math.clamp(1 - damageAmount, 0, 1)
 
     if isLeased then

@@ -839,18 +839,18 @@ local function markTutorialDataDirty(vehicle, spec)
     end
 
     local fuelState = spec.fuelState
-    local idleTimer  = fuelState ~= nil and (tonumber(fuelState.idleTimer)  or 0) or 0
-    local fuelLevel  = fuelState ~= nil and (tonumber(fuelState.level)      or 0) or 0
+    local idleTimer  = tonumber(fuelState.idleTimer)  or 0
+    local fuelLevel  = tonumber(fuelState.level)      or 0
     local luggingTimer    = tonumber(spec.luggingTutorialTimer)    or 0
     local wheelSlipTimer  = tonumber(spec.wheelSlipTutorialTimer)  or 0
     local brakeState  = spec.chassisBrakeState
-    local hpTrailerMassRatio = brakeState ~= nil and (tonumber(brakeState.hpTrailerMassRatio) or 1000) or 1000
-    local trailerMass = brakeState ~= nil and (tonumber(brakeState.trailerMass) or 0) or 0
-    local hpGrossMassRatio = brakeState ~= nil and (tonumber(brakeState.hpGrossMassRatio) or 1000) or 1000
+    local hpTrailerMassRatio = tonumber(brakeState.hpTrailerMassRatio) or 1000
+    local trailerMass = tonumber(brakeState.trailerMass) or 0
+    local hpGrossMassRatio = tonumber(brakeState.hpGrossMassRatio) or 1000
     local isCranking  = spec.isCranking == true
     local steerState    = spec.chassisSteerState
-    local groundContact = steerState ~= nil and (steerState.groundContact or 0) > 0 or false
-    local isMoving      = steerState ~= nil and steerState.isMoving == true or false
+    local groundContact = steerState.groundContact > 0
+    local isMoving      = steerState.isMoving == true
     local elecSys      = spec.systems ~= nil and spec.systems.electrical or nil
     local crankingTimer = elecSys ~= nil and (tonumber(elecSys.crankingTimer) or 0) or 0
     local liftedMass     = tonumber(spec.liftedMass)              or 0
@@ -1465,17 +1465,17 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
         -- [10] Tutorial data (MP clients only)
         if streamWriteBool(streamId, bit32.band(pending, AdvancedDamageSystem.SYNC_GROUP.TUTORIAL_DATA) ~= 0) then
             local fuelState = spec.fuelState
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.idleTimer or 0, 0, 0, 600))
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState ~= nil and fuelState.level or 0, 0, 0, 1))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState.idleTimer, 0, 0, 600))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(fuelState.level, 0, 0, 1))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.luggingTutorialTimer, 0, 0, 5000))
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.wheelSlipTutorialTimer, 0, 0, 3000))
             local brakeState = spec.chassisBrakeState
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpTrailerMassRatio or 1000, 1000, 0, 10000))
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.trailerMass or 0, 0, 0))
-            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState ~= nil and brakeState.hpGrossMassRatio or 1000, 1000, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState.hpTrailerMassRatio, 1000, 0, 10000))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState.trailerMass, 0, 0))
+            streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(brakeState.hpGrossMassRatio, 1000, 0, 10000))
             local steerState = spec.chassisSteerState
-            streamWriteBool(streamId, steerState ~= nil and (steerState.groundContact or 0) > 0 or false)
-            streamWriteBool(streamId, steerState ~= nil and steerState.isMoving == true or false)
+            streamWriteBool(streamId, steerState.groundContact > 0)
+            streamWriteBool(streamId, steerState.isMoving == true)
             streamWriteBool(streamId, spec.isCranking == true)
             local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(elecSys ~= nil and elecSys.crankingTimer or 0, 0, 0, 10000))
@@ -1600,27 +1600,15 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
         -- [10] Tutorial data (MP clients only)
         if streamReadBool(streamId) then
             local fuelState = spec.fuelState
-            if fuelState == nil then
-                fuelState = { level = 0, currentUsageRatio = 0, temperature = 0, idleTimer = 0 }
-                spec.fuelState = fuelState
-            end
             fuelState.idleTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 600)
             fuelState.level     = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
             spec.luggingTutorialTimer   = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 5000)
             spec.wheelSlipTutorialTimer = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 3000)
             local brakeState = spec.chassisBrakeState
-            if brakeState == nil then
-                brakeState = { pedal = 0, massRatio = 0, hpTrailerMassRatio = 1000, isBraking = false, isBrakingByAxis = false }
-                spec.chassisBrakeState = brakeState
-            end
             brakeState.hpTrailerMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
             brakeState.trailerMass = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             brakeState.hpGrossMassRatio = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 1000, 0, 10000)
             local steerState = spec.chassisSteerState
-            if steerState == nil then
-                steerState = { prevPosition = nil, position = 0, deltaRate = 0, rateFactor = 0, groundContact = 0, isLowSpeedActive = false, isMoving = false }
-                spec.chassisSteerState = steerState
-            end
             steerState.groundContact = streamReadBool(streamId) and 1 or 0
             steerState.isMoving      = streamReadBool(streamId)
             spec.isCranking          = streamReadBool(streamId)
@@ -4326,24 +4314,9 @@ local function updateChassisVibState(vehicle, dt)
     end
 
     local vibState = spec.chassisVibState
-    if vibState == nil then
-        vibState = {
-            prevSuspension = {},
-            smoothed = 0,
-            raw = 0,
-            signal = 0,
-            wheelCount = 0,
-            speedFactor = 0,
-            avgDensityType = 0,
-            fieldMultiplier = 1
-        }
-        spec.chassisVibState = vibState
-    end
+    local prevSuspension = vibState.prevSuspension
 
-    local prevSuspension = vibState.prevSuspension or {}
-    vibState.prevSuspension = prevSuspension
-
-    local speed = tonumber(vehicle.getLastSpeed ~= nil and vehicle:getLastSpeed() or 0) or 0
+    local speed = vehicle:getLastSpeed()
     local vibRaw = 0
     local vibWheelCount = 0
     local vibAvgDensityType = 0
@@ -4419,27 +4392,12 @@ local function updateChassisSteeringState(vehicle, dt)
     end
 
     local steerState = spec.chassisSteerState
-    if steerState == nil then
-        steerState = {
-            prevPosition = nil,
-            position = 0,
-            angleMagnitude = 0,
-            inputMagnitude = 0,
-            deltaRate = 0,
-            rateFactor = 0,
-            groundContact = 0,
-            isLowSpeedActive = false,
-            isMoving = false
-        }
-        spec.chassisSteerState = steerState
-    end
-
-    local speed = tonumber(vehicle.getLastSpeed ~= nil and vehicle:getLastSpeed() or 0) or 0
+    local speed = vehicle:getLastSpeed()
     local C = ADS_Config.CORE.CHASSIS_FACTOR_DATA
     local steerSpeedThreshold = tonumber(C.STEER_LOAD_SPEED_THRESHOLD) or 4.0
     local steeringPosition = 0
     local drivableSpec = vehicle.spec_drivable
-    local steeringInputMagnitude = math.abs(tonumber(drivableSpec ~= nil and drivableSpec.axisSide or 0) or 0)
+    local steeringInputMagnitude = math.abs(drivableSpec ~= nil and drivableSpec.axisSide or 0)
 
     if vehicle.rotatedTime ~= nil then
         steeringPosition = tonumber(vehicle.rotatedTime) or 0
@@ -4506,16 +4464,6 @@ local function updateChassisBrakingState(vehicle)
     end
 
     local brakeState = spec.chassisBrakeState
-    if brakeState == nil then
-        brakeState = {
-            pedal = 0,
-            massRatio = 0,
-            isBraking = false,
-            isBrakingByAxis = false
-        }
-        spec.chassisBrakeState = brakeState
-    end
-
     brakeState.pedal = 0
     brakeState.massRatio = 0
     brakeState.trailerMass = 0
@@ -4525,8 +4473,8 @@ local function updateChassisBrakingState(vehicle)
     brakeState.isBraking = false
     brakeState.isBrakingByAxis = false
 
-    local totalMass = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass() or 0) or 0
-    local selfMass = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass(true) or 0) or 0
+    local totalMass = vehicle:getTotalMass()
+    local selfMass = vehicle:getTotalMass(true)
     local trailerMass = math.max(totalMass - selfMass, 0)
     local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     local horsepower = math.max(((motor ~= nil and motor.peakMotorPower) or 0) * 1.36, 0.001)
@@ -4541,7 +4489,7 @@ local function updateChassisBrakingState(vehicle)
     end
 
     local brakePedalRaw = tonumber(vehicle.spec_wheels.brakePedal) or 0
-    local axisForward = tonumber(drivable.axisForward or drivable.axisForwardSend or (drivable.lastInputValues and drivable.lastInputValues.axisForward) or 0) or 0
+    local axisForward = drivable.axisForward
     local movingDirection = tonumber(vehicle.movingDirection) or 0
     local directionMode = vehicle.getDirectionChangeMode ~= nil and vehicle:getDirectionChangeMode() or 1
     local isBrakingByAxis = false
@@ -4556,8 +4504,8 @@ local function updateChassisBrakingState(vehicle)
     local brakePedal = math.clamp(brakePedalRaw, 0, 1)
     local isBraking = isBrakingByAxis or brakePedal > brakePedalThreshold
 
-    local ownMass = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass(true) or 0) or 0
-    local totalMass = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass() or 0) or 0
+    local ownMass = vehicle:getTotalMass(true)
+    local totalMass = vehicle:getTotalMass()
     local brakeMassRatio = ownMass > 0 and math.max(totalMass / ownMass, 0) or 0
 
     brakeState.pedal = brakePedal
@@ -4573,15 +4521,6 @@ local function updateFuelState(vehicle, dt)
     end
 
     local fuelState = spec.fuelState
-    if fuelState == nil then
-        fuelState = {
-            level = 0,
-            currentUsageRatio = 0,
-            temperature = 0,
-            idleTimer = 0
-        }
-        spec.fuelState = fuelState
-    end
 
     local function resolveFuelLevel()
         local fuelFillUnit = nil
@@ -5345,12 +5284,12 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     local expiredServiceFactor, pullOverloadFactor, luggingFactor, heavyTrailerFactor, wheelSlipFactor,  coldTransFactor, hotTransFactor = 0, 0, 0, 0, 0, 0, 0
     local drivetrainWindupFactor = 0
     local wearRate = 1.0
-    local brakeState = spec.chassisBrakeState or {}
+    local brakeState = spec.chassisBrakeState
     local isTruck = spec.isTruck == true
-    local trailerMass = math.max(tonumber(brakeState.trailerMass or 0) or 0, 0)
+    local trailerMass = math.max(brakeState.trailerMass, 0)
     local hpHeavyTrailerRatio = isTruck
-        and (tonumber(brakeState.hpGrossMassRatio or 100) or 100)
-        or (tonumber(brakeState.hpTrailerMassRatio or 100) or 100)
+        and brakeState.hpGrossMassRatio
+        or brakeState.hpTrailerMassRatio
     local heavyTrailerRatioThreshold = isTruck
         and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0)
         or (tonumber(C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0)
@@ -5550,11 +5489,11 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
     local expiredServiceFactor = 0
     local C = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA
     local heavyLiftFactor, operatingFactor, coldOilFactor, sharpAngleFactor, vibFactor = 0, 0, 0, 0, 0
-    local ptoSharpAngleDeg = tonumber(spec.maxConnectedPtoAngleDeg or 0) or 0
-    local vibState = spec.chassisVibState or {}
-    local vibSignal = tonumber(vibState.signal or 0) or 0
-    local vibRaw = tonumber(vibState.raw or 0) or 0
-    local vibFieldMultiplier = tonumber(vibState.fieldMultiplier or 1) or 1
+    local ptoSharpAngleDeg = spec.maxConnectedPtoAngleDeg
+    local vibState = spec.chassisVibState
+    local vibSignal = vibState.signal
+    local vibRaw = vibState.raw
+    local vibFieldMultiplier = vibState.fieldMultiplier
     local wearRate = 1.0
     local vehicleMass = self.getTotalMass ~= nil and (self:getTotalMass(true) or 0) or 0
     local heavyLiftMassRatio, operatingMassRatio = 0, 0
@@ -5596,7 +5535,7 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
 
             -- vibration factor
             local vibThreshold = tonumber(C.VIB_FACTOR_THRESHOLD) or 0.12
-            if spec.isImplementLifted and (tonumber(vibState.smoothed or 0) or 0) > vibThreshold then
+            if spec.isImplementLifted and vibState.smoothed > vibThreshold then
                 local vibMaxSignal = tonumber(C.VIB_FACTOR_MAX_SIGNAL) or 0.22
                 local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
                 local liftRatioPivot = tonumber(C.HEAVY_LIFT_FACTOR_THRESHOLD) or 0.6
@@ -5607,7 +5546,7 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
                     liftRatioInfluence = 1.0 - 0.5 * ADS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, true, 0.0)
                 end
                 local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier * liftRatioInfluence
-                vibFactor = ADS_Utils.calculateQuadraticMultiplier(tonumber(vibState.smoothed or 0) or 0, vibThreshold, false, vibMaxForCurve)
+                vibFactor = ADS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
                 vibFactor = vibFactor * vibMultiplier
                 vibFactor = math.min(vibFactor, vibMultiplier)
                 wearRate = wearRate + vibFactor
@@ -5615,7 +5554,7 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
 
             if spec.isPtoActive then
                 -- pto sharp angle factor
-                local ptoAngleDeg = tonumber(spec.maxConnectedPtoAngleDeg or 0) or 0
+                local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
                 local hasConnectedPto = spec.hasConnectedPto == true
                 ptoSharpAngleDeg = ptoAngleDeg
                 local sharpAngleThreshold = spec.ptoConnectionIsTrailerHitch == true
@@ -5750,10 +5689,10 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
     local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.electrical.name)
     local systemData = spec.systems.electrical
     if systemData == nil then return end
-    local vibState = spec.chassisVibState or {}
-    local vibSignal = tonumber(vibState.signal or 0) or 0
-    local vibRaw = tonumber(vibState.raw or 0) or 0
-    local vibFieldMultiplier = tonumber(vibState.fieldMultiplier or 1) or 1
+    local vibState = spec.chassisVibState
+    local vibSignal = vibState.signal
+    local vibRaw = vibState.raw
+    local vibFieldMultiplier = vibState.fieldMultiplier
     local expiredServiceFactor, weatherExposureFactor, lightsFactor, overheatFactor, crankingStressFactor, vibFactor = 0, 0, 0, 0, 0, 0
     local C = ADS_Config.CORE.ELECTRICAL_FACTOR_DATA
     local wearRate = 1.0
@@ -5821,11 +5760,11 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
 
         -- vibration factor
         local vibThreshold = tonumber(C.VIB_FACTOR_THRESHOLD) or 0.12
-        if (tonumber(vibState.smoothed or 0) or 0) > vibThreshold then
+        if vibState.smoothed > vibThreshold then
             local vibMaxSignal = tonumber(C.VIB_FACTOR_MAX_SIGNAL) or 0.22
             local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
             local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier
-            vibFactor = ADS_Utils.calculateQuadraticMultiplier(tonumber(vibState.smoothed or 0) or 0, vibThreshold, false, vibMaxForCurve)
+            vibFactor = ADS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
             vibFactor = vibFactor * vibMultiplier
             vibFactor = math.min(vibFactor, vibMultiplier)
             wearRate = wearRate + vibFactor
@@ -5859,29 +5798,29 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
     local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.chassis.name)
     local systemData = spec.systems.chassis
     local expiredServiceFactor, lubricationFactor, vibFactor, steerLoadFactor = 0, 0, 0, 0
-    local vibState = spec.chassisVibState or {}
-    local steerState = spec.chassisSteerState or {}
-    local brakeState = spec.chassisBrakeState or {}
-    local vibSignal = tonumber(vibState.signal or 0) or 0
-    local vibRaw = tonumber(vibState.raw or 0) or 0
-    local vibWheelCount = tonumber(vibState.wheelCount or 0) or 0
-    local vibSpeedFactor = tonumber(vibState.speedFactor or 0) or 0
-    local vibAvgDensityType = tonumber(vibState.avgDensityType or 0) or 0
-    local vibFieldMultiplier = tonumber(vibState.fieldMultiplier or 1) or 1
+    local vibState = spec.chassisVibState
+    local steerState = spec.chassisSteerState
+    local brakeState = spec.chassisBrakeState
+    local vibSignal = vibState.signal
+    local vibRaw = vibState.raw
+    local vibWheelCount = vibState.wheelCount
+    local vibSpeedFactor = vibState.speedFactor
+    local vibAvgDensityType = vibState.avgDensityType
+    local vibFieldMultiplier = vibState.fieldMultiplier
     local steerLowSpeedFactor = 0
     local steerGroundFrictionCoeff = math.max(tonumber(spec.avgTireGroundFrictionCoeff) or 0, 0)
     local steerGroundFrictionFactor = steerGroundFrictionCoeff ^ 2
-    local steerGroundContact = tonumber(steerState.groundContact or 0) or 0
-    local steerRateFactor = tonumber(steerState.rateFactor or 0) or 0
-    local steerDeltaRate = tonumber(steerState.deltaRate or 0) or 0
+    local steerGroundContact = steerState.groundContact
+    local steerRateFactor = steerState.rateFactor
+    local steerDeltaRate = steerState.deltaRate
     local steerMoving = steerState.isMoving == true
     local brakeMassFactor = 0
     local isTruck = spec.isTruck == true
-    local trailerMass = math.max(tonumber(brakeState.trailerMass or 0) or 0, 0)
+    local trailerMass = math.max(brakeState.trailerMass, 0)
     local hpBrakeMassRatio = isTruck
-        and (tonumber(brakeState.hpGrossMassRatio or 100) or 100)
-        or (tonumber(brakeState.hpTrailerMassRatio or 100) or 100)
-    local brakePedal = tonumber(brakeState.pedal or 0) or 0
+        and brakeState.hpGrossMassRatio
+        or brakeState.hpTrailerMassRatio
+    local brakePedal = brakeState.pedal
     local C = ADS_Config.CORE.CHASSIS_FACTOR_DATA
     local brakeMassRatioThreshold = isTruck
         and (tonumber(C.BRAKE_MASS_TRUCK_RATIO_THRESHOLD) or 6.0)
@@ -5895,7 +5834,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         return
     end
 
-    local speed = tonumber(self.getLastSpeed ~= nil and self:getLastSpeed() or 0) or 0
+    local speed = self:getLastSpeed()
 
 
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
@@ -5914,11 +5853,11 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         if speed > 0.003 then
             -- vibration
             local vibThreshold = tonumber(C.VIB_FACTOR_THRESHOLD) or 0.12
-            if (tonumber(vibState.smoothed or 0) or 0) > vibThreshold then
+            if vibState.smoothed > vibThreshold then
                 local vibMaxSignal = tonumber(C.VIB_FACTOR_MAX_SIGNAL) or 0.22
                 local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
                 local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier
-                vibFactor = ADS_Utils.calculateQuadraticMultiplier(tonumber(vibState.smoothed or 0) or 0, vibThreshold, false, vibMaxForCurve)
+                vibFactor = ADS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
                 vibFactor = vibFactor * vibMultiplier
                 vibFactor = math.min(vibFactor, vibMultiplier)
                 wearRate = wearRate + vibFactor
@@ -5998,7 +5937,7 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
     local currentFuelUsageRatio = 0
     local C = ADS_Config.CORE.FUEL_FACTOR_DATA
     local wearRate = 1.0
-    local fuelState = spec.fuelState or {}
+    local fuelState = spec.fuelState
 
     if not systemData.enabled then
         return
@@ -6006,8 +5945,8 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
 
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() and not spec.isElectricVehicle then
         local motorLoad = self:getMotorLoadPercentage()
-        fuelLevel = tonumber(fuelState.level or 0) or 0
-        currentFuelUsageRatio = tonumber(fuelState.currentUsageRatio or 0) or 0
+        fuelLevel = fuelState.level
+        currentFuelUsageRatio = fuelState.currentUsageRatio
 
         -- low fuel
         if fuelLevel < C.LOW_FUEL_THRESHOLD then
@@ -6018,7 +5957,7 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         end
 
         -- cold fuel factor
-        fuelTemperature = tonumber(fuelState.temperature or 0) or 0
+        fuelTemperature = fuelState.temperature
         if fuelTemperature < C.COLD_FUEL_THRESHOLD and motorLoad > 0.5 then
             coldFuelFactor = ADS_Utils.calculateQuadraticMultiplier(fuelTemperature, C.COLD_FUEL_THRESHOLD, true)
             local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(motorLoad, 0.50, false)
@@ -6066,7 +6005,7 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         idleDepositFactor = idleDepositFactor,
         highPressureFactor = highPressureFactor,
         currentFuelUsageRatio = currentFuelUsageRatio,
-        idleTimer = tonumber(fuelState.idleTimer or 0) or 0,
+        idleTimer = fuelState.idleTimer,
         fuelLevel = fuelLevel,
         fuelTemperature = fuelTemperature
     })
@@ -9066,7 +9005,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSpecVar(rawArgs, rawValue)
         print(string.format(
             "ADS: clogging state synced on '%s' (dirt=%.2f, radiator=%.2f, airIntake=%.2f).",
             vehicle:getFullName(),
-            tonumber(vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0) or 0,
+            vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0,
             tonumber(spec.radiatorClogging) or 0,
             tonumber(spec.airIntakeClogging) or 0
         ))

@@ -114,15 +114,15 @@ function ADS_Tutorial:update(dt)
             local vehicleMass = vehicle.getTotalMass ~= nil and (vehicle:getTotalMass(true) or 0) or 0
             local heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
             local heavyLiftThreshold = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
-            local ptoAngleDeg = tonumber(spec.maxConnectedPtoAngleDeg or 0) or 0
+            local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
             local hasConnectedPto = spec.hasConnectedPto == true
             local sharpAngleThreshold = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA.PTO_SHARP_ANGLE_FACTOR_THRESHOLD or 30
             local transmissionConfig = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
-            local chassisBrakeState = spec.chassisBrakeState or {}
+            local chassisBrakeState = spec.chassisBrakeState
             local isTruck = spec.isTruck == true
-            local heavyTrailerMass = math.max(tonumber(chassisBrakeState.trailerMass or 0) or 0, 0)
-            local tractorHeavyTrailerRatio = tonumber(chassisBrakeState.hpTrailerMassRatio or 1000) or 1000
-            local truckHeavyTrailerRatio = tonumber(chassisBrakeState.hpGrossMassRatio or 1000) or 1000
+            local heavyTrailerMass = math.max(chassisBrakeState.trailerMass, 0)
+            local tractorHeavyTrailerRatio = chassisBrakeState.hpTrailerMassRatio
+            local truckHeavyTrailerRatio = chassisBrakeState.hpGrossMassRatio
             local tractorHeavyTrailerThreshold = (tonumber(transmissionConfig.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0) * 0.8
             local truckHeavyTrailerThreshold = (tonumber(transmissionConfig.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0) * 0.8
             local hasHeavyTrailerForTractor = not isTruck
@@ -143,8 +143,8 @@ function ADS_Tutorial:update(dt)
                         and systemData.enabled == true
                         and systemData.condition ~= nil
                         and systemData.stress ~= nil then
-                        local condition = math.max(tonumber(systemData.condition or 0) or 0, 0.001)
-                        local stress = tonumber(systemData.stress or 0) or 0
+                        local condition = math.max(systemData.condition, 0.001)
+                        local stress = systemData.stress
 
                         if stress / condition > 0.7 then
                             preventiveRiskSystem = systemData
@@ -390,8 +390,7 @@ function ADS_Tutorial:update(dt)
                 and chassisSystemEnabled
                 and isMotorStarted
                 and speed <= 0.1
-                and spec.chassisSteerState ~= nil
-                and (tonumber(spec.chassisSteerState.groundContact or 0) or 0) > 0
+                and spec.chassisSteerState.groundContact > 0
                 and spec.chassisSteerState.isMoving == true then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_steering_message"),
@@ -488,8 +487,7 @@ function ADS_Tutorial:update(dt)
                 and fuelSystemEnabled
                 and isMotorStarted
                 and not spec.isElectricVehicle
-                and spec.fuelState ~= nil
-                and (tonumber(spec.fuelState.level or 0) or 0) < (ADS_Config.CORE.FUEL_FACTOR_DATA.LOW_FUEL_THRESHOLD or 0.20) then
+                and spec.fuelState.level < (ADS_Config.CORE.FUEL_FACTOR_DATA.LOW_FUEL_THRESHOLD or 0.20) then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_low_fuel_message"),
                     0,
@@ -504,8 +502,7 @@ function ADS_Tutorial:update(dt)
                 and fuelSystemEnabled
                 and isMotorStarted
                 and not spec.isElectricVehicle
-                and spec.fuelState ~= nil
-                and (tonumber(spec.fuelState.idleTimer or 0) or 0) >= 120 then
+                and spec.fuelState.idleTimer >= 120 then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_idle_deposit_message"),
                     0,

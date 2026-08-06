@@ -1906,20 +1906,20 @@ function ADS_Hud:drawActiveVehicleHUD()
 
     local overviewLines = {}
     local serviceWearRate = serviceDbg.totalWearRate or ADS_Config.CORE.BASE_SERVICE_WEAR or 0
-    local weatherFactor = tonumber((ADS_Main ~= nil and ADS_Main.currentWeatherFactor) or 1.0) or 1.0
-    local dirtLevel = tonumber(vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0) or 0
-    local radiatorClogging = tonumber(spec.radiatorClogging or 0) or 0
-    local airIntakeClogging = tonumber(spec.airIntakeClogging or 0) or 0
-    local lubricationLevel = tonumber(spec.lubricationLevel or 0) or 0
-    local paintState = math.max(1 - (tonumber(vehicle.getWearTotalAmount ~= nil and vehicle:getWearTotalAmount() or 0) or 0), 0)
+    local weatherFactor = ADS_Main.currentWeatherFactor
+    local dirtLevel = vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0
+    local radiatorClogging = spec.radiatorClogging
+    local airIntakeClogging = spec.airIntakeClogging
+    local lubricationLevel = spec.lubricationLevel
+    local paintState = math.max(1 - (vehicle.getWearTotalAmount ~= nil and vehicle:getWearTotalAmount() or 0), 0)
     local radiatorDbg = debugData.radiator or {}
     local airIntakeDbg = debugData.airIntake or {}
-    local radiatorMultiplier = tonumber(radiatorDbg.totalMultiplier or 0) or 0
-    local airIntakeMultiplier = tonumber(airIntakeDbg.totalMultiplier or 0) or 0
+    local radiatorMultiplier = radiatorDbg.totalMultiplier or 0
+    local airIntakeMultiplier = airIntakeDbg.totalMultiplier or 0
     local cloggingIsOnField = radiatorDbg.isOnField == true or airIntakeDbg.isOnField == true
     local cloggingHasDust = radiatorDbg.hasDust == true or airIntakeDbg.hasDust == true
     local cloggingHasDebris = radiatorDbg.hasDebris == true or airIntakeDbg.hasDebris == true
-    local cloggingWetnessFactor = tonumber(airIntakeDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1) or 1
+    local cloggingWetnessFactor = airIntakeDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1
     local factorStatsOperatingHours = 0
     local currentOperatingSeconds = 0
     if vehicle.getOperatingTime ~= nil then
@@ -2138,7 +2138,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         { shortName = "pof", statKey = "pof", value = transmissionDbg.pullOverloadFactor or 0, extraInfo = string.format("%.1f->%.1f", transmissionDbg.pullOverloadTimer or 0, transmissionDbg.pullOverloadTimerMin or 0) },
         { shortName = "htf", statKey = "htf", value = transmissionDbg.heavyTrailerFactor or 0, extraInfo = string.format("hp/%s: %.1f", (transmissionDbg.heavyTrailerMassBasis == "gcw") and "gcw" or "trl", transmissionDbg.heavyTrailerMassRatio or 0) },
         { shortName = "lf", statKey = "lf", value = transmissionDbg.luggingFactor or 0 },
-        { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0, extraInfo = string.format("c: %.2f", avgTireGroundFrictionCoeff) },
+        { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or 0, extraInfo = string.format("c: %.2f", avgTireGroundFrictionCoeff) },
         { shortName = "dwf", statKey = "dwf", value = transmissionDbg.drivetrainWindupFactor or 0, extraInfo = string.format("w: %.1f%% lock: %s", asPercent(drivetrainDbg.windupStress or 0), (drivetrainDbg.diffLockEngaged == true) and "Y" or "N") },
         { shortName = "ctf", statKey = "ctf", value = transmissionDbg.coldTransFactor or 0 },
         { shortName = "hotf", statKey = "hotf", value = transmissionDbg.hotTransFactor or 0 }
@@ -2173,7 +2173,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         { shortName = "sf", statKey = "sf", value = chassisDbg.expiredServiceFactor or 0 },
         { shortName = "lubf", statKey = "lubf", value = chassisDbg.lubricationFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(lubricationLevel)) },
         { shortName = "vf", statKey = "vf", value = chassisDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(chassisDbg.vibRaw or 0), asPercent(chassisDbg.vibSignal or 0)) },
-        { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("ls: %.2f c: %.2f m: %s", tonumber(chassisDbg.steerLowSpeedFactor or 0) or 0, tonumber(chassisDbg.steerGroundFrictionCoeff or 0) or 0, (chassisDbg.steerMoving == true) and "Y" or "N") },
+        { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("ls: %.2f c: %.2f m: %s", chassisDbg.steerLowSpeedFactor or 0, chassisDbg.steerGroundFrictionCoeff or 0, (chassisDbg.steerMoving == true) and "Y" or "N") },
         { shortName = "bmf", statKey = "bmf", value = chassisDbg.brakeMassFactor or 0, extraInfo = string.format("hp/%s: %.1f", (chassisDbg.brakeMassBasis == "gcw") and "gcw" or "trl", chassisDbg.brakeMassRatio or 0) }
     })
 
@@ -2267,7 +2267,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     local avgSpeed = tonumber(getDebugStateValue("avgSpeed", spec.avgSpeed)) or 0
     local avgAbsDiffAcc = tonumber(getDebugStateValue("avgAbsDiffAcc", spec.avgAbsDiffAcc)) or 0
     local acceleratorPedal = tonumber(getDebugStateValue("acceleratorPedal", motor.lastAcceleratorPedal)) or 0
-    local brakePedal = tonumber(getDebugStateValue("chassisBrakePedal", (spec.chassisBrakeState or {}).pedal)) or 0
+    local brakePedal = tonumber(getDebugStateValue("chassisBrakePedal", spec.chassisBrakeState.pedal)) or 0
     local dynamicLoadDeltaPct = motorLoad > 0 and ((dynamicMotorLoad - motorLoad) / motorLoad) * 100 or 0
     local targetGear = (motor.targetGear or 0) * (motor.currentDirection or 1)
     local spec_CVTaddon = vehicle.spec_CVTaddon
@@ -2565,10 +2565,10 @@ function ADS_Hud:drawActiveVehicleHUD()
             "#%d %s | mass: %.1f | jointType: %s | lowered: %s | supportWheels: %d | moving: %s | foldMoving: %s | plowRotating: %s | cylinderMoving: %s | head: %s",
             index,
             tostring(impl.name or "implement"),
-            tonumber(impl.mass or 0) or 0,
+            impl.mass,
             tostring(impl.jointTypeId),
             tostring(impl.isLowered == true),
-            tonumber(impl.supportWheelCount or 0) or 0,
+            impl.supportWheelCount,
             tostring(impl.isMoving == true),
             tostring(impl.isFoldMoving == true),
             tostring(impl.isPlowRotationMoving == true),

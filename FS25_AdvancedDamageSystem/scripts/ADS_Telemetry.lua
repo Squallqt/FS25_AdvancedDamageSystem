@@ -283,11 +283,11 @@ function ADS_Telemetry:collectSessionInfo(vehicle)
     local environment = g_currentMission ~= nil and g_currentMission.environment or nil
     local weather = environment ~= nil and environment.weather or nil
     local ambientTemperatureC = weather ~= nil and weather.getCurrentTemperature ~= nil and weather:getCurrentTemperature() or 0
-    local operatingTimeMs = tonumber(vehicle.getOperatingTime ~= nil and vehicle:getOperatingTime() or vehicle.operatingTime or 0) or 0
+    local operatingTimeMs = vehicle:getOperatingTime()
     local operatingTimeSec = operatingTimeMs / 1000
     local operatingHours = operatingTimeMs / 3600000
-    local ageMonths = tonumber(vehicle.age or 0) or 0
-    local tractorMassKg = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass(true) or 0) or 0
+    local ageMonths = vehicle.age
+    local tractorMassKg = vehicle:getTotalMass(true)
     local totalMassKg = tonumber(vehicle.getTotalMass ~= nil and vehicle:getTotalMass() or tractorMassKg) or tractorMassKg
     local attachedNames = collectAttachedImplementNames(vehicle, {}, {})
 
@@ -297,13 +297,13 @@ function ADS_Telemetry:collectSessionInfo(vehicle)
         subjectAgeYears = ageMonths / 12,
         subjectOperatingTimeSec = operatingTimeSec,
         subjectOperatingHours = operatingHours,
-        subjectReliability = tonumber(spec.reliability or 0) or 0,
-        subjectMaintainability = tonumber(spec.maintainability or 0) or 0,
+        subjectReliability = spec.reliability,
+        subjectMaintainability = spec.maintainability,
         subjectTractorMassKg = tractorMassKg,
         subjectTotalMassKg = totalMassKg,
         subjectAttachedCount = #attachedNames,
         subjectAttachedNames = table.concat(attachedNames, " | "),
-        environmentAmbientTemperatureC = tonumber(ambientTemperatureC or 0) or 0
+        environmentAmbientTemperatureC = ambientTemperatureC
     }
 end
 
@@ -319,29 +319,29 @@ function ADS_Telemetry:collectTransmissionSystemInfo(vehicle)
     local spec = vehicle.spec_AdvancedDamageSystem
     local debugData = type(spec.debugData) == "table" and spec.debugData or {}
     local transmissionDbg = type(debugData.transmission) == "table" and debugData.transmission or {}
-    local systemData = spec.systems ~= nil and spec.systems.transmission or nil
-    local systemStats = type(spec.factorStats) == "table" and spec.factorStats.transmission or nil
+    local systemData = spec.systems.transmission
+    local systemStats = spec.factorStats.transmission
 
     return {
-        condition = tonumber(systemData ~= nil and systemData.condition or 0) or 0,
-        stress = tonumber(systemData ~= nil and systemData.stress or 0) or 0,
-        totalWearRate = tonumber(transmissionDbg.totalWearRate or 0) or 0,
-        instantStressRate = tonumber(transmissionDbg.instantStressRate or 0) or 0,
-        avgStress = tonumber(transmissionDbg._avgStress or 0) or 0,
-        accumulatedStress = tonumber(systemStats ~= nil and systemStats.stress or 0) or 0,
-        breakdownProbability = tonumber(transmissionDbg.breakdownProbability or 0) or 0,
-        critBreakdownProbability = tonumber(transmissionDbg.critBreakdownProbability or 0) or 0,
-        expiredServiceFactor = tonumber(transmissionDbg.expiredServiceFactor or 0) or 0,
-        pullOverloadFactor = tonumber(transmissionDbg.pullOverloadFactor or 0) or 0,
-        pullOverloadTimer = tonumber(transmissionDbg.pullOverloadTimer or 0) or 0,
-        heavyTrailerFactor = tonumber(transmissionDbg.heavyTrailerFactor or 0) or 0,
-        heavyTrailerMassRatio = tonumber(transmissionDbg.heavyTrailerMassRatio or 0) or 0,
-        luggingFactor = tonumber(transmissionDbg.luggingFactor or 0) or 0,
-        wheelSlipFactor = tonumber(transmissionDbg.wheelSlipFactor or transmissionDbg.wheelSleepFactor or 0) or 0,
-        wheelSlipIntensity = tonumber(spec.wheelSlipIntensity or 0) or 0,
-        avgTireGroundFrictionCoeff = tonumber(spec.avgTireGroundFrictionCoeff or 0) or 0,
-        coldTransFactor = tonumber(transmissionDbg.coldTransFactor or 0) or 0,
-        hotTransFactor = tonumber(transmissionDbg.hotTransFactor or 0) or 0
+        condition = systemData.condition,
+        stress = systemData.stress,
+        totalWearRate = transmissionDbg.totalWearRate or 0,
+        instantStressRate = transmissionDbg.instantStressRate or 0,
+        avgStress = transmissionDbg._avgStress or 0,
+        accumulatedStress = systemStats.stress,
+        breakdownProbability = transmissionDbg.breakdownProbability or 0,
+        critBreakdownProbability = transmissionDbg.critBreakdownProbability or 0,
+        expiredServiceFactor = transmissionDbg.expiredServiceFactor or 0,
+        pullOverloadFactor = transmissionDbg.pullOverloadFactor or 0,
+        pullOverloadTimer = transmissionDbg.pullOverloadTimer or 0,
+        heavyTrailerFactor = transmissionDbg.heavyTrailerFactor or 0,
+        heavyTrailerMassRatio = transmissionDbg.heavyTrailerMassRatio or 0,
+        luggingFactor = transmissionDbg.luggingFactor or 0,
+        wheelSlipFactor = transmissionDbg.wheelSlipFactor or 0,
+        wheelSlipIntensity = spec.wheelSlipIntensity,
+        avgTireGroundFrictionCoeff = spec.avgTireGroundFrictionCoeff,
+        coldTransFactor = transmissionDbg.coldTransFactor or 0,
+        hotTransFactor = transmissionDbg.hotTransFactor or 0
     }
 end
 
@@ -355,25 +355,25 @@ function ADS_Telemetry:collectCVTTempInfo(vehicle)
     local transmissionTempDbg = type(debugData.transmissionTemp) == "table" and debugData.transmissionTemp or {}
 
     return {
-        temperatureC = tonumber(spec.transmissionTemperature or -99) or -99,
-        rawTemperatureC = tonumber(spec.rawTransmissionTemperature or spec.transmissionTemperature or -99) or -99,
-        thermostatState = tonumber(spec.transmissionThermostatState or 0) or 0,
-        kp = tonumber(transmissionTempDbg.kp or 0) or 0,
-        stiction = tonumber(transmissionTempDbg.stiction or 0) or 0,
-        waxSpeed = tonumber(transmissionTempDbg.waxSpeed or 0) or 0,
-        totalHeat = tonumber(transmissionTempDbg.totalHeat or 0) or 0,
-        totalCooling = tonumber(transmissionTempDbg.totalCooling or 0) or 0,
-        radiatorCooling = tonumber(transmissionTempDbg.radiatorCooling or 0) or 0,
-        speedCooling = tonumber(transmissionTempDbg.speedCooling or 0) or 0,
-        convectionCooling = tonumber(transmissionTempDbg.convectionCooling or 0) or 0,
-        loadFactor = tonumber(transmissionTempDbg.loadFactor or 0) or 0,
-        slipFactor = tonumber(transmissionTempDbg.slipFactor or 0) or 0,
-        accFactor = tonumber(transmissionTempDbg.accFactor or 0) or 0,
-        pullFactor = tonumber(transmissionTempDbg.pullFactor or 0) or 0,
-        wheelSlipFactor = tonumber(transmissionTempDbg.wheelSlipFactor or 0) or 0,
-        cvtSlipActive = tonumber(transmissionTempDbg.cvtSlipActive or 0) or 0,
-        cvtSlipLocked = tonumber(transmissionTempDbg.cvtSlipLocked or 0) or 0,
-        extraTransmissionHeat = tonumber(transmissionTempDbg.extraTransmissionHeat or 0) or 0
+        temperatureC = spec.transmissionTemperature,
+        rawTemperatureC = spec.rawTransmissionTemperature,
+        thermostatState = spec.transmissionThermostatState,
+        kp = transmissionTempDbg.kp or 0,
+        stiction = transmissionTempDbg.stiction or 0,
+        waxSpeed = transmissionTempDbg.waxSpeed or 0,
+        totalHeat = transmissionTempDbg.totalHeat or 0,
+        totalCooling = transmissionTempDbg.totalCooling or 0,
+        radiatorCooling = transmissionTempDbg.radiatorCooling or 0,
+        speedCooling = transmissionTempDbg.speedCooling or 0,
+        convectionCooling = transmissionTempDbg.convectionCooling or 0,
+        loadFactor = transmissionTempDbg.loadFactor or 0,
+        slipFactor = transmissionTempDbg.slipFactor or 0,
+        accFactor = transmissionTempDbg.accFactor or 0,
+        pullFactor = transmissionTempDbg.pullFactor or 0,
+        wheelSlipFactor = transmissionTempDbg.wheelSlipFactor or 0,
+        cvtSlipActive = transmissionTempDbg.cvtSlipActive or 0,
+        cvtSlipLocked = transmissionTempDbg.cvtSlipLocked or 0,
+        extraTransmissionHeat = transmissionTempDbg.extraTransmissionHeat or 0
     }
 end
 
@@ -388,20 +388,20 @@ function ADS_Telemetry:collectDrivetrainInfo(vehicle)
         return nil
     end
 
-    local availableTorque = tonumber(motor.getMotorAvailableTorque ~= nil and motor:getMotorAvailableTorque() or 0) or 0
-    local motorPowerW = (tonumber(motor.getMotorRotSpeed ~= nil and motor:getMotorRotSpeed() or 0) or 0)
-        * ((availableTorque - (tonumber(motor.getMotorExternalTorque ~= nil and motor:getMotorExternalTorque() or 0) or 0)) * 1000)
+    local availableTorque = motor:getMotorAvailableTorque()
+    local motorPowerW = motor:getMotorRotSpeed()
+        * ((availableTorque - motor:getMotorExternalTorque()) * 1000)
     local motorPowerHp = motorPowerW / 735.5
     local peakPowerHp = (tonumber(motor.peakMotorPower) or 0) * 1.36
-    local lastRpm = tonumber(motor.getLastModulatedMotorRpm ~= nil and motor:getLastModulatedMotorRpm() or 0) or 0
+    local lastRpm = motor:getLastModulatedMotorRpm()
     local maxRpm = math.max(tonumber(motor.maxRpm) or 1, 1)
     local rpmLoad = lastRpm / maxRpm
-    local motorLoad = tonumber(vehicle.getMotorLoadPercentage ~= nil and vehicle:getMotorLoadPercentage() or 0) or 0
+    local motorLoad = vehicle:getMotorLoadPercentage()
     local dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or motorLoad
     local avgAbsDiffAcc = tonumber(spec.avgAbsDiffAcc) or 0
-    local acceleratorPedal = tonumber(motor.lastAcceleratorPedal or 0) or 0
-    local currentSpeedKmh = tonumber(vehicle.getLastSpeed ~= nil and vehicle:getLastSpeed() or 0) or 0
-    local currentSpeedLimitKmh = tonumber(vehicle.getSpeedLimit ~= nil and vehicle:getSpeedLimit(true) or 0) or 0
+    local acceleratorPedal = motor.lastAcceleratorPedal
+    local currentSpeedKmh = vehicle:getLastSpeed()
+    local currentSpeedLimitKmh = vehicle:getSpeedLimit(true)
     if currentSpeedLimitKmh == math.huge or currentSpeedLimitKmh < 0 then
         currentSpeedLimitKmh = 0
     end
@@ -420,7 +420,7 @@ function ADS_Telemetry:collectDrivetrainInfo(vehicle)
         end
     end
     if currentSpeedLimitKmh <= 0 then
-        currentSpeedLimitKmh = (tonumber(motor.getMaximumForwardSpeed ~= nil and motor:getMaximumForwardSpeed() or 0) or 0) * 3.6
+        currentSpeedLimitKmh = motor:getMaximumForwardSpeed() * 3.6
     end
     local targetGear = (tonumber(motor.targetGear) or 0) * (tonumber(motor.currentDirection) or 1)
     local spec_CVTaddon = vehicle.spec_CVTaddon
@@ -438,7 +438,7 @@ function ADS_Telemetry:collectDrivetrainInfo(vehicle)
         currentGear = tonumber(motor.gear) or 0,
         targetGear = targetGear,
         activeGearGroupIndex = tonumber(motor.activeGearGroupIndex) or 0,
-        gearRatio = tonumber(motor.getGearRatio ~= nil and motor:getGearRatio() or 0) or 0,
+        gearRatio = motor:getGearRatio(),
         draftMaxForce = tonumber(spec.activeDraftMaxForce) or 0,
         draftEffectiveForceCap = tonumber(spec.activeDraftEffectiveForceCap) or 0,
         cvtAddon = hasCVTAddon(vehicle) and {
@@ -463,15 +463,15 @@ function ADS_Telemetry:collectCloggingInfo(vehicle)
     local airIntakeDbg = type(debugData.airIntake) == "table" and debugData.airIntake or {}
 
     return {
-        dirtLevel = tonumber(vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0) or 0,
-        radiatorClogging = tonumber(spec.radiatorClogging or 0) or 0,
-        radiatorMultiplier = tonumber(radiatorDbg.totalMultiplier or 0) or 0,
-        airIntakeClogging = tonumber(spec.airIntakeClogging or 0) or 0,
-        airIntakeMultiplier = tonumber(airIntakeDbg.totalMultiplier or 0) or 0,
+        dirtLevel = vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0,
+        radiatorClogging = spec.radiatorClogging,
+        radiatorMultiplier = radiatorDbg.totalMultiplier or 0,
+        airIntakeClogging = spec.airIntakeClogging,
+        airIntakeMultiplier = airIntakeDbg.totalMultiplier or 0,
         isOnField = radiatorDbg.isOnField == true or airIntakeDbg.isOnField == true,
         hasDust = radiatorDbg.hasDust == true or airIntakeDbg.hasDust == true,
         hasDebris = radiatorDbg.hasDebris == true or airIntakeDbg.hasDebris == true,
-        wetnessFactor = tonumber(airIntakeDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1) or 1
+        wetnessFactor = airIntakeDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1
     }
 end
 

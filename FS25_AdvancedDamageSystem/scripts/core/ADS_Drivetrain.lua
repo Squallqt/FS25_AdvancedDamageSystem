@@ -830,15 +830,14 @@ local function updateDiffLockState(vehicle, state, dt)
 end
 
 function ADS_Drivetrain.getIsTurning(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
-    local steerState = spec ~= nil and spec.chassisSteerState or nil
-    local steeringAngle = tonumber(steerState ~= nil and steerState.angleMagnitude or 0) or 0
+    local steerState = vehicle.spec_AdvancedDamageSystem.chassisSteerState
+    local steeringAngle = steerState.angleMagnitude
     if steeringAngle > getConfig().WINDUP_STEER_THRESHOLD then
         return true
     end
 
     return getIsTwinTrack(vehicle)
-        and (tonumber(steerState ~= nil and steerState.inputMagnitude or 0) or 0) > TRACK_STEER_INPUT_EPSILON
+        and steerState.inputMagnitude > TRACK_STEER_INPUT_EPSILON
 end
 
 local function updateWindupModel(vehicle, state, spec, dt)

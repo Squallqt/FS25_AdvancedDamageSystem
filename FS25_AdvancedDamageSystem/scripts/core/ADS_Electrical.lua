@@ -551,8 +551,8 @@ local function orderExternalPowerContexts(ctxA, ctxB)
         return ctxB, ctxA
     end
 
-    local aKey = tonumber(ctxA.vehicle ~= nil and (ctxA.vehicle.rootNode or ctxA.vehicle.id or ctxA.vehicle.uniqueId) or 0) or 0
-    local bKey = tonumber(ctxB.vehicle ~= nil and (ctxB.vehicle.rootNode or ctxB.vehicle.id or ctxB.vehicle.uniqueId) or 0) or 0
+    local aKey = ctxA.vehicle.rootNode or 0
+    local bKey = ctxB.vehicle.rootNode or 0
     if aKey <= bKey then
         return ctxA, ctxB
     end
@@ -1080,8 +1080,8 @@ function ADS_Electrical:updateBatteryChargingModel(dt)
         and connectionSpec ~= nil
         and (connectionVehicle.rootNode == nil or entityExists(connectionVehicle.rootNode)) then
 
-        local selfSpeed = math.abs(tonumber(self.getLastSpeed ~= nil and self:getLastSpeed() or 0) or 0)
-        local connectionSpeed = math.abs(tonumber(connectionVehicle.getLastSpeed ~= nil and connectionVehicle:getLastSpeed() or 0) or 0)
+        local selfSpeed = math.abs(self:getLastSpeed())
+        local connectionSpeed = math.abs(connectionVehicle:getLastSpeed())
         if self.isServer and (selfSpeed > 1 or connectionSpeed > 1) then
             self:clearExternalPowerConnection(connectionVehicle)
             connectionVehicle = nil
