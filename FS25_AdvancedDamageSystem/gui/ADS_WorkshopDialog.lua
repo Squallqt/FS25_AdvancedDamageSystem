@@ -32,7 +32,7 @@ function ADS_WorkshopDialog.show(vehicle)
     dialog.vehicle = vehicle
     dialog.activeBreakdowns = vehicle:getActiveBreakdowns()
     dialog.visibleBreakdowns = {}
-    dialog.breakdonRegistry = ADS_Breakdowns.BreakdownRegistry
+    dialog.breakdownRegistry = ADS_Breakdowns.BreakdownRegistry
     dialog.workshopType = AdvancedDamageSystem.WORKSHOP.DEALER
     dialog.lastObservedStatus = vehicle:getCurrentStatus()
 
@@ -94,12 +94,12 @@ function ADS_WorkshopDialog:updateScreen()
 
     self.serviceValue:setText(ADS_Utils.formatService(inspectedService, isCompleteServiceInspection))
     self.serviceValue:setTextColor(ADS_Utils.getServiceColor(inspectedService, isCompleteServiceInspection))
-    self.condtionValue:setText(ADS_Utils.formatCondition(inspectedCondition, isCompleteInspection))
-    self.condtionValue:setTextColor(ADS_Utils.getConditionColor(inspectedCondition, isCompleteInspection))
+    self.conditionValue:setText(ADS_Utils.formatCondition(inspectedCondition, isCompleteInspection))
+    self.conditionValue:setTextColor(ADS_Utils.getConditionColor(inspectedCondition, isCompleteInspection))
     self.serviceLastInspectionDeltaValue:setTextColor(0.5, 0.5, 0.5, 1.0)
-    self.condtionLastInspectionDelataValue:setTextColor(0.5, 0.5, 0.5, 1.0)
+    self.conditionLastInspectionDeltaValue:setTextColor(0.5, 0.5, 0.5, 1.0)
     self.serviceLastInspectionDeltaValue:setText(monthsSinceInspectionText)
-    self.condtionLastInspectionDelataValue:setText(monthsSinceInspectionText)
+    self.conditionLastInspectionDeltaValue:setText(monthsSinceInspectionText)
 
     self.relAndMainValue:setText(ADS_Utils.formatOperatingHours(self.vehicle:getHoursSinceLastMaintenance(), self.vehicle:getMaintenanceInterval()))
 
@@ -150,8 +150,8 @@ function ADS_WorkshopDialog:updateScreen()
             local inspectingText = g_i18n:getText("ads_ws_inspecting_status")
             self.serviceValue:setText(inspectingText)
             self.serviceValue:setTextColor(0.5, 0.5, 0.5, 1.0)
-            self.condtionValue:setText(inspectingText)
-            self.condtionValue:setTextColor(0.5, 0.5, 0.5, 1.0)
+            self.conditionValue:setText(inspectingText)
+            self.conditionValue:setTextColor(0.5, 0.5, 0.5, 1.0)
         end
     end
 
@@ -173,12 +173,12 @@ function ADS_WorkshopDialog:updateScreen()
     end
 
     if g_workshopScreen.isDealer or g_workshopScreen.isOwnWorkshop then
-        self.inscpectionButton.disabled = buttonsDisabled 
+        self.inspectionButton.disabled = buttonsDisabled 
         self.maintenanceButton.disabled = buttonsDisabled
         self.repairButton.disabled = buttonsDisabled
         self.overhaulButton.disabled = buttonsDisabled or not hasSystemEligibleForOverhaul
     else
-        self.inscpectionButton.disabled = buttonsDisabled or spec.currentState ~= STATUS.READY
+        self.inspectionButton.disabled = buttonsDisabled or spec.currentState ~= STATUS.READY
         self.maintenanceButton.disabled = buttonsDisabled or spec.currentState ~= STATUS.READY
         self.repairButton.disabled = buttonsDisabled or spec.currentState ~= STATUS.READY
         self.overhaulButton.disabled = true
@@ -187,7 +187,7 @@ function ADS_WorkshopDialog:updateScreen()
     local isUnderService = spec.currentState ~= STATUS.READY
     self.cancelServiceButton:setVisible(isUnderService)
     self.cancelServiceButton.disabled = not isUnderService
-    self.inscpectionButton:setVisible(not isUnderService)
+    self.inspectionButton:setVisible(not isUnderService)
     self.maintenanceButton:setVisible(not isUnderService)
     self.repairButton:setVisible(not isUnderService)
     self.overhaulButton:setVisible(not isUnderService)
@@ -209,7 +209,7 @@ function ADS_WorkshopDialog:updateScreen()
     end
     
     local buttonFormat = g_i18n:getText("ads_ws_button_price_format")
-    self.inscpectionButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_inspection"), g_i18n:formatMoney(inspectionPrice, 0, true, false)))
+    self.inspectionButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_inspection"), g_i18n:formatMoney(inspectionPrice, 0, true, false)))
     self.maintenanceButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_maintenance"), g_i18n:formatMoney(maintenancePrice, 0, true, false)))
     if self.vehicle:isWarrantyRepairCovered(AdvancedDamageSystem.REPAIR_TYPES.MEDIUM, AdvancedDamageSystem.PART_TYPES.OEM) and selectedRepairCount > 0 then
         self.repairButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_repair"), g_i18n:getText("ads_option_menu_warranty_repair_text")))
@@ -282,14 +282,14 @@ end
 
 
 function ADS_WorkshopDialog:populateCellForItemInSection(list, section, index, cell)
-    local breadownId = self.visibleBreakdowns[index]
-    local data = self.activeBreakdowns[breadownId]
+    local breakdownId = self.visibleBreakdowns[index]
+    local data = self.activeBreakdowns[breakdownId]
     if data == nil then return end
 
-    local part_key = self.breakdonRegistry[breadownId].part or self.breakdonRegistry[breadownId].system
-    local stage_key = self.breakdonRegistry[breadownId].stages[data.stage].severity
-    local description_key = self.breakdonRegistry[breadownId].stages[data.stage].description
-    local price = self.vehicle:getBreakdownRepairPrice(breadownId, data.stage, AdvancedDamageSystem.PART_TYPES.OEM)
+    local part_key = self.breakdownRegistry[breakdownId].part or self.breakdownRegistry[breakdownId].system
+    local stage_key = self.breakdownRegistry[breakdownId].stages[data.stage].severity
+    local description_key = self.breakdownRegistry[breakdownId].stages[data.stage].description
+    local price = self.vehicle:getBreakdownRepairPrice(breakdownId, data.stage, AdvancedDamageSystem.PART_TYPES.OEM)
     local selected = data.isSelectedForRepair
 
     local stageText = ""
