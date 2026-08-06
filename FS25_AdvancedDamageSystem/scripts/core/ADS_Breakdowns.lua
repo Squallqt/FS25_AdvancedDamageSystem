@@ -1,14 +1,6 @@
 ADS_Breakdowns = {}
 
-local function log_dbg(...)
-    if ADS_Config and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_BREAKDOWNS] " .. table.concat(args, " "))
-    end
-end
+local log_dbg = ADS_Utils.createLogger("[ADS_BREAKDOWNS]")
 
 local loggedHookErrors = {}
 
@@ -71,23 +63,8 @@ ADS_Breakdowns.COLOR_PRIORITY = {
 --                    BREAKDOWN REGISTRY
 -- ==========================================================
 
-local function getIsElectricVehicle(vehicle)
-    for _, consumer in pairs(vehicle.spec_motorized.consumers) do
-        if consumer.fillType == FillType.ELECTRICCHARGE then
-            return true
-        end
-    end
-end
-
-local function hasCVTAddon(vehicle)
-    local spec_CVTaddon = vehicle.spec_CVTaddon
-    local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
-    local hasActiveCVTAddon = spec_CVTaddon ~= nil
-        and spec_CVTaddon.CVTcfgExists
-        and cvtAddonConfig ~= 0
-        and cvtAddonConfig ~= 8
-    return hasActiveCVTAddon
-end
+local getIsElectricVehicle = ADS_Utils.getIsElectricVehicle
+local hasCVTAddon = ADS_Utils.hasCVTAddon
 
 local function hasPtoCapability(vehicle)
     if vehicle == nil then

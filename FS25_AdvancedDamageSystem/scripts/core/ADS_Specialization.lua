@@ -235,15 +235,7 @@ end
 --                          HELPER FUNCTIONS
 -- ==========================================================
 
-local function log_dbg(...)
-    if ADS_Config and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_SPEC] " .. table.concat(args, " "))
-    end
-end
+local log_dbg = ADS_Utils.createLogger("[ADS_SPEC]")
 
 local PTO_SHARP_ANGLE_EXCLUDED_TYPES = {
     combineDrivable = true,
@@ -369,10 +361,7 @@ local function ensureFactorStats(spec, vehicle)
     return spec.factorStats
 end
 
-local function hasCVTTransmission(vehicle)
-    local motor = vehicle:getMotor()
-    return motor ~= nil and motor.minForwardGearRatio ~= nil
-end
+local hasCVTTransmission = ADS_Utils.hasCVTTransmission
 
 local function getTransmissionNameFromXML(vehicle)
     if vehicle == nil then
@@ -455,33 +444,8 @@ end
 AdvancedDamageSystem.getTransmissionType = getTransmissionType
 AdvancedDamageSystem.getTransmissionNameFromXML = getTransmissionNameFromXML
 
-local function hasCVTAddon(vehicle)
-    local spec_CVTaddon = vehicle.spec_CVTaddon
-    local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
-    local hasActiveCVTAddon = spec_CVTaddon ~= nil
-        and spec_CVTaddon.CVTcfgExists
-        and cvtAddonConfig ~= 0
-        and cvtAddonConfig ~= 8
-    return hasActiveCVTAddon
-end
-
-local function getIsElectricVehicle(vehicle)
-    local hasElectricConsumer = false
-    local hasCombustionConsumer = false
-
-    if vehicle.spec_motorized and vehicle.spec_motorized.consumers then
-        for _, consumer in pairs(vehicle.spec_motorized.consumers) do
-            if consumer.fillType == FillType.ELECTRICCHARGE then
-                hasElectricConsumer = true
-            elseif consumer.fillType == FillType.DIESEL
-                    or consumer.fillType == FillType.METHANE then
-                hasCombustionConsumer = true
-            end
-        end
-    end
-
-    return hasElectricConsumer and not hasCombustionConsumer
-end
+local hasCVTAddon = ADS_Utils.hasCVTAddon
+local getIsElectricVehicle = ADS_Utils.getIsElectricVehicle
 
 local function getIsUnsupportedVehicle(vehicle)
     return getIsElectricVehicle(vehicle)
@@ -9316,18 +9280,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemCondition(rawArgs, rawArg
     local spec = vehicle.spec_AdvancedDamageSystem
 
     local function resolveSystemKey(rawSystem)
-        if rawSystem == nil or rawSystem == "" then
-            return nil
-        end
-
-        local normalized = string.lower(rawSystem)
-        for key, _ in pairs(spec.systems or {}) do
-            if string.lower(tostring(key)) == normalized then
-                return key
-            end
-        end
-
-        return false
+        return ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     end
 
     local requestedSystem = args and args[1] or nil
@@ -9417,18 +9370,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemStress(rawArgs, rawArgTwo
     local spec = vehicle.spec_AdvancedDamageSystem
 
     local function resolveSystemKey(rawSystem)
-        if rawSystem == nil or rawSystem == "" then
-            return nil
-        end
-
-        local normalized = string.lower(rawSystem)
-        for key, _ in pairs(spec.systems or {}) do
-            if string.lower(tostring(key)) == normalized then
-                return key
-            end
-        end
-
-        return false
+        return ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     end
 
     local requestedSystem = args and args[1] or nil
@@ -9493,18 +9435,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemStressMultiplier(rawArgs,
     end
 
     local function resolveSystemKey(rawSystem)
-        if rawSystem == nil or rawSystem == "" then
-            return nil
-        end
-
-        local normalized = string.lower(rawSystem)
-        for key, _ in pairs(spec.systems or {}) do
-            if string.lower(tostring(key)) == normalized then
-                return key
-            end
-        end
-
-        return false
+        return ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     end
 
     local requestedSystem = args and args[2] or nil

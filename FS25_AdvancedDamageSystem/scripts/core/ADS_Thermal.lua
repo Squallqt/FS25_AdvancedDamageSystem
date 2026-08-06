@@ -6,40 +6,9 @@ ADS_Thermal = ADS_Thermal or {}
 --                     HELPERS
 -- ==========================================================
 
-local function sanitizeNumber(value, fallback, minValue, maxValue)
-    if AdvancedDamageSystem ~= nil and AdvancedDamageSystem.sanitizeNumber ~= nil then
-        return AdvancedDamageSystem.sanitizeNumber(value, fallback, minValue, maxValue)
-    end
-
-    local sanitized = tonumber(value)
-    if type(sanitized) ~= "number" or sanitized ~= sanitized or sanitized == math.huge or sanitized == -math.huge then
-        sanitized = tonumber(fallback) or 0
-    end
-
-    if minValue ~= nil then
-        sanitized = math.max(sanitized, minValue)
-    end
-    if maxValue ~= nil then
-        sanitized = math.min(sanitized, maxValue)
-    end
-
-    return sanitized
-end
-
-local function hasCVTTransmission(vehicle)
-    local motor = vehicle:getMotor()
-    return motor ~= nil and motor.minForwardGearRatio ~= nil
-end
-
-local function hasCVTAddon(vehicle)
-    local spec_CVTaddon = vehicle.spec_CVTaddon
-    local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
-    local hasActiveCVTAddon = spec_CVTaddon ~= nil
-        and spec_CVTaddon.CVTcfgExists
-        and cvtAddonConfig ~= 0
-        and cvtAddonConfig ~= 8
-    return hasActiveCVTAddon
-end
+local sanitizeNumber = AdvancedDamageSystem.sanitizeNumber
+local hasCVTTransmission = ADS_Utils.hasCVTTransmission
+local hasCVTAddon = ADS_Utils.hasCVTAddon
 
 local function getSpeedCooling(vehicle)
     local C = ADS_Config.THERMAL

@@ -21,15 +21,7 @@ local DEBUG_SAMPLE_INTERVAL_MS = 400
 local DEBUG_RATIO_MIN_SPEED = 0.05
 local DEBUG_RATIO_MAX = 99
 
-local function sanitizeNumber(value, fallback, minValue, maxValue)
-    if AdvancedDamageSystem ~= nil and AdvancedDamageSystem.sanitizeNumber ~= nil then
-        return AdvancedDamageSystem.sanitizeNumber(value, fallback, minValue, maxValue)
-    end
-    local sanitized = tonumber(value) or tonumber(fallback) or 0
-    if minValue ~= nil then sanitized = math.max(sanitized, minValue) end
-    if maxValue ~= nil then sanitized = math.min(sanitized, maxValue) end
-    return sanitized
-end
+local sanitizeNumber = AdvancedDamageSystem.sanitizeNumber
 
 local function getConfig()
     return ADS_Config.DRIVETRAIN

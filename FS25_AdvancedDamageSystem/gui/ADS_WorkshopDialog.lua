@@ -4,15 +4,7 @@ ADS_WorkshopDialog.INSTANCE = nil
 local ADS_WorkshopDialog_mt = Class(ADS_WorkshopDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
-local function log_dbg(...)
-    if ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_WORKSHOP_DIALOG] " .. table.concat(args, " "))
-    end
-end
+local log_dbg = ADS_Utils.createLogger("[ADS_WORKSHOP_DIALOG]")
 
 
 function ADS_WorkshopDialog.register()

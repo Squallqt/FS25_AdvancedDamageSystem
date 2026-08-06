@@ -18,15 +18,7 @@ ADS_Telemetry.sessionInfo = nil
 --                              HELPER FUNCTIONS
 -- =====================================================================================
 
-local function log_dbg(...)
-    if ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_TELEMETRY] " .. table.concat(args, " "))
-    end
-end
+local log_dbg = ADS_Utils.createLogger("[ADS_TELEMETRY]")
 
 local function getTelemetryOutputDirectory()
     return getUserProfileAppPath() .. "modSettings/FS25_AdvancedDamageSystem/"
@@ -145,19 +137,8 @@ local function collectAttachedImplementNames(rootVehicle, names, visited)
     return names
 end
 
-local function hasCVTTransmission(vehicle)
-    local motor = vehicle ~= nil and vehicle.getMotor ~= nil and vehicle:getMotor() or nil
-    return motor ~= nil and motor.minForwardGearRatio ~= nil
-end
-
-local function hasCVTAddon(vehicle)
-    local spec_CVTaddon = vehicle ~= nil and vehicle.spec_CVTaddon or nil
-    local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
-    return spec_CVTaddon ~= nil
-        and spec_CVTaddon.CVTcfgExists
-        and cvtAddonConfig ~= 0
-        and cvtAddonConfig ~= 8
-end
+local hasCVTTransmission = ADS_Utils.hasCVTTransmission
+local hasCVTAddon = ADS_Utils.hasCVTAddon
 
 local function splitConsoleArgs(text)
     local args = {}

@@ -4,25 +4,7 @@ ADS_Electrical = ADS_Electrical or {}
 --                     HELPERS
 -- ==========================================================
 
-local function sanitizeNumber(value, fallback, minValue, maxValue)
-    if AdvancedDamageSystem ~= nil and AdvancedDamageSystem.sanitizeNumber ~= nil then
-        return AdvancedDamageSystem.sanitizeNumber(value, fallback, minValue, maxValue)
-    end
-
-    local sanitized = tonumber(value)
-    if type(sanitized) ~= "number" or sanitized ~= sanitized or sanitized == math.huge or sanitized == -math.huge then
-        sanitized = tonumber(fallback) or 0
-    end
-
-    if minValue ~= nil then
-        sanitized = math.max(sanitized, minValue)
-    end
-    if maxValue ~= nil then
-        sanitized = math.min(sanitized, maxValue)
-    end
-
-    return sanitized
-end
+local sanitizeNumber = AdvancedDamageSystem.sanitizeNumber
 
 -- ==========================================================
 --                     MAIN

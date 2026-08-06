@@ -416,20 +416,8 @@ function ADS_Hud:getVehicleTypeCategoryLabel(vehicle)
     return string.format("%s/%s", vehicleTypeName, categoryName)
 end
 
-local function hasCVTTransmission(vehicle)
-    local motor = vehicle:getMotor()
-    return motor ~= nil and motor.minForwardGearRatio ~= nil
-end
-
-local function hasCVTAddon(vehicle)
-    local spec_CVTaddon = vehicle.spec_CVTaddon
-    local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
-    local hasActiveCVTAddon = spec_CVTaddon ~= nil
-        and spec_CVTaddon.CVTcfgExists
-        and cvtAddonConfig ~= 0
-        and cvtAddonConfig ~= 8
-    return hasActiveCVTAddon
-end
+local hasCVTTransmission = ADS_Utils.hasCVTTransmission
+local hasCVTAddon = ADS_Utils.hasCVTAddon
 
 -- =====================================================================================
 --                              DRAW

@@ -1058,3 +1058,66 @@ function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
     end
     return result
 end
+
+-- ==========================================================
+--                  SHARED VEHICLE HELPERS
+-- ==========================================================
+
+function ADS_Utils.hasCVTAddon(vehicle)
+    local spec_CVTaddon = vehicle ~= nil and vehicle.spec_CVTaddon or nil
+    local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
+    return spec_CVTaddon ~= nil
+        and spec_CVTaddon.CVTcfgExists
+        and cvtAddonConfig ~= 0
+        and cvtAddonConfig ~= 8
+end
+
+function ADS_Utils.hasCVTTransmission(vehicle)
+    local motor = vehicle ~= nil and vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+    return motor ~= nil and motor.minForwardGearRatio ~= nil
+end
+
+function ADS_Utils.getIsElectricVehicle(vehicle)
+    local hasElectricConsumer = false
+    local hasCombustionConsumer = false
+
+    if vehicle.spec_motorized and vehicle.spec_motorized.consumers then
+        for _, consumer in pairs(vehicle.spec_motorized.consumers) do
+            if consumer.fillType == FillType.ELECTRICCHARGE then
+                hasElectricConsumer = true
+            elseif consumer.fillType == FillType.DIESEL
+                    or consumer.fillType == FillType.METHANE then
+                hasCombustionConsumer = true
+            end
+        end
+    end
+
+    return hasElectricConsumer and not hasCombustionConsumer
+end
+
+function ADS_Utils.createLogger(prefix)
+    return function(...)
+        if ADS_Config ~= nil and ADS_Config.DEBUG then
+            local args = {...}
+            for i = 1, #args do
+                args[i] = tostring(args[i])
+            end
+            print(prefix .. " " .. table.concat(args, " "))
+        end
+    end
+end
+
+function ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
+    if rawSystem == nil or rawSystem == "" then
+        return nil
+    end
+
+    local normalized = string.lower(rawSystem)
+    for key, _ in pairs(spec.systems or {}) do
+        if string.lower(tostring(key)) == normalized then
+            return key
+        end
+    end
+
+    return false
+end

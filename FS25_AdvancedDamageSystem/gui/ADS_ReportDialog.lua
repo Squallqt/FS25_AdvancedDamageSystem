@@ -179,15 +179,7 @@ local RECOMMENDATION_RULES = {
     }
 }
 
-local function log_dbg(...)
-    if ADS_Config and ADS_Config.DEBUG then
-        local args = {...}
-        for i = 1, #args do
-            args[i] = tostring(args[i])
-        end
-        print("[ADS_REPORT_DIALOG] " .. table.concat(args, " "))
-    end
-end
+local log_dbg = ADS_Utils.createLogger("[ADS_REPORT_DIALOG]")
 
 local function getTextOrFallback(key, fallback)
     local text = g_i18n:getText(key)
