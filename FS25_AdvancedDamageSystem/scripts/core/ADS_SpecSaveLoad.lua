@@ -1126,6 +1126,8 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
     spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
 
+    ADS_Electrical.initVoltagesFromSoc(self)
+
     self:recalculateAndApplyEffects()
 end
 

@@ -984,6 +984,17 @@ function ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
     spec.batteryChargeAh = math.clamp(soc * effectiveCapacityAh, 0, effectiveCapacityAh)
 end
 
+function ADS_Electrical.initVoltagesFromSoc(vehicle)
+    local spec = vehicle.spec_AdvancedDamageSystem
+    local ocvV = sanitizeNumber(getBatteryOpenCircuitVoltage(spec.batterySoc), 12.7, 0, 30)
+
+    spec.batteryOpenCircuitVoltageV = ocvV
+    spec.rawBatteryTerminalVoltageV = ocvV
+    spec.batteryTerminalVoltageV = ocvV
+    spec.rawSystemVoltageV = ocvV
+    spec.systemVoltageV = ocvV
+end
+
 function ADS_Electrical:syncDeadBatteryEffect()
     local spec = self.spec_AdvancedDamageSystem
     if spec == nil then return end

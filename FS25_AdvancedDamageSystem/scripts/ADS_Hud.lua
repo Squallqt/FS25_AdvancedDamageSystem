@@ -1259,16 +1259,14 @@ function ADS_Hud:drawFuelConsumption(cardRightX)
 
     local motorizedSpec = vehicle.spec_motorized
     local consumptionPerHour = 0
-    local rawConsumptionPerHour = 0
     if vehicle:getIsMotorStarted() then
         consumptionPerHour = math.max(tonumber(motorizedSpec.lastFuelUsageDisplay or motorizedSpec.lastFuelUsage) or 0, 0)
-        rawConsumptionPerHour = math.max(tonumber(motorizedSpec.lastFuelUsage) or 0, 0)
     end
 
     local speed, areaRate = self:getConsumptionAreaRate()
     local consumptionPerArea = 0
     if speed > 0.9 and areaRate > 0 then
-        consumptionPerArea = rawConsumptionPerHour / areaRate
+        consumptionPerArea = consumptionPerHour / areaRate
     end
     consumptionPerArea = self:interpolateTelemetryValue(
         self.telemetryDisplayValues.consumptionPerArea,
