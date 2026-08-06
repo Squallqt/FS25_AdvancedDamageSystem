@@ -4636,8 +4636,8 @@ local function updateFuelState(vehicle, dt)
 
         fuelState.temperature = math.max(AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, environmentTemp, -80, 160) / 3.6, environmentTemp)
 
-        local idleSpeedThreshold = tonumber(ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_SPEED_THRESHOLD) or 0.5
-        local idleLoadThreshold = tonumber(ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_LOAD_THRESHOLD) or 0.3
+        local idleSpeedThreshold = ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_SPEED_THRESHOLD
+        local idleLoadThreshold = ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_LOAD_THRESHOLD
         local motorLoad = vehicle.getMotorLoadPercentage ~= nil and (vehicle:getMotorLoadPercentage() or 0) or 0
         local idleTimer = math.max(tonumber(fuelState.idleTimer) or 0, 0)
         local isIdle = (vehicle:getLastSpeed() or 0) <= idleSpeedThreshold and motorLoad <= idleLoadThreshold
