@@ -3281,21 +3281,21 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
                 extra.timer = extra.timer + dt
                 if extra.timer > extra.duration then
                     if extra.cruiseState ~= 0 then
-                        vehicle:setCruiseControlState(extra.cruiseState, true)
+                        v:setCruiseControlState(extra.cruiseState, true)
                     end
                     extra.status = "IDLE"
                     extra.timer = 0
                 end
-            elseif vehicle:getMotorLoadPercentage() > extra.motorLoad then
-                if vehicle.isServer and effectData.value > 0 and math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effectData.value) and extra.status == "IDLE" then
-                    
-                    local cruiseState = vehicle:getCruiseControlState()
+            elseif v:getMotorLoadPercentage() > extra.motorLoad then
+                if v.isServer and effectData.value > 0 and math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effectData.value) and extra.status == "IDLE" then
+
+                    local cruiseState = v:getCruiseControlState()
                     if cruiseState ~= 0 then
                         extra.cruiseState = cruiseState
-                        vehicle:setCruiseControlState(0, true)
+                        v:setCruiseControlState(0, true)
                     end
                     extra.status = "CHOKING"
-                    ADS_EffectSyncEvent.send(vehicle, "ENGINE_HESITATION_CHANCE", "CHOKING", 0)
+                    ADS_EffectSyncEvent.send(v, "ENGINE_HESITATION_CHANCE", "CHOKING", 0)
 
                 end
             end
