@@ -144,20 +144,9 @@ function ADS_Utils.tableToString(tbl)
     return "{ " .. table.concat(parts, ", ") .. " }"
 end
 
--- number key
-function ADS_Utils.getIndexByValue(tbl, value)
+function ADS_Utils.getKeyByValue(tbl, value)
     for key, val in pairs(tbl) do
-        if val == value and type(key) == "number" then
-            return key
-        end
-    end
-    return nil
-end
-
--- string key
-function ADS_Utils.getNameByValue(tbl, value)
-    for key, val in pairs(tbl) do
-        if val == value and type(key) == "string" then
+        if val == value then
             return key
         end
     end
@@ -845,7 +834,7 @@ function ADS_Utils.getSystemKey(systems, systemName)
     if systems == nil then
         return ""
     end
-    return string.lower(ADS_Utils.getNameByValue(systems, systemName) or "")
+    return string.lower(ADS_Utils.getKeyByValue(systems, systemName) or "")
 end
 
 function ADS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
@@ -893,7 +882,7 @@ function ADS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
                 end
             end
 
-            local systemKeyByValue = ADS_Utils.getNameByValue(systems, name)
+            local systemKeyByValue = ADS_Utils.getKeyByValue(systems, name)
             if type(systemKeyByValue) == "string" then
                 local loweredEnumKey = string.lower(systemKeyByValue)
                 if spec.systems[loweredEnumKey] ~= nil then

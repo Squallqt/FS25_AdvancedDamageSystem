@@ -49,14 +49,7 @@ AdvancedDamageSystem = {
         COOLING = "ads_spec_system_cooling",
         ELECTRICAL = "ads_spec_system_electrical",
         CHASSIS = "ads_spec_system_chassis",
-        FUEL = "ads_spec_system_fuel",
-        [1] = "ads_spec_system_engine",
-        [2] = "ads_spec_system_transmission",
-        [3] = "ads_spec_system_hydraulics",
-        [4] = "ads_spec_system_cooling",
-        [5] = "ads_spec_system_electrical",
-        [6] = "ads_spec_system_chassis",
-        [7] = "ads_spec_system_fuel"
+        FUEL = "ads_spec_system_fuel"
     },
 
     BREAKDOWN_SOURCES = {
@@ -69,9 +62,6 @@ AdvancedDamageSystem = {
     DEALER  = "ads_spec_workshop_dealer",
     MOBILE  = "ads_spec_workshop_mobile",
     OWN     = "ads_spec_workshop_own",
-    [1] = "ads_spec_workshop_dealer",
-    [2] = "ads_spec_workshop_mobile",
-    [3] = "ads_spec_workshop_own",
     },
 
     PART_TYPES = {
@@ -79,19 +69,12 @@ AdvancedDamageSystem = {
     USED        = "ads_spec_part_types_used",
     AFTERMARKET = "ads_spec_part_types_aftermarket",
     PREMIUM     = "ads_spec_part_types_premium",
-    [1] = "ads_spec_part_types_oem",
-    [2] = "ads_spec_part_types_used",
-    [3] = "ads_spec_part_types_aftermarket",
-    [4] = "ads_spec_part_types_premium",
     },
 
     INSPECTION_TYPES = {
     STANDARD = "ads_spec_inspection_standard",
     VISUAL   = "ads_spec_inspection_visual",
     COMPLETE = "ads_spec_inspection_complete",
-    [1] = "ads_spec_inspection_standard",
-    [2] = "ads_spec_inspection_visual",
-    [3] = "ads_spec_inspection_complete",
     },
 
     MAINTENANCE_TYPES = {
@@ -99,28 +82,18 @@ AdvancedDamageSystem = {
     MINIMAL  = "ads_spec_maintenance_minimal",
     EXTENDED = "ads_spec_maintenance_extended",
     PREVENTIVE = "ads_spec_maintenance_preventive",
-    [1] = "ads_spec_maintenance_standard",
-    [2] = "ads_spec_maintenance_minimal",
-    [3] = "ads_spec_maintenance_extended",
-    [4] = "ads_spec_maintenance_preventive",
     },
 
     REPAIR_TYPES = {
     LOW    = "ads_spec_repair_type_fix",
     MEDIUM = "ads_spec_repair_type_replacement",
     HIGH = "ads_spec_repair_type_advanced",
-    [1] = "ads_spec_repair_type_fix",
-    [2] = "ads_spec_repair_type_replacement",
-    [3] = "ads_spec_repair_type_advanced",
     },
 
     OVERHAUL_TYPES = {
     STANDARD = "ads_spec_overhaul_standard",
     PARTIAL  = "ads_spec_overhaul_partial",
     FULL     = "ads_spec_overhaul_full",
-    [1] = "ads_spec_overhaul_standard",
-    [2] = "ads_spec_overhaul_partial",
-    [3] = "ads_spec_overhaul_full",
     },
 
     TRANSMISSION_TYPES = {
@@ -131,13 +104,26 @@ AdvancedDamageSystem = {
     VARIABLE    = "variable",
     CVT         = "variable",
     UNKNOWN     = "unknown",
-    [1] = "manual",
-    [2] = "manual_powershift",
-    [3] = "automatic",
-    [4] = "powershift",
-    [5] = "variable",
-    [6] = "unknown",
     },
+}
+
+-- Display order of the vehicle systems.
+AdvancedDamageSystem.SYSTEMS_ORDER = {
+    AdvancedDamageSystem.SYSTEMS.ENGINE,
+    AdvancedDamageSystem.SYSTEMS.TRANSMISSION,
+    AdvancedDamageSystem.SYSTEMS.HYDRAULICS,
+    AdvancedDamageSystem.SYSTEMS.COOLING,
+    AdvancedDamageSystem.SYSTEMS.ELECTRICAL,
+    AdvancedDamageSystem.SYSTEMS.CHASSIS,
+    AdvancedDamageSystem.SYSTEMS.FUEL
+}
+
+-- Display order of the part quality options.
+AdvancedDamageSystem.PART_TYPES_ORDER = {
+    AdvancedDamageSystem.PART_TYPES.OEM,
+    AdvancedDamageSystem.PART_TYPES.USED,
+    AdvancedDamageSystem.PART_TYPES.AFTERMARKET,
+    AdvancedDamageSystem.PART_TYPES.PREMIUM
 }
 
 AdvancedDamageSystem.modDirectory = g_currentModDirectory
@@ -2830,7 +2816,7 @@ local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdow
 
         if vehicle:getOperatingTime() > 0 then
             local operatingHours = tonumber(vehicle:getFormattedOperatingTime()) or 0
-            local lifespanRatio = ADS_Config.CORE.DEFAULT_SYSTEM_WEAR / ADS_Config.CORE.BASE_SYSTEMS_WEAR
+            local lifespanRatio = ADS_Config.CORE.REFERENCE_SYSTEMS_WEAR / ADS_Config.CORE.BASE_SYSTEMS_WEAR
             local chance = operatingHours / (100 * lifespanRatio)
             chance = math.clamp(chance * ADS_Config.CORE.USED_VEHICLE_BREAKDOWN_PRESENCE_CHANGE_MUL, 0, ADS_Config.CORE.USED_VEHICLE_BREAKDOWN_PRESENCE_CHANGE_MAX)
             if math.random() < chance then
@@ -3274,7 +3260,7 @@ local function syncOverloadWarning(vehicle, dt)
     local spec = vehicle.spec_AdvancedDamageSystem
     if spec == nil or not vehicle.isServer then return end
     local period = 60000
-    local wearScale = ADS_Config.CORE.BASE_SYSTEMS_WEAR / ADS_Config.CORE.DEFAULT_SYSTEM_WEAR
+    local wearScale = ADS_Config.CORE.BASE_SYSTEMS_WEAR / ADS_Config.CORE.REFERENCE_SYSTEMS_WEAR
     local avgStressWarningThreshold = ADS_Config.CORE.AVG_STRESS_WARNING_THRESHOLD * ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
     local avgStressCriticalThreshold = ADS_Config.CORE.AVG_STRESS_CRITICAL_THRESHOLD * ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
     local sampleDurationMs = math.max(tonumber(dt) or 0, 1)
@@ -6556,7 +6542,7 @@ function AdvancedDamageSystem:addBreakdown(breakdownId, stageOrOptions)
 
     local resumeTimer = math.max(tonumber(options.resumeTimer) or 0, 0)
     if not currentIsActive and resumeTimer <= 0 then
-        local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
+        local serviceScale = ADS_Config.CORE.REFERENCE_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
         resumeTimer = ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (math.random() + 0.5)
     end
 
@@ -6758,7 +6744,7 @@ function AdvancedDamageSystem:processBreakdowns(dt)
                         breakdown.progressTimer = breakdown.progressTimer or 0
                         breakdown.progressTimer = breakdown.progressTimer + dt
                         
-                        local serviceScale = C.DEFAULT_SERVICE_WEAR / C.BASE_SERVICE_WEAR
+                        local serviceScale = C.REFERENCE_SERVICE_WEAR / C.BASE_SERVICE_WEAR
                         local stageDuration = C.BASE_BREAKDOWN_PROGRESS_TIME * stageData.progressMultiplier * serviceScale
 
                         if breakdown.progressTimer >= stageDuration then
@@ -7162,7 +7148,7 @@ local function markRepairStressReduction(spec, systemKey, optionOne)
         return
     end
 
-    local optionOneKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
+    local optionOneKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
 
     spec.pendingRepairSystemStressStart = spec.pendingRepairSystemStressStart or {}
     spec.pendingRepairSystemStressTarget = spec.pendingRepairSystemStressTarget or {}
@@ -7307,7 +7293,7 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
                 spec.serviceOptionOne = optionOne
             end
 
-            local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
+            local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
             if C.INSTANT_INSPECTION then
                 totalTimeMs = 1000
             else
@@ -7324,7 +7310,7 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
 
     -- MAINTENANCE
     if type == states.MAINTENANCE then
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
         totalTimeMs = C.MAINTENANCE_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.MAINTENANCE_TIME_MULTIPLIERS[key]
         spec.pendingMaintenanceServiceStart = spec.serviceLevel
         spec.pendingMaintenanceServiceTarget = math.max(spec.pendingMaintenanceServiceStart, C.MAINTENANCE_SERVICE_RESTORE_MULTIPLIERS[key])
@@ -7341,7 +7327,7 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
 
     -- REPAIR
     elseif type == states.REPAIR then
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
         local idsToRepair = {}
         for id, breakdown in pairs(self:getActiveBreakdowns()) do
             if isBreakdownSelectedForPlayerRepair(id, breakdown, optionOne) then
@@ -7356,7 +7342,7 @@ function AdvancedDamageSystem:initService(type, workshopType, optionOne, optionT
 
     -- OVERHAUL
     elseif type == states.OVERHAUL then
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
         totalTimeMs = C.OVERHAUL_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.OVERHAUL_TIME_MULTIPLIERS[key]
         local targetOverhaulSystemKey = nil
         if optionOne == AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL then 
@@ -7457,7 +7443,7 @@ local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, o
 
     if optionOne == AdvancedDamageSystem.REPAIR_TYPES.LOW then
         local random = math.random()
-        local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
+        local serviceScale = ADS_Config.CORE.REFERENCE_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
         vehicle:suspendBreakdown(breakdownId, ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (random + 0.5))
     else
         local stage = vehicle:getActiveBreakdowns()[breakdownId].stage
@@ -7471,7 +7457,7 @@ local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, o
         if optionTwo ~= AdvancedDamageSystem.PART_TYPES.PREMIUM then
             local defectChance = C.PARTS_BREAKDOWN_CHANCES[optionTwoKey]
             if math.random() < defectChance then
-                local serviceScale = ADS_Config.CORE.DEFAULT_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
+                local serviceScale = ADS_Config.CORE.REFERENCE_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
                 vehicle:addBreakdown(breakdownId, {
                     stage = stage,
                     isVisible = false,
@@ -7511,7 +7497,7 @@ function AdvancedDamageSystem:processService(dt)
     local serviceType = spec.currentState
     local optionOne = spec.serviceOptionOne
     local optionTwo = spec.serviceOptionTwo
-    local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+    local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
 
     if serviceType == states.INSPECTION or serviceType == states.MAINTENANCE then
         local steps = #spec.pendingInspectionQueue
@@ -7527,7 +7513,7 @@ function AdvancedDamageSystem:processService(dt)
                     if breakdownDef ~= nil and breakdownDef.stages ~= nil and breakdownDef.stages[breakdown.stage] ~= nil then
                         local inspectionDetectionMul = 1.0
                         if serviceType == states.INSPECTION then
-                            local optionOneKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
+                            local optionOneKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
                             inspectionDetectionMul = C.INSPECTION_DETECTION_CHANCE_MULTIPLIERS[optionOneKey] or 1.0
                         end
                         local chance = (breakdownDef.stages[breakdown.stage].detectionChance * inspectionDetectionMul) or 0
@@ -7659,7 +7645,7 @@ function AdvancedDamageSystem:completeService()
             self:removeBreakdown(table.unpack(idsToRepair))
         end
     elseif serviceType == states.REPAIR then
-        local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
         local repairQueue = spec.pendingRepairQueue or {}
         spec.pendingProgressStepIndex = math.max(math.floor(tonumber(spec.pendingProgressStepIndex) or 0), 0)
 
@@ -8242,7 +8228,7 @@ function AdvancedDamageSystem:getMaintenanceInterval()
         end
     end
 
-    local maintenanceIndex = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, lastMaintenanceType)
+    local maintenanceIndex = ADS_Utils.getKeyByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, lastMaintenanceType)
     local restoreCoeff = ADS_Config.MAINTENANCE.MAINTENANCE_SERVICE_RESTORE_MULTIPLIERS[maintenanceIndex]
     
     local gameTimeCoeff = 1.0
@@ -8386,7 +8372,7 @@ function AdvancedDamageSystem:isWarrantyRepairCovered(repairType, partType)
     local operatingHours = self.getFormattedOperatingTime ~= nil and tonumber(self:getFormattedOperatingTime()) or 0
     local ageMonths = tonumber(self.age) or 0
 
-    local lifespanScale = ADS_Config.CORE.DEFAULT_SYSTEM_WEAR / ADS_Config.CORE.BASE_SYSTEMS_WEAR
+    local lifespanScale = ADS_Config.CORE.REFERENCE_SYSTEMS_WEAR / ADS_Config.CORE.BASE_SYSTEMS_WEAR
     if operatingHours >= ((C.WARRANTY_MAX_OPERATING_HOURS * lifespanScale) or 20) or ageMonths >= (C.WARRANTY_MAX_AGE_MONTHS or 12) then
         return false
     end
@@ -8407,11 +8393,11 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
     end
 
     local workshopType = workshopTypeOverride or spec.workshopType
-    local workshopKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.WORKSHOP, workshopType)
+    local workshopKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.WORKSHOP, workshopType)
     local ownWorkshopDiscount = ADS_Config.WORKSHOP.PRICE_MULTIPLIERS[workshopKey] or 1.0
 
     if maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
         local inspectionPrice = math.ceil(math.max((C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.INSPECTION_PRICE_MULTIPLIERS[key] * price * 0.001 * ownWorkshopDiscount / 10) / spec.maintainability, 2)) * 10
         local inspectionPriceLimits = C.INSPECTION_PRICE_LIMITS ~= nil and C.INSPECTION_PRICE_LIMITS[key] or nil
         if inspectionPriceLimits ~= nil then
@@ -8421,14 +8407,14 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
         return inspectionPrice
         
     elseif maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
-        local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
+        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
         local maintenancePrice = math.ceil(math.max((C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.MAINTENANCE_PRICE_MULTIPLIERS[key] * C.PARTS_PRICE_MULTIPLIERS[optionTwoKey] * ownWorkshopDiscount * price * ageFactor * 0.01 / 10) / spec.maintainability, 2)) * 10
         log_dbg(string.format("Calculated maintenance price: %.2f (base price: %.2f, multiplier: %.2f, own workshop discount: %.2f, age factor: %.2f, maintainability: %.2f)", maintenancePrice, price, C.MAINTENANCE_PRICE_MULTIPLIERS[key] * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.PARTS_PRICE_MULTIPLIERS[optionTwoKey], ownWorkshopDiscount, ageFactor, spec.maintainability))
         return  maintenancePrice
 
     elseif maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
         local overhaulPrice = 0
 
         if optionOne == AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL then
@@ -8453,8 +8439,8 @@ function AdvancedDamageSystem:getServicePrice(maintenanceType, optionOne, option
             return 0
         end
 
-        local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
-        local optionTwoKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
+        local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
+        local optionTwoKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.PART_TYPES, optionTwo) or AdvancedDamageSystem.PART_TYPES.OEM
         local repairPrice = 0
         local activeBreakdowns = self:getActiveBreakdowns()
         
@@ -8489,7 +8475,7 @@ function AdvancedDamageSystem:getBreakdownRepairPrice(breakdownId, breakdownStag
     local vehiclePrice = self:getPrice()
     local ageFactor = math.min(math.max(math.log10(self.age), 1), 2)
 
-    local workshopKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.WORKSHOP, spec.workshopType)
+    local workshopKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.WORKSHOP, spec.workshopType)
     local ownWorkshopDiscount = ADS_Config.WORKSHOP.PRICE_MULTIPLIERS[workshopKey] or 1.0
 
     return price * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * (vehiclePrice / 100) * ageFactor * ownWorkshopDiscount / spec.maintainability
@@ -8516,17 +8502,17 @@ function AdvancedDamageSystem:getServiceDuration(maintenanceType, optionOne, opt
             if C.INSTANT_INSPECTION and optionOne == AdvancedDamageSystem.INSPECTION_TYPES.VISUAL then
                 optionOne = AdvancedDamageSystem.INSPECTION_TYPES.STANDARD
             end
-            local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
+            local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.INSPECTION_TYPES, optionOne)
             if C.INSTANT_INSPECTION then
                 totalDurationMs = 1000
             else
                 totalDurationMs = C.INSPECTION_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.INSPECTION_TIME_MULTIPLIERS[key] / spec.maintainability
             end
         elseif maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
-            local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
+            local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, optionOne)
             totalDurationMs = C.MAINTENANCE_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.MAINTENANCE_TIME_MULTIPLIERS[key] / spec.maintainability
         elseif maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-            local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
+            local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.OVERHAUL_TYPES, optionOne)
             totalDurationMs = C.OVERHAUL_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.OVERHAUL_TIME_MULTIPLIERS[key] / spec.maintainability
             if optionOne == AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL then
                  local systemWeight = ADS_Utils.getEffectiveSystemWeight(self, optionTwo, AdvancedDamageSystem.SYSTEMS)
@@ -8539,7 +8525,7 @@ function AdvancedDamageSystem:getServiceDuration(maintenanceType, optionOne, opt
                 totalDurationMs = totalDurationMs + C.REPAINT_TIME
             end
         elseif maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
-            local key = ADS_Utils.getNameByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
+            local key = ADS_Utils.getKeyByValue(AdvancedDamageSystem.REPAIR_TYPES, optionOne)
             local repairCount = 0
             local breakdowns = self:getActiveBreakdowns()
 

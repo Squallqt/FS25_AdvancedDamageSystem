@@ -39,8 +39,8 @@ ADS_Config = {
     -- This section controls the fundamental mechanics of wear, tear, and breakdowns.
     -- ====================================================================================
     CORE = {
-        DEFAULT_SERVICE_WEAR = 0.1,
-        DEFAULT_SYSTEM_WEAR = 0.01,
+        REFERENCE_SERVICE_WEAR = 0.1,
+        REFERENCE_SYSTEMS_WEAR = 0.01,
         BASE_SERVICE_WEAR = 0.1,
         BASE_SYSTEMS_WEAR = 0.01,
 
@@ -277,36 +277,36 @@ ADS_Config = {
         -- The hour of the day (0-23) when the workshop closes. Repairs will pause at this time.
         CLOSE_HOUR = 19, -- (7 PM)
         PRICE_MULTIPLIERS = {
-            [1] = 1.0, DEALER = 1.0,
-            [2] = 1.2, MOBILE = 1.2,
-            [3] = 0.8, OWN = 0.8,
+            DEALER = 1.0,
+            MOBILE = 1.2,
+            OWN    = 0.8,
         },
 
         MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = true,
         MOBILE_WORKSHOP_SERVICES_BY_MAINTAINABILITY = {
             INSPECTION = {
-                [1] = 0.0,  STANDARD = 0.0,
-                [2] = 0.0,  VISUAL   = 0.0,
-                [3] = 99.0, COMPLETE = 99.0,
+                STANDARD = 0.0,
+                VISUAL   = 0.0,
+                COMPLETE = 99.0,
             },
 
             MAINTENANCE = {
-                [1] = 1.1,  STANDARD = 1.1,
-                [2] = 0.9,  MINIMAL  = 0.9,
-                [3] = 1.2,  EXTENDED = 1.2,
-                [4] = 1.4,  PREVENTIVE = 1.4,
+                STANDARD   = 1.1,
+                MINIMAL    = 0.9,
+                EXTENDED   = 1.2,
+                PREVENTIVE = 1.4,
             },
 
             REPAIR = {
-                [1] = 0.0,  LOW    = 0.0,
-                [2] = 1.1,  MEDIUM = 1.1,
-                [3] = 99.0, HIGH   = 99.0,
+                LOW    = 0.0,
+                MEDIUM = 1.1,
+                HIGH   = 99.0,
             },
 
             OVERHAUL = {
-                [1] = 99.0,  STANDARD = 99.0,
-                [2] = 99.0,  PARTIAL  = 99.0,
-                [3] = 99.0,  FULL     = 99.0,
+                STANDARD = 99.0,
+                PARTIAL  = 99.0,
+                FULL     = 99.0,
             },
         }
     },
@@ -326,106 +326,106 @@ ADS_Config = {
 
         INSPECTION_TIME = 1 * 3600000,
         INSPECTION_TIME_MULTIPLIERS = {
-            [1] = 1.0,  STANDARD = 1.0,
-            [2] = 0.1,  VISUAL   = 0.1,
-            [3] = 4.0,  COMPLETE = 4.0,
+            STANDARD = 1.0,
+            VISUAL   = 0.1,
+            COMPLETE = 4.0,
         },
         MAINTENANCE_TIME = 6 * 3600000,
         MAINTENANCE_TIME_MULTIPLIERS = {
-            [1] = 1.0,  STANDARD = 1.0,
-            [2] = 0.25, MINIMAL  = 0.25,
-            [3] = 1.5,  EXTENDED = 1.5,
-            [4] = 2.0,  PREVENTIVE = 2.0,
+            STANDARD   = 1.0,
+            MINIMAL    = 0.25,
+            EXTENDED   = 1.5,
+            PREVENTIVE = 2.0,
         },
         REPAIR_TIME = 4 * 3600000,
         REPAIR_TIME_MULTIPLIERS = {
-            [1] = 0.2, LOW    = 0.2,
-            [2] = 1.0, MEDIUM = 1.0,
-            [3] = 2.0, HIGH = 2.0,
+            LOW    = 0.2,
+            MEDIUM = 1.0,
+            HIGH   = 2.0,
         },
         OVERHAUL_TIME = 24 * 3600000,
         OVERHAUL_TIME_MULTIPLIERS = {
-            [1] = 1.0, STANDARD = 1.0,
-            [2] = 1.2, PARTIAL  = 1.2,
-            [3] = 2.0, FULL     = 2.0,
+            STANDARD = 1.0,
+            PARTIAL  = 1.2,
+            FULL     = 2.0,
         },
 
         REPAINT_TIME = 8 * 3600000,
 
         INSPECTION_DETECTION_CHANCE_MULTIPLIERS = {
-            [1] = 1.0,  STANDARD = 1.0,
-            [2] = 0.8,  VISUAL   = 0.8,
-            [3] = 1.0,  COMPLETE = 1.0,
+            STANDARD = 1.0,
+            VISUAL   = 0.8,
+            COMPLETE = 1.0,
         },
 
         MAINTENANCE_SERVICE_RESTORE_MULTIPLIERS = {
-            [1] = 1.0,  STANDARD = 1.0,
-            [2] = 0.75, MINIMAL  = 0.75,
-            [3] = 1.2,  EXTENDED = 1.2,
-            [4] = 1.0,  PREVENTIVE = 1.0,
+            STANDARD   = 1.0,
+            MINIMAL    = 0.75,
+            EXTENDED   = 1.2,
+            PREVENTIVE = 1.0,
         },
 
         MAINTENANCE_PREVENTIVE_STRESS_REMOVE_MULTIPLIER = 0.6,
         MAINTENANCE_PREVENTIVE_SYSTEMS_COUNT = 3,
 
         REPAIR_REMAINING_STRESS_RATIO = {
-            [2] = 0.5,  MEDIUM = 0.5,
-            [3] = 0.0,  HIGH = 0.0,
+            MEDIUM = 0.5,
+            HIGH   = 0.0,
         },
 
         OVERHAUL_MIN_CONDITION_RESTORE_MULTIPLIERS = {
-            [1] = 0.61, STANDARD = 0.61,
-            [2] = 0.61, PARTIAL  = 0.61,
-            [3] = 0.81, FULL     = 0.81,
+            STANDARD = 0.61,
+            PARTIAL  = 0.61,
+            FULL     = 0.81,
         },
         OVERHAUL_MAX_CONDITION_RESTORE_MULTIPLIERS = {
-            [1] = 0.79, STANDARD = 0.79,
-            [2] = 0.79, PARTIAL  = 0.79,
-            [3] = 0.99, FULL     = 0.99,
+            STANDARD = 0.79,
+            PARTIAL  = 0.79,
+            FULL     = 0.99,
         },
 
         RE_OVERHAUL_FACTOR = 0.1,
 
         PARTS_BREAKDOWN_CHANCES = {
-            [1] = 0.1,  OEM         = 0.1,
-            [2] = 0.5,  USED        = 0.5,
-            [3] = 0.33, AFTERMARKET = 0.33,
-            [4] = 0.0,  PREMIUM     = 0.0,
+            OEM         = 0.1,
+            USED        = 0.5,
+            AFTERMARKET = 0.33,
+            PREMIUM     = 0.0,
         },
 
 
         PARTS_PRICE_MULTIPLIERS = {
-            [1] = 1.0,  OEM         = 1.0,
-            [2] = 0.33, USED        = 0.33,
-            [3] = 0.66, AFTERMARKET = 0.66,
-            [4] = 1.20, PREMIUM     = 1.20,
+            OEM         = 1.0,
+            USED        = 0.33,
+            AFTERMARKET = 0.66,
+            PREMIUM     = 1.20,
         },
         MAINTENANCE_PRICE_MULTIPLIERS = {
-            [1] = 1.0,  STANDARD = 1.0,
-            [2] = 0.65, MINIMAL  = 0.65,
-            [3] = 1.25, EXTENDED = 1.25,
-            [4] = 3.0,  PREVENTIVE = 3.0,
+            STANDARD   = 1.0,
+            MINIMAL    = 0.65,
+            EXTENDED   = 1.25,
+            PREVENTIVE = 3.0,
         },
 
         REPAIR_PRICE_MULTIPLIERS = {
-            [1] = 0.2, LOW    = 0.2,
-            [2] = 1.0, MEDIUM = 1.0,
-            [3] = 2.0,  HIGH = 2.0,
+            LOW    = 0.2,
+            MEDIUM = 1.0,
+            HIGH   = 2.0,
         },
         OVERHAUL_PRICE_MULTIPLIERS = {
-            [1] = 0.5, STANDARD = 0.5,
-            [2] = 0.6, PARTIAL  = 0.6,
-            [3] = 0.8, FULL     = 0.8,
+            STANDARD = 0.5,
+            PARTIAL  = 0.6,
+            FULL     = 0.8,
         },
         INSPECTION_PRICE_MULTIPLIERS = {
-            [1] = 1.0, STANDARD = 1.0,
-            [2] = 0.1, VISUAL   = 0.1,
-            [3] = 4.0, COMPLETE = 4.0,
+            STANDARD = 1.0,
+            VISUAL   = 0.1,
+            COMPLETE = 4.0,
         },
         INSPECTION_PRICE_LIMITS = {
-            [1] = {min = 100, max = 400},  STANDARD = {min = 100, max = 400},
-            [2] = {min = 20,  max = 100},  VISUAL   = {min = 20,  max = 100},
-            [3] = {min = 400, max = 1600}, COMPLETE = {min = 400, max = 1600},
+            STANDARD = {min = 100, max = 400},
+            VISUAL   = {min = 20,  max = 100},
+            COMPLETE = {min = 400, max = 1600},
         },
         OVERHAUL_MAX_PRICE_RATIO = 1.0,
         AGE_FACTOR_PRICE_FACTOR = 0.01,

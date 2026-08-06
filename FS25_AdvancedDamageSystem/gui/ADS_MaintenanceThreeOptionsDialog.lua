@@ -15,6 +15,7 @@ function ADS_MaintenanceThreeOptionsDialog.new(target, customMt)
     dialog.vehicle = nil
     dialog.overhaulSystemValues = nil
     dialog.optionOneValues = nil
+    dialog.optionTwoValues = nil
     dialog.serviceInfoData = {}
     return dialog
 end
@@ -24,22 +25,10 @@ local function ensureTrailingColon(text)
     return normalized .. ":"
 end
 
-local function getOverhaulSystemValues()
-    local values = {}
-    local index = 1
-
-    while AdvancedDamageSystem.SYSTEMS[index] ~= nil do
-        table.insert(values, AdvancedDamageSystem.SYSTEMS[index])
-        index = index + 1
-    end
-
-    return values
-end
-
 local function getEnabledOverhaulSystemValues(vehicle)
     local values = {}
     local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
-    local allSystems = getOverhaulSystemValues()
+    local allSystems = AdvancedDamageSystem.SYSTEMS_ORDER
 
     if spec == nil or type(spec.systems) ~= "table" then
         return allSystems
@@ -82,15 +71,15 @@ local function getMobileWorkshopAvailability(dialog)
         return true
     end
 
-    local serviceKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.STATUS, dialog.maintenanceType)
+    local serviceKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.STATUS, dialog.maintenanceType)
     local optionKey
 
     if dialog.maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
-        optionKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, dialog.selectedOptionOne)
+        optionKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, dialog.selectedOptionOne)
     elseif dialog.maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
-        optionKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.REPAIR_TYPES, dialog.selectedOptionOne)
+        optionKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.REPAIR_TYPES, dialog.selectedOptionOne)
     elseif dialog.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        optionKey = ADS_Utils.getNameByValue(AdvancedDamageSystem.OVERHAUL_TYPES, dialog.selectedOptionOne)
+        optionKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.OVERHAUL_TYPES, dialog.selectedOptionOne)
     end
 
     local limits = ADS_Config.WORKSHOP.MOBILE_WORKSHOP_SERVICES_BY_MAINTAINABILITY
@@ -148,16 +137,16 @@ function ADS_MaintenanceThreeOptionsDialog.show(vehicle, maintenanceType)
     end
 
     if dialog.maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
-        dialog.selectedOptionOne = AdvancedDamageSystem.MAINTENANCE_TYPES[1]
+        dialog.selectedOptionOne = AdvancedDamageSystem.MAINTENANCE_TYPES.STANDARD
     elseif dialog.maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
         dialog.selectedOptionOne = AdvancedDamageSystem.REPAIR_TYPES.MEDIUM
     elseif dialog.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        dialog.selectedOptionOne = AdvancedDamageSystem.OVERHAUL_TYPES[1]
+        dialog.selectedOptionOne = AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD
     end
     dialog.overhaulSystemValues = getEnabledOverhaulSystemValues(vehicle)
     dialog.selectedOptionTwo = dialog.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL
         and dialog.overhaulSystemValues[1]
-        or AdvancedDamageSystem.PART_TYPES[1]
+        or AdvancedDamageSystem.PART_TYPES.OEM
     dialog.selectedOptionThree = false
     
     dialog:updateScreen()
@@ -233,7 +222,7 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
     self.optionOneValues = optionOneValues
     if self.optionOneValues[1] == nil then
         self.selectedOptionOne = nil
-    elseif ADS_Utils.getIndexByValue(self.optionOneValues, self.selectedOptionOne) == nil then
+    elseif ADS_Utils.getKeyByValue(self.optionOneValues, self.selectedOptionOne) == nil then
         self.selectedOptionOne = self.optionOneValues[1]
         if self.optionOne.setState ~= nil then
             self.optionOne:setState(1)
@@ -246,32 +235,25 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
     -- option two
     local optionTwoText = ""
     local optionTwoOptions = {}
+    local optionTwoValues = {}
 
     if self.maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
         optionTwoText = g_i18n:getText("ads_option_menu_option_two_title_maintenance")
-        optionTwoOptions = {
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.OEM),
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.USED),
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.AFTERMARKET),
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.PREMIUM)
-        }
+        optionTwoValues = AdvancedDamageSystem.PART_TYPES_ORDER
     elseif self.maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
         optionTwoText = g_i18n:getText("ads_option_menu_option_two_title_repair")
-        optionTwoOptions = {
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.OEM),
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.USED),
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.AFTERMARKET),
-            g_i18n:getText(AdvancedDamageSystem.PART_TYPES.PREMIUM)
-        }
+        optionTwoValues = AdvancedDamageSystem.PART_TYPES_ORDER
     else
         optionTwoText = g_i18n:getText("ads_option_menu_option_two_title_overhaul")
-        optionTwoOptions = {}
         self.overhaulSystemValues = self.overhaulSystemValues or getEnabledOverhaulSystemValues(self.vehicle)
-        for _, systemL10nKey in ipairs(self.overhaulSystemValues) do
-            table.insert(optionTwoOptions, g_i18n:getText(systemL10nKey))
-        end
+        optionTwoValues = self.overhaulSystemValues
     end
 
+    for _, optionValue in ipairs(optionTwoValues) do
+        table.insert(optionTwoOptions, g_i18n:getText(optionValue))
+    end
+
+    self.optionTwoValues = optionTwoValues
     self.optionTwoText:setText(optionTwoText)
     self.optionTwo:setTexts(optionTwoOptions)
 
@@ -288,15 +270,8 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
 
     if self.optionTwo ~= nil and self.optionTwo.getState ~= nil then
         local optionTwoState = tonumber(self.optionTwo:getState())
-        if optionTwoState ~= nil then
-            if self.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-                self.overhaulSystemValues = self.overhaulSystemValues or getEnabledOverhaulSystemValues(self.vehicle)
-                if self.overhaulSystemValues[optionTwoState] ~= nil then
-                    self.selectedOptionTwo = self.overhaulSystemValues[optionTwoState]
-                end
-            elseif AdvancedDamageSystem.PART_TYPES[optionTwoState] ~= nil then
-                self.selectedOptionTwo = AdvancedDamageSystem.PART_TYPES[optionTwoState]
-            end
+        if optionTwoState ~= nil and self.optionTwoValues[optionTwoState] ~= nil then
+            self.selectedOptionTwo = self.optionTwoValues[optionTwoState]
         end
     end
 
@@ -337,16 +312,14 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
     self.serviceInfoTable:reloadData()
 
     -- disclaimers
-    local optionOneDisclaimers = {}
-
     if self.maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
-        optionOneDisclaimers = {
-            g_i18n:getText("ads_option_menu_maintenance_standard_description"),
-            g_i18n:getText("ads_option_menu_maintenance_minimal_description"),
-            g_i18n:getText("ads_option_menu_maintenance_extended_description"),
-            g_i18n:getText("ads_option_menu_maintenance_preventive_description")
+        local optionOneDisclaimers = {
+            [AdvancedDamageSystem.MAINTENANCE_TYPES.STANDARD]   = g_i18n:getText("ads_option_menu_maintenance_standard_description"),
+            [AdvancedDamageSystem.MAINTENANCE_TYPES.MINIMAL]    = g_i18n:getText("ads_option_menu_maintenance_minimal_description"),
+            [AdvancedDamageSystem.MAINTENANCE_TYPES.EXTENDED]   = g_i18n:getText("ads_option_menu_maintenance_extended_description"),
+            [AdvancedDamageSystem.MAINTENANCE_TYPES.PREVENTIVE] = g_i18n:getText("ads_option_menu_maintenance_preventive_description")
         }
-        self.optionOneDisclaimer:setText(optionOneDisclaimers[ADS_Utils.getIndexByValue(AdvancedDamageSystem.MAINTENANCE_TYPES, self.selectedOptionOne)] or "")
+        self.optionOneDisclaimer:setText(optionOneDisclaimers[self.selectedOptionOne] or "")
         self.choosenPartsText:setVisible(false)
     elseif self.maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
         local choosenPartsText = g_i18n:getText("ads_option_menu_chosen_parts_text")
@@ -373,12 +346,12 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
         self.choosenPartsText:setText(choosenPartsText)
         self.choosenPartsText:setVisible(true)
     else
-        optionOneDisclaimers = {
-            g_i18n:getText("ads_option_menu_overhaul_standard_description"),
-            g_i18n:getText("ads_option_menu_overhaul_partial_description"),
-            g_i18n:getText("ads_option_menu_overhaul_full_description")
+        local optionOneDisclaimers = {
+            [AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD] = g_i18n:getText("ads_option_menu_overhaul_standard_description"),
+            [AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL]  = g_i18n:getText("ads_option_menu_overhaul_partial_description"),
+            [AdvancedDamageSystem.OVERHAUL_TYPES.FULL]     = g_i18n:getText("ads_option_menu_overhaul_full_description")
         }
-        self.optionOneDisclaimer:setText(optionOneDisclaimers[ADS_Utils.getIndexByValue(AdvancedDamageSystem.OVERHAUL_TYPES, self.selectedOptionOne)] or "")
+        self.optionOneDisclaimer:setText(optionOneDisclaimers[self.selectedOptionOne] or "")
         self.choosenPartsText:setVisible(false)
     end
 
@@ -386,12 +359,12 @@ function ADS_MaintenanceThreeOptionsDialog:updateScreen()
         self.optionTwoDisclaimer:setText("")
     else
         local optionTwoDisclaimers = {
-            g_i18n:getText("ads_option_menu_part_oem_description"),
-            g_i18n:getText("ads_option_menu_part_used_description"),
-            g_i18n:getText("ads_option_menu_part_aftermarket_description"),
-            g_i18n:getText("ads_option_menu_part_premium_description")
+            [AdvancedDamageSystem.PART_TYPES.OEM]         = g_i18n:getText("ads_option_menu_part_oem_description"),
+            [AdvancedDamageSystem.PART_TYPES.USED]        = g_i18n:getText("ads_option_menu_part_used_description"),
+            [AdvancedDamageSystem.PART_TYPES.AFTERMARKET] = g_i18n:getText("ads_option_menu_part_aftermarket_description"),
+            [AdvancedDamageSystem.PART_TYPES.PREMIUM]     = g_i18n:getText("ads_option_menu_part_premium_description")
         }
-        self.optionTwoDisclaimer:setText(optionTwoDisclaimers[ADS_Utils.getIndexByValue(AdvancedDamageSystem.PART_TYPES, self.selectedOptionTwo)] or "")
+        self.optionTwoDisclaimer:setText(optionTwoDisclaimers[self.selectedOptionTwo] or "")
     end
 
     if not isAllowedInMobileWorkshop then
@@ -436,12 +409,7 @@ function ADS_MaintenanceThreeOptionsDialog:onClickOptionOne(index)
 end
 
 function ADS_MaintenanceThreeOptionsDialog:onClickOptionTwo(index)
-    if self.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        self.overhaulSystemValues = self.overhaulSystemValues or getEnabledOverhaulSystemValues(self.vehicle)
-        self.selectedOptionTwo = self.overhaulSystemValues[index] or self.selectedOptionTwo
-    else
-        self.selectedOptionTwo = AdvancedDamageSystem.PART_TYPES[index]
-    end
+    self.selectedOptionTwo = self.optionTwoValues[index] or self.selectedOptionTwo
     self:updateScreen()
 end
 

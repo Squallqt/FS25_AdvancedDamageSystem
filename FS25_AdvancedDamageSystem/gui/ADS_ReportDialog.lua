@@ -193,7 +193,7 @@ function getSystemDisplayName(systemKey)
     local normalizedKey = string.lower(tostring(systemKey or ""))
 
     for enumKey, l10nKey in pairs(AdvancedDamageSystem.SYSTEMS or {}) do
-        if type(enumKey) == "string" and string.lower(enumKey) == normalizedKey then
+        if string.lower(enumKey) == normalizedKey then
             return getTextOrFallback(l10nKey, tostring(systemKey))
         end
     end
@@ -509,23 +509,13 @@ function ADS_ReportDialog:updateScreen()
 --                   SYSTEM CONDITION   
 -- ==========================================================
 
-    local systemOrder = {
-        "ENGINE",
-        "TRANSMISSION",
-        "HYDRAULICS",
-        "COOLING",
-        "ELECTRICAL",
-        "CHASSIS",
-        "FUEL"
-    }
-
-    for _, systemEnumKey in ipairs(systemOrder) do
-        local systemKey = string.lower(systemEnumKey)
+    for _, systemL10nKey in ipairs(AdvancedDamageSystem.SYSTEMS_ORDER) do
+        local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemL10nKey)
         local systemData = systems[systemKey]
         if type(systemData) == "table" and systemData.enabled ~= false then
             local systemCondition = math.max(math.min(systemData.condition or 1.0, 1.0), 0.0)
             local systemStress = math.max(math.min(systemData.stress or 0.0, 1.0), 0.0)
-            table.insert(self.systemConditionData, {AdvancedDamageSystem.SYSTEMS[systemEnumKey], systemCondition, systemStress})
+            table.insert(self.systemConditionData, {systemL10nKey, systemCondition, systemStress})
         end
     end
 
