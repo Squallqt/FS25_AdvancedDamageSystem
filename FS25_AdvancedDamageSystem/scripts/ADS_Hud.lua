@@ -1418,13 +1418,7 @@ function ADS_Hud:drawLoadMass(cardRightX)
         local ratioBasis = isTruck and totalMass or towedMass
         local powerToWeight = horsepower / math.max(ratioBasis, 0.01)
 
-        local C         = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
-        local threshold = isTruck
-            and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0)
-            or  (tonumber(C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD)       or 10.0)
-        local fullEffect = isTruck
-            and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT) or 3.0)
-            or  (tonumber(C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT)       or 5.0)
+        local threshold, fullEffect = ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
 
         local trailerSeverity = ADS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
 
@@ -3075,6 +3069,9 @@ end
 
 local INSPECTED_DAMAGE_CEILING = 0.9
 
+-- Damage bar filling of each condition tier.
+local TIER_DAMAGE_AMOUNTS = {0.0, 0.25, 0.5, 0.75, INSPECTED_DAMAGE_CEILING}
+
 local originalSpeedMeterDisplayDraw = SpeedMeterDisplay.draw
 SpeedMeterDisplay.draw = function(self, ...)
     local vehicle = self.vehicle
@@ -3140,16 +3137,8 @@ SpeedMeterDisplay.draw = function(self, ...)
                 customDamageAmount = 1.0
             elseif isCompleteInspection then
                 customDamageAmount = math.min(1 - condition, INSPECTED_DAMAGE_CEILING)
-            elseif condition > 0.8 then
-                customDamageAmount = 0.0
-            elseif condition > 0.6 then
-                customDamageAmount = 0.25
-            elseif condition > 0.4 then
-                customDamageAmount = 0.5
-            elseif condition > 0.2 then
-                customDamageAmount = 0.75
             else
-                customDamageAmount = INSPECTED_DAMAGE_CEILING
+                customDamageAmount = TIER_DAMAGE_AMOUNTS[ADS_Utils.getConditionTier(condition)]
             end
         else
             customDamageAmount = selectedTool:getDamageAmount()

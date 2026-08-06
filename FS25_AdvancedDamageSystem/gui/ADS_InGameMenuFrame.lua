@@ -221,7 +221,7 @@ local function buildOtherVehicleRow(vehicle)
         workingHoursValue = operatingHours,
         condition = string.format("%s%%", g_i18n:formatNumber(conditionValue * 100, 0)),
         conditionValue = conditionValue,
-        conditionColor = {ADS_Utils.getValueColor(conditionValue, 0.8, 0.6, 0.4, 0.2, false)},
+        conditionColor = {ADS_Utils.getConditionColor(conditionValue, true)},
         interval = "-",
         intervalValue = -1,
         intervalColor = {1, 1, 1, 1},

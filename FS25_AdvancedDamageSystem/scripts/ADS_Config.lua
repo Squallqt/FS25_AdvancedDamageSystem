@@ -113,6 +113,8 @@ ADS_Config = {
             HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD = 6.0,
             HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT = 3.0,
             HEAVY_TRAILER_MOTORLOAD_THRESHOLD = 0.7,
+            -- Fraction of the heavy trailer ratio threshold at which the tutorial tip fires.
+            HEAVY_TRAILER_TUTORIAL_MARGIN = 0.8,
             COLD_TRANSMISSION_MULTIPLIER = 60.0,
             COLD_TRANSMISSION_THRESHOLD = 45,
             OVERHEAT_TRANSMISSION_MAX_MULTIPLIER = 100.0,

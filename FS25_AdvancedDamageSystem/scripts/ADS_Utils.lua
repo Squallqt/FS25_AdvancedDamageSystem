@@ -304,6 +304,21 @@ end
 
 -- condition and service levels -----------------------------
 
+ADS_Utils.CONDITION_LEVELS = {0.8, 0.6, 0.4, 0.2}
+
+local CONDITION_STATE_NAMES = {"EXCELLENT", "GOOD", "NORMAL", "BAD", "TERRIBLE"}
+
+-- Returns the condition tier, 1 for the best and 5 for the worst.
+function ADS_Utils.getConditionTier(condition)
+    local levels = ADS_Utils.CONDITION_LEVELS
+    for tier = 1, #levels do
+        if condition >= levels[tier] then
+            return tier
+        end
+    end
+    return #levels + 1
+end
+
 function ADS_Utils.formatCondition(condition, isCompleteInspection)
     local STATES = AdvancedDamageSystem.STATES
     if isCompleteInspection == nil then
@@ -312,18 +327,7 @@ function ADS_Utils.formatCondition(condition, isCompleteInspection)
     if isCompleteInspection then
         return string.format("%.0f%%", condition * 100)
     end
-    local damage = 1.0 - condition
-    if damage > 0.8 then
-        return g_i18n:getText(STATES.TERRIBLE)
-    elseif damage > 0.6 then
-        return g_i18n:getText(STATES.BAD)
-    elseif damage > 0.4 then
-        return g_i18n:getText(STATES.NORMAL)
-    elseif damage > 0.2 then
-        return g_i18n:getText(STATES.GOOD)
-    else
-        return g_i18n:getText(STATES.EXCELLENT)
-    end
+    return g_i18n:getText(STATES[CONDITION_STATE_NAMES[ADS_Utils.getConditionTier(condition)]])
 end
 
 function ADS_Utils.getServiceIntervalRemainingRatio(service)
@@ -451,7 +455,6 @@ local COLOR_ORANGE = {0.85, 0.5, 0.15, 1.0}  -- orange
 local COLOR_RED    = {0.8, 0.2, 0.2, 1.0}    -- red
 local COLOR_UNKNOWN = {0.5, 0.5, 0.5, 1.0}   -- grey
 
-local DEFAULT_COLOR_LEVELS = {0.8, 0.6, 0.4, 0.2}
 local SERVICE_COLOR_LEVELS = {0.9, 0.5, 0.2, 0.001}
 
 local function lerpColor(a, b, t)
@@ -504,7 +507,7 @@ function ADS_Utils.getConditionColor(condition, isCompleteInspection)
         return unpack(COLOR_UNKNOWN)
     end
 
-    local ideal, high, mid, low = unpack(DEFAULT_COLOR_LEVELS)
+    local ideal, high, mid, low = unpack(ADS_Utils.CONDITION_LEVELS)
     return ADS_Utils.getValueColor(condition, ideal, high, mid, low, false)
 end
 
@@ -1093,6 +1096,24 @@ function ADS_Utils.getIsElectricVehicle(vehicle)
     end
 
     return hasElectricConsumer and not hasCombustionConsumer
+end
+
+-- Returns the heavy trailer power to mass ratio threshold and full effect ratio of the vehicle class.
+function ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
+    local C = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
+    if isTruck then
+        return C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD, C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT
+    end
+    return C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD, C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT
+end
+
+-- Returns the PTO angle threshold in degrees of the current connection type.
+function ADS_Utils.getPtoSharpAngleThreshold(spec)
+    local C = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA
+    if spec.ptoConnectionIsTrailerHitch == true then
+        return C.PTO_SHARP_ANGLE_WIDE_THRESHOLD
+    end
+    return C.PTO_SHARP_ANGLE_FACTOR_THRESHOLD
 end
 
 function ADS_Utils.createLogger(prefix)

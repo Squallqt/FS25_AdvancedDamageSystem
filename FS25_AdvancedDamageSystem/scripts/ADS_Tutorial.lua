@@ -116,21 +116,17 @@ function ADS_Tutorial:update(dt)
             local heavyLiftThreshold = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
             local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
             local hasConnectedPto = spec.hasConnectedPto == true
-            local sharpAngleThreshold = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA.PTO_SHARP_ANGLE_FACTOR_THRESHOLD or 30
+            local sharpAngleThreshold = ADS_Utils.getPtoSharpAngleThreshold(spec)
             local transmissionConfig = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
             local chassisBrakeState = spec.chassisBrakeState
             local isTruck = spec.isTruck == true
             local heavyTrailerMass = math.max(chassisBrakeState.trailerMass, 0)
-            local tractorHeavyTrailerRatio = chassisBrakeState.hpTrailerMassRatio
-            local truckHeavyTrailerRatio = chassisBrakeState.hpGrossMassRatio
-            local tractorHeavyTrailerThreshold = (tonumber(transmissionConfig.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0) * 0.8
-            local truckHeavyTrailerThreshold = (tonumber(transmissionConfig.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0) * 0.8
-            local hasHeavyTrailerForTractor = not isTruck
-                and heavyTrailerMass > 0.1
-                and tractorHeavyTrailerRatio <= tractorHeavyTrailerThreshold
-            local hasHeavyTrailerForTruck = isTruck
-                and heavyTrailerMass > 0.1
-                and truckHeavyTrailerRatio <= truckHeavyTrailerThreshold
+            local heavyTrailerRatio = isTruck
+                and chassisBrakeState.hpGrossMassRatio
+                or chassisBrakeState.hpTrailerMassRatio
+            local heavyTrailerThreshold = ADS_Utils.getHeavyTrailerRatioLevels(isTruck) * transmissionConfig.HEAVY_TRAILER_TUTORIAL_MARGIN
+            local hasHeavyTrailer = heavyTrailerMass > 0.1
+                and heavyTrailerRatio <= heavyTrailerThreshold
             local preventiveRiskSystem = nil
             local hasPoorPartsBreakdown = false
             local localWeatherType = (g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather ~= nil)
@@ -169,17 +165,13 @@ function ADS_Tutorial:update(dt)
                 end
             end
 
-            if sharpAngleThreshold <= (2 * math.pi + 0.001) then
-                sharpAngleThreshold = math.deg(sharpAngleThreshold)
-            end
-
             local serviceInterval = vehicle:getHoursSinceLastMaintenance() / vehicle:getMaintenanceInterval()
 
             -- ==========================================================
             -- STATE and STATUS
             -- ==========================================================
             --- heavy trailer
-            if not messagedData.HEAVY_TRAILER and transmissionSystemEnabled and isMotorStarted and speed > 5 and (hasHeavyTrailerForTractor or hasHeavyTrailerForTruck) then
+            if not messagedData.HEAVY_TRAILER and transmissionSystemEnabled and isMotorStarted and speed > 5 and hasHeavyTrailer then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_heavy_trailer_message"),
                     0,
@@ -263,7 +255,7 @@ function ADS_Tutorial:update(dt)
                 self.messageDowntime = downtimeAfterMessage
 
             --- needs lubrication
-            elseif not messagedData.NEEDS_LUBRICATION and spec.isVehicleNeedLubricate and spec.lubricationLevel <= 0.8 then
+            elseif not messagedData.NEEDS_LUBRICATION and spec.isVehicleNeedLubricate and spec.lubricationLevel <= ADS_Config.FIELD_CARE.LUBRICATION_WARNING_THRESHOLD then
                 ADS_Hud.showNotification(
                     string.format(g_i18n:getText("ads_tutorial_needs_lubrication_message"), vehicle:getFullName()),
                     0,

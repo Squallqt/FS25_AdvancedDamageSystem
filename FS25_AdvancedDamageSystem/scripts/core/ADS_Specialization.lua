@@ -857,6 +857,7 @@ local function markTutorialDataDirty(vehicle, spec)
     local isPtoActive    = spec.isPtoActive    == true
     local hasConnectedPto = spec.hasConnectedPto == true
     local ptoAngle       = tonumber(spec.maxConnectedPtoAngleDeg) or 0
+    local ptoIsTrailerHitch = spec.ptoConnectionIsTrailerHitch == true
 
     if syncFloatChanged(spec._lastSyncTutorial_idleTimer,       idleTimer,       1.0)   or
        syncFloatChanged(spec._lastSyncTutorial_fuelLevel,       fuelLevel,       0.01)  or
@@ -872,6 +873,7 @@ local function markTutorialDataDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncTutorial_liftedMass,      liftedMass,      0.01)  or
        spec._lastSyncTutorial_isPtoActive    ~= isPtoActive                            or
        spec._lastSyncTutorial_hasConnectedPto ~= hasConnectedPto                       or
+       spec._lastSyncTutorial_ptoIsTrailerHitch ~= ptoIsTrailerHitch                    or
        syncFloatChanged(spec._lastSyncTutorial_ptoAngle,        ptoAngle,        0.5) then
             AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TUTORIAL_DATA)
             spec._lastSyncTutorial_idleTimer       = idleTimer
@@ -888,6 +890,7 @@ local function markTutorialDataDirty(vehicle, spec)
             spec._lastSyncTutorial_liftedMass      = liftedMass
             spec._lastSyncTutorial_isPtoActive     = isPtoActive
             spec._lastSyncTutorial_hasConnectedPto = hasConnectedPto
+            spec._lastSyncTutorial_ptoIsTrailerHitch = ptoIsTrailerHitch
             spec._lastSyncTutorial_ptoAngle        = ptoAngle
             return true
     end
@@ -957,7 +960,7 @@ function AdvancedDamageSystem.forceFinishService(vehicle)
 
     if not ok then
         log_dbg(string.format("Failed to force-finish service for '%s': %s", vehicle:getFullName(), tostring(err)))
-        return false
+        return false, err
     end
 
     if spec.currentState ~= AdvancedDamageSystem.STATUS.READY then
@@ -1482,6 +1485,7 @@ function AdvancedDamageSystem:onWriteUpdateStream(streamId, connection, dirtyMas
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.liftedMass, 0, 0))
             streamWriteBool(streamId, spec.isPtoActive == true)
             streamWriteBool(streamId, spec.hasConnectedPto == true)
+            streamWriteBool(streamId, spec.ptoConnectionIsTrailerHitch == true)
             streamWriteFloat32(streamId, AdvancedDamageSystem.sanitizeNumber(spec.maxConnectedPtoAngleDeg, 0, 0, 180))
         end
     end
@@ -1620,6 +1624,7 @@ function AdvancedDamageSystem:onReadUpdateStream(streamId, timestamp, connection
             spec.liftedMass           = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             spec.isPtoActive          = streamReadBool(streamId)
             spec.hasConnectedPto      = streamReadBool(streamId)
+            spec.ptoConnectionIsTrailerHitch = streamReadBool(streamId)
             spec.maxConnectedPtoAngleDeg = AdvancedDamageSystem.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 180)
         end
     end
@@ -5290,12 +5295,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     local hpHeavyTrailerRatio = isTruck
         and brakeState.hpGrossMassRatio
         or brakeState.hpTrailerMassRatio
-    local heavyTrailerRatioThreshold = isTruck
-        and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD) or 6.0)
-        or (tonumber(C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD) or 10.0)
-    local heavyTrailerFullEffectRatio = isTruck
-        and (tonumber(C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT) or 3.0)
-        or (tonumber(C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT) or 5.0)
+    local heavyTrailerRatioThreshold, heavyTrailerFullEffectRatio = ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
     local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.transmission.name)
     
     if not systemData.enabled then
@@ -5557,12 +5557,7 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
                 local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
                 local hasConnectedPto = spec.hasConnectedPto == true
                 ptoSharpAngleDeg = ptoAngleDeg
-                local sharpAngleThreshold = spec.ptoConnectionIsTrailerHitch == true
-                    and (C.PTO_SHARP_ANGLE_WIDE_THRESHOLD or 70)
-                    or  (C.PTO_SHARP_ANGLE_FACTOR_THRESHOLD or 30)
-                if sharpAngleThreshold <= (2 * math.pi + 0.001) then
-                    sharpAngleThreshold = math.deg(sharpAngleThreshold)
-                end
+                local sharpAngleThreshold = ADS_Utils.getPtoSharpAngleThreshold(spec)
 
                 if hasConnectedPto and ptoAngleDeg > sharpAngleThreshold and not spec.isExcludedFromPTOSharpAngleFactor then
                     sharpAngleFactor = ADS_Utils.calculateQuadraticMultiplier(ptoAngleDeg, sharpAngleThreshold, false, 50)
@@ -6021,32 +6016,12 @@ local function buildGeneralWearBreakdown(vehicle)
         return
     end
 
-    local generalWearBreakdown = {
-        system = 'vehicle',
-        isSelectable = false,
-        isApplicable = function(vehicle)
-            return true
-        end,
-        probability = function(vehicle)
-            return 0.0
-        end,
-        isCanProgress = function(vehicle)
-            return false
-        end,
-        stages = {
-            {
-                severity = "ads_breakdowns_severity_permanent",
-                description = "ads_breakdowns_general_wear_stage1_description",
-                detectionChance = 0.0,
-                progressMultiplier = 0.0,
-                repairPrice = 0.0,
-                effects = {},
-                indicators = {}
-            }
-        }
-    }
+    local generalWearBreakdown = ADS_Utils.shallowCopy(ADS_Breakdowns.BreakdownRegistry.GENERAL_WEAR)
+    local stage = ADS_Utils.shallowCopy(generalWearBreakdown.stages[1])
+    stage.effects = {}
+    generalWearBreakdown.stages = { stage }
 
-    local effects = generalWearBreakdown.stages[1].effects
+    local effects = stage.effects
     local systems = AdvancedDamageSystem.SYSTEMS
 
     for _, systemData in pairs(spec.systems) do
@@ -9636,37 +9611,11 @@ function AdvancedDamageSystem.ConsoleCommands:finishMaintance()
     end
 
     local currentState = spec.currentState
-    local remainingMs = math.max(spec.maintenanceTimer or 0, 0)
-    local missionInfo = g_currentMission and g_currentMission.missionInfo or nil
-    local timeScale = (missionInfo and missionInfo.timeScale) or 1
-    if timeScale <= 0 then
-        timeScale = 1
-    end
-    local forceDt = math.max(math.ceil(remainingMs / timeScale) + 1, 1)
+    local finished, err = AdvancedDamageSystem.forceFinishService(vehicle)
 
-    local previousWorkshopOpen = nil
-    if ADS_Main ~= nil then
-        previousWorkshopOpen = ADS_Main.isWorkshopOpen
-        ADS_Main.isWorkshopOpen = true
-    end
-
-    local ok, err = pcall(function()
-        vehicle:processService(forceDt)
-    end)
-
-    if ADS_Main ~= nil and previousWorkshopOpen ~= nil then
-        ADS_Main.isWorkshopOpen = previousWorkshopOpen
-    end
-
-    if not ok then
+    if not finished then
         print(string.format("ADS Error: Failed to force-finish service for '%s': %s", vehicle:getFullName(), tostring(err)))
         return
-    end
-
-    if spec.currentState ~= AdvancedDamageSystem.STATUS.READY then
-        spec.pendingProgressElapsedTime = spec.pendingProgressTotalTime or 0
-        spec.maintenanceTimer = 0
-        vehicle:completeService()
     end
 
     print(string.format("ADS: Service '%s' force-finished for '%s'.", currentState, vehicle:getFullName()))
