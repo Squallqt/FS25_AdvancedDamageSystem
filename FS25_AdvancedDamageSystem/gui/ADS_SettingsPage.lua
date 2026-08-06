@@ -1,9 +1,8 @@
 ADS_SettingsPage = {}
-ADS_InGameSettings = ADS_SettingsPage
-ADS_InGameSettings.name = g_currentModName
-ADS_InGameSettings.modDirectory = g_currentModDirectory
+ADS_SettingsPage.name = g_currentModName
+ADS_SettingsPage.modDirectory = g_currentModDirectory
 
-ADS_InGameSettings.steps = {}
+ADS_SettingsPage.steps = {}
 
 local function formatAh(val)
     local text = string.format("%.2f", val)
@@ -76,11 +75,11 @@ local function buildPendingConfigFromAdsConfig()
 end
 
 local function getPendingConfig()
-    if ADS_InGameSettings.pendingConfig == nil then
-        ADS_InGameSettings.pendingConfig = buildPendingConfigFromAdsConfig()
+    if ADS_SettingsPage.pendingConfig == nil then
+        ADS_SettingsPage.pendingConfig = buildPendingConfigFromAdsConfig()
     end
 
-    return ADS_InGameSettings.pendingConfig
+    return ADS_SettingsPage.pendingConfig
 end
 
 local function getSettingsProfile(defaultProfileName)
@@ -121,7 +120,7 @@ local function addDisabledLockToSettingsRow(rowElement, optionElement, tooltip)
     local lockButton = ButtonElement.new()
     lockButton.name = "iconDisabled"
     lockButton:loadProfile(getSettingsProfile("fs25_settingsMultiTextOptionLocked"), true)
-    lockButton.target = ADS_InGameSettings
+    lockButton.target = ADS_SettingsPage
     lockButton:setCallback("onClickCallback", "onClickSettingsLockedIcon")
     lockButton:setCallback("onFocusCallback", "onFocusSettingsLockedIcon")
 
@@ -178,18 +177,18 @@ local function getVanillaSettingsButtonTemplate()
     return nil
 end
 
-function ADS_InGameSettings:onClickSettingsLockedIcon()
+function ADS_SettingsPage:onClickSettingsLockedIcon()
 end
 
-function ADS_InGameSettings:onFocusSettingsLockedIcon(icon)
-    local page = ADS_InGameSettings.embeddedPage
+function ADS_SettingsPage:onFocusSettingsLockedIcon(icon)
+    local page = ADS_SettingsPage.embeddedPage
     if page ~= nil and page.settingsLayout ~= nil and page.settingsLayout.scrollToMakeElementVisible ~= nil then
         page.settingsLayout:scrollToMakeElementVisible(icon)
     end
 end
 
 local function getCurrentSettingsPage()
-    local embeddedPage = ADS_InGameSettings.embeddedPage
+    local embeddedPage = ADS_SettingsPage.embeddedPage
     if embeddedPage ~= nil
         and embeddedPage.getCurrentSubCategory ~= nil
         and ADS_InGameMenuFrame ~= nil
@@ -217,11 +216,11 @@ end
 local function refreshCurrentSettingsPage()
     local currentPage = getCurrentSettingsPage()
     if currentPage ~= nil then
-        ADS_InGameSettings:updateADSSettings(currentPage)
+        ADS_SettingsPage:updateADSSettings(currentPage)
     end
 end
 
-function ADS_InGameSettings.applyPendingConfigSideEffects(oldConfig, newConfig)
+function ADS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
     if g_currentMission == nil or not g_currentMission:getIsServer() then
         return
     end
@@ -261,12 +260,12 @@ function ADS_InGameSettings.applyPendingConfigSideEffects(oldConfig, newConfig)
     end
 end
 
-function ADS_InGameSettings.commitPendingConfig(current, pending)
+function ADS_SettingsPage.commitPendingConfig(current, pending)
     if pending == nil or current == nil then
         return
     end
 
-    ADS_InGameSettings.applyPendingConfigSideEffects(current, pending)
+    ADS_SettingsPage.applyPendingConfigSideEffects(current, pending)
 
     local batteryFactorChanged = valuesDiffer(pending.batteryUsableCapacityFactor, current.batteryUsableCapacityFactor)
     local workshopChanged =
@@ -356,12 +355,12 @@ function ADS_InGameSettings.commitPendingConfig(current, pending)
     end
 end
 
-function ADS_InGameSettings.beginSettingsSession()
-    ADS_InGameSettings.pendingConfig = buildPendingConfigFromAdsConfig()
-    ADS_InGameSettings.ads_hasPendingSettingsChange = false
+function ADS_SettingsPage.beginSettingsSession()
+    ADS_SettingsPage.pendingConfig = buildPendingConfigFromAdsConfig()
+    ADS_SettingsPage.ads_hasPendingSettingsChange = false
 end
 
-function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
+function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     local page = targetPage
     if page == nil or page.ads_initSettingsMenuDone then
         return
@@ -375,73 +374,73 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
         end
     end
 
-    ADS_InGameSettings:generateAllSteps()
+    ADS_SettingsPage:generateAllSteps()
     page.ads_settingsRowIsEven = false
 
     -- General
-    page.ads_tutorialMode = ADS_InGameSettings:addBinaryOption(
+    page.ads_tutorialMode = ADS_SettingsPage:addBinaryOption(
         page,
         "onTutorialModeChanged",
         g_i18n:getText("ads_tutorialMode_label"),
         g_i18n:getText("ads_tutorialMode_tooltip")
     )
-    page.ads_tutorialResetTips = ADS_InGameSettings:addButtonOption(
+    page.ads_tutorialResetTips = ADS_SettingsPage:addButtonOption(
         page,
         "onResetTutorialTipsClicked",
         g_i18n:getText("ads_tutorialResetTips_label"),
         g_i18n:getText("ads_tutorialResetTips_text"),
         g_i18n:getText("ads_tutorialResetTips_tooltip")
     )
-    page.ads_warningMessages = ADS_InGameSettings:addBinaryOption(
+    page.ads_warningMessages = ADS_SettingsPage:addBinaryOption(
         page,
         "onWarningMessagesChanged",
         g_i18n:getText("ads_warningMessages_label"),
         g_i18n:getText("ads_warningMessages_tooltip")
     )
-    page.ads_debugMode = ADS_InGameSettings:addBinaryOption(
+    page.ads_debugMode = ADS_SettingsPage:addBinaryOption(
         page,
         "onDebugModeChanged",
         g_i18n:getText("ads_debugMode_label"),
         g_i18n:getText("ads_debugMode_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_service_wear"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_service_wear"))
 
-    page.ads_serviceWear = ADS_InGameSettings:addMultiTextOption(
+    page.ads_serviceWear = ADS_SettingsPage:addMultiTextOption(
         page, "onServiceWearChanged",
-        ADS_InGameSettings.steps.serviceWear.texts,
+        ADS_SettingsPage.steps.serviceWear.texts,
         g_i18n:getText("ads_serviceInterval_label"),
         g_i18n:getText("ads_serviceInterval_tooltip")
     )
-    page.ads_conditionWear = ADS_InGameSettings:addMultiTextOption(
+    page.ads_conditionWear = ADS_SettingsPage:addMultiTextOption(
         page, "onConditionWearChanged",
-        ADS_InGameSettings.steps.conditionWear.texts,
+        ADS_SettingsPage.steps.conditionWear.texts,
         g_i18n:getText("ads_vehicleLifespan_label"),
         g_i18n:getText("ads_vehicleLifespan_tooltip")
     )
-    page.ads_systemStressRate = ADS_InGameSettings:addMultiTextOption(
+    page.ads_systemStressRate = ADS_SettingsPage:addMultiTextOption(
         page, "onSystemStressRateChanged",
-        ADS_InGameSettings.steps.systemStressRate.texts,
+        ADS_SettingsPage.steps.systemStressRate.texts,
         g_i18n:getText("ads_systemStressRate_label"),
         g_i18n:getText("ads_systemStressRate_tooltip")
     )
-    page.ads_downtimeWear = ADS_InGameSettings:addMultiTextOption(
+    page.ads_downtimeWear = ADS_SettingsPage:addMultiTextOption(
         page, "onDowntimeWearChanged",
-        ADS_InGameSettings.steps.downtimeWear.texts,
+        ADS_SettingsPage.steps.downtimeWear.texts,
         g_i18n:getText("ads_downtimeWear_label"),
         g_i18n:getText("ads_downtimeWear_tooltip")
     )
-    page.ads_generalWearEnabled = ADS_InGameSettings:addBinaryOption(
+    page.ads_generalWearEnabled = ADS_SettingsPage:addBinaryOption(
         page,
         "onGeneralWearEnabledChanged",
         g_i18n:getText("ads_generalWearEnabled_label"),
         g_i18n:getText("ads_generalWearEnabled_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_ws_header_title"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_ws_header_title"))
 
     -- Instant Inspection (Binary)
-    page.ads_instantInspection = ADS_InGameSettings:addBinaryOption(
+    page.ads_instantInspection = ADS_SettingsPage:addBinaryOption(
         page,
         "onInstantInspectionChanged",
         g_i18n:getText("ads_instantInspection_label"),
@@ -449,7 +448,7 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Park Vehicle (Binary)
-    page.ads_parkVehicle = ADS_InGameSettings:addBinaryOption(
+    page.ads_parkVehicle = ADS_SettingsPage:addBinaryOption(
         page,
         "onParkVehicleChanged",
         g_i18n:getText("ads_parkVehicle_label"),
@@ -457,7 +456,7 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Warranty Coverage (Binary)
-    page.ads_warrantyEnabled = ADS_InGameSettings:addBinaryOption(
+    page.ads_warrantyEnabled = ADS_SettingsPage:addBinaryOption(
         page,
         "onWarrantyEnabledChanged",
         g_i18n:getText("ads_warrantyEnabled_label"),
@@ -465,25 +464,25 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Maintenance Price
-    page.ads_maintenancePrice = ADS_InGameSettings:addMultiTextOption(
+    page.ads_maintenancePrice = ADS_SettingsPage:addMultiTextOption(
         page,
         "onMaintenancePriceChanged",
-        ADS_InGameSettings.steps.maintPrice.texts,
+        ADS_SettingsPage.steps.maintPrice.texts,
         g_i18n:getText("ads_maintenancePrice_label"),
         g_i18n:getText("ads_maintenancePrice_tooltip")
     )
 
     -- Maintenance Duration
-    page.ads_maintenanceDuration = ADS_InGameSettings:addMultiTextOption(
+    page.ads_maintenanceDuration = ADS_SettingsPage:addMultiTextOption(
         page,
         "onMaintenanceDurationChanged",
-        ADS_InGameSettings.steps.maintDuration.texts,
+        ADS_SettingsPage.steps.maintDuration.texts,
         g_i18n:getText("ads_maintenanceDuration_label"),
         g_i18n:getText("ads_maintenanceDuration_tooltip")
     )
 
     -- Mobile Workshop Restrictions (Binary)
-    page.ads_mobileWorkshopRestrictions = ADS_InGameSettings:addBinaryOption(
+    page.ads_mobileWorkshopRestrictions = ADS_SettingsPage:addBinaryOption(
         page,
         "onMobileWorkshopRestrictionsChanged",
         g_i18n:getText("ads_mobileWorkshopRestrictions_label"),
@@ -491,7 +490,7 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Dealer Workshop Available (Binary)
-    page.ads_dealerWorkshopAvailable = ADS_InGameSettings:addBinaryOption(
+    page.ads_dealerWorkshopAvailable = ADS_SettingsPage:addBinaryOption(
         page,
         "onDealerWorkshopAvailableChanged",
         g_i18n:getText("ads_dealerWorkshopAvailable_label"),
@@ -499,7 +498,7 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Mobile Workshop Available (Binary)
-    page.ads_mobileWorkshopAvailable = ADS_InGameSettings:addBinaryOption(
+    page.ads_mobileWorkshopAvailable = ADS_SettingsPage:addBinaryOption(
         page,
         "onMobileWorkshopAvailableChanged",
         g_i18n:getText("ads_mobileWorkshopAvailable_label"),
@@ -507,7 +506,7 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Own Workshop Available (Binary)
-    page.ads_ownWorkshopAvailable = ADS_InGameSettings:addBinaryOption(
+    page.ads_ownWorkshopAvailable = ADS_SettingsPage:addBinaryOption(
         page,
         "onOwnWorkshopAvailableChanged",
         g_i18n:getText("ads_ownWorkshopAvailable_label"),
@@ -515,178 +514,178 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     )
 
     -- Workshop Open Hour
-    page.ads_workshopOpenHour = ADS_InGameSettings:addMultiTextOption(
+    page.ads_workshopOpenHour = ADS_SettingsPage:addMultiTextOption(
         page,
         "onWorkshopOpenHourChanged",
-        ADS_InGameSettings.steps.hours.texts,
+        ADS_SettingsPage.steps.hours.texts,
         g_i18n:getText("ads_workshopOpenHour_label"),
         g_i18n:getText("ads_workshopOpenHour_tooltip")
     )
 
     -- Workshop Close Hour
-    page.ads_workshopCloseHour = ADS_InGameSettings:addMultiTextOption(
+    page.ads_workshopCloseHour = ADS_SettingsPage:addMultiTextOption(
         page,
         "onWorkshopCloseHourChanged",
-        ADS_InGameSettings.steps.hours.texts,
+        ADS_SettingsPage.steps.hours.texts,
         g_i18n:getText("ads_workshopCloseHour_label"),
         g_i18n:getText("ads_workshopCloseHour_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_thermal_model"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_thermal_model"))
 
-    page.ads_thermalSensitivity = ADS_InGameSettings:addMultiTextOption(
+    page.ads_thermalSensitivity = ADS_SettingsPage:addMultiTextOption(
         page, "onThermalSensitivityChanged",
-        ADS_InGameSettings.steps.thermalSensitivity.texts,
+        ADS_SettingsPage.steps.thermalSensitivity.texts,
         g_i18n:getText("ads_thermalSensitivity_label"),
         g_i18n:getText("ads_thermalSensitivity_tooltip")
     )
-    page.ads_temperatureChangeSpeed = ADS_InGameSettings:addMultiTextOption(
+    page.ads_temperatureChangeSpeed = ADS_SettingsPage:addMultiTextOption(
         page,
         "onTemperatureChangeSpeedChanged",
-        ADS_InGameSettings.steps.temperatureChangeSpeed.texts,
+        ADS_SettingsPage.steps.temperatureChangeSpeed.texts,
         g_i18n:getText("ads_temperatureChangeSpeed_label"),
         g_i18n:getText("ads_temperatureChangeSpeed_tooltip")
     )
-    page.ads_radiatorDirtInfluence = ADS_InGameSettings:addMultiTextOption(
+    page.ads_radiatorDirtInfluence = ADS_SettingsPage:addMultiTextOption(
         page,
         "onRadiatorDirtInfluenceChanged",
-        ADS_InGameSettings.steps.radiatorDirtInfluence.texts,
+        ADS_SettingsPage.steps.radiatorDirtInfluence.texts,
         g_i18n:getText("ads_radiatorDirtInfluence_label"),
         g_i18n:getText("ads_radiatorDirtInfluence_tooltip")
     )
-    page.ads_warmingBoostPower = ADS_InGameSettings:addMultiTextOption(
+    page.ads_warmingBoostPower = ADS_SettingsPage:addMultiTextOption(
         page,
         "onWarmingBoostPowerChanged",
-        ADS_InGameSettings.steps.thermalPower.texts,
+        ADS_SettingsPage.steps.thermalPower.texts,
         g_i18n:getText("ads_warmingBoostPower_label"),
         g_i18n:getText("ads_warmingBoostPower_tooltip")
     )
-    page.ads_coolingSlowdownPower = ADS_InGameSettings:addMultiTextOption(
+    page.ads_coolingSlowdownPower = ADS_SettingsPage:addMultiTextOption(
         page,
         "onCoolingSlowdownPowerChanged",
-        ADS_InGameSettings.steps.thermalPower.texts,
+        ADS_SettingsPage.steps.thermalPower.texts,
         g_i18n:getText("ads_coolingSlowdownPower_label"),
         g_i18n:getText("ads_coolingSlowdownPower_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_battery_alternator"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_battery_alternator"))
 
-    page.ads_batteryCapacity = ADS_InGameSettings:addMultiTextOption(
+    page.ads_batteryCapacity = ADS_SettingsPage:addMultiTextOption(
         page, "onBatteryCapacityChanged",
-        ADS_InGameSettings.steps.batteryCapacity.texts,
+        ADS_SettingsPage.steps.batteryCapacity.texts,
         g_i18n:getText("ads_batteryCapacity_label"),
         g_i18n:getText("ads_batteryCapacity_tooltip")
     )
-    page.ads_alternatorMaxOutput = ADS_InGameSettings:addMultiTextOption(
+    page.ads_alternatorMaxOutput = ADS_SettingsPage:addMultiTextOption(
         page,
         "onAlternatorMaxOutputChanged",
-        ADS_InGameSettings.steps.alternatorMaxOutput.texts,
+        ADS_SettingsPage.steps.alternatorMaxOutput.texts,
         g_i18n:getText("ads_alternatorMaxOutput_label"),
         g_i18n:getText("ads_alternatorMaxOutput_tooltip")
     )
-    page.ads_idleCurrent = ADS_InGameSettings:addMultiTextOption(
+    page.ads_idleCurrent = ADS_SettingsPage:addMultiTextOption(
         page,
         "onIdleCurrentChanged",
-        ADS_InGameSettings.steps.idleCurrent.texts,
+        ADS_SettingsPage.steps.idleCurrent.texts,
         g_i18n:getText("ads_idleCurrent_label"),
         g_i18n:getText("ads_idleCurrent_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_preshift_maintenance"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_preshift_maintenance"))
 
-    page.ads_cloggingSpeed = ADS_InGameSettings:addMultiTextOption(
+    page.ads_cloggingSpeed = ADS_SettingsPage:addMultiTextOption(
         page,
         "onCloggingSpeedChanged",
-        ADS_InGameSettings.steps.cloggingSpeed.texts,
+        ADS_SettingsPage.steps.cloggingSpeed.texts,
         g_i18n:getText("ads_cloggingSpeed_label"),
         g_i18n:getText("ads_cloggingSpeed_tooltip")
     )
-    page.ads_fieldInspectionDuration = ADS_InGameSettings:addMultiTextOption(
+    page.ads_fieldInspectionDuration = ADS_SettingsPage:addMultiTextOption(
         page,
         "onFieldInspectionDurationChanged",
-        ADS_InGameSettings.steps.fieldInspectionDuration.texts,
+        ADS_SettingsPage.steps.fieldInspectionDuration.texts,
         g_i18n:getText("ads_fieldInspectionDuration_label"),
         g_i18n:getText("ads_fieldInspectionDuration_tooltip")
     )
-    page.ads_lubricationReducePerOperatingHour = ADS_InGameSettings:addMultiTextOption(
+    page.ads_lubricationReducePerOperatingHour = ADS_SettingsPage:addMultiTextOption(
         page,
         "onLubricationReducePerOperatingHourChanged",
-        ADS_InGameSettings.steps.lubricationReducePerOperatingHour.texts,
+        ADS_SettingsPage.steps.lubricationReducePerOperatingHour.texts,
         g_i18n:getText("ads_lubricationReducePerOperatingHour_label"),
         g_i18n:getText("ads_lubricationReducePerOperatingHour_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_drivetrain"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_drivetrain"))
 
-    page.ads_drivetrainEnabled = ADS_InGameSettings:addBinaryOption(
+    page.ads_drivetrainEnabled = ADS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainEnabledChanged",
         g_i18n:getText("ads_drivetrainEnabled_label"),
         g_i18n:getText("ads_drivetrainEnabled_tooltip")
     )
-    page.ads_drivetrainAllowAutoMode = ADS_InGameSettings:addBinaryOption(
+    page.ads_drivetrainAllowAutoMode = ADS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainAllowAutoModeChanged",
         g_i18n:getText("ads_drivetrainAllowAutoMode_label"),
         g_i18n:getText("ads_drivetrainAllowAutoMode_tooltip")
     )
-    page.ads_drivetrainWindupDamage = ADS_InGameSettings:addBinaryOption(
+    page.ads_drivetrainWindupDamage = ADS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainWindupDamageChanged",
         g_i18n:getText("ads_drivetrainWindupDamage_label"),
         g_i18n:getText("ads_drivetrainWindupDamage_tooltip")
     )
-    page.ads_drivetrainDiffLockReleaseSpeed = ADS_InGameSettings:addMultiTextOption(
+    page.ads_drivetrainDiffLockReleaseSpeed = ADS_SettingsPage:addMultiTextOption(
         page,
         "onDrivetrainDiffLockReleaseSpeedChanged",
-        ADS_InGameSettings.steps.diffLockReleaseSpeed.texts,
+        ADS_SettingsPage.steps.diffLockReleaseSpeed.texts,
         g_i18n:getText("ads_drivetrainDiffLockReleaseSpeed_label"),
         g_i18n:getText("ads_drivetrainDiffLockReleaseSpeed_tooltip")
     )
-    page.ads_drivetrainParkBrakeEnabled = ADS_InGameSettings:addBinaryOption(
+    page.ads_drivetrainParkBrakeEnabled = ADS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainParkBrakeEnabledChanged",
         g_i18n:getText("ads_drivetrainParkBrakeEnabled_label"),
         g_i18n:getText("ads_drivetrainParkBrakeEnabled_tooltip")
     )
-    page.ads_drivetrainParkBrakeAuto = ADS_InGameSettings:addBinaryOption(
+    page.ads_drivetrainParkBrakeAuto = ADS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainParkBrakeAutoChanged",
         g_i18n:getText("ads_drivetrainParkBrakeAuto_label"),
         g_i18n:getText("ads_drivetrainParkBrakeAuto_tooltip")
     )
 
-    ADS_InGameSettings:addSectionHeader(page, g_i18n:getText("ads_settings_section_other"))
+    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_other"))
 
-    page.ads_aiOverloadAndOverheatControl = ADS_InGameSettings:addBinaryOption(
+    page.ads_aiOverloadAndOverheatControl = ADS_SettingsPage:addBinaryOption(
         page,
         "onAiOverloadAndOverheatControlChanged",
         g_i18n:getText("ads_aiOverloadAndOverheatControl_label"),
         g_i18n:getText("ads_aiOverloadAndOverheatControl_tooltip")
     )
-    page.ads_aiDisableOnCriticalOverload = ADS_InGameSettings:addBinaryOption(
+    page.ads_aiDisableOnCriticalOverload = ADS_SettingsPage:addBinaryOption(
         page,
         "onAiDisableOnCriticalOverloadChanged",
         g_i18n:getText("ads_aiDisableOnCriticalOverload_label"),
         g_i18n:getText("ads_aiDisableOnCriticalOverload_tooltip")
     )
-    page.ads_contractVehicleProtection = ADS_InGameSettings:addBinaryOption(
+    page.ads_contractVehicleProtection = ADS_SettingsPage:addBinaryOption(
         page,
         "onContractVehicleProtectionChanged",
         g_i18n:getText("ads_contractVehicleProtection_label"),
         g_i18n:getText("ads_contractVehicleProtection_tooltip")
     )
-    page.ads_aiWorkerTargetStress = ADS_InGameSettings:addMultiTextOption(
+    page.ads_aiWorkerTargetStress = ADS_SettingsPage:addMultiTextOption(
         page,
         "onAiWorkerTargetStressChanged",
-        ADS_InGameSettings.steps.aiWorkerTargetStress.texts,
+        ADS_SettingsPage.steps.aiWorkerTargetStress.texts,
         g_i18n:getText("ads_aiWorkerTargetStress_label"),
         g_i18n:getText("ads_aiWorkerTargetStress_tooltip")
     )
-    page.ads_aiWorkerMinSpeed = ADS_InGameSettings:addMultiTextOption(
+    page.ads_aiWorkerMinSpeed = ADS_SettingsPage:addMultiTextOption(
         page,
         "onAiWorkerMinSpeedChanged",
-        ADS_InGameSettings.steps.aiWorkerMinSpeed.texts,
+        ADS_SettingsPage.steps.aiWorkerMinSpeed.texts,
         g_i18n:getText("ads_aiWorkerMinSpeed_label"),
         g_i18n:getText("ads_aiWorkerMinSpeed_tooltip")
     )
@@ -699,7 +698,7 @@ function ADS_InGameSettings:initializeSettingsPageControls(targetPage)
     page.ads_initSettingsMenuDone = true
 end
 
-function ADS_InGameSettings:activateEmbeddedSettingsPage(page)
+function ADS_SettingsPage:activateEmbeddedSettingsPage(page)
     if page == nil then
         return
     end
@@ -708,7 +707,7 @@ function ADS_InGameSettings:activateEmbeddedSettingsPage(page)
     page.ads_useFleetMenuStyle = true
 
     if self.pendingConfig == nil then
-        ADS_InGameSettings.beginSettingsSession()
+        ADS_SettingsPage.beginSettingsSession()
     end
 
     self:updateADSPageVisibility(page)
@@ -717,12 +716,12 @@ function ADS_InGameSettings:activateEmbeddedSettingsPage(page)
     if page.settingsSlider ~= nil and page.settingsSlider.setDataElement ~= nil then
         page.settingsSlider:setDataElement(page.settingsLayout)
     end
-    ADS_InGameSettings.registerEmbeddedFocus(page)
+    ADS_SettingsPage.registerEmbeddedFocus(page)
     self:updateADSPageVisibility(page)
     self:updateADSSettings(page)
 end
 
-function ADS_InGameSettings.registerEmbeddedFocus(page)
+function ADS_SettingsPage.registerEmbeddedFocus(page)
     if page == nil
         or page.ads_settingsFocusLoaded
         or page.settingsLayout == nil
@@ -748,7 +747,7 @@ function ADS_InGameSettings.registerEmbeddedFocus(page)
     page.ads_settingsFocusLoaded = true
 end
 
-function ADS_InGameSettings:updateADSPageVisibility(targetPage)
+function ADS_SettingsPage:updateADSPageVisibility(targetPage)
     local page = targetPage
     if page == nil then
         return
@@ -768,17 +767,17 @@ function ADS_InGameSettings:updateADSPageVisibility(targetPage)
     end
 end
 
-function ADS_InGameSettings:onFrameClose()
-    if not ADS_InGameSettings.ads_hasPendingSettingsChange then
-        ADS_InGameSettings.pendingConfig = nil
+function ADS_SettingsPage:onFrameClose()
+    if not ADS_SettingsPage.ads_hasPendingSettingsChange then
+        ADS_SettingsPage.pendingConfig = nil
         return
     end
 
-    local pending = ADS_InGameSettings.pendingConfig
+    local pending = ADS_SettingsPage.pendingConfig
     local current = buildPendingConfigFromAdsConfig()
 
-    ADS_InGameSettings.pendingConfig = nil
-    ADS_InGameSettings.ads_hasPendingSettingsChange = false
+    ADS_SettingsPage.pendingConfig = nil
+    ADS_SettingsPage.ads_hasPendingSettingsChange = false
 
     if pending == nil then
         return
@@ -796,15 +795,15 @@ function ADS_InGameSettings:onFrameClose()
         return
     end
 
-    ADS_InGameSettings.commitPendingConfig(current, pending)
+    ADS_SettingsPage.commitPendingConfig(current, pending)
 end
 
 
-function ADS_InGameSettings:updateADSSettings(currentPage)
+function ADS_SettingsPage:updateADSSettings(currentPage)
     if currentPage == nil or not currentPage.ads_initSettingsMenuDone then return end
 
-    local steps = ADS_InGameSettings.steps
-    local pending = ADS_InGameSettings.pendingConfig or buildPendingConfigFromAdsConfig()
+    local steps = ADS_SettingsPage.steps
+    local pending = ADS_SettingsPage.pendingConfig or buildPendingConfigFromAdsConfig()
     local tutorialOption = currentPage.ads_tutorialMode
 
     local function setIndex(element, valueList, targetValue)
@@ -927,22 +926,22 @@ function ADS_InGameSettings:updateADSSettings(currentPage)
 end
 
 -- --- Callback Handlers --- --
-function ADS_InGameSettings:onServiceWearChanged(state)
-    getPendingConfig().baseServiceWear = ADS_InGameSettings.steps.serviceWear.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onServiceWearChanged(state)
+    getPendingConfig().baseServiceWear = ADS_SettingsPage.steps.serviceWear.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onTutorialModeChanged(state, optionElement)
+function ADS_SettingsPage:onTutorialModeChanged(state, optionElement)
     local pending = getPendingConfig()
     local newValue = false
 
     if optionElement ~= nil and optionElement.getIsChecked ~= nil then
         newValue = optionElement:getIsChecked()
-    elseif ADS_InGameSettings.embeddedPage ~= nil
-        and ADS_InGameSettings.embeddedPage.ads_tutorialMode ~= nil
-        and ADS_InGameSettings.embeddedPage.ads_tutorialMode.getIsChecked ~= nil then
-        newValue = ADS_InGameSettings.embeddedPage.ads_tutorialMode:getIsChecked()
+    elseif ADS_SettingsPage.embeddedPage ~= nil
+        and ADS_SettingsPage.embeddedPage.ads_tutorialMode ~= nil
+        and ADS_SettingsPage.embeddedPage.ads_tutorialMode.getIsChecked ~= nil then
+        newValue = ADS_SettingsPage.embeddedPage.ads_tutorialMode:getIsChecked()
     elseif BinaryOptionElement ~= nil and state == BinaryOptionElement.STATE_RIGHT then
         newValue = true
     elseif type(state) == "boolean" then
@@ -950,11 +949,11 @@ function ADS_InGameSettings:onTutorialModeChanged(state, optionElement)
     end
 
     pending.tutorialMode = newValue
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onResetTutorialTipsClicked()
+function ADS_SettingsPage:onResetTutorialTipsClicked()
     YesNoDialog.show(function(shouldReset)
         if shouldReset then
             ADS_Config.resetTutorialMessages()
@@ -963,81 +962,81 @@ function ADS_InGameSettings:onResetTutorialTipsClicked()
     end, nil, g_i18n:getText("ads_tutorialResetConfirm_message"), g_i18n:getText("ads_tutorialResetConfirm_title"))
 end
 
-function ADS_InGameSettings:onConditionWearChanged(state)
-    getPendingConfig().baseSystemsWear = ADS_InGameSettings.steps.conditionWear.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onConditionWearChanged(state)
+    getPendingConfig().baseSystemsWear = ADS_SettingsPage.steps.conditionWear.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDowntimeWearChanged(state)
-    getPendingConfig().downtimeMultiplier = ADS_InGameSettings.steps.downtimeWear.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onDowntimeWearChanged(state)
+    getPendingConfig().downtimeMultiplier = ADS_SettingsPage.steps.downtimeWear.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onGeneralWearEnabledChanged(state)
+function ADS_SettingsPage:onGeneralWearEnabledChanged(state)
     getPendingConfig().generalWearEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onInstantInspectionChanged(state)
+function ADS_SettingsPage:onInstantInspectionChanged(state)
     getPendingConfig().instantInspection = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onParkVehicleChanged(state)
+function ADS_SettingsPage:onParkVehicleChanged(state)
     getPendingConfig().parkVehicle = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onWarrantyEnabledChanged(state)
+function ADS_SettingsPage:onWarrantyEnabledChanged(state)
     getPendingConfig().warrantyEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onMaintenancePriceChanged(state)
-    getPendingConfig().globalPriceMultiplier = ADS_InGameSettings.steps.maintPrice.values[state] / 100
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onMaintenancePriceChanged(state)
+    getPendingConfig().globalPriceMultiplier = ADS_SettingsPage.steps.maintPrice.values[state] / 100
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onMaintenanceDurationChanged(state)
-    getPendingConfig().globalTimeMultiplier = ADS_InGameSettings.steps.maintDuration.values[state] / 100
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onMaintenanceDurationChanged(state)
+    getPendingConfig().globalTimeMultiplier = ADS_SettingsPage.steps.maintDuration.values[state] / 100
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDealerWorkshopAvailableChanged(state)
+function ADS_SettingsPage:onDealerWorkshopAvailableChanged(state)
     getPendingConfig().dealerAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onMobileWorkshopAvailableChanged(state)
+function ADS_SettingsPage:onMobileWorkshopAvailableChanged(state)
     getPendingConfig().mobileAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onOwnWorkshopAvailableChanged(state)
+function ADS_SettingsPage:onOwnWorkshopAvailableChanged(state)
     getPendingConfig().ownAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onMobileWorkshopRestrictionsChanged(state)
+function ADS_SettingsPage:onMobileWorkshopRestrictionsChanged(state)
     getPendingConfig().mobileWorkshopRestrictionsEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onWorkshopOpenHourChanged(state)
+function ADS_SettingsPage:onWorkshopOpenHourChanged(state)
     local pending = getPendingConfig()
-    local newOpen = ADS_InGameSettings.steps.hours.values[state]
+    local newOpen = ADS_SettingsPage.steps.hours.values[state]
     local currentClose = pending.closeHour
 
     -- Keep open/close hours from overlapping.
@@ -1051,13 +1050,13 @@ function ADS_InGameSettings:onWorkshopOpenHourChanged(state)
     end
 
     pending.openHour = newOpen
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onWorkshopCloseHourChanged(state)
+function ADS_SettingsPage:onWorkshopCloseHourChanged(state)
     local pending = getPendingConfig()
-    local newClose = ADS_InGameSettings.steps.hours.values[state]
+    local newClose = ADS_SettingsPage.steps.hours.values[state]
     local currentOpen = pending.openHour
 
     -- Keep open/close hours from overlapping.
@@ -1071,168 +1070,168 @@ function ADS_InGameSettings:onWorkshopCloseHourChanged(state)
     end
 
     pending.closeHour = newClose
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
 
-function ADS_InGameSettings:onSystemStressRateChanged(state)
-    getPendingConfig().systemStressGlobalMultiplier = ADS_InGameSettings.steps.systemStressRate.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onSystemStressRateChanged(state)
+    getPendingConfig().systemStressGlobalMultiplier = ADS_SettingsPage.steps.systemStressRate.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onBatteryCapacityChanged(state)
-    getPendingConfig().batteryUsableCapacityFactor = ADS_InGameSettings.steps.batteryCapacity.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onBatteryCapacityChanged(state)
+    getPendingConfig().batteryUsableCapacityFactor = ADS_SettingsPage.steps.batteryCapacity.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onAlternatorMaxOutputChanged(state)
-    getPendingConfig().alternatorMaxOutput = ADS_InGameSettings.steps.alternatorMaxOutput.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onAlternatorMaxOutputChanged(state)
+    getPendingConfig().alternatorMaxOutput = ADS_SettingsPage.steps.alternatorMaxOutput.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onIdleCurrentChanged(state)
-    getPendingConfig().idleCurrentA = ADS_InGameSettings.steps.idleCurrent.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onIdleCurrentChanged(state)
+    getPendingConfig().idleCurrentA = ADS_SettingsPage.steps.idleCurrent.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
 
-function ADS_InGameSettings:onThermalSensitivityChanged(state)
-    local val = ADS_InGameSettings.steps.thermalSensitivity.values[state]
+function ADS_SettingsPage:onThermalSensitivityChanged(state)
+    local val = ADS_SettingsPage.steps.thermalSensitivity.values[state]
     local pending = getPendingConfig()
     pending.engineMaxHeat = val
     pending.transMaxHeat = val
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onTemperatureChangeSpeedChanged(state)
-    getPendingConfig().temperatureChangeSpeed = ADS_InGameSettings.steps.temperatureChangeSpeed.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onTemperatureChangeSpeedChanged(state)
+    getPendingConfig().temperatureChangeSpeed = ADS_SettingsPage.steps.temperatureChangeSpeed.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onRadiatorDirtInfluenceChanged(state)
-    getPendingConfig().maxDirtInfluence = ADS_InGameSettings.steps.radiatorDirtInfluence.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onRadiatorDirtInfluenceChanged(state)
+    getPendingConfig().maxDirtInfluence = ADS_SettingsPage.steps.radiatorDirtInfluence.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onWarmingBoostPowerChanged(state)
-    getPendingConfig().warmingBoostPower = ADS_InGameSettings.steps.thermalPower.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onWarmingBoostPowerChanged(state)
+    getPendingConfig().warmingBoostPower = ADS_SettingsPage.steps.thermalPower.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onCoolingSlowdownPowerChanged(state)
-    getPendingConfig().coolingSlowdownPower = ADS_InGameSettings.steps.thermalPower.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onCoolingSlowdownPowerChanged(state)
+    getPendingConfig().coolingSlowdownPower = ADS_SettingsPage.steps.thermalPower.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onCloggingSpeedChanged(state)
-    getPendingConfig().cloggingSpeed = ADS_InGameSettings.steps.cloggingSpeed.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onCloggingSpeedChanged(state)
+    getPendingConfig().cloggingSpeed = ADS_SettingsPage.steps.cloggingSpeed.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onFieldInspectionDurationChanged(state)
-    getPendingConfig().fieldInspectionDuration = ADS_InGameSettings.steps.fieldInspectionDuration.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onFieldInspectionDurationChanged(state)
+    getPendingConfig().fieldInspectionDuration = ADS_SettingsPage.steps.fieldInspectionDuration.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onLubricationReducePerOperatingHourChanged(state)
-    getPendingConfig().lubricationReducePerOperatingHour = ADS_InGameSettings.steps.lubricationReducePerOperatingHour.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onLubricationReducePerOperatingHourChanged(state)
+    getPendingConfig().lubricationReducePerOperatingHour = ADS_SettingsPage.steps.lubricationReducePerOperatingHour.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onAiOverloadAndOverheatControlChanged(state)
+function ADS_SettingsPage:onAiOverloadAndOverheatControlChanged(state)
     getPendingConfig().aiOverloadControl = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onAiDisableOnCriticalOverloadChanged(state)
+function ADS_SettingsPage:onAiDisableOnCriticalOverloadChanged(state)
     getPendingConfig().aiDisableOnCriticalOverload = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onContractVehicleProtectionChanged(state)
+function ADS_SettingsPage:onContractVehicleProtectionChanged(state)
     getPendingConfig().contractVehicleProtection = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onAiWorkerTargetStressChanged(state)
-    getPendingConfig().aiWorkerTargetStress = ADS_InGameSettings.steps.aiWorkerTargetStress.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onAiWorkerTargetStressChanged(state)
+    getPendingConfig().aiWorkerTargetStress = ADS_SettingsPage.steps.aiWorkerTargetStress.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onAiWorkerMinSpeedChanged(state)
-    getPendingConfig().aiWorkerMinSpeed = ADS_InGameSettings.steps.aiWorkerMinSpeed.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onAiWorkerMinSpeedChanged(state)
+    getPendingConfig().aiWorkerMinSpeed = ADS_SettingsPage.steps.aiWorkerMinSpeed.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDrivetrainEnabledChanged(state)
+function ADS_SettingsPage:onDrivetrainEnabledChanged(state)
     getPendingConfig().drivetrainEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDrivetrainAllowAutoModeChanged(state)
+function ADS_SettingsPage:onDrivetrainAllowAutoModeChanged(state)
     getPendingConfig().drivetrainAllowAutoMode = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDrivetrainWindupDamageChanged(state)
+function ADS_SettingsPage:onDrivetrainWindupDamageChanged(state)
     getPendingConfig().drivetrainWindupDamage = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDrivetrainDiffLockReleaseSpeedChanged(state)
-    getPendingConfig().drivetrainDiffLockReleaseSpeed = ADS_InGameSettings.steps.diffLockReleaseSpeed.values[state]
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+function ADS_SettingsPage:onDrivetrainDiffLockReleaseSpeedChanged(state)
+    getPendingConfig().drivetrainDiffLockReleaseSpeed = ADS_SettingsPage.steps.diffLockReleaseSpeed.values[state]
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDrivetrainParkBrakeEnabledChanged(state)
+function ADS_SettingsPage:onDrivetrainParkBrakeEnabledChanged(state)
     getPendingConfig().drivetrainParkBrakeEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDrivetrainParkBrakeAutoChanged(state)
+function ADS_SettingsPage:onDrivetrainParkBrakeAutoChanged(state)
     getPendingConfig().drivetrainParkBrakeAuto = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onWarningMessagesChanged(state)
+function ADS_SettingsPage:onWarningMessagesChanged(state)
     getPendingConfig().enableWarningMessages = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_InGameSettings:onDebugModeChanged(state)
+function ADS_SettingsPage:onDebugModeChanged(state)
     getPendingConfig().debugMode = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_InGameSettings.ads_hasPendingSettingsChange = true
+    ADS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
 
 -- --- UI Helper Methods --- --
-function ADS_InGameSettings:addSectionHeader(inGameMenuSettingsFrame, titleText)
+function ADS_SettingsPage:addSectionHeader(inGameMenuSettingsFrame, titleText)
     local textElement = TextElement.new()
     local textElementProfile = getSettingsProfile("fs25_settingsSectionHeader")
     textElement.name = "sectionHeader"
@@ -1242,7 +1241,7 @@ function ADS_InGameSettings:addSectionHeader(inGameMenuSettingsFrame, titleText)
     textElement:onGuiSetupFinished()
 end
 
-function ADS_InGameSettings:addMultiTextOption(inGameMenuSettingsFrame, onClickCallback, texts, title, tooltip)
+function ADS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCallback, texts, title, tooltip)
     local bitMap = BitmapElement.new()
     local bitMapProfile = getSettingsProfile("fs25_multiTextOptionContainer")
     bitMap:loadProfile(bitMapProfile, true)
@@ -1252,7 +1251,7 @@ function ADS_InGameSettings:addMultiTextOption(inGameMenuSettingsFrame, onClickC
     local multiTextOptionProfile = getSettingsProfile("fs25_settingsMultiTextOption")
     multiTextOption:loadProfile(multiTextOptionProfile, true)
     multiTextOption.updateChildrenState = true
-    multiTextOption.target = ADS_InGameSettings
+    multiTextOption.target = ADS_SettingsPage
     multiTextOption:setCallback("onClickCallback", onClickCallback)
     multiTextOption:setTexts(texts)
 
@@ -1283,7 +1282,7 @@ function ADS_InGameSettings:addMultiTextOption(inGameMenuSettingsFrame, onClickC
     return multiTextOption
 end
 
-function ADS_InGameSettings:addBinaryOption(inGameMenuSettingsFrame, onClickCallback, title, tooltip)
+function ADS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallback, title, tooltip)
     local bitMap = BitmapElement.new()
     local bitMapProfile = getSettingsProfile("fs25_multiTextOptionContainer")
     bitMap:loadProfile(bitMapProfile, true)
@@ -1293,7 +1292,7 @@ function ADS_InGameSettings:addBinaryOption(inGameMenuSettingsFrame, onClickCall
     binaryOption.useYesNoTexts = true
     local binaryOptionProfile = getSettingsProfile("fs25_settingsBinaryOption")
     binaryOption:loadProfile(binaryOptionProfile, true)
-    binaryOption.target = ADS_InGameSettings
+    binaryOption.target = ADS_SettingsPage
     binaryOption:setCallback("onClickCallback", onClickCallback)
 
     local binaryOptionTitle = TextElement.new()
@@ -1322,7 +1321,7 @@ function ADS_InGameSettings:addBinaryOption(inGameMenuSettingsFrame, onClickCall
     return binaryOption
 end
 
-function ADS_InGameSettings:addButtonOption(inGameMenuSettingsFrame, onClickCallback, title, text, tooltip)
+function ADS_SettingsPage:addButtonOption(inGameMenuSettingsFrame, onClickCallback, title, text, tooltip)
     local template = getVanillaSettingsButtonTemplate()
     local bitMap
     local clonedTemplate = template ~= nil and template.clone ~= nil
@@ -1357,7 +1356,7 @@ function ADS_InGameSettings:addButtonOption(inGameMenuSettingsFrame, onClickCall
 
     button:applyProfile("ads_settingsButton")
     applyButtonBackgroundProfile(button)
-    button.target = ADS_InGameSettings
+    button.target = ADS_SettingsPage
     button:setCallback("onClickCallback", onClickCallback)
     button:setText(text)
     button.id = nil
@@ -1402,7 +1401,7 @@ end
 
 
 -- --- Data Generation --- --
-function ADS_InGameSettings:generateAllSteps()
+function ADS_SettingsPage:generateAllSteps()
     if self.steps.generated then return end
 
     local function createSteps(startVal, count, stepSize, formatter)
@@ -1614,9 +1613,9 @@ function ADS_InGameSettings:generateAllSteps()
 end
 
 
-function ADS_InGameSettings.reset()
-    ADS_InGameSettings.steps = {}
-    ADS_InGameSettings.pendingConfig = nil
-    ADS_InGameSettings.ads_hasPendingSettingsChange = false
-    ADS_InGameSettings.embeddedPage = nil
+function ADS_SettingsPage.reset()
+    ADS_SettingsPage.steps = {}
+    ADS_SettingsPage.pendingConfig = nil
+    ADS_SettingsPage.ads_hasPendingSettingsChange = false
+    ADS_SettingsPage.embeddedPage = nil
 end
