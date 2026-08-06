@@ -547,7 +547,7 @@ function ADS_Main:update(dt)
                     elseif ADS_Main.currentWeather == WeatherType.SNOW then
                         ADS_Main.currentWeatherFactor = ADS_Config.CORE.SNOW_FACTOR or 1.0
                     elseif ADS_Main.currentWeather == WeatherType.HAIL then
-                        ADS_Main.currentWeatherFactor = ADS_Config.CORE.HALL_FACTOR or 1.0
+                        ADS_Main.currentWeatherFactor = ADS_Config.CORE.HAIL_FACTOR or 1.0
                     else
                         ADS_Main.currentWeatherFactor = 1.0
                     end

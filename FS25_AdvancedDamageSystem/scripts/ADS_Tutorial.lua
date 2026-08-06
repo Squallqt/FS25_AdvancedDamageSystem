@@ -236,7 +236,6 @@ function ADS_Tutorial:update(dt)
                     localWeatherType == WeatherType.RAIN
                     or localWeatherType == WeatherType.SNOW
                     or (WeatherType.HAIL ~= nil and localWeatherType == WeatherType.HAIL)
-                    or (WeatherType.HALL ~= nil and localWeatherType == WeatherType.HALL)
                 ) then
                 ADS_Hud.showNotification(
                     g_i18n:getText("ads_tutorial_wet_weather_message"),

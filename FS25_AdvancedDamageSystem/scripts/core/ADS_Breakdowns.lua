@@ -1571,7 +1571,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 repairPrice = 1.0 * breakdownPriceMultipliers.CVT_CHAIN_WEAR,
                 effects = {
                     { id = "CVT_SLIP_EFFECT", value = 0.1, aggregation = "max" },
-                    { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" }  
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" }  
                 }
             },
             {
@@ -1583,7 +1583,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = {
                      { id = "CVT_SLIP_EFFECT", value = 0.2, aggregation = "max" },
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.20, aggregation = "sum" },
-                     { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.1, aggregation = "sum" }
+                     { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.1, aggregation = "sum" }
                 },
                 indicators = {
                     { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
@@ -1598,7 +1598,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = { 
                      { id = "CVT_SLIP_EFFECT", value = 0.5, aggregation = "max" },
                      { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.25, aggregation = "sum" },
-                     { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
+                     { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
                 },
                 indicators = {
                     { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -1659,7 +1659,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = {
                     { id = "CVT_PRESSURE_DROP_CHANCE", value = 1.0, aggregation = "max", extraData = {timer = 0, duration = 250, status = 'IDLE'}},
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.1, aggregation = "sum" },
-                    { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" },
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" },
                     { id = "CVT_MAX_RATIO_MODIFIER", value = 0.4, aggregation = "max" },
                     
                 },
@@ -1676,7 +1676,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 effects = { 
                     { id = "CVT_PRESSURE_DROP_CHANCE", value = 0.5, aggregation = "max", extraData = {timer = 0, duration = 300, status = 'IDLE'}},
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.2, aggregation = "sum" },
-                    { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.1, aggregation = "sum" },
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.1, aggregation = "sum" },
                     { id = "CVT_MAX_RATIO_MODIFIER", value = 0.5, aggregation = "max" },
                 },
                 inspection = {
@@ -1694,7 +1694,7 @@ ADS_Breakdowns.BreakdownRegistry = {
                 repairPrice = 8.0 * breakdownPriceMultipliers.CVT_HYDRAULIC_CONTROL_VALVE_MALFUNCTION,
                 effects = { 
                      { id = "CVT_MAX_RATIO_MODIFIER", value = 0.8, aggregation = "max" },
-                     { id = "TRANASMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" },
+                     { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" },
                      { id = "ENGINE_TORQUE_MODIFIER", value = -0.3, aggregation = "sum" },
                      { id = "CVT_PRESSURE_DROP_CHANCE", value = 0.1, aggregation = "max", extraData = {timer = 0, duration = 300, status = 'IDLE'}},
                      { id = "ENGINE_LIMP_EFFECT", value = -0.2, aggregation = "min", extraData = {reason = "BREAKDOWN", message = "ads_breakdowns_hydraulic_control_valve_malfunction_stage4_message", disableAi = true } },
@@ -4334,8 +4334,8 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HEAT_MODIFIER = {
     end
 }
 
--- TRANASMISSION_HEAT_MODIFIER
-ADS_Breakdowns.EffectApplicators.TRANASMISSION_HEAT_MODIFIER = {
+-- TRANSMISSION_HEAT_MODIFIER
+ADS_Breakdowns.EffectApplicators.TRANSMISSION_HEAT_MODIFIER = {
     apply = function(vehicle, effectData, handler)
         local spec = vehicle.spec_AdvancedDamageSystem
         spec.extraTransmissionHeat = effectData.value

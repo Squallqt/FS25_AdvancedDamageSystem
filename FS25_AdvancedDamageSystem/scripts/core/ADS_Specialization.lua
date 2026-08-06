@@ -5789,7 +5789,7 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
         elseif weatherType == WeatherType.SNOW then
             weatherExposureFactor = C.SNOW_FACTOR_MULTIPLIER or 0
         elseif weatherType == WeatherType.HAIL then
-            weatherExposureFactor = C.HAIL_FACTOR_MULTIPLIER or C.HALL_FACTOR_MULTIPLIER or 0
+            weatherExposureFactor = C.HAIL_FACTOR_MULTIPLIER or 0
         end
         wearRate = wearRate + weatherExposureFactor
     end
