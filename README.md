@@ -1,4 +1,4 @@
-# FS25_AdvancedDamageSystem
+# FS25_RealisticMechanicalSystems
 
 Advanced vehicle wear, failure, diagnostics, maintenance, and repair system for Farming Simulator 25.
 
@@ -14,7 +14,7 @@ This repository is an independently maintained fork of Advanced Damage System by
 
 ## Quick Start
 
-If you do not want to read the full guide at the bottom of this page but still want to play with ADS without constant breakdowns and unnecessary frustration, just follow these three rules:
+If you do not want to read the full guide at the bottom of this page but still want to play with RMS without constant breakdowns and unnecessary frustration, just follow these three rules:
 
 1. **Always follow the service interval.**  
    By default, the recommended interval is about `5 operating hours` on average. You can check it:
@@ -29,7 +29,7 @@ If you do not want to read the full guide at the bottom of this page but still w
 
 3. **Do not abuse your equipment.**  
    Avoid overloading, overheating, using implements that are too heavy or too demanding for the machine, excessive wheel slip in mud, hard work on a cold engine, and high-speed driving over rough terrain.  
-   As a general rule: if something would be harmful to the machine in real life, it is harmful in ADS too.
+   As a general rule: if something would be harmful to the machine in real life, it is harmful in RMS too.
 
 ## Features
 - **Complete Replacement of the Vanilla Damage System:** Every vehicle in the game is now divided into multiple individual systems: engine, transmission, hydraulics, cooling system, fuel system, electrical system, and chassis. Each system tracks how the machine is actually being used. For example, chassis wear increases faster if you drive quickly over rough terrain. The harsher the operating conditions, the faster wear builds up and the more often breakdowns occur.
@@ -44,19 +44,15 @@ If you do not want to read the full guide at the bottom of this page but still w
 
   ... More information below in the guide
 
-## Removed Features
-
-Some mechanics have been deliberately removed from ADS. If you remember a feature and can no longer find it, [REMOVED_FEATURES.md](REMOVED_FEATURES.md) records what was removed, why, and whether existing saves are affected.
-
 ## Installation
 
 ### Manual
 1. Place the mod ZIP file in your FS25 `mods/` directory (do not extract).
 2. Enable the mod in game.
-3. Access ADS interfaces from in-game menus and workshop interactions.
+3. Access RMS interfaces from in-game menus and workshop interactions.
 
 ## Console Commands
-For testing and debugging, ADS includes console commands. Most commands require you to be inside a vehicle that supports this mod.
+For testing and debugging, RMS includes console commands. Most commands require you to be inside a vehicle that supports this mod.
 
 | Command | Description | Usage Example |
 | --- | --- | --- |
@@ -88,7 +84,7 @@ For testing and debugging, ADS includes console commands. Most commands require 
 > [!IMPORTANT]
 > The mod is actively being developed: some mechanics are constantly being expanded, changed, and reworked, so the guide may contain some inaccuracies.
 
-The Advanced Damage System (ADS) mod completely replaces the standard damage system, offering a deep and detailed simulation of wear, breakdowns, and technical service.
+The Realistic Mechanical Systems (RMS) mod completely replaces the standard damage system, offering a deep and detailed simulation of wear, breakdowns, and technical service.
 This guide will help you understand all aspects of the mod.
 
 ## 1. Core Mechanics: Condition, Stress and Service
@@ -227,7 +223,7 @@ Each system has its own set of wear factors that accelerate `Condition` loss and
 
 ## 3. Breakdowns
 
-In ADS, your vehicles can suffer real breakdowns. Some failures are minor and only reduce performance, while others can make the machine completely inoperable.
+In RMS, your vehicles can suffer real breakdowns. Some failures are minor and only reduce performance, while others can make the machine completely inoperable.
 
 > [!NOTE]
 > <details>
@@ -409,7 +405,7 @@ The probability of a breakdown depends entirely on the `Stress` level in a speci
 
 In addition, the `Condition` level determines the probability of a critical breakdown. A critical breakdown is a failure that appears immediately at `Stage 4`, skipping the earlier stages. The lower a system's `Condition`, the higher the chance that a breakdown will be critical from the start.
 
-The type of breakdown is not entirely random. First, it will always belong to the damaged system. Second, ADS keeps track of which wear factors have been active most often and uses that history to determine which failure is most likely to occur.
+The type of breakdown is not entirely random. First, it will always belong to the damaged system. Second, RMS keeps track of which wear factors have been active most often and uses that history to determine which failure is most likely to occur.
 
 #### Stages and Progression
 Most breakdowns go through several stages, gradually getting worse:
@@ -541,7 +537,7 @@ Beyond money, all workshop procedures require time. The duration of a service or
 
 ## 5. Pre-Shift Inspection and Maintenance
 
-ADS encourages you to spend a little time with your machines at the beginning of each working day. A quick pre-shift inspection and a few routine maintenance actions can help you detect problems early and avoid expensive breakdowns later in the field.
+RMS encourages you to spend a little time with your machines at the beginning of each working day. A quick pre-shift inspection and a few routine maintenance actions can help you detect problems early and avoid expensive breakdowns later in the field.
 
 #### Pre-Shift Inspection
 
@@ -636,7 +632,7 @@ In practice, low-speed high-stress work and jerky driving can overheat CVT compo
 
 ## 8. Alternator & Battery
 
-ADS simulates the vehicle electrical system as a real working model rather than a simple on/off mechanic. The mod tracks battery charge, alternator output, onboard electrical loads, battery temperature, internal resistance, and voltage behavior under charging and discharge.
+RMS simulates the vehicle electrical system as a real working model rather than a simple on/off mechanic. The mod tracks battery charge, alternator output, onboard electrical loads, battery temperature, internal resistance, and voltage behavior under charging and discharge.
 
 Battery behavior depends on several factors at once. Its available capacity drops in cold weather, internal resistance rises as the battery gets colder and more worn, and charge acceptance is reduced not only by low temperature, but also by high state of charge and poor battery health. In practice, this means a weak or cold battery does not just "have less charge" - it also charges worse, sags harder under load, and performs noticeably worse during starting.
 
@@ -646,11 +642,11 @@ Battery temperature is simulated separately. It is influenced by ambient tempera
 
 This system also interacts with breakdowns. A failed alternator can leave the machine running only on battery reserve, while battery failure can lead to weak cranking, hard starting, or a complete no-start situation. Depending on the condition of the electrical system, the vehicle may suffer from unstable voltage, poor charging, or total loss of starting ability.
 
-If the battery is too weak to start the engine, you can use jumper cables and get power from another vehicle. ADS models this as an actual external power connection: both batteries are linked into a shared circuit, current flows between them, and the donor vehicle can support the receiver during cranking or temporary charging.
+If the battery is too weak to start the engine, you can use jumper cables and get power from another vehicle. RMS models this as an actual external power connection: both batteries are linked into a shared circuit, current flows between them, and the donor vehicle can support the receiver during cranking or temporary charging.
 
 ## Support
 
-- Issues and suggestions: https://github.com/Squallqt/FS25_AdvancedDamageSystem/issues
+- Issues and suggestions: https://github.com/Squallqt/FS25_RealisticMechanicalSystems/issues
 
 ## License
 

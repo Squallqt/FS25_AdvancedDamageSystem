@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="111">
+    <author>id577, Squallqt</author>
+    <version>0.9.3.0</version>
+    <title>
+        <en>Realistic Mechanical Systems</en>
+        <de>Realistische Mechaniksysteme</de>
+        <fr>Systèmes Mécaniques Réalistes</fr>
+    </title>
+    <description>
+        <en><![CDATA[Realistic Mechanical Systems adds a deep vehicle wear, failure, diagnostics, maintenance, and repair system to Farming Simulator 25. Instead of relying on a single generic condition value, each machine is built around multiple individual systems with their own condition, wear factors, stress accumulation, and risk of failure. Vehicle behaviour and the nature of breakdowns depend on operating conditions, load, temperature, and service quality.
+
+The mod includes a temperature model for key systems, advanced battery, alternator, and diesel preheating simulation, realistic breakdown logic, expanded workshop workflows, service reports, maintenance history, and pre-shift inspections. As a result, vehicle management becomes a strategic part of gameplay: service takes time, poor operation increases the risk of failures, and neglecting machine condition can disrupt critical field work. A responsible farmer who looks after equipment, services it on time, and avoids unnecessary abuse will keep the fleet reliable and avoid serious problems during the season.
+
+Changelog 0.9.3.0 [WIP]:
+- Fixed & improved translations
+- Added drivetrain management for tractors: 4x2 / 4WD / AUTO drive modes and differential locks (new key bindings, HUD indicator, settings)
+- Turning on hard ground with locked differentials now damages the transmission
+- Added a parking brake with HUD indicator and optional automatic engagement
+- Hands the drivetrain and parking brake over to Enhanced Vehicle when its matching functions are enabled
+- Added a HUD readout of tractor, towed, and combined mass
+- Fixed locked hook-lift containers being classified as towed and continuously lifted loads; they now count as carried vehicle mass
+- Removed unnecessary debug log spam from routine UI and config updates
+- Extended lubrication to all non-road ADS machines
+- Removed the work process system entirely, with the harvest processing wear and the unloading auger malfunction
+- Reworked cold-engine wear to start only at the dashboard's high-load threshold, with RPM as a secondary factor
+- Fixed the debug HUD showing missing or incorrect values for the controlled vehicle on dedicated servers
+- Integrated ADS dashboard indicators into an extended native speedometer layout, with values aligned to their corresponding icons
+- Separated engine and transmission thermal alerts and routed transmission breakdowns to the dedicated transmission indicator; excluded vehicles keep the unmodified native HUD
+- Dashboard indicators no longer disappear at high speed, and the inactive service indicator remains visible in gray
+- Turbocharger wear now applies to every engine of 56 kW (75 hp) or more, instead of a single tractor model
+- Added a transmission thermostat breakdown on CVT gearboxes
+- Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C
+- Added automatic temperature-based diesel preheating, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
+- Vehicle exclusions now follow what a machine can actually do instead of its type name; any automatic exclusion can be reverted with ads_setExcluded false, except on electric vehicles
+- Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for ADS]]></en>
+
+        <de><![CDATA[Realistische Mechaniksysteme fügen Farming Simulator 25 ein tiefgehendes System für Verschleiß, Ausfälle, Diagnose, Wartung und Reparatur von Fahrzeugen hinzu. Anstelle eines einzigen allgemeinen Zustandswerts besteht jede Maschine aus mehreren einzelnen Systemen mit eigenem Zustand, eigenen Verschleißfaktoren, Stressaufbau und Ausfallrisiko. Fahrverhalten und Art der Defekte hängen von Einsatzbedingungen, Belastung, Temperatur und Wartungsqualität ab.
+
+Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batterie-, Lichtmaschinen- und Diesel-Vorglühsimulation, realistische Ausfalllogik, erweiterte Werkstattabläufe, Serviceberichte, Wartungshistorie und Vorschicht-Inspektionen. Dadurch wird Fahrzeugmanagement zu einem strategischen Teil des Gameplays: Wartung kostet Zeit, falscher Einsatz erhöht das Ausfallrisiko, und vernachlässigter Maschinenzustand kann wichtige Feldarbeiten gefährden. Ein verantwortungsvoller Landwirt, der seine Technik pflegt, rechtzeitig wartet und unnötige Überlastung vermeidet, hält seinen Fuhrpark zuverlässig und vermeidet ernsthafte Probleme in der Saison.
+
+Changelog 0.9.3.0 [WIP]:
+- Übersetzungen korrigiert und verbessert
+- Antriebsstrangverwaltung für Traktoren hinzugefügt: Fahrmodi 4x2 / Allrad / AUTO und Differentialsperren (neue Tastenbelegungen, HUD-Anzeige, Einstellungen)
+- Kurvenfahrten auf hartem Boden mit gesperrten Differentialen beschädigen nun das Getriebe
+- Feststellbremse mit HUD-Anzeige und optionalem automatischem Anziehen hinzugefügt
+- Übergibt Antriebsstrang und Feststellbremse an Enhanced Vehicle, wenn dessen entsprechende Funktionen aktiv sind
+- HUD-Anzeige von Traktor-, Anhänger- und Gesamtmasse hinzugefügt
+- Verriegelte Hakenliftcontainer werden nicht mehr als gezogene und dauerhaft angehobene Lasten eingestuft, sondern als getragene Fahrzeugmasse
+- Unnötige Debug-Log-Ausgaben aus routinemäßigen UI- und Konfigurationsaktualisierungen entfernt
+- Betriebsstundenabhängige Schmierung auf alle ADS-Arbeitsmaschinen außerhalb der Straßenkategorien erweitert
+- Arbeitssystem vollständig entfernt, zusammen mit dem Verschleiß der Ernteverarbeitung und der Störung der Entladeschnecke
+- Verschleiß bei kaltem Motor überarbeitet: Er beginnt erst an der Hochlastschwelle der Armaturenbrettanzeige, die Drehzahl wirkt nur zusätzlich
+- Fehlende oder fehlerhafte Werte im Debug-HUD für das gesteuerte Fahrzeug auf dedizierten Servern behoben
+- ADS-Armaturenbrettanzeigen in ein erweitertes natives Tachometer-Layout integriert und Werte an den zugehörigen Symbolen ausgerichtet
+- Thermische Warnungen für Motor und Getriebe getrennt und Getriebestörungen der eigenen Getriebeanzeige zugeordnet; ausgeschlossene Fahrzeuge behalten das unveränderte native HUD
+- Armaturenbrettanzeigen verschwinden nicht mehr bei hoher Geschwindigkeit, und die inaktive Wartungsanzeige bleibt grau sichtbar
+- Turboladerverschleiß betrifft jetzt jeden Motor ab 56 kW (75 PS) statt nur eines einzigen Traktormodells
+- Störung des Getriebethermostats für CVT-Getriebe hinzugefügt
+- CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C
+- Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt, mit Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung
+- Fahrzeugausschlüsse richten sich jetzt nach den tatsächlichen Fähigkeiten einer Maschine statt nach ihrem Typnamen; jeder automatische Ausschluss lässt sich mit ads_setExcluded false aufheben, außer bei Elektrofahrzeugen
+- Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für ADS installiert war]]></de>
+        
+        <fr><![CDATA[Systèmes Mécaniques Réalistes ajoutent à Farming Simulator 25 un système approfondi d'usure, de pannes, de diagnostic, d'entretien et de réparation des véhicules. Au lieu de reposer sur une seule valeur générale d'état, chaque machine est composée de plusieurs systèmes distincts ayant leur propre état, leurs propres facteurs d'usure, leur accumulation de stress et leur risque de panne. Le comportement de la machine et la nature des défaillances dépendent des conditions d'utilisation, de la charge, de la température et de la qualité de l'entretien.
+
+Le mod comprend un modèle thermique pour les systèmes clés, une simulation avancée de la batterie, de l'alternateur et du préchauffage diesel, une logique de pannes réaliste, des procédures d'atelier étendues, des rapports d'intervention, un historique d'entretien et des inspections avant prise de poste. La gestion du matériel devient ainsi une dimension stratégique du gameplay : l'entretien prend du temps, une mauvaise utilisation augmente le risque de panne, et négliger l'état des machines peut compromettre des travaux de campagne essentiels. Un agriculteur consciencieux qui surveille son matériel, l'entretient à temps et évite les mauvais traitements inutiles conservera une flotte fiable et évitera de graves problèmes en saison.
+
+Changelog 0.9.3.0 [WIP] :
+- Correction & amélioration des traductions
+- Ajout de la gestion de transmission pour les tracteurs : modes 4x2 / 4RM / AUTO et blocages de différentiel (nouveaux raccourcis, témoin HUD, réglages)
+- Braquer sur sol dur avec les différentiels bloqués endommage désormais la transmission
+- Ajout d'un frein de parking avec témoin HUD et serrage automatique optionnel
+- Cède la transmission et le frein de parking à Enhanced Vehicle quand ses fonctions correspondantes sont activées
+- Ajout d'un affichage HUD des masses tracteur, tractée et totale
+- Correction des caissons hook-lift verrouillés classés comme charges tractées et continuellement levées ; ils comptent désormais comme masse portée par le véhicule
+- Suppression de logs de debug inutiles lors des mises à jour d'interface et de configuration
+- Extension du graissage à toutes les machines ADS hors catégories routières
+- Retrait complet du système de travail, avec l'usure du traitement de récolte et le dysfonctionnement de la vis de déchargement
+- Refonte de l'usure moteur à froid : elle commence uniquement au seuil de forte charge du HUD, le régime n'étant qu'un facteur aggravant
+- Correction de valeurs manquantes ou erronées dans le panneau de debug du véhicule contrôlé sur serveur dédié
+- Intégration des témoins ADS dans une disposition étendue du compteur natif, avec les valeurs alignées sur leurs pictogrammes
+- Séparation des alertes thermiques moteur et transmission et attribution des pannes de transmission au témoin dédié ; les véhicules exclus conservent le HUD natif non modifié
+- Les témoins du tableau de bord ne disparaissent plus à haute vitesse et le témoin d'entretien inactif reste visible en gris
+- L'usure du turbocompresseur concerne désormais tout moteur de 56 kW (75 ch) ou plus, au lieu d'un seul modèle de tracteur
+- Ajout d'une panne de thermostat de transmission sur les boîtes CVT
+- Recalibrage des températures de boîte CVT sur les données réelles d'huile de transmission : le thermostat régule désormais à 85 °C au lieu de 75 °C, et l'usure par surchauffe démarre à 100 °C au lieu de 95 °C
+- Ajout du préchauffage diesel automatique selon la température, avec charge batterie, témoin dédié, didacticiel et panne de bougies en quatre stades
+- Les exclusions de véhicules reposent désormais sur les capacités réelles d'une machine au lieu de son nom de type ; toute exclusion automatique peut être annulée avec ads_setExcluded false, sauf sur les véhicules électriques
+- Les millésimes des véhicules sont désormais déterminés par le mod lui-même ; Vehicle Years n'est plus requis et peut être désinstallé s'il n'était installé que pour ADS]]></fr>
+        
+    </description>
+    <storeItems>
+        <storeItem xmlFilename="objects/greaseGun/greaseGun.xml"/>
+        <storeItem xmlFilename="objects/airBlower/airBlower.xml"/>
+        <storeItem xmlFilename="objects/jumperCables/jumperCables.xml"/>
+    </storeItems>
+    <iconFilename>icon_rms.dds</iconFilename>
+    <multiplayer supported="true"/>
+    <extraSourceFiles>
+        <sourceFile filename="scripts/ADS_Main.lua"/>
+    </extraSourceFiles>
+    <actions>
+        <action name="ADS_FIELD_INSPECTION" axisType="HALF" displayCategory="PLAYER_INTERACTIVE"/>
+        <action name="ADS_CLOSE_NOTIFICATION" displayCategory="PLAYER_INTERACTIVE"/>
+        <action name="ADS_TOGGLE_4WD" displayCategory="VEHICLE"/>
+        <action name="ADS_TOGGLE_DIFFLOCK" displayCategory="VEHICLE"/>
+        <action name="ADS_TOGGLE_PARKBRAKE" displayCategory="VEHICLE"/>
+    </actions>
+    <inputBinding>
+        <actionBinding action="ADS_FIELD_INSPECTION">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_r"/>
+        </actionBinding>
+        <actionBinding action="ADS_CLOSE_NOTIFICATION">
+            <binding device="KB_MOUSE_DEFAULT" input="MOUSE_BUTTON_LEFT"/>
+            <binding device="0_XINPUT_GAMEPAD" input="BUTTON_1"/>
+        </actionBinding>
+        <actionBinding action="ADS_TOGGLE_4WD">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_4"/>
+        </actionBinding>
+        <actionBinding action="ADS_TOGGLE_DIFFLOCK">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_5"/>
+        </actionBinding>
+        <actionBinding action="ADS_TOGGLE_PARKBRAKE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_6"/>
+        </actionBinding>
+    </inputBinding>
+    <l10n filenamePrefix="translations/l10n"/>
+</modDesc>

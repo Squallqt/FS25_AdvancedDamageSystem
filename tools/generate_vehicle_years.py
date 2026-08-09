@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 SOURCE_URL = "https://gitlab.com/thalley/fs25_vehicle_years/-/raw/main/data/vehicle_years.xml"
-TARGET = Path(__file__).resolve().parent.parent / "FS25_AdvancedDamageSystem" / "scripts" / "ADS_VehicleYearsData.lua"
+TARGET = Path(__file__).resolve().parent.parent / "FS25_RealisticMechanicalSystems" / "scripts" / "ADS_VehicleYearsData.lua"
 OLDEST_YEAR = 1800
 NEWEST_YEAR = 2100
 
