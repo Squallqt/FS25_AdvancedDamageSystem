@@ -1,8 +1,8 @@
-ADS_SettingsPage = {}
-ADS_SettingsPage.name = g_currentModName
-ADS_SettingsPage.modDirectory = g_currentModDirectory
+RMS_SettingsPage = {}
+RMS_SettingsPage.name = g_currentModName
+RMS_SettingsPage.modDirectory = g_currentModDirectory
 
-ADS_SettingsPage.steps = {}
+RMS_SettingsPage.steps = {}
 
 local function formatAh(val)
     local text = string.format("%.2f", val)
@@ -21,65 +21,65 @@ end
 
 local function buildPendingConfigFromAdsConfig()
     return {
-        tutorialMode = ADS_Config.TUTORIAL_MODE,
+        tutorialMode = RMS_Config.TUTORIAL_MODE,
 
-        baseServiceWear = ADS_Config.CORE.BASE_SERVICE_WEAR,
-        baseSystemsWear = ADS_Config.CORE.BASE_SYSTEMS_WEAR,
-        downtimeMultiplier = ADS_Config.CORE.DOWNTIME_MULTIPLIER,
-        generalWearEnabled = ADS_Config.CORE.GENERAL_WEAR_ENABLED,
-        enableWarningMessages = ADS_Config.CORE.ENABLE_WARNING_MESSAGES,
-        systemStressGlobalMultiplier = ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER,
-        aiOverloadControl = ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL,
-        aiDisableOnCriticalOverload = ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD,
-        contractVehicleProtection = ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION,
-        aiWorkerTargetStress = ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS,
-        aiWorkerMinSpeed = ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED,
+        baseServiceWear = RMS_Config.CORE.BASE_SERVICE_WEAR,
+        baseSystemsWear = RMS_Config.CORE.BASE_SYSTEMS_WEAR,
+        downtimeMultiplier = RMS_Config.CORE.DOWNTIME_MULTIPLIER,
+        generalWearEnabled = RMS_Config.CORE.GENERAL_WEAR_ENABLED,
+        enableWarningMessages = RMS_Config.CORE.ENABLE_WARNING_MESSAGES,
+        systemStressGlobalMultiplier = RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER,
+        aiOverloadControl = RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL,
+        aiDisableOnCriticalOverload = RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD,
+        contractVehicleProtection = RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION,
+        aiWorkerTargetStress = RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS,
+        aiWorkerMinSpeed = RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED,
 
-        instantInspection = ADS_Config.MAINTENANCE.INSTANT_INSPECTION,
-        parkVehicle = ADS_Config.MAINTENANCE.PARK_VEHICLE,
-        warrantyEnabled = ADS_Config.MAINTENANCE.WARRANTY_ENABLED,
-        globalPriceMultiplier = ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER,
-        globalTimeMultiplier = ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER,
+        instantInspection = RMS_Config.MAINTENANCE.INSTANT_INSPECTION,
+        parkVehicle = RMS_Config.MAINTENANCE.PARK_VEHICLE,
+        warrantyEnabled = RMS_Config.MAINTENANCE.WARRANTY_ENABLED,
+        globalPriceMultiplier = RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER,
+        globalTimeMultiplier = RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER,
 
-        dealerAlwaysAvailable = ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE,
-        mobileAlwaysAvailable = ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE,
-        ownAlwaysAvailable = ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE,
-        mobileWorkshopRestrictionsEnabled = ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED,
-        openHour = ADS_Config.WORKSHOP.OPEN_HOUR,
-        closeHour = ADS_Config.WORKSHOP.CLOSE_HOUR,
+        dealerAlwaysAvailable = RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE,
+        mobileAlwaysAvailable = RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE,
+        ownAlwaysAvailable = RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE,
+        mobileWorkshopRestrictionsEnabled = RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED,
+        openHour = RMS_Config.WORKSHOP.OPEN_HOUR,
+        closeHour = RMS_Config.WORKSHOP.CLOSE_HOUR,
 
-        engineMaxHeat = ADS_Config.THERMAL.ENGINE_MAX_HEAT,
-        transMaxHeat = ADS_Config.THERMAL.TRANS_MAX_HEAT,
-        temperatureChangeSpeed = ADS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED,
-        maxDirtInfluence = ADS_Config.THERMAL.MAX_DIRT_INFLUENCE,
-        warmingBoostPower = ADS_Config.THERMAL.WARMING_BOOST_POWER,
-        coolingSlowdownPower = ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER,
+        engineMaxHeat = RMS_Config.THERMAL.ENGINE_MAX_HEAT,
+        transMaxHeat = RMS_Config.THERMAL.TRANS_MAX_HEAT,
+        temperatureChangeSpeed = RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED,
+        maxDirtInfluence = RMS_Config.THERMAL.MAX_DIRT_INFLUENCE,
+        warmingBoostPower = RMS_Config.THERMAL.WARMING_BOOST_POWER,
+        coolingSlowdownPower = RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER,
 
-        batteryUsableCapacityFactor = ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
-        alternatorMaxOutput = ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT,
-        idleCurrentA = ADS_Config.ELECTRICAL.IDLE_CURRENT_A,
+        batteryUsableCapacityFactor = RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
+        alternatorMaxOutput = RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT,
+        idleCurrentA = RMS_Config.ELECTRICAL.IDLE_CURRENT_A,
 
-        cloggingSpeed = ADS_Config.FIELD_CARE.CLOGGING_SPEED,
-        fieldInspectionDuration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
-        lubricationReducePerOperatingHour = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR,
+        cloggingSpeed = RMS_Config.FIELD_CARE.CLOGGING_SPEED,
+        fieldInspectionDuration = RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
+        lubricationReducePerOperatingHour = RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR,
 
-        drivetrainEnabled = ADS_Config.DRIVETRAIN.ENABLED,
-        drivetrainAllowAutoMode = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE,
-        drivetrainWindupDamage = ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED,
-        drivetrainDiffLockReleaseSpeed = ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED,
-        drivetrainParkBrakeEnabled = ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED,
-        drivetrainParkBrakeAuto = ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE,
+        drivetrainEnabled = RMS_Config.DRIVETRAIN.ENABLED,
+        drivetrainAllowAutoMode = RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE,
+        drivetrainWindupDamage = RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED,
+        drivetrainDiffLockReleaseSpeed = RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED,
+        drivetrainParkBrakeEnabled = RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED,
+        drivetrainParkBrakeAuto = RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE,
 
-        debugMode = ADS_Config.DEBUG
+        debugMode = RMS_Config.DEBUG
     }
 end
 
 local function getPendingConfig()
-    if ADS_SettingsPage.pendingConfig == nil then
-        ADS_SettingsPage.pendingConfig = buildPendingConfigFromAdsConfig()
+    if RMS_SettingsPage.pendingConfig == nil then
+        RMS_SettingsPage.pendingConfig = buildPendingConfigFromAdsConfig()
     end
 
-    return ADS_SettingsPage.pendingConfig
+    return RMS_SettingsPage.pendingConfig
 end
 
 local function getSettingsProfile(defaultProfileName)
@@ -120,7 +120,7 @@ local function addDisabledLockToSettingsRow(rowElement, optionElement, tooltip)
     local lockButton = ButtonElement.new()
     lockButton.name = "iconDisabled"
     lockButton:loadProfile(getSettingsProfile("fs25_settingsMultiTextOptionLocked"), true)
-    lockButton.target = ADS_SettingsPage
+    lockButton.target = RMS_SettingsPage
     lockButton:setCallback("onClickCallback", "onClickSettingsLockedIcon")
     lockButton:setCallback("onFocusCallback", "onFocusSettingsLockedIcon")
 
@@ -177,23 +177,23 @@ local function getVanillaSettingsButtonTemplate()
     return nil
 end
 
-function ADS_SettingsPage:onClickSettingsLockedIcon()
+function RMS_SettingsPage:onClickSettingsLockedIcon()
 end
 
-function ADS_SettingsPage:onFocusSettingsLockedIcon(icon)
-    local page = ADS_SettingsPage.embeddedPage
+function RMS_SettingsPage:onFocusSettingsLockedIcon(icon)
+    local page = RMS_SettingsPage.embeddedPage
     if page ~= nil and page.settingsLayout ~= nil and page.settingsLayout.scrollToMakeElementVisible ~= nil then
         page.settingsLayout:scrollToMakeElementVisible(icon)
     end
 end
 
 local function getCurrentSettingsPage()
-    local embeddedPage = ADS_SettingsPage.embeddedPage
+    local embeddedPage = RMS_SettingsPage.embeddedPage
     if embeddedPage ~= nil
         and embeddedPage.getCurrentSubCategory ~= nil
-        and ADS_InGameMenuFrame ~= nil
-        and ADS_InGameMenuFrame.SUB_CATEGORY ~= nil
-        and embeddedPage:getCurrentSubCategory() == ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
+        and RMS_InGameMenuFrame ~= nil
+        and RMS_InGameMenuFrame.SUB_CATEGORY ~= nil
+        and embeddedPage:getCurrentSubCategory() == RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
         return embeddedPage
     end
 
@@ -206,7 +206,7 @@ local function isCurrentMissionMultiplayer()
         and g_currentMission.missionDynamicInfo.isMultiplayer == true
 end
 
-local function canChangeADSSettings()
+local function canChangeRMSSettings()
     return g_currentMission ~= nil
         and g_currentMission.getIsClient ~= nil
         and g_currentMission:getIsClient()
@@ -216,16 +216,16 @@ end
 local function refreshCurrentSettingsPage()
     local currentPage = getCurrentSettingsPage()
     if currentPage ~= nil then
-        ADS_SettingsPage:updateADSSettings(currentPage)
+        RMS_SettingsPage:updateRMSSettings(currentPage)
     end
 end
 
-function ADS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
+function RMS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
     if g_currentMission == nil or not g_currentMission:getIsServer() then
         return
     end
 
-    if oldConfig == nil or newConfig == nil or ADS_Main == nil or ADS_Main.vehicles == nil then
+    if oldConfig == nil or newConfig == nil or RMS_Main == nil or RMS_Main.vehicles == nil then
         return
     end
 
@@ -236,11 +236,11 @@ function ADS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
         return
     end
 
-    local states = AdvancedDamageSystem.STATUS
+    local states = RealisticMechanicalSystems.STATUS
 
-    for _, vehicle in pairs(ADS_Main.vehicles) do
-        if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
-            local spec = vehicle.spec_AdvancedDamageSystem
+    for _, vehicle in pairs(RMS_Main.vehicles) do
+        if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
+            local spec = vehicle.spec_RealisticMechanicalSystems
             local currentState = spec.currentState
 
             if parkVehicleChanged
@@ -252,20 +252,20 @@ function ADS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
             end
 
             if instantInspectionEnabled and currentState == states.INSPECTION then
-                if AdvancedDamageSystem.forceFinishService(vehicle) then
-                    AdvancedDamageSystem.raiseServiceLifecycleDirtyFlags(vehicle)
+                if RealisticMechanicalSystems.forceFinishService(vehicle) then
+                    RealisticMechanicalSystems.raiseServiceLifecycleDirtyFlags(vehicle)
                 end
             end
         end
     end
 end
 
-function ADS_SettingsPage.commitPendingConfig(current, pending)
+function RMS_SettingsPage.commitPendingConfig(current, pending)
     if pending == nil or current == nil then
         return
     end
 
-    ADS_SettingsPage.applyPendingConfigSideEffects(current, pending)
+    RMS_SettingsPage.applyPendingConfigSideEffects(current, pending)
 
     local batteryFactorChanged = valuesDiffer(pending.batteryUsableCapacityFactor, current.batteryUsableCapacityFactor)
     local workshopChanged =
@@ -277,90 +277,90 @@ function ADS_SettingsPage.commitPendingConfig(current, pending)
         valuesDiffer(pending.closeHour, current.closeHour)
 
     local tutorialModeChanged = valuesDiffer(pending.tutorialMode, current.tutorialMode)
-    ADS_Config.TUTORIAL_MODE = pending.tutorialMode
+    RMS_Config.TUTORIAL_MODE = pending.tutorialMode
     if tutorialModeChanged then
-        ADS_Config.syncTutorialState()
+        RMS_Config.syncTutorialState()
     end
 
-    ADS_Config.CORE.BASE_SERVICE_WEAR = pending.baseServiceWear
-    ADS_Config.CORE.BASE_SYSTEMS_WEAR = pending.baseSystemsWear
-    ADS_Config.CORE.DOWNTIME_MULTIPLIER = pending.downtimeMultiplier
-    ADS_Config.CORE.GENERAL_WEAR_ENABLED = pending.generalWearEnabled
-    ADS_Config.CORE.ENABLE_WARNING_MESSAGES = pending.enableWarningMessages
-    ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER = pending.systemStressGlobalMultiplier
-    ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = pending.aiOverloadControl
-    ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD = pending.aiDisableOnCriticalOverload
-    ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION = pending.contractVehicleProtection
-    ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = pending.aiWorkerTargetStress
-    ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED = pending.aiWorkerMinSpeed
+    RMS_Config.CORE.BASE_SERVICE_WEAR = pending.baseServiceWear
+    RMS_Config.CORE.BASE_SYSTEMS_WEAR = pending.baseSystemsWear
+    RMS_Config.CORE.DOWNTIME_MULTIPLIER = pending.downtimeMultiplier
+    RMS_Config.CORE.GENERAL_WEAR_ENABLED = pending.generalWearEnabled
+    RMS_Config.CORE.ENABLE_WARNING_MESSAGES = pending.enableWarningMessages
+    RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER = pending.systemStressGlobalMultiplier
+    RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = pending.aiOverloadControl
+    RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD = pending.aiDisableOnCriticalOverload
+    RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION = pending.contractVehicleProtection
+    RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = pending.aiWorkerTargetStress
+    RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED = pending.aiWorkerMinSpeed
 
-    ADS_Config.MAINTENANCE.INSTANT_INSPECTION = pending.instantInspection
-    ADS_Config.MAINTENANCE.PARK_VEHICLE = pending.parkVehicle
-    ADS_Config.MAINTENANCE.WARRANTY_ENABLED = pending.warrantyEnabled
-    ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER = pending.globalPriceMultiplier
-    ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER = pending.globalTimeMultiplier
+    RMS_Config.MAINTENANCE.INSTANT_INSPECTION = pending.instantInspection
+    RMS_Config.MAINTENANCE.PARK_VEHICLE = pending.parkVehicle
+    RMS_Config.MAINTENANCE.WARRANTY_ENABLED = pending.warrantyEnabled
+    RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER = pending.globalPriceMultiplier
+    RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER = pending.globalTimeMultiplier
 
-    ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = pending.dealerAlwaysAvailable
-    ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE = pending.mobileAlwaysAvailable
-    ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE = pending.ownAlwaysAvailable
-    ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = pending.mobileWorkshopRestrictionsEnabled
-    ADS_Config.WORKSHOP.OPEN_HOUR = pending.openHour
-    ADS_Config.WORKSHOP.CLOSE_HOUR = pending.closeHour
+    RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = pending.dealerAlwaysAvailable
+    RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE = pending.mobileAlwaysAvailable
+    RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE = pending.ownAlwaysAvailable
+    RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = pending.mobileWorkshopRestrictionsEnabled
+    RMS_Config.WORKSHOP.OPEN_HOUR = pending.openHour
+    RMS_Config.WORKSHOP.CLOSE_HOUR = pending.closeHour
 
-    ADS_Config.THERMAL.ENGINE_MAX_HEAT = pending.engineMaxHeat
-    ADS_Config.THERMAL.TRANS_MAX_HEAT = pending.transMaxHeat
-    ADS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = pending.temperatureChangeSpeed
-    ADS_Config.THERMAL.MAX_DIRT_INFLUENCE = pending.maxDirtInfluence
-    ADS_Config.THERMAL.WARMING_BOOST_POWER = pending.warmingBoostPower
-    ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER = pending.coolingSlowdownPower
+    RMS_Config.THERMAL.ENGINE_MAX_HEAT = pending.engineMaxHeat
+    RMS_Config.THERMAL.TRANS_MAX_HEAT = pending.transMaxHeat
+    RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = pending.temperatureChangeSpeed
+    RMS_Config.THERMAL.MAX_DIRT_INFLUENCE = pending.maxDirtInfluence
+    RMS_Config.THERMAL.WARMING_BOOST_POWER = pending.warmingBoostPower
+    RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER = pending.coolingSlowdownPower
 
-    ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = pending.batteryUsableCapacityFactor
-    ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT = pending.alternatorMaxOutput
-    ADS_Config.ELECTRICAL.IDLE_CURRENT_A = pending.idleCurrentA
+    RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = pending.batteryUsableCapacityFactor
+    RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT = pending.alternatorMaxOutput
+    RMS_Config.ELECTRICAL.IDLE_CURRENT_A = pending.idleCurrentA
 
-    ADS_Config.FIELD_CARE.CLOGGING_SPEED = pending.cloggingSpeed
-    ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = pending.fieldInspectionDuration
-    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = pending.lubricationReducePerOperatingHour
+    RMS_Config.FIELD_CARE.CLOGGING_SPEED = pending.cloggingSpeed
+    RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = pending.fieldInspectionDuration
+    RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = pending.lubricationReducePerOperatingHour
 
-    ADS_Config.DRIVETRAIN.ENABLED = pending.drivetrainEnabled
-    ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = pending.drivetrainAllowAutoMode
-    ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = pending.drivetrainWindupDamage
-    ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = pending.drivetrainDiffLockReleaseSpeed
-    ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = pending.drivetrainParkBrakeEnabled
-    ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = pending.drivetrainParkBrakeAuto
+    RMS_Config.DRIVETRAIN.ENABLED = pending.drivetrainEnabled
+    RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = pending.drivetrainAllowAutoMode
+    RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = pending.drivetrainWindupDamage
+    RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = pending.drivetrainDiffLockReleaseSpeed
+    RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = pending.drivetrainParkBrakeEnabled
+    RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = pending.drivetrainParkBrakeAuto
 
-    ADS_Config.DEBUG = pending.debugMode
+    RMS_Config.DEBUG = pending.debugMode
 
-    if batteryFactorChanged and ADS_Main ~= nil and ADS_Main.vehicles ~= nil then
-        for _, vehicle in pairs(ADS_Main.vehicles) do
-            if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
-                ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
+    if batteryFactorChanged and RMS_Main ~= nil and RMS_Main.vehicles ~= nil then
+        for _, vehicle in pairs(RMS_Main.vehicles) do
+            if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
+                RMS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
 
-                local spec = vehicle.spec_AdvancedDamageSystem
-                AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
+                local spec = vehicle.spec_RealisticMechanicalSystems
+                RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.ELECTRICAL)
             end
         end
     end
 
-    if workshopChanged and ADS_Main ~= nil and ADS_Main.forceWorkshopUpdate ~= nil then
-        ADS_Main:forceWorkshopUpdate(true)
+    if workshopChanged and RMS_Main ~= nil and RMS_Main.forceWorkshopUpdate ~= nil then
+        RMS_Main:forceWorkshopUpdate(true)
     end
 
     if g_currentMission ~= nil then
         if g_currentMission:getIsServer() and g_server ~= nil then
-            g_server:broadcastEvent(ADS_SettingsSyncEvent.new())
+            g_server:broadcastEvent(RMS_SettingsSyncEvent.new())
         elseif g_client ~= nil then
-            ADS_SettingsSyncEvent.send()
+            RMS_SettingsSyncEvent.send()
         end
     end
 end
 
-function ADS_SettingsPage.beginSettingsSession()
-    ADS_SettingsPage.pendingConfig = buildPendingConfigFromAdsConfig()
-    ADS_SettingsPage.ads_hasPendingSettingsChange = false
+function RMS_SettingsPage.beginSettingsSession()
+    RMS_SettingsPage.pendingConfig = buildPendingConfigFromAdsConfig()
+    RMS_SettingsPage.ads_hasPendingSettingsChange = false
 end
 
-function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
+function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
     local page = targetPage
     if page == nil or page.ads_initSettingsMenuDone then
         return
@@ -374,73 +374,73 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
         end
     end
 
-    ADS_SettingsPage:generateAllSteps()
+    RMS_SettingsPage:generateAllSteps()
     page.ads_settingsRowIsEven = false
 
     -- General
-    page.ads_tutorialMode = ADS_SettingsPage:addBinaryOption(
+    page.ads_tutorialMode = RMS_SettingsPage:addBinaryOption(
         page,
         "onTutorialModeChanged",
         g_i18n:getText("ads_tutorialMode_label"),
         g_i18n:getText("ads_tutorialMode_tooltip")
     )
-    page.ads_tutorialResetTips = ADS_SettingsPage:addButtonOption(
+    page.ads_tutorialResetTips = RMS_SettingsPage:addButtonOption(
         page,
         "onResetTutorialTipsClicked",
         g_i18n:getText("ads_tutorialResetTips_label"),
         g_i18n:getText("ads_tutorialResetTips_text"),
         g_i18n:getText("ads_tutorialResetTips_tooltip")
     )
-    page.ads_warningMessages = ADS_SettingsPage:addBinaryOption(
+    page.ads_warningMessages = RMS_SettingsPage:addBinaryOption(
         page,
         "onWarningMessagesChanged",
         g_i18n:getText("ads_warningMessages_label"),
         g_i18n:getText("ads_warningMessages_tooltip")
     )
-    page.ads_debugMode = ADS_SettingsPage:addBinaryOption(
+    page.ads_debugMode = RMS_SettingsPage:addBinaryOption(
         page,
         "onDebugModeChanged",
         g_i18n:getText("ads_debugMode_label"),
         g_i18n:getText("ads_debugMode_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_service_wear"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_service_wear"))
 
-    page.ads_serviceWear = ADS_SettingsPage:addMultiTextOption(
+    page.ads_serviceWear = RMS_SettingsPage:addMultiTextOption(
         page, "onServiceWearChanged",
-        ADS_SettingsPage.steps.serviceWear.texts,
+        RMS_SettingsPage.steps.serviceWear.texts,
         g_i18n:getText("ads_serviceInterval_label"),
         g_i18n:getText("ads_serviceInterval_tooltip")
     )
-    page.ads_conditionWear = ADS_SettingsPage:addMultiTextOption(
+    page.ads_conditionWear = RMS_SettingsPage:addMultiTextOption(
         page, "onConditionWearChanged",
-        ADS_SettingsPage.steps.conditionWear.texts,
+        RMS_SettingsPage.steps.conditionWear.texts,
         g_i18n:getText("ads_vehicleLifespan_label"),
         g_i18n:getText("ads_vehicleLifespan_tooltip")
     )
-    page.ads_systemStressRate = ADS_SettingsPage:addMultiTextOption(
+    page.ads_systemStressRate = RMS_SettingsPage:addMultiTextOption(
         page, "onSystemStressRateChanged",
-        ADS_SettingsPage.steps.systemStressRate.texts,
+        RMS_SettingsPage.steps.systemStressRate.texts,
         g_i18n:getText("ads_systemStressRate_label"),
         g_i18n:getText("ads_systemStressRate_tooltip")
     )
-    page.ads_downtimeWear = ADS_SettingsPage:addMultiTextOption(
+    page.ads_downtimeWear = RMS_SettingsPage:addMultiTextOption(
         page, "onDowntimeWearChanged",
-        ADS_SettingsPage.steps.downtimeWear.texts,
+        RMS_SettingsPage.steps.downtimeWear.texts,
         g_i18n:getText("ads_downtimeWear_label"),
         g_i18n:getText("ads_downtimeWear_tooltip")
     )
-    page.ads_generalWearEnabled = ADS_SettingsPage:addBinaryOption(
+    page.ads_generalWearEnabled = RMS_SettingsPage:addBinaryOption(
         page,
         "onGeneralWearEnabledChanged",
         g_i18n:getText("ads_generalWearEnabled_label"),
         g_i18n:getText("ads_generalWearEnabled_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_ws_header_title"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_ws_header_title"))
 
     -- Instant Inspection (Binary)
-    page.ads_instantInspection = ADS_SettingsPage:addBinaryOption(
+    page.ads_instantInspection = RMS_SettingsPage:addBinaryOption(
         page,
         "onInstantInspectionChanged",
         g_i18n:getText("ads_instantInspection_label"),
@@ -448,7 +448,7 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Park Vehicle (Binary)
-    page.ads_parkVehicle = ADS_SettingsPage:addBinaryOption(
+    page.ads_parkVehicle = RMS_SettingsPage:addBinaryOption(
         page,
         "onParkVehicleChanged",
         g_i18n:getText("ads_parkVehicle_label"),
@@ -456,7 +456,7 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Warranty Coverage (Binary)
-    page.ads_warrantyEnabled = ADS_SettingsPage:addBinaryOption(
+    page.ads_warrantyEnabled = RMS_SettingsPage:addBinaryOption(
         page,
         "onWarrantyEnabledChanged",
         g_i18n:getText("ads_warrantyEnabled_label"),
@@ -464,25 +464,25 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Maintenance Price
-    page.ads_maintenancePrice = ADS_SettingsPage:addMultiTextOption(
+    page.ads_maintenancePrice = RMS_SettingsPage:addMultiTextOption(
         page,
         "onMaintenancePriceChanged",
-        ADS_SettingsPage.steps.maintPrice.texts,
+        RMS_SettingsPage.steps.maintPrice.texts,
         g_i18n:getText("ads_maintenancePrice_label"),
         g_i18n:getText("ads_maintenancePrice_tooltip")
     )
 
     -- Maintenance Duration
-    page.ads_maintenanceDuration = ADS_SettingsPage:addMultiTextOption(
+    page.ads_maintenanceDuration = RMS_SettingsPage:addMultiTextOption(
         page,
         "onMaintenanceDurationChanged",
-        ADS_SettingsPage.steps.maintDuration.texts,
+        RMS_SettingsPage.steps.maintDuration.texts,
         g_i18n:getText("ads_maintenanceDuration_label"),
         g_i18n:getText("ads_maintenanceDuration_tooltip")
     )
 
     -- Mobile Workshop Restrictions (Binary)
-    page.ads_mobileWorkshopRestrictions = ADS_SettingsPage:addBinaryOption(
+    page.ads_mobileWorkshopRestrictions = RMS_SettingsPage:addBinaryOption(
         page,
         "onMobileWorkshopRestrictionsChanged",
         g_i18n:getText("ads_mobileWorkshopRestrictions_label"),
@@ -490,7 +490,7 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Dealer Workshop Available (Binary)
-    page.ads_dealerWorkshopAvailable = ADS_SettingsPage:addBinaryOption(
+    page.ads_dealerWorkshopAvailable = RMS_SettingsPage:addBinaryOption(
         page,
         "onDealerWorkshopAvailableChanged",
         g_i18n:getText("ads_dealerWorkshopAvailable_label"),
@@ -498,7 +498,7 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Mobile Workshop Available (Binary)
-    page.ads_mobileWorkshopAvailable = ADS_SettingsPage:addBinaryOption(
+    page.ads_mobileWorkshopAvailable = RMS_SettingsPage:addBinaryOption(
         page,
         "onMobileWorkshopAvailableChanged",
         g_i18n:getText("ads_mobileWorkshopAvailable_label"),
@@ -506,7 +506,7 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Own Workshop Available (Binary)
-    page.ads_ownWorkshopAvailable = ADS_SettingsPage:addBinaryOption(
+    page.ads_ownWorkshopAvailable = RMS_SettingsPage:addBinaryOption(
         page,
         "onOwnWorkshopAvailableChanged",
         g_i18n:getText("ads_ownWorkshopAvailable_label"),
@@ -514,178 +514,178 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     )
 
     -- Workshop Open Hour
-    page.ads_workshopOpenHour = ADS_SettingsPage:addMultiTextOption(
+    page.ads_workshopOpenHour = RMS_SettingsPage:addMultiTextOption(
         page,
         "onWorkshopOpenHourChanged",
-        ADS_SettingsPage.steps.hours.texts,
+        RMS_SettingsPage.steps.hours.texts,
         g_i18n:getText("ads_workshopOpenHour_label"),
         g_i18n:getText("ads_workshopOpenHour_tooltip")
     )
 
     -- Workshop Close Hour
-    page.ads_workshopCloseHour = ADS_SettingsPage:addMultiTextOption(
+    page.ads_workshopCloseHour = RMS_SettingsPage:addMultiTextOption(
         page,
         "onWorkshopCloseHourChanged",
-        ADS_SettingsPage.steps.hours.texts,
+        RMS_SettingsPage.steps.hours.texts,
         g_i18n:getText("ads_workshopCloseHour_label"),
         g_i18n:getText("ads_workshopCloseHour_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_thermal_model"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_thermal_model"))
 
-    page.ads_thermalSensitivity = ADS_SettingsPage:addMultiTextOption(
+    page.ads_thermalSensitivity = RMS_SettingsPage:addMultiTextOption(
         page, "onThermalSensitivityChanged",
-        ADS_SettingsPage.steps.thermalSensitivity.texts,
+        RMS_SettingsPage.steps.thermalSensitivity.texts,
         g_i18n:getText("ads_thermalSensitivity_label"),
         g_i18n:getText("ads_thermalSensitivity_tooltip")
     )
-    page.ads_temperatureChangeSpeed = ADS_SettingsPage:addMultiTextOption(
+    page.ads_temperatureChangeSpeed = RMS_SettingsPage:addMultiTextOption(
         page,
         "onTemperatureChangeSpeedChanged",
-        ADS_SettingsPage.steps.temperatureChangeSpeed.texts,
+        RMS_SettingsPage.steps.temperatureChangeSpeed.texts,
         g_i18n:getText("ads_temperatureChangeSpeed_label"),
         g_i18n:getText("ads_temperatureChangeSpeed_tooltip")
     )
-    page.ads_radiatorDirtInfluence = ADS_SettingsPage:addMultiTextOption(
+    page.ads_radiatorDirtInfluence = RMS_SettingsPage:addMultiTextOption(
         page,
         "onRadiatorDirtInfluenceChanged",
-        ADS_SettingsPage.steps.radiatorDirtInfluence.texts,
+        RMS_SettingsPage.steps.radiatorDirtInfluence.texts,
         g_i18n:getText("ads_radiatorDirtInfluence_label"),
         g_i18n:getText("ads_radiatorDirtInfluence_tooltip")
     )
-    page.ads_warmingBoostPower = ADS_SettingsPage:addMultiTextOption(
+    page.ads_warmingBoostPower = RMS_SettingsPage:addMultiTextOption(
         page,
         "onWarmingBoostPowerChanged",
-        ADS_SettingsPage.steps.thermalPower.texts,
+        RMS_SettingsPage.steps.thermalPower.texts,
         g_i18n:getText("ads_warmingBoostPower_label"),
         g_i18n:getText("ads_warmingBoostPower_tooltip")
     )
-    page.ads_coolingSlowdownPower = ADS_SettingsPage:addMultiTextOption(
+    page.ads_coolingSlowdownPower = RMS_SettingsPage:addMultiTextOption(
         page,
         "onCoolingSlowdownPowerChanged",
-        ADS_SettingsPage.steps.thermalPower.texts,
+        RMS_SettingsPage.steps.thermalPower.texts,
         g_i18n:getText("ads_coolingSlowdownPower_label"),
         g_i18n:getText("ads_coolingSlowdownPower_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_battery_alternator"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_battery_alternator"))
 
-    page.ads_batteryCapacity = ADS_SettingsPage:addMultiTextOption(
+    page.ads_batteryCapacity = RMS_SettingsPage:addMultiTextOption(
         page, "onBatteryCapacityChanged",
-        ADS_SettingsPage.steps.batteryCapacity.texts,
+        RMS_SettingsPage.steps.batteryCapacity.texts,
         g_i18n:getText("ads_batteryCapacity_label"),
         g_i18n:getText("ads_batteryCapacity_tooltip")
     )
-    page.ads_alternatorMaxOutput = ADS_SettingsPage:addMultiTextOption(
+    page.ads_alternatorMaxOutput = RMS_SettingsPage:addMultiTextOption(
         page,
         "onAlternatorMaxOutputChanged",
-        ADS_SettingsPage.steps.alternatorMaxOutput.texts,
+        RMS_SettingsPage.steps.alternatorMaxOutput.texts,
         g_i18n:getText("ads_alternatorMaxOutput_label"),
         g_i18n:getText("ads_alternatorMaxOutput_tooltip")
     )
-    page.ads_idleCurrent = ADS_SettingsPage:addMultiTextOption(
+    page.ads_idleCurrent = RMS_SettingsPage:addMultiTextOption(
         page,
         "onIdleCurrentChanged",
-        ADS_SettingsPage.steps.idleCurrent.texts,
+        RMS_SettingsPage.steps.idleCurrent.texts,
         g_i18n:getText("ads_idleCurrent_label"),
         g_i18n:getText("ads_idleCurrent_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_preshift_maintenance"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_preshift_maintenance"))
 
-    page.ads_cloggingSpeed = ADS_SettingsPage:addMultiTextOption(
+    page.ads_cloggingSpeed = RMS_SettingsPage:addMultiTextOption(
         page,
         "onCloggingSpeedChanged",
-        ADS_SettingsPage.steps.cloggingSpeed.texts,
+        RMS_SettingsPage.steps.cloggingSpeed.texts,
         g_i18n:getText("ads_cloggingSpeed_label"),
         g_i18n:getText("ads_cloggingSpeed_tooltip")
     )
-    page.ads_fieldInspectionDuration = ADS_SettingsPage:addMultiTextOption(
+    page.ads_fieldInspectionDuration = RMS_SettingsPage:addMultiTextOption(
         page,
         "onFieldInspectionDurationChanged",
-        ADS_SettingsPage.steps.fieldInspectionDuration.texts,
+        RMS_SettingsPage.steps.fieldInspectionDuration.texts,
         g_i18n:getText("ads_fieldInspectionDuration_label"),
         g_i18n:getText("ads_fieldInspectionDuration_tooltip")
     )
-    page.ads_lubricationReducePerOperatingHour = ADS_SettingsPage:addMultiTextOption(
+    page.ads_lubricationReducePerOperatingHour = RMS_SettingsPage:addMultiTextOption(
         page,
         "onLubricationReducePerOperatingHourChanged",
-        ADS_SettingsPage.steps.lubricationReducePerOperatingHour.texts,
+        RMS_SettingsPage.steps.lubricationReducePerOperatingHour.texts,
         g_i18n:getText("ads_lubricationReducePerOperatingHour_label"),
         g_i18n:getText("ads_lubricationReducePerOperatingHour_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_drivetrain"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_drivetrain"))
 
-    page.ads_drivetrainEnabled = ADS_SettingsPage:addBinaryOption(
+    page.ads_drivetrainEnabled = RMS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainEnabledChanged",
         g_i18n:getText("ads_drivetrainEnabled_label"),
         g_i18n:getText("ads_drivetrainEnabled_tooltip")
     )
-    page.ads_drivetrainAllowAutoMode = ADS_SettingsPage:addBinaryOption(
+    page.ads_drivetrainAllowAutoMode = RMS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainAllowAutoModeChanged",
         g_i18n:getText("ads_drivetrainAllowAutoMode_label"),
         g_i18n:getText("ads_drivetrainAllowAutoMode_tooltip")
     )
-    page.ads_drivetrainWindupDamage = ADS_SettingsPage:addBinaryOption(
+    page.ads_drivetrainWindupDamage = RMS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainWindupDamageChanged",
         g_i18n:getText("ads_drivetrainWindupDamage_label"),
         g_i18n:getText("ads_drivetrainWindupDamage_tooltip")
     )
-    page.ads_drivetrainDiffLockReleaseSpeed = ADS_SettingsPage:addMultiTextOption(
+    page.ads_drivetrainDiffLockReleaseSpeed = RMS_SettingsPage:addMultiTextOption(
         page,
         "onDrivetrainDiffLockReleaseSpeedChanged",
-        ADS_SettingsPage.steps.diffLockReleaseSpeed.texts,
+        RMS_SettingsPage.steps.diffLockReleaseSpeed.texts,
         g_i18n:getText("ads_drivetrainDiffLockReleaseSpeed_label"),
         g_i18n:getText("ads_drivetrainDiffLockReleaseSpeed_tooltip")
     )
-    page.ads_drivetrainParkBrakeEnabled = ADS_SettingsPage:addBinaryOption(
+    page.ads_drivetrainParkBrakeEnabled = RMS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainParkBrakeEnabledChanged",
         g_i18n:getText("ads_drivetrainParkBrakeEnabled_label"),
         g_i18n:getText("ads_drivetrainParkBrakeEnabled_tooltip")
     )
-    page.ads_drivetrainParkBrakeAuto = ADS_SettingsPage:addBinaryOption(
+    page.ads_drivetrainParkBrakeAuto = RMS_SettingsPage:addBinaryOption(
         page,
         "onDrivetrainParkBrakeAutoChanged",
         g_i18n:getText("ads_drivetrainParkBrakeAuto_label"),
         g_i18n:getText("ads_drivetrainParkBrakeAuto_tooltip")
     )
 
-    ADS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_other"))
+    RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("ads_settings_section_other"))
 
-    page.ads_aiOverloadAndOverheatControl = ADS_SettingsPage:addBinaryOption(
+    page.ads_aiOverloadAndOverheatControl = RMS_SettingsPage:addBinaryOption(
         page,
         "onAiOverloadAndOverheatControlChanged",
         g_i18n:getText("ads_aiOverloadAndOverheatControl_label"),
         g_i18n:getText("ads_aiOverloadAndOverheatControl_tooltip")
     )
-    page.ads_aiDisableOnCriticalOverload = ADS_SettingsPage:addBinaryOption(
+    page.ads_aiDisableOnCriticalOverload = RMS_SettingsPage:addBinaryOption(
         page,
         "onAiDisableOnCriticalOverloadChanged",
         g_i18n:getText("ads_aiDisableOnCriticalOverload_label"),
         g_i18n:getText("ads_aiDisableOnCriticalOverload_tooltip")
     )
-    page.ads_contractVehicleProtection = ADS_SettingsPage:addBinaryOption(
+    page.ads_contractVehicleProtection = RMS_SettingsPage:addBinaryOption(
         page,
         "onContractVehicleProtectionChanged",
         g_i18n:getText("ads_contractVehicleProtection_label"),
         g_i18n:getText("ads_contractVehicleProtection_tooltip")
     )
-    page.ads_aiWorkerTargetStress = ADS_SettingsPage:addMultiTextOption(
+    page.ads_aiWorkerTargetStress = RMS_SettingsPage:addMultiTextOption(
         page,
         "onAiWorkerTargetStressChanged",
-        ADS_SettingsPage.steps.aiWorkerTargetStress.texts,
+        RMS_SettingsPage.steps.aiWorkerTargetStress.texts,
         g_i18n:getText("ads_aiWorkerTargetStress_label"),
         g_i18n:getText("ads_aiWorkerTargetStress_tooltip")
     )
-    page.ads_aiWorkerMinSpeed = ADS_SettingsPage:addMultiTextOption(
+    page.ads_aiWorkerMinSpeed = RMS_SettingsPage:addMultiTextOption(
         page,
         "onAiWorkerMinSpeedChanged",
-        ADS_SettingsPage.steps.aiWorkerMinSpeed.texts,
+        RMS_SettingsPage.steps.aiWorkerMinSpeed.texts,
         g_i18n:getText("ads_aiWorkerMinSpeed_label"),
         g_i18n:getText("ads_aiWorkerMinSpeed_tooltip")
     )
@@ -698,7 +698,7 @@ function ADS_SettingsPage:initializeSettingsPageControls(targetPage)
     page.ads_initSettingsMenuDone = true
 end
 
-function ADS_SettingsPage:activateEmbeddedSettingsPage(page)
+function RMS_SettingsPage:activateEmbeddedSettingsPage(page)
     if page == nil then
         return
     end
@@ -707,21 +707,21 @@ function ADS_SettingsPage:activateEmbeddedSettingsPage(page)
     page.ads_useFleetMenuStyle = true
 
     if self.pendingConfig == nil then
-        ADS_SettingsPage.beginSettingsSession()
+        RMS_SettingsPage.beginSettingsSession()
     end
 
-    self:updateADSPageVisibility(page)
+    self:updateRMSPageVisibility(page)
 
     self:initializeSettingsPageControls(page)
     if page.settingsSlider ~= nil and page.settingsSlider.setDataElement ~= nil then
         page.settingsSlider:setDataElement(page.settingsLayout)
     end
-    ADS_SettingsPage.registerEmbeddedFocus(page)
-    self:updateADSPageVisibility(page)
-    self:updateADSSettings(page)
+    RMS_SettingsPage.registerEmbeddedFocus(page)
+    self:updateRMSPageVisibility(page)
+    self:updateRMSSettings(page)
 end
 
-function ADS_SettingsPage.registerEmbeddedFocus(page)
+function RMS_SettingsPage.registerEmbeddedFocus(page)
     if page == nil
         or page.ads_settingsFocusLoaded
         or page.settingsLayout == nil
@@ -747,7 +747,7 @@ function ADS_SettingsPage.registerEmbeddedFocus(page)
     page.ads_settingsFocusLoaded = true
 end
 
-function ADS_SettingsPage:updateADSPageVisibility(targetPage)
+function RMS_SettingsPage:updateRMSPageVisibility(targetPage)
     local page = targetPage
     if page == nil then
         return
@@ -767,17 +767,17 @@ function ADS_SettingsPage:updateADSPageVisibility(targetPage)
     end
 end
 
-function ADS_SettingsPage:onFrameClose()
-    if not ADS_SettingsPage.ads_hasPendingSettingsChange then
-        ADS_SettingsPage.pendingConfig = nil
+function RMS_SettingsPage:onFrameClose()
+    if not RMS_SettingsPage.ads_hasPendingSettingsChange then
+        RMS_SettingsPage.pendingConfig = nil
         return
     end
 
-    local pending = ADS_SettingsPage.pendingConfig
+    local pending = RMS_SettingsPage.pendingConfig
     local current = buildPendingConfigFromAdsConfig()
 
-    ADS_SettingsPage.pendingConfig = nil
-    ADS_SettingsPage.ads_hasPendingSettingsChange = false
+    RMS_SettingsPage.pendingConfig = nil
+    RMS_SettingsPage.ads_hasPendingSettingsChange = false
 
     if pending == nil then
         return
@@ -795,15 +795,15 @@ function ADS_SettingsPage:onFrameClose()
         return
     end
 
-    ADS_SettingsPage.commitPendingConfig(current, pending)
+    RMS_SettingsPage.commitPendingConfig(current, pending)
 end
 
 
-function ADS_SettingsPage:updateADSSettings(currentPage)
+function RMS_SettingsPage:updateRMSSettings(currentPage)
     if currentPage == nil or not currentPage.ads_initSettingsMenuDone then return end
 
-    local steps = ADS_SettingsPage.steps
-    local pending = ADS_SettingsPage.pendingConfig or buildPendingConfigFromAdsConfig()
+    local steps = RMS_SettingsPage.steps
+    local pending = RMS_SettingsPage.pendingConfig or buildPendingConfigFromAdsConfig()
     local tutorialOption = currentPage.ads_tutorialMode
 
     local function setIndex(element, valueList, targetValue)
@@ -874,7 +874,7 @@ function ADS_SettingsPage:updateADSSettings(currentPage)
     currentPage.ads_workshopCloseHour:setDisabled(areAllWorkshopsAlwaysAvailable)
 
     -- MP permission: only server host or dedicated-server admin can change settings.
-    local canChangeSettings = canChangeADSSettings()
+    local canChangeSettings = canChangeRMSSettings()
     local disableAll = not canChangeSettings
 
     currentPage.ads_serviceWear:setDisabled(disableAll)
@@ -926,22 +926,22 @@ function ADS_SettingsPage:updateADSSettings(currentPage)
 end
 
 -- --- Callback Handlers --- --
-function ADS_SettingsPage:onServiceWearChanged(state)
-    getPendingConfig().baseServiceWear = ADS_SettingsPage.steps.serviceWear.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onServiceWearChanged(state)
+    getPendingConfig().baseServiceWear = RMS_SettingsPage.steps.serviceWear.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onTutorialModeChanged(state, optionElement)
+function RMS_SettingsPage:onTutorialModeChanged(state, optionElement)
     local pending = getPendingConfig()
     local newValue = false
 
     if optionElement ~= nil and optionElement.getIsChecked ~= nil then
         newValue = optionElement:getIsChecked()
-    elseif ADS_SettingsPage.embeddedPage ~= nil
-        and ADS_SettingsPage.embeddedPage.ads_tutorialMode ~= nil
-        and ADS_SettingsPage.embeddedPage.ads_tutorialMode.getIsChecked ~= nil then
-        newValue = ADS_SettingsPage.embeddedPage.ads_tutorialMode:getIsChecked()
+    elseif RMS_SettingsPage.embeddedPage ~= nil
+        and RMS_SettingsPage.embeddedPage.ads_tutorialMode ~= nil
+        and RMS_SettingsPage.embeddedPage.ads_tutorialMode.getIsChecked ~= nil then
+        newValue = RMS_SettingsPage.embeddedPage.ads_tutorialMode:getIsChecked()
     elseif BinaryOptionElement ~= nil and state == BinaryOptionElement.STATE_RIGHT then
         newValue = true
     elseif type(state) == "boolean" then
@@ -949,94 +949,94 @@ function ADS_SettingsPage:onTutorialModeChanged(state, optionElement)
     end
 
     pending.tutorialMode = newValue
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onResetTutorialTipsClicked()
+function RMS_SettingsPage:onResetTutorialTipsClicked()
     YesNoDialog.show(function(shouldReset)
         if shouldReset then
-            ADS_Config.resetTutorialMessages()
-            ADS_Config.syncTutorialState()
+            RMS_Config.resetTutorialMessages()
+            RMS_Config.syncTutorialState()
         end
     end, nil, g_i18n:getText("ads_tutorialResetConfirm_message"), g_i18n:getText("ads_tutorialResetConfirm_title"))
 end
 
-function ADS_SettingsPage:onConditionWearChanged(state)
-    getPendingConfig().baseSystemsWear = ADS_SettingsPage.steps.conditionWear.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onConditionWearChanged(state)
+    getPendingConfig().baseSystemsWear = RMS_SettingsPage.steps.conditionWear.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDowntimeWearChanged(state)
-    getPendingConfig().downtimeMultiplier = ADS_SettingsPage.steps.downtimeWear.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onDowntimeWearChanged(state)
+    getPendingConfig().downtimeMultiplier = RMS_SettingsPage.steps.downtimeWear.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onGeneralWearEnabledChanged(state)
+function RMS_SettingsPage:onGeneralWearEnabledChanged(state)
     getPendingConfig().generalWearEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onInstantInspectionChanged(state)
+function RMS_SettingsPage:onInstantInspectionChanged(state)
     getPendingConfig().instantInspection = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onParkVehicleChanged(state)
+function RMS_SettingsPage:onParkVehicleChanged(state)
     getPendingConfig().parkVehicle = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onWarrantyEnabledChanged(state)
+function RMS_SettingsPage:onWarrantyEnabledChanged(state)
     getPendingConfig().warrantyEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onMaintenancePriceChanged(state)
-    getPendingConfig().globalPriceMultiplier = ADS_SettingsPage.steps.maintPrice.values[state] / 100
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onMaintenancePriceChanged(state)
+    getPendingConfig().globalPriceMultiplier = RMS_SettingsPage.steps.maintPrice.values[state] / 100
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onMaintenanceDurationChanged(state)
-    getPendingConfig().globalTimeMultiplier = ADS_SettingsPage.steps.maintDuration.values[state] / 100
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onMaintenanceDurationChanged(state)
+    getPendingConfig().globalTimeMultiplier = RMS_SettingsPage.steps.maintDuration.values[state] / 100
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDealerWorkshopAvailableChanged(state)
+function RMS_SettingsPage:onDealerWorkshopAvailableChanged(state)
     getPendingConfig().dealerAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onMobileWorkshopAvailableChanged(state)
+function RMS_SettingsPage:onMobileWorkshopAvailableChanged(state)
     getPendingConfig().mobileAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onOwnWorkshopAvailableChanged(state)
+function RMS_SettingsPage:onOwnWorkshopAvailableChanged(state)
     getPendingConfig().ownAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onMobileWorkshopRestrictionsChanged(state)
+function RMS_SettingsPage:onMobileWorkshopRestrictionsChanged(state)
     getPendingConfig().mobileWorkshopRestrictionsEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onWorkshopOpenHourChanged(state)
+function RMS_SettingsPage:onWorkshopOpenHourChanged(state)
     local pending = getPendingConfig()
-    local newOpen = ADS_SettingsPage.steps.hours.values[state]
+    local newOpen = RMS_SettingsPage.steps.hours.values[state]
     local currentClose = pending.closeHour
 
     -- Keep open/close hours from overlapping.
@@ -1050,13 +1050,13 @@ function ADS_SettingsPage:onWorkshopOpenHourChanged(state)
     end
 
     pending.openHour = newOpen
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onWorkshopCloseHourChanged(state)
+function RMS_SettingsPage:onWorkshopCloseHourChanged(state)
     local pending = getPendingConfig()
-    local newClose = ADS_SettingsPage.steps.hours.values[state]
+    local newClose = RMS_SettingsPage.steps.hours.values[state]
     local currentOpen = pending.openHour
 
     -- Keep open/close hours from overlapping.
@@ -1070,168 +1070,168 @@ function ADS_SettingsPage:onWorkshopCloseHourChanged(state)
     end
 
     pending.closeHour = newClose
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
 
-function ADS_SettingsPage:onSystemStressRateChanged(state)
-    getPendingConfig().systemStressGlobalMultiplier = ADS_SettingsPage.steps.systemStressRate.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onSystemStressRateChanged(state)
+    getPendingConfig().systemStressGlobalMultiplier = RMS_SettingsPage.steps.systemStressRate.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onBatteryCapacityChanged(state)
-    getPendingConfig().batteryUsableCapacityFactor = ADS_SettingsPage.steps.batteryCapacity.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onBatteryCapacityChanged(state)
+    getPendingConfig().batteryUsableCapacityFactor = RMS_SettingsPage.steps.batteryCapacity.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onAlternatorMaxOutputChanged(state)
-    getPendingConfig().alternatorMaxOutput = ADS_SettingsPage.steps.alternatorMaxOutput.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onAlternatorMaxOutputChanged(state)
+    getPendingConfig().alternatorMaxOutput = RMS_SettingsPage.steps.alternatorMaxOutput.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onIdleCurrentChanged(state)
-    getPendingConfig().idleCurrentA = ADS_SettingsPage.steps.idleCurrent.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onIdleCurrentChanged(state)
+    getPendingConfig().idleCurrentA = RMS_SettingsPage.steps.idleCurrent.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
 
-function ADS_SettingsPage:onThermalSensitivityChanged(state)
-    local val = ADS_SettingsPage.steps.thermalSensitivity.values[state]
+function RMS_SettingsPage:onThermalSensitivityChanged(state)
+    local val = RMS_SettingsPage.steps.thermalSensitivity.values[state]
     local pending = getPendingConfig()
     pending.engineMaxHeat = val
     pending.transMaxHeat = val
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onTemperatureChangeSpeedChanged(state)
-    getPendingConfig().temperatureChangeSpeed = ADS_SettingsPage.steps.temperatureChangeSpeed.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onTemperatureChangeSpeedChanged(state)
+    getPendingConfig().temperatureChangeSpeed = RMS_SettingsPage.steps.temperatureChangeSpeed.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onRadiatorDirtInfluenceChanged(state)
-    getPendingConfig().maxDirtInfluence = ADS_SettingsPage.steps.radiatorDirtInfluence.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onRadiatorDirtInfluenceChanged(state)
+    getPendingConfig().maxDirtInfluence = RMS_SettingsPage.steps.radiatorDirtInfluence.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onWarmingBoostPowerChanged(state)
-    getPendingConfig().warmingBoostPower = ADS_SettingsPage.steps.thermalPower.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onWarmingBoostPowerChanged(state)
+    getPendingConfig().warmingBoostPower = RMS_SettingsPage.steps.thermalPower.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onCoolingSlowdownPowerChanged(state)
-    getPendingConfig().coolingSlowdownPower = ADS_SettingsPage.steps.thermalPower.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onCoolingSlowdownPowerChanged(state)
+    getPendingConfig().coolingSlowdownPower = RMS_SettingsPage.steps.thermalPower.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onCloggingSpeedChanged(state)
-    getPendingConfig().cloggingSpeed = ADS_SettingsPage.steps.cloggingSpeed.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onCloggingSpeedChanged(state)
+    getPendingConfig().cloggingSpeed = RMS_SettingsPage.steps.cloggingSpeed.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onFieldInspectionDurationChanged(state)
-    getPendingConfig().fieldInspectionDuration = ADS_SettingsPage.steps.fieldInspectionDuration.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onFieldInspectionDurationChanged(state)
+    getPendingConfig().fieldInspectionDuration = RMS_SettingsPage.steps.fieldInspectionDuration.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onLubricationReducePerOperatingHourChanged(state)
-    getPendingConfig().lubricationReducePerOperatingHour = ADS_SettingsPage.steps.lubricationReducePerOperatingHour.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onLubricationReducePerOperatingHourChanged(state)
+    getPendingConfig().lubricationReducePerOperatingHour = RMS_SettingsPage.steps.lubricationReducePerOperatingHour.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onAiOverloadAndOverheatControlChanged(state)
+function RMS_SettingsPage:onAiOverloadAndOverheatControlChanged(state)
     getPendingConfig().aiOverloadControl = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onAiDisableOnCriticalOverloadChanged(state)
+function RMS_SettingsPage:onAiDisableOnCriticalOverloadChanged(state)
     getPendingConfig().aiDisableOnCriticalOverload = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onContractVehicleProtectionChanged(state)
+function RMS_SettingsPage:onContractVehicleProtectionChanged(state)
     getPendingConfig().contractVehicleProtection = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onAiWorkerTargetStressChanged(state)
-    getPendingConfig().aiWorkerTargetStress = ADS_SettingsPage.steps.aiWorkerTargetStress.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onAiWorkerTargetStressChanged(state)
+    getPendingConfig().aiWorkerTargetStress = RMS_SettingsPage.steps.aiWorkerTargetStress.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onAiWorkerMinSpeedChanged(state)
-    getPendingConfig().aiWorkerMinSpeed = ADS_SettingsPage.steps.aiWorkerMinSpeed.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onAiWorkerMinSpeedChanged(state)
+    getPendingConfig().aiWorkerMinSpeed = RMS_SettingsPage.steps.aiWorkerMinSpeed.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDrivetrainEnabledChanged(state)
+function RMS_SettingsPage:onDrivetrainEnabledChanged(state)
     getPendingConfig().drivetrainEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDrivetrainAllowAutoModeChanged(state)
+function RMS_SettingsPage:onDrivetrainAllowAutoModeChanged(state)
     getPendingConfig().drivetrainAllowAutoMode = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDrivetrainWindupDamageChanged(state)
+function RMS_SettingsPage:onDrivetrainWindupDamageChanged(state)
     getPendingConfig().drivetrainWindupDamage = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDrivetrainDiffLockReleaseSpeedChanged(state)
-    getPendingConfig().drivetrainDiffLockReleaseSpeed = ADS_SettingsPage.steps.diffLockReleaseSpeed.values[state]
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+function RMS_SettingsPage:onDrivetrainDiffLockReleaseSpeedChanged(state)
+    getPendingConfig().drivetrainDiffLockReleaseSpeed = RMS_SettingsPage.steps.diffLockReleaseSpeed.values[state]
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDrivetrainParkBrakeEnabledChanged(state)
+function RMS_SettingsPage:onDrivetrainParkBrakeEnabledChanged(state)
     getPendingConfig().drivetrainParkBrakeEnabled = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDrivetrainParkBrakeAutoChanged(state)
+function RMS_SettingsPage:onDrivetrainParkBrakeAutoChanged(state)
     getPendingConfig().drivetrainParkBrakeAuto = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onWarningMessagesChanged(state)
+function RMS_SettingsPage:onWarningMessagesChanged(state)
     getPendingConfig().enableWarningMessages = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
-function ADS_SettingsPage:onDebugModeChanged(state)
+function RMS_SettingsPage:onDebugModeChanged(state)
     getPendingConfig().debugMode = (state == BinaryOptionElement.STATE_RIGHT)
-    ADS_SettingsPage.ads_hasPendingSettingsChange = true
+    RMS_SettingsPage.ads_hasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
 
 -- --- UI Helper Methods --- --
-function ADS_SettingsPage:addSectionHeader(inGameMenuSettingsFrame, titleText)
+function RMS_SettingsPage:addSectionHeader(inGameMenuSettingsFrame, titleText)
     local textElement = TextElement.new()
     local textElementProfile = getSettingsProfile("fs25_settingsSectionHeader")
     textElement.name = "sectionHeader"
@@ -1241,7 +1241,7 @@ function ADS_SettingsPage:addSectionHeader(inGameMenuSettingsFrame, titleText)
     textElement:onGuiSetupFinished()
 end
 
-function ADS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCallback, texts, title, tooltip)
+function RMS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCallback, texts, title, tooltip)
     local bitMap = BitmapElement.new()
     local bitMapProfile = getSettingsProfile("fs25_multiTextOptionContainer")
     bitMap:loadProfile(bitMapProfile, true)
@@ -1251,7 +1251,7 @@ function ADS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCal
     local multiTextOptionProfile = getSettingsProfile("fs25_settingsMultiTextOption")
     multiTextOption:loadProfile(multiTextOptionProfile, true)
     multiTextOption.updateChildrenState = true
-    multiTextOption.target = ADS_SettingsPage
+    multiTextOption.target = RMS_SettingsPage
     multiTextOption:setCallback("onClickCallback", onClickCallback)
     multiTextOption:setTexts(texts)
 
@@ -1282,7 +1282,7 @@ function ADS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCal
     return multiTextOption
 end
 
-function ADS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallback, title, tooltip)
+function RMS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallback, title, tooltip)
     local bitMap = BitmapElement.new()
     local bitMapProfile = getSettingsProfile("fs25_multiTextOptionContainer")
     bitMap:loadProfile(bitMapProfile, true)
@@ -1292,7 +1292,7 @@ function ADS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallba
     binaryOption.useYesNoTexts = true
     local binaryOptionProfile = getSettingsProfile("fs25_settingsBinaryOption")
     binaryOption:loadProfile(binaryOptionProfile, true)
-    binaryOption.target = ADS_SettingsPage
+    binaryOption.target = RMS_SettingsPage
     binaryOption:setCallback("onClickCallback", onClickCallback)
 
     local binaryOptionTitle = TextElement.new()
@@ -1321,7 +1321,7 @@ function ADS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallba
     return binaryOption
 end
 
-function ADS_SettingsPage:addButtonOption(inGameMenuSettingsFrame, onClickCallback, title, text, tooltip)
+function RMS_SettingsPage:addButtonOption(inGameMenuSettingsFrame, onClickCallback, title, text, tooltip)
     local template = getVanillaSettingsButtonTemplate()
     local bitMap
     local clonedTemplate = template ~= nil and template.clone ~= nil
@@ -1356,7 +1356,7 @@ function ADS_SettingsPage:addButtonOption(inGameMenuSettingsFrame, onClickCallba
 
     button:applyProfile("ads_settingsButton")
     applyButtonBackgroundProfile(button)
-    button.target = ADS_SettingsPage
+    button.target = RMS_SettingsPage
     button:setCallback("onClickCallback", onClickCallback)
     button:setText(text)
     button.id = nil
@@ -1401,7 +1401,7 @@ end
 
 
 -- --- Data Generation --- --
-function ADS_SettingsPage:generateAllSteps()
+function RMS_SettingsPage:generateAllSteps()
     if self.steps.generated then return end
 
     local function createSteps(startVal, count, stepSize, formatter)
@@ -1485,7 +1485,7 @@ function ADS_SettingsPage:generateAllSteps()
 
     -- Battery Capacity in Ah (stored as usable capacity factor)
     do
-        local nominalCapacity = tonumber(ADS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY) or 150
+        local nominalCapacity = tonumber(RMS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY) or 150
         local data = { values = {}, texts = {} }
         local factors = {0.025, 0.05, 0.075, 0.1}
 
@@ -1613,9 +1613,9 @@ function ADS_SettingsPage:generateAllSteps()
 end
 
 
-function ADS_SettingsPage.reset()
-    ADS_SettingsPage.steps = {}
-    ADS_SettingsPage.pendingConfig = nil
-    ADS_SettingsPage.ads_hasPendingSettingsChange = false
-    ADS_SettingsPage.embeddedPage = nil
+function RMS_SettingsPage.reset()
+    RMS_SettingsPage.steps = {}
+    RMS_SettingsPage.pendingConfig = nil
+    RMS_SettingsPage.ads_hasPendingSettingsChange = false
+    RMS_SettingsPage.embeddedPage = nil
 end

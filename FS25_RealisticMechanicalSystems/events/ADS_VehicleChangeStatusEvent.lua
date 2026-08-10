@@ -1,43 +1,43 @@
--- ADS_VehicleChangeStatusEvent
+-- RMS_VehicleChangeStatusEvent
 -- Server-to-client broadcast. Notifies clients of ADS state changes
 -- (service completion, cancellation, status transition).
 -- Carries an optional HUD notification string; bulk state data is
 -- synchronised via the update-stream dirty-flag pipeline.
 
-ADS_VehicleChangeStatusEvent = {}
-local ADS_VehicleChangeStatusEvent_mt = Class(ADS_VehicleChangeStatusEvent, Event)
-MessageType.ADS_VEHICLE_CHANGE_STATUS = nextMessageTypeId()
+RMS_VehicleChangeStatusEvent = {}
+local RMS_VehicleChangeStatusEvent_mt = Class(RMS_VehicleChangeStatusEvent, Event)
+MessageType.RMS_VEHICLE_CHANGE_STATUS = nextMessageTypeId()
 
-InitEventClass(ADS_VehicleChangeStatusEvent, "ADS_VehicleChangeStatusEvent")
+InitEventClass(RMS_VehicleChangeStatusEvent, "RMS_VehicleChangeStatusEvent")
 
 
-function ADS_VehicleChangeStatusEvent.emptyNew()
-    return Event.new(ADS_VehicleChangeStatusEvent_mt)
+function RMS_VehicleChangeStatusEvent.emptyNew()
+    return Event.new(RMS_VehicleChangeStatusEvent_mt)
 end
 
 
-function ADS_VehicleChangeStatusEvent.new(vehicle, notificationText)
-    local self = ADS_VehicleChangeStatusEvent.emptyNew()
+function RMS_VehicleChangeStatusEvent.new(vehicle, notificationText)
+    local self = RMS_VehicleChangeStatusEvent.emptyNew()
     self.vehicle = vehicle
     self.notificationText = notificationText or ""
     return self
 end
 
 
-function ADS_VehicleChangeStatusEvent:writeStream(streamId, connection)
+function RMS_VehicleChangeStatusEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteString(streamId, self.notificationText or "")
 end
 
 
-function ADS_VehicleChangeStatusEvent:readStream(streamId, connection)
+function RMS_VehicleChangeStatusEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self.notificationText = streamReadString(streamId)
     self:run(connection)
 end
 
 
-function ADS_VehicleChangeStatusEvent:run(connection)
+function RMS_VehicleChangeStatusEvent:run(connection)
     if self.vehicle ~= nil and self.vehicle:getIsSynchronized() then
         self.vehicle:recalculateAndApplyEffects()
         self.vehicle:recalculateAndApplyIndicators()
@@ -48,11 +48,11 @@ function ADS_VehicleChangeStatusEvent:run(connection)
                 g_currentMission.hud:addSideNotification({1, 1, 1, 1}, self.notificationText)
             end
             if g_currentMission:getFarmId() == self.vehicle.ownerFarmId then
-                ADS_SoundManager.playSample(ADS_Main.samples.maintenanceCompleted2D)
+                RMS_SoundManager.playSample(RMS_Main.samples.maintenanceCompleted2D)
             end
         end
 
-        g_messageCenter:publish(MessageType.ADS_VEHICLE_CHANGE_STATUS, self.vehicle)
+        g_messageCenter:publish(MessageType.RMS_VEHICLE_CHANGE_STATUS, self.vehicle)
     end
 
     -- Server relay: re-broadcast if received from a client (with ownership check)
@@ -61,7 +61,7 @@ function ADS_VehicleChangeStatusEvent:run(connection)
             local userId = g_currentMission.userManager:getUserIdByConnection(connection)
             local farm = g_farmManager:getFarmByUserId(userId)
             if farm ~= nil and farm.farmId == self.vehicle:getOwnerFarmId() then
-                g_server:broadcastEvent(ADS_VehicleChangeStatusEvent.new(self.vehicle, self.notificationText), nil, connection, self.vehicle)
+                g_server:broadcastEvent(RMS_VehicleChangeStatusEvent.new(self.vehicle, self.notificationText), nil, connection, self.vehicle)
             end
         end
     end
@@ -69,8 +69,8 @@ end
 
 
 -- Server convenience: broadcast status change to all clients.
-function ADS_VehicleChangeStatusEvent.send(vehicle, notificationText)
+function RMS_VehicleChangeStatusEvent.send(vehicle, notificationText)
     if g_server ~= nil then
-        g_server:broadcastEvent(ADS_VehicleChangeStatusEvent.new(vehicle, notificationText or ""), nil, nil, vehicle)
+        g_server:broadcastEvent(RMS_VehicleChangeStatusEvent.new(vehicle, notificationText or ""), nil, nil, vehicle)
     end
 end

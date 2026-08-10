@@ -1,9 +1,9 @@
-ADS_ConsoleCommandEvent = {}
-local ADS_ConsoleCommandEvent_mt = Class(ADS_ConsoleCommandEvent, Event)
+RMS_ConsoleCommandEvent = {}
+local RMS_ConsoleCommandEvent_mt = Class(RMS_ConsoleCommandEvent, Event)
 
-InitEventClass(ADS_ConsoleCommandEvent, "ADS_ConsoleCommandEvent")
+InitEventClass(RMS_ConsoleCommandEvent, "RMS_ConsoleCommandEvent")
 
-ADS_ConsoleCommandEvent.ALLOWED_COMMANDS = {
+RMS_ConsoleCommandEvent.ALLOWED_COMMANDS = {
     setService = true,
     setCondition = true,
     setSystemCondition = true,
@@ -29,13 +29,13 @@ ADS_ConsoleCommandEvent.ALLOWED_COMMANDS = {
     debug = true
 }
 
-function ADS_ConsoleCommandEvent.emptyNew()
-    return Event.new(ADS_ConsoleCommandEvent_mt)
+function RMS_ConsoleCommandEvent.emptyNew()
+    return Event.new(RMS_ConsoleCommandEvent_mt)
 end
 
 
-function ADS_ConsoleCommandEvent.new(commandName, argsOne, argsTwo, vehicle)
-    local self = ADS_ConsoleCommandEvent.emptyNew()
+function RMS_ConsoleCommandEvent.new(commandName, argsOne, argsTwo, vehicle)
+    local self = RMS_ConsoleCommandEvent.emptyNew()
     self.commandName = commandName
     self.argsOne = argsOne
     self.argsTwo = argsTwo
@@ -44,7 +44,7 @@ function ADS_ConsoleCommandEvent.new(commandName, argsOne, argsTwo, vehicle)
 end
 
 
-function ADS_ConsoleCommandEvent:writeStream(streamId, connection)
+function RMS_ConsoleCommandEvent:writeStream(streamId, connection)
     streamWriteString(streamId, self.commandName or "")
     streamWriteString(streamId, self.argsOne or "")
     streamWriteString(streamId, self.argsTwo or "")
@@ -56,7 +56,7 @@ function ADS_ConsoleCommandEvent:writeStream(streamId, connection)
 end
 
 
-function ADS_ConsoleCommandEvent:readStream(streamId, connection)
+function RMS_ConsoleCommandEvent:readStream(streamId, connection)
     self.commandName = streamReadString(streamId)
     self.argsOne = streamReadString(streamId)
     self.argsTwo = streamReadString(streamId)
@@ -72,7 +72,7 @@ function ADS_ConsoleCommandEvent:readStream(streamId, connection)
 end
 
 
-function ADS_ConsoleCommandEvent:run(connection)
+function RMS_ConsoleCommandEvent:run(connection)
     if connection:getIsServer() then
         return
     end
@@ -83,44 +83,44 @@ function ADS_ConsoleCommandEvent:run(connection)
         return
     end
 
-    if not ADS_ConsoleCommandEvent.ALLOWED_COMMANDS[self.commandName] then
+    if not RMS_ConsoleCommandEvent.ALLOWED_COMMANDS[self.commandName] then
         return
     end
 
-    local func = AdvancedDamageSystem.ConsoleCommands[self.commandName]
+    local func = RealisticMechanicalSystems.ConsoleCommands[self.commandName]
     if func == nil then
         return
     end
 
-    AdvancedDamageSystem.ConsoleCommands._overrideVehicle = self.vehicle
-    func(AdvancedDamageSystem.ConsoleCommands, self.argsOne, self.argsTwo)
-    AdvancedDamageSystem.ConsoleCommands._overrideVehicle = nil
+    RealisticMechanicalSystems.ConsoleCommands._overrideVehicle = self.vehicle
+    func(RealisticMechanicalSystems.ConsoleCommands, self.argsOne, self.argsTwo)
+    RealisticMechanicalSystems.ConsoleCommands._overrideVehicle = nil
 
-    if self.vehicle ~= nil and self.vehicle.spec_AdvancedDamageSystem ~= nil then
-        local spec = self.vehicle.spec_AdvancedDamageSystem
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.STATE)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.THERMAL)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.WEAR)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
-        AdvancedDamageSystem.raiseADSDirty(self.vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS)
+    if self.vehicle ~= nil and self.vehicle.spec_RealisticMechanicalSystems ~= nil then
+        local spec = self.vehicle.spec_RealisticMechanicalSystems
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.STATE)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.SERVICE_CONTEXT)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.TELEMETRY)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.THERMAL)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.ELECTRICAL)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.WEAR)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self.vehicle, RealisticMechanicalSystems.SYNC_GROUP.SERVICE_PROGRESS)
     end
 
     if self.commandName == "setConfigVar" then
-        g_server:broadcastEvent(ADS_SettingsSyncEvent.new())
+        g_server:broadcastEvent(RMS_SettingsSyncEvent.new())
     end
 end
 
 
-function ADS_ConsoleCommandEvent.sendToServer(commandName, argsOne, argsTwo, vehicle)
+function RMS_ConsoleCommandEvent.sendToServer(commandName, argsOne, argsTwo, vehicle)
     if g_client ~= nil then
         if not g_currentMission.isMasterUser then
             print("ADS: Admin access required.")
             return
         end
-        g_client:getServerConnection():sendEvent(ADS_ConsoleCommandEvent.new(commandName, argsOne, argsTwo, vehicle))
+        g_client:getServerConnection():sendEvent(RMS_ConsoleCommandEvent.new(commandName, argsOne, argsTwo, vehicle))
     end
 end

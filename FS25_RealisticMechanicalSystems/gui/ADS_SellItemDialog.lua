@@ -1,7 +1,7 @@
-ADS_SellItemDialog = {}
-ADS_SellItemDialog.INSTANCE = nil
+RMS_SellItemDialog = {}
+RMS_SellItemDialog.INSTANCE = nil
 
-local ADS_SellItemDialog_mt = Class(ADS_SellItemDialog, MessageDialog)
+local RMS_SellItemDialog_mt = Class(RMS_SellItemDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
 local function ensureTrailingColon(text)
@@ -30,14 +30,14 @@ local function applyMoneyColor(element, value)
     end
 end
 
-function ADS_SellItemDialog.register()
-    local dialog = ADS_SellItemDialog.new()
-    g_gui:loadGui(modDirectory .. "gui/ADS_SellItemDialog.xml", "ADS_SellItemDialog", dialog)
-    ADS_SellItemDialog.INSTANCE = dialog
+function RMS_SellItemDialog.register()
+    local dialog = RMS_SellItemDialog.new()
+    g_gui:loadGui(modDirectory .. "gui/ADS_SellItemDialog.xml", "RMS_SellItemDialog", dialog)
+    RMS_SellItemDialog.INSTANCE = dialog
 end
 
-function ADS_SellItemDialog.new(target, customMt)
-    local dialog = MessageDialog.new(target, customMt or ADS_SellItemDialog_mt)
+function RMS_SellItemDialog.new(target, customMt)
+    local dialog = MessageDialog.new(target, customMt or RMS_SellItemDialog_mt)
     dialog.vehicle = nil
     dialog.callback = nil
     dialog.callbackTarget = nil
@@ -46,16 +46,16 @@ function ADS_SellItemDialog.new(target, customMt)
     return dialog
 end
 
-function ADS_SellItemDialog.show(vehicle, storeItem, callback, target, args)
-    if ADS_SellItemDialog.INSTANCE == nil then
-        ADS_SellItemDialog.register()
+function RMS_SellItemDialog.show(vehicle, storeItem, callback, target, args)
+    if RMS_SellItemDialog.INSTANCE == nil then
+        RMS_SellItemDialog.register()
     end
 
     if vehicle == nil then
         return
     end
 
-    local dialog = ADS_SellItemDialog.INSTANCE
+    local dialog = RMS_SellItemDialog.INSTANCE
     dialog.vehicle = vehicle
     dialog.storeItem = storeItem or g_storeManager:getItemByXMLFilename(vehicle.configFileName)
     dialog.callback = callback
@@ -63,10 +63,10 @@ function ADS_SellItemDialog.show(vehicle, storeItem, callback, target, args)
     dialog.callbackArgs = args
 
     dialog:updateScreen()
-    g_gui:showDialog("ADS_SellItemDialog")
+    g_gui:showDialog("RMS_SellItemDialog")
 end
 
-function ADS_SellItemDialog:updateScreen()
+function RMS_SellItemDialog:updateScreen()
     if self.vehicle == nil then
         return
     end
@@ -106,7 +106,7 @@ function ADS_SellItemDialog:updateScreen()
     end
 
 
-    local returnBreakdown = ADS_Leasing.getReturnBreakdown(self.vehicle)
+    local returnBreakdown = RMS_Leasing.getReturnBreakdown(self.vehicle)
     self.returnBreakdown = returnBreakdown
 
     self.costRows = {
@@ -132,7 +132,7 @@ function ADS_SellItemDialog:updateScreen()
     end
 end
 
-function ADS_SellItemDialog:getNumberOfItemsInSection(list, section)
+function RMS_SellItemDialog:getNumberOfItemsInSection(list, section)
     if list == self.costList then
         return #self.costRows
     end
@@ -140,7 +140,7 @@ function ADS_SellItemDialog:getNumberOfItemsInSection(list, section)
     return 0
 end
 
-function ADS_SellItemDialog:populateCellForItemInSection(list, section, index, cell)
+function RMS_SellItemDialog:populateCellForItemInSection(list, section, index, cell)
     if list ~= self.costList then
         return
     end
@@ -163,7 +163,7 @@ function ADS_SellItemDialog:populateCellForItemInSection(list, section, index, c
     end
 end
 
-function ADS_SellItemDialog:sendCallback(value)
+function RMS_SellItemDialog:sendCallback(value)
     if self.callback ~= nil then
         if self.callbackArgs ~= nil then
             self.callback(self.callbackTarget, value, unpack(self.callbackArgs))
@@ -173,26 +173,26 @@ function ADS_SellItemDialog:sendCallback(value)
     end
 end
 
-function ADS_SellItemDialog:onClickYes()
+function RMS_SellItemDialog:onClickYes()
     self:sendCallback(true)
     self:close()
 end
 
-function ADS_SellItemDialog:onClickNo()
+function RMS_SellItemDialog:onClickNo()
     self:sendCallback(false)
     self:close()
 end
 
-function ADS_SellItemDialog:onOpen()
-    ADS_SellItemDialog:superClass().onOpen(self)
+function RMS_SellItemDialog:onOpen()
+    RMS_SellItemDialog:superClass().onOpen(self)
 end
 
-function ADS_SellItemDialog:onClose()
+function RMS_SellItemDialog:onClose()
     self.vehicle = nil
     self.storeItem = nil
     self.returnBreakdown = nil
     self.callback = nil
     self.callbackTarget = nil
     self.callbackArgs = nil
-    ADS_SellItemDialog:superClass().onClose(self)
+    RMS_SellItemDialog:superClass().onClose(self)
 end

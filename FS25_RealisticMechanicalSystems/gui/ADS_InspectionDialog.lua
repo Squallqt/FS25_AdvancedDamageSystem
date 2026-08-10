@@ -1,7 +1,7 @@
-ADS_InspectionDialog = {}
-ADS_InspectionDialog.INSTANCE = nil
+RMS_InspectionDialog = {}
+RMS_InspectionDialog.INSTANCE = nil
 
-local ADS_InspectionDialog_mt = Class(ADS_InspectionDialog, MessageDialog)
+local RMS_InspectionDialog_mt = Class(RMS_InspectionDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 local OK_COLOR = {0.40, 0.95, 0.40, 1.0}
 local TEXT_COLOR = {1, 1, 1, 1}
@@ -126,12 +126,12 @@ end
 
 local function applyBreakdownInspectionFindings(dialog, additionalLines)
     local vehicle = dialog.vehicle
-    if vehicle == nil or vehicle.getActiveBreakdowns == nil or ADS_Breakdowns == nil then
+    if vehicle == nil or vehicle.getActiveBreakdowns == nil or RMS_Breakdowns == nil then
         return
     end
 
     local activeBreakdowns = vehicle:getActiveBreakdowns() or {}
-    local registry = ADS_Breakdowns.BreakdownRegistry or {}
+    local registry = RMS_Breakdowns.BreakdownRegistry or {}
     local targetMap = {
         engineOil = "ads_inspection_engine_oil",
         coolant = "ads_inspection_coolant",
@@ -170,7 +170,7 @@ end
 
 local function applyCloggingInspectionFindings(dialog, additionalLines)
     local vehicle = dialog.vehicle
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
         return
     end
@@ -222,7 +222,7 @@ end
 
 local function applyLubricationInspectionFindings(dialog, additionalLines)
     local vehicle = dialog.vehicle
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or spec.isVehicleNeedLubricate == false then
         return
     end
@@ -230,7 +230,7 @@ local function applyLubricationInspectionFindings(dialog, additionalLines)
     local lubricationLevel = math.clamp(tonumber(spec.lubricationLevel) or 0, 0, 1)
     local statusKey = nil
 
-    local C = ADS_Config.FIELD_CARE
+    local C = RMS_Config.FIELD_CARE
 
     if lubricationLevel <= C.LUBRICATION_CRITICALLY_DRY_THRESHOLD then
         statusKey = "ads_inspection_status_critically_dry"
@@ -251,14 +251,14 @@ local function applyLubricationInspectionFindings(dialog, additionalLines)
     end
 end
 
-function ADS_InspectionDialog.register()
-    local dialog = ADS_InspectionDialog.new()
-    g_gui:loadGui(modDirectory .. "gui/ADS_InspectionDialog.xml", "ADS_InspectionDialog", dialog)
-    ADS_InspectionDialog.INSTANCE = dialog
+function RMS_InspectionDialog.register()
+    local dialog = RMS_InspectionDialog.new()
+    g_gui:loadGui(modDirectory .. "gui/ADS_InspectionDialog.xml", "RMS_InspectionDialog", dialog)
+    RMS_InspectionDialog.INSTANCE = dialog
 end
 
-function ADS_InspectionDialog.new(target, customMt)
-    local dialog = MessageDialog.new(target, customMt or ADS_InspectionDialog_mt)
+function RMS_InspectionDialog.new(target, customMt)
+    local dialog = MessageDialog.new(target, customMt or RMS_InspectionDialog_mt)
     dialog.vehicle = nil
     dialog.technicalFluidsData = {}
     dialog.coolingAndAirData = {}
@@ -266,17 +266,17 @@ function ADS_InspectionDialog.new(target, customMt)
     return dialog
 end
 
-function ADS_InspectionDialog.show(vehicle)
-    if ADS_InspectionDialog.INSTANCE == nil then ADS_InspectionDialog.register() end
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then return end
+function RMS_InspectionDialog.show(vehicle)
+    if RMS_InspectionDialog.INSTANCE == nil then RMS_InspectionDialog.register() end
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then return end
     
-    local dialog = ADS_InspectionDialog.INSTANCE
+    local dialog = RMS_InspectionDialog.INSTANCE
     dialog.vehicle = vehicle
     dialog:updateScreen()
-    g_gui:showDialog("ADS_InspectionDialog")
+    g_gui:showDialog("RMS_InspectionDialog")
 end
 
-function ADS_InspectionDialog:updateScreen()
+function RMS_InspectionDialog:updateScreen()
     if self.vehicle == nil then return end
     
     self.dialogTitleElement:setText(g_i18n:getText("ads_inspection_dialog_title"))
@@ -298,7 +298,7 @@ function ADS_InspectionDialog:updateScreen()
         {titleKey = "ads_inspection_lubrication_level", title = g_i18n:getText("ads_inspection_lubrication_level"), statusKey = "ads_inspection_ok", value = g_i18n:getText("ads_inspection_ok")}
     }
 
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
     if spec ~= nil and spec.isVehicleNeedBlowOut == false then
         setRowValue(self.coolingAndAirData, "ads_inspection_radiator", "ads_inspection_status_not_required")
         setRowValue(self.coolingAndAirData, "ads_inspection_air_duct", "ads_inspection_status_not_required")
@@ -341,12 +341,12 @@ local function getListData(self, list)
     return nil
 end
 
-function ADS_InspectionDialog:getNumberOfItemsInSection(list, section)
+function RMS_InspectionDialog:getNumberOfItemsInSection(list, section)
     local data = getListData(self, list)
     return data ~= nil and #data or 0
 end
 
-function ADS_InspectionDialog:populateCellForItemInSection(list, section, index, cell)
+function RMS_InspectionDialog:populateCellForItemInSection(list, section, index, cell)
     local data = getListData(self, list)
     local row = data ~= nil and data[index] or nil
     if row == nil then
@@ -362,15 +362,15 @@ function ADS_InspectionDialog:populateCellForItemInSection(list, section, index,
     valueElement:setTextColor(unpack(getRowColor(row)))
 end
 
-function ADS_InspectionDialog:onOpen()
-    ADS_InspectionDialog:superClass().onOpen(self)
+function RMS_InspectionDialog:onOpen()
+    RMS_InspectionDialog:superClass().onOpen(self)
 end
 
-function ADS_InspectionDialog:onClose()
+function RMS_InspectionDialog:onClose()
     self.vehicle = nil
-    ADS_InspectionDialog:superClass().onClose(self)
+    RMS_InspectionDialog:superClass().onClose(self)
 end
 
-function ADS_InspectionDialog:onClickBack()
+function RMS_InspectionDialog:onClickBack()
     self:close()
 end

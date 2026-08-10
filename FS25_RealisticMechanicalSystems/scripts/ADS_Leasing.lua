@@ -1,4 +1,4 @@
-ADS_Leasing = {}
+RMS_Leasing = {}
 
 local function getNumber(value, fallback)
     local numericValue = tonumber(value)
@@ -9,26 +9,26 @@ local function getNumber(value, fallback)
     return numericValue
 end
 
-function ADS_Leasing.hasExtendedLeasing()
+function RMS_Leasing.hasExtendedLeasing()
     return g_modIsLoaded ~= nil and g_modIsLoaded["FS25_ExtendedLeasing"] == true
 end
 
-function ADS_Leasing.preLoad(_mission)
-    SellVehicleEvent.run = Utils.overwrittenFunction(SellVehicleEvent.run, ADS_Leasing.onSellVehicleEventRun)
-    ShopController.sell = Utils.overwrittenFunction(ShopController.sell, ADS_Leasing.onShopControllerSell)
+function RMS_Leasing.preLoad(_mission)
+    SellVehicleEvent.run = Utils.overwrittenFunction(SellVehicleEvent.run, RMS_Leasing.onSellVehicleEventRun)
+    ShopController.sell = Utils.overwrittenFunction(ShopController.sell, RMS_Leasing.onShopControllerSell)
 end
 
-function ADS_Leasing.init()
-    Mission00.load = Utils.prependedFunction(Mission00.load, ADS_Leasing.preLoad)
+function RMS_Leasing.init()
+    Mission00.load = Utils.prependedFunction(Mission00.load, RMS_Leasing.preLoad)
 end
 
-function ADS_Leasing.isADSVehicle(vehicle)
+function RMS_Leasing.isRMSVehicle(vehicle)
     return vehicle ~= nil
-        and vehicle.spec_AdvancedDamageSystem ~= nil
-        and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle
+        and vehicle.spec_RealisticMechanicalSystems ~= nil
+        and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle
 end
 
-function ADS_Leasing.isLeasedVehicle(vehicle)
+function RMS_Leasing.isLeasedVehicle(vehicle)
     if vehicle == nil then
         return false
     end
@@ -37,14 +37,14 @@ function ADS_Leasing.isLeasedVehicle(vehicle)
     return vehicle.propertyState == leasedState
 end
 
-function ADS_Leasing.isSupportedVehicle(vehicle)
-    return ADS_Leasing.isADSVehicle(vehicle) and ADS_Leasing.isLeasedVehicle(vehicle)
+function RMS_Leasing.isSupportedVehicle(vehicle)
+    return RMS_Leasing.isRMSVehicle(vehicle) and RMS_Leasing.isLeasedVehicle(vehicle)
 end
 
-function ADS_Leasing.getReturnBreakdown(vehicle)
+function RMS_Leasing.getReturnBreakdown(vehicle)
     local emptyResult = {
         vehicle = vehicle,
-        hasExtendedLeasing = ADS_Leasing.hasExtendedLeasing(),
+        hasExtendedLeasing = RMS_Leasing.hasExtendedLeasing(),
         raw = {
             overdueMaintenance = 0,
             repair = 0,
@@ -69,18 +69,18 @@ function ADS_Leasing.getReturnBreakdown(vehicle)
         }
     }
 
-    if not ADS_Leasing.isADSVehicle(vehicle) then
+    if not RMS_Leasing.isRMSVehicle(vehicle) then
         return emptyResult
     end
 
-    local ads = AdvancedDamageSystem
-    local hasExtendedLeasing = ADS_Leasing.hasExtendedLeasing()
+    local ads = RealisticMechanicalSystems
+    local hasExtendedLeasing = RMS_Leasing.hasExtendedLeasing()
     local vehiclePrice = getNumber(vehicle.getPrice ~= nil and vehicle:getPrice(), 0)
     local deposit = MathUtil.round(vehiclePrice * EconomyManager.DEFAULT_LEASING_DEPOSIT_FACTOR, 0)
     local dirtAmount = math.min(getNumber(vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount(), 0), 1)
     local washingCost = deposit * 0.3 * dirtAmount
-    local serviceLevel = getNumber(vehicle.getServiceLevel ~= nil and vehicle:getServiceLevel(), ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD)
-    local serviceExpiredThreshold = math.max(getNumber(ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD, 0), 0.0001)
+    local serviceLevel = getNumber(vehicle.getServiceLevel ~= nil and vehicle:getServiceLevel(), RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD)
+    local serviceExpiredThreshold = math.max(getNumber(RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD, 0), 0.0001)
     local overdueMaintenanceRatio = math.max(serviceExpiredThreshold - serviceLevel, 0) * (1 / serviceExpiredThreshold)
     local overdueMaintenanceCost = overdueMaintenanceRatio * getNumber(
         vehicle.getServicePrice ~= nil and vehicle:getServicePrice(
@@ -135,11 +135,11 @@ function ADS_Leasing.getReturnBreakdown(vehicle)
     return emptyResult
 end
 
-function ADS_Leasing.onShopControllerSell(self, overwrittenFunc, storeItem, concreteItem)
+function RMS_Leasing.onShopControllerSell(self, overwrittenFunc, storeItem, concreteItem)
     local vehicle = concreteItem
     local isConcreteVehicle = vehicle ~= nil and vehicle ~= ShopDisplayItem.NO_CONCRETE_ITEM
 
-    if not isConcreteVehicle or not ADS_Leasing.isSupportedVehicle(vehicle) then
+    if not isConcreteVehicle or not RMS_Leasing.isSupportedVehicle(vehicle) then
         overwrittenFunc(self, storeItem, concreteItem)
         return
     end
@@ -148,10 +148,10 @@ function ADS_Leasing.onShopControllerSell(self, overwrittenFunc, storeItem, conc
     self.currentSellStoreItem = storeItem
     self.currentSellItem = concreteItem
 
-    ADS_SellItemDialog.show(vehicle, storeItem, ADS_Leasing.onShopControllerSellDialogCallback, self)
+    RMS_SellItemDialog.show(vehicle, storeItem, RMS_Leasing.onShopControllerSellDialogCallback, self)
 end
 
-function ADS_Leasing.onShopControllerSellDialogCallback(self, yes)
+function RMS_Leasing.onShopControllerSellDialogCallback(self, yes)
     if self == nil then
         return
     end
@@ -159,13 +159,13 @@ function ADS_Leasing.onShopControllerSellDialogCallback(self, yes)
     self:onSellCallback(yes)
 end
 
-function ADS_Leasing.onSellVehicleEventRun(self, overwrittenFunc, connection)
+function RMS_Leasing.onSellVehicleEventRun(self, overwrittenFunc, connection)
     local vehicle = self.vehicle
     local ownerFarmId = vehicle ~= nil and vehicle:getOwnerFarmId() or FarmManager.SPECTATOR_FARM_ID
     local hasPermission = vehicle ~= nil
         and g_currentMission:getHasPlayerPermission(Farm.PERMISSION.SELL_VEHICLE, connection, ownerFarmId)
     local isVehicleInUse = vehicle ~= nil and vehicle:getIsInUse(connection)
-    local shouldApplyCharges = ADS_Leasing.isSupportedVehicle(vehicle)
+    local shouldApplyCharges = RMS_Leasing.isSupportedVehicle(vehicle)
         and hasPermission
         and not isVehicleInUse
 
@@ -180,7 +180,7 @@ function ADS_Leasing.onSellVehicleEventRun(self, overwrittenFunc, connection)
         return
     end
 
-    local breakdown = ADS_Leasing.getReturnBreakdown(vehicle)
+    local breakdown = RMS_Leasing.getReturnBreakdown(vehicle)
     if breakdown == nil or breakdown.charge == nil then
         return
     end
@@ -200,4 +200,4 @@ function ADS_Leasing.onSellVehicleEventRun(self, overwrittenFunc, connection)
     end
 end
 
-ADS_Leasing.init()
+RMS_Leasing.init()

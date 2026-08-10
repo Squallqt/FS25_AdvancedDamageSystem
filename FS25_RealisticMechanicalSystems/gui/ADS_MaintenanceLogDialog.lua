@@ -1,7 +1,7 @@
-ADS_MaintenanceLogDialog = {}
-ADS_MaintenanceLogDialog.INSTANCE = nil
+RMS_MaintenanceLogDialog = {}
+RMS_MaintenanceLogDialog.INSTANCE = nil
 
-local ADS_MaintenanceLogDialog_mt = Class(ADS_MaintenanceLogDialog, MessageDialog)
+local RMS_MaintenanceLogDialog_mt = Class(RMS_MaintenanceLogDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
 local function isLoggableRepairBreakdownId(breakdownId)
@@ -35,7 +35,7 @@ local function getResolvedBreakdownsCount(logEntries)
     end
 
     local total = 0
-    local S = AdvancedDamageSystem.STATUS
+    local S = RealisticMechanicalSystems.STATUS
 
     for _, entry in ipairs(logEntries) do
         if entry ~= nil and entry.isCompleted ~= false then
@@ -59,21 +59,21 @@ local function getResolvedBreakdownsCount(logEntries)
     return total
 end
 
-function ADS_MaintenanceLogDialog.register()
-    local dialog = ADS_MaintenanceLogDialog.new()
-    g_gui:loadGui(modDirectory .. "gui/ADS_MaintenanceLogDialog.xml", "ADS_MaintenanceLogDialog", dialog)
-    ADS_MaintenanceLogDialog.INSTANCE = dialog
+function RMS_MaintenanceLogDialog.register()
+    local dialog = RMS_MaintenanceLogDialog.new()
+    g_gui:loadGui(modDirectory .. "gui/ADS_MaintenanceLogDialog.xml", "RMS_MaintenanceLogDialog", dialog)
+    RMS_MaintenanceLogDialog.INSTANCE = dialog
 end
 
-function ADS_MaintenanceLogDialog.new(target, customMt)
-    local dialog = MessageDialog.new(target, customMt or ADS_MaintenanceLogDialog_mt)
+function RMS_MaintenanceLogDialog.new(target, customMt)
+    local dialog = MessageDialog.new(target, customMt or RMS_MaintenanceLogDialog_mt)
     dialog.vehicle = nil
     dialog.logDataAll = nil
     dialog.selectedLogIndex = nil
     return dialog
 end
 
-function ADS_MaintenanceLogDialog:getSelectedLogEntry()
+function RMS_MaintenanceLogDialog:getSelectedLogEntry()
     if self.logData == nil or self.selectedLogIndex == nil then
         return nil
     end
@@ -82,16 +82,16 @@ function ADS_MaintenanceLogDialog:getSelectedLogEntry()
     return self.logData[entryIndex]
 end
 
-function ADS_MaintenanceLogDialog:updateShowReportButtonState()
+function RMS_MaintenanceLogDialog:updateShowReportButtonState()
     if self.showReportButton == nil then
         return
     end
 
     local entry = self:getSelectedLogEntry()
-    self.showReportButton.disabled = not (entry ~= nil and AdvancedDamageSystem.getIsLogEntryHasReport(entry))
+    self.showReportButton.disabled = not (entry ~= nil and RealisticMechanicalSystems.getIsLogEntryHasReport(entry))
 end
 
-function ADS_MaintenanceLogDialog:rebuildVisibleLogData()
+function RMS_MaintenanceLogDialog:rebuildVisibleLogData()
     self.logData = {}
     if self.logDataAll == nil then
         return
@@ -104,31 +104,31 @@ function ADS_MaintenanceLogDialog:rebuildVisibleLogData()
     end
 end
 
-function ADS_MaintenanceLogDialog.show(vehicle)
-    if ADS_MaintenanceLogDialog.INSTANCE == nil then ADS_MaintenanceLogDialog.register() end
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then return end
+function RMS_MaintenanceLogDialog.show(vehicle)
+    if RMS_MaintenanceLogDialog.INSTANCE == nil then RMS_MaintenanceLogDialog.register() end
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then return end
     
-    local dialog = ADS_MaintenanceLogDialog.INSTANCE
+    local dialog = RMS_MaintenanceLogDialog.INSTANCE
     dialog.vehicle = vehicle
     
-    dialog.logDataAll = vehicle.spec_AdvancedDamageSystem.maintenanceLog or {}
+    dialog.logDataAll = vehicle.spec_RealisticMechanicalSystems.maintenanceLog or {}
     dialog:rebuildVisibleLogData()
     dialog.selectedLogIndex = #dialog.logData > 0 and 1 or nil
     
     dialog:updateScreen()
-    g_gui:showDialog("ADS_MaintenanceLogDialog")
+    g_gui:showDialog("RMS_MaintenanceLogDialog")
 end
 
-function ADS_MaintenanceLogDialog:updateScreen()
+function RMS_MaintenanceLogDialog:updateScreen()
     if self.vehicle == nil then return end
 
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
     self.logDataAll = spec.maintenanceLog or {}
     self:rebuildVisibleLogData()
 
     local balanceText = g_i18n:formatMoney(g_currentMission:getMoney(), 0, true, false)
     self.balanceElement:setText(balanceText)
-    ADS_Utils.updateMoneyBoxLayout(
+    RMS_Utils.updateMoneyBoxLayout(
         self.balanceTitleElement,
         self.balanceElement,
         self.moneyBox,
@@ -175,7 +175,7 @@ function ADS_MaintenanceLogDialog:updateScreen()
 
     local maintenanceCount = 0
     for _, entry in pairs(self.logDataAll) do
-        if entry.type == AdvancedDamageSystem.STATUS.MAINTENANCE then
+        if entry.type == RealisticMechanicalSystems.STATUS.MAINTENANCE then
             maintenanceCount = maintenanceCount + 1
         end
     end
@@ -185,7 +185,7 @@ function ADS_MaintenanceLogDialog:updateScreen()
         local lastServiceHours = purchaseHours or 0
         for i = 1, #self.logDataAll do
             local nextEntry = self.logDataAll[i]
-            if nextEntry.type == AdvancedDamageSystem.STATUS.MAINTENANCE then
+            if nextEntry.type == RealisticMechanicalSystems.STATUS.MAINTENANCE then
                 if nextEntry.conditionData and nextEntry.conditionData.operatingHours then
                     sumMaintenanceInterval = sumMaintenanceInterval + (nextEntry.conditionData.operatingHours - lastServiceHours)
                     lastServiceHours = nextEntry.conditionData.operatingHours
@@ -220,14 +220,14 @@ end
 -- LIST DELEGATE METHODS
 -- ====================================================================
 
-function ADS_MaintenanceLogDialog:getNumberOfItemsInSection(list, section)
+function RMS_MaintenanceLogDialog:getNumberOfItemsInSection(list, section)
     return #self.logData
 end
 
-function ADS_MaintenanceLogDialog:populateCellForItemInSection(list, section, index, cell)
+function RMS_MaintenanceLogDialog:populateCellForItemInSection(list, section, index, cell)
     local entryIndex = #self.logData - index + 1
     local entry = self.logData[entryIndex]
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
 
     if entry == nil then return end
 
@@ -253,7 +253,7 @@ function ADS_MaintenanceLogDialog:populateCellForItemInSection(list, section, in
     local typeText = "UNKNOWN"
     local color = {1, 1, 1, 1}
     
-    local S = AdvancedDamageSystem.STATUS
+    local S = RealisticMechanicalSystems.STATUS
     if entry.type == S.REPAIR then
         typeText = g_i18n:getText("ads_ws_action_repair")
         color = {0.88, 0.12, 0.12, 1}
@@ -279,7 +279,7 @@ function ADS_MaintenanceLogDialog:populateCellForItemInSection(list, section, in
     if entry.conditionData and entry.conditionData.selectedBreakdowns then
         for _, breakdownId in ipairs(entry.conditionData.selectedBreakdowns) do
             if isLoggableRepairBreakdownId(breakdownId) then
-                local breakdownDef = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+                local breakdownDef = RMS_Breakdowns.BreakdownRegistry[breakdownId]
                  
                 local partKey = breakdownDef ~= nil and (breakdownDef.part or breakdownDef.system) or nil
                 if partKey ~= nil then
@@ -353,11 +353,11 @@ end
 -- CALLBACKS & EVENTS
 -- ====================================================================
 
-function ADS_MaintenanceLogDialog:onClickBack()
+function RMS_MaintenanceLogDialog:onClickBack()
     self:close()
 end
 
-function ADS_MaintenanceLogDialog:onRowClick(row)
+function RMS_MaintenanceLogDialog:onRowClick(row)
     if row == nil or row.indexInSection == nil then return end
 
     self.selectedLogIndex = row.indexInSection
@@ -367,21 +367,21 @@ function ADS_MaintenanceLogDialog:onRowClick(row)
     self:updateShowReportButtonState()
 end
 
-function ADS_MaintenanceLogDialog:onClickShowReport()
+function RMS_MaintenanceLogDialog:onClickShowReport()
     local entry = self:getSelectedLogEntry()
-    if entry ~= nil and AdvancedDamageSystem.getIsLogEntryHasReport(entry) then
-        ADS_ReportDialog.show(self.vehicle, entry)
+    if entry ~= nil and RealisticMechanicalSystems.getIsLogEntryHasReport(entry) then
+        RMS_ReportDialog.show(self.vehicle, entry)
         return
     end
 
     InfoDialog.show(g_i18n:getText("ads_ws_no_report_message"))
 end
 
-function ADS_MaintenanceLogDialog:onOpen(superFunc)
+function RMS_MaintenanceLogDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
 end
 
-function ADS_MaintenanceLogDialog:onClose(superFunc)
+function RMS_MaintenanceLogDialog:onClose(superFunc)
     self.vehicle = nil
     self.logData = nil
     self.logDataAll = nil

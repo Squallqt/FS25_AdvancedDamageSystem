@@ -1,6 +1,6 @@
-ADS_Utils = {}
+RMS_Utils = {}
 
-function ADS_Utils.getLockedHookLiftContainer(vehicle)
+function RMS_Utils.getLockedHookLiftContainer(vehicle)
     local hookLift = vehicle ~= nil and vehicle.spec_hookLiftTrailer or nil
     local attachedContainer = hookLift ~= nil and hookLift.attachedContainer or nil
     local container = attachedContainer ~= nil and attachedContainer.object or nil
@@ -12,7 +12,7 @@ function ADS_Utils.getLockedHookLiftContainer(vehicle)
     return container
 end
 
-function ADS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
+function RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     if meanTimeInMinutes <= 0 then
         return 1.0
     end
@@ -20,7 +20,7 @@ function ADS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     return dt / meanTimeInMs
 end
 
-function ADS_Utils.calculateQuadraticMultiplier(level, threshold, lessIsWorse, customMax)
+function RMS_Utils.calculateQuadraticMultiplier(level, threshold, lessIsWorse, customMax)
     if (lessIsWorse and level >= threshold) or (not lessIsWorse and level <= threshold) then
         return 0.0
     end
@@ -43,8 +43,8 @@ function ADS_Utils.calculateQuadraticMultiplier(level, threshold, lessIsWorse, c
     end
 end
 
-function ADS_Utils.getEstimatedMTBF(systemCondition, systemStress)
-    local probabilityData = ADS_Config.CORE.BREAKDOWN_PROBABILITIES
+function RMS_Utils.getEstimatedMTBF(systemCondition, systemStress)
+    local probabilityData = RMS_Config.CORE.BREAKDOWN_PROBABILITIES
     if type(systemStress) == "table" then
         probabilityData = systemStress
         systemStress = nil
@@ -60,7 +60,7 @@ function ADS_Utils.getEstimatedMTBF(systemCondition, systemStress)
 
     local stress = math.max(systemStress, 0.0)
     local stressThreshold = probabilityData.STRESS_THRESHOLD or 0.0
-    local effectiveCondition = math.max(condition, ADS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0.15)
+    local effectiveCondition = math.max(condition, RMS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0.15)
     if stress / effectiveCondition < stressThreshold then
         return math.huge
     end
@@ -73,12 +73,12 @@ function ADS_Utils.getEstimatedMTBF(systemCondition, systemStress)
     return mtbfInMinutes
 end
 
-function ADS_Utils.getCriticalFailureChance(condition)
-    local probability = ADS_Config.CORE.BREAKDOWN_PROBABILITIES
+function RMS_Utils.getCriticalFailureChance(condition)
+    local probability = RMS_Config.CORE.BREAKDOWN_PROBABILITIES
     return math.clamp((1 - condition) ^ probability.CRITICAL_DEGREE, probability.CRITICAL_MIN, probability.CRITICAL_MAX)
 end
 
-function ADS_Utils.convertHoursToHoursAndMinutes(totalHours)
+function RMS_Utils.convertHoursToHoursAndMinutes(totalHours)
     if totalHours == nil then
         return 0, 0
     end
@@ -88,7 +88,7 @@ function ADS_Utils.convertHoursToHoursAndMinutes(totalHours)
     return hours, minutes
 end
 
-function ADS_Utils.updateMoneyBoxLayout(labelElement, valueElement, boxElement, bgElement, labelText, valueText)
+function RMS_Utils.updateMoneyBoxLayout(labelElement, valueElement, boxElement, bgElement, labelText, valueText)
     if labelElement == nil or valueElement == nil or boxElement == nil or bgElement == nil then
         return
     end
@@ -126,7 +126,7 @@ function ADS_Utils.updateMoneyBoxLayout(labelElement, valueElement, boxElement, 
     end
 end
 
-function ADS_Utils.tableToString(tbl)
+function RMS_Utils.tableToString(tbl)
     if not tbl or next(tbl) == nil then
         return "{}" 
     end
@@ -135,7 +135,7 @@ function ADS_Utils.tableToString(tbl)
     for k, v in pairs(tbl) do
         local valueStr
         if type(v) == 'table' then
-            valueStr = ADS_Utils.tableToString(v)
+            valueStr = RMS_Utils.tableToString(v)
         else
             valueStr = tostring(v)
         end
@@ -144,7 +144,7 @@ function ADS_Utils.tableToString(tbl)
     return "{ " .. table.concat(parts, ", ") .. " }"
 end
 
-function ADS_Utils.getKeyByValue(tbl, value)
+function RMS_Utils.getKeyByValue(tbl, value)
     for key, val in pairs(tbl) do
         if val == value then
             return key
@@ -157,7 +157,7 @@ end
 --                          SERIALIZATION   
 -- ==========================================================
 
-function ADS_Utils.serializeBreakdowns(breakdownsTable)
+function RMS_Utils.serializeBreakdowns(breakdownsTable)
     local parts = {}
     for id, breakdown in pairs(breakdownsTable) do
         local visible = breakdown.isVisible and 1 or 0
@@ -172,14 +172,14 @@ function ADS_Utils.serializeBreakdowns(breakdownsTable)
     return table.concat(parts, ";")
 end
 
-function ADS_Utils.serializeDate(dateTable)
+function RMS_Utils.serializeDate(dateTable)
     if dateTable == nil or dateTable.day == nil then
         return ""
     end
     return string.format("%d,%d,%d", dateTable.day, dateTable.month, dateTable.year)
 end
 
-function ADS_Utils.encodeDelimitedString(value)
+function RMS_Utils.encodeDelimitedString(value)
     if value == nil then
         return ""
     end
@@ -189,7 +189,7 @@ function ADS_Utils.encodeDelimitedString(value)
     end))
 end
 
-function ADS_Utils.decodeDelimitedString(value)
+function RMS_Utils.decodeDelimitedString(value)
     if value == nil or value == "" then
         return ""
     end
@@ -199,7 +199,7 @@ function ADS_Utils.decodeDelimitedString(value)
     end))
 end
 
-function ADS_Utils.deserializeDate(dateString)
+function RMS_Utils.deserializeDate(dateString)
     if dateString == nil or dateString == "" then
         return {}
     end
@@ -215,7 +215,7 @@ function ADS_Utils.deserializeDate(dateString)
     return {}
 end
 
-function ADS_Utils.deserializeBreakdowns(breakdownString)
+function RMS_Utils.deserializeBreakdowns(breakdownString)
     local breakdowns = {}
     if breakdownString == nil or breakdownString == "" then
         return breakdowns
@@ -232,7 +232,7 @@ function ADS_Utils.deserializeBreakdowns(breakdownString)
                 isSelectedForRepair = (tonumber(isSelected) == 1),
                 isActive = (tonumber(isActive) == 1),
                 resumeTimer = math.max(tonumber(resumeTimer) or 0, 0),
-                source = tonumber(source) or AdvancedDamageSystem.BREAKDOWN_SOURCES.RANDOM
+                source = tonumber(source) or RealisticMechanicalSystems.BREAKDOWN_SOURCES.RANDOM
             }
         end
     end
@@ -245,12 +245,12 @@ end
 
 -- service --------------------------------------------------
 
-function ADS_Utils.formatFinishTime(finishTime, daysToAdd)
+function RMS_Utils.formatFinishTime(finishTime, daysToAdd)
    if finishTime == nil then
         return ""
     end
     
-    local finishTimeHours, finishTimeMinutes = ADS_Utils.convertHoursToHoursAndMinutes(finishTime)
+    local finishTimeHours, finishTimeMinutes = RMS_Utils.convertHoursToHoursAndMinutes(finishTime)
     local daysText = ""
 
     if daysToAdd == 1 then
@@ -265,11 +265,11 @@ function ADS_Utils.formatFinishTime(finishTime, daysToAdd)
     return string.format("%s%02d:%02d", daysText, finishTimeHours, finishTimeMinutes)
 end
 
-function ADS_Utils.formatDuration(duration)
+function RMS_Utils.formatDuration(duration)
     if duration == nil then
         return ""
     end
-    local durationHours, durationMinutes = ADS_Utils.convertHoursToHoursAndMinutes(duration)
+    local durationHours, durationMinutes = RMS_Utils.convertHoursToHoursAndMinutes(duration)
     local days = math.floor(durationHours / 24)
     local daysText = ""
     if days > 0 then
@@ -293,13 +293,13 @@ end
 
 -- condition and service levels -----------------------------
 
-ADS_Utils.CONDITION_LEVELS = {0.8, 0.6, 0.4, 0.2}
+RMS_Utils.CONDITION_LEVELS = {0.8, 0.6, 0.4, 0.2}
 
 local CONDITION_STATE_NAMES = {"EXCELLENT", "GOOD", "NORMAL", "BAD", "TERRIBLE"}
 
 -- Returns the condition tier, 1 for the best and 5 for the worst.
-function ADS_Utils.getConditionTier(condition)
-    local levels = ADS_Utils.CONDITION_LEVELS
+function RMS_Utils.getConditionTier(condition)
+    local levels = RMS_Utils.CONDITION_LEVELS
     for tier = 1, #levels do
         if condition >= levels[tier] then
             return tier
@@ -308,31 +308,31 @@ function ADS_Utils.getConditionTier(condition)
     return #levels + 1
 end
 
-function ADS_Utils.formatCondition(condition, isCompleteInspection)
-    local STATES = AdvancedDamageSystem.STATES
+function RMS_Utils.formatCondition(condition, isCompleteInspection)
+    local STATES = RealisticMechanicalSystems.STATES
     if isCompleteInspection == nil then
         return g_i18n:getText(STATES.UNKNOWN)
     end
     if isCompleteInspection then
         return string.format("%.0f%%", condition * 100)
     end
-    return g_i18n:getText(STATES[CONDITION_STATE_NAMES[ADS_Utils.getConditionTier(condition)]])
+    return g_i18n:getText(STATES[CONDITION_STATE_NAMES[RMS_Utils.getConditionTier(condition)]])
 end
 
-function ADS_Utils.getServiceIntervalRemainingRatio(service)
-    local threshold = math.clamp(tonumber(ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD) or 0.5, 0.0, 0.9999)
+function RMS_Utils.getServiceIntervalRemainingRatio(service)
+    local threshold = math.clamp(tonumber(RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD) or 0.5, 0.0, 0.9999)
     local activeRange = math.max(1.0 - threshold, 0.0001)
     return math.clamp(((tonumber(service) or 0.0) - threshold) / activeRange, 0.0, 1.0)
 end
 
-function ADS_Utils.formatService(service, isCompleteInspection)
-    local STATES = AdvancedDamageSystem.STATES
+function RMS_Utils.formatService(service, isCompleteInspection)
+    local STATES = RealisticMechanicalSystems.STATES
     -- No report in the log.
     if isCompleteInspection == nil then
         return g_i18n:getText(STATES.UNKNOWN)
     end
     if isCompleteInspection then
-        return string.format("%.0f%%", ADS_Utils.getServiceIntervalRemainingRatio(service) * 100)
+        return string.format("%.0f%%", RMS_Utils.getServiceIntervalRemainingRatio(service) * 100)
     end
     service = tonumber(service) or 0.0
     if service >= 0.9 then
@@ -350,7 +350,7 @@ end
 
 -- time -----------------------------------------------------
 
-function ADS_Utils.formatTimeAgo(pastDate) -- expects a table with year and month fields, returns a localized string like "5 months ago" or "This month"
+function RMS_Utils.formatTimeAgo(pastDate) -- expects a table with year and month fields, returns a localized string like "5 months ago" or "This month"
     if type(pastDate) ~= "table" or not pastDate.year or not pastDate.month then
         return g_i18n:getText('ads_spec_never')
     end
@@ -378,13 +378,13 @@ end
 
 -- operating hours ---------------------------------------------------
 
-function ADS_Utils.formatOperatingHours(currentHours, intervalHours)
+function RMS_Utils.formatOperatingHours(currentHours, intervalHours)
     return string.format("%.1f / %.1f %s", currentHours, intervalHours, g_i18n:getText('ads_spec_op_hours_short'))
 end
 
 -- others ---------------------------------------------------------------
 
-function ADS_Utils.getValueLabel(value, ideal, high, mid, low, ...)
+function RMS_Utils.getValueLabel(value, ideal, high, mid, low, ...)
 -- getValueLabel(63, 90, 75, 50, 25, "Excellent", "Good", "Average", "Poor", "Critical")
     local labels = {...}
     if value >= ideal then
@@ -400,7 +400,7 @@ function ADS_Utils.getValueLabel(value, ideal, high, mid, low, ...)
     end
 end
 
-function ADS_Utils.getValueLabelInverted(value, ideal, low, mid, high, ...)
+function RMS_Utils.getValueLabelInverted(value, ideal, low, mid, high, ...)
 -- getValueLabelInverted(63, 10, 25, 50, 75, "Excellent", "Good", "Average", "Poor", "Critical")
     local labels = {...}
     if value <= ideal then
@@ -418,7 +418,7 @@ end
 
 -- reliabolity and maintenability ------------------------------------
 
-function ADS_Utils.formatReliability(value)
+function RMS_Utils.formatReliability(value)
     if value < 1.0 then return g_i18n:getText('ads_spec_state_budget')
     elseif value < 1.1 then return g_i18n:getText('ads_spec_state_standard')
     elseif value < 1.2 then return g_i18n:getText('ads_spec_state_premium')
@@ -426,7 +426,7 @@ function ADS_Utils.formatReliability(value)
 end
 
 
-function ADS_Utils.formatMaintainability(value)
+function RMS_Utils.formatMaintainability(value)
     if value < 1.0 then return g_i18n:getText('ads_spec_state_low')
     elseif value < 1.1 then return g_i18n:getText('ads_spec_state_average')
     elseif value < 1.2 then return g_i18n:getText('ads_spec_state_high')
@@ -455,7 +455,7 @@ local function lerpColor(a, b, t)
     }
 end
 
-function ADS_Utils.getValueColor(value, ideal, high, mid, low, smooth)
+function RMS_Utils.getValueColor(value, ideal, high, mid, low, smooth)
     local c
 
     if smooth then
@@ -491,25 +491,25 @@ function ADS_Utils.getValueColor(value, ideal, high, mid, low, smooth)
     return c[1], c[2], c[3], c[4]
 end
 
-function ADS_Utils.getConditionColor(condition, isCompleteInspection)
+function RMS_Utils.getConditionColor(condition, isCompleteInspection)
     if isCompleteInspection == nil then
         return unpack(COLOR_UNKNOWN)
     end
 
-    local ideal, high, mid, low = unpack(ADS_Utils.CONDITION_LEVELS)
-    return ADS_Utils.getValueColor(condition, ideal, high, mid, low, false)
+    local ideal, high, mid, low = unpack(RMS_Utils.CONDITION_LEVELS)
+    return RMS_Utils.getValueColor(condition, ideal, high, mid, low, false)
 end
 
-function ADS_Utils.getServiceColor(service, isCompleteInspection)
+function RMS_Utils.getServiceColor(service, isCompleteInspection)
     if isCompleteInspection == nil then
         return unpack(COLOR_UNKNOWN)
     end
 
     local ideal, high, mid, low = unpack(SERVICE_COLOR_LEVELS)
-    return ADS_Utils.getValueColor(ADS_Utils.getServiceIntervalRemainingRatio(service), ideal, high, mid, low, isCompleteInspection)
+    return RMS_Utils.getValueColor(RMS_Utils.getServiceIntervalRemainingRatio(service), ideal, high, mid, low, isCompleteInspection)
 end
 
-function ADS_Utils.getValueColorInverted(value, ideal, low, mid, high, smooth)
+function RMS_Utils.getValueColorInverted(value, ideal, low, mid, high, smooth)
     local c
 
     if smooth then
@@ -551,7 +551,7 @@ end
 
 local SAVEGAME_OPTIONAL_FLOAT_SENTINEL = -1
 
-function ADS_Utils.normalizeBoolValue(value, defaultValue)
+function RMS_Utils.normalizeBoolValue(value, defaultValue)
     if value == nil then
         return defaultValue == true
     end
@@ -577,7 +577,7 @@ function ADS_Utils.normalizeBoolValue(value, defaultValue)
     return value and true or false
 end
 
-function ADS_Utils.normalizeNumberValue(value, defaultValue)
+function RMS_Utils.normalizeNumberValue(value, defaultValue)
     if value == nil then
         return defaultValue
     end
@@ -590,7 +590,7 @@ function ADS_Utils.normalizeNumberValue(value, defaultValue)
     return num
 end
 
-function ADS_Utils.encodeOptionalFloat(value)
+function RMS_Utils.encodeOptionalFloat(value)
     if value == nil then
         return SAVEGAME_OPTIONAL_FLOAT_SENTINEL
     end
@@ -603,7 +603,7 @@ function ADS_Utils.encodeOptionalFloat(value)
     return num
 end
 
-function ADS_Utils.decodeOptionalFloat(value)
+function RMS_Utils.decodeOptionalFloat(value)
     local num = tonumber(value)
     if num == nil or num < 0 then
         return nil
@@ -612,7 +612,7 @@ function ADS_Utils.decodeOptionalFloat(value)
     return num
 end
 
-function ADS_Utils.parseCsvList(csvString)
+function RMS_Utils.parseCsvList(csvString)
     local result = {}
     if csvString == nil or csvString == "" then
         return result
@@ -628,7 +628,7 @@ function ADS_Utils.parseCsvList(csvString)
     return result
 end
 
-function ADS_Utils.serializeEffectSnapshot(effects)
+function RMS_Utils.serializeEffectSnapshot(effects)
     local entries = {}
     if effects == nil then
         return ""
@@ -656,14 +656,14 @@ function ADS_Utils.serializeEffectSnapshot(effects)
     return table.concat(entries, ";")
 end
 
-function ADS_Utils.deserializeEffectSnapshot(serialized)
+function RMS_Utils.deserializeEffectSnapshot(serialized)
     local result = {}
     if serialized == nil or serialized == "" then
         return result
     end
 
     if not string.find(serialized, "|") then
-        for _, effectId in ipairs(ADS_Utils.parseCsvList(serialized)) do
+        for _, effectId in ipairs(RMS_Utils.parseCsvList(serialized)) do
             result[effectId] = true
         end
         return result
@@ -687,7 +687,7 @@ function ADS_Utils.deserializeEffectSnapshot(serialized)
     return result
 end
 
-function ADS_Utils.getSystemNameByKey(systems, systemKey)
+function RMS_Utils.getSystemNameByKey(systems, systemKey)
     if systems == nil then
         return tostring(systemKey)
     end
@@ -702,7 +702,7 @@ function ADS_Utils.getSystemNameByKey(systems, systemKey)
     return tostring(systemKey)
 end
 
-function ADS_Utils.serializeSystemsState(systems)
+function RMS_Utils.serializeSystemsState(systems)
     local entries = {}
     if systems == nil then
         return ""
@@ -716,7 +716,7 @@ function ADS_Utils.serializeSystemsState(systems)
         if type(systemData) == "table" then
             condition = tonumber(systemData.condition) or 1.0
             stress = tonumber(systemData.stress) or 0.0
-            enabled = ADS_Utils.normalizeBoolValue(systemData.enabled, true)
+            enabled = RMS_Utils.normalizeBoolValue(systemData.enabled, true)
         else
             condition = tonumber(systemData) or 1.0
         end
@@ -728,7 +728,7 @@ function ADS_Utils.serializeSystemsState(systems)
     return table.concat(entries, ";")
 end
 
-function ADS_Utils.deserializeSystemsState(serialized)
+function RMS_Utils.deserializeSystemsState(serialized)
     local result = {}
     if serialized == nil or serialized == "" then
         return result
@@ -750,7 +750,7 @@ function ADS_Utils.deserializeSystemsState(serialized)
         if key ~= nil and key ~= "" then
             local condition = tonumber(parts[2]) or 1.0
             local stress = tonumber(parts[3]) or 0.0
-            local enabled = ADS_Utils.normalizeBoolValue(tonumber(parts[4]), true)
+            local enabled = RMS_Utils.normalizeBoolValue(tonumber(parts[4]), true)
 
             result[key] = {
                 condition = condition,
@@ -763,7 +763,7 @@ function ADS_Utils.deserializeSystemsState(serialized)
     return result
 end
 
-function ADS_Utils.createSystemsSnapshot(systems)
+function RMS_Utils.createSystemsSnapshot(systems)
     local snapshot = {}
     if systems == nil then
         return snapshot
@@ -774,7 +774,7 @@ function ADS_Utils.createSystemsSnapshot(systems)
             snapshot[systemKey] = {
                 condition = tonumber(systemData.condition) or 1.0,
                 stress = tonumber(systemData.stress) or 0.0,
-                enabled = ADS_Utils.normalizeBoolValue(systemData.enabled, true)
+                enabled = RMS_Utils.normalizeBoolValue(systemData.enabled, true)
             }
         else
             snapshot[systemKey] = {
@@ -788,7 +788,7 @@ function ADS_Utils.createSystemsSnapshot(systems)
     return snapshot
 end
 
-function ADS_Utils.serializeNumericMap(valueMap)
+function RMS_Utils.serializeNumericMap(valueMap)
     local entries = {}
     if valueMap == nil then
         return ""
@@ -805,7 +805,7 @@ function ADS_Utils.serializeNumericMap(valueMap)
     return table.concat(entries, ";")
 end
 
-function ADS_Utils.deserializeNumericMap(serialized)
+function RMS_Utils.deserializeNumericMap(serialized)
     local result = {}
     if serialized == nil or serialized == "" then
         return result
@@ -830,20 +830,20 @@ function ADS_Utils.deserializeNumericMap(serialized)
     return result
 end
 
-function ADS_Utils.getSystemKey(systems, systemName)
+function RMS_Utils.getSystemKey(systems, systemName)
     if systems == nil then
         return ""
     end
-    return string.lower(ADS_Utils.getKeyByValue(systems, systemName) or "")
+    return string.lower(RMS_Utils.getKeyByValue(systems, systemName) or "")
 end
 
-function ADS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+function RMS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or type(spec.systems) ~= "table" or type(systemName) ~= "string" then
         return 0
     end
 
-    local systemWeights = ADS_Config ~= nil and ADS_Config.CORE ~= nil and ADS_Config.CORE.SYSTEM_WEIGHTS or nil
+    local systemWeights = RMS_Config ~= nil and RMS_Config.CORE ~= nil and RMS_Config.CORE.SYSTEM_WEIGHTS or nil
     if type(systemWeights) ~= "table" then
         return 0
     end
@@ -882,7 +882,7 @@ function ADS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
                 end
             end
 
-            local systemKeyByValue = ADS_Utils.getKeyByValue(systems, name)
+            local systemKeyByValue = RMS_Utils.getKeyByValue(systems, name)
             if type(systemKeyByValue) == "string" then
                 local loweredEnumKey = string.lower(systemKeyByValue)
                 if spec.systems[loweredEnumKey] ~= nil then
@@ -929,7 +929,7 @@ function ADS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
     return targetWeight / totalEnabledWeight
 end
 
-function ADS_Utils.shallowCopy(original)
+function RMS_Utils.shallowCopy(original)
     local result = {}
     if type(original) ~= "table" then
         return result
@@ -940,7 +940,7 @@ function ADS_Utils.shallowCopy(original)
     return result
 end
 
-function ADS_Utils.deepCopy(original, seen)
+function RMS_Utils.deepCopy(original, seen)
     if type(original) ~= "table" then
         return original
     end
@@ -954,8 +954,8 @@ function ADS_Utils.deepCopy(original, seen)
     seen[original] = result
 
     for key, value in pairs(original) do
-        local copiedKey = ADS_Utils.deepCopy(key, seen)
-        result[copiedKey] = ADS_Utils.deepCopy(value, seen)
+        local copiedKey = RMS_Utils.deepCopy(key, seen)
+        result[copiedKey] = RMS_Utils.deepCopy(value, seen)
     end
 
     return result
@@ -965,13 +965,13 @@ end
 --           MAINTENANCE LOG STREAM SERIALIZATION
 -- ==========================================================
 
-function ADS_Utils.serializeMaintenanceLogEntry(entry)
+function RMS_Utils.serializeMaintenanceLogEntry(entry)
     if entry == nil then return "" end
     local cd = entry.conditionData or {}
-    local serializedSystems = ADS_Utils.encodeDelimitedString(ADS_Utils.serializeSystemsState(ADS_Utils.createSystemsSnapshot(cd.systems)))
-    local serializedBreakdowns = ADS_Utils.encodeDelimitedString(ADS_Utils.serializeBreakdowns(cd.activeBreakdowns or {}))
-    local serializedSelectedBreakdowns = ADS_Utils.encodeDelimitedString(table.concat(cd.selectedBreakdowns or {}, ","))
-    local serializedEffects = ADS_Utils.encodeDelimitedString(ADS_Utils.serializeEffectSnapshot(cd.activeEffects))
+    local serializedSystems = RMS_Utils.encodeDelimitedString(RMS_Utils.serializeSystemsState(RMS_Utils.createSystemsSnapshot(cd.systems)))
+    local serializedBreakdowns = RMS_Utils.encodeDelimitedString(RMS_Utils.serializeBreakdowns(cd.activeBreakdowns or {}))
+    local serializedSelectedBreakdowns = RMS_Utils.encodeDelimitedString(table.concat(cd.selectedBreakdowns or {}, ","))
+    local serializedEffects = RMS_Utils.encodeDelimitedString(RMS_Utils.serializeEffectSnapshot(cd.activeEffects))
     local activeIndicatorIds = {}
     for indicatorId, isActive in pairs(cd.activeIndicators or {}) do
         if isActive then
@@ -979,18 +979,18 @@ function ADS_Utils.serializeMaintenanceLogEntry(entry)
         end
     end
     table.sort(activeIndicatorIds)
-    local serializedIndicators = ADS_Utils.encodeDelimitedString(table.concat(activeIndicatorIds, ","))
+    local serializedIndicators = RMS_Utils.encodeDelimitedString(table.concat(activeIndicatorIds, ","))
     local parts = {
         tostring(entry.id or 0),
         tostring(entry.type or ""),
         tostring(entry.price or 0),
-        ADS_Utils.serializeDate(entry.date),
+        RMS_Utils.serializeDate(entry.date),
         tostring(entry.location or "UNKNOWN"),
         tostring(entry.optionOne or "NONE"),
         tostring(entry.optionTwo or "NONE"),
         tostring(entry.optionThree or false),
-        tostring(ADS_Utils.normalizeBoolValue(entry.isVisible, true)),
-        tostring(ADS_Utils.normalizeBoolValue(entry.isCompleted, true)),
+        tostring(RMS_Utils.normalizeBoolValue(entry.isVisible, true)),
+        tostring(RMS_Utils.normalizeBoolValue(entry.isCompleted, true)),
         tostring(cd.year or 0),
         tostring(cd.operatingHours or 0),
         tostring(cd.age or 0),
@@ -1008,7 +1008,7 @@ function ADS_Utils.serializeMaintenanceLogEntry(entry)
     return table.concat(parts, "|")
 end
 
-function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
+function RMS_Utils.deserializeMaintenanceLogEntry(serialized)
     if serialized == nil or serialized == "" then return nil end
     local parts = {}
     for part in string.gmatch(serialized .. "|", "(.-)|") do
@@ -1020,13 +1020,13 @@ function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
         id = tonumber(parts[1]) or 0,
         type = parts[2] ~= "" and parts[2] or nil,
         price = tonumber(parts[3]) or 0,
-        date = ADS_Utils.deserializeDate(parts[4]),
+        date = RMS_Utils.deserializeDate(parts[4]),
         location = parts[5] ~= "" and parts[5] or "UNKNOWN",
         optionOne = parts[6] ~= "" and parts[6] or "NONE",
         optionTwo = parts[7] ~= "" and parts[7] or "NONE",
-        optionThree = ADS_Utils.normalizeBoolValue(parts[8], false),
-        isVisible = ADS_Utils.normalizeBoolValue(parts[9], true),
-        isCompleted = ADS_Utils.normalizeBoolValue(parts[10], true),
+        optionThree = RMS_Utils.normalizeBoolValue(parts[8], false),
+        isVisible = RMS_Utils.normalizeBoolValue(parts[9], true),
+        isCompleted = RMS_Utils.normalizeBoolValue(parts[10], true),
         conditionData = {
             year = tonumber(parts[11]) or 0,
             operatingHours = tonumber(parts[12]) or 0,
@@ -1035,15 +1035,15 @@ function ADS_Utils.deserializeMaintenanceLogEntry(serialized)
             service = tonumber(parts[15]) or 1,
             reliability = tonumber(parts[16]) or 1,
             maintainability = tonumber(parts[17]) or 1,
-            systems = ADS_Utils.createSystemsSnapshot(ADS_Utils.deserializeSystemsState(ADS_Utils.decodeDelimitedString(parts[18] or ""))),
+            systems = RMS_Utils.createSystemsSnapshot(RMS_Utils.deserializeSystemsState(RMS_Utils.decodeDelimitedString(parts[18] or ""))),
             batterySoc = tonumber(parts[19]) or 1,
-            activeBreakdowns = ADS_Utils.deserializeBreakdowns(ADS_Utils.decodeDelimitedString(parts[21] or "")),
-            selectedBreakdowns = ADS_Utils.parseCsvList(ADS_Utils.decodeDelimitedString(parts[22] or "")),
-            activeEffects = ADS_Utils.deserializeEffectSnapshot(ADS_Utils.decodeDelimitedString(parts[20] or "")),
+            activeBreakdowns = RMS_Utils.deserializeBreakdowns(RMS_Utils.decodeDelimitedString(parts[21] or "")),
+            selectedBreakdowns = RMS_Utils.parseCsvList(RMS_Utils.decodeDelimitedString(parts[22] or "")),
+            activeEffects = RMS_Utils.deserializeEffectSnapshot(RMS_Utils.decodeDelimitedString(parts[20] or "")),
             activeIndicators = {}
         }
     }
-    for _, indicatorId in ipairs(ADS_Utils.parseCsvList(ADS_Utils.decodeDelimitedString(parts[23] or ""))) do
+    for _, indicatorId in ipairs(RMS_Utils.parseCsvList(RMS_Utils.decodeDelimitedString(parts[23] or ""))) do
         if indicatorId ~= nil and indicatorId ~= "" then
             result.conditionData.activeIndicators[indicatorId] = true
         end
@@ -1055,7 +1055,7 @@ end
 --                  SHARED VEHICLE HELPERS
 -- ==========================================================
 
-function ADS_Utils.hasCVTAddon(vehicle)
+function RMS_Utils.hasCVTAddon(vehicle)
     local spec_CVTaddon = vehicle ~= nil and vehicle.spec_CVTaddon or nil
     local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
     return spec_CVTaddon ~= nil
@@ -1064,12 +1064,12 @@ function ADS_Utils.hasCVTAddon(vehicle)
         and cvtAddonConfig ~= 8
 end
 
-function ADS_Utils.hasCVTTransmission(vehicle)
+function RMS_Utils.hasCVTTransmission(vehicle)
     local motor = vehicle ~= nil and vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     return motor ~= nil and motor.minForwardGearRatio ~= nil
 end
 
-function ADS_Utils.getIsElectricVehicle(vehicle)
+function RMS_Utils.getIsElectricVehicle(vehicle)
     local hasElectricConsumer = false
     local hasCombustionConsumer = false
 
@@ -1088,8 +1088,8 @@ function ADS_Utils.getIsElectricVehicle(vehicle)
 end
 
 -- Returns the heavy trailer power to mass ratio threshold and full effect ratio of the vehicle class.
-function ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
-    local C = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
+function RMS_Utils.getHeavyTrailerRatioLevels(isTruck)
+    local C = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
     if isTruck then
         return C.HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD, C.HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT
     end
@@ -1097,17 +1097,17 @@ function ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
 end
 
 -- Returns the PTO angle threshold in degrees of the current connection type.
-function ADS_Utils.getPtoSharpAngleThreshold(spec)
-    local C = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA
+function RMS_Utils.getPtoSharpAngleThreshold(spec)
+    local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
     if spec.ptoConnectionIsTrailerHitch == true then
         return C.PTO_SHARP_ANGLE_WIDE_THRESHOLD
     end
     return C.PTO_SHARP_ANGLE_FACTOR_THRESHOLD
 end
 
-function ADS_Utils.createLogger(prefix)
+function RMS_Utils.createLogger(prefix)
     return function(...)
-        if ADS_Config ~= nil and ADS_Config.DEBUG then
+        if RMS_Config ~= nil and RMS_Config.DEBUG then
             local args = {...}
             for i = 1, #args do
                 args[i] = tostring(args[i])
@@ -1117,7 +1117,7 @@ function ADS_Utils.createLogger(prefix)
     end
 end
 
-function ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
+function RMS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     if rawSystem == nil or rawSystem == "" then
         return nil
     end

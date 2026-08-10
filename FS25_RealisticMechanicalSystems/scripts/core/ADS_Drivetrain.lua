@@ -1,12 +1,12 @@
-ADS_Drivetrain = ADS_Drivetrain or {}
+RMS_Drivetrain = RMS_Drivetrain or {}
 
-ADS_Drivetrain.MODE = {
+RMS_Drivetrain.MODE = {
     TWO_WD  = 0,
     FOUR_WD = 1,
     AUTO    = 2
 }
 
-ADS_Drivetrain.MODE_L10N = {
+RMS_Drivetrain.MODE_L10N = {
     [0] = "ads_drivetrain_mode_4x2",
     [1] = "ads_drivetrain_mode_4wd",
     [2] = "ads_drivetrain_mode_auto"
@@ -21,10 +21,10 @@ local DEBUG_SAMPLE_INTERVAL_MS = 400
 local DEBUG_RATIO_MIN_SPEED = 0.05
 local DEBUG_RATIO_MAX = 99
 
-local sanitizeNumber = AdvancedDamageSystem.sanitizeNumber
+local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
 
 local function getConfig()
-    return ADS_Config.DRIVETRAIN
+    return RMS_Config.DRIVETRAIN
 end
 
 local evConfigCache = { diff = nil, park = nil, nextReadTime = -math.huge }
@@ -64,7 +64,7 @@ local function getIsEnhancedVehicleLoaded(vehicle)
     return vehicle ~= nil and vehicle.vData ~= nil and vehicle.vData.is ~= nil
 end
 
-function ADS_Drivetrain.isExternallyManaged(vehicle)
+function RMS_Drivetrain.isExternallyManaged(vehicle)
     local ev = rawget(_G, "FS25_EnhancedVehicle")
     if ev ~= nil and ev.functionDiffIsEnabled ~= nil then
         return ev.functionDiffIsEnabled == true
@@ -77,7 +77,7 @@ function ADS_Drivetrain.isExternallyManaged(vehicle)
     return false
 end
 
-function ADS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
+function RMS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
     local ev = rawget(_G, "FS25_EnhancedVehicle")
     if ev ~= nil and ev.functionParkingBrakeIsEnabled ~= nil then
         return ev.functionParkingBrakeIsEnabled == true
@@ -111,7 +111,7 @@ local function getStoreCategoryNames(vehicle)
     return nil
 end
 
-function ADS_Drivetrain.getIsRoadVehicleCategory(vehicle)
+function RMS_Drivetrain.getIsRoadVehicleCategory(vehicle)
     local categoryNames = getStoreCategoryNames(vehicle)
     if categoryNames == nil then
         return false
@@ -128,7 +128,7 @@ function ADS_Drivetrain.getIsRoadVehicleCategory(vehicle)
     return false
 end
 
-function ADS_Drivetrain.getIsWheelSteerable(wheel)
+function RMS_Drivetrain.getIsWheelSteerable(wheel)
     local physics = wheel ~= nil and wheel.physics or nil
     if physics == nil then return false end
     local rotMin = tonumber(physics.rotMin) or 0
@@ -183,7 +183,7 @@ local function getAxleScore(vehicle, wheelIndices)
         if wheel ~= nil then
             count = count + 1
             zSum = zSum + getWheelLocalZ(wheel)
-            if ADS_Drivetrain.getIsWheelSteerable(wheel) then
+            if RMS_Drivetrain.getIsWheelSteerable(wheel) then
                 steerableCount = steerableCount + 1
             end
         end
@@ -221,7 +221,7 @@ local function getIsTwinTrack(vehicle)
     return true
 end
 
-function ADS_Drivetrain.buildLayout(vehicle)
+function RMS_Drivetrain.buildLayout(vehicle)
     local spec_motorized = vehicle.spec_motorized
     local differentials = spec_motorized ~= nil and spec_motorized.differentials or nil
     if differentials == nil or next(differentials) == nil then
@@ -333,8 +333,8 @@ end
 --                SPEC INIT / STATE ACCESS
 -- ==========================================================
 
-function ADS_Drivetrain.initSpec(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+function RMS_Drivetrain.initSpec(vehicle)
+    local spec = vehicle.spec_RealisticMechanicalSystems
     spec.drivetrain = {
         layout = nil,
         layoutAnalyzed = false,
@@ -342,7 +342,7 @@ function ADS_Drivetrain.initSpec(vehicle)
         hasCenterDiff = false,
         externallyManaged = false,
         parkExternallyManaged = false,
-        driveMode = ADS_Drivetrain.MODE.TWO_WD,
+        driveMode = RMS_Drivetrain.MODE.TWO_WD,
         autoEngaged = false,
         diffLockRequested = false,
         diffLockEngaged = false,
@@ -369,21 +369,21 @@ function ADS_Drivetrain.initSpec(vehicle)
     }
 end
 
-function ADS_Drivetrain.getState(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+function RMS_Drivetrain.getState(vehicle)
+    local spec = vehicle.spec_RealisticMechanicalSystems
     return spec ~= nil and spec.drivetrain or nil
 end
 
-function ADS_Drivetrain.getIsAvailable(vehicle)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.getIsAvailable(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     return state ~= nil
         and state.hasControl == true
         and not state.externallyManaged
         and getConfig().ENABLED
 end
 
-function ADS_Drivetrain.getHasCenterDifferential(vehicle)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.getHasCenterDifferential(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     return state ~= nil and state.hasCenterDiff == true
 end
 
@@ -397,18 +397,18 @@ local function ensureLayout(vehicle, state)
     end
     state.layoutAnalyzed = true
 
-    if ADS_Drivetrain.getIsRoadVehicleCategory(vehicle) then
+    if RMS_Drivetrain.getIsRoadVehicleCategory(vehicle) then
         state.layout = nil
         state.hasControl = false
         state.hasCenterDiff = false
-        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
+        RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.DRIVETRAIN)
         return false
     end
 
-    state.layout = ADS_Drivetrain.buildLayout(vehicle)
+    state.layout = RMS_Drivetrain.buildLayout(vehicle)
     state.hasControl = state.layout ~= nil
     state.hasCenterDiff = state.layout ~= nil and state.layout.centerIdx0 ~= nil
-    AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
+    RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.DRIVETRAIN)
     return state.layout ~= nil
 end
 
@@ -420,9 +420,9 @@ local function getEffectiveFourWheelDrive(state)
     if state.layout == nil or state.layout.centerIdx0 == nil then
         return true -- single-axle machines are always "engaged"
     end
-    if state.driveMode == ADS_Drivetrain.MODE.FOUR_WD then
+    if state.driveMode == RMS_Drivetrain.MODE.FOUR_WD then
         return true
-    elseif state.driveMode == ADS_Drivetrain.MODE.AUTO then
+    elseif state.driveMode == RMS_Drivetrain.MODE.AUTO then
         return state.autoEngaged
     end
     return false
@@ -561,10 +561,10 @@ local function restoreOriginalDifferentialGraph(vehicle, state)
     return true
 end
 
-function ADS_Drivetrain.applyState(vehicle, force)
+function RMS_Drivetrain.applyState(vehicle, force)
     if not vehicle.isServer then return end
 
-    local state = ADS_Drivetrain.getState(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     local spec_motorized = vehicle.spec_motorized
     if state == nil or state.layout == nil or spec_motorized == nil or spec_motorized.motorizedNode == nil then
         return
@@ -704,13 +704,13 @@ end
 --                 COMMAND SETTERS (MP-SAFE)
 -- ==========================================================
 
-function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested, parkBrake, noEventSend)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested, parkBrake, noEventSend)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
 
     driveMode = math.clamp(math.floor(tonumber(driveMode) or state.driveMode), 0, 2)
-    if not getConfig().ALLOW_AUTO_MODE and driveMode == ADS_Drivetrain.MODE.AUTO then
-        driveMode = ADS_Drivetrain.MODE.FOUR_WD
+    if not getConfig().ALLOW_AUTO_MODE and driveMode == RMS_Drivetrain.MODE.AUTO then
+        driveMode = RMS_Drivetrain.MODE.FOUR_WD
     end
     diffLockRequested = diffLockRequested == true
     if parkBrake == nil then parkBrake = state.parkBrake end
@@ -724,50 +724,50 @@ function ADS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
     state.parkBrake = parkBrake
 
     if vehicle.isServer then
-        if state.driveMode ~= ADS_Drivetrain.MODE.AUTO then
+        if state.driveMode ~= RMS_Drivetrain.MODE.AUTO then
             state.autoEngaged = false
             state._autoConditionTimer = 0
         end
         if changed then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.DRIVETRAIN)
         end
     elseif changed then
-        ADS_DrivetrainEvent.sendEvent(vehicle, noEventSend)
+        RMS_DrivetrainEvent.sendEvent(vehicle, noEventSend)
     end
 end
 
-function ADS_Drivetrain.setParkBrake(vehicle, engaged, noEventSend)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.setParkBrake(vehicle, engaged, noEventSend)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
-    ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, engaged, noEventSend)
+    RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, engaged, noEventSend)
 end
 
-function ADS_Drivetrain.cycleDriveMode(vehicle)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.cycleDriveMode(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil or not state.hasCenterDiff then return end
 
     local nextMode
-    if state.driveMode == ADS_Drivetrain.MODE.TWO_WD then
-        nextMode = ADS_Drivetrain.MODE.FOUR_WD
-    elseif state.driveMode == ADS_Drivetrain.MODE.FOUR_WD then
-        nextMode = getConfig().ALLOW_AUTO_MODE and ADS_Drivetrain.MODE.AUTO or ADS_Drivetrain.MODE.TWO_WD
+    if state.driveMode == RMS_Drivetrain.MODE.TWO_WD then
+        nextMode = RMS_Drivetrain.MODE.FOUR_WD
+    elseif state.driveMode == RMS_Drivetrain.MODE.FOUR_WD then
+        nextMode = getConfig().ALLOW_AUTO_MODE and RMS_Drivetrain.MODE.AUTO or RMS_Drivetrain.MODE.TWO_WD
     else
-        nextMode = ADS_Drivetrain.MODE.TWO_WD
+        nextMode = RMS_Drivetrain.MODE.TWO_WD
     end
 
-    ADS_Drivetrain.setDrivetrainState(vehicle, nextMode, state.diffLockRequested, state.parkBrake)
+    RMS_Drivetrain.setDrivetrainState(vehicle, nextMode, state.diffLockRequested, state.parkBrake)
 end
 
-function ADS_Drivetrain.toggleDiffLock(vehicle)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.toggleDiffLock(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil or not state.hasControl then return end
-    ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, not state.diffLockRequested, state.parkBrake)
+    RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, not state.diffLockRequested, state.parkBrake)
 end
 
-function ADS_Drivetrain.toggleParkBrake(vehicle)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.toggleParkBrake(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
-    ADS_Drivetrain.setParkBrake(vehicle, not state.parkBrake)
+    RMS_Drivetrain.setParkBrake(vehicle, not state.parkBrake)
 end
 
 -- ==========================================================
@@ -775,7 +775,7 @@ end
 -- ==========================================================
 
 local function updateAutoMode(vehicle, state, spec, dt)
-    if state.driveMode ~= ADS_Drivetrain.MODE.AUTO then return end
+    if state.driveMode ~= RMS_Drivetrain.MODE.AUTO then return end
 
     local C = getConfig()
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
@@ -809,7 +809,7 @@ local function updateDiffLockState(vehicle, state, dt)
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
 
     if state.diffLockRequested and vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
-        ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
+        RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
         return
     end
 
@@ -817,7 +817,7 @@ local function updateDiffLockState(vehicle, state, dt)
         if state.diffLockEngaged then
             if speed > C.DIFFLOCK_AUTO_RELEASE_SPEED then
                 state.diffLockEngaged = false
-                ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
+                RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
             end
         else
             if speed <= C.DIFFLOCK_AUTO_RELEASE_SPEED then
@@ -829,8 +829,8 @@ local function updateDiffLockState(vehicle, state, dt)
     end
 end
 
-function ADS_Drivetrain.getIsTurning(vehicle)
-    local steerState = vehicle.spec_AdvancedDamageSystem.chassisSteerState
+function RMS_Drivetrain.getIsTurning(vehicle)
+    local steerState = vehicle.spec_RealisticMechanicalSystems.chassisSteerState
     local steeringAngle = steerState.angleMagnitude
     if steeringAngle > getConfig().WINDUP_STEER_THRESHOLD then
         return true
@@ -904,10 +904,10 @@ local function updateWindupModel(vehicle, state, spec, dt)
     if state.diffLockEngaged and state.windupStress >= 1.0 and not state._windupDamageLatched then
         local transmissionSystem = spec.systems ~= nil and spec.systems.transmission or nil
         if transmissionSystem ~= nil and transmissionSystem.enabled == true and vehicle.applyInstantDamageToSystem ~= nil then
-            vehicle:applyInstantDamageToSystem(AdvancedDamageSystem.SYSTEMS.TRANSMISSION, C.WINDUP_INSTANT_DAMAGE)
+            vehicle:applyInstantDamageToSystem(RealisticMechanicalSystems.SYSTEMS.TRANSMISSION, C.WINDUP_INSTANT_DAMAGE)
             state._windupDamageLatched = true
             state.windupStress = 0.5
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.WEAR)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.WEAR)
         end
     end
 
@@ -924,7 +924,7 @@ local function notifyParkBrakeChange(state)
         if state._lastNotifiedPark ~= nil then
             local key = state.parkBrake and "ads_drivetrain_notify_park_on" or "ads_drivetrain_notify_park_off"
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, g_i18n:getText(key))
-            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
+            RMS_SoundManager.playSample(RMS_Main.samples.notification2D)
         end
         state._lastNotifiedPark = state.parkBrake
     end
@@ -957,21 +957,21 @@ local function updateLocalNotifications(vehicle, state, dt)
     local driveModeChanged = state._lastNotifiedMode ~= state.driveMode
     if driveModeChanged then
         if state._lastNotifiedMode ~= nil then
-            local modeText = g_i18n:getText(ADS_Drivetrain.MODE_L10N[state.driveMode] or "ads_drivetrain_mode_4wd")
+            local modeText = g_i18n:getText(RMS_Drivetrain.MODE_L10N[state.driveMode] or "ads_drivetrain_mode_4wd")
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, string.format(g_i18n:getText("ads_drivetrain_notify_mode"), modeText))
-            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
+            RMS_SoundManager.playSample(RMS_Main.samples.notification2D)
         end
         state._lastNotifiedMode = state.driveMode
     end
 
-    if driveModeChanged or state.driveMode ~= ADS_Drivetrain.MODE.AUTO then
+    if driveModeChanged or state.driveMode ~= RMS_Drivetrain.MODE.AUTO then
         state._lastNotifiedAutoEngaged = state.autoEngaged
     elseif state._lastNotifiedAutoEngaged ~= state.autoEngaged then
         if state._lastNotifiedAutoEngaged ~= nil then
             local modeKey = state.autoEngaged and "ads_drivetrain_mode_4wd" or "ads_drivetrain_mode_4x2"
             local modeText = g_i18n:getText(modeKey)
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, string.format(g_i18n:getText("ads_drivetrain_notify_mode"), modeText))
-            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
+            RMS_SoundManager.playSample(RMS_Main.samples.notification2D)
         end
         state._lastNotifiedAutoEngaged = state.autoEngaged
     end
@@ -980,7 +980,7 @@ local function updateLocalNotifications(vehicle, state, dt)
         if state._lastNotifiedLock ~= nil then
             local key = state.diffLockEngaged and "ads_drivetrain_notify_lock_on" or "ads_drivetrain_notify_lock_off"
             g_currentMission.hud:addSideNotification({1, 1, 1, 1}, g_i18n:getText(key))
-            ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
+            RMS_SoundManager.playSample(RMS_Main.samples.notification2D)
         end
         state._lastNotifiedLock = state.diffLockEngaged
     end
@@ -1009,27 +1009,27 @@ end
 local function updateParkBrakeState(vehicle, state, dt)
     if not getConfig().PARKBRAKE_ENABLED or state.parkExternallyManaged then
         if state.parkBrake then
-            ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
+            RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
         end
         return
     end
 
     if state.parkBrake and vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
-        ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
+        RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
         return
     end
 
     if getConfig().PARKBRAKE_AUTO_MODE and not state.parkBrake then
         local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
         if not vehicle:getIsControlled() and not vehicle:getIsAIActive() and speed < 1.0 then
-            ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, true, false)
+            RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, true, false)
         end
     end
 
     if getConfig().PARKBRAKE_AUTO_MODE and state.parkBrake and vehicle:getIsControlled() then
         local axisForward = vehicle.spec_drivable ~= nil and math.abs(tonumber(vehicle.spec_drivable.axisForward) or 0) or 0
         if axisForward > 0.2 then
-            ADS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
+            RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, false, false)
         end
     end
 end
@@ -1082,7 +1082,7 @@ local function updateDebugAxleRatios(vehicle, state, dbg)
 end
 
 local function updateDebugData(vehicle, state, spec)
-    if not ADS_Config.DEBUG or spec.debugData == nil or spec.debugData.drivetrain == nil then
+    if not RMS_Config.DEBUG or spec.debugData == nil or spec.debugData.drivetrain == nil then
         return
     end
 
@@ -1117,8 +1117,8 @@ local function updateDebugData(vehicle, state, spec)
     dbg.wheelAxleSpeeds = wheelAxleSpeeds
 end
 
-function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+function RMS_Drivetrain.updateDrivetrain(vehicle, dt)
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local state = spec ~= nil and spec.drivetrain or nil
     if state == nil then return end
 
@@ -1129,14 +1129,14 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
 
     if not ensureLayout(vehicle, state) then return end
 
-    local externallyManaged = ADS_Drivetrain.isExternallyManaged(vehicle)
-    local parkExternallyManaged = ADS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
+    local externallyManaged = RMS_Drivetrain.isExternallyManaged(vehicle)
+    local parkExternallyManaged = RMS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
     local managementChanged = state.externallyManaged ~= externallyManaged
         or state.parkExternallyManaged ~= parkExternallyManaged
     if managementChanged then
         state.externallyManaged = externallyManaged
         state.parkExternallyManaged = parkExternallyManaged
-        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
+        RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.DRIVETRAIN)
     end
 
     if not getConfig().ENABLED or externallyManaged then
@@ -1155,13 +1155,13 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         if hadWindupState then
             state.windupStress = 0
             state.windupWearFactor = 0
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.DRIVETRAIN)
         end
         return
     end
 
-    if state.driveMode == ADS_Drivetrain.MODE.AUTO and not getConfig().ALLOW_AUTO_MODE then
-        ADS_Drivetrain.setDrivetrainState(vehicle, ADS_Drivetrain.MODE.FOUR_WD, state.diffLockRequested, state.parkBrake, false)
+    if state.driveMode == RMS_Drivetrain.MODE.AUTO and not getConfig().ALLOW_AUTO_MODE then
+        RMS_Drivetrain.setDrivetrainState(vehicle, RMS_Drivetrain.MODE.FOUR_WD, state.diffLockRequested, state.parkBrake, false)
     end
 
     local isAddedToPhysics = vehicle.isAddedToPhysics == true
@@ -1177,7 +1177,7 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
     updateDiffLockState(vehicle, state, dt)
     updateParkBrakeState(vehicle, state, dt)
     updateWindupModel(vehicle, state, spec, dt)
-    ADS_Drivetrain.applyState(vehicle, physicsRestored)
+    RMS_Drivetrain.applyState(vehicle, physicsRestored)
     applyDifferentialLock(vehicle, state)
 
     local windupQuantized = math.floor(sanitizeNumber(state.windupStress, 0, 0, 1) * 255 + 0.5)
@@ -1186,15 +1186,15 @@ function ADS_Drivetrain.updateDrivetrain(vehicle, dt)
         or prevWindupActive ~= state.windupActive
         or prevWindupQuantized ~= windupQuantized
     if physicalStateChanged then
-        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.DRIVETRAIN)
+        RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.DRIVETRAIN)
     end
 
     updateLocalNotifications(vehicle, state, dt)
     updateDebugData(vehicle, state, spec)
 end
 
-function ADS_Drivetrain.getWindupWearFactor(vehicle)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.getWindupWearFactor(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return 0 end
     return sanitizeNumber(state.windupWearFactor, 0, 0, 100)
 end
@@ -1203,13 +1203,13 @@ end
 --                MP STREAMS / SAVEGAME
 -- ==========================================================
 
-function ADS_Drivetrain.writeStreamState(vehicle, streamId)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.writeStreamState(vehicle, streamId)
+    local state = RMS_Drivetrain.getState(vehicle)
     streamWriteBool(streamId, state ~= nil and state.hasControl or false)
     streamWriteBool(streamId, state ~= nil and state.hasCenterDiff or false)
     streamWriteBool(streamId, state ~= nil and state.externallyManaged or false)
     streamWriteBool(streamId, state ~= nil and state.parkExternallyManaged or false)
-    streamWriteUIntN(streamId, state ~= nil and state.driveMode or ADS_Drivetrain.MODE.FOUR_WD, 2)
+    streamWriteUIntN(streamId, state ~= nil and state.driveMode or RMS_Drivetrain.MODE.FOUR_WD, 2)
     streamWriteBool(streamId, state ~= nil and state.autoEngaged or false)
     streamWriteBool(streamId, state ~= nil and state.diffLockRequested or false)
     streamWriteBool(streamId, state ~= nil and state.diffLockEngaged or false)
@@ -1218,7 +1218,7 @@ function ADS_Drivetrain.writeStreamState(vehicle, streamId)
     streamWriteUInt8(streamId, math.floor(sanitizeNumber(state ~= nil and state.windupStress or 0, 0, 0, 1) * 255 + 0.5))
 end
 
-function ADS_Drivetrain.readStreamState(vehicle, streamId)
+function RMS_Drivetrain.readStreamState(vehicle, streamId)
     local hasControl = streamReadBool(streamId)
     local hasCenterDiff = streamReadBool(streamId)
     local externallyManaged = streamReadBool(streamId)
@@ -1231,7 +1231,7 @@ function ADS_Drivetrain.readStreamState(vehicle, streamId)
     local windupActive = streamReadBool(streamId)
     local windupStress = streamReadUInt8(streamId) / 255
 
-    local state = ADS_Drivetrain.getState(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
     state.hasControl = hasControl
     state.hasCenterDiff = hasCenterDiff
@@ -1246,16 +1246,16 @@ function ADS_Drivetrain.readStreamState(vehicle, streamId)
     state.windupStress = windupStress
 end
 
-function ADS_Drivetrain.saveToXMLFile(vehicle, xmlFile, key)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.saveToXMLFile(vehicle, xmlFile, key)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
     xmlFile:setValue(key .. "#driveMode", state.driveMode)
     xmlFile:setValue(key .. "#diffLockRequested", state.diffLockRequested == true)
     xmlFile:setValue(key .. "#parkBrake", state.parkBrake == true)
 end
 
-function ADS_Drivetrain.loadFromSavegame(vehicle, xmlFile, key)
-    local state = ADS_Drivetrain.getState(vehicle)
+function RMS_Drivetrain.loadFromSavegame(vehicle, xmlFile, key)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
     state.driveMode = math.clamp(math.floor(tonumber(xmlFile:getValue(key .. "#driveMode", state.driveMode)) or state.driveMode), 0, 2)
     state.diffLockRequested = xmlFile:getValue(key .. "#diffLockRequested", state.diffLockRequested) == true
@@ -1266,26 +1266,26 @@ end
 --                  INPUT ACTION CALLBACKS
 -- ==========================================================
 
-function ADS_Drivetrain.actionToggleDriveMode(vehicle, actionName, inputValue, callbackState, isAnalog)
-    if not ADS_Drivetrain.getIsAvailable(vehicle)
-            or not ADS_Drivetrain.getHasCenterDifferential(vehicle) then
+function RMS_Drivetrain.actionToggleDriveMode(vehicle, actionName, inputValue, callbackState, isAnalog)
+    if not RMS_Drivetrain.getIsAvailable(vehicle)
+            or not RMS_Drivetrain.getHasCenterDifferential(vehicle) then
         return
     end
-    ADS_Drivetrain.cycleDriveMode(vehicle)
+    RMS_Drivetrain.cycleDriveMode(vehicle)
 end
 
-function ADS_Drivetrain.actionToggleDiffLock(vehicle, actionName, inputValue, callbackState, isAnalog)
-    if not ADS_Drivetrain.getIsAvailable(vehicle) then return end
-    ADS_Drivetrain.toggleDiffLock(vehicle)
+function RMS_Drivetrain.actionToggleDiffLock(vehicle, actionName, inputValue, callbackState, isAnalog)
+    if not RMS_Drivetrain.getIsAvailable(vehicle) then return end
+    RMS_Drivetrain.toggleDiffLock(vehicle)
 end
 
-function ADS_Drivetrain.actionToggleParkBrake(vehicle, actionName, inputValue, callbackState, isAnalog)
+function RMS_Drivetrain.actionToggleParkBrake(vehicle, actionName, inputValue, callbackState, isAnalog)
     if not getConfig().PARKBRAKE_ENABLED then return end
-    ADS_Drivetrain.toggleParkBrake(vehicle)
+    RMS_Drivetrain.toggleParkBrake(vehicle)
 end
 
-function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSelection)
-    local spec = vehicle.spec_AdvancedDamageSystem
+function RMS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSelection)
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local state = spec ~= nil and spec.drivetrain or nil
     if state == nil then return end
 
@@ -1298,7 +1298,7 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
     if getConfig().ENABLED and not state.externallyManaged then
         if state.hasCenterDiff or not state.layoutAnalyzed then
             local _, modeEventId = vehicle:addActionEvent(spec.drivetrainActionEvents, InputAction.ADS_TOGGLE_4WD, vehicle,
-                ADS_Drivetrain.actionToggleDriveMode, false, true, false, true, nil)
+                RMS_Drivetrain.actionToggleDriveMode, false, true, false, true, nil)
             if modeEventId ~= nil then
                 g_inputBinding:setActionEventText(modeEventId, g_i18n:getText("input_ADS_TOGGLE_4WD"))
                 g_inputBinding:setActionEventTextPriority(modeEventId, GS_PRIO_LOW)
@@ -1307,7 +1307,7 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
         end
 
         local _, lockEventId = vehicle:addActionEvent(spec.drivetrainActionEvents, InputAction.ADS_TOGGLE_DIFFLOCK, vehicle,
-            ADS_Drivetrain.actionToggleDiffLock, false, true, false, true, nil)
+            RMS_Drivetrain.actionToggleDiffLock, false, true, false, true, nil)
         if lockEventId ~= nil then
             g_inputBinding:setActionEventText(lockEventId, g_i18n:getText("input_ADS_TOGGLE_DIFFLOCK"))
             g_inputBinding:setActionEventTextPriority(lockEventId, GS_PRIO_LOW)
@@ -1317,7 +1317,7 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
 
     if getConfig().PARKBRAKE_ENABLED and not state.parkExternallyManaged then
         local _, parkEventId = vehicle:addActionEvent(spec.drivetrainActionEvents, InputAction.ADS_TOGGLE_PARKBRAKE, vehicle,
-            ADS_Drivetrain.actionToggleParkBrake, false, true, false, true, nil)
+            RMS_Drivetrain.actionToggleParkBrake, false, true, false, true, nil)
         if parkEventId ~= nil then
             g_inputBinding:setActionEventText(parkEventId, g_i18n:getText("input_ADS_TOGGLE_PARKBRAKE"))
             g_inputBinding:setActionEventTextPriority(parkEventId, GS_PRIO_LOW)
@@ -1326,8 +1326,8 @@ function ADS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
     end
 end
 
-function ADS_Drivetrain.getIsParkBrakeEngaged(vehicle)
+function RMS_Drivetrain.getIsParkBrakeEngaged(vehicle)
     if not getConfig().PARKBRAKE_ENABLED then return false end
-    local state = ADS_Drivetrain.getState(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     return state ~= nil and state.parkBrake == true and not state.parkExternallyManaged
 end

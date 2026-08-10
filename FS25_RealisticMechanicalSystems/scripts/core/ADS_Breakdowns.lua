@@ -1,6 +1,6 @@
-ADS_Breakdowns = {}
+RMS_Breakdowns = {}
 
-local log_dbg = ADS_Utils.createLogger("[ADS_BREAKDOWNS]")
+local log_dbg = RMS_Utils.createLogger("[RMS_BREAKDOWNS]")
 
 local loggedHookErrors = {}
 
@@ -14,7 +14,7 @@ local function log_hook_error(context, err)
         return
     end
     loggedHookErrors[key] = true
-    Logging.error("[ADS_BREAKDOWNS] %s failed: %s", context, tostring(err))
+    Logging.error("[RMS_BREAKDOWNS] %s failed: %s", context, tostring(err))
 end
 
 source(g_currentModDirectory .. "scripts/core/ADS_BreakdownRegistry.lua")
@@ -23,17 +23,17 @@ source(g_currentModDirectory .. "scripts/core/ADS_BreakdownRegistry.lua")
 --                     BREAKDOWN EFFECTS
 -- ==========================================================
 
-ADS_Breakdowns.EffectApplicators = {}
+RMS_Breakdowns.EffectApplicators = {}
 
 local function addFuncToActive(v, effectName, func)
-    if v.spec_AdvancedDamageSystem.activeFunctions[effectName] == nil then
-        v.spec_AdvancedDamageSystem.activeFunctions[effectName] = func
+    if v.spec_RealisticMechanicalSystems.activeFunctions[effectName] == nil then
+        v.spec_RealisticMechanicalSystems.activeFunctions[effectName] = func
     end
 end
 
 local function removeFuncFromActive(v, effectName)
-    if v.spec_AdvancedDamageSystem.activeFunctions[effectName] ~= nil then
-        v.spec_AdvancedDamageSystem.activeFunctions[effectName] = nil
+    if v.spec_RealisticMechanicalSystems.activeFunctions[effectName] ~= nil then
+        v.spec_RealisticMechanicalSystems.activeFunctions[effectName] = nil
     end
 end
 
@@ -67,7 +67,7 @@ local function getActiveStarterCrankingEffect(spec)
 end
 
 local function getIsStarterRequestActive(vehicle, effect)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     return spec ~= nil and (spec.startButtonHeld == true
         or (effect ~= nil and effect.extraData ~= nil and effect.extraData.automaticCrank == true))
 end
@@ -77,7 +77,7 @@ local function syncStarterCrankingSample(vehicle)
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local starterCrankingSample = spec ~= nil and spec.samples ~= nil and spec.samples.starterCranking or nil
     if starterCrankingSample == nil then
         return
@@ -89,11 +89,11 @@ local function syncStarterCrankingSample(vehicle)
 
     if shouldPlay then
         local pitchOffset = getStarterCrankingPitchOffset(activeEffect.extraData.preCrankVoltageV)
-        ADS_SoundManager.setSamplePitchOffset(starterCrankingSample, pitchOffset)
-        ADS_SoundManager.setSamplePlaying(starterCrankingSample, true)
+        RMS_SoundManager.setSamplePitchOffset(starterCrankingSample, pitchOffset)
+        RMS_SoundManager.setSamplePlaying(starterCrankingSample, true)
     else
-        ADS_SoundManager.setSamplePlaying(starterCrankingSample, false, 0, 0)
-        ADS_SoundManager.setSamplePitchOffset(starterCrankingSample, 0)
+        RMS_SoundManager.setSamplePlaying(starterCrankingSample, false, 0, 0)
+        RMS_SoundManager.setSamplePitchOffset(starterCrankingSample, 0)
     end
 end
 
@@ -103,16 +103,16 @@ local function playStarterCrankingEndSample(spec, pitchOffset)
         return
     end
 
-    ADS_SoundManager.setSampleVolumeOffset(starterCrankingEndSample, 0)
-    if not ADS_SoundManager.getIsSamplePlaying(starterCrankingEndSample) then
-        ADS_SoundManager.setSamplePitchOffset(starterCrankingEndSample, pitchOffset or 0)
-        ADS_SoundManager.playSample(starterCrankingEndSample)
+    RMS_SoundManager.setSampleVolumeOffset(starterCrankingEndSample, 0)
+    if not RMS_SoundManager.getIsSamplePlaying(starterCrankingEndSample) then
+        RMS_SoundManager.setSamplePitchOffset(starterCrankingEndSample, pitchOffset or 0)
+        RMS_SoundManager.playSample(starterCrankingEndSample)
     end
 end
 
 -- ==========================================================
 -- SELF_DISAPPEARING_BREAKDOWN_EFFECT
-ADS_Breakdowns.EffectApplicators.SELF_DISAPPEARING_BREAKDOWN_EFFECT = {
+RMS_Breakdowns.EffectApplicators.SELF_DISAPPEARING_BREAKDOWN_EFFECT = {
     apply = function(vehicle, effectData, handler)
         vehicle:removeBreakdown(effectData.extraData.breakdownId)
     end,
@@ -121,15 +121,15 @@ ADS_Breakdowns.EffectApplicators.SELF_DISAPPEARING_BREAKDOWN_EFFECT = {
 
 -- ==========================================================
 -- ENGINE_FAILURE
-ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
+RMS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
     getEffectName = function()
         return "ENGINE_FAILURE"
     end,
     apply = function(vehicle, effectData, handler)
         local effectName = handler.getEffectName()
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         local activeFunc = function(v, dt)
-            local currentEffect = v.spec_AdvancedDamageSystem.activeEffects ~= nil and v.spec_AdvancedDamageSystem.activeEffects[effectName] or nil
+            local currentEffect = v.spec_RealisticMechanicalSystems.activeEffects ~= nil and v.spec_RealisticMechanicalSystems.activeEffects[effectName] or nil
             if currentEffect == nil or currentEffect.extraData == nil then
                 return
             end
@@ -149,7 +149,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
                     currentEffect.extraData.status = 'IDLE'
                     currentEffect.extraData.preCrankVoltageV = nil
                     currentEffect.extraData.automaticCrank = false
-                    ADS_EffectSyncEvent.send(v, effectName, "IDLE", 0, 0, 0)
+                    RMS_EffectSyncEvent.send(v, effectName, "IDLE", 0, 0, 0)
                 end
             end
 
@@ -165,7 +165,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_FAILURE = {
 
 -- ==========================================================
 -- LIGHTS_FAILURE
-ADS_Breakdowns.EffectApplicators.LIGHTS_FAILURE = {
+RMS_Breakdowns.EffectApplicators.LIGHTS_FAILURE = {
     apply = function(vehicle, effectData, handler)
         local currentLightMask = vehicle:getLightsTypesMask()
         if currentLightMask ~= 0 then
@@ -175,9 +175,9 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FAILURE = {
 
 }
 
-function ADS_Breakdowns.setLightsTypesMask(self, superFunc, lightsTypesMask, force, noEventSend)
+function RMS_Breakdowns.setLightsTypesMask(self, superFunc, lightsTypesMask, force, noEventSend)
     local rootVehicle = self:getRootVehicle()
-    local lightsFailure = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.LIGHTS_FAILURE
+    local lightsFailure = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.LIGHTS_FAILURE
     if lightsFailure == nil then
         superFunc(self, lightsTypesMask, force, noEventSend)
     else
@@ -191,7 +191,7 @@ end
 
 -- ==========================================================
 -- PTO_FAILURE
-ADS_Breakdowns.EffectApplicators.PTO_FAILURE = {
+RMS_Breakdowns.EffectApplicators.PTO_FAILURE = {
     getEffectName = function() return "PTO_FAILURE" end,
     apply = function(vehicle, effectData, handler)
         local effectName = handler.getEffectName()
@@ -231,7 +231,7 @@ ADS_Breakdowns.EffectApplicators.PTO_FAILURE = {
         end
 
         local activeFunc = function(v, dt)
-            local effect = v.spec_AdvancedDamageSystem.activeEffects[effectName]
+            local effect = v.spec_RealisticMechanicalSystems.activeEffects[effectName]
             if effect == nil or (tonumber(effect.value) or 0) <= 0 then
                 return
             end
@@ -248,7 +248,7 @@ ADS_Breakdowns.EffectApplicators.PTO_FAILURE = {
                  
 -- ==========================================================
 local function getWheelSeizureTargetWheel(vehicle)
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
+    local spec_ads = vehicle.spec_RealisticMechanicalSystems
     local spec_wheels = vehicle.spec_wheels
     if spec_ads == nil or spec_wheels == nil or spec_wheels.wheels == nil then
         return nil
@@ -360,28 +360,28 @@ end
 
 -- ENGINE_LIMP_EFFECT
 -- BRAKE_FORCE_MODIFIER
-ADS_Breakdowns.EffectApplicators.BRAKE_FORCE_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.BRAKE_FORCE_MODIFIER = {
 }
 
 -- STEERING_STATIC_BIAS_EFFECT
-ADS_Breakdowns.EffectApplicators.STEERING_STATIC_BIAS_EFFECT = {
+RMS_Breakdowns.EffectApplicators.STEERING_STATIC_BIAS_EFFECT = {
 }
 
 -- STEERING_SENSITIVITY_MODIFIER
-ADS_Breakdowns.EffectApplicators.STEERING_SENSITIVITY_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.STEERING_SENSITIVITY_MODIFIER = {
 }
 
 -- WHEEL_SEIZURE_EFFECT
-ADS_Breakdowns.EffectApplicators.WHEEL_SEIZURE_EFFECT = {
+RMS_Breakdowns.EffectApplicators.WHEEL_SEIZURE_EFFECT = {
     remove = function(vehicle, handler)
-        if vehicle.spec_AdvancedDamageSystem ~= nil then
-            vehicle.spec_AdvancedDamageSystem.wheelSeizureTargetIndex = nil
+        if vehicle.spec_RealisticMechanicalSystems ~= nil then
+            vehicle.spec_RealisticMechanicalSystems.wheelSeizureTargetIndex = nil
         end
     end
 }
 
 -- ENGINE_HESITATION_CHANCE
-ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
+RMS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
     getEffectName = function() return "ENGINE_HESITATION_CHANCE" end,
 
     apply = function(vehicle, effectData, handler)
@@ -400,7 +400,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
                     extra.timer = 0
                 end
             elseif v:getMotorLoadPercentage() > extra.motorLoad then
-                if v.isServer and effectData.value > 0 and math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effectData.value) and extra.status == "IDLE" then
+                if v.isServer and effectData.value > 0 and math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effectData.value) and extra.status == "IDLE" then
 
                     local cruiseState = v:getCruiseControlState()
                     if cruiseState ~= 0 then
@@ -408,7 +408,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
                         v:setCruiseControlState(0, true)
                     end
                     extra.status = "CHOKING"
-                    ADS_EffectSyncEvent.send(v, "ENGINE_HESITATION_CHANCE", "CHOKING", 0)
+                    RMS_EffectSyncEvent.send(v, "ENGINE_HESITATION_CHANCE", "CHOKING", 0)
 
                 end
             end
@@ -421,14 +421,14 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HESITATION_CHANCE = {
     end
 }
 
-function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, axisSide, doHandbrake, dt)
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
+function RMS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, axisSide, doHandbrake, dt)
+    local spec_ads = vehicle.spec_RealisticMechanicalSystems
     if spec_ads == nil then
         return superFunc(vehicle, axisForward, axisSide, doHandbrake, dt)
     end
 
     -- Parking brake: anchor the machine and ignore throttle, like a real park position.
-    if ADS_Drivetrain.getIsParkBrakeEngaged(vehicle) then
+    if RMS_Drivetrain.getIsParkBrakeEngaged(vehicle) then
         if vehicle:getCruiseControlState() ~= Drivable.CRUISECONTROL_STATE_OFF then
             vehicle:setCruiseControlState(Drivable.CRUISECONTROL_STATE_OFF)
         end
@@ -511,8 +511,8 @@ function ADS_Breakdowns.updateVehiclePhysics(vehicle, superFunc, axisForward, ax
                     and math.abs(origAxisForward) > 0.999
                     and math.random() < math.abs(brakeEffect.value) then
                     local sampleIndex = math.random(3)
-                    ADS_SoundManager.playSample(spec_ads.samples["brakes" .. sampleIndex])
-                    ADS_EffectSyncEvent.send(vehicle, "BRAKE_FORCE_MODIFIER", "SOUND", 0, sampleIndex)
+                    RMS_SoundManager.playSample(spec_ads.samples["brakes" .. sampleIndex])
+                    RMS_EffectSyncEvent.send(vehicle, "BRAKE_FORCE_MODIFIER", "SOUND", 0, sampleIndex)
                 end
             end
         end
@@ -559,7 +559,7 @@ end
 
 -- ==========================================================
 -- ENGINE_TORQUE_MODIFIER
-ADS_Breakdowns.EffectApplicators.ENGINE_TORQUE_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.ENGINE_TORQUE_MODIFIER = {
     apply = function(vehicle, effectData, handler)
         vehicle:updateMotorProperties()
     end,
@@ -574,7 +574,7 @@ if VehicleMotor ~= nil and VehicleMotor.getTorqueCurveValue ~= nil then
         local torque = superFunc(self, rpm)
         local vehicle = self.vehicle
         if vehicle ~= nil then
-            local spec_ads = vehicle.spec_AdvancedDamageSystem
+            local spec_ads = vehicle.spec_RealisticMechanicalSystems
             if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
                 local effect = spec_ads.activeEffects.ENGINE_TORQUE_MODIFIER
                 if effect ~= nil and effect.value ~= nil then
@@ -588,7 +588,7 @@ end
                   
 -- ==========================================================
 -- PTO_TORQUE_TRANSFER_MODIFIER
-ADS_Breakdowns.EffectApplicators.PTO_TORQUE_TRANSFER_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.PTO_TORQUE_TRANSFER_MODIFIER = {
 
 }
 
@@ -611,7 +611,7 @@ if PowerConsumer ~= nil and PowerConsumer.getTotalConsumedPtoTorque ~= nil then
                 rootVehicle = rootVehicle:getRootVehicle()
             end
 
-            local spec = rootVehicle ~= nil and rootVehicle.spec_AdvancedDamageSystem or nil
+            local spec = rootVehicle ~= nil and rootVehicle.spec_RealisticMechanicalSystems or nil
             local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects.PTO_TORQUE_TRANSFER_MODIFIER or nil
             if effect ~= nil then
                 local effectValue = tonumber(effect.value) or 0
@@ -629,10 +629,10 @@ end
                   
 -- ==========================================================
 -- FUEL_CONSUMPTION_MODIFIER
-ADS_Breakdowns.EffectApplicators.FUEL_CONSUMPTION_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.FUEL_CONSUMPTION_MODIFIER = {
 }
 
-function ADS_Breakdowns.updateConsumers(vehicle, dt, accInput)
+function RMS_Breakdowns.updateConsumers(vehicle, dt, accInput)
 	local spec = vehicle.spec_motorized
 	local idleFactor = 0.5
 	local rpmPercentage = (spec.motor.lastMotorRpm - spec.motor.minRpm) / (spec.motor.maxRpm - spec.motor.minRpm)
@@ -665,8 +665,8 @@ function ADS_Breakdowns.updateConsumers(vehicle, dt, accInput)
 		usageFactor = usageFactor * (1 + damage * Motorized.DAMAGED_USAGE_INCREASE)
 	end
 
-    if vehicle.spec_AdvancedDamageSystem ~= nil then
-        local fuelEffect = vehicle.spec_AdvancedDamageSystem.activeEffects.FUEL_CONSUMPTION_MODIFIER
+    if vehicle.spec_RealisticMechanicalSystems ~= nil then
+        local fuelEffect = vehicle.spec_RealisticMechanicalSystems.activeEffects.FUEL_CONSUMPTION_MODIFIER
         local adsFuelModifier = (fuelEffect and fuelEffect.value) or 0
         usageFactor = usageFactor * (1 + adsFuelModifier)
     end
@@ -756,12 +756,12 @@ function ADS_Breakdowns.updateConsumers(vehicle, dt, accInput)
 	end
 end
 
-function ADS_Breakdowns.updateConsumersOverwrite(vehicle, superFunc, dt, accInput)
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
+function RMS_Breakdowns.updateConsumersOverwrite(vehicle, superFunc, dt, accInput)
+    local spec_ads = vehicle.spec_RealisticMechanicalSystems
     if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
         local effect = spec_ads.activeEffects.FUEL_CONSUMPTION_MODIFIER
         if effect ~= nil and effect.value ~= nil then
-            return ADS_Breakdowns.updateConsumers(vehicle, dt, accInput)
+            return RMS_Breakdowns.updateConsumers(vehicle, dt, accInput)
         end
     end
     return superFunc(vehicle, dt, accInput)
@@ -769,12 +769,12 @@ end
 
 -- ==========================================================
 -- TRANSMISSION_SLIP_EFFECT
-ADS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
+RMS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
     apply = function(vehicle, effectData, handler)
         local motor = vehicle:getMotor()
         if motor == nil then return end
 
-        local spec_ads = vehicle.spec_AdvancedDamageSystem
+        local spec_ads = vehicle.spec_RealisticMechanicalSystems
         if spec_ads._origClutchSlippingTime == nil then
             spec_ads._origClutchSlippingTime = motor.clutchSlippingTime
         end
@@ -785,7 +785,7 @@ ADS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
         local motor = vehicle:getMotor()
         if motor == nil then return end
 
-        local spec_ads = vehicle.spec_AdvancedDamageSystem
+        local spec_ads = vehicle.spec_RealisticMechanicalSystems
         if spec_ads._origClutchSlippingTime ~= nil then
             motor.clutchSlippingTime = spec_ads._origClutchSlippingTime
             spec_ads._origClutchSlippingTime = nil
@@ -794,7 +794,7 @@ ADS_Breakdowns.EffectApplicators.TRANSMISSION_SLIP_EFFECT = {
 }
 
 -- CVT_SLIP_EFFECT
-ADS_Breakdowns.EffectApplicators.CVT_SLIP_EFFECT = {
+RMS_Breakdowns.EffectApplicators.CVT_SLIP_EFFECT = {
 
     remove = function(vehicle, handler)
         local motor = vehicle:getMotor()
@@ -805,7 +805,7 @@ ADS_Breakdowns.EffectApplicators.CVT_SLIP_EFFECT = {
 }
 
 -- CVT_MAX_RATIO_MODIFIER
-ADS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.CVT_MAX_RATIO_MODIFIER = {
 }
 
 -- Convergence rate of the transmission slip modifier, per second at full factor.
@@ -819,7 +819,7 @@ if VehicleMotor ~= nil and VehicleMotor.getMinMaxGearRatio ~= nil then
         local vehicle = self.vehicle
         if vehicle == nil then return minRatio, maxRatio end
 
-        local spec_ads = vehicle.spec_AdvancedDamageSystem
+        local spec_ads = vehicle.spec_RealisticMechanicalSystems
         if spec_ads == nil or spec_ads.activeEffects == nil then return minRatio, maxRatio end
 
         -- TRANSMISSION_SLIP_EFFECT
@@ -918,7 +918,7 @@ end
 
 -- =========================================================
 -- POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT
-ADS_Breakdowns.EffectApplicators.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT = {
+RMS_Breakdowns.EffectApplicators.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT = {
     getEffectName = function()
         return "POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT" 
     end,
@@ -927,11 +927,11 @@ ADS_Breakdowns.EffectApplicators.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT = {
 
         local effectName = handler.getEffectName()
 
-        if vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] == nil then
-            vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] = function(v, dt)
+        if vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] == nil then
+            vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] = function(v, dt)
                 
                 if v:getIsMotorStarted() then
-                    local spec = v.spec_AdvancedDamageSystem
+                    local spec = v.spec_RealisticMechanicalSystems
                     local effect = spec.activeEffects.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT
                     if effect and effect.value > 0 and effect.extraData.status ~= "IDLE" then
                         local motor = v:getMotor()
@@ -960,8 +960,8 @@ ADS_Breakdowns.EffectApplicators.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT = {
     remove = function(vehicle, handler)
 
         local effectName = handler.getEffectName()
-        if vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] ~= nil then
-            vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] = nil
+        if vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] ~= nil then
+            vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] = nil
         end
     end
 }
@@ -970,7 +970,7 @@ if VehicleMotor ~= nil and VehicleMotor.applyTargetGear ~= nil then
     VehicleMotor.applyTargetGear = Utils.overwrittenFunction(VehicleMotor.applyTargetGear, function(self, superFunc)
         local vehicle = self.vehicle
         if vehicle ~= nil then
-            local spec_ads = vehicle.spec_AdvancedDamageSystem
+            local spec_ads = vehicle.spec_RealisticMechanicalSystems
             if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
                 local effect = spec_ads.activeEffects.POWERSHIFT_ENGAGEMENT_LAG_AND_HARSH_EFFECT
                 if effect ~= nil and effect.value ~= nil and effect.extraData.status == "IDLE" then
@@ -1054,12 +1054,12 @@ local function restoreHydraulicHoldDriftSpeedLimitBypass(implement)
 end
 
 -- HYDRAULIC_SPEED_MODIFIER
-ADS_Breakdowns.EffectApplicators.HYDRAULIC_SPEED_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.HYDRAULIC_SPEED_MODIFIER = {
 
 }
 
 -- HYDRAULIC_HOLD_DRIFT_EFFEC
-ADS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
+RMS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
     getEffectName = function()
         return "HYDRAULIC_HOLD_DRIFT_EFFECT"
     end,
@@ -1122,12 +1122,12 @@ ADS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
     end
 }
 
-function ADS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
+function RMS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
     local rootVehicle = self:getRootVehicle()
     local spec = self.spec_attacherJoints
 
-    local hydraulicEffect = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.HYDRAULIC_SPEED_MODIFIER
-    local hydraulicHoldEffect = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.HYDRAULIC_HOLD_DRIFT_EFFECT
+    local hydraulicEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_SPEED_MODIFIER
+    local hydraulicHoldEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_HOLD_DRIFT_EFFECT
     local hydraulicModifier = (hydraulicEffect and hydraulicEffect.value) or 0
     local hydraulicHoldModifier = (hydraulicHoldEffect and hydraulicHoldEffect.value) or 0
     
@@ -1186,11 +1186,11 @@ function ADS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
 end
 
 
-function ADS_Breakdowns.applyHydraulicDamageToCylindered(self, superFunc, dt, ...)
+function RMS_Breakdowns.applyHydraulicDamageToCylindered(self, superFunc, dt, ...)
     local rootVehicle = self:getRootVehicle()
     local spec = self.spec_cylindered
 
-    local hydraulicEffect = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.HYDRAULIC_SPEED_MODIFIER
+    local hydraulicEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_SPEED_MODIFIER
     local hydraulicModifier = (hydraulicEffect and hydraulicEffect.value) or 0
     if hydraulicModifier == 0 then
         return superFunc(self, dt, ...)
@@ -1243,11 +1243,11 @@ function ADS_Breakdowns.applyHydraulicDamageToCylindered(self, superFunc, dt, ..
 end
 
 
-function ADS_Breakdowns.applyHydraulicDamageToFoldable(self, superFunc, direction, moveToMiddle, noEventSend)
+function RMS_Breakdowns.applyHydraulicDamageToFoldable(self, superFunc, direction, moveToMiddle, noEventSend)
     local rootVehicle = self:getRootVehicle()
     local spec = self.spec_foldable
 
-    local hydraulicEffect = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.HYDRAULIC_SPEED_MODIFIER
+    local hydraulicEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_SPEED_MODIFIER
     local hydraulicModifier = (hydraulicEffect and hydraulicEffect.value) or 0
     if hydraulicModifier == 0 then
         return superFunc(self, direction, moveToMiddle, noEventSend)
@@ -1281,9 +1281,9 @@ function ADS_Breakdowns.applyHydraulicDamageToFoldable(self, superFunc, directio
 end
 
 
-function ADS_Breakdowns.applyHydraulicDamageToPlowRotation(self, superFunc, rotationMax, noEventSend, turnAnimationTime)
+function RMS_Breakdowns.applyHydraulicDamageToPlowRotation(self, superFunc, rotationMax, noEventSend, turnAnimationTime)
     local rootVehicle = self:getRootVehicle()
-    local hydraulicEffect = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.HYDRAULIC_SPEED_MODIFIER
+    local hydraulicEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_SPEED_MODIFIER
     local hydraulicModifier = (hydraulicEffect and hydraulicEffect.value) or 0
 
     -- Keep the vanilla Plow event flow intact. In particular, the receiving
@@ -1307,9 +1307,9 @@ function ADS_Breakdowns.applyHydraulicDamageToPlowRotation(self, superFunc, rota
 end
 
 
-function ADS_Breakdowns.applyHydraulicDamageToPlowCenterRotation(self, superFunc, noEventSend)
+function RMS_Breakdowns.applyHydraulicDamageToPlowCenterRotation(self, superFunc, noEventSend)
     local rootVehicle = self:getRootVehicle()
-    local hydraulicEffect = rootVehicle.spec_AdvancedDamageSystem and rootVehicle.spec_AdvancedDamageSystem.activeEffects.HYDRAULIC_SPEED_MODIFIER
+    local hydraulicEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_SPEED_MODIFIER
     local hydraulicModifier = (hydraulicEffect and hydraulicEffect.value) or 0
 
     local result = superFunc(self, noEventSend)
@@ -1337,7 +1337,7 @@ function ADS_Breakdowns.applyHydraulicDamageToPlowCenterRotation(self, superFunc
 end
 
 do
-    if not ADS_Breakdowns._hydraulicSpeedHooksInstalled then
+    if not RMS_Breakdowns._hydraulicSpeedHooksInstalled then
         local hydraulicSpeedHookDefs = {
             { objectName = "Plow", field = "setRotationMax", wrapperName = "applyHydraulicDamageToPlowRotation" },
             { objectName = "Plow", field = "setRotationCenter", wrapperName = "applyHydraulicDamageToPlowCenterRotation" },
@@ -1348,7 +1348,7 @@ do
 
         for _, def in ipairs(hydraulicSpeedHookDefs) do
             local targetObject = _G[def.objectName]
-            local wrapperFunc = ADS_Breakdowns[def.wrapperName]
+            local wrapperFunc = RMS_Breakdowns[def.wrapperName]
             if targetObject ~= nil and targetObject[def.field] ~= nil and wrapperFunc ~= nil then
                 targetObject[def.field] = Utils.overwrittenFunction(targetObject[def.field], wrapperFunc)
                 log_dbg("HYDRAULIC hook installed:", string.format("%s.%s", def.objectName, def.field))
@@ -1357,20 +1357,20 @@ do
             end
         end
 
-        ADS_Breakdowns._hydraulicSpeedHooksInstalled = true
+        RMS_Breakdowns._hydraulicSpeedHooksInstalled = true
     end
 end
 
 -- =========================================================
 -- MAX_SPEED_MODIFIER
-ADS_Breakdowns.EffectApplicators.MAX_SPEED_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.MAX_SPEED_MODIFIER = {
 
 }
 
-function ADS_Breakdowns.getSpeedLimitOverwrite(vehicle, superFunc, onlyIfWorking)
+function RMS_Breakdowns.getSpeedLimitOverwrite(vehicle, superFunc, onlyIfWorking)
     local speedLimit, doCheckSpeedLimit = superFunc(vehicle, onlyIfWorking)
 
-    local spec_ads = vehicle.spec_AdvancedDamageSystem
+    local spec_ads = vehicle.spec_RealisticMechanicalSystems
     if spec_ads == nil or spec_ads.activeEffects == nil then
         return speedLimit, doCheckSpeedLimit
     end
@@ -1409,126 +1409,126 @@ end
 -- =========================================================
 -- ==========================================================
 -- CONDITION_WEAR_MODIFIER
-ADS_Breakdowns.EffectApplicators.CONDITION_WEAR_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.CONDITION_WEAR_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraConditionWear = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraConditionWear = 0
     end
 }
 
 -- SERVICE_WEAR_MODIFIER
-ADS_Breakdowns.EffectApplicators.SERVICE_WEAR_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.SERVICE_WEAR_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraServiceWear = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraServiceWear = 0
     end
 }
 
 -- ENGINE_HEAT_MODIFIER
-ADS_Breakdowns.EffectApplicators.ENGINE_HEAT_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.ENGINE_HEAT_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraEngineHeat = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraEngineHeat = 0
     end
 }
 
 -- TRANSMISSION_HEAT_MODIFIER
-ADS_Breakdowns.EffectApplicators.TRANSMISSION_HEAT_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.TRANSMISSION_HEAT_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraTransmissionHeat = effectData.value
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.extraTransmissionHeat = 0
     end
 }
 
 -- THERMOSTAT_HEALTH_MODIFIER
-ADS_Breakdowns.EffectApplicators.THERMOSTAT_HEALTH_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.THERMOSTAT_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.thermostatHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.thermostatHealth = 1.0
     end
 }
 
 -- RADIATOR_HEALTH_MODIFIER
-ADS_Breakdowns.EffectApplicators.RADIATOR_HEALTH_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.RADIATOR_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.radiatorHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.radiatorHealth = 1.0
     end
 }
 
 -- BATTERY_HEALTH_MODIFIER
-ADS_Breakdowns.EffectApplicators.BATTERY_HEALTH_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.BATTERY_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.batteryHealth = math.max(1.0 + effectData.value, 0.0001)
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.batteryHealth = 1.0
     end
 }
 
 -- ALTERNATOR_HEALTH_MODIFIER
-ADS_Breakdowns.EffectApplicators.ALTERNATOR_HEALTH_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.ALTERNATOR_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.alternatorHealth = math.max(1.0 + effectData.value, 0.0001)
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.alternatorHealth = 1.0
     end
 }
 
 -- FAN_CLUTCH_MODIFIER
-ADS_Breakdowns.EffectApplicators.FAN_CLUTCH_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.FAN_CLUTCH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.fanClutchHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.fanClutchHealth = 1.0
     end
 }
 
 -- THERMOSTAT_STUCK_EFFECT
-ADS_Breakdowns.EffectApplicators.THERMOSTAT_STUCK_EFFECT = {
+RMS_Breakdowns.EffectApplicators.THERMOSTAT_STUCK_EFFECT = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
 
 
         if spec.thermostatStuckedPosition == nil or spec.thermostatStuckedPosition < 0 then
@@ -1537,28 +1537,28 @@ ADS_Breakdowns.EffectApplicators.THERMOSTAT_STUCK_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.thermostatStuckedPosition = nil
     end
 }
 
 -- TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER
-ADS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_HEALTH_MODIFIER = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.transmissionThermostatHealth = math.max(1.0 + effectData.value, 0.1)
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.transmissionThermostatHealth = 1.0
     end
 }
 
 -- TRANSMISSION_THERMOSTAT_STUCK_EFFECT
-ADS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_STUCK_EFFECT = {
+RMS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_STUCK_EFFECT = {
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
 
         if spec.transmissionThermostatStuckedPosition == nil or spec.transmissionThermostatStuckedPosition < 0 then
             spec.transmissionThermostatStuckedPosition = spec.transmissionThermostatState
@@ -1566,7 +1566,7 @@ ADS_Breakdowns.EffectApplicators.TRANSMISSION_THERMOSTAT_STUCK_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         spec.transmissionThermostatStuckedPosition = nil
     end
 }
@@ -1594,7 +1594,7 @@ local function updateIdleHuntingMotor(motor, effectData, dt, rpmBackup, shouldHu
     return rpmBackup
 end
 
-ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
+RMS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
     getEffectName = function()
         return "IDLE_HUNTING_EFFECT" 
     end,
@@ -1626,7 +1626,7 @@ ADS_Breakdowns.EffectApplicators.IDLE_HUNTING_EFFECT = {
 
 -- ==========================================================
 -- GLOW_PLUG_COLD_IDLE_EFFECT
-ADS_Breakdowns.EffectApplicators.GLOW_PLUG_COLD_IDLE_EFFECT = {
+RMS_Breakdowns.EffectApplicators.GLOW_PLUG_COLD_IDLE_EFFECT = {
     getEffectName = function()
         return "GLOW_PLUG_COLD_IDLE_EFFECT"
     end,
@@ -1634,19 +1634,19 @@ ADS_Breakdowns.EffectApplicators.GLOW_PLUG_COLD_IDLE_EFFECT = {
     apply = function(vehicle, effectData, handler)
         local effectName = handler.getEffectName()
         local motor = vehicle:getMotor()
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         if spec.glowPlugColdIdleRpmBackup == nil then
             spec.glowPlugColdIdleRpmBackup = motor.minRpm
         end
         local activeFunc = function(v, dt)
-            local spec = v.spec_AdvancedDamageSystem
+            local spec = v.spec_RealisticMechanicalSystems
             local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
             if effect == nil or effect.extraData == nil then
                 return
             end
 
-            local coldThreshold = ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
-            local engineTemperature = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, coldThreshold, -80, 160)
+            local coldThreshold = RMS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
+            local engineTemperature = RealisticMechanicalSystems.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, coldThreshold, -80, 160)
             local otherIdleHuntingEffect = spec.activeEffects.IDLE_HUNTING_EFFECT
             local otherIdleHuntingActive = otherIdleHuntingEffect ~= nil
             local shouldHunt = spec.preheatColdStartFaultSeverity >= 2
@@ -1676,7 +1676,7 @@ ADS_Breakdowns.EffectApplicators.GLOW_PLUG_COLD_IDLE_EFFECT = {
     end,
 
     remove = function(vehicle, handler)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         local motor = vehicle:getMotor()
         if spec ~= nil and spec.glowPlugColdIdleRpmBackup ~= nil then
             local otherIdleHuntingEffect = spec.activeEffects.IDLE_HUNTING_EFFECT
@@ -1693,7 +1693,7 @@ ADS_Breakdowns.EffectApplicators.GLOW_PLUG_COLD_IDLE_EFFECT = {
 
 -- ==========================================================
 -- DARK_EXHAUST_EFFECT
-ADS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {    
+RMS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {    
     apply = function(vehicle, effectData, handler)
         local originalMinRpmColorName = "exhaustEffectsMinRpmColor"
         local originalMaxRpmColorName = "exhaustEffectsMaxRpmColor"
@@ -1703,16 +1703,16 @@ ADS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {
             return
         end
         
-        if vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMinRpmColorName] == nil then
-            vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMinRpmColorName] = { 
+        if vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMinRpmColorName] == nil then
+            vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMinRpmColorName] = { 
                 effect.minRpmColor[1],
                 effect.minRpmColor[2],
                 effect.minRpmColor[3],
                 effect.minRpmColor[4]
             }
         end
-        if vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMaxRpmColorName] == nil then
-            vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMaxRpmColorName] = {
+        if vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMaxRpmColorName] == nil then
+            vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMaxRpmColorName] = {
                 effect.maxRpmColor[1],
                 effect.maxRpmColor[2],
                 effect.maxRpmColor[3],
@@ -1720,8 +1720,8 @@ ADS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {
             }
         end
 
-        local originalMinRpmColorValue = vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMinRpmColorName]
-        local originalMaxRpmColorValue = vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMaxRpmColorName]
+        local originalMinRpmColorValue = vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMinRpmColorName]
+        local originalMaxRpmColorValue = vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMaxRpmColorName]
         
 	    if effect ~= nil then
 		    effect.minRpmColor = {0.015, 0.015, 0.02, originalMinRpmColorValue[4] * effectData.value * 6}
@@ -1733,29 +1733,29 @@ ADS_Breakdowns.EffectApplicators.DARK_EXHAUST_EFFECT = {
     remove = function(vehicle, handler)
         local originalMinRpmColorName = "exhaustEffectsMinRpmColor"
         local originalMaxRpmColorName = "exhaustEffectsMaxRpmColor"
-        local originalMinRpmColorValue = vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMinRpmColorName]
-        local originalMaxRpmColorValue = vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMaxRpmColorName]
+        local originalMinRpmColorValue = vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMinRpmColorName]
+        local originalMaxRpmColorValue = vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMaxRpmColorName]
         local effect = vehicle.spec_motorized.exhaustEffects[#vehicle.spec_motorized.exhaustEffects]
         if originalMinRpmColorValue ~= nil then
             effect.minRpmColor[1] = originalMinRpmColorValue[1]
             effect.minRpmColor[2] = originalMinRpmColorValue[2]
             effect.minRpmColor[3] = originalMinRpmColorValue[3]
             effect.minRpmColor[4] = originalMinRpmColorValue[4]
-            vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMinRpmColorName] = nil
+            vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMinRpmColorName] = nil
         end
         if originalMaxRpmColorValue ~= nil then
             effect.maxRpmColor[1] = originalMaxRpmColorValue[1]
             effect.maxRpmColor[2] = originalMaxRpmColorValue[2]
             effect.maxRpmColor[3] = originalMaxRpmColorValue[3]
             effect.maxRpmColor[4] = originalMaxRpmColorValue[4]
-            vehicle.spec_AdvancedDamageSystem.originalFunctions[originalMaxRpmColorName] = nil
+            vehicle.spec_RealisticMechanicalSystems.originalFunctions[originalMaxRpmColorName] = nil
         end
     end
 }
 
 -- ==========================================================
 -- ELECTRICAL_CONTACT_RESISTANCE_EFFECT
-ADS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
+RMS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
     getEffectName = function()
         return "ELECTRICAL_CONTACT_RESISTANCE_EFFECT" 
     end,
@@ -1765,12 +1765,12 @@ ADS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
         local effectName = handler.getEffectName()
 
         local activeFunc = function(v, dt)
-                local spec = v.spec_AdvancedDamageSystem
+                local spec = v.spec_RealisticMechanicalSystems
                 local effect = spec.activeEffects.ELECTRICAL_CONTACT_RESISTANCE_EFFECT
                 if v.isServer and v:getIsMotorStarted() then
                     if effect and effect.value > 0 then
                         if effect.extraData.status == "IDLE" then
-                            local chance = ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value)
+                            local chance = RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value)
                             if math.random() < chance then
                                 effect.extraData.status = "SHORTC"
                                 effect.extraData.timer = 1000
@@ -1804,9 +1804,9 @@ ADS_Breakdowns.EffectApplicators.ELECTRICAL_CONTACT_RESISTANCE_EFFECT = {
 
 local function adsStopAndResetNoiseSample(sample)
     if sample == nil then return end
-    ADS_SoundManager.setSamplePlaying(sample, false, 0, 0)
-    ADS_SoundManager.setSampleVolumeOffset(sample, 0)
-    ADS_SoundManager.setSamplePitchOffset(sample, 0)
+    RMS_SoundManager.setSamplePlaying(sample, false, 0, 0)
+    RMS_SoundManager.setSampleVolumeOffset(sample, 0)
+    RMS_SoundManager.setSamplePitchOffset(sample, 0)
     if sample.adsOriginalLoops ~= nil then
         sample.loops = sample.adsOriginalLoops
     end
@@ -1837,7 +1837,7 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
         apply = function(vehicle, effectData, handler)
             log_dbg(string.format("Applying %s effect", effectName))
             local activeFunc = function(v, dt)
-                local spec_ads = v.spec_AdvancedDamageSystem
+                local spec_ads = v.spec_RealisticMechanicalSystems
                 if spec_ads == nil or spec_ads.samples == nil then return end
                 local motor = v:getMotor()
                 if motor == nil then return end
@@ -1906,9 +1906,9 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 sample.loops = 0
                 sample.volumeScale = sample.adsOriginalVolumeScale * baseVolumeScale
 
-                ADS_SoundManager.setSamplePlaying(sample, true)
+                RMS_SoundManager.setSamplePlaying(sample, true)
 
-                ADS_SoundManager.setSampleVolumeOffset(sample, 0)
+                RMS_SoundManager.setSampleVolumeOffset(sample, 0)
                 local pitchOffset
                 if sampleName == "turboWhistle" then
                     local boostThreshold = 0.02
@@ -1928,7 +1928,7 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 else
                     pitchOffset = 0.24 * (rpmN ^ 1.35) + 0.04 * dynamicIntensity * rpmN
                 end
-                ADS_SoundManager.setSamplePitchOffset(sample, pitchOffset)
+                RMS_SoundManager.setSamplePitchOffset(sample, pitchOffset)
             end
 
             addFuncToActive(vehicle, effectName, activeFunc)
@@ -1936,7 +1936,7 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
 
         remove = function(vehicle, handler)
             log_dbg(string.format("Removing %s effect", effectName))
-            local spec_ads = vehicle.spec_AdvancedDamageSystem
+            local spec_ads = vehicle.spec_RealisticMechanicalSystems
             if spec_ads ~= nil and spec_ads.samples ~= nil then
                 adsStopAndResetNoiseSample(spec_ads.samples[sampleName])
                 if spec_ads.__adsNoiseGates ~= nil then
@@ -1948,18 +1948,18 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
     }
 end
 
-ADS_Breakdowns.EffectApplicators.ENGINE_KNOCKING_NOISE_EFFECT = createEngineNoiseEffectApplicator("ENGINE_KNOCKING_NOISE_EFFECT", "engineKnocking", nil)
-ADS_Breakdowns.EffectApplicators.VALVE_TRAIN_NOISE_EFFECT = createEngineNoiseEffectApplicator("VALVE_TRAIN_NOISE_EFFECT", "valveTrainNoise", nil)
-ADS_Breakdowns.EffectApplicators.TURBO_WHISTLE_NOISE_EFFECT = createEngineNoiseEffectApplicator("TURBO_WHISTLE_NOISE_EFFECT", "turboWhistle", "boost")
-ADS_Breakdowns.EffectApplicators.FAN_CLUTCH_NOISE_EFFECT = createEngineNoiseEffectApplicator("FAN_CLUTCH_NOISE_EFFECT", "fanNoice", nil)
-ADS_Breakdowns.EffectApplicators.VIBRATION_NOISE_EFFECT = createEngineNoiseEffectApplicator("VIBRATION_NOISE_EFFECT", "vibrationNoice", "speed")
-ADS_Breakdowns.EffectApplicators.WHEEL_HUB_BEARING_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_HUB_BEARING_NOISE_EFFECT", "wheelHubBearingNoise", "speed")
-ADS_Breakdowns.EffectApplicators.WHEEL_SEIZURE_GRIND_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_SEIZURE_GRIND_NOISE_EFFECT", "wheelSeizureGrind", "speed")
+RMS_Breakdowns.EffectApplicators.ENGINE_KNOCKING_NOISE_EFFECT = createEngineNoiseEffectApplicator("ENGINE_KNOCKING_NOISE_EFFECT", "engineKnocking", nil)
+RMS_Breakdowns.EffectApplicators.VALVE_TRAIN_NOISE_EFFECT = createEngineNoiseEffectApplicator("VALVE_TRAIN_NOISE_EFFECT", "valveTrainNoise", nil)
+RMS_Breakdowns.EffectApplicators.TURBO_WHISTLE_NOISE_EFFECT = createEngineNoiseEffectApplicator("TURBO_WHISTLE_NOISE_EFFECT", "turboWhistle", "boost")
+RMS_Breakdowns.EffectApplicators.FAN_CLUTCH_NOISE_EFFECT = createEngineNoiseEffectApplicator("FAN_CLUTCH_NOISE_EFFECT", "fanNoice", nil)
+RMS_Breakdowns.EffectApplicators.VIBRATION_NOISE_EFFECT = createEngineNoiseEffectApplicator("VIBRATION_NOISE_EFFECT", "vibrationNoice", "speed")
+RMS_Breakdowns.EffectApplicators.WHEEL_HUB_BEARING_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_HUB_BEARING_NOISE_EFFECT", "wheelHubBearingNoise", "speed")
+RMS_Breakdowns.EffectApplicators.WHEEL_SEIZURE_GRIND_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_SEIZURE_GRIND_NOISE_EFFECT", "wheelSeizureGrind", "speed")
 
 
 -- ==========================================================
 -- CVT_PRESSURE_DROP_CHANCE
-ADS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
+RMS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
     getEffectName = function()
         return "CVT_PRESSURE_DROP_CHANCE"
     end,
@@ -1973,7 +1973,7 @@ ADS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
         local activeFunc = function(v, dt)
 
             if v:getIsMotorStarted() and v:getLastSpeed() > 1 then
-                local effect = v.spec_AdvancedDamageSystem.activeEffects.CVT_PRESSURE_DROP_CHANCE
+                local effect = v.spec_RealisticMechanicalSystems.activeEffects.CVT_PRESSURE_DROP_CHANCE
                 if effect == nil then
                     return
                 end
@@ -1982,11 +1982,11 @@ ADS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
                 effect.extraData.timer = tonumber(effect.extraData.timer) or 0
                 effect.extraData.duration = tonumber(effect.extraData.duration) or 200
 
-                if v.isServer and effect.extraData.status == 'IDLE' and math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
+                if v.isServer and effect.extraData.status == 'IDLE' and math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
                     effect.extraData.status = 'DROP'
                     effect.extraData.timer = effect.extraData.duration
 
-                    ADS_EffectSyncEvent.send(v, handler.getEffectName(), "DROP", effect.extraData.timer, 0, 0)
+                    RMS_EffectSyncEvent.send(v, handler.getEffectName(), "DROP", effect.extraData.timer, 0, 0)
                 end
                 if effect.extraData.status == 'DROP' and effect.extraData.timer > 0 then
                     effect.extraData.status = 'PROGRESS'
@@ -2010,7 +2010,7 @@ ADS_Breakdowns.EffectApplicators.CVT_PRESSURE_DROP_CHANCE = {
 
 -- ==========================================================
 -- ENGINE_STALLS_CHANCE
-ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
+RMS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
     getEffectName = function() return "ENGINE_STALLS_CHANCE" end,
     apply = function(vehicle, effectData, handler)
         local effectName = handler.getEffectName()
@@ -2019,13 +2019,13 @@ ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
             if not v.isServer then return end
 
             if v:getIsMotorStarted() and not v:getIsAIActive() then
-                local effect = v.spec_AdvancedDamageSystem.activeEffects.ENGINE_STALLS_CHANCE
+                local effect = v.spec_RealisticMechanicalSystems.activeEffects.ENGINE_STALLS_CHANCE
                 if effect and effect.value > 0 then
-                    if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
+                    if math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
                         if v.stopMotor then
                             v:stopMotor()
 
-                            ADS_EffectSyncEvent.send(v, "ENGINE_STALLS_CHANCE", "STALLED")
+                            RMS_EffectSyncEvent.send(v, "ENGINE_STALLS_CHANCE", "STALLED")
 
                             if v:getIsActiveForInput(true) then
                                 g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_engine_stalled_message"), 5000) 
@@ -2044,7 +2044,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
 
 -- ==========================================================
 -- PTO_AUTO_DISENGAGE_CHANCE
-ADS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
+RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
     getEffectName = function() return "PTO_AUTO_DISENGAGE_CHANCE" end,
     apply = function(vehicle, effectData, handler)
         local effectName = handler.getEffectName()
@@ -2101,7 +2101,7 @@ ADS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
 
         local activeFunc = function(v, dt)
 
-            local effect = v.spec_AdvancedDamageSystem.activeEffects[effectName]
+            local effect = v.spec_RealisticMechanicalSystems.activeEffects[effectName]
             if effect == nil or (tonumber(effect.value) or 0) <= 0 then
                 return
             end
@@ -2129,9 +2129,9 @@ ADS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
                 return
             end
 
-            if effect.extraData.status == "IDLE" and math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
+            if effect.extraData.status == "IDLE" and math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
                 effect.extraData.status = "DISENGAGED"
-                ADS_EffectSyncEvent.send(v, effectName, "DISENGAGED", 0, 0, 0)
+                RMS_EffectSyncEvent.send(v, effectName, "DISENGAGED", 0, 0, 0)
             end
         end
 
@@ -2164,7 +2164,7 @@ local function tryStartMotor(dt, value, engTemp, batV)
         modValue = modValue * batFactor
     end
     local mtbfInMinutes = modValue / 60
-    local chance = ADS_Utils.getChancePerFrameFromMeanTime(dt, mtbfInMinutes)
+    local chance = RMS_Utils.getChancePerFrameFromMeanTime(dt, mtbfInMinutes)
     local random = math.random()
     if random < chance then return true end
     return false
@@ -2172,7 +2172,7 @@ end
 
 local function applyHardStartModifier(vehicle, effectName)
     local activeFunc = function(v, dt)
-        local spec = v.spec_AdvancedDamageSystem
+        local spec = v.spec_RealisticMechanicalSystems
         if spec == nil then return end
         local effect = spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
         if effect == nil or effect.extraData == nil then
@@ -2206,8 +2206,8 @@ local function applyHardStartModifier(vehicle, effectName)
             local easedT = t * t
             local offset = math.max(-(baseVolume * easedT), -0.65)
 
-            if ADS_SoundManager.getIsSamplePlaying(spec.samples.starterCrankingEnd) then
-                ADS_SoundManager.setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
+            if RMS_SoundManager.getIsSamplePlaying(spec.samples.starterCrankingEnd) then
+                RMS_SoundManager.setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
             end
         end
 
@@ -2226,11 +2226,11 @@ local function applyHardStartModifier(vehicle, effectName)
                 and tryStartMotor(dt, effect.value, rawEngineTemp, effect.extraData.preCrankVoltageV) then
                 effect.extraData.timer = motorStartDelay
                 effect.extraData.status = "PASSED"
-                ADS_Preheat.onCrankPassed(v)
+                RMS_Preheat.onCrankPassed(v)
                 if v.isClient then
                     playStarterCrankingEndSample(spec, crankingPitchOffset)
                 end
-                ADS_EffectSyncEvent.send(v, effectName, "PASSED", motorStartDelay, 0, 0)
+                RMS_EffectSyncEvent.send(v, effectName, "PASSED", motorStartDelay, 0, 0)
             end
         elseif not startRequestActive and effect.extraData.status == "CRANKING" then
             effect.extraData.status = "IDLE"
@@ -2245,9 +2245,9 @@ local function applyHardStartModifier(vehicle, effectName)
 end
 
 local function removeHardStartModifier(vehicle, effectName)
-    local effect = vehicle.spec_AdvancedDamageSystem
-        and vehicle.spec_AdvancedDamageSystem.activeEffects
-        and vehicle.spec_AdvancedDamageSystem.activeEffects[effectName]
+    local effect = vehicle.spec_RealisticMechanicalSystems
+        and vehicle.spec_RealisticMechanicalSystems.activeEffects
+        and vehicle.spec_RealisticMechanicalSystems.activeEffects[effectName]
         or nil
     if effect ~= nil and effect.extraData ~= nil then
         effect.extraData.status = "IDLE"
@@ -2259,7 +2259,7 @@ local function removeHardStartModifier(vehicle, effectName)
     removeFuncFromActive(vehicle, effectName)
 end
 
-ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
     getEffectName = function() return "ENGINE_HARD_START_MODIFIER" end,
     apply = function(vehicle, effectData, handler)
         applyHardStartModifier(vehicle, handler.getEffectName())
@@ -2269,7 +2269,7 @@ ADS_Breakdowns.EffectApplicators.ENGINE_HARD_START_MODIFIER = {
     end
 }
 
-ADS_Breakdowns.EffectApplicators.GLOW_PLUG_HARD_START_MODIFIER = {
+RMS_Breakdowns.EffectApplicators.GLOW_PLUG_HARD_START_MODIFIER = {
     getEffectName = function() return "GLOW_PLUG_HARD_START_MODIFIER" end,
     apply = function(vehicle, effectData, handler)
         applyHardStartModifier(vehicle, handler.getEffectName())
@@ -2279,8 +2279,8 @@ ADS_Breakdowns.EffectApplicators.GLOW_PLUG_HARD_START_MODIFIER = {
     end
 }
 
-function ADS_Breakdowns.onStartButtonAction(self, actionName, inputValue, callbackState, isAnalog, isMouse, deviceCategory, binding)
-    local spec = self ~= nil and self.spec_AdvancedDamageSystem or nil
+function RMS_Breakdowns.onStartButtonAction(self, actionName, inputValue, callbackState, isAnalog, isMouse, deviceCategory, binding)
+    local spec = self ~= nil and self.spec_RealisticMechanicalSystems or nil
     if spec == nil then
         return
     end
@@ -2299,12 +2299,12 @@ function ADS_Breakdowns.onStartButtonAction(self, actionName, inputValue, callba
     spec.startButtonHeld = currentlyHeld
 
     if _prevStartButtonDown ~= spec.startButtonDown or _prevStartButtonUp ~= spec.startButtonUp or _prevStartButtonHeld ~= spec.startButtonHeld then
-        ADS_StartButtonEvent.send(self, spec.startButtonDown, spec.startButtonHeld, spec.startButtonUp)
+        RMS_StartButtonEvent.send(self, spec.startButtonDown, spec.startButtonHeld, spec.startButtonUp)
     end
 
     if spec.startButtonDown then
-        local wasPreheatFailed = ADS_Preheat.isFailed(self)
-        ADS_Preheat.requestStart(self)
+        local wasPreheatFailed = RMS_Preheat.isFailed(self)
+        RMS_Preheat.requestStart(self)
 
         if wasPreheatFailed then
             return
@@ -2324,18 +2324,18 @@ function ADS_Breakdowns.onStartButtonAction(self, actionName, inputValue, callba
     end
 end
 
-function ADS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
+    local spec = self.spec_RealisticMechanicalSystems
     local engineFailure = spec and spec.activeEffects.ENGINE_FAILURE
     local engineHardStart = spec and spec.activeEffects.ENGINE_HARD_START_MODIFIER
     local glowPlugHardStart = spec and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER
-    if glowPlugHardStart ~= nil and not ADS_Preheat.shouldApplyGlowPlugHardStart(self) then
+    if glowPlugHardStart ~= nil and not RMS_Preheat.shouldApplyGlowPlugHardStart(self) then
         glowPlugHardStart = nil
     end
     local isGlowPlugStartBlocked = glowPlugHardStart ~= nil
         and glowPlugHardStart.extraData.blockStart == true
 
-    if ADS_Preheat.shouldDeferStart(self, passed) then
+    if RMS_Preheat.shouldDeferStart(self, passed) then
         return
     end
 
@@ -2354,7 +2354,7 @@ function ADS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
         and g_currentMission.missionInfo.automaticMotorStartEnabled == true
     local hasManualStartInput = spec ~= nil and (spec.startButtonHeld == true
         or spec.startButtonDown == true
-        or ADS_Preheat.isAutomaticCrankActive(self))
+        or RMS_Preheat.isAutomaticCrankActive(self))
     local isAutomaticStartAttempt = automaticMotorStartEnabled and not hasManualStartInput
 
 
@@ -2374,10 +2374,10 @@ function ADS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
                 return
             end
             if engineFailure.extraData.status == 'IDLE' then
-                local automaticCrank = ADS_Preheat.isAutomaticCrankActive(self)
+                local automaticCrank = RMS_Preheat.isAutomaticCrankActive(self)
                 engineFailure.extraData.status = 'CRANKING'
                 engineFailure.extraData.automaticCrank = automaticCrank
-                ADS_EffectSyncEvent.send(self, 'ENGINE_FAILURE', "CRANKING", 0, automaticCrank and 1 or 0, 0)
+                RMS_EffectSyncEvent.send(self, 'ENGINE_FAILURE', "CRANKING", 0, automaticCrank and 1 or 0, 0)
             end
         end
         return
@@ -2387,16 +2387,16 @@ function ADS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
         if isAutomaticStartAttempt then
             return
         end
-        local automaticCrank = ADS_Preheat.isAutomaticCrankActive(self)
+        local automaticCrank = RMS_Preheat.isAutomaticCrankActive(self)
         selectedHardStart.extraData.status = 'CRANKING'
         selectedHardStart.extraData.automaticCrank = automaticCrank
-        ADS_EffectSyncEvent.send(self, selectedHardStartId, "CRANKING", 0, automaticCrank and 1 or 0, 0)
+        RMS_EffectSyncEvent.send(self, selectedHardStartId, "CRANKING", 0, automaticCrank and 1 or 0, 0)
         return
     end
 end
 
-function ADS_Breakdowns.cancelStarterCranking(vehicle)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+function RMS_Breakdowns.cancelStarterCranking(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or spec.activeEffects == nil then
         return
     end
@@ -2408,7 +2408,7 @@ function ADS_Breakdowns.cancelStarterCranking(vehicle)
             effect.extraData.timer = 0
             effect.extraData.preCrankVoltageV = nil
             effect.extraData.automaticCrank = false
-            ADS_EffectSyncEvent.send(vehicle, effectId, "IDLE", 0, 0, 0)
+            RMS_EffectSyncEvent.send(vehicle, effectId, "IDLE", 0, 0, 0)
         end
     end
 
@@ -2418,7 +2418,7 @@ end
 
 -- ==========================================================
 -- GEAR_SHIFT_FAILURE_CHANCE
-ADS_Breakdowns.EffectApplicators.GEAR_SHIFT_FAILURE_CHANCE = {
+RMS_Breakdowns.EffectApplicators.GEAR_SHIFT_FAILURE_CHANCE = {
     getEffectName = function()
         return "GEAR_SHIFT_FAILURE_CHANCE" 
     end,
@@ -2427,11 +2427,11 @@ ADS_Breakdowns.EffectApplicators.GEAR_SHIFT_FAILURE_CHANCE = {
 
         local effectName = handler.getEffectName()
 
-        if vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] == nil then
-            vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] = function(v, dt)
+        if vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] == nil then
+            vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] = function(v, dt)
                 
                 if v:getIsMotorStarted() then
-                    local spec = v.spec_AdvancedDamageSystem           
+                    local spec = v.spec_RealisticMechanicalSystems           
                     local effect = spec.activeEffects.GEAR_SHIFT_FAILURE_CHANCE
                     if effect and effect.value > 0 and effect.extraData.status == "FAILED" then
                         effect.extraData.timer = effect.extraData.timer + dt
@@ -2448,8 +2448,8 @@ ADS_Breakdowns.EffectApplicators.GEAR_SHIFT_FAILURE_CHANCE = {
     remove = function(vehicle, handler)
 
         local effectName = handler.getEffectName()
-        if vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] ~= nil then
-            vehicle.spec_AdvancedDamageSystem.activeFunctions[effectName] = nil
+        if vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] ~= nil then
+            vehicle.spec_RealisticMechanicalSystems.activeFunctions[effectName] = nil
         end
     end
 }
@@ -2458,7 +2458,7 @@ if VehicleMotor ~= nil and VehicleMotor.shiftGear ~= nil then
     VehicleMotor.shiftGear = Utils.overwrittenFunction(VehicleMotor.shiftGear, function(self, superFunc, up)
         local vehicle = self.vehicle
         if vehicle ~= nil then
-            local spec_ads = vehicle.spec_AdvancedDamageSystem
+            local spec_ads = vehicle.spec_RealisticMechanicalSystems
             if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
                 local effect = spec_ads.activeEffects.GEAR_SHIFT_FAILURE_CHANCE
                 if effect ~= nil and effect.value ~= nil then
@@ -2466,8 +2466,8 @@ if VehicleMotor ~= nil and VehicleMotor.shiftGear ~= nil then
                     if vehicle.isServer and math.random() < effect.value then
                         effect.extraData.status = "FAILED"
                         local sampleIndex = math.random(3)
-                        ADS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
-                        ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, 0)
+                        RMS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
+                        RMS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, 0)
                         return
                     end
                 end
@@ -2481,7 +2481,7 @@ if VehicleMotor ~= nil and VehicleMotor.selectGear ~= nil then
     VehicleMotor.selectGear = Utils.overwrittenFunction(VehicleMotor.selectGear, function(self, superFunc, gearIndex, activation)
         local vehicle = self.vehicle
         if vehicle ~= nil then
-            local spec_ads = vehicle.spec_AdvancedDamageSystem
+            local spec_ads = vehicle.spec_RealisticMechanicalSystems
             if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
                 local effect = spec_ads.activeEffects.GEAR_SHIFT_FAILURE_CHANCE
                 if effect ~= nil and effect.value ~= nil then
@@ -2490,8 +2490,8 @@ if VehicleMotor ~= nil and VehicleMotor.selectGear ~= nil then
                         if vehicle.isServer and math.random() < effect.value then
                             effect.extraData.status = "FAILED"
                             local sampleIndex = math.random(3)
-                            ADS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
-                            ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, 0)
+                            RMS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
+                            RMS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, 0)
                             return
                         end
                     end
@@ -2510,7 +2510,7 @@ if VehicleMotor ~= nil and VehicleMotor.updateGear ~= nil then
         local isShifting = (self.gear == 0 and self.gearChangeTimer > 0)
 
         if vehicle ~= nil and isShifting and not wasShifting then
-            local spec_ads = vehicle.spec_AdvancedDamageSystem
+            local spec_ads = vehicle.spec_RealisticMechanicalSystems
             if spec_ads ~= nil and spec_ads.activeEffects ~= nil then
                 local effect = spec_ads.activeEffects.GEAR_SHIFT_FAILURE_CHANCE
                 if effect ~= nil and effect.value ~= nil then
@@ -2522,8 +2522,8 @@ if VehicleMotor ~= nil and VehicleMotor.updateGear ~= nil then
                         self.autoGearChangeTimer = effect.extraData.duration
 
                         local sampleIndex = math.random(3)
-                        ADS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
-                        ADS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, effect.extraData.duration)
+                        RMS_SoundManager.playSample(spec_ads.samples["transmissionShiftFailed" .. sampleIndex])
+                        RMS_EffectSyncEvent.send(vehicle, "GEAR_SHIFT_FAILURE_CHANCE", "FAILED", 0, sampleIndex, effect.extraData.duration)
                     end
                     if effect.value >= 1.0 then
                         self.targetGear = self.previousGear
@@ -2538,13 +2538,13 @@ end
 
 -- ==========================================================
 -- GEAR_REJECTION_CHANCE
-ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
+RMS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
     getEffectName = function() return "GEAR_REJECTION_CHANCE" end,
     apply = function(vehicle, effectData, handler)
         local effectName = handler.getEffectName()
         local activeFunc = function(v, dt)
             if v:getIsMotorStarted() then
-                local effect = v.spec_AdvancedDamageSystem.activeEffects.GEAR_REJECTION_CHANCE
+                local effect = v.spec_RealisticMechanicalSystems.activeEffects.GEAR_REJECTION_CHANCE
                 if effect and effect.value > 0 then
                     local motor = v:getMotor()
                     if effect.extraData.status == 'REJECTED' then
@@ -2554,19 +2554,19 @@ ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
                             effect.extraData.status = 'IDLE'
                             effect.extraData.timer = 0
                             local sampleIndex = math.random(3)
-                            ADS_SoundManager.playSample(v.spec_AdvancedDamageSystem.samples["transmissionShiftFailed" .. sampleIndex])
-                            ADS_EffectSyncEvent.send(v, "GEAR_REJECTION_CHANCE", "IDLE", 0, sampleIndex)
+                            RMS_SoundManager.playSample(v.spec_RealisticMechanicalSystems.samples["transmissionShiftFailed" .. sampleIndex])
+                            RMS_EffectSyncEvent.send(v, "GEAR_REJECTION_CHANCE", "IDLE", 0, sampleIndex)
                         end
 
                     elseif v.isServer and v:getMotorLoadPercentage() > 0.8 and effect.extraData.status == 'IDLE' then
-                        if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
+                        if math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
                             effect.extraData.status = 'REJECTED'
                             effect.extraData.timer = 0
                             if motor and motor.setGear then
                                 motor:setGear(0, false)
 
-                                ADS_EffectSyncEvent.send(v, "GEAR_REJECTION_CHANCE", "REJECTED", 0)
-                                ADS_SoundManager.playSample(v.spec_AdvancedDamageSystem.samples.gearDisengage1)
+                                RMS_EffectSyncEvent.send(v, "GEAR_REJECTION_CHANCE", "REJECTED", 0)
+                                RMS_SoundManager.playSample(v.spec_RealisticMechanicalSystems.samples.gearDisengage1)
                                 if v:getIsActiveForInput(true) then
                                     g_currentMission:showBlinkingWarning(g_i18n:getText("ads_breakdowns_gear_disengage_message", 3000)) 
                                 end
@@ -2585,7 +2585,7 @@ ADS_Breakdowns.EffectApplicators.GEAR_REJECTION_CHANCE = {
 
 -- ==========================================================
 -- LIGHTS_FLICKER_CHANCE
-ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
+RMS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
     getEffectName = function()
         return "LIGHTS_FLICKER_CHANCE" 
     end,
@@ -2596,7 +2596,7 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
 
         local activeFunc = function(v, dt)
                 if v:getIsMotorStarted() then
-                    local spec = v.spec_AdvancedDamageSystem
+                    local spec = v.spec_RealisticMechanicalSystems
                     local effect = spec.activeEffects.LIGHTS_FLICKER_CHANCE
                     if effect and effect.value > 0 then
                         if v.spec_lights == nil then return end
@@ -2613,12 +2613,12 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
                             v:setLightsTypesMask(effect.extraData.maskBackup, true, true)
 
                         elseif v.isServer and effect.extraData.status == 'IDLE' then
-                            if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
+                            if math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
                                 effect.extraData.maskBackup = v:getLightsTypesMask()
                                 if effect.extraData.maskBackup == 0 then return end
                                 effect.extraData.status = 'FLICKING'
 
-                                ADS_EffectSyncEvent.send(v, "LIGHTS_FLICKER_CHANCE", "FLICKING", 0, effect.extraData.maskBackup)
+                                RMS_EffectSyncEvent.send(v, "LIGHTS_FLICKER_CHANCE", "FLICKING", 0, effect.extraData.maskBackup)
 
                             end
                         end
@@ -2635,12 +2635,12 @@ ADS_Breakdowns.EffectApplicators.LIGHTS_FLICKER_CHANCE = {
 
 -- =========================================================
 -- EMPTY_EFFECT
-ADS_Breakdowns.EffectApplicators.EMPTY_EFFECT = {
+RMS_Breakdowns.EffectApplicators.EMPTY_EFFECT = {
 }
 
 -- ==========================================================
-function ADS_Breakdowns.getCanMotorRun(self, superFunc)
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Breakdowns.getCanMotorRun(self, superFunc)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or spec.isExcludedVehicle then
         return superFunc(self)
     end
@@ -2656,7 +2656,7 @@ function ADS_Breakdowns.getCanMotorRun(self, superFunc)
         return false
     end
 
-    if ADS_Preheat.shouldBlockMotorRun(self) then
+    if RMS_Preheat.shouldBlockMotorRun(self) then
         return false
     end
 

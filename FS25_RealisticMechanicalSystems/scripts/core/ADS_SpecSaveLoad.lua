@@ -1,9 +1,9 @@
-local log_dbg = ADS_Utils.createLogger("[ADS_SPEC]")
-local getIsElectricVehicle = ADS_Utils.getIsElectricVehicle
-local ensureFactorStats = AdvancedDamageSystem.ensureFactorStats
-local refreshExclusionState = AdvancedDamageSystem.refreshExclusionState
-local getSyncOperatingTime = AdvancedDamageSystem.getSyncOperatingTime
-local captureSystemsSync = AdvancedDamageSystem.captureSystemsSync
+local log_dbg = RMS_Utils.createLogger("[RMS_SPEC]")
+local getIsElectricVehicle = RMS_Utils.getIsElectricVehicle
+local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
+local refreshExclusionState = RealisticMechanicalSystems.refreshExclusionState
+local getSyncOperatingTime = RealisticMechanicalSystems.getSyncOperatingTime
+local captureSystemsSync = RealisticMechanicalSystems.captureSystemsSync
 
 -- ==========================================================
 --                      HELPER FUNCTIONS
@@ -104,7 +104,7 @@ local function getIsVehicleNeedLubricate(vehicle)
         return false
     end
 
-    return not ADS_Drivetrain.getIsRoadVehicleCategory(vehicle)
+    return not RMS_Drivetrain.getIsRoadVehicleCategory(vehicle)
 end
 
 local function getIsTruck(vehicle)
@@ -131,8 +131,8 @@ end
 --                       SAVE & LOAD
 -- ============================================================
 
-function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:saveToXMLFile(xmlFile, key, usedModNames)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec ~= nil and not spec.isExcludedByDefault then
         if spec.isExcludedByUser ~= nil then
             xmlFile:setValue(key .. "#userExclusion", spec.isExcludedByUser)
@@ -149,48 +149,48 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
         if xmlFile.handle ~= nil then
             setXMLFloat(xmlFile.handle, key .. "#realOperatingTime", tonumber(realOperatingTime or currentOperatingTime) or 0)
         end
-        local breakdownString = ADS_Utils.serializeBreakdowns(spec.activeBreakdowns)
+        local breakdownString = RMS_Utils.serializeBreakdowns(spec.activeBreakdowns)
         xmlFile:setValue(key .. "#breakdowns", breakdownString)
-        xmlFile:setValue(key .. "#state", spec.currentState or AdvancedDamageSystem.STATUS.READY)
-        xmlFile:setValue(key .. "#plannedState", spec.plannedState or AdvancedDamageSystem.STATUS.READY)
-        xmlFile:setValue(key .. "#maintenanceTimer", AdvancedDamageSystem.sanitizeNumber(spec.maintenanceTimer, 0, 0))
-        xmlFile:setValue(key .. "#engineTemperature", AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, 20, -80, 160))
-        xmlFile:setValue(key .. "#transmissionTemperature", AdvancedDamageSystem.sanitizeNumber(spec.transmissionTemperature, 20, -80, 180))
-        xmlFile:setValue(key .. "#batterySoc", AdvancedDamageSystem.sanitizeNumber(spec.batterySoc, 1.0, 0, 1))
-        xmlFile:setValue(key .. "#batteryChargeAh", AdvancedDamageSystem.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
-        xmlFile:setValue(key .. "#batteryTempC", AdvancedDamageSystem.sanitizeNumber(spec.batteryTempC, 20, -80, 85))
+        xmlFile:setValue(key .. "#state", spec.currentState or RealisticMechanicalSystems.STATUS.READY)
+        xmlFile:setValue(key .. "#plannedState", spec.plannedState or RealisticMechanicalSystems.STATUS.READY)
+        xmlFile:setValue(key .. "#maintenanceTimer", RealisticMechanicalSystems.sanitizeNumber(spec.maintenanceTimer, 0, 0))
+        xmlFile:setValue(key .. "#engineTemperature", RealisticMechanicalSystems.sanitizeNumber(spec.engineTemperature, 20, -80, 160))
+        xmlFile:setValue(key .. "#transmissionTemperature", RealisticMechanicalSystems.sanitizeNumber(spec.transmissionTemperature, 20, -80, 180))
+        xmlFile:setValue(key .. "#batterySoc", RealisticMechanicalSystems.sanitizeNumber(spec.batterySoc, 1.0, 0, 1))
+        xmlFile:setValue(key .. "#batteryChargeAh", RealisticMechanicalSystems.sanitizeNumber(spec.batteryChargeAh, 0, 0, 10000))
+        xmlFile:setValue(key .. "#batteryTempC", RealisticMechanicalSystems.sanitizeNumber(spec.batteryTempC, 20, -80, 85))
         xmlFile:setValue(key .. "#radiatorClogging", math.max(spec.radiatorClogging or 0, 0))
         xmlFile:setValue(key .. "#airIntakeClogging", math.max(spec.airIntakeClogging or 0, 0))
         xmlFile:setValue(key .. "#lubricationLevel", math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#lubricationUsedThisPeriod", spec.lubricationUsedThisPeriod == true)
-        xmlFile:setValue(key .. "#thermostatState", AdvancedDamageSystem.sanitizeNumber(spec.thermostatState, 0.0, 0.0, 1.0))
-        xmlFile:setValue(key .. "#transmissionThermostatState", AdvancedDamageSystem.sanitizeNumber(spec.transmissionThermostatState, 0.0, 0.0, 1.0))
+        xmlFile:setValue(key .. "#thermostatState", RealisticMechanicalSystems.sanitizeNumber(spec.thermostatState, 0.0, 0.0, 1.0))
+        xmlFile:setValue(key .. "#transmissionThermostatState", RealisticMechanicalSystems.sanitizeNumber(spec.transmissionThermostatState, 0.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#serviceOptionOne", spec.serviceOptionOne or "")
         xmlFile:setValue(key .. "#serviceOptionTwo", spec.serviceOptionTwo or "")
         xmlFile:setValue(key .. "#serviceOptionThree", spec.serviceOptionThree or false)
         xmlFile:setValue(key .. "#workshopType", spec.workshopType or "")
         xmlFile:setValue(key .. "#pendingSelectedBreakdowns", table.concat(spec.pendingSelectedBreakdowns or {}, ","))
-        xmlFile:setValue(key .. "#pendingServicePrice", ADS_Utils.encodeOptionalFloat(spec.pendingServicePrice))
+        xmlFile:setValue(key .. "#pendingServicePrice", RMS_Utils.encodeOptionalFloat(spec.pendingServicePrice))
         xmlFile:setValue(key .. "#pendingInspectionQueue", table.concat(spec.pendingInspectionQueue or {}, ","))
         xmlFile:setValue(key .. "#pendingRepairQueue", table.concat(spec.pendingRepairQueue or {}, ","))
         xmlFile:setValue(key .. "#pendingProgressStepIndex", spec.pendingProgressStepIndex or 0)
         xmlFile:setValue(key .. "#pendingProgressTotalTime", spec.pendingProgressTotalTime or 0)
         xmlFile:setValue(key .. "#pendingProgressElapsedTime", spec.pendingProgressElapsedTime or 0)
-        xmlFile:setValue(key .. "#pendingMaintenanceServiceStart", ADS_Utils.encodeOptionalFloat(spec.pendingMaintenanceServiceStart))
-        xmlFile:setValue(key .. "#pendingMaintenanceServiceTarget", ADS_Utils.encodeOptionalFloat(spec.pendingMaintenanceServiceTarget))
-        xmlFile:setValue(key .. "#pendingPreventiveSystemStressStart", ADS_Utils.serializeNumericMap(spec.pendingPreventiveSystemStressStart))
-        xmlFile:setValue(key .. "#pendingPreventiveSystemStressTarget", ADS_Utils.serializeNumericMap(spec.pendingPreventiveSystemStressTarget))
-        xmlFile:setValue(key .. "#systemsState", ADS_Utils.serializeSystemsState(spec.systems))
-        xmlFile:setValue(key .. "#factorStats", ADS_Utils.serializeNumericMap(flattenFactorStats(spec.factorStats)))
-        xmlFile:setValue(key .. "#pendingOverhaulSystemStart", ADS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStart))
-        xmlFile:setValue(key .. "#pendingOverhaulSystemTarget", ADS_Utils.serializeNumericMap(spec.pendingOverhaulSystemTarget))
-        xmlFile:setValue(key .. "#pendingOverhaulSystemStressStart", ADS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStressStart))
-        xmlFile:setValue(key .. "#pendingOverhaulSystemStressTarget", ADS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStressTarget))
-        xmlFile:setValue(key .. "#pendingRepairSystemStressStart", ADS_Utils.serializeNumericMap(spec.pendingRepairSystemStressStart))
-        xmlFile:setValue(key .. "#pendingRepairSystemStressTarget", ADS_Utils.serializeNumericMap(spec.pendingRepairSystemStressTarget))
-        xmlFile:setValue(key .. "#pendingRepairSystemStressStartRatio", ADS_Utils.serializeNumericMap(spec.pendingRepairSystemStressStartRatio))
+        xmlFile:setValue(key .. "#pendingMaintenanceServiceStart", RMS_Utils.encodeOptionalFloat(spec.pendingMaintenanceServiceStart))
+        xmlFile:setValue(key .. "#pendingMaintenanceServiceTarget", RMS_Utils.encodeOptionalFloat(spec.pendingMaintenanceServiceTarget))
+        xmlFile:setValue(key .. "#pendingPreventiveSystemStressStart", RMS_Utils.serializeNumericMap(spec.pendingPreventiveSystemStressStart))
+        xmlFile:setValue(key .. "#pendingPreventiveSystemStressTarget", RMS_Utils.serializeNumericMap(spec.pendingPreventiveSystemStressTarget))
+        xmlFile:setValue(key .. "#systemsState", RMS_Utils.serializeSystemsState(spec.systems))
+        xmlFile:setValue(key .. "#factorStats", RMS_Utils.serializeNumericMap(flattenFactorStats(spec.factorStats)))
+        xmlFile:setValue(key .. "#pendingOverhaulSystemStart", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStart))
+        xmlFile:setValue(key .. "#pendingOverhaulSystemTarget", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemTarget))
+        xmlFile:setValue(key .. "#pendingOverhaulSystemStressStart", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStressStart))
+        xmlFile:setValue(key .. "#pendingOverhaulSystemStressTarget", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStressTarget))
+        xmlFile:setValue(key .. "#pendingRepairSystemStressStart", RMS_Utils.serializeNumericMap(spec.pendingRepairSystemStressStart))
+        xmlFile:setValue(key .. "#pendingRepairSystemStressTarget", RMS_Utils.serializeNumericMap(spec.pendingRepairSystemStressTarget))
+        xmlFile:setValue(key .. "#pendingRepairSystemStressStartRatio", RMS_Utils.serializeNumericMap(spec.pendingRepairSystemStressStartRatio))
 
-        ADS_Drivetrain.saveToXMLFile(self, xmlFile, key)
+        RMS_Drivetrain.saveToXMLFile(self, xmlFile, key)
 
         if spec.maintenanceLog and #spec.maintenanceLog > 0 then
             for i, entry in ipairs(spec.maintenanceLog) do
@@ -199,13 +199,13 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
                 xmlFile:setValue(entryKey .. "#id", entry.id or 0)
                 xmlFile:setValue(entryKey .. "#type", entry.type or "")
                 xmlFile:setValue(entryKey .. "#price", entry.price or 0)
-                xmlFile:setValue(entryKey .. "#date", ADS_Utils.serializeDate(entry.date)) 
+                xmlFile:setValue(entryKey .. "#date", RMS_Utils.serializeDate(entry.date)) 
                 xmlFile:setValue(entryKey .. "#location", entry.location or "UNKNOWN")
                 xmlFile:setValue(entryKey .. "#optionOne", entry.optionOne or "NONE")
                 xmlFile:setValue(entryKey .. "#optionTwo", entry.optionTwo or "NONE")
                 xmlFile:setValue(entryKey .. "#optionThree", entry.optionThree or false)
-                xmlFile:setValue(entryKey .. "#isVisible", tostring(ADS_Utils.normalizeBoolValue(entry.isVisible, true)))
-                xmlFile:setValue(entryKey .. "#isCompleted", ADS_Utils.normalizeBoolValue(entry.isCompleted, true))
+                xmlFile:setValue(entryKey .. "#isVisible", tostring(RMS_Utils.normalizeBoolValue(entry.isVisible, true)))
+                xmlFile:setValue(entryKey .. "#isCompleted", RMS_Utils.normalizeBoolValue(entry.isCompleted, true))
 
                 if entry.conditionData then
                     local condKey = entryKey .. ".conditionData"
@@ -216,11 +216,11 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
                     xmlFile:setValue(condKey .. "#service", entry.conditionData.service or 1)
                     xmlFile:setValue(condKey .. "#reliability", entry.conditionData.reliability or 1)
                     xmlFile:setValue(condKey .. "#maintainability", entry.conditionData.maintainability or 1)
-                    xmlFile:setValue(condKey .. "#systems", ADS_Utils.serializeSystemsState(ADS_Utils.createSystemsSnapshot(entry.conditionData.systems)))
+                    xmlFile:setValue(condKey .. "#systems", RMS_Utils.serializeSystemsState(RMS_Utils.createSystemsSnapshot(entry.conditionData.systems)))
                     xmlFile:setValue(condKey .. "#batterySoc", entry.conditionData.batterySoc or 1)
 
                     if entry.conditionData.activeBreakdowns then
-                        xmlFile:setValue(condKey .. "#activeBreakdowns", ADS_Utils.serializeBreakdowns(entry.conditionData.activeBreakdowns))
+                        xmlFile:setValue(condKey .. "#activeBreakdowns", RMS_Utils.serializeBreakdowns(entry.conditionData.activeBreakdowns))
                     end
                     
                     if entry.conditionData.selectedBreakdowns and #entry.conditionData.selectedBreakdowns > 0 then
@@ -228,7 +228,7 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
                     end
                     
                     if entry.conditionData.activeEffects then
-                        xmlFile:setValue(condKey .. "#activeEffects", ADS_Utils.serializeEffectSnapshot(entry.conditionData.activeEffects))
+                        xmlFile:setValue(condKey .. "#activeEffects", RMS_Utils.serializeEffectSnapshot(entry.conditionData.activeEffects))
                     end
                     
                     if entry.conditionData.activeIndicators then
@@ -245,124 +245,124 @@ function AdvancedDamageSystem:saveToXMLFile(xmlFile, key, usedModNames)
     end
 end
 
-function AdvancedDamageSystem:onLoad(savegame)
-    self.spec_AdvancedDamageSystem.isExcludedVehicle = false
-    self.spec_AdvancedDamageSystem.isExcludedByDefault = false
-    self.spec_AdvancedDamageSystem.isExcludedByRule = false
-    self.spec_AdvancedDamageSystem.isExcludedByUser = nil
-    self.spec_AdvancedDamageSystem.isElectricVehicle = false
-    self.spec_AdvancedDamageSystem.isTruck = getIsTruck(self)
-    self.spec_AdvancedDamageSystem.isVehicleNeedLubricate = false
-    self.spec_AdvancedDamageSystem.isVehicleNeedBlowOut = false
+function RealisticMechanicalSystems:onLoad(savegame)
+    self.spec_RealisticMechanicalSystems.isExcludedVehicle = false
+    self.spec_RealisticMechanicalSystems.isExcludedByDefault = false
+    self.spec_RealisticMechanicalSystems.isExcludedByRule = false
+    self.spec_RealisticMechanicalSystems.isExcludedByUser = nil
+    self.spec_RealisticMechanicalSystems.isElectricVehicle = false
+    self.spec_RealisticMechanicalSystems.isTruck = getIsTruck(self)
+    self.spec_RealisticMechanicalSystems.isVehicleNeedLubricate = false
+    self.spec_RealisticMechanicalSystems.isVehicleNeedBlowOut = false
 
-    self.spec_AdvancedDamageSystem.baseServiceLevel = 1.0
-    self.spec_AdvancedDamageSystem.baseConditionLevel = 1.0
-    self.spec_AdvancedDamageSystem.serviceLevel = self.spec_AdvancedDamageSystem.baseServiceLevel
-    self.spec_AdvancedDamageSystem.conditionLevel = self.spec_AdvancedDamageSystem.baseConditionLevel
+    self.spec_RealisticMechanicalSystems.baseServiceLevel = 1.0
+    self.spec_RealisticMechanicalSystems.baseConditionLevel = 1.0
+    self.spec_RealisticMechanicalSystems.serviceLevel = self.spec_RealisticMechanicalSystems.baseServiceLevel
+    self.spec_RealisticMechanicalSystems.conditionLevel = self.spec_RealisticMechanicalSystems.baseConditionLevel
 
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
-    local existingRealOperatingTime = tonumber(self.spec_AdvancedDamageSystem.realOperatingTime) or 0
-    self.spec_AdvancedDamageSystem.realOperatingTime = math.max(existingRealOperatingTime, currentOperatingTime)
-    self.spec_AdvancedDamageSystem._prevConditionLevel = 0
-    self.spec_AdvancedDamageSystem._allowAdsOperatingTimeWrite = false
+    local existingRealOperatingTime = tonumber(self.spec_RealisticMechanicalSystems.realOperatingTime) or 0
+    self.spec_RealisticMechanicalSystems.realOperatingTime = math.max(existingRealOperatingTime, currentOperatingTime)
+    self.spec_RealisticMechanicalSystems._prevConditionLevel = 0
+    self.spec_RealisticMechanicalSystems._allowAdsOperatingTimeWrite = false
 
-    self.spec_AdvancedDamageSystem.systems = {
-        engine = { name = AdvancedDamageSystem.SYSTEMS.ENGINE, condition = 1.0, stress = 0.0, enabled = true },
-        transmission = { name = AdvancedDamageSystem.SYSTEMS.TRANSMISSION, condition = 1.0, stress = 0.0, enabled = true },
-        hydraulics = { name = AdvancedDamageSystem.SYSTEMS.HYDRAULICS, condition = 1.0, stress = 0.0, enabled = true },
-        cooling = { name = AdvancedDamageSystem.SYSTEMS.COOLING, condition = 1.0, stress = 0.0, enabled = true },
-        electrical = { name = AdvancedDamageSystem.SYSTEMS.ELECTRICAL, condition = 1.0, stress = 0.0, enabled = true },
-        chassis = { name = AdvancedDamageSystem.SYSTEMS.CHASSIS, condition = 1.0, stress = 0.0, enabled = true },
-        fuel = { name = AdvancedDamageSystem.SYSTEMS.FUEL, condition = 1.0, stress = 0.0, enabled = true }
+    self.spec_RealisticMechanicalSystems.systems = {
+        engine = { name = RealisticMechanicalSystems.SYSTEMS.ENGINE, condition = 1.0, stress = 0.0, enabled = true },
+        transmission = { name = RealisticMechanicalSystems.SYSTEMS.TRANSMISSION, condition = 1.0, stress = 0.0, enabled = true },
+        hydraulics = { name = RealisticMechanicalSystems.SYSTEMS.HYDRAULICS, condition = 1.0, stress = 0.0, enabled = true },
+        cooling = { name = RealisticMechanicalSystems.SYSTEMS.COOLING, condition = 1.0, stress = 0.0, enabled = true },
+        electrical = { name = RealisticMechanicalSystems.SYSTEMS.ELECTRICAL, condition = 1.0, stress = 0.0, enabled = true },
+        chassis = { name = RealisticMechanicalSystems.SYSTEMS.CHASSIS, condition = 1.0, stress = 0.0, enabled = true },
+        fuel = { name = RealisticMechanicalSystems.SYSTEMS.FUEL, condition = 1.0, stress = 0.0, enabled = true }
     }
-    self.spec_AdvancedDamageSystem.factorStats = createEmptyFactorStats(self.spec_AdvancedDamageSystem.systems)
-    ensureFactorStats(self.spec_AdvancedDamageSystem, self)
+    self.spec_RealisticMechanicalSystems.factorStats = createEmptyFactorStats(self.spec_RealisticMechanicalSystems.systems)
+    ensureFactorStats(self.spec_RealisticMechanicalSystems, self)
 
     --- engine consumptables
-    self.spec_AdvancedDamageSystem.airIntakeClogging = 0.0
+    self.spec_RealisticMechanicalSystems.airIntakeClogging = 0.0
 
-    self.spec_AdvancedDamageSystem.extraConditionWear = 0
-    self.spec_AdvancedDamageSystem.extraServiceWear = 0
-    self.spec_AdvancedDamageSystem.extraEngineHeat = 0
-    self.spec_AdvancedDamageSystem.extraTransmissionHeat = 0
-    self.spec_AdvancedDamageSystem.extraCurrentPeak = 0
+    self.spec_RealisticMechanicalSystems.extraConditionWear = 0
+    self.spec_RealisticMechanicalSystems.extraServiceWear = 0
+    self.spec_RealisticMechanicalSystems.extraEngineHeat = 0
+    self.spec_RealisticMechanicalSystems.extraTransmissionHeat = 0
+    self.spec_RealisticMechanicalSystems.extraCurrentPeak = 0
     
-    self.spec_AdvancedDamageSystem.reliability = 1.0
-    self.spec_AdvancedDamageSystem.maintainability = 1.0
-    self.spec_AdvancedDamageSystem.year = ADS_VehicleYears.DEFAULT_YEAR
+    self.spec_RealisticMechanicalSystems.reliability = 1.0
+    self.spec_RealisticMechanicalSystems.maintainability = 1.0
+    self.spec_RealisticMechanicalSystems.year = RMS_VehicleYears.DEFAULT_YEAR
 
-    self.spec_AdvancedDamageSystem.activeBreakdowns = {}
-    self.spec_AdvancedDamageSystem.activeEffects = {}
-    self.spec_AdvancedDamageSystem.activeIndicators = {}
-    self.spec_AdvancedDamageSystem.activeFunctions = {}
-    self.spec_AdvancedDamageSystem.originalFunctions = {}
-    self.spec_AdvancedDamageSystem.dynamicBreakdowns = {}
+    self.spec_RealisticMechanicalSystems.activeBreakdowns = {}
+    self.spec_RealisticMechanicalSystems.activeEffects = {}
+    self.spec_RealisticMechanicalSystems.activeIndicators = {}
+    self.spec_RealisticMechanicalSystems.activeFunctions = {}
+    self.spec_RealisticMechanicalSystems.originalFunctions = {}
+    self.spec_RealisticMechanicalSystems.dynamicBreakdowns = {}
 
-    self.spec_AdvancedDamageSystem.maintenanceLog = {}
+    self.spec_RealisticMechanicalSystems.maintenanceLog = {}
     
-    self.spec_AdvancedDamageSystem._fuelUsageRaw  = 0
-    self.spec_AdvancedDamageSystem.lastBlinkingWarningMessage = ""
-    self.spec_AdvancedDamageSystem.blinkingWarningTimer = 0
-    self.spec_AdvancedDamageSystem.coldEngineExposureMs = 0
-    self.spec_AdvancedDamageSystem.coldEngineWarningShown = false
-    self.spec_AdvancedDamageSystem.pendingSideNotifications = {}
+    self.spec_RealisticMechanicalSystems._fuelUsageRaw  = 0
+    self.spec_RealisticMechanicalSystems.lastBlinkingWarningMessage = ""
+    self.spec_RealisticMechanicalSystems.blinkingWarningTimer = 0
+    self.spec_RealisticMechanicalSystems.coldEngineExposureMs = 0
+    self.spec_RealisticMechanicalSystems.coldEngineWarningShown = false
+    self.spec_RealisticMechanicalSystems.pendingSideNotifications = {}
 
-    self.spec_AdvancedDamageSystem.startButtonActionEvents = {}
-    self.spec_AdvancedDamageSystem.startButtonDown = false
-    self.spec_AdvancedDamageSystem.startButtonHeld = false
-    self.spec_AdvancedDamageSystem.startButtonUp = false
-    ADS_Preheat.initSpec(self)
+    self.spec_RealisticMechanicalSystems.startButtonActionEvents = {}
+    self.spec_RealisticMechanicalSystems.startButtonDown = false
+    self.spec_RealisticMechanicalSystems.startButtonHeld = false
+    self.spec_RealisticMechanicalSystems.startButtonUp = false
+    RMS_Preheat.initSpec(self)
 
-    self.spec_AdvancedDamageSystem.drivetrainActionEvents = {}
-    ADS_Drivetrain.initSpec(self)
+    self.spec_RealisticMechanicalSystems.drivetrainActionEvents = {}
+    RMS_Drivetrain.initSpec(self)
 
-    self.spec_AdvancedDamageSystem.radiatorClogging = 0.0
-    self.spec_AdvancedDamageSystem.lubricationLevel = 1.0
-    self.spec_AdvancedDamageSystem.lubricationUsedThisPeriod = true
-    self.spec_AdvancedDamageSystem.fieldInspectionSoundActive = false
-    self.spec_AdvancedDamageSystem.fieldInspectionActivePlayers = {}
+    self.spec_RealisticMechanicalSystems.radiatorClogging = 0.0
+    self.spec_RealisticMechanicalSystems.lubricationLevel = 1.0
+    self.spec_RealisticMechanicalSystems.lubricationUsedThisPeriod = true
+    self.spec_RealisticMechanicalSystems.fieldInspectionSoundActive = false
+    self.spec_RealisticMechanicalSystems.fieldInspectionActivePlayers = {}
 
-    self.spec_AdvancedDamageSystem.batterySoc = 1.0
-    self.spec_AdvancedDamageSystem.batteryChargeAh = nil
-    self.spec_AdvancedDamageSystem.batteryHealth = 1.0
-    self.spec_AdvancedDamageSystem.batteryCapacityAh = ADS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY
-    self.spec_AdvancedDamageSystem.batteryTempC = 0
-    self.spec_AdvancedDamageSystem.batteryOpenCircuitVoltageV = 12.7
-    self.spec_AdvancedDamageSystem.rawBatteryTerminalVoltageV = 12.7
-    self.spec_AdvancedDamageSystem.batteryTerminalVoltageV = 12.7
-    self.spec_AdvancedDamageSystem.rawSystemVoltageV = 12.7
-    self.spec_AdvancedDamageSystem.systemVoltageV = 12.7
-    self.spec_AdvancedDamageSystem.alternatorHealth = 1.0
-    self.spec_AdvancedDamageSystem.iAltAvail = 0
-    self.spec_AdvancedDamageSystem.iLoads = 0
-    self.spec_AdvancedDamageSystem.externalPowerConnection = nil
+    self.spec_RealisticMechanicalSystems.batterySoc = 1.0
+    self.spec_RealisticMechanicalSystems.batteryChargeAh = nil
+    self.spec_RealisticMechanicalSystems.batteryHealth = 1.0
+    self.spec_RealisticMechanicalSystems.batteryCapacityAh = RMS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY
+    self.spec_RealisticMechanicalSystems.batteryTempC = 0
+    self.spec_RealisticMechanicalSystems.batteryOpenCircuitVoltageV = 12.7
+    self.spec_RealisticMechanicalSystems.rawBatteryTerminalVoltageV = 12.7
+    self.spec_RealisticMechanicalSystems.batteryTerminalVoltageV = 12.7
+    self.spec_RealisticMechanicalSystems.rawSystemVoltageV = 12.7
+    self.spec_RealisticMechanicalSystems.systemVoltageV = 12.7
+    self.spec_RealisticMechanicalSystems.alternatorHealth = 1.0
+    self.spec_RealisticMechanicalSystems.iAltAvail = 0
+    self.spec_RealisticMechanicalSystems.iLoads = 0
+    self.spec_RealisticMechanicalSystems.externalPowerConnection = nil
 
-    self.spec_AdvancedDamageSystem.engineTemperature = -99
-    self.spec_AdvancedDamageSystem.rawEngineTemperature = -99
-    self.spec_AdvancedDamageSystem._netTargetEngineTemp = nil
-    self.spec_AdvancedDamageSystem._smoothedMotorLoad = 0
-    self.spec_AdvancedDamageSystem._netDynamicMotorLoad = 0
-    self.spec_AdvancedDamageSystem.radiatorHealth = 1.0
-    self.spec_AdvancedDamageSystem.fanClutchHealth = 1.0
-    self.spec_AdvancedDamageSystem.thermostatState = 0.0
-    self.spec_AdvancedDamageSystem.thermostatHealth = 1.0
-    self.spec_AdvancedDamageSystem.thermostatStuckedPosition = nil
-    self.spec_AdvancedDamageSystem.engTermPID = {
+    self.spec_RealisticMechanicalSystems.engineTemperature = -99
+    self.spec_RealisticMechanicalSystems.rawEngineTemperature = -99
+    self.spec_RealisticMechanicalSystems._netTargetEngineTemp = nil
+    self.spec_RealisticMechanicalSystems._smoothedMotorLoad = 0
+    self.spec_RealisticMechanicalSystems._netDynamicMotorLoad = 0
+    self.spec_RealisticMechanicalSystems.radiatorHealth = 1.0
+    self.spec_RealisticMechanicalSystems.fanClutchHealth = 1.0
+    self.spec_RealisticMechanicalSystems.thermostatState = 0.0
+    self.spec_RealisticMechanicalSystems.thermostatHealth = 1.0
+    self.spec_RealisticMechanicalSystems.thermostatStuckedPosition = nil
+    self.spec_RealisticMechanicalSystems.engTermPID = {
         integral = 0,
         lastError = 0
     }
 
-    self.spec_AdvancedDamageSystem.transmissionTemperature = -99
-    self.spec_AdvancedDamageSystem.rawTransmissionTemperature = -99
-    self.spec_AdvancedDamageSystem._netTargetTransmissionTemp = nil
-    self.spec_AdvancedDamageSystem.transmissionThermostatState = 0.0
-    self.spec_AdvancedDamageSystem.transmissionThermostatHealth = 1.0
-    self.spec_AdvancedDamageSystem.transmissionThermostatStuckedPosition = nil
-    self.spec_AdvancedDamageSystem.transTermPID = {
+    self.spec_RealisticMechanicalSystems.transmissionTemperature = -99
+    self.spec_RealisticMechanicalSystems.rawTransmissionTemperature = -99
+    self.spec_RealisticMechanicalSystems._netTargetTransmissionTemp = nil
+    self.spec_RealisticMechanicalSystems.transmissionThermostatState = 0.0
+    self.spec_RealisticMechanicalSystems.transmissionThermostatHealth = 1.0
+    self.spec_RealisticMechanicalSystems.transmissionThermostatStuckedPosition = nil
+    self.spec_RealisticMechanicalSystems.transTermPID = {
         integral = 0,
         lastError = 0
     }
-    self.spec_AdvancedDamageSystem.aiWorkerPid = {
+    self.spec_RealisticMechanicalSystems.aiWorkerPid = {
         integral = 0,
         lastError = 0,
         filteredStress = 0,
@@ -372,7 +372,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         lastAppliedSpeed = nil
     }
 
-    self.spec_AdvancedDamageSystem.debugData = {
+    self.spec_RealisticMechanicalSystems.debugData = {
         service = {
             totalWearRate = 0
         },
@@ -590,38 +590,38 @@ function AdvancedDamageSystem:onLoad(savegame)
         }
     }
 
-    self.spec_AdvancedDamageSystem.isExcludedFromPTOSharpAngleFactor = false
-    self.spec_AdvancedDamageSystem.isUnderRoof = true
-    self.spec_AdvancedDamageSystem.roofRaycastHit = false
-    self.spec_AdvancedDamageSystem.roofRaycastResult = nil
-    self.spec_AdvancedDamageSystem.roofLastRaycastTime = nil
-    self.spec_AdvancedDamageSystem.roofWasStationary = false
-    self.spec_AdvancedDamageSystem.dynamicMotorLoad = 0
-    self.spec_AdvancedDamageSystem.avgDynamicMotorLoad = 0
-    self.spec_AdvancedDamageSystem.avgSpeed = 0
-    self.spec_AdvancedDamageSystem.activeDraftMaxForce = 0
-    self.spec_AdvancedDamageSystem.activeDraftEffectiveForceCap = 0
-    self.spec_AdvancedDamageSystem.isCranking = false
-    self.spec_AdvancedDamageSystem.wheelSlipIntensity = 0
-    self.spec_AdvancedDamageSystem._wheelSlipPreviousSample = 0
-    self.spec_AdvancedDamageSystem._wheelSlipOlderSample = 0
-    self.spec_AdvancedDamageSystem.wheelSlipTutorialTimer = 0
-    self.spec_AdvancedDamageSystem.luggingTutorialTimer = 0
-    self.spec_AdvancedDamageSystem.avgTireGroundFrictionCoeff = 0
-    self.spec_AdvancedDamageSystem.avgGroundSurfaceFactor = 0
-    self.spec_AdvancedDamageSystem.implements = {}
-    self.spec_AdvancedDamageSystem.isImplementLifted = false
-    self.spec_AdvancedDamageSystem.isImplementLowered = false
-    self.spec_AdvancedDamageSystem.isImplementOperating = false
-    self.spec_AdvancedDamageSystem.liftedMass = 0
-    self.spec_AdvancedDamageSystem.operatingMass = 0
-    self.spec_AdvancedDamageSystem.isPtoActive = false
-    self.spec_AdvancedDamageSystem.maxConnectedPtoAngleDeg = 0
-    self.spec_AdvancedDamageSystem.ptoConnectionIsTrailerHitch = false
-    self.spec_AdvancedDamageSystem.hasConnectedPto = false
-    self.spec_AdvancedDamageSystem.hydraulicsMoveAlphaCache = {}
-    self.spec_AdvancedDamageSystem.hydraulicsLiftRatioCache = {}
-    self.spec_AdvancedDamageSystem.chassisVibState = {
+    self.spec_RealisticMechanicalSystems.isExcludedFromPTOSharpAngleFactor = false
+    self.spec_RealisticMechanicalSystems.isUnderRoof = true
+    self.spec_RealisticMechanicalSystems.roofRaycastHit = false
+    self.spec_RealisticMechanicalSystems.roofRaycastResult = nil
+    self.spec_RealisticMechanicalSystems.roofLastRaycastTime = nil
+    self.spec_RealisticMechanicalSystems.roofWasStationary = false
+    self.spec_RealisticMechanicalSystems.dynamicMotorLoad = 0
+    self.spec_RealisticMechanicalSystems.avgDynamicMotorLoad = 0
+    self.spec_RealisticMechanicalSystems.avgSpeed = 0
+    self.spec_RealisticMechanicalSystems.activeDraftMaxForce = 0
+    self.spec_RealisticMechanicalSystems.activeDraftEffectiveForceCap = 0
+    self.spec_RealisticMechanicalSystems.isCranking = false
+    self.spec_RealisticMechanicalSystems.wheelSlipIntensity = 0
+    self.spec_RealisticMechanicalSystems._wheelSlipPreviousSample = 0
+    self.spec_RealisticMechanicalSystems._wheelSlipOlderSample = 0
+    self.spec_RealisticMechanicalSystems.wheelSlipTutorialTimer = 0
+    self.spec_RealisticMechanicalSystems.luggingTutorialTimer = 0
+    self.spec_RealisticMechanicalSystems.avgTireGroundFrictionCoeff = 0
+    self.spec_RealisticMechanicalSystems.avgGroundSurfaceFactor = 0
+    self.spec_RealisticMechanicalSystems.implements = {}
+    self.spec_RealisticMechanicalSystems.isImplementLifted = false
+    self.spec_RealisticMechanicalSystems.isImplementLowered = false
+    self.spec_RealisticMechanicalSystems.isImplementOperating = false
+    self.spec_RealisticMechanicalSystems.liftedMass = 0
+    self.spec_RealisticMechanicalSystems.operatingMass = 0
+    self.spec_RealisticMechanicalSystems.isPtoActive = false
+    self.spec_RealisticMechanicalSystems.maxConnectedPtoAngleDeg = 0
+    self.spec_RealisticMechanicalSystems.ptoConnectionIsTrailerHitch = false
+    self.spec_RealisticMechanicalSystems.hasConnectedPto = false
+    self.spec_RealisticMechanicalSystems.hydraulicsMoveAlphaCache = {}
+    self.spec_RealisticMechanicalSystems.hydraulicsLiftRatioCache = {}
+    self.spec_RealisticMechanicalSystems.chassisVibState = {
         prevSuspension = {},
         smoothed = 0,
         raw = 0,
@@ -631,7 +631,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         avgDensityType = 0,
         fieldMultiplier = 1
     }
-    self.spec_AdvancedDamageSystem.chassisSteerState = {
+    self.spec_RealisticMechanicalSystems.chassisSteerState = {
         prevPosition = nil,
         position = 0,
         angleMagnitude = 0,
@@ -642,7 +642,7 @@ function AdvancedDamageSystem:onLoad(savegame)
         isLowSpeedActive = false,
         isMoving = false
     }
-    self.spec_AdvancedDamageSystem.chassisBrakeState = {
+    self.spec_RealisticMechanicalSystems.chassisBrakeState = {
         pedal = 0,
         massRatio = 0,
         trailerMass = 0,
@@ -652,75 +652,75 @@ function AdvancedDamageSystem:onLoad(savegame)
         isBraking = false,
         isBrakingByAxis = false
     }
-    self.spec_AdvancedDamageSystem.fuelState = {
+    self.spec_RealisticMechanicalSystems.fuelState = {
         level = 0,
         currentUsageRatio = 0,
         temperature = 0,
         idleTimer = 0
     }
-    self.spec_AdvancedDamageSystem.isHarvesting = false
+    self.spec_RealisticMechanicalSystems.isHarvesting = false
 
-    self.spec_AdvancedDamageSystem.onUpdateTimer = ADS_Config.ON_UPDATE_DELAY
-    self.spec_AdvancedDamageSystem.updateVehicleStateTimerOne = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
-    self.spec_AdvancedDamageSystem.updateVehicleStateTimerTwo = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
-    self.spec_AdvancedDamageSystem.updateVehicleStateTimerThree = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
-    self.spec_AdvancedDamageSystem.metaUpdateTimer = math.random() * ADS_Config.META_UPDATE_DELAY
-    self.spec_AdvancedDamageSystem.maintenanceTimer = 0
-    self.spec_AdvancedDamageSystem.currentState = AdvancedDamageSystem.STATUS.READY
-    self.spec_AdvancedDamageSystem.plannedState = AdvancedDamageSystem.STATUS.READY
-    self.spec_AdvancedDamageSystem.workshopType = AdvancedDamageSystem.WORKSHOP.DEALER
-    self.spec_AdvancedDamageSystem.serviceOptionOne = nil
-    self.spec_AdvancedDamageSystem.serviceOptionTwo = nil
-    self.spec_AdvancedDamageSystem.serviceOptionThree = false
-    self.spec_AdvancedDamageSystem.pendingSelectedBreakdowns = {}
-    self.spec_AdvancedDamageSystem.pendingServicePrice = nil
-    self.spec_AdvancedDamageSystem.pendingInspectionQueue = {}
-    self.spec_AdvancedDamageSystem.pendingRepairQueue = {}
-    self.spec_AdvancedDamageSystem.pendingProgressStepIndex = 0
-    self.spec_AdvancedDamageSystem.pendingProgressTotalTime = 0
-    self.spec_AdvancedDamageSystem.pendingProgressElapsedTime = 0
-    self.spec_AdvancedDamageSystem.pendingMaintenanceServiceStart = nil
-    self.spec_AdvancedDamageSystem.pendingMaintenanceServiceTarget = nil
-    self.spec_AdvancedDamageSystem.pendingPreventiveSystemStressStart = {}
-    self.spec_AdvancedDamageSystem.pendingPreventiveSystemStressTarget = {}
-    self.spec_AdvancedDamageSystem.pendingOverhaulSystemStart = {}
-    self.spec_AdvancedDamageSystem.pendingOverhaulSystemTarget = {}
-    self.spec_AdvancedDamageSystem.pendingOverhaulSystemStressStart = {}
-    self.spec_AdvancedDamageSystem.pendingOverhaulSystemStressTarget = {}
-    self.spec_AdvancedDamageSystem.pendingRepairSystemStressStart = {}
-    self.spec_AdvancedDamageSystem.pendingRepairSystemStressTarget = {}
-    self.spec_AdvancedDamageSystem.pendingRepairSystemStressStartRatio = {}
+    self.spec_RealisticMechanicalSystems.onUpdateTimer = RMS_Config.ON_UPDATE_DELAY
+    self.spec_RealisticMechanicalSystems.updateVehicleStateTimerOne = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
+    self.spec_RealisticMechanicalSystems.updateVehicleStateTimerTwo = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
+    self.spec_RealisticMechanicalSystems.updateVehicleStateTimerThree = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
+    self.spec_RealisticMechanicalSystems.metaUpdateTimer = math.random() * RMS_Config.META_UPDATE_DELAY
+    self.spec_RealisticMechanicalSystems.maintenanceTimer = 0
+    self.spec_RealisticMechanicalSystems.currentState = RealisticMechanicalSystems.STATUS.READY
+    self.spec_RealisticMechanicalSystems.plannedState = RealisticMechanicalSystems.STATUS.READY
+    self.spec_RealisticMechanicalSystems.workshopType = RealisticMechanicalSystems.WORKSHOP.DEALER
+    self.spec_RealisticMechanicalSystems.serviceOptionOne = nil
+    self.spec_RealisticMechanicalSystems.serviceOptionTwo = nil
+    self.spec_RealisticMechanicalSystems.serviceOptionThree = false
+    self.spec_RealisticMechanicalSystems.pendingSelectedBreakdowns = {}
+    self.spec_RealisticMechanicalSystems.pendingServicePrice = nil
+    self.spec_RealisticMechanicalSystems.pendingInspectionQueue = {}
+    self.spec_RealisticMechanicalSystems.pendingRepairQueue = {}
+    self.spec_RealisticMechanicalSystems.pendingProgressStepIndex = 0
+    self.spec_RealisticMechanicalSystems.pendingProgressTotalTime = 0
+    self.spec_RealisticMechanicalSystems.pendingProgressElapsedTime = 0
+    self.spec_RealisticMechanicalSystems.pendingMaintenanceServiceStart = nil
+    self.spec_RealisticMechanicalSystems.pendingMaintenanceServiceTarget = nil
+    self.spec_RealisticMechanicalSystems.pendingPreventiveSystemStressStart = {}
+    self.spec_RealisticMechanicalSystems.pendingPreventiveSystemStressTarget = {}
+    self.spec_RealisticMechanicalSystems.pendingOverhaulSystemStart = {}
+    self.spec_RealisticMechanicalSystems.pendingOverhaulSystemTarget = {}
+    self.spec_RealisticMechanicalSystems.pendingOverhaulSystemStressStart = {}
+    self.spec_RealisticMechanicalSystems.pendingOverhaulSystemStressTarget = {}
+    self.spec_RealisticMechanicalSystems.pendingRepairSystemStressStart = {}
+    self.spec_RealisticMechanicalSystems.pendingRepairSystemStressTarget = {}
+    self.spec_RealisticMechanicalSystems.pendingRepairSystemStressStartRatio = {}
 
 
     if self.isServer then
-        local spec = self.spec_AdvancedDamageSystem
+        local spec = self.spec_RealisticMechanicalSystems
         spec.adsDirtyFlag = self:getNextDirtyFlag()
         spec.adsPendingByConnection = {}
     end
 end
 
-function AdvancedDamageSystem:onPostLoad(savegame)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:onPostLoad(savegame)
+    local spec = self.spec_RealisticMechanicalSystems
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
 
     spec.isExcludedByDefault = getIsUnsupportedVehicle(self)
     spec.isExcludedByRule = getIsAuxiliaryMachine(self)
     spec.isExcludedByUser = nil
     if savegame ~= nil then
-        local exclusionKey = savegame.key .. ".AdvancedDamageSystem#userExclusion"
+        local exclusionKey = savegame.key .. ".RealisticMechanicalSystems#userExclusion"
         spec.isExcludedByUser = savegame.xmlFile:getValue(exclusionKey)
     end
     refreshExclusionState(spec)
     if spec.isExcludedByDefault then return end
 
     if spec ~= nil and savegame ~= nil then
-        local key = savegame.key .. ".AdvancedDamageSystem"
+        local key = savegame.key .. ".RealisticMechanicalSystems"
 
-        spec.serviceLevel = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#service", spec.serviceLevel), spec.serviceLevel or 1.0, 0.001)
-        spec.conditionLevel = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#condition", spec.conditionLevel), spec.conditionLevel or 1.0, 0.001, 1.0)
+        spec.serviceLevel = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#service", spec.serviceLevel), spec.serviceLevel or 1.0, 0.001)
+        spec.conditionLevel = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#condition", spec.conditionLevel), spec.conditionLevel or 1.0, 0.001, 1.0)
         spec.currentState = savegame.xmlFile:getValue(key .. "#state", spec.currentState)
         spec.plannedState = savegame.xmlFile:getValue(key .. "#plannedState", spec.plannedState)
-        spec.maintenanceTimer = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#maintenanceTimer", spec.maintenanceTimer), spec.maintenanceTimer or 0, 0)
+        spec.maintenanceTimer = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#maintenanceTimer", spec.maintenanceTimer), spec.maintenanceTimer or 0, 0)
         
         local loadedRealOperatingTime = nil
         if savegame.xmlFile:hasProperty(key .. "#realOperatingTime") then
@@ -730,7 +730,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
             loadedRealOperatingTime = getXMLFloat(savegame.xmlFile.handle, key .. "#realOperatingTime")
         end
         if loadedRealOperatingTime ~= nil then
-            spec.realOperatingTime = AdvancedDamageSystem.sanitizeNumber(loadedRealOperatingTime, currentOperatingTime, 0)
+            spec.realOperatingTime = RealisticMechanicalSystems.sanitizeNumber(loadedRealOperatingTime, currentOperatingTime, 0)
         else
             spec.realOperatingTime = currentOperatingTime
         end
@@ -738,24 +738,24 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         -- Load Breakdowns
         local breakdownString = savegame.xmlFile:getValue(key .. "#breakdowns", "")
         if breakdownString and breakdownString ~= "" then
-            spec.activeBreakdowns = ADS_Utils.deserializeBreakdowns(breakdownString)
+            spec.activeBreakdowns = RMS_Utils.deserializeBreakdowns(breakdownString)
         else
             spec.activeBreakdowns = {}
         end
 
         -- Load Simple Variables
-        spec.engineTemperature = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#engineTemperature", spec.engineTemperature), 20, -80, 160)
-        spec.transmissionTemperature = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionTemperature", spec.transmissionTemperature), spec.engineTemperature, -80, 180)
-        spec.batterySoc = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batterySoc", spec.batterySoc), 1.0, 0, 1)
+        spec.engineTemperature = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#engineTemperature", spec.engineTemperature), 20, -80, 160)
+        spec.transmissionTemperature = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionTemperature", spec.transmissionTemperature), spec.engineTemperature, -80, 180)
+        spec.batterySoc = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batterySoc", spec.batterySoc), 1.0, 0, 1)
         local loadedBatteryChargeAh = savegame.xmlFile:getValue(key .. "#batteryChargeAh", spec.batteryChargeAh)
-        spec.batteryChargeAh = loadedBatteryChargeAh ~= nil and AdvancedDamageSystem.sanitizeNumber(loadedBatteryChargeAh, 0, 0, 10000) or nil
-        spec.batteryTempC = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batteryTempC", spec.batteryTempC), 20, -80, 85)
+        spec.batteryChargeAh = loadedBatteryChargeAh ~= nil and RealisticMechanicalSystems.sanitizeNumber(loadedBatteryChargeAh, 0, 0, 10000) or nil
+        spec.batteryTempC = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batteryTempC", spec.batteryTempC), 20, -80, 85)
         spec.radiatorClogging = math.max(savegame.xmlFile:getValue(key .. "#radiatorClogging", spec.radiatorClogging), 0)
         spec.airIntakeClogging = math.max(savegame.xmlFile:getValue(key .. "#airIntakeClogging", spec.airIntakeClogging), 0)
         spec.lubricationLevel = math.clamp(savegame.xmlFile:getValue(key .. "#lubricationLevel", spec.lubricationLevel), 0.0, 1.0)
         spec.lubricationUsedThisPeriod = savegame.xmlFile:getValue(key .. "#lubricationUsedThisPeriod", true)
-        spec.thermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
-        spec.transmissionThermostatState = AdvancedDamageSystem.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
+        spec.thermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
+        spec.transmissionThermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
         if spec.engTermPID ~= nil then
             spec.engTermPID.mechPos = spec.thermostatState
         end
@@ -767,12 +767,12 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         if spec.serviceOptionOne == "" then spec.serviceOptionOne = nil end
         if spec.serviceOptionTwo == "" then spec.serviceOptionTwo = nil end
         spec.serviceOptionThree = savegame.xmlFile:getValue(key .. "#serviceOptionThree", spec.serviceOptionThree)
-        ADS_Drivetrain.loadFromSavegame(self, savegame.xmlFile, key)
+        RMS_Drivetrain.loadFromSavegame(self, savegame.xmlFile, key)
         local loadedWorkshopType = savegame.xmlFile:getValue(key .. "#workshopType", "")
         if loadedWorkshopType ~= nil and loadedWorkshopType ~= "" then
             spec.workshopType = loadedWorkshopType
         end
-        spec.pendingServicePrice = ADS_Utils.decodeOptionalFloat(savegame.xmlFile:getValue(key .. "#pendingServicePrice", spec.pendingServicePrice))
+        spec.pendingServicePrice = RMS_Utils.decodeOptionalFloat(savegame.xmlFile:getValue(key .. "#pendingServicePrice", spec.pendingServicePrice))
         spec.pendingSelectedBreakdowns = {}
         local pendingSelBdStr = savegame.xmlFile:getValue(key .. "#pendingSelectedBreakdowns", "")
         if pendingSelBdStr ~= nil and pendingSelBdStr ~= "" then
@@ -799,20 +799,20 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         spec.pendingProgressStepIndex = savegame.xmlFile:getValue(key .. "#pendingProgressStepIndex", spec.pendingProgressStepIndex)
         spec.pendingProgressTotalTime = savegame.xmlFile:getValue(key .. "#pendingProgressTotalTime", spec.pendingProgressTotalTime)
         spec.pendingProgressElapsedTime = savegame.xmlFile:getValue(key .. "#pendingProgressElapsedTime", spec.pendingProgressElapsedTime)
-        spec.pendingMaintenanceServiceStart = ADS_Utils.decodeOptionalFloat(savegame.xmlFile:getValue(key .. "#pendingMaintenanceServiceStart", spec.pendingMaintenanceServiceStart))
-        spec.pendingMaintenanceServiceTarget = ADS_Utils.decodeOptionalFloat(savegame.xmlFile:getValue(key .. "#pendingMaintenanceServiceTarget", spec.pendingMaintenanceServiceTarget))
-        spec.pendingPreventiveSystemStressStart = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingPreventiveSystemStressStart", ""))
-        spec.pendingPreventiveSystemStressTarget = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingPreventiveSystemStressTarget", ""))
-        spec.pendingOverhaulSystemStart = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemStart", ""))
-        spec.pendingOverhaulSystemTarget = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemTarget", ""))
-        spec.pendingOverhaulSystemStressStart = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemStressStart", ""))
-        spec.pendingOverhaulSystemStressTarget = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemStressTarget", ""))
-        spec.pendingRepairSystemStressStart = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingRepairSystemStressStart", ""))
-        spec.pendingRepairSystemStressTarget = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingRepairSystemStressTarget", ""))
-        spec.pendingRepairSystemStressStartRatio = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingRepairSystemStressStartRatio", ""))
-        local loadedFactorStatsFlat = ADS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#factorStats", ""))
+        spec.pendingMaintenanceServiceStart = RMS_Utils.decodeOptionalFloat(savegame.xmlFile:getValue(key .. "#pendingMaintenanceServiceStart", spec.pendingMaintenanceServiceStart))
+        spec.pendingMaintenanceServiceTarget = RMS_Utils.decodeOptionalFloat(savegame.xmlFile:getValue(key .. "#pendingMaintenanceServiceTarget", spec.pendingMaintenanceServiceTarget))
+        spec.pendingPreventiveSystemStressStart = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingPreventiveSystemStressStart", ""))
+        spec.pendingPreventiveSystemStressTarget = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingPreventiveSystemStressTarget", ""))
+        spec.pendingOverhaulSystemStart = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemStart", ""))
+        spec.pendingOverhaulSystemTarget = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemTarget", ""))
+        spec.pendingOverhaulSystemStressStart = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemStressStart", ""))
+        spec.pendingOverhaulSystemStressTarget = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingOverhaulSystemStressTarget", ""))
+        spec.pendingRepairSystemStressStart = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingRepairSystemStressStart", ""))
+        spec.pendingRepairSystemStressTarget = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingRepairSystemStressTarget", ""))
+        spec.pendingRepairSystemStressStartRatio = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#pendingRepairSystemStressStartRatio", ""))
+        local loadedFactorStatsFlat = RMS_Utils.deserializeNumericMap(savegame.xmlFile:getValue(key .. "#factorStats", ""))
 
-        local loadedSystemsStateRaw = ADS_Utils.deserializeSystemsState(savegame.xmlFile:getValue(key .. "#systemsState", ""))
+        local loadedSystemsStateRaw = RMS_Utils.deserializeSystemsState(savegame.xmlFile:getValue(key .. "#systemsState", ""))
         local loadedSystemsState = {}
         for loadedKey, loadedData in pairs(loadedSystemsStateRaw) do
             loadedSystemsState[string.lower(tostring(loadedKey))] = loadedData
@@ -836,7 +836,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
             if loadedData ~= nil then
                 systemData.condition = math.clamp(tonumber(loadedData.condition) or systemData.condition or 1.0, 0.001, 1.0)
                 systemData.stress = math.max(tonumber(loadedData.stress) or systemData.stress or 0.0, 0.0)
-                systemData.enabled = ADS_Utils.normalizeBoolValue(loadedData.enabled, systemData.enabled ~= false)
+                systemData.enabled = RMS_Utils.normalizeBoolValue(loadedData.enabled, systemData.enabled ~= false)
             else
                 if not hasSerializedSystemsState and spec.conditionLevel ~= nil then
                     systemData.condition = math.clamp(tonumber(spec.conditionLevel) or systemData.condition or 1.0, 0.001, 1.0)
@@ -844,10 +844,10 @@ function AdvancedDamageSystem:onPostLoad(savegame)
                     systemData.condition = math.clamp(tonumber(systemData.condition) or 1.0, 0.001, 1.0)
                 end
                 systemData.stress = math.max(tonumber(systemData.stress) or 0.0, 0.0)
-                systemData.enabled = ADS_Utils.normalizeBoolValue(systemData.enabled, true)
+                systemData.enabled = RMS_Utils.normalizeBoolValue(systemData.enabled, true)
             end
 
-            systemData.name = ADS_Utils.getSystemNameByKey(AdvancedDamageSystem.SYSTEMS, systemKey)
+            systemData.name = RMS_Utils.getSystemNameByKey(RealisticMechanicalSystems.SYSTEMS, systemKey)
         end
         ensureFactorStats(spec, self)
         applyFlattenedFactorStats(spec, loadedFactorStatsFlat)
@@ -866,7 +866,7 @@ function AdvancedDamageSystem:onPostLoad(savegame)
                 id = savegame.xmlFile:getValue(entryKey .. "#id"),
                 type = savegame.xmlFile:getValue(entryKey .. "#type"),
                 price = savegame.xmlFile:getValue(entryKey .. "#price"),
-                date = ADS_Utils.deserializeDate(savegame.xmlFile:getValue(entryKey .. "#date")),
+                date = RMS_Utils.deserializeDate(savegame.xmlFile:getValue(entryKey .. "#date")),
                 conditionData = {}
             }
             local condKey = entryKey .. ".conditionData"
@@ -876,8 +876,8 @@ function AdvancedDamageSystem:onPostLoad(savegame)
                 entry.optionOne = savegame.xmlFile:getValue(entryKey .. "#optionOne", "NONE")
                 entry.optionTwo = savegame.xmlFile:getValue(entryKey .. "#optionTwo", "NONE")
                 entry.optionThree = savegame.xmlFile:getValue(entryKey .. "#optionThree", false)
-                entry.isVisible = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isVisible", true), true)
-                entry.isCompleted = ADS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isCompleted", true), true)
+                entry.isVisible = RMS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isVisible", true), true)
+                entry.isCompleted = RMS_Utils.normalizeBoolValue(savegame.xmlFile:getValue(entryKey .. "#isCompleted", true), true)
 
                 entry.conditionData.year = savegame.xmlFile:getValue(condKey .. "#year", 0)
                 entry.conditionData.operatingHours = savegame.xmlFile:getValue(condKey .. "#operatingHours", 0)
@@ -886,19 +886,19 @@ function AdvancedDamageSystem:onPostLoad(savegame)
                 entry.conditionData.service = savegame.xmlFile:getValue(condKey .. "#service", 1)
                 entry.conditionData.reliability = savegame.xmlFile:getValue(condKey .. "#reliability", 1)
                 entry.conditionData.maintainability = savegame.xmlFile:getValue(condKey .. "#maintainability", 1)
-                entry.conditionData.systems = ADS_Utils.createSystemsSnapshot(ADS_Utils.deserializeSystemsState(savegame.xmlFile:getValue(condKey .. "#systems", "")))
+                entry.conditionData.systems = RMS_Utils.createSystemsSnapshot(RMS_Utils.deserializeSystemsState(savegame.xmlFile:getValue(condKey .. "#systems", "")))
                 entry.conditionData.batterySoc = savegame.xmlFile:getValue(condKey .. "#batterySoc", 1)
 
                 local bdStr = savegame.xmlFile:getValue(condKey .. "#activeBreakdowns", "")
-                entry.conditionData.activeBreakdowns = ADS_Utils.deserializeBreakdowns(bdStr) or {}
+                entry.conditionData.activeBreakdowns = RMS_Utils.deserializeBreakdowns(bdStr) or {}
 
                 local selBdStr = savegame.xmlFile:getValue(condKey .. "#selectedBreakdowns", "")
-                entry.conditionData.selectedBreakdowns = ADS_Utils.parseCsvList(selBdStr)
+                entry.conditionData.selectedBreakdowns = RMS_Utils.parseCsvList(selBdStr)
 
-                entry.conditionData.activeEffects = ADS_Utils.deserializeEffectSnapshot(savegame.xmlFile:getValue(condKey .. "#activeEffects", ""))
+                entry.conditionData.activeEffects = RMS_Utils.deserializeEffectSnapshot(savegame.xmlFile:getValue(condKey .. "#activeEffects", ""))
 
                 entry.conditionData.activeIndicators = {}
-                local indicatorIds = ADS_Utils.parseCsvList(savegame.xmlFile:getValue(condKey .. "#activeIndicators", ""))
+                local indicatorIds = RMS_Utils.parseCsvList(savegame.xmlFile:getValue(condKey .. "#activeIndicators", ""))
                 for _, indId in ipairs(indicatorIds) do
                     entry.conditionData.activeIndicators[indId] = true
                 end
@@ -913,8 +913,8 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         if spec.serviceLevel == nil then spec.serviceLevel = spec.baseServiceLevel end
         if spec.conditionLevel == nil then spec.conditionLevel = spec.baseConditionLevel end
         if spec.maintenanceTimer == nil then spec.maintenanceTimer = 0 end
-        if spec.currentState == nil then spec.currentState = AdvancedDamageSystem.STATUS.READY end
-        if spec.plannedState == nil then spec.plannedState = AdvancedDamageSystem.STATUS.READY end
+        if spec.currentState == nil then spec.currentState = RealisticMechanicalSystems.STATUS.READY end
+        if spec.plannedState == nil then spec.plannedState = RealisticMechanicalSystems.STATUS.READY end
         if spec.serviceOptionThree == nil then spec.serviceOptionThree = false end
         if spec.pendingSelectedBreakdowns == nil then spec.pendingSelectedBreakdowns = {} end
         if spec.pendingInspectionQueue == nil then spec.pendingInspectionQueue = {} end
@@ -956,21 +956,21 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec.fieldInspection = spec.fieldInspection or {
         isActive = false,
         elapsedTime = 0,
-        duration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
+        duration = RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION,
         startTime = 0,
         targetNode = nil,
         targetVehicle = nil
     }
 
     -- Sounds Loading
-    local xmlSoundFile = loadXMLFile("ads_sounds", AdvancedDamageSystem.modDirectory .. "sounds/ads_sounds.xml")
+    local xmlSoundFile = loadXMLFile("ads_sounds", RealisticMechanicalSystems.modDirectory .. "sounds/ads_sounds.xml")
     if spec.samples == nil then
         spec.samples = {}
     end
     
     if xmlSoundFile ~= nil then
         local soundManager = g_soundManager
-        local modDir = AdvancedDamageSystem.modDirectory
+        local modDir = RealisticMechanicalSystems.modDirectory
         local root = self.rootNode
         local i3d = self.i3dMappings
         
@@ -995,14 +995,14 @@ function AdvancedDamageSystem:onPostLoad(savegame)
         spec.samples.inspection = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "inspection", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         delete(xmlSoundFile)
     else
-        log_dbg("ERROR: AdvancedDamageSystem - Could not load ads_sounds.xml")
+        log_dbg("ERROR: RealisticMechanicalSystems - Could not load ads_sounds.xml")
     end
 
     spec.rawEngineTemperature = spec.engineTemperature
     spec.rawTransmissionTemperature = spec.transmissionTemperature
 
     spec.isElectricVehicle = getIsElectricVehicle(self)
-    spec.isDieselVehicle = ADS_Preheat.isDieselVehicle(self)
+    spec.isDieselVehicle = RMS_Preheat.isDieselVehicle(self)
     spec.hydraulicsMoveAlphaCache = {}
     spec.hydraulicsLiftRatioCache = {}
 
@@ -1032,36 +1032,36 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     end
 
     local function enableOrDisableSystems(vehicle)
-        local spec = vehicle.spec_AdvancedDamageSystem
+        local spec = vehicle.spec_RealisticMechanicalSystems
         for _, systemData in pairs(spec.systems) do
             -- disable engine for electric vehicles
-            if systemData.name == AdvancedDamageSystem.SYSTEMS.ENGINE then
+            if systemData.name == RealisticMechanicalSystems.SYSTEMS.ENGINE then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
             -- disable transsmision for electric vehicles
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.TRANSMISSION then
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.TRANSMISSION then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
             -- disable hydralic for trucks, cars, motorbikes
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.HYDRAULICS then
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.HYDRAULICS then
                 local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
                 local vtype = vehicle.type.name
                 if storeItem.categoryName == "TRUCKS" or vtype == "car" or vtype == "carFillable" or vtype == "motorbike" then
                     systemData.enabled = false
                 end
             -- disable cooling for trucks, cars, motorbikes
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.COOLING then
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.COOLING then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
             -- electrical is  applicable for all vehicles
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.ELECTRICAL then
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.ELECTRICAL then
             -- chassis is applicable for all vehicles
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.CHASSIS  then
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.CHASSIS  then
             --- disable fuel system for electric vehicles
-            elseif systemData.name == AdvancedDamageSystem.SYSTEMS.FUEL then
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.FUEL then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
@@ -1120,29 +1120,29 @@ function AdvancedDamageSystem:onPostLoad(savegame)
     spec._lastSyncWear_conditionLevel = spec.conditionLevel
     captureSystemsSync(spec)
     --- [8] breakdowns
-    spec._lastSyncBreakdowns_serialized = ADS_Utils.serializeBreakdowns(spec.activeBreakdowns or {})
+    spec._lastSyncBreakdowns_serialized = RMS_Utils.serializeBreakdowns(spec.activeBreakdowns or {})
     --- [9] service
     spec._lastSyncServiceProgress_elapsed = spec.pendingProgressElapsedTime
     spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
     spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
 
-    ADS_Electrical.initVoltagesFromSoc(self)
+    RMS_Electrical.initVoltagesFromSoc(self)
 
     self:recalculateAndApplyEffects()
 end
 
-function AdvancedDamageSystem:onDelete()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:onDelete()
+    local spec = self.spec_RealisticMechanicalSystems
 
     if spec and spec.samples then
         g_soundManager:deleteSamples(spec.samples)
     end
 
-    if ADS_Main and ADS_Main.vehicles and self.uniqueId and ADS_Main.vehicles[self.uniqueId] then
-        if ADS_Main.previousKey == self.uniqueId then
-            ADS_Main.previousKey = nil
+    if RMS_Main and RMS_Main.vehicles and self.uniqueId and RMS_Main.vehicles[self.uniqueId] then
+        if RMS_Main.previousKey == self.uniqueId then
+            RMS_Main.previousKey = nil
         end
-        ADS_Main.vehicles[self.uniqueId] = nil
-        ADS_Main.numVehicles = ADS_Main.numVehicles - 1
+        RMS_Main.vehicles[self.uniqueId] = nil
+        RMS_Main.numVehicles = RMS_Main.numVehicles - 1
     end
 end

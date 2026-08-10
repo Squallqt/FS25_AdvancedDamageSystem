@@ -1,69 +1,69 @@
--- ADS_SettingsSyncEvent
--- Client-to-server event. Replicates all adjustable ADS_Config values
+-- RMS_SettingsSyncEvent
+-- Client-to-server event. Replicates all adjustable RMS_Config values
 -- from the admin client to the dedicated server so both machines share
 -- identical tuning.  Sent once after every in-game settings change.
 
-ADS_SettingsSyncEvent = {}
-local ADS_SettingsSyncEvent_mt = Class(ADS_SettingsSyncEvent, Event)
+RMS_SettingsSyncEvent = {}
+local RMS_SettingsSyncEvent_mt = Class(RMS_SettingsSyncEvent, Event)
 
-InitEventClass(ADS_SettingsSyncEvent, "ADS_SettingsSyncEvent")
+InitEventClass(RMS_SettingsSyncEvent, "RMS_SettingsSyncEvent")
 
 
-function ADS_SettingsSyncEvent.emptyNew()
-    return Event.new(ADS_SettingsSyncEvent_mt)
+function RMS_SettingsSyncEvent.emptyNew()
+    return Event.new(RMS_SettingsSyncEvent_mt)
 end
 
 
-function ADS_SettingsSyncEvent.new()
-    local self = ADS_SettingsSyncEvent.emptyNew()
+function RMS_SettingsSyncEvent.new()
+    local self = RMS_SettingsSyncEvent.emptyNew()
 
-    self.baseServiceWear           = ADS_Config.CORE.BASE_SERVICE_WEAR
-    self.baseSystemsWear           = ADS_Config.CORE.BASE_SYSTEMS_WEAR
-    self.downtimeMultiplier        = ADS_Config.CORE.DOWNTIME_MULTIPLIER
-    self.generalWearEnabled        = ADS_Config.CORE.GENERAL_WEAR_ENABLED
-    self.enableWarningMessages     = ADS_Config.CORE.ENABLE_WARNING_MESSAGES
-    self.systemStressGlobalMultiplier = ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER
-    self.aiOverloadControl         = ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL
-    self.aiDisableOnCriticalOverload = ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD
-    self.contractVehicleProtection = ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION
-    self.aiWorkerTargetStress      = ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS
-    self.aiWorkerMinSpeed          = ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED
-    self.instantInspection         = ADS_Config.MAINTENANCE.INSTANT_INSPECTION
-    self.parkVehicle               = ADS_Config.MAINTENANCE.PARK_VEHICLE
-    self.warrantyEnabled           = ADS_Config.MAINTENANCE.WARRANTY_ENABLED
-    self.globalPriceMultiplier     = ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER
-    self.globalTimeMultiplier      = ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER
-    self.dealerAlwaysAvailable     = ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE
-    self.mobileAlwaysAvailable     = ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE
-    self.ownAlwaysAvailable        = ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE
-    self.mobileWorkshopRestrictionsEnabled = ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED
-    self.openHour                  = ADS_Config.WORKSHOP.OPEN_HOUR
-    self.closeHour                 = ADS_Config.WORKSHOP.CLOSE_HOUR
-    self.engineMaxHeat             = ADS_Config.THERMAL.ENGINE_MAX_HEAT
-    self.transMaxHeat              = ADS_Config.THERMAL.TRANS_MAX_HEAT
-    self.temperatureChangeSpeed    = ADS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED
-    self.maxDirtInfluence          = ADS_Config.THERMAL.MAX_DIRT_INFLUENCE
-    self.warmingBoostPower         = ADS_Config.THERMAL.WARMING_BOOST_POWER
-    self.coolingSlowdownPower      = ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER
-    self.batteryUsableCapacityFactor = ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
-    self.alternatorMaxOutput       = ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT
-    self.idleCurrentA              = ADS_Config.ELECTRICAL.IDLE_CURRENT_A
-    self.cloggingSpeed             = ADS_Config.FIELD_CARE.CLOGGING_SPEED
-    self.fieldInspectionDuration   = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
-    self.lubricationReducePerOperatingHour = ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR
-    self.debugMode                 = ADS_Config.DEBUG
-    self.drivetrainEnabled         = ADS_Config.DRIVETRAIN.ENABLED
-    self.drivetrainAllowAutoMode   = ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE
-    self.drivetrainWindupDamage    = ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED
-    self.drivetrainDiffLockReleaseSpeed = ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED
-    self.drivetrainParkBrakeEnabled = ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED
-    self.drivetrainParkBrakeAuto   = ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE
+    self.baseServiceWear           = RMS_Config.CORE.BASE_SERVICE_WEAR
+    self.baseSystemsWear           = RMS_Config.CORE.BASE_SYSTEMS_WEAR
+    self.downtimeMultiplier        = RMS_Config.CORE.DOWNTIME_MULTIPLIER
+    self.generalWearEnabled        = RMS_Config.CORE.GENERAL_WEAR_ENABLED
+    self.enableWarningMessages     = RMS_Config.CORE.ENABLE_WARNING_MESSAGES
+    self.systemStressGlobalMultiplier = RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER
+    self.aiOverloadControl         = RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL
+    self.aiDisableOnCriticalOverload = RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD
+    self.contractVehicleProtection = RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION
+    self.aiWorkerTargetStress      = RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS
+    self.aiWorkerMinSpeed          = RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED
+    self.instantInspection         = RMS_Config.MAINTENANCE.INSTANT_INSPECTION
+    self.parkVehicle               = RMS_Config.MAINTENANCE.PARK_VEHICLE
+    self.warrantyEnabled           = RMS_Config.MAINTENANCE.WARRANTY_ENABLED
+    self.globalPriceMultiplier     = RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER
+    self.globalTimeMultiplier      = RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER
+    self.dealerAlwaysAvailable     = RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE
+    self.mobileAlwaysAvailable     = RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE
+    self.ownAlwaysAvailable        = RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE
+    self.mobileWorkshopRestrictionsEnabled = RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED
+    self.openHour                  = RMS_Config.WORKSHOP.OPEN_HOUR
+    self.closeHour                 = RMS_Config.WORKSHOP.CLOSE_HOUR
+    self.engineMaxHeat             = RMS_Config.THERMAL.ENGINE_MAX_HEAT
+    self.transMaxHeat              = RMS_Config.THERMAL.TRANS_MAX_HEAT
+    self.temperatureChangeSpeed    = RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED
+    self.maxDirtInfluence          = RMS_Config.THERMAL.MAX_DIRT_INFLUENCE
+    self.warmingBoostPower         = RMS_Config.THERMAL.WARMING_BOOST_POWER
+    self.coolingSlowdownPower      = RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER
+    self.batteryUsableCapacityFactor = RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
+    self.alternatorMaxOutput       = RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT
+    self.idleCurrentA              = RMS_Config.ELECTRICAL.IDLE_CURRENT_A
+    self.cloggingSpeed             = RMS_Config.FIELD_CARE.CLOGGING_SPEED
+    self.fieldInspectionDuration   = RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
+    self.lubricationReducePerOperatingHour = RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR
+    self.debugMode                 = RMS_Config.DEBUG
+    self.drivetrainEnabled         = RMS_Config.DRIVETRAIN.ENABLED
+    self.drivetrainAllowAutoMode   = RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE
+    self.drivetrainWindupDamage    = RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED
+    self.drivetrainDiffLockReleaseSpeed = RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED
+    self.drivetrainParkBrakeEnabled = RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED
+    self.drivetrainParkBrakeAuto   = RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE
 
     return self
 end
 
 
-function ADS_SettingsSyncEvent:writeStream(streamId, connection)
+function RMS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.baseServiceWear       or 0)
     streamWriteFloat32(streamId, self.baseSystemsWear       or 0)
     streamWriteFloat32(streamId, self.downtimeMultiplier    or 0)
@@ -108,7 +108,7 @@ function ADS_SettingsSyncEvent:writeStream(streamId, connection)
 end
 
 
-function ADS_SettingsSyncEvent:readStream(streamId, connection)
+function RMS_SettingsSyncEvent:readStream(streamId, connection)
     self.baseServiceWear           = streamReadFloat32(streamId)
     self.baseSystemsWear           = streamReadFloat32(streamId)
     self.downtimeMultiplier        = streamReadFloat32(streamId)
@@ -155,80 +155,80 @@ function ADS_SettingsSyncEvent:readStream(streamId, connection)
 end
 
 
--- Apply received values to ADS_Config.
+-- Apply received values to RMS_Config.
 local function applyConfig(event)
-    local oldBatteryCapacityFactor = ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
+    local oldBatteryCapacityFactor = RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
     local oldConfig = {
-        parkVehicle = ADS_Config.MAINTENANCE.PARK_VEHICLE,
-        instantInspection = ADS_Config.MAINTENANCE.INSTANT_INSPECTION
+        parkVehicle = RMS_Config.MAINTENANCE.PARK_VEHICLE,
+        instantInspection = RMS_Config.MAINTENANCE.INSTANT_INSPECTION
     }
 
-    ADS_Config.CORE.BASE_SERVICE_WEAR                      = event.baseServiceWear
-    ADS_Config.CORE.BASE_SYSTEMS_WEAR                      = event.baseSystemsWear
-    ADS_Config.CORE.DOWNTIME_MULTIPLIER                    = event.downtimeMultiplier
-    ADS_Config.CORE.GENERAL_WEAR_ENABLED                   = event.generalWearEnabled
-    ADS_Config.CORE.ENABLE_WARNING_MESSAGES                = event.enableWarningMessages
-    ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER        = event.systemStressGlobalMultiplier
-    ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL       = event.aiOverloadControl
-    ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD        = event.aiDisableOnCriticalOverload
-    ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION            = event.contractVehicleProtection
-    ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS            = event.aiWorkerTargetStress
-    ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED                = event.aiWorkerMinSpeed
-    ADS_Config.MAINTENANCE.INSTANT_INSPECTION               = event.instantInspection
-    ADS_Config.MAINTENANCE.PARK_VEHICLE                     = event.parkVehicle
-    ADS_Config.MAINTENANCE.WARRANTY_ENABLED                 = event.warrantyEnabled
-    ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER  = event.globalPriceMultiplier
-    ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER   = event.globalTimeMultiplier
-    ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE             = event.dealerAlwaysAvailable
-    ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE             = event.mobileAlwaysAvailable
-    ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE                = event.ownAlwaysAvailable
-    ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = event.mobileWorkshopRestrictionsEnabled
-    ADS_Config.WORKSHOP.OPEN_HOUR                           = event.openHour
-    ADS_Config.WORKSHOP.CLOSE_HOUR                          = event.closeHour
-    ADS_Config.THERMAL.ENGINE_MAX_HEAT                      = event.engineMaxHeat
-    ADS_Config.THERMAL.TRANS_MAX_HEAT                       = event.transMaxHeat
-    ADS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED             = math.clamp(event.temperatureChangeSpeed, 0.5, 2.0)
-    ADS_Config.THERMAL.MAX_DIRT_INFLUENCE                   = event.maxDirtInfluence
-    ADS_Config.THERMAL.WARMING_BOOST_POWER                  = event.warmingBoostPower
-    ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER               = event.coolingSlowdownPower
-    ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR    = event.batteryUsableCapacityFactor
-    ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT                    = event.alternatorMaxOutput
-    ADS_Config.ELECTRICAL.IDLE_CURRENT_A                    = event.idleCurrentA
-    ADS_Config.FIELD_CARE.CLOGGING_SPEED                    = event.cloggingSpeed
-    ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION         = event.fieldInspectionDuration
-    ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = event.lubricationReducePerOperatingHour
-    ADS_Config.DEBUG                                        = event.debugMode
-    ADS_Config.DRIVETRAIN.ENABLED                           = event.drivetrainEnabled ~= false
-    ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE                   = event.drivetrainAllowAutoMode ~= false
-    ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED             = event.drivetrainWindupDamage ~= false
-    ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED       = math.clamp(tonumber(event.drivetrainDiffLockReleaseSpeed) or 10, 10, 40)
-    ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED                 = event.drivetrainParkBrakeEnabled ~= false
-    ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE               = event.drivetrainParkBrakeAuto ~= false
+    RMS_Config.CORE.BASE_SERVICE_WEAR                      = event.baseServiceWear
+    RMS_Config.CORE.BASE_SYSTEMS_WEAR                      = event.baseSystemsWear
+    RMS_Config.CORE.DOWNTIME_MULTIPLIER                    = event.downtimeMultiplier
+    RMS_Config.CORE.GENERAL_WEAR_ENABLED                   = event.generalWearEnabled
+    RMS_Config.CORE.ENABLE_WARNING_MESSAGES                = event.enableWarningMessages
+    RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER        = event.systemStressGlobalMultiplier
+    RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL       = event.aiOverloadControl
+    RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD        = event.aiDisableOnCriticalOverload
+    RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION            = event.contractVehicleProtection
+    RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS            = event.aiWorkerTargetStress
+    RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED                = event.aiWorkerMinSpeed
+    RMS_Config.MAINTENANCE.INSTANT_INSPECTION               = event.instantInspection
+    RMS_Config.MAINTENANCE.PARK_VEHICLE                     = event.parkVehicle
+    RMS_Config.MAINTENANCE.WARRANTY_ENABLED                 = event.warrantyEnabled
+    RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER  = event.globalPriceMultiplier
+    RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER   = event.globalTimeMultiplier
+    RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE             = event.dealerAlwaysAvailable
+    RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE             = event.mobileAlwaysAvailable
+    RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE                = event.ownAlwaysAvailable
+    RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = event.mobileWorkshopRestrictionsEnabled
+    RMS_Config.WORKSHOP.OPEN_HOUR                           = event.openHour
+    RMS_Config.WORKSHOP.CLOSE_HOUR                          = event.closeHour
+    RMS_Config.THERMAL.ENGINE_MAX_HEAT                      = event.engineMaxHeat
+    RMS_Config.THERMAL.TRANS_MAX_HEAT                       = event.transMaxHeat
+    RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED             = math.clamp(event.temperatureChangeSpeed, 0.5, 2.0)
+    RMS_Config.THERMAL.MAX_DIRT_INFLUENCE                   = event.maxDirtInfluence
+    RMS_Config.THERMAL.WARMING_BOOST_POWER                  = event.warmingBoostPower
+    RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER               = event.coolingSlowdownPower
+    RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR    = event.batteryUsableCapacityFactor
+    RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT                    = event.alternatorMaxOutput
+    RMS_Config.ELECTRICAL.IDLE_CURRENT_A                    = event.idleCurrentA
+    RMS_Config.FIELD_CARE.CLOGGING_SPEED                    = event.cloggingSpeed
+    RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION         = event.fieldInspectionDuration
+    RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = event.lubricationReducePerOperatingHour
+    RMS_Config.DEBUG                                        = event.debugMode
+    RMS_Config.DRIVETRAIN.ENABLED                           = event.drivetrainEnabled ~= false
+    RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE                   = event.drivetrainAllowAutoMode ~= false
+    RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED             = event.drivetrainWindupDamage ~= false
+    RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED       = math.clamp(tonumber(event.drivetrainDiffLockReleaseSpeed) or 10, 10, 40)
+    RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED                 = event.drivetrainParkBrakeEnabled ~= false
+    RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE               = event.drivetrainParkBrakeAuto ~= false
 
     local newConfig = {
         parkVehicle = event.parkVehicle,
         instantInspection = event.instantInspection
     }
 
-    ADS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
+    RMS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
 
     if math.abs((oldBatteryCapacityFactor or 0) - (event.batteryUsableCapacityFactor or 0)) > 0.0001
-        and ADS_Main ~= nil and ADS_Main.vehicles ~= nil then
-        for _, vehicle in pairs(ADS_Main.vehicles) do
-            if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
-                ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
+        and RMS_Main ~= nil and RMS_Main.vehicles ~= nil then
+        for _, vehicle in pairs(RMS_Main.vehicles) do
+            if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
+                RMS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
 
-                local spec = vehicle.spec_AdvancedDamageSystem
-                AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
+                local spec = vehicle.spec_RealisticMechanicalSystems
+                RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.ELECTRICAL)
             end
         end
     end
 
-    ADS_Main:forceWorkshopUpdate(true)
+    RMS_Main:forceWorkshopUpdate(true)
 end
 
 
-function ADS_SettingsSyncEvent:run(connection)
+function RMS_SettingsSyncEvent:run(connection)
     if not connection:getIsServer() then
         local userId = g_currentMission.userManager:getUserIdByConnection(connection)
         local user = g_currentMission.userManager:getUserByUserId(userId)
@@ -237,7 +237,7 @@ function ADS_SettingsSyncEvent:run(connection)
         end
 
         applyConfig(self)
-        g_server:broadcastEvent(ADS_SettingsSyncEvent.new(), nil, connection)
+        g_server:broadcastEvent(RMS_SettingsSyncEvent.new(), nil, connection)
     else
         applyConfig(self)
     end
@@ -245,8 +245,8 @@ end
 
 
 -- Send current config from client to server.
-function ADS_SettingsSyncEvent.send()
+function RMS_SettingsSyncEvent.send()
     if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_SettingsSyncEvent.new())
+        g_client:getServerConnection():sendEvent(RMS_SettingsSyncEvent.new())
     end
 end

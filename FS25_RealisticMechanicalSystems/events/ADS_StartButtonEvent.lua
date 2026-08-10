@@ -1,16 +1,16 @@
-ADS_StartButtonEvent = {}
-local ADS_StartButtonEvent_mt = Class(ADS_StartButtonEvent, Event)
+RMS_StartButtonEvent = {}
+local RMS_StartButtonEvent_mt = Class(RMS_StartButtonEvent, Event)
 
-InitEventClass(ADS_StartButtonEvent, "ADS_StartButtonEvent")
+InitEventClass(RMS_StartButtonEvent, "RMS_StartButtonEvent")
 
 
-function ADS_StartButtonEvent.emptyNew()
-    return Event.new(ADS_StartButtonEvent_mt)
+function RMS_StartButtonEvent.emptyNew()
+    return Event.new(RMS_StartButtonEvent_mt)
 end
 
 
-function ADS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp)
-    local self = ADS_StartButtonEvent.emptyNew()
+function RMS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp)
+    local self = RMS_StartButtonEvent.emptyNew()
     self.vehicle = vehicle
     self.isDown = isDown == true
     self.isHeld = isHeld == true
@@ -19,7 +19,7 @@ function ADS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp)
 end
 
 
-function ADS_StartButtonEvent:writeStream(streamId, connection)
+function RMS_StartButtonEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteBool(streamId, self.isDown)
     streamWriteBool(streamId, self.isHeld)
@@ -27,7 +27,7 @@ function ADS_StartButtonEvent:writeStream(streamId, connection)
 end
 
 
-function ADS_StartButtonEvent:readStream(streamId, connection)
+function RMS_StartButtonEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self.isDown = streamReadBool(streamId)
     self.isHeld = streamReadBool(streamId)
@@ -36,13 +36,13 @@ function ADS_StartButtonEvent:readStream(streamId, connection)
 end
 
 
-function ADS_StartButtonEvent:run(connection)
+function RMS_StartButtonEvent:run(connection)
     local vehicle = self.vehicle
     if vehicle == nil or not vehicle:getIsSynchronized() then
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -53,18 +53,18 @@ function ADS_StartButtonEvent:run(connection)
 
     if not connection:getIsServer() then
         if self.isDown and vehicle.isServer then
-            ADS_Preheat.requestStart(vehicle)
+            RMS_Preheat.requestStart(vehicle)
         end
-        g_server:broadcastEvent(ADS_StartButtonEvent.new(vehicle, self.isDown, self.isHeld, self.isUp), nil, connection, vehicle)
+        g_server:broadcastEvent(RMS_StartButtonEvent.new(vehicle, self.isDown, self.isHeld, self.isUp), nil, connection, vehicle)
     end
 end
 
 
-function ADS_StartButtonEvent.send(vehicle, isDown, isHeld, isUp)
+function RMS_StartButtonEvent.send(vehicle, isDown, isHeld, isUp)
     if g_server ~= nil then
-        g_server:broadcastEvent(ADS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp), nil, nil, vehicle)
+        g_server:broadcastEvent(RMS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp), nil, nil, vehicle)
     elseif g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp))
+        g_client:getServerConnection():sendEvent(RMS_StartButtonEvent.new(vehicle, isDown, isHeld, isUp))
     end
 end
 

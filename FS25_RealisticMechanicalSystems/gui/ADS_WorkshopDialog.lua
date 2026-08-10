@@ -1,20 +1,20 @@
-ADS_WorkshopDialog = {}
-ADS_WorkshopDialog.INSTANCE = nil
+RMS_WorkshopDialog = {}
+RMS_WorkshopDialog.INSTANCE = nil
 
-local ADS_WorkshopDialog_mt = Class(ADS_WorkshopDialog, MessageDialog)
+local RMS_WorkshopDialog_mt = Class(RMS_WorkshopDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
-local log_dbg = ADS_Utils.createLogger("[ADS_WORKSHOP_DIALOG]")
+local log_dbg = RMS_Utils.createLogger("[RMS_WORKSHOP_DIALOG]")
 
 
-function ADS_WorkshopDialog.register()
-    local dialog = ADS_WorkshopDialog.new()
-    g_gui:loadGui(modDirectory .. "gui/ADS_WorkshopDialog.xml", "ADS_WorkshopDialog", dialog)
-    ADS_WorkshopDialog.INSTANCE = dialog
+function RMS_WorkshopDialog.register()
+    local dialog = RMS_WorkshopDialog.new()
+    g_gui:loadGui(modDirectory .. "gui/ADS_WorkshopDialog.xml", "RMS_WorkshopDialog", dialog)
+    RMS_WorkshopDialog.INSTANCE = dialog
 end
 
-function ADS_WorkshopDialog.new(target, customMt)
-    local dialog = MessageDialog.new(target, customMt or ADS_WorkshopDialog_mt)
+function RMS_WorkshopDialog.new(target, customMt)
+    local dialog = MessageDialog.new(target, customMt or RMS_WorkshopDialog_mt)
     dialog.vehicle = nil
     dialog.isDialogOpen = false
     dialog.lastObservedStatus = nil
@@ -22,32 +22,32 @@ function ADS_WorkshopDialog.new(target, customMt)
 end
 
 
-function ADS_WorkshopDialog.show(vehicle)
-    if ADS_WorkshopDialog.INSTANCE.updateScreen == nil then ADS_WorkshopDialog.register() end
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
-        log_dbg("Tried to show ADS_WorkshopDialog without a valid vehicle.")
+function RMS_WorkshopDialog.show(vehicle)
+    if RMS_WorkshopDialog.INSTANCE.updateScreen == nil then RMS_WorkshopDialog.register() end
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
+        log_dbg("Tried to show RMS_WorkshopDialog without a valid vehicle.")
         return
     end
-    local dialog = ADS_WorkshopDialog.INSTANCE
+    local dialog = RMS_WorkshopDialog.INSTANCE
     dialog.vehicle = vehicle
     dialog.activeBreakdowns = vehicle:getActiveBreakdowns()
     dialog.visibleBreakdowns = {}
-    dialog.breakdownRegistry = ADS_Breakdowns.BreakdownRegistry
-    dialog.workshopType = AdvancedDamageSystem.WORKSHOP.DEALER
+    dialog.breakdownRegistry = RMS_Breakdowns.BreakdownRegistry
+    dialog.workshopType = RealisticMechanicalSystems.WORKSHOP.DEALER
     dialog.lastObservedStatus = vehicle:getCurrentStatus()
 
-    if g_workshopScreen.isOwnWorkshop then  dialog.workshopType = AdvancedDamageSystem.WORKSHOP.OWN end
-    if g_workshopScreen.isMobileWorkshop then  dialog.workshopType = AdvancedDamageSystem.WORKSHOP.MOBILE end
+    if g_workshopScreen.isOwnWorkshop then  dialog.workshopType = RealisticMechanicalSystems.WORKSHOP.OWN end
+    if g_workshopScreen.isMobileWorkshop then  dialog.workshopType = RealisticMechanicalSystems.WORKSHOP.MOBILE end
 
     dialog:updateScreen()
-    g_gui:showDialog("ADS_WorkshopDialog")
+    g_gui:showDialog("RMS_WorkshopDialog")
 end
 
-function ADS_WorkshopDialog:updateScreen()
+function RMS_WorkshopDialog:updateScreen()
     if self.vehicle == nil then return end
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
     local vehicle = self.vehicle
-    local STATUS = AdvancedDamageSystem.STATUS
+    local STATUS = RealisticMechanicalSystems.STATUS
     self.lastObservedStatus = self.vehicle:getCurrentStatus()
 
     -- ====================================================================
@@ -56,7 +56,7 @@ function ADS_WorkshopDialog:updateScreen()
 
     local balanceText = g_i18n:formatMoney(math.floor(g_currentMission:getMoney()), 2, true, false)
     self.balanceElement:setText(balanceText)
-    ADS_Utils.updateMoneyBoxLayout(
+    RMS_Utils.updateMoneyBoxLayout(
         self.balanceTitleElement,
         self.balanceElement,
         self.moneyBox,
@@ -84,24 +84,24 @@ function ADS_WorkshopDialog:updateScreen()
     self.ageValue:setText(string.format("%d %s", vehicle.age, g_i18n:getText("ads_ws_age_unit")))
     self.operatingHoursValue:setText(string.format("%s %s", vehicle:getFormattedOperatingTime(), g_i18n:getText("ads_ws_hours_unit")))
     
-    self.lastServiceValue:setText(ADS_Utils.formatTimeAgo(vehicle:getLastMaintenanceDate()))
-    self.maintainabilityValue:setText(ADS_Utils.formatMaintainability(spec.maintainability))
-    self.maintainabilityValue:setTextColor(ADS_Utils.getValueColor(spec.maintainability, 1.2, 1.1, 1.0, 0.9, false))
+    self.lastServiceValue:setText(RMS_Utils.formatTimeAgo(vehicle:getLastMaintenanceDate()))
+    self.maintainabilityValue:setText(RMS_Utils.formatMaintainability(spec.maintainability))
+    self.maintainabilityValue:setTextColor(RMS_Utils.getValueColor(spec.maintainability, 1.2, 1.1, 1.0, 0.9, false))
 
-    local monthsSinceInspectionText = ADS_Utils.formatTimeAgo(self.vehicle:getLastInspectionDate())
+    local monthsSinceInspectionText = RMS_Utils.formatTimeAgo(self.vehicle:getLastInspectionDate())
     local inspectedService, isCompleteServiceInspection = self.vehicle:getLastInspectedService()
     local inspectedCondition, isCompleteInspection = self.vehicle:getLastInspectedCondition()
 
-    self.serviceValue:setText(ADS_Utils.formatService(inspectedService, isCompleteServiceInspection))
-    self.serviceValue:setTextColor(ADS_Utils.getServiceColor(inspectedService, isCompleteServiceInspection))
-    self.conditionValue:setText(ADS_Utils.formatCondition(inspectedCondition, isCompleteInspection))
-    self.conditionValue:setTextColor(ADS_Utils.getConditionColor(inspectedCondition, isCompleteInspection))
+    self.serviceValue:setText(RMS_Utils.formatService(inspectedService, isCompleteServiceInspection))
+    self.serviceValue:setTextColor(RMS_Utils.getServiceColor(inspectedService, isCompleteServiceInspection))
+    self.conditionValue:setText(RMS_Utils.formatCondition(inspectedCondition, isCompleteInspection))
+    self.conditionValue:setTextColor(RMS_Utils.getConditionColor(inspectedCondition, isCompleteInspection))
     self.serviceLastInspectionDeltaValue:setTextColor(0.5, 0.5, 0.5, 1.0)
     self.conditionLastInspectionDeltaValue:setTextColor(0.5, 0.5, 0.5, 1.0)
     self.serviceLastInspectionDeltaValue:setText(monthsSinceInspectionText)
     self.conditionLastInspectionDeltaValue:setText(monthsSinceInspectionText)
 
-    self.relAndMainValue:setText(ADS_Utils.formatOperatingHours(self.vehicle:getHoursSinceLastMaintenance(), self.vehicle:getMaintenanceInterval()))
+    self.relAndMainValue:setText(RMS_Utils.formatOperatingHours(self.vehicle:getHoursSinceLastMaintenance(), self.vehicle:getMaintenanceInterval()))
 
     -- ====================================================================
     -- 2: Breakdowns Table
@@ -127,9 +127,9 @@ function ADS_WorkshopDialog:updateScreen()
     local statusColor = {1, 1, 1, 1}
     
     self.maintanceInProgressSpinner:setVisible(false)
-    local isWorkshopTypeOpen = ADS_Main == nil
-        or ADS_Main.isWorkshopTypeOpen == nil
-        or ADS_Main:isWorkshopTypeOpen(self.workshopType)
+    local isWorkshopTypeOpen = RMS_Main == nil
+        or RMS_Main.isWorkshopTypeOpen == nil
+        or RMS_Main:isWorkshopTypeOpen(self.workshopType)
 
     if not isWorkshopTypeOpen then
         buttonsDisabled = true
@@ -143,7 +143,7 @@ function ADS_WorkshopDialog:updateScreen()
     if spec.currentState ~= STATUS.READY then
         self.maintanceInProgressSpinner:setVisible(true)
         buttonsDisabled = true
-        local finishTimeText = ADS_Utils.formatFinishTime(self.vehicle:getServiceFinishTime(nil, nil, nil, nil))
+        local finishTimeText = RMS_Utils.formatFinishTime(self.vehicle:getServiceFinishTime(nil, nil, nil, nil))
         local localizedStatus = g_i18n:getText(spec.currentState)
         statusText = string.format(g_i18n:getText("ads_ws_status_in_progress_format"), localizedStatus, finishTimeText)
         if spec.currentState ~= STATUS.REPAIR then
@@ -192,10 +192,10 @@ function ADS_WorkshopDialog:updateScreen()
     self.repairButton:setVisible(not isUnderService)
     self.overhaulButton:setVisible(not isUnderService)
 
-    local inspectionPrice = self.vehicle:getServicePrice(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, self.workshopType)
-    local maintenancePrice = self.vehicle:getServicePrice(AdvancedDamageSystem.STATUS.MAINTENANCE, AdvancedDamageSystem.MAINTENANCE_TYPES.STANDARD, AdvancedDamageSystem.PART_TYPES.OEM, false, self.workshopType)
-    local repairPrice = self.vehicle:getServicePrice(AdvancedDamageSystem.STATUS.REPAIR, AdvancedDamageSystem.REPAIR_TYPES.MEDIUM, AdvancedDamageSystem.PART_TYPES.OEM, false, self.workshopType)
-    local overhaulPrice = self.vehicle:getServicePrice(AdvancedDamageSystem.STATUS.OVERHAUL, AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD, "NONE", false, self.workshopType)
+    local inspectionPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.INSPECTION, RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD, "NONE", false, self.workshopType)
+    local maintenancePrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.MAINTENANCE, RealisticMechanicalSystems.MAINTENANCE_TYPES.STANDARD, RealisticMechanicalSystems.PART_TYPES.OEM, false, self.workshopType)
+    local repairPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.REPAIR, RealisticMechanicalSystems.REPAIR_TYPES.MEDIUM, RealisticMechanicalSystems.PART_TYPES.OEM, false, self.workshopType)
+    local overhaulPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.OVERHAUL, RealisticMechanicalSystems.OVERHAUL_TYPES.STANDARD, "NONE", false, self.workshopType)
 
     local selectedRepairCount = 0
     for _, breakdown in pairs(self.activeBreakdowns) do
@@ -211,7 +211,7 @@ function ADS_WorkshopDialog:updateScreen()
     local buttonFormat = g_i18n:getText("ads_ws_button_price_format")
     self.inspectionButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_inspection"), g_i18n:formatMoney(inspectionPrice, 0, true, false)))
     self.maintenanceButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_maintenance"), g_i18n:formatMoney(maintenancePrice, 0, true, false)))
-    if self.vehicle:isWarrantyRepairCovered(AdvancedDamageSystem.REPAIR_TYPES.MEDIUM, AdvancedDamageSystem.PART_TYPES.OEM) and selectedRepairCount > 0 then
+    if self.vehicle:isWarrantyRepairCovered(RealisticMechanicalSystems.REPAIR_TYPES.MEDIUM, RealisticMechanicalSystems.PART_TYPES.OEM) and selectedRepairCount > 0 then
         self.repairButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_repair"), g_i18n:getText("ads_option_menu_warranty_repair_text")))
     else
         self.repairButton:setText(string.format(buttonFormat, g_i18n:getText("ads_ws_action_repair"), g_i18n:formatMoney(repairPrice, 0, true, false)))
@@ -236,12 +236,12 @@ function ADS_WorkshopDialog:updateScreen()
     --self.statusText:setPosition(0, 0.015)
 end
 
-function ADS_WorkshopDialog:getServiceProgressPercent()
-    if self.vehicle == nil or self.vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_WorkshopDialog:getServiceProgressPercent()
+    if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
     end
 
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
     local totalTime = spec.pendingProgressTotalTime or 0
     local elapsedTime = spec.pendingProgressElapsedTime or 0
 
@@ -253,12 +253,12 @@ function ADS_WorkshopDialog:getServiceProgressPercent()
     return math.floor(ratio * 100)
 end
 
-function ADS_WorkshopDialog:updateServiceProgressText()
-    if self.vehicle == nil or self.vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_WorkshopDialog:updateServiceProgressText()
+    if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil then
         return
     end
 
-    if self.vehicle:getCurrentStatus() == AdvancedDamageSystem.STATUS.READY then
+    if self.vehicle:getCurrentStatus() == RealisticMechanicalSystems.STATUS.READY then
         return
     end
 
@@ -276,12 +276,12 @@ function ADS_WorkshopDialog:updateServiceProgressText()
     self.emptyTableText:setTextColor(0.455, 0.565, 0.115, 1)
 end
 
-function ADS_WorkshopDialog:getNumberOfItemsInSection(list, section)
+function RMS_WorkshopDialog:getNumberOfItemsInSection(list, section)
     return #self.visibleBreakdowns
 end
 
 
-function ADS_WorkshopDialog:populateCellForItemInSection(list, section, index, cell)
+function RMS_WorkshopDialog:populateCellForItemInSection(list, section, index, cell)
     local breakdownId = self.visibleBreakdowns[index]
     local data = self.activeBreakdowns[breakdownId]
     if data == nil then return end
@@ -289,16 +289,16 @@ function ADS_WorkshopDialog:populateCellForItemInSection(list, section, index, c
     local part_key = self.breakdownRegistry[breakdownId].part or self.breakdownRegistry[breakdownId].system
     local stage_key = self.breakdownRegistry[breakdownId].stages[data.stage].severity
     local description_key = self.breakdownRegistry[breakdownId].stages[data.stage].description
-    local price = self.vehicle:getBreakdownRepairPrice(breakdownId, data.stage, AdvancedDamageSystem.PART_TYPES.OEM)
+    local price = self.vehicle:getBreakdownRepairPrice(breakdownId, data.stage, RealisticMechanicalSystems.PART_TYPES.OEM)
     local selected = data.isSelectedForRepair
 
     local stageText = ""
     local descriptionText = ""
 
-    if data.isActive == false and data.source == AdvancedDamageSystem.BREAKDOWN_SOURCES.QUICK_FIX then
+    if data.isActive == false and data.source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.QUICK_FIX then
         stageText = g_i18n:getText("ads_breakdowns_quick_fix_stage")
         descriptionText = g_i18n:getText("ads_breakdowns_temporarily_repaired_description")
-    elseif data.isActive == false and data.source == AdvancedDamageSystem.BREAKDOWN_SOURCES.POOR_PARTS then
+    elseif data.isActive == false and data.source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.POOR_PARTS then
         stageText = g_i18n:getText("ads_breakdowns_defected_parts_stage")
         descriptionText = g_i18n:getText("ads_breakdowns_defected_parts_detected_description")
     else
@@ -341,8 +341,8 @@ function ADS_WorkshopDialog:populateCellForItemInSection(list, section, index, c
 end
 
 
-function ADS_WorkshopDialog:onRowClick(button)
-    if self.vehicle:getCurrentStatus() ~= AdvancedDamageSystem.STATUS.READY then return end
+function RMS_WorkshopDialog:onRowClick(button)
+    if self.vehicle:getCurrentStatus() ~= RealisticMechanicalSystems.STATUS.READY then return end
     if button == nil or self.visibleBreakdowns[button.parent.indexInSection] == nil then return end
     
     local id = self.visibleBreakdowns[button.parent.indexInSection]
@@ -353,47 +353,47 @@ function ADS_WorkshopDialog:onRowClick(button)
     end
 end
 
-function ADS_WorkshopDialog:onClickShowLog()
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+function RMS_WorkshopDialog:onClickShowLog()
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
     if #spec.maintenanceLog > 1 then
-        ADS_MaintenanceLogDialog.show(self.vehicle)
+        RMS_MaintenanceLogDialog.show(self.vehicle)
     else
         InfoDialog.show(g_i18n:getText("ads_ws_no_log_empty_message"))
     end
 end
 
-function ADS_WorkshopDialog:onClickShowReport()
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+function RMS_WorkshopDialog:onClickShowReport()
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
     for i = #spec.maintenanceLog, 1, -1 do
         local entry = spec.maintenanceLog[i]
-        if AdvancedDamageSystem.getIsLogEntryHasReport(entry) then
-            ADS_ReportDialog.show(self.vehicle, entry)
+        if RealisticMechanicalSystems.getIsLogEntryHasReport(entry) then
+            RMS_ReportDialog.show(self.vehicle, entry)
             return
         end
     end
     InfoDialog.show(g_i18n:getText("ads_ws_no_last_report_message"))
 end
 
-function ADS_WorkshopDialog:onClickInspection()
-    ADS_MaintenanceTwoOptionsDialog.show(self.vehicle, AdvancedDamageSystem.STATUS.INSPECTION)
+function RMS_WorkshopDialog:onClickInspection()
+    RMS_MaintenanceTwoOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.INSPECTION)
 end
 
-function ADS_WorkshopDialog:onClickService()
-    ADS_MaintenanceThreeOptionsDialog.show(self.vehicle, AdvancedDamageSystem.STATUS.MAINTENANCE)
+function RMS_WorkshopDialog:onClickService()
+    RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.MAINTENANCE)
 end
 
-function ADS_WorkshopDialog:onClickRepair()
-    ADS_MaintenanceThreeOptionsDialog.show(self.vehicle, AdvancedDamageSystem.STATUS.REPAIR)
+function RMS_WorkshopDialog:onClickRepair()
+    RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.REPAIR)
 end
 
-function ADS_WorkshopDialog:onClickOverhaul()
-    ADS_MaintenanceThreeOptionsDialog.show(self.vehicle, AdvancedDamageSystem.STATUS.OVERHAUL)
+function RMS_WorkshopDialog:onClickOverhaul()
+    RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.OVERHAUL)
 end
 
-function ADS_WorkshopDialog:onClickCancelService()
+function RMS_WorkshopDialog:onClickCancelService()
     if self.vehicle == nil then return end
-    local spec = self.vehicle.spec_AdvancedDamageSystem
-    if spec == nil or spec.currentState == AdvancedDamageSystem.STATUS.READY then return end
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
+    if spec == nil or spec.currentState == RealisticMechanicalSystems.STATUS.READY then return end
 
     local title = string.format(g_i18n:getText("ads_ws_cancel_confirm_title"), g_i18n:getText(spec.currentState))
     local text = g_i18n:getText("ads_ws_cancel_confirm_text")
@@ -403,25 +403,25 @@ function ADS_WorkshopDialog:onClickCancelService()
     end
 end
 
-function ADS_WorkshopDialog:onCancelServiceConfirm(yes)
+function RMS_WorkshopDialog:onCancelServiceConfirm(yes)
     if yes and self.vehicle ~= nil then
         if g_server ~= nil then
             -- Server: execute locally
             self.vehicle:cancelService()
         else
             -- Client: send request to server
-            ADS_CancelServiceEvent.send(self.vehicle)
+            RMS_CancelServiceEvent.send(self.vehicle)
         end
         self:updateScreen()
     end
 end
 
 
-function ADS_WorkshopDialog:onCreate(superFunc)
+function RMS_WorkshopDialog:onCreate(superFunc)
     --
 end
 
-function ADS_WorkshopDialog:onOpen(superFunc)
+function RMS_WorkshopDialog:onOpen(superFunc)
     self.isDialogOpen = true
 
     local function onVehicleChangeStatusEvent(vehicle)
@@ -435,11 +435,11 @@ function ADS_WorkshopDialog:onOpen(superFunc)
     end
 
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
-    g_messageCenter:subscribe(MessageType.ADS_VEHICLE_CHANGE_STATUS, onVehicleChangeStatusEvent, self)
-    g_messageCenter:subscribe(MessageType.ADS_WORKSHOP_CHANGE_STATUS, onWorkshopChangeStatusEvent, self)
+    g_messageCenter:subscribe(MessageType.RMS_VEHICLE_CHANGE_STATUS, onVehicleChangeStatusEvent, self)
+    g_messageCenter:subscribe(MessageType.RMS_WORKSHOP_CHANGE_STATUS, onWorkshopChangeStatusEvent, self)
 end
 
-function ADS_WorkshopDialog:onClose(superFunc)
+function RMS_WorkshopDialog:onClose(superFunc)
     self.isDialogOpen = false
     self.lastObservedStatus = nil
     self.vehicle = nil
@@ -449,6 +449,6 @@ function ADS_WorkshopDialog:onClose(superFunc)
 	g_currentMission:showMoneyChange(MoneyType.SHOP_VEHICLE_SELL)
 end
 
-function ADS_WorkshopDialog:onClickBack()
+function RMS_WorkshopDialog:onClickBack()
     self:close()
 end

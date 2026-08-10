@@ -1,14 +1,14 @@
-ADS_DebugSnapshot = {}
+RMS_DebugSnapshot = {}
 
-ADS_DebugSnapshot.REQUEST_INTERVAL_MS = 500
-ADS_DebugSnapshot.MAX_SNAPSHOT_AGE_MS = 1500
-ADS_DebugSnapshot.ENTRY_TYPE_NUMBER = 0
-ADS_DebugSnapshot.ENTRY_TYPE_BOOLEAN = 1
-ADS_DebugSnapshot.ENTRY_TYPE_STRING = 2
-ADS_DebugSnapshot.ENTRY_TYPE_TABLE = 3
+RMS_DebugSnapshot.REQUEST_INTERVAL_MS = 500
+RMS_DebugSnapshot.MAX_SNAPSHOT_AGE_MS = 1500
+RMS_DebugSnapshot.ENTRY_TYPE_NUMBER = 0
+RMS_DebugSnapshot.ENTRY_TYPE_BOOLEAN = 1
+RMS_DebugSnapshot.ENTRY_TYPE_STRING = 2
+RMS_DebugSnapshot.ENTRY_TYPE_TABLE = 3
 
-ADS_DebugSnapshot.lastRequestedVehicle = nil
-ADS_DebugSnapshot.lastRequestTime = -math.huge
+RMS_DebugSnapshot.lastRequestedVehicle = nil
+RMS_DebugSnapshot.lastRequestTime = -math.huge
 
 local DEBUG_SECTIONS = {
     "service",
@@ -98,7 +98,7 @@ local function writeSnapshotValue(streamId, value)
     local valueType = type(value)
 
     if valueType == "table" then
-        streamWriteUIntN(streamId, ADS_DebugSnapshot.ENTRY_TYPE_TABLE, 2)
+        streamWriteUIntN(streamId, RMS_DebugSnapshot.ENTRY_TYPE_TABLE, 2)
 
         local keys = {}
         for key, _ in pairs(value) do
@@ -125,16 +125,16 @@ local function writeSnapshotValue(streamId, value)
             writeSnapshotValue(streamId, value[key])
         end
     elseif valueType == "number" and value == value and value ~= math.huge and value ~= -math.huge then
-        streamWriteUIntN(streamId, ADS_DebugSnapshot.ENTRY_TYPE_NUMBER, 2)
+        streamWriteUIntN(streamId, RMS_DebugSnapshot.ENTRY_TYPE_NUMBER, 2)
         streamWriteFloat32(streamId, value)
     elseif valueType == "boolean" then
-        streamWriteUIntN(streamId, ADS_DebugSnapshot.ENTRY_TYPE_BOOLEAN, 2)
+        streamWriteUIntN(streamId, RMS_DebugSnapshot.ENTRY_TYPE_BOOLEAN, 2)
         streamWriteBool(streamId, value)
     elseif valueType == "string" then
-        streamWriteUIntN(streamId, ADS_DebugSnapshot.ENTRY_TYPE_STRING, 2)
+        streamWriteUIntN(streamId, RMS_DebugSnapshot.ENTRY_TYPE_STRING, 2)
         streamWriteString(streamId, value)
     else
-        streamWriteUIntN(streamId, ADS_DebugSnapshot.ENTRY_TYPE_TABLE, 2)
+        streamWriteUIntN(streamId, RMS_DebugSnapshot.ENTRY_TYPE_TABLE, 2)
         streamWriteUInt16(streamId, 0)
     end
 end
@@ -142,11 +142,11 @@ end
 local function readSnapshotValue(streamId)
     local valueType = streamReadUIntN(streamId, 2)
 
-    if valueType == ADS_DebugSnapshot.ENTRY_TYPE_NUMBER then
+    if valueType == RMS_DebugSnapshot.ENTRY_TYPE_NUMBER then
         return streamReadFloat32(streamId)
-    elseif valueType == ADS_DebugSnapshot.ENTRY_TYPE_BOOLEAN then
+    elseif valueType == RMS_DebugSnapshot.ENTRY_TYPE_BOOLEAN then
         return streamReadBool(streamId)
-    elseif valueType == ADS_DebugSnapshot.ENTRY_TYPE_STRING then
+    elseif valueType == RMS_DebugSnapshot.ENTRY_TYPE_STRING then
         return streamReadString(streamId)
     end
 
@@ -160,14 +160,14 @@ local function readSnapshotValue(streamId)
     return value
 end
 
-function ADS_DebugSnapshot.build(vehicle)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+function RMS_DebugSnapshot.build(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
         return nil
     end
 
     local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
-    local preheatState = tonumber(spec.preheatState) or ADS_Preheat.STATE.IDLE
+    local preheatState = tonumber(spec.preheatState) or RMS_Preheat.STATE.IDLE
     local glowHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER or nil
     local glowHardStartStatus = glowHardStartEffect ~= nil
         and glowHardStartEffect.extraData ~= nil
@@ -194,9 +194,9 @@ function ADS_DebugSnapshot.build(vehicle)
             isCranking = spec.isCranking == true,
             batteryTempC = tonumber(spec.batteryTempC) or 0,
             preheatState = preheatState,
-            preheatStateName = ADS_Preheat.getStateName(preheatState),
-            preheatIsDiesel = ADS_Preheat.isDieselVehicle(vehicle),
-            preheatEngineTemperatureC = ADS_Preheat.getEngineTemperatureC(vehicle),
+            preheatStateName = RMS_Preheat.getStateName(preheatState),
+            preheatIsDiesel = RMS_Preheat.isDieselVehicle(vehicle),
+            preheatEngineTemperatureC = RMS_Preheat.getEngineTemperatureC(vehicle),
             preheatLampTestActive = spec.preheatLampTestActive == true,
             preheatLampTestRemainingMs = tonumber(spec.preheatLampTestRemainingMs) or 0,
             preheatRemainingMs = tonumber(spec.preheatRemainingMs) or 0,
@@ -204,7 +204,7 @@ function ADS_DebugSnapshot.build(vehicle)
             preheatWasRequired = spec.preheatWasRequired == true,
             preheatAutomaticCrank = spec.preheatAutomaticCrank == true,
             preheatAutomaticCrankElapsedMs = tonumber(spec.preheatAutomaticCrankElapsedMs) or 0,
-            preheatGlowPlugFailureSeverity = ADS_Preheat.getGlowPlugFailureSeverity(vehicle),
+            preheatGlowPlugFailureSeverity = RMS_Preheat.getGlowPlugFailureSeverity(vehicle),
             preheatColdStartFaultSeverity = tonumber(spec.preheatColdStartFaultSeverity) or 0,
             preheatGlowHardStartStatus = tostring(glowHardStartStatus),
             preheatGlowHardStartBlocked = glowHardStartBlocked,
@@ -236,16 +236,16 @@ function ADS_DebugSnapshot.build(vehicle)
     }
 end
 
-function ADS_DebugSnapshot.write(streamId, snapshot)
+function RMS_DebugSnapshot.write(streamId, snapshot)
     writeSnapshotValue(streamId, snapshot or {})
 end
 
-function ADS_DebugSnapshot.read(streamId)
+function RMS_DebugSnapshot.read(streamId)
     return readSnapshotValue(streamId)
 end
 
-function ADS_DebugSnapshot.apply(vehicle, snapshot)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+function RMS_DebugSnapshot.apply(vehicle, snapshot)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or type(snapshot) ~= "table" then
         return
     end
@@ -254,41 +254,41 @@ function ADS_DebugSnapshot.apply(vehicle, snapshot)
     spec.adsDebugSnapshotReceivedAt = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
 end
 
-function ADS_DebugSnapshot.get(vehicle)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+function RMS_DebugSnapshot.get(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
         return nil
     end
 
     local receivedAt = tonumber(spec.adsDebugSnapshotReceivedAt)
     local now = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
-    if receivedAt == nil or now - receivedAt > ADS_DebugSnapshot.MAX_SNAPSHOT_AGE_MS then
+    if receivedAt == nil or now - receivedAt > RMS_DebugSnapshot.MAX_SNAPSHOT_AGE_MS then
         return nil
     end
 
     return spec.adsDebugSnapshot
 end
 
-function ADS_DebugSnapshot.request(vehicle)
-    if vehicle == nil or vehicle.isServer or g_client == nil or not ADS_Config.DEBUG then
+function RMS_DebugSnapshot.request(vehicle)
+    if vehicle == nil or vehicle.isServer or g_client == nil or not RMS_Config.DEBUG then
         return
     end
     if g_currentMission == nil or not g_currentMission.isMasterUser then
         return
     end
-    if ADS_DebugSnapshotRequestEvent == nil then
+    if RMS_DebugSnapshotRequestEvent == nil then
         return
     end
 
     local now = g_currentMission.time or g_time or 0
-    if ADS_DebugSnapshot.lastRequestedVehicle ~= vehicle then
-        ADS_DebugSnapshot.lastRequestedVehicle = vehicle
-        ADS_DebugSnapshot.lastRequestTime = -math.huge
+    if RMS_DebugSnapshot.lastRequestedVehicle ~= vehicle then
+        RMS_DebugSnapshot.lastRequestedVehicle = vehicle
+        RMS_DebugSnapshot.lastRequestTime = -math.huge
     end
-    if now - ADS_DebugSnapshot.lastRequestTime < ADS_DebugSnapshot.REQUEST_INTERVAL_MS then
+    if now - RMS_DebugSnapshot.lastRequestTime < RMS_DebugSnapshot.REQUEST_INTERVAL_MS then
         return
     end
 
-    ADS_DebugSnapshot.lastRequestTime = now
-    ADS_DebugSnapshotRequestEvent.send(vehicle)
+    RMS_DebugSnapshot.lastRequestTime = now
+    RMS_DebugSnapshotRequestEvent.send(vehicle)
 end

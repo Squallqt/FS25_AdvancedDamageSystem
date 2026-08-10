@@ -1,29 +1,29 @@
-ADS_DebugSnapshotRequestEvent = {}
-local ADS_DebugSnapshotRequestEvent_mt = Class(ADS_DebugSnapshotRequestEvent, Event)
+RMS_DebugSnapshotRequestEvent = {}
+local RMS_DebugSnapshotRequestEvent_mt = Class(RMS_DebugSnapshotRequestEvent, Event)
 
-InitEventClass(ADS_DebugSnapshotRequestEvent, "ADS_DebugSnapshotRequestEvent")
+InitEventClass(RMS_DebugSnapshotRequestEvent, "RMS_DebugSnapshotRequestEvent")
 
-function ADS_DebugSnapshotRequestEvent.emptyNew()
-    return Event.new(ADS_DebugSnapshotRequestEvent_mt)
+function RMS_DebugSnapshotRequestEvent.emptyNew()
+    return Event.new(RMS_DebugSnapshotRequestEvent_mt)
 end
 
-function ADS_DebugSnapshotRequestEvent.new(vehicle)
-    local self = ADS_DebugSnapshotRequestEvent.emptyNew()
+function RMS_DebugSnapshotRequestEvent.new(vehicle)
+    local self = RMS_DebugSnapshotRequestEvent.emptyNew()
     self.vehicle = vehicle
     return self
 end
 
-function ADS_DebugSnapshotRequestEvent:writeStream(streamId, connection)
+function RMS_DebugSnapshotRequestEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
 end
 
-function ADS_DebugSnapshotRequestEvent:readStream(streamId, connection)
+function RMS_DebugSnapshotRequestEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self:run(connection)
 end
 
-function ADS_DebugSnapshotRequestEvent:run(connection)
-    if connection == nil or connection:getIsServer() or not ADS_Config.DEBUG then
+function RMS_DebugSnapshotRequestEvent:run(connection)
+    if connection == nil or connection:getIsServer() or not RMS_Config.DEBUG then
         return
     end
 
@@ -34,16 +34,16 @@ function ADS_DebugSnapshotRequestEvent:run(connection)
     end
 
     local vehicle = self.vehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil or vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         return
     end
 
-    connection:sendEvent(ADS_DebugSnapshotResponseEvent.new(vehicle))
+    connection:sendEvent(RMS_DebugSnapshotResponseEvent.new(vehicle))
 end
 
-function ADS_DebugSnapshotRequestEvent.send(vehicle)
+function RMS_DebugSnapshotRequestEvent.send(vehicle)
     if g_client ~= nil and vehicle ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_DebugSnapshotRequestEvent.new(vehicle))
+        g_client:getServerConnection():sendEvent(RMS_DebugSnapshotRequestEvent.new(vehicle))
     end
 end
 

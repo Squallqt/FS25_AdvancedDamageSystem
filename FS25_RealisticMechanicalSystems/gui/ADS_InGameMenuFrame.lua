@@ -1,15 +1,15 @@
-ADS_InGameMenuFrame = {}
-ADS_InGameMenuFrame.MOD_DIR = g_currentModDirectory
-ADS_InGameMenuFrame.PAGE_NAME = "pageADSFleet"
-ADS_InGameMenuFrame.REFRESH_INTERVAL_MS = 1000
-ADS_InGameMenuFrame.SCREEN_EDGE_SLIDER_MARGIN_X = 0
-ADS_InGameMenuFrame.SUB_CATEGORY = {
+RMS_InGameMenuFrame = {}
+RMS_InGameMenuFrame.MOD_DIR = g_currentModDirectory
+RMS_InGameMenuFrame.PAGE_NAME = "pageRMSFleet"
+RMS_InGameMenuFrame.REFRESH_INTERVAL_MS = 1000
+RMS_InGameMenuFrame.SCREEN_EDGE_SLIDER_MARGIN_X = 0
+RMS_InGameMenuFrame.SUB_CATEGORY = {
     ACTIVE = 1,
     SERVICE = 2,
     OTHER = 3,
     SETTINGS = 4
 }
-ADS_InGameMenuFrame.SORT_COLUMN = {
+RMS_InGameMenuFrame.SORT_COLUMN = {
     VEHICLE = "vehicle",
     VEHICLE_TYPE = "vehicleType",
     AGE = "age",
@@ -23,10 +23,10 @@ ADS_InGameMenuFrame.SORT_COLUMN = {
     PRICE = "price"
 }
 
-local ADS_InGameMenuFrame_mt = Class(ADS_InGameMenuFrame, TabbedMenuFrameElement)
+local RMS_InGameMenuFrame_mt = Class(RMS_InGameMenuFrame, TabbedMenuFrameElement)
 
 local function getVehicleTotalCost(vehicle)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     local log = spec ~= nil and spec.maintenanceLog or nil
     local totalCost = 0
 
@@ -145,15 +145,15 @@ local function buildVehicleRow(vehicle)
         ageValue = vehicle.age or 0,
         workingHours = formatVehicleOperatingHours(vehicle),
         workingHoursValue = operatingHours,
-        condition = ADS_Utils.formatCondition(conditionValue, isCompleteInspection),
+        condition = RMS_Utils.formatCondition(conditionValue, isCompleteInspection),
         conditionValue = isCompleteInspection ~= nil and (conditionValue or 0) or -1,
-        conditionColor = {ADS_Utils.getConditionColor(conditionValue, isCompleteInspection)},
-        interval = ADS_Utils.formatOperatingHours(intervalCurrent, intervalTotal),
+        conditionColor = {RMS_Utils.getConditionColor(conditionValue, isCompleteInspection)},
+        interval = RMS_Utils.formatOperatingHours(intervalCurrent, intervalTotal),
         intervalValue = intervalCurrent or 0,
         intervalColor = intervalColor,
-        lastInspection = ADS_Utils.formatTimeAgo(lastInspectionDate),
+        lastInspection = RMS_Utils.formatTimeAgo(lastInspectionDate),
         lastInspectionValue = getDateSortValue(lastInspectionDate),
-        lastMaintenance = ADS_Utils.formatTimeAgo(lastMaintenanceDate),
+        lastMaintenance = RMS_Utils.formatTimeAgo(lastMaintenanceDate),
         lastMaintenanceValue = getDateSortValue(lastMaintenanceDate),
         cost = g_i18n:formatMoney(totalCost, 0, true, false),
         costValue = totalCost,
@@ -166,7 +166,7 @@ end
 
 local function buildServiceRow(vehicle)
     local baseRow = buildVehicleRow(vehicle)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     local currentState = spec ~= nil and spec.currentState or nil
     local finishTime, daysToAdd = vehicle:getServiceFinishTime()
     local duration = vehicle:getServiceDuration()
@@ -182,8 +182,8 @@ local function buildServiceRow(vehicle)
     end
 
     baseRow.procedure = currentState ~= nil and g_i18n:getText(currentState) or ""
-    baseRow.remainingTime = ADS_Utils.formatDuration(duration)
-    baseRow.finishTime = ADS_Utils.formatFinishTime(finishTime, daysToAdd)
+    baseRow.remainingTime = RMS_Utils.formatDuration(duration)
+    baseRow.finishTime = RMS_Utils.formatFinishTime(finishTime, daysToAdd)
     baseRow.serviceCost = g_i18n:formatMoney(pendingServicePrice or 0, 0, true, false)
 
     return baseRow
@@ -221,7 +221,7 @@ local function buildOtherVehicleRow(vehicle)
         workingHoursValue = operatingHours,
         condition = string.format("%s%%", g_i18n:formatNumber(conditionValue * 100, 0)),
         conditionValue = conditionValue,
-        conditionColor = {ADS_Utils.getConditionColor(conditionValue, true)},
+        conditionColor = {RMS_Utils.getConditionColor(conditionValue, true)},
         interval = "-",
         intervalValue = -1,
         intervalColor = {1, 1, 1, 1},
@@ -263,15 +263,15 @@ local function canDisplayOwnedVehicle(mission, vehicle, currentFarmId)
         and showInVehiclesOverview
 end
 
-function ADS_InGameMenuFrame.register()
-    local frame = ADS_InGameMenuFrame.new()
-    local filename = ADS_InGameMenuFrame.MOD_DIR .. "gui/ADS_InGameMenuFrame.xml"
+function RMS_InGameMenuFrame.register()
+    local frame = RMS_InGameMenuFrame.new()
+    local filename = RMS_InGameMenuFrame.MOD_DIR .. "gui/ADS_InGameMenuFrame.xml"
     g_gui:loadGui(filename, "adsInGameMenuFleetFrame", frame, false)
     return frame
 end
 
-function ADS_InGameMenuFrame.new(target, customMt)
-    local self = TabbedMenuFrameElement.new(target, customMt or ADS_InGameMenuFrame_mt)
+function RMS_InGameMenuFrame.new(target, customMt)
+    local self = TabbedMenuFrameElement.new(target, customMt or RMS_InGameMenuFrame_mt)
 
     self.hasCustomMenuButtons = true
     self.rows = {}
@@ -282,15 +282,15 @@ function ADS_InGameMenuFrame.new(target, customMt)
     self.selectedRowIndex = 1
     self.selectedServiceRowIndex = 1
     self.selectedOtherRowIndex = 1
-    self.subCategoryState = ADS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
-    self.sortColumn = ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE
+    self.subCategoryState = RMS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
+    self.sortColumn = RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE
     self.sortingAsc = true
     self.elementCache = {}
 
     return self
 end
 
-function ADS_InGameMenuFrame:setTemplates()
+function RMS_InGameMenuFrame:setTemplates()
     if self.attributesLayout == nil then
         return
     end
@@ -306,7 +306,7 @@ function ADS_InGameMenuFrame:setTemplates()
     end
 end
 
-function ADS_InGameMenuFrame:updateBalanceDisplay()
+function RMS_InGameMenuFrame:updateBalanceDisplay()
     if self.balanceElement == nil then
         return
     end
@@ -327,8 +327,8 @@ function ADS_InGameMenuFrame:updateBalanceDisplay()
     end
 end
 
-function ADS_InGameMenuFrame:initialize()
-    ADS_InGameMenuFrame:superClass().initialize(self)
+function RMS_InGameMenuFrame:initialize()
+    RMS_InGameMenuFrame:superClass().initialize(self)
 
     self.backButtonInfo = {
         inputAction = InputAction.MENU_BACK
@@ -425,17 +425,17 @@ function ADS_InGameMenuFrame:initialize()
     end
 
     self.sortIconMap = {
-        [ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE] = {asc = self.iconVehicleAscending, desc = self.iconVehicleDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE_TYPE] = {asc = self.iconTypeAscending, desc = self.iconTypeDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.AGE] = {asc = self.iconAgeAscending, desc = self.iconAgeDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.WORKING_HOURS] = {asc = self.iconHoursAscending, desc = self.iconHoursDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.CONDITION] = {asc = self.iconConditionAscending, desc = self.iconConditionDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.INTERVAL] = {asc = self.iconIntervalAscending, desc = self.iconIntervalDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.LAST_INSPECTION] = {asc = self.iconInspectionAscending, desc = self.iconInspectionDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.LAST_MAINTENANCE] = {asc = self.iconMaintenanceAscending, desc = self.iconMaintenanceDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.COST] = {asc = self.iconCostAscending, desc = self.iconCostDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.LEASING_PRICE] = {asc = self.iconLeasingAscending, desc = self.iconLeasingDescending},
-        [ADS_InGameMenuFrame.SORT_COLUMN.PRICE] = {asc = self.iconPriceAscending, desc = self.iconPriceDescending}
+        [RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE] = {asc = self.iconVehicleAscending, desc = self.iconVehicleDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE_TYPE] = {asc = self.iconTypeAscending, desc = self.iconTypeDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.AGE] = {asc = self.iconAgeAscending, desc = self.iconAgeDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.WORKING_HOURS] = {asc = self.iconHoursAscending, desc = self.iconHoursDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.CONDITION] = {asc = self.iconConditionAscending, desc = self.iconConditionDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.INTERVAL] = {asc = self.iconIntervalAscending, desc = self.iconIntervalDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.LAST_INSPECTION] = {asc = self.iconInspectionAscending, desc = self.iconInspectionDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.LAST_MAINTENANCE] = {asc = self.iconMaintenanceAscending, desc = self.iconMaintenanceDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.COST] = {asc = self.iconCostAscending, desc = self.iconCostDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.LEASING_PRICE] = {asc = self.iconLeasingAscending, desc = self.iconLeasingDescending},
+        [RMS_InGameMenuFrame.SORT_COLUMN.PRICE] = {asc = self.iconPriceAscending, desc = self.iconPriceDescending}
     }
 
     self:setTemplates()
@@ -446,15 +446,15 @@ function ADS_InGameMenuFrame:initialize()
     self:reloadRows()
 end
 
-function ADS_InGameMenuFrame:getCurrentSubCategory()
+function RMS_InGameMenuFrame:getCurrentSubCategory()
     if self.subCategoryPaging ~= nil and self.subCategoryPaging.getState ~= nil then
         return self.subCategoryPaging:getState()
     end
 
-    return self.subCategoryState or ADS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
+    return self.subCategoryState or RMS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
 end
 
-function ADS_InGameMenuFrame:updateSubCategoryPages(subCategoryIndex)
+function RMS_InGameMenuFrame:updateSubCategoryPages(subCategoryIndex)
     if subCategoryIndex ~= nil then
         self.subCategoryState = subCategoryIndex
     end
@@ -467,8 +467,8 @@ function ADS_InGameMenuFrame:updateSubCategoryPages(subCategoryIndex)
         end
     end
 
-    if state == ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS and ADS_SettingsPage ~= nil then
-        ADS_SettingsPage:activateEmbeddedSettingsPage(self)
+    if state == RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS and RMS_SettingsPage ~= nil then
+        RMS_SettingsPage:activateEmbeddedSettingsPage(self)
     end
 
     self:updateEmptyStates()
@@ -478,13 +478,13 @@ function ADS_InGameMenuFrame:updateSubCategoryPages(subCategoryIndex)
     self:setMenuButtonInfoDirty()
 end
 
-function ADS_InGameMenuFrame:updateDetailBoxVisibility()
+function RMS_InGameMenuFrame:updateDetailBoxVisibility()
     if self.detailBox ~= nil then
-        self.detailBox:setVisible(self:getCurrentSubCategory() ~= ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS and self.selectedVehicleId ~= nil)
+        self.detailBox:setVisible(self:getCurrentSubCategory() ~= RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS and self.selectedVehicleId ~= nil)
     end
 end
 
-function ADS_InGameMenuFrame:updateScreenEdgeSliders()
+function RMS_InGameMenuFrame:updateScreenEdgeSliders()
     if self.screenEdgeSliderBoxes == nil then
         self.screenEdgeSliderBoxes = {
             self.activeTableSliderBox,
@@ -501,7 +501,7 @@ function ADS_InGameMenuFrame:updateScreenEdgeSliders()
             local lastSize = self.screenEdgeSliderSizes[sliderBox]
 
             if lastSize == nil or lastSize[1] ~= width or lastSize[2] ~= height then
-                local x = 1 - width - ADS_InGameMenuFrame.SCREEN_EDGE_SLIDER_MARGIN_X
+                local x = 1 - width - RMS_InGameMenuFrame.SCREEN_EDGE_SLIDER_MARGIN_X
                 local y = 0.5 - height * 0.5
 
                 sliderBox:setAbsolutePosition(x, y)
@@ -521,7 +521,7 @@ function ADS_InGameMenuFrame:updateScreenEdgeSliders()
     end
 end
 
-function ADS_InGameMenuFrame:onFrameOpen()
+function RMS_InGameMenuFrame:onFrameOpen()
     if self.subCategoryBox ~= nil and self.subCategoryPaging ~= nil and self.subCategoryTabs ~= nil then
         local texts = {}
         for index, tab in ipairs(self.subCategoryTabs) do
@@ -543,14 +543,14 @@ function ADS_InGameMenuFrame:onFrameOpen()
         self.itemDetailsMap:setIngameMap(g_currentMission.hud:getIngameMap())
     end
 
-    ADS_InGameMenuFrame:superClass().onFrameOpen(self)
+    RMS_InGameMenuFrame:superClass().onFrameOpen(self)
     self.refreshTimerMs = 0
     self:updateBalanceDisplay()
     self:reloadRows()
     self:updateScreenEdgeSliders()
 end
 
-function ADS_InGameMenuFrame:onFrameClose()
+function RMS_InGameMenuFrame:onFrameClose()
     if self.vehicleList ~= nil then
         self.vehicleList.selectedIndex = 1
     end
@@ -562,24 +562,24 @@ function ADS_InGameMenuFrame:onFrameClose()
     end
     self.selectedServiceRowIndex = 1
     self.selectedOtherRowIndex = 1
-    if ADS_SettingsPage ~= nil then
-        ADS_SettingsPage:onFrameClose()
-        ADS_SettingsPage.embeddedPage = nil
+    if RMS_SettingsPage ~= nil then
+        RMS_SettingsPage:onFrameClose()
+        RMS_SettingsPage.embeddedPage = nil
     end
-    ADS_InGameMenuFrame:superClass().onFrameClose(self)
+    RMS_InGameMenuFrame:superClass().onFrameClose(self)
 end
 
-function ADS_InGameMenuFrame:getSelectedVehicle()
+function RMS_InGameMenuFrame:getSelectedVehicle()
     local state = self:getCurrentSubCategory()
-    if state == ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
+    if state == RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
         return nil
     end
 
     local row = nil
 
-    if state == ADS_InGameMenuFrame.SUB_CATEGORY.SERVICE then
+    if state == RMS_InGameMenuFrame.SUB_CATEGORY.SERVICE then
         row = self.serviceRows[self.selectedServiceRowIndex]
-    elseif state == ADS_InGameMenuFrame.SUB_CATEGORY.OTHER then
+    elseif state == RMS_InGameMenuFrame.SUB_CATEGORY.OTHER then
         row = self.otherRows[self.selectedOtherRowIndex]
     else
         row = self.rows[self.selectedRowIndex]
@@ -588,9 +588,9 @@ function ADS_InGameMenuFrame:getSelectedVehicle()
     return row ~= nil and row.vehicle or nil
 end
 
-function ADS_InGameMenuFrame:updateActionButtons()
+function RMS_InGameMenuFrame:updateActionButtons()
     local currentSection = self:getCurrentSubCategory()
-    if currentSection == ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
+    if currentSection == RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
         self:setMenuButtonInfo({
             self.backButtonInfo,
             self.prevPageButtonInfo,
@@ -600,13 +600,13 @@ function ADS_InGameMenuFrame:updateActionButtons()
         return
     end
 
-    local isVehicleSection = currentSection == ADS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
-        or currentSection == ADS_InGameMenuFrame.SUB_CATEGORY.OTHER
-    local isADSSection = currentSection == ADS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
-        or currentSection == ADS_InGameMenuFrame.SUB_CATEGORY.SERVICE
+    local isVehicleSection = currentSection == RMS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
+        or currentSection == RMS_InGameMenuFrame.SUB_CATEGORY.OTHER
+    local isRMSSection = currentSection == RMS_InGameMenuFrame.SUB_CATEGORY.ACTIVE
+        or currentSection == RMS_InGameMenuFrame.SUB_CATEGORY.SERVICE
     local vehicle = self:getSelectedVehicle()
     local hasVehicle = isVehicleSection and vehicle ~= nil
-    local hasADSVehicle = isADSSection and vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil
+    local hasRMSVehicle = isRMSSection and vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil
     local isLeased = hasVehicle and vehicle.propertyState == 3
     local canEnterVehicle = hasVehicle and vehicle.getIsEnterableFromMenu ~= nil and vehicle:getIsEnterableFromMenu()
 
@@ -620,7 +620,7 @@ function ADS_InGameMenuFrame:updateActionButtons()
     end
 
     if self.maintenanceLogButtonInfo ~= nil then
-        self.maintenanceLogButtonInfo.disabled = not hasADSVehicle
+        self.maintenanceLogButtonInfo.disabled = not hasRMSVehicle
     end
 
     self:setMenuButtonInfo({
@@ -634,22 +634,22 @@ function ADS_InGameMenuFrame:updateActionButtons()
     self:setMenuButtonInfoDirty()
 end
 
-function ADS_InGameMenuFrame:update(dt)
-    ADS_InGameMenuFrame:superClass().update(self, dt)
+function RMS_InGameMenuFrame:update(dt)
+    RMS_InGameMenuFrame:superClass().update(self, dt)
     self:updateScreenEdgeSliders()
 
-    if self:getCurrentSubCategory() == ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
+    if self:getCurrentSubCategory() == RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
         return
     end
 
     self.refreshTimerMs = self.refreshTimerMs - dt
     if self.refreshTimerMs <= 0 then
-        self.refreshTimerMs = ADS_InGameMenuFrame.REFRESH_INTERVAL_MS
+        self.refreshTimerMs = RMS_InGameMenuFrame.REFRESH_INTERVAL_MS
         self:reloadRows()
     end
 end
 
-function ADS_InGameMenuFrame:clearDetailElements()
+function RMS_InGameMenuFrame:clearDetailElements()
     for _, element in pairs(self.elementCache) do
         if element ~= nil then
             element:delete()
@@ -659,7 +659,7 @@ function ADS_InGameMenuFrame:clearDetailElements()
     self.elementCache = {}
 end
 
-function ADS_InGameMenuFrame:updateDetailsPanel(vehicle)
+function RMS_InGameMenuFrame:updateDetailsPanel(vehicle)
     self:clearDetailElements()
 
     if self.detailBox ~= nil then
@@ -722,8 +722,8 @@ function ADS_InGameMenuFrame:updateDetailsPanel(vehicle)
     self.attributesLayout:invalidateLayout()
 end
 
-function ADS_InGameMenuFrame:updateDetailsForCurrentSection()
-    if self:getCurrentSubCategory() == ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
+function RMS_InGameMenuFrame:updateDetailsForCurrentSection()
+    if self:getCurrentSubCategory() == RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS then
         self.selectedVehicleId = nil
         self:updateDetailsPanel(nil)
         return
@@ -731,9 +731,9 @@ function ADS_InGameMenuFrame:updateDetailsForCurrentSection()
 
     local row = nil
 
-    if self:getCurrentSubCategory() == ADS_InGameMenuFrame.SUB_CATEGORY.SERVICE then
+    if self:getCurrentSubCategory() == RMS_InGameMenuFrame.SUB_CATEGORY.SERVICE then
         row = self.serviceRows[self.selectedServiceRowIndex]
-    elseif self:getCurrentSubCategory() == ADS_InGameMenuFrame.SUB_CATEGORY.OTHER then
+    elseif self:getCurrentSubCategory() == RMS_InGameMenuFrame.SUB_CATEGORY.OTHER then
         row = self.otherRows[self.selectedOtherRowIndex]
     else
         row = self.rows[self.selectedRowIndex]
@@ -748,7 +748,7 @@ function ADS_InGameMenuFrame:updateDetailsForCurrentSection()
     end
 end
 
-function ADS_InGameMenuFrame:updateEmptyStates()
+function RMS_InGameMenuFrame:updateEmptyStates()
     local activeHasItems = #self.rows > 0
     local serviceHasItems = #self.serviceRows > 0
     local otherHasItems = #self.otherRows > 0
@@ -802,40 +802,40 @@ function ADS_InGameMenuFrame:updateEmptyStates()
     end
 end
 
-function ADS_InGameMenuFrame:getSortValue(row)
+function RMS_InGameMenuFrame:getSortValue(row)
     if row == nil then
         return nil
     end
 
     local col = self.sortColumn
-    if col == ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE then
+    if col == RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE then
         return safeLower(row.vehicleName)
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE_TYPE then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE_TYPE then
         return safeLower(row.vehicleType)
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.AGE then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.AGE then
         return row.ageValue or 0
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.WORKING_HOURS then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.WORKING_HOURS then
         return row.workingHoursValue or 0
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.CONDITION then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.CONDITION then
         return row.conditionValue or 0
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.INTERVAL then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.INTERVAL then
         return row.intervalValue or 0
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.LAST_INSPECTION then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.LAST_INSPECTION then
         return row.lastInspectionValue or -1
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.LAST_MAINTENANCE then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.LAST_MAINTENANCE then
         return row.lastMaintenanceValue or -1
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.COST then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.COST then
         return row.costValue or 0
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.LEASING_PRICE then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.LEASING_PRICE then
         return row.leasingPriceValue or 0
-    elseif col == ADS_InGameMenuFrame.SORT_COLUMN.PRICE then
+    elseif col == RMS_InGameMenuFrame.SORT_COLUMN.PRICE then
         return row.priceValue or 0
     end
 
     return safeLower(row.vehicleName)
 end
 
-function ADS_InGameMenuFrame:sortRows()
+function RMS_InGameMenuFrame:sortRows()
     table.sort(self.rows, function(a, b)
         local va = self:getSortValue(a)
         local vb = self:getSortValue(b)
@@ -851,7 +851,7 @@ function ADS_InGameMenuFrame:sortRows()
     end)
 end
 
-function ADS_InGameMenuFrame:updateSortIcons()
+function RMS_InGameMenuFrame:updateSortIcons()
     if self.sortIconMap == nil then
         return
     end
@@ -867,7 +867,7 @@ function ADS_InGameMenuFrame:updateSortIcons()
     end
 end
 
-function ADS_InGameMenuFrame:selectSortColumn(column)
+function RMS_InGameMenuFrame:selectSortColumn(column)
     if self.sortColumn == column then
         self.sortingAsc = not self.sortingAsc
     else
@@ -879,24 +879,24 @@ function ADS_InGameMenuFrame:selectSortColumn(column)
     self:reloadRows()
 end
 
-function ADS_InGameMenuFrame:reloadRows()
+function RMS_InGameMenuFrame:reloadRows()
     self.rows = {}
     self.serviceRows = {}
     self.otherRows = {}
     local mission = g_currentMission
     local currentFarmId = mission ~= nil and mission:getFarmId() or FarmManager.SPECTATOR_FARM_ID
     local serviceStates = {
-        [AdvancedDamageSystem.STATUS.INSPECTION] = true,
-        [AdvancedDamageSystem.STATUS.MAINTENANCE] = true,
-        [AdvancedDamageSystem.STATUS.REPAIR] = true,
-        [AdvancedDamageSystem.STATUS.OVERHAUL] = true
+        [RealisticMechanicalSystems.STATUS.INSPECTION] = true,
+        [RealisticMechanicalSystems.STATUS.MAINTENANCE] = true,
+        [RealisticMechanicalSystems.STATUS.REPAIR] = true,
+        [RealisticMechanicalSystems.STATUS.OVERHAUL] = true
     }
 
     self:updateBalanceDisplay()
 
-    if ADS_Main ~= nil and ADS_Main.vehicles ~= nil then
-        for _, vehicle in pairs(ADS_Main.vehicles) do
-            local spec = vehicle.spec_AdvancedDamageSystem
+    if RMS_Main ~= nil and RMS_Main.vehicles ~= nil then
+        for _, vehicle in pairs(RMS_Main.vehicles) do
+            local spec = vehicle.spec_RealisticMechanicalSystems
 
             if spec ~= nil
                 and not spec.isExcludedVehicle
@@ -914,7 +914,7 @@ function ADS_InGameMenuFrame:reloadRows()
     if mission ~= nil and mission.vehicleSystem ~= nil and mission.vehicleSystem.vehicles ~= nil then
         for _, vehicle in pairs(mission.vehicleSystem.vehicles) do
             if canDisplayOwnedVehicle(mission, vehicle, currentFarmId)
-                and (vehicle.spec_AdvancedDamageSystem == nil or (vehicle.spec_AdvancedDamageSystem ~= nil and vehicle.spec_AdvancedDamageSystem.isExcludedVehicle == true)) then
+                and (vehicle.spec_RealisticMechanicalSystems == nil or (vehicle.spec_RealisticMechanicalSystems ~= nil and vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle == true)) then
                 table.insert(self.otherRows, buildOtherVehicleRow(vehicle))
             end
         end
@@ -1002,15 +1002,15 @@ function ADS_InGameMenuFrame:reloadRows()
     self:updateActionButtons()
 end
 
-function ADS_InGameMenuFrame:getNumberOfSections(_list)
+function RMS_InGameMenuFrame:getNumberOfSections(_list)
     return 1
 end
 
-function ADS_InGameMenuFrame:getTitleForSectionHeader(_list, _section)
+function RMS_InGameMenuFrame:getTitleForSectionHeader(_list, _section)
     return ""
 end
 
-function ADS_InGameMenuFrame:getNumberOfItemsInSection(_list, _section)
+function RMS_InGameMenuFrame:getNumberOfItemsInSection(_list, _section)
     if _list == self.serviceVehicleList then
         return #self.serviceRows
     elseif _list == self.otherVehicleList then
@@ -1020,7 +1020,7 @@ function ADS_InGameMenuFrame:getNumberOfItemsInSection(_list, _section)
     return #self.rows
 end
 
-function ADS_InGameMenuFrame:populateCellForItemInSection(_list, _section, index, cell)
+function RMS_InGameMenuFrame:populateCellForItemInSection(_list, _section, index, cell)
     local row = nil
     if _list == self.serviceVehicleList then
         row = self.serviceRows[index]
@@ -1125,7 +1125,7 @@ function ADS_InGameMenuFrame:populateCellForItemInSection(_list, _section, index
     end
 end
 
-function ADS_InGameMenuFrame:onListSelectionChanged(_list, _section, index)
+function RMS_InGameMenuFrame:onListSelectionChanged(_list, _section, index)
     local row = nil
 
     if _list == self.serviceVehicleList then
@@ -1150,94 +1150,94 @@ function ADS_InGameMenuFrame:onListSelectionChanged(_list, _section, index)
     self:updateActionButtons()
 end
 
-function ADS_InGameMenuFrame:onClickVehicleHeader(element)
+function RMS_InGameMenuFrame:onClickVehicleHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE)
 end
 
-function ADS_InGameMenuFrame:onClickActiveSection()
+function RMS_InGameMenuFrame:onClickActiveSection()
     if self.subCategoryPaging ~= nil then
-        self.subCategoryPaging:setState(ADS_InGameMenuFrame.SUB_CATEGORY.ACTIVE, true)
+        self.subCategoryPaging:setState(RMS_InGameMenuFrame.SUB_CATEGORY.ACTIVE, true)
     end
 
-    self:updateSubCategoryPages(ADS_InGameMenuFrame.SUB_CATEGORY.ACTIVE)
+    self:updateSubCategoryPages(RMS_InGameMenuFrame.SUB_CATEGORY.ACTIVE)
 end
 
-function ADS_InGameMenuFrame:onClickServiceSection()
+function RMS_InGameMenuFrame:onClickServiceSection()
     if self.subCategoryPaging ~= nil then
-        self.subCategoryPaging:setState(ADS_InGameMenuFrame.SUB_CATEGORY.SERVICE, true)
+        self.subCategoryPaging:setState(RMS_InGameMenuFrame.SUB_CATEGORY.SERVICE, true)
     end
 
-    self:updateSubCategoryPages(ADS_InGameMenuFrame.SUB_CATEGORY.SERVICE)
+    self:updateSubCategoryPages(RMS_InGameMenuFrame.SUB_CATEGORY.SERVICE)
 end
 
-function ADS_InGameMenuFrame:onClickOtherSection()
+function RMS_InGameMenuFrame:onClickOtherSection()
     if self.subCategoryPaging ~= nil then
-        self.subCategoryPaging:setState(ADS_InGameMenuFrame.SUB_CATEGORY.OTHER, true)
+        self.subCategoryPaging:setState(RMS_InGameMenuFrame.SUB_CATEGORY.OTHER, true)
     end
 
-    self:updateSubCategoryPages(ADS_InGameMenuFrame.SUB_CATEGORY.OTHER)
+    self:updateSubCategoryPages(RMS_InGameMenuFrame.SUB_CATEGORY.OTHER)
 end
 
-function ADS_InGameMenuFrame:onClickSettingsSection()
+function RMS_InGameMenuFrame:onClickSettingsSection()
     if self.subCategoryPaging ~= nil then
-        self.subCategoryPaging:setState(ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS, true)
+        self.subCategoryPaging:setState(RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS, true)
     end
 
-    self:updateSubCategoryPages(ADS_InGameMenuFrame.SUB_CATEGORY.SETTINGS)
+    self:updateSubCategoryPages(RMS_InGameMenuFrame.SUB_CATEGORY.SETTINGS)
 end
 
-function ADS_InGameMenuFrame:onClickTypeHeader(element)
+function RMS_InGameMenuFrame:onClickTypeHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.VEHICLE_TYPE)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.VEHICLE_TYPE)
 end
 
-function ADS_InGameMenuFrame:onClickAgeHeader(element)
+function RMS_InGameMenuFrame:onClickAgeHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.AGE)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.AGE)
 end
 
-function ADS_InGameMenuFrame:onClickWorkingHoursHeader(element)
+function RMS_InGameMenuFrame:onClickWorkingHoursHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.WORKING_HOURS)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.WORKING_HOURS)
 end
 
-function ADS_InGameMenuFrame:onClickConditionHeader(element)
+function RMS_InGameMenuFrame:onClickConditionHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.CONDITION)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.CONDITION)
 end
 
-function ADS_InGameMenuFrame:onClickIntervalHeader(element)
+function RMS_InGameMenuFrame:onClickIntervalHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.INTERVAL)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.INTERVAL)
 end
 
-function ADS_InGameMenuFrame:onClickLastInspectionHeader(element)
+function RMS_InGameMenuFrame:onClickLastInspectionHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.LAST_INSPECTION)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.LAST_INSPECTION)
 end
 
-function ADS_InGameMenuFrame:onClickLastMaintenanceHeader(element)
+function RMS_InGameMenuFrame:onClickLastMaintenanceHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.LAST_MAINTENANCE)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.LAST_MAINTENANCE)
 end
 
-function ADS_InGameMenuFrame:onClickCostHeader(element)
+function RMS_InGameMenuFrame:onClickCostHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.COST)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.COST)
 end
 
-function ADS_InGameMenuFrame:onClickLeasingPriceHeader(element)
+function RMS_InGameMenuFrame:onClickLeasingPriceHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.LEASING_PRICE)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.LEASING_PRICE)
 end
 
-function ADS_InGameMenuFrame:onClickPriceHeader(element)
+function RMS_InGameMenuFrame:onClickPriceHeader(element)
     self:playSample(GuiSoundPlayer.SOUND_SAMPLES.CLICK)
-    self:selectSortColumn(ADS_InGameMenuFrame.SORT_COLUMN.PRICE)
+    self:selectSortColumn(RMS_InGameMenuFrame.SORT_COLUMN.PRICE)
 end
 
-function ADS_InGameMenuFrame:onTryEnterVehicle()
+function RMS_InGameMenuFrame:onTryEnterVehicle()
     local vehicle = self:getSelectedVehicle()
     if vehicle ~= nil and vehicle.getIsEnterableFromMenu ~= nil and vehicle:getIsEnterableFromMenu() then
         g_gui:showGui("")
@@ -1245,7 +1245,7 @@ function ADS_InGameMenuFrame:onTryEnterVehicle()
     end
 end
 
-function ADS_InGameMenuFrame:onSellSelectedVehicle()
+function RMS_InGameMenuFrame:onSellSelectedVehicle()
     local vehicle = self:getSelectedVehicle()
     if vehicle == nil then
         return
@@ -1256,18 +1256,18 @@ function ADS_InGameMenuFrame:onSellSelectedVehicle()
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local isLeased = vehicle.propertyState == 3
 
     if spec ~= nil and not spec.isExcludedVehicle and isLeased then
-        ADS_SellItemDialog.show(vehicle, storeItem, self.onADSSellDialogCallback, self)
+        RMS_SellItemDialog.show(vehicle, storeItem, self.onRMSSellDialogCallback, self)
         return
     end
 
     g_shopController:sell(storeItem, vehicle)
 end
 
-function ADS_InGameMenuFrame:onADSSellDialogCallback(yes)
+function RMS_InGameMenuFrame:onRMSSellDialogCallback(yes)
     if not yes then
         return
     end
@@ -1280,15 +1280,15 @@ function ADS_InGameMenuFrame:onADSSellDialogCallback(yes)
     g_client:getServerConnection():sendEvent(SellVehicleEvent.new(vehicle, 1, true))
 end
 
-function ADS_InGameMenuFrame:onShowMaintenanceLog()
+function RMS_InGameMenuFrame:onShowMaintenanceLog()
     local vehicle = self:getSelectedVehicle()
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
         return
     end
 
     if #spec.maintenanceLog > 1 then
-        ADS_MaintenanceLogDialog.show(vehicle)
+        RMS_MaintenanceLogDialog.show(vehicle)
     else
         InfoDialog.show(g_i18n:getText("ads_ws_no_log_empty_message"))
     end

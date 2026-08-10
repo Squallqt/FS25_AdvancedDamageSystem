@@ -1,27 +1,27 @@
-ADS_Telemetry = {}
-ADS_Telemetry.modDirectory = g_currentModDirectory
+RMS_Telemetry = {}
+RMS_Telemetry.modDirectory = g_currentModDirectory
 
-ADS_Telemetry.isRecording = false
-ADS_Telemetry.intervalMs = 1000
-ADS_Telemetry.elapsedMs = 0
-ADS_Telemetry.samples = {}
-ADS_Telemetry.startedAt = nil
-ADS_Telemetry.stoppedAt = nil
-ADS_Telemetry.vehicleId = nil
-ADS_Telemetry.vehicleName = nil
-ADS_Telemetry.filePrefix = "ads_telemetry"
-ADS_Telemetry.fileSequence = 0
-ADS_Telemetry.recordingScenario = nil
-ADS_Telemetry.sessionInfo = nil
+RMS_Telemetry.isRecording = false
+RMS_Telemetry.intervalMs = 1000
+RMS_Telemetry.elapsedMs = 0
+RMS_Telemetry.samples = {}
+RMS_Telemetry.startedAt = nil
+RMS_Telemetry.stoppedAt = nil
+RMS_Telemetry.vehicleId = nil
+RMS_Telemetry.vehicleName = nil
+RMS_Telemetry.filePrefix = "ads_telemetry"
+RMS_Telemetry.fileSequence = 0
+RMS_Telemetry.recordingScenario = nil
+RMS_Telemetry.sessionInfo = nil
 
 -- =====================================================================================
 --                              HELPER FUNCTIONS
 -- =====================================================================================
 
-local log_dbg = ADS_Utils.createLogger("[ADS_TELEMETRY]")
+local log_dbg = RMS_Utils.createLogger("[RMS_TELEMETRY]")
 
 local function getTelemetryOutputDirectory()
-    return getUserProfileAppPath() .. "modSettings/FS25_AdvancedDamageSystem/"
+    return getUserProfileAppPath() .. "modSettings/FS25_RealisticMechanicalSystems/"
 end
 
 local function sanitizeFileName(value)
@@ -104,7 +104,7 @@ end
 
 local function getTelemetryTargetVehicle()
     local vehicle = g_localPlayer ~= nil and g_localPlayer.getCurrentVehicle ~= nil and g_localPlayer:getCurrentVehicle() or nil
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         log_dbg("Telemetry: no current ADS vehicle found.")
         return nil
     end
@@ -137,8 +137,8 @@ local function collectAttachedImplementNames(rootVehicle, names, visited)
     return names
 end
 
-local hasCVTTransmission = ADS_Utils.hasCVTTransmission
-local hasCVTAddon = ADS_Utils.hasCVTAddon
+local hasCVTTransmission = RMS_Utils.hasCVTTransmission
+local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 local function splitConsoleArgs(text)
     local args = {}
@@ -148,7 +148,7 @@ local function splitConsoleArgs(text)
     return args
 end
 
-function ADS_Telemetry:buildOutputFilePath()
+function RMS_Telemetry:buildOutputFilePath()
     local baseDir = getTelemetryOutputDirectory()
     createFolder(baseDir)
 
@@ -181,7 +181,7 @@ end
 --                              FILE OUTPUT
 -- =====================================================================================
 
-function ADS_Telemetry:saveToFile()
+function RMS_Telemetry:saveToFile()
     local filePath = self:buildOutputFilePath()
     local file = io.open(filePath, "w")
 
@@ -250,7 +250,7 @@ end
 --                              SERVICE FUNCTIONS
 -- =====================================================================================
 
-function ADS_Telemetry:reset()
+function RMS_Telemetry:reset()
     self.isRecording = false
     self.elapsedMs = 0
     self.samples = {}
@@ -262,24 +262,24 @@ function ADS_Telemetry:reset()
     self.sessionInfo = nil
 end
 
-function ADS_Telemetry:getRecordedVehicle()
-    if self.vehicleId == nil or ADS_Main == nil or ADS_Main.vehicles == nil then
+function RMS_Telemetry:getRecordedVehicle()
+    if self.vehicleId == nil or RMS_Main == nil or RMS_Main.vehicles == nil then
         return nil
     end
 
-    return ADS_Main.vehicles[self.vehicleId]
+    return RMS_Main.vehicles[self.vehicleId]
 end
 
 -- =====================================================================================
 --                              SESSION INFO
 -- =====================================================================================
 
-function ADS_Telemetry:collectSessionInfo(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_Telemetry:collectSessionInfo(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local environment = g_currentMission ~= nil and g_currentMission.environment or nil
     local weather = environment ~= nil and environment.weather or nil
     local ambientTemperatureC = weather ~= nil and weather.getCurrentTemperature ~= nil and weather:getCurrentTemperature() or 0
@@ -311,12 +311,12 @@ end
 --                              DATA COLLECTORS
 -- =====================================================================================
 
-function ADS_Telemetry:collectTransmissionSystemInfo(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_Telemetry:collectTransmissionSystemInfo(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local debugData = type(spec.debugData) == "table" and spec.debugData or {}
     local transmissionDbg = type(debugData.transmission) == "table" and debugData.transmission or {}
     local systemData = spec.systems.transmission
@@ -345,12 +345,12 @@ function ADS_Telemetry:collectTransmissionSystemInfo(vehicle)
     }
 end
 
-function ADS_Telemetry:collectCVTTempInfo(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil or not hasCVTTransmission(vehicle) then
+function RMS_Telemetry:collectCVTTempInfo(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or not hasCVTTransmission(vehicle) then
         return nil
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local debugData = type(spec.debugData) == "table" and spec.debugData or {}
     local transmissionTempDbg = type(debugData.transmissionTemp) == "table" and debugData.transmissionTemp or {}
 
@@ -377,12 +377,12 @@ function ADS_Telemetry:collectCVTTempInfo(vehicle)
     }
 end
 
-function ADS_Telemetry:collectDrivetrainInfo(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_Telemetry:collectDrivetrainInfo(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     if motor == nil then
         return nil
@@ -452,12 +452,12 @@ function ADS_Telemetry:collectDrivetrainInfo(vehicle)
     }
 end
 
-function ADS_Telemetry:collectCloggingInfo(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_Telemetry:collectCloggingInfo(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local debugData = type(spec.debugData) == "table" and spec.debugData or {}
     local radiatorDbg = type(debugData.radiator) == "table" and debugData.radiator or {}
     local airIntakeDbg = type(debugData.airIntake) == "table" and debugData.airIntake or {}
@@ -479,8 +479,8 @@ end
 --                              SCENARIOS
 -- =====================================================================================
 
-function ADS_Telemetry:collectSample(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_Telemetry:collectSample(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
     end
 
@@ -506,7 +506,7 @@ end
 --                              RECORDING CONTROL
 -- =====================================================================================
 
-function ADS_Telemetry:update(dt)
+function RMS_Telemetry:update(dt)
     if not self.isRecording then
         return
     end
@@ -530,7 +530,7 @@ function ADS_Telemetry:update(dt)
     end
 end
 
-function ADS_Telemetry:finishRecording(reason)
+function RMS_Telemetry:finishRecording(reason)
     if not self.isRecording then
         log_dbg("Telemetry: recording is not active.")
         return false
@@ -548,7 +548,7 @@ function ADS_Telemetry:finishRecording(reason)
     return self:saveToFile()
 end
 
-function ADS_Telemetry:startRecording(scenarioName, intervalMs)
+function RMS_Telemetry:startRecording(scenarioName, intervalMs)
     local vehicle = getTelemetryTargetVehicle()
     if vehicle == nil then
         log_dbg("Telemetry: no current ADS vehicle is currently selected.")
@@ -593,18 +593,18 @@ function ADS_Telemetry:startRecording(scenarioName, intervalMs)
     return true
 end
 
-function ADS_Telemetry:stopRecording()
+function RMS_Telemetry:stopRecording()
     return self:finishRecording("manual")
 end
 
-function ADS_Telemetry:startConsole(args)
+function RMS_Telemetry:startConsole(args)
     local tokens = splitConsoleArgs(args)
     local scenarioName = tokens[1] or "default"
     local intervalMs = tokens[2]
     self:startRecording(scenarioName, intervalMs)
 end
 
-function ADS_Telemetry:stopConsole()
+function RMS_Telemetry:stopConsole()
     self:stopRecording()
 end
 
@@ -612,6 +612,6 @@ end
 --                              REGISTRATION
 -- =====================================================================================
 
-addConsoleCommand("ads_telemetryStart", "Starts ADS telemetry recording for the current vehicle.", "startConsole", ADS_Telemetry)
-addConsoleCommand("ads_telemetryStop", "Stops ADS telemetry recording.", "stopConsole", ADS_Telemetry)
-addModEventListener(ADS_Telemetry)
+addConsoleCommand("ads_telemetryStart", "Starts ADS telemetry recording for the current vehicle.", "startConsole", RMS_Telemetry)
+addConsoleCommand("ads_telemetryStop", "Stops ADS telemetry recording.", "stopConsole", RMS_Telemetry)
+addModEventListener(RMS_Telemetry)

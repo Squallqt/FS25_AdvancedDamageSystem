@@ -1,7 +1,7 @@
-local hasCVTTransmission = ADS_Utils.hasCVTTransmission
-local hasCVTAddon = ADS_Utils.hasCVTAddon
-local ensureFactorStats = AdvancedDamageSystem.ensureFactorStats
-local getColdEngineStress = AdvancedDamageSystem.getColdEngineStress
+local hasCVTTransmission = RMS_Utils.hasCVTTransmission
+local hasCVTAddon = RMS_Utils.hasCVTAddon
+local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
+local getColdEngineStress = RealisticMechanicalSystems.getColdEngineStress
 
 -- =========================================================
 --                   CORE WEAR FUNCTIONS
@@ -17,7 +17,7 @@ local function resolveSystemKey(spec, systemName)
     end
 
     local loweredSystemName = string.lower(systemName)
-    local weights = ADS_Config ~= nil and ADS_Config.CORE ~= nil and ADS_Config.CORE.SYSTEM_WEIGHTS or nil
+    local weights = RMS_Config ~= nil and RMS_Config.CORE ~= nil and RMS_Config.CORE.SYSTEM_WEIGHTS or nil
     if type(weights) == "table" then
         for weightedKey, _ in pairs(weights) do
             if string.lower(tostring(weightedKey)) == loweredSystemName and spec.systems[weightedKey] ~= nil then
@@ -62,9 +62,9 @@ local function getExpiredServiceFactor(serviceLevel, serviceMultiplier)
         return 0.0
     end
 
-    if serviceLevel < ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD then
+    if serviceLevel < RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD then
         local severity = math.clamp(
-            (ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD - serviceLevel) / ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD,
+            (RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD - serviceLevel) / RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD,
             0.0,
             1.0
         )
@@ -75,17 +75,17 @@ local function getExpiredServiceFactor(serviceLevel, serviceMultiplier)
     return 0.0
 end
 
-function AdvancedDamageSystem:updateServiceLevel(dt)
-    local spec = self.spec_AdvancedDamageSystem
-    local wearRate = ADS_Config.CORE.BASE_SERVICE_WEAR
+function RealisticMechanicalSystems:updateServiceLevel(dt)
+    local spec = self.spec_RealisticMechanicalSystems
+    local wearRate = RMS_Config.CORE.BASE_SERVICE_WEAR
 
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
         wearRate = wearRate * (1 + spec.extraServiceWear) 
     else
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
         end
     end  
 
@@ -94,7 +94,7 @@ function AdvancedDamageSystem:updateServiceLevel(dt)
     local newLevel = spec.serviceLevel -  wearRate / (60 * 60 * 1000) * dt
     spec.serviceLevel = math.max(newLevel, 0)
 
-    if ADS_Config.DEBUG then
+    if RMS_Config.DEBUG then
         if spec.debugData == nil then
             spec.debugData = {}
         end
@@ -107,11 +107,11 @@ function AdvancedDamageSystem:updateServiceLevel(dt)
     end
 end
 
-function AdvancedDamageSystem:updateConditionLevel()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:updateConditionLevel()
+    local spec = self.spec_RealisticMechanicalSystems
     local weightedCondition = 0
     local totalEnabledWeight = 0
-    local systemWeights = ADS_Config.CORE.SYSTEM_WEIGHTS or {}
+    local systemWeights = RMS_Config.CORE.SYSTEM_WEIGHTS or {}
 
     for systemName, systemData in pairs(spec.systems) do
         if systemData.enabled ~= false then
@@ -132,8 +132,8 @@ function AdvancedDamageSystem:updateConditionLevel()
     spec.conditionLevel = math.clamp(condition, 0.001, 1.0)
 end
 
-function AdvancedDamageSystem:updateSystemConditionAndStress(dt, systemName, wearRate, debugFactors)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:updateSystemConditionAndStress(dt, systemName, wearRate, debugFactors)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -146,10 +146,10 @@ function AdvancedDamageSystem:updateSystemConditionAndStress(dt, systemName, wea
     wearRate = tonumber(wearRate) or baseWearRate
     wearRate = wearRate * (1 + spec.extraConditionWear) / reliability
 
-    local stressMultipliers = ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS or {}
+    local stressMultipliers = RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS or {}
     local systemStressMultiplier = stressMultipliers[systemName] or 1.0
-    local globalStressMultiplier = math.max(tonumber(ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER) or 1.0, 0.0)
-    local dtMultiplier = ADS_Config.CORE.BASE_SYSTEMS_WEAR / (60 * 60 * 1000) * dt
+    local globalStressMultiplier = math.max(tonumber(RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER) or 1.0, 0.0)
+    local dtMultiplier = RMS_Config.CORE.BASE_SYSTEMS_WEAR / (60 * 60 * 1000) * dt
 
     local conditionToRemove = wearRate * dtMultiplier
     local newCondition = (systemData.condition or 1.0) - conditionToRemove
@@ -167,7 +167,7 @@ function AdvancedDamageSystem:updateSystemConditionAndStress(dt, systemName, wea
         if type(debugFactors) == "table" then
             for key, value in pairs(debugFactors) do
                 local numericValue = tonumber(value)
-                local alias = AdvancedDamageSystem.FACTOR_STATS_ALIASES[tostring(key)]
+                local alias = RealisticMechanicalSystems.FACTOR_STATS_ALIASES[tostring(key)]
                 if numericValue ~= nil and alias ~= nil then
                     local factorDelta = (numericValue / reliability) * dtMultiplier
                     systemStats[alias] = (tonumber(systemStats[alias]) or 0) + factorDelta
@@ -176,7 +176,7 @@ function AdvancedDamageSystem:updateSystemConditionAndStress(dt, systemName, wea
         end
     end
 
-    if ADS_Config.DEBUG and systemName ~= nil then
+    if RMS_Config.DEBUG and systemName ~= nil then
         if spec.debugData == nil then
             spec.debugData = {}
         end
@@ -198,9 +198,9 @@ function AdvancedDamageSystem:updateSystemConditionAndStress(dt, systemName, wea
     end
 end
 
-function AdvancedDamageSystem:applyInstantDamageToSystem(system, damageAmount)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, system)
+function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmount)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, system)
     systemKey = resolveSystemKey(spec, systemKey)
 
     if systemKey == nil or systemKey == "" or spec.systems[systemKey] == nil then
@@ -209,8 +209,8 @@ function AdvancedDamageSystem:applyInstantDamageToSystem(system, damageAmount)
 
     local dmg = math.max(tonumber(damageAmount) or 0, 0)
     spec.systems[systemKey].condition = math.clamp((spec.systems[systemKey].condition or 1.0) - dmg, 0.001, 1.0)
-    local stressToAdd = dmg * (ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey] or 1)
-    local stressCap = math.max(spec.systems[systemKey].condition or 0, ADS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0)
+    local stressToAdd = dmg * (RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey] or 1)
+    local stressCap = math.max(spec.systems[systemKey].condition or 0, RMS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0)
     spec.systems[systemKey].stress = math.clamp((spec.systems[systemKey].stress or 0) + stressToAdd, 0, stressCap)
 
     local factorStats = ensureFactorStats(spec, self)
@@ -222,15 +222,15 @@ function AdvancedDamageSystem:applyInstantDamageToSystem(system, damageAmount)
 end
 
 -- systems
-function AdvancedDamageSystem:updateEngineSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:updateEngineSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
-    local C = ADS_Config.CORE.ENGINE_FACTOR_DATA
+    local C = RMS_Config.CORE.ENGINE_FACTOR_DATA
     local motorLoadFactor, luggingFactor, expiredServiceFactor, coldMotorFactor, hotMotorFactor, airIntakeCloggingFactor = 0, 0, 0, 0, 0, 0
     local baseWearRate = 1.0
     local wearRate = baseWearRate
     local rpmLoad = 0
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.engine.name)
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.engine.name)
     local systemData = spec.systems.engine
 
     if not systemData.enabled then
@@ -246,7 +246,7 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
 
         -- overload factor
         if dynamicMotorLoad > C.MOTOR_OVERLOADED_THRESHOLD then
-            motorLoadFactor = ADS_Utils.calculateQuadraticMultiplier(dynamicMotorLoad, C.MOTOR_OVERLOADED_THRESHOLD, false, C.MOTOR_OVERLOADED_MAX_EFFECT)
+            motorLoadFactor = RMS_Utils.calculateQuadraticMultiplier(dynamicMotorLoad, C.MOTOR_OVERLOADED_THRESHOLD, false, C.MOTOR_OVERLOADED_MAX_EFFECT)
             motorLoadFactor = motorLoadFactor * (C.MOTOR_OVERLOADED_MULTIPLIER or 0)
             wearRate = wearRate + motorLoadFactor
         end
@@ -256,7 +256,7 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
             local maxDiff = 0.6
             local minDiff = math.clamp(C.LUGGING_MOTORLOAD_THRESHOLD - C.LUGGING_RPM_THRESHOLD, 0, maxDiff)
             local currentDiff = math.clamp(dynamicMotorLoad - rpmLoad, 0.0, 1.0)
-            luggingFactor = ADS_Utils.calculateQuadraticMultiplier(currentDiff, minDiff, false, maxDiff)
+            luggingFactor = RMS_Utils.calculateQuadraticMultiplier(currentDiff, minDiff, false, maxDiff)
             local aiMultiplier = self:getIsAIActive() and 0.5 or 1.0
             luggingFactor = luggingFactor * (C.LUGGING_MULTIPLIER or 0) * aiMultiplier
             wearRate = wearRate + luggingFactor
@@ -264,7 +264,7 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
 
         -- airintake cloagging factor
         if spec.airIntakeClogging > C.AIR_INTAKE_CLOGGING_THRESHOLD then
-            airIntakeCloggingFactor = ADS_Utils.calculateQuadraticMultiplier(spec.airIntakeClogging, C.AIR_INTAKE_CLOGGING_THRESHOLD, false)
+            airIntakeCloggingFactor = RMS_Utils.calculateQuadraticMultiplier(spec.airIntakeClogging, C.AIR_INTAKE_CLOGGING_THRESHOLD, false)
             airIntakeCloggingFactor = airIntakeCloggingFactor * (C.AIR_INTAKE_CLOGGING_MULTIPLIER or 0)
             wearRate = wearRate + airIntakeCloggingFactor
         end
@@ -277,8 +277,8 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
 
         -- overheating engine factor
         elseif (spec.engineTemperature or -99) > C.OVERHEAT_MOTOR_THRESHOLD and motorLoad > 0.3 and not spec.isElectricVehicle then
-            hotMotorFactor = ADS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_MOTOR_THRESHOLD, false, 120)
-            local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(motorLoad, 0.3, false)
+            hotMotorFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_MOTOR_THRESHOLD, false, 120)
+            local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(motorLoad, 0.3, false)
             hotMotorFactor = hotMotorFactor * (C.OVERHEAT_MOTOR_MULTIPLIER or 0) * motorLoadInf
             hotMotorFactor = math.min(hotMotorFactor, C.OVERHEAT_MOTOR_MULTIPLIER or hotMotorFactor)
             wearRate = wearRate + hotMotorFactor
@@ -293,9 +293,9 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
         wearRate = wearRate + expiredServiceFactor
     else
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
         end
     end
 
@@ -313,11 +313,11 @@ function AdvancedDamageSystem:updateEngineSystem(dt)
     })
 end
 
-function AdvancedDamageSystem:updateTransmissionSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:updateTransmissionSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
     local spec_wheels = self.spec_wheels
-    local C = ADS_Config.CORE.TRANSMISSION_FACTOR_DATA
+    local C = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
     local systemData = spec.systems.transmission
     systemData.pullOverloadTimer = tonumber(systemData.pullOverloadTimer) or 0
     local vehicleHaveCVT = hasCVTTransmission(self)
@@ -330,8 +330,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     local hpHeavyTrailerRatio = isTruck
         and brakeState.hpGrossMassRatio
         or brakeState.hpTrailerMassRatio
-    local heavyTrailerRatioThreshold, heavyTrailerFullEffectRatio = ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.transmission.name)
+    local heavyTrailerRatioThreshold, heavyTrailerFullEffectRatio = RMS_Utils.getHeavyTrailerRatioLevels(isTruck)
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.transmission.name)
     
     if not systemData.enabled then
         return
@@ -348,8 +348,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         local normalizedCVTdamage = currentCVTdamage / 100
         local normalizedDelta = cvtDamageDelta / 100
 
-        local systemStressMultiplier = ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey] or 1.0
-        local globalStressMultiplier = math.max(tonumber(ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER) or 1.0, 0.001)
+        local systemStressMultiplier = RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey] or 1.0
+        local globalStressMultiplier = math.max(tonumber(RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER) or 1.0, 0.001)
         local divisor = math.max(systemStressMultiplier * globalStressMultiplier, 0.001)
 
         local currentCondition = math.clamp(tonumber(systemData.condition) or 1.0, 0.001, 1.0)
@@ -376,7 +376,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
 
         local motorLoad = self:getMotorLoadPercentage()
         local speed = self:getLastSpeed()
-        if motorLoad < ADS_Config.CORE.ENGINE_FACTOR_DATA.MOTOR_IDLING_THRESHOLD and speed < 0.003 then
+        if motorLoad < RMS_Config.CORE.ENGINE_FACTOR_DATA.MOTOR_IDLING_THRESHOLD and speed < 0.003 then
             wearRate = wearRate * C.TRANSMISSION_IDLING_MULTIPLIER
         end
 
@@ -410,7 +410,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         if speed > 0.5 and systemData.pullOverloadTimer > 0 then
-            pullOverloadFactor = ADS_Utils.calculateQuadraticMultiplier(systemData.pullOverloadTimer, 0, false, C.PULL_OVERLOAD_TIMER_MAX_EFFECT)
+            pullOverloadFactor = RMS_Utils.calculateQuadraticMultiplier(systemData.pullOverloadTimer, 0, false, C.PULL_OVERLOAD_TIMER_MAX_EFFECT)
             pullOverloadFactor = math.clamp(pullOverloadFactor * dynamicMotorLoad * C.PULL_OVERLOAD_MULTIPLIER, 0, C.PULL_OVERLOAD_MULTIPLIER * 5)
             wearRate = wearRate + pullOverloadFactor
         end
@@ -420,7 +420,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
             local maxDiff = 0.6
             local minDiff = math.clamp(C.LUGGING_MOTORLOAD_THRESHOLD - C.LUGGING_RPM_THRESHOLD, 0, maxDiff)
             local currentDiff = math.clamp(dynamicMotorLoad - rpmLoad, 0.0, 1.0)
-            luggingFactor = ADS_Utils.calculateQuadraticMultiplier(currentDiff, minDiff, false, maxDiff)
+            luggingFactor = RMS_Utils.calculateQuadraticMultiplier(currentDiff, minDiff, false, maxDiff)
             local aiMultiplier = self:getIsAIActive() and 0.5 or 1.0
             luggingFactor = luggingFactor * C.LUGGING_MULTIPLIER * aiMultiplier
             wearRate = wearRate + luggingFactor
@@ -432,7 +432,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
 
         -- heavy trailer factor
         if trailerMass > 0.1 and hpHeavyTrailerRatio < heavyTrailerRatioThreshold and motorLoad > C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD and speed > 0.5 then
-            heavyTrailerFactor = ADS_Utils.calculateQuadraticMultiplier(hpHeavyTrailerRatio, heavyTrailerRatioThreshold, true, heavyTrailerFullEffectRatio)
+            heavyTrailerFactor = RMS_Utils.calculateQuadraticMultiplier(hpHeavyTrailerRatio, heavyTrailerRatioThreshold, true, heavyTrailerFullEffectRatio)
             local loadRange = math.max(1.0 - C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD, 0.001)
             local loadRatio = math.clamp((motorLoad - C.HEAVY_TRAILER_MOTORLOAD_THRESHOLD) / loadRange, 0, 1.0)
             heavyTrailerFactor = math.max(heavyTrailerFactor * C.HEAVY_TRAILER_MULTIPLIER * loadRatio, 0)
@@ -441,10 +441,10 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         -- wheel slip factor
-        local isTurning = ADS_Drivetrain.getIsTurning(self)
+        local isTurning = RMS_Drivetrain.getIsTurning(self)
         if not isTurning and spec.wheelSlipIntensity > C.WHEEL_SLIP_THRESHOLD and speed < 20 and motorLoad > 0.5 then
             local groundFrictionCoef = spec.avgTireGroundFrictionCoeff
-            wheelSlipFactor = ADS_Utils.calculateQuadraticMultiplier(spec.wheelSlipIntensity, C.WHEEL_SLIP_THRESHOLD, false)
+            wheelSlipFactor = RMS_Utils.calculateQuadraticMultiplier(spec.wheelSlipIntensity, C.WHEEL_SLIP_THRESHOLD, false)
             wheelSlipFactor = math.max(wheelSlipFactor * (C.WHEEL_SLIP_MULTIPLIER or 0) * (groundFrictionCoef ^ 2) * motorLoad, 0)
             wearRate = wearRate + wheelSlipFactor
             --- tutorial timer
@@ -454,7 +454,7 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         -- driveline windup factor (locked differentials + steering on grippy ground)
-        drivetrainWindupFactor = ADS_Drivetrain.getWindupWearFactor(self)
+        drivetrainWindupFactor = RMS_Drivetrain.getWindupWearFactor(self)
         if drivetrainWindupFactor > 0 then
             wearRate = wearRate + drivetrainWindupFactor
         end
@@ -462,8 +462,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         if vehicleHaveCVT then
             -- cold CVT factor
             if (spec.transmissionTemperature or -99) < C.COLD_TRANSMISSION_THRESHOLD and rpmLoad > 0.75 and not spec.isElectricVehicle and not self:getIsAIActive() then
-                coldTransFactor = ADS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.COLD_TRANSMISSION_THRESHOLD, true)
-                local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.5, false)
+                coldTransFactor = RMS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.COLD_TRANSMISSION_THRESHOLD, true)
+                local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.5, false)
                 coldTransFactor = coldTransFactor * C.COLD_TRANSMISSION_MULTIPLIER * motorLoadInf
                 coldTransFactor = math.min(coldTransFactor, C.COLD_TRANSMISSION_MULTIPLIER or coldTransFactor)
                 wearRate = wearRate + coldTransFactor
@@ -471,8 +471,8 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
             -- overheating CVT factor
             elseif (spec.transmissionTemperature or -99) > C.OVERHEAT_TRANSMISSION_THRESHOLD and motorLoad > 0.3 and not spec.isElectricVehicle then
                 local transTemp = spec.transmissionTemperature
-                hotTransFactor = ADS_Utils.calculateQuadraticMultiplier(transTemp, C.OVERHEAT_TRANSMISSION_THRESHOLD, false, 120)
-                local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.5, false)
+                hotTransFactor = RMS_Utils.calculateQuadraticMultiplier(transTemp, C.OVERHEAT_TRANSMISSION_THRESHOLD, false, 120)
+                local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.5, false)
                 hotTransFactor = hotTransFactor * C.OVERHEAT_TRANSMISSION_MAX_MULTIPLIER * motorLoadInf
                 hotTransFactor = math.min(hotTransFactor, C.OVERHEAT_TRANSMISSION_MAX_MULTIPLIER or hotTransFactor)
                 wearRate = wearRate + hotTransFactor
@@ -480,12 +480,12 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         -- idling
-        if motorLoad < ADS_Config.CORE.ENGINE_FACTOR_DATA.MOTOR_IDLING_THRESHOLD and speed < 0.003 then
+        if motorLoad < RMS_Config.CORE.ENGINE_FACTOR_DATA.MOTOR_IDLING_THRESHOLD and speed < 0.003 then
             wearRate = wearRate * C.TRANSMISSION_IDLING_MULTIPLIER
         end
 
         -- service
-        expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER or ADS_Config.CORE.ENGINE_FACTOR_DATA.SERVICE_EXPIRED_MULTIPLIER)
+        expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER or RMS_Config.CORE.ENGINE_FACTOR_DATA.SERVICE_EXPIRED_MULTIPLIER)
         wearRate = wearRate + expiredServiceFactor
     else
         if hasCVTAddon(self) then
@@ -494,9 +494,9 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
         end
 
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
         end
     end
 
@@ -517,12 +517,12 @@ function AdvancedDamageSystem:updateTransmissionSystem(dt)
     })
 end
 
-function AdvancedDamageSystem:updateHydraulicsSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.hydraulics.name)
+function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.hydraulics.name)
     local systemData = spec.systems.hydraulics
     local expiredServiceFactor = 0
-    local C = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA
+    local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
     local heavyLiftFactor, operatingFactor, coldOilFactor, sharpAngleFactor, vibFactor = 0, 0, 0, 0, 0
     local ptoSharpAngleDeg = spec.maxConnectedPtoAngleDeg
     local vibState = spec.chassisVibState
@@ -546,14 +546,14 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
                 systemData.operatingTimer = math.min(systemData.operatingTimer + dt, 30000)
                 operatingMassRatio = vehicleMass > 0 and (spec.operatingMass / vehicleMass) or 0
                 if operatingMassRatio > C.OPERATING_FACTOR_THRESHOLD then
-                    operatingFactor = ADS_Utils.calculateQuadraticMultiplier(operatingMassRatio, C.OPERATING_FACTOR_THRESHOLD, false)
+                    operatingFactor = RMS_Utils.calculateQuadraticMultiplier(operatingMassRatio, C.OPERATING_FACTOR_THRESHOLD, false)
                     operatingFactor = math.min(operatingFactor * (C.OPERATING_FACTOR_MULTIPLIER or 0), C.OPERATING_FACTOR_MULTIPLIER) * math.max(systemData.operatingTimer / 10000, 1)
                     wearRate = wearRate + operatingFactor
                 end
                 -- cold oil
                 if (spec.engineTemperature or 0) < C.COLD_OIL_THRESHOLD then
-                    coldOilFactor = ADS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.COLD_OIL_THRESHOLD, true)
-                    coldOilFactor = coldOilFactor * (C.COLD_OIL_MULTIPLIER or 0) * (1 + ADS_Utils.calculateQuadraticMultiplier(operatingMassRatio, 0, false))
+                    coldOilFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.COLD_OIL_THRESHOLD, true)
+                    coldOilFactor = coldOilFactor * (C.COLD_OIL_MULTIPLIER or 0) * (1 + RMS_Utils.calculateQuadraticMultiplier(operatingMassRatio, 0, false))
                     coldOilFactor = math.min(coldOilFactor, (C.COLD_OIL_MULTIPLIER or 0) * 2)
                     wearRate = wearRate + coldOilFactor
                 end
@@ -562,7 +562,7 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
             -- heavy lift
             heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
             if heavyLiftMassRatio > (C.HEAVY_LIFT_FACTOR_THRESHOLD or 0) then
-                heavyLiftFactor = ADS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, C.HEAVY_LIFT_FACTOR_THRESHOLD, false)
+                heavyLiftFactor = RMS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, C.HEAVY_LIFT_FACTOR_THRESHOLD, false)
                 heavyLiftFactor = heavyLiftFactor * (C.HEAVY_LIFT_FACTOR_MULTIPLIER or 0)
                 heavyLiftFactor = math.min(heavyLiftFactor, C.HEAVY_LIFT_FACTOR_MULTIPLIER or heavyLiftFactor)
                 wearRate = wearRate + heavyLiftFactor
@@ -576,12 +576,12 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
                 local liftRatioPivot = tonumber(C.HEAVY_LIFT_FACTOR_THRESHOLD) or 0.6
                 local liftRatioInfluence = 1.0
                 if heavyLiftMassRatio > liftRatioPivot then
-                    liftRatioInfluence = 1.0 + ADS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, false, 1.0)
+                    liftRatioInfluence = 1.0 + RMS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, false, 1.0)
                 elseif heavyLiftMassRatio < liftRatioPivot then
-                    liftRatioInfluence = 1.0 - 0.5 * ADS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, true, 0.0)
+                    liftRatioInfluence = 1.0 - 0.5 * RMS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, true, 0.0)
                 end
                 local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier * liftRatioInfluence
-                vibFactor = ADS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
+                vibFactor = RMS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
                 vibFactor = vibFactor * vibMultiplier
                 vibFactor = math.min(vibFactor, vibMultiplier)
                 wearRate = wearRate + vibFactor
@@ -592,10 +592,10 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
                 local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
                 local hasConnectedPto = spec.hasConnectedPto == true
                 ptoSharpAngleDeg = ptoAngleDeg
-                local sharpAngleThreshold = ADS_Utils.getPtoSharpAngleThreshold(spec)
+                local sharpAngleThreshold = RMS_Utils.getPtoSharpAngleThreshold(spec)
 
                 if hasConnectedPto and ptoAngleDeg > sharpAngleThreshold and not spec.isExcludedFromPTOSharpAngleFactor then
-                    sharpAngleFactor = ADS_Utils.calculateQuadraticMultiplier(ptoAngleDeg, sharpAngleThreshold, false, 50)
+                    sharpAngleFactor = RMS_Utils.calculateQuadraticMultiplier(ptoAngleDeg, sharpAngleThreshold, false, 50)
                     sharpAngleFactor = sharpAngleFactor * (C.PTO_SHARP_ANGLE_FACTOR_MULTIPLIER or 0)
                     sharpAngleFactor = math.min(sharpAngleFactor, C.PTO_SHARP_ANGLE_FACTOR_MULTIPLIER or sharpAngleFactor)
                     wearRate = wearRate + sharpAngleFactor
@@ -613,9 +613,9 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
 
     else
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
         end
     end
 
@@ -640,13 +640,13 @@ function AdvancedDamageSystem:updateHydraulicsSystem(dt)
     })
 end
 
-function AdvancedDamageSystem:updateCoolingSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:updateCoolingSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.cooling.name)
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.cooling.name)
     local systemData = spec.systems.cooling
     local expiredServiceFactor = 0
-    local C = ADS_Config.CORE.COOLING_FACTOR_DATA
+    local C = RMS_Config.CORE.COOLING_FACTOR_DATA
     local highCoolingFactor, overheatFactor, coldShockFactor = 0, 0, 0
     local wearRate = 1.0
     local rpmLoad = 0
@@ -663,7 +663,7 @@ function AdvancedDamageSystem:updateCoolingSystem(dt)
         -- high cooling
         if spec.thermostatState > 0.0 then
             if spec.thermostatState > C.HIGH_COOLING_FACTOR_THRESHOLD then
-                highCoolingFactor = ADS_Utils.calculateQuadraticMultiplier(spec.thermostatState, C.HIGH_COOLING_FACTOR_THRESHOLD, false)
+                highCoolingFactor = RMS_Utils.calculateQuadraticMultiplier(spec.thermostatState, C.HIGH_COOLING_FACTOR_THRESHOLD, false)
                 highCoolingFactor = highCoolingFactor * (C.HIGH_COOLING_FACTOR_MULTIPLIER or 0)
                 highCoolingFactor = math.min(highCoolingFactor, C.HIGH_COOLING_FACTOR_MULTIPLIER or highCoolingFactor)
                 wearRate = wearRate + highCoolingFactor
@@ -672,7 +672,7 @@ function AdvancedDamageSystem:updateCoolingSystem(dt)
 
         -- overheat
         if (spec.engineTemperature or -99) > C.OVERHEAT_FACTOR_THRESHOLD then
-            overheatFactor = ADS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_FACTOR_THRESHOLD, false, 120)
+            overheatFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_FACTOR_THRESHOLD, false, 120)
             overheatFactor = overheatFactor * (C.OVERHEAT_FACTOR_MULTIPLIER or 0)
             overheatFactor = math.min(overheatFactor, C.OVERHEAT_FACTOR_MULTIPLIER or overheatFactor)
             wearRate = wearRate + overheatFactor
@@ -680,8 +680,8 @@ function AdvancedDamageSystem:updateCoolingSystem(dt)
 
         -- cold shock
         if (spec.engineTemperature or -99) < C.COLD_SHOCK_FACTOR_THRESHOLD and rpmLoad > 0.75 and not self:getIsAIActive() then
-            coldShockFactor = ADS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.COLD_SHOCK_FACTOR_THRESHOLD, true)
-            local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.75, false)
+            coldShockFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.COLD_SHOCK_FACTOR_THRESHOLD, true)
+            local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.75, false)
             coldShockFactor = coldShockFactor * (C.COLD_SHOCK_FACTOR_MULTIPLIER or 0) * motorLoadInf
             coldShockFactor = math.min(coldShockFactor, C.COLD_SHOCK_FACTOR_MULTIPLIER or coldShockFactor)
             wearRate = wearRate + coldShockFactor
@@ -697,9 +697,9 @@ function AdvancedDamageSystem:updateCoolingSystem(dt)
         wearRate = wearRate + expiredServiceFactor
     else
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
         end
     end
 
@@ -714,9 +714,9 @@ function AdvancedDamageSystem:updateCoolingSystem(dt)
     })
 end
 
-function AdvancedDamageSystem:updateElectricalSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.electrical.name)
+function RealisticMechanicalSystems:updateElectricalSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.electrical.name)
     local systemData = spec.systems.electrical
     if systemData == nil then return end
     local vibState = spec.chassisVibState
@@ -724,7 +724,7 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
     local vibRaw = vibState.raw
     local vibFieldMultiplier = vibState.fieldMultiplier
     local expiredServiceFactor, weatherExposureFactor, lightsFactor, overheatFactor, crankingStressFactor, vibFactor = 0, 0, 0, 0, 0, 0
-    local C = ADS_Config.CORE.ELECTRICAL_FACTOR_DATA
+    local C = RMS_Config.CORE.ELECTRICAL_FACTOR_DATA
     local wearRate = 1.0
 
     if not systemData.enabled then
@@ -752,7 +752,7 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
 
     -- weather factor
     if isOutdoor then
-        local weatherType = ADS_Main.currentWeather
+        local weatherType = RMS_Main.currentWeather
         if weatherType == WeatherType.RAIN then
             weatherExposureFactor = C.RAIN_FACTOR_MULTIPLIER or 0
         elseif weatherType == WeatherType.SNOW then
@@ -782,7 +782,7 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
 
         -- overheating engine compartment
         if (spec.engineTemperature or -99) > C.OVERHEAT_FACTOR_THRESHOLD then
-            overheatFactor = ADS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_FACTOR_THRESHOLD, false, 120)
+            overheatFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.OVERHEAT_FACTOR_THRESHOLD, false, 120)
             overheatFactor = overheatFactor * (C.OVERHEAT_FACTOR_MULTIPLIER or 0)
             overheatFactor = math.min(overheatFactor, C.OVERHEAT_FACTOR_MULTIPLIER or overheatFactor)
             wearRate = wearRate + overheatFactor
@@ -794,7 +794,7 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
             local vibMaxSignal = tonumber(C.VIB_FACTOR_MAX_SIGNAL) or 0.22
             local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
             local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier
-            vibFactor = ADS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
+            vibFactor = RMS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
             vibFactor = vibFactor * vibMultiplier
             vibFactor = math.min(vibFactor, vibMultiplier)
             wearRate = wearRate + vibFactor
@@ -802,9 +802,9 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
 
     elseif lightsFactor == 0 and crankingStressFactor == 0 then 
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER 
         end
     end
 
@@ -823,9 +823,9 @@ function AdvancedDamageSystem:updateElectricalSystem(dt)
     })
 end
 
-function AdvancedDamageSystem:updateChassisSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.chassis.name)
+function RealisticMechanicalSystems:updateChassisSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.chassis.name)
     local systemData = spec.systems.chassis
     local expiredServiceFactor, lubricationFactor, vibFactor, steerLoadFactor = 0, 0, 0, 0
     local vibState = spec.chassisVibState
@@ -851,7 +851,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         and brakeState.hpGrossMassRatio
         or brakeState.hpTrailerMassRatio
     local brakePedal = brakeState.pedal
-    local C = ADS_Config.CORE.CHASSIS_FACTOR_DATA
+    local C = RMS_Config.CORE.CHASSIS_FACTOR_DATA
     local brakeMassRatioThreshold = isTruck
         and (tonumber(C.BRAKE_MASS_TRUCK_RATIO_THRESHOLD) or 6.0)
         or (tonumber(C.BRAKE_MASS_RATIO_THRESHOLD) or 10.0)
@@ -870,9 +870,9 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
         if spec.isVehicleNeedLubricate then
             local lubricationLevel = math.clamp(tonumber(spec.lubricationLevel) or 1.0, 0.0, 1.0)
-            lubricationFactor = ADS_Utils.calculateQuadraticMultiplier(
+            lubricationFactor = RMS_Utils.calculateQuadraticMultiplier(
                 lubricationLevel,
-                ADS_Config.FIELD_CARE.LUBRICATION_WARNING_THRESHOLD,
+                RMS_Config.FIELD_CARE.LUBRICATION_WARNING_THRESHOLD,
                 true,
                 0.0
             )
@@ -887,7 +887,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
                 local vibMaxSignal = tonumber(C.VIB_FACTOR_MAX_SIGNAL) or 0.22
                 local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
                 local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier
-                vibFactor = ADS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
+                vibFactor = RMS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
                 vibFactor = vibFactor * vibMultiplier
                 vibFactor = math.min(vibFactor, vibMultiplier)
                 wearRate = wearRate + vibFactor
@@ -896,7 +896,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
             -- braking under mass
             if trailerMass > 0.1 and brakeState.isBraking and speed > (tonumber(C.BRAKE_MASS_SPEED_THRESHOLD) or 2.0) then
                 if hpBrakeMassRatio < brakeMassRatioThreshold then
-                    local ratioFactor = ADS_Utils.calculateQuadraticMultiplier(hpBrakeMassRatio, brakeMassRatioThreshold, true, brakeMassFullEffectRatio)
+                    local ratioFactor = RMS_Utils.calculateQuadraticMultiplier(hpBrakeMassRatio, brakeMassRatioThreshold, true, brakeMassFullEffectRatio)
                     local brakeInputFactor = brakePedal
                     brakeMassFactor = ratioFactor * brakeInputFactor * (tonumber(C.BRAKE_MASS_FACTOR_MULTIPLIER) or 6.0)
                     brakeMassFactor = math.min(brakeMassFactor, tonumber(C.BRAKE_MASS_FACTOR_MULTIPLIER) or brakeMassFactor)
@@ -911,7 +911,7 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         -- steering load at standstill / low speed
         local steerSpeedThreshold = tonumber(C.STEER_LOAD_SPEED_THRESHOLD) or 4.0
         if steerSpeedThreshold > 0 and steerState.isLowSpeedActive and steerGroundContact > 0 and steerMoving then
-            steerLowSpeedFactor = ADS_Utils.calculateQuadraticMultiplier(math.clamp(speed, 0, steerSpeedThreshold), steerSpeedThreshold, true)
+            steerLowSpeedFactor = RMS_Utils.calculateQuadraticMultiplier(math.clamp(speed, 0, steerSpeedThreshold), steerSpeedThreshold, true)
             if steerLowSpeedFactor > 0 then
                 steerLoadFactor = steerLowSpeedFactor * steerRateFactor * (tonumber(C.STEER_LOAD_FACTOR_MULTIPLIER) or 5.0) * steerGroundFrictionFactor
                 wearRate = wearRate + steerLoadFactor
@@ -925,9 +925,9 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
         end
     else
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER 
         end
     end
 
@@ -957,15 +957,15 @@ function AdvancedDamageSystem:updateChassisSystem(dt)
     })
 end
 
-function AdvancedDamageSystem:updateFuelSystem(dt)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, spec.systems.fuel.name)
+function RealisticMechanicalSystems:updateFuelSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.fuel.name)
     local systemData = spec.systems.fuel
     if systemData == nil then return end
     local lowFuelStarvationFactor, coldFuelFactor = 0, 0
     local expiredServiceFactor, fuelLevel, fuelTemperature, idleDepositFactor, highPressureFactor = 0, 0, 0, 0, 0
     local currentFuelUsageRatio = 0
-    local C = ADS_Config.CORE.FUEL_FACTOR_DATA
+    local C = RMS_Config.CORE.FUEL_FACTOR_DATA
     local wearRate = 1.0
     local fuelState = spec.fuelState
 
@@ -980,8 +980,8 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
 
         -- low fuel
         if fuelLevel < C.LOW_FUEL_THRESHOLD then
-            lowFuelStarvationFactor = ADS_Utils.calculateQuadraticMultiplier(fuelLevel, C.LOW_FUEL_THRESHOLD, true)
-            local motorLoadInf = 1 + ADS_Utils.calculateQuadraticMultiplier(motorLoad, 0.70, false)
+            lowFuelStarvationFactor = RMS_Utils.calculateQuadraticMultiplier(fuelLevel, C.LOW_FUEL_THRESHOLD, true)
+            local motorLoadInf = 1 + RMS_Utils.calculateQuadraticMultiplier(motorLoad, 0.70, false)
             lowFuelStarvationFactor = lowFuelStarvationFactor * motorLoadInf * C.LOW_FUEL_FACTOR_MULTIPLIER
             wearRate = wearRate + lowFuelStarvationFactor
         end
@@ -989,8 +989,8 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         -- cold fuel factor
         fuelTemperature = fuelState.temperature
         if fuelTemperature < C.COLD_FUEL_THRESHOLD and motorLoad > 0.5 then
-            coldFuelFactor = ADS_Utils.calculateQuadraticMultiplier(fuelTemperature, C.COLD_FUEL_THRESHOLD, true)
-            local motorLoadInf = ADS_Utils.calculateQuadraticMultiplier(motorLoad, 0.50, false)
+            coldFuelFactor = RMS_Utils.calculateQuadraticMultiplier(fuelTemperature, C.COLD_FUEL_THRESHOLD, true)
+            local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(motorLoad, 0.50, false)
             coldFuelFactor = coldFuelFactor * motorLoadInf * C.COLD_FUEL_FACTOR_MULTIPLIER
             coldFuelFactor = math.min(coldFuelFactor, C.COLD_FUEL_FACTOR_MULTIPLIER or coldFuelFactor)
             wearRate = wearRate + coldFuelFactor
@@ -999,7 +999,7 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         -- idle deposit
         local idleTimer = math.max(tonumber(fuelState.idleTimer) or 0, 0)
         if idleTimer >= C.IDLE_DEPOSIT_FACTOR_TIMER_THRESHOLD then
-            idleDepositFactor = ADS_Utils.calculateQuadraticMultiplier(
+            idleDepositFactor = RMS_Utils.calculateQuadraticMultiplier(
                 idleTimer,
                 C.IDLE_DEPOSIT_FACTOR_TIMER_THRESHOLD,
                 false,
@@ -1012,7 +1012,7 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         -- high pressure factor
         local highPressureThreshold = tonumber(C.HIGH_PRESSURE_FACTOR_THRESHOLD) or 0.8
         if currentFuelUsageRatio > highPressureThreshold then
-            highPressureFactor = ADS_Utils.calculateQuadraticMultiplier(currentFuelUsageRatio, highPressureThreshold, false)
+            highPressureFactor = RMS_Utils.calculateQuadraticMultiplier(currentFuelUsageRatio, highPressureThreshold, false)
             highPressureFactor = math.min(highPressureFactor * C.HIGH_PRESSURE_FACTOR_MULTIPLIER, C.HIGH_PRESSURE_FACTOR_MULTIPLIER)
             wearRate = wearRate + highPressureFactor
         end
@@ -1022,9 +1022,9 @@ function AdvancedDamageSystem:updateFuelSystem(dt)
         wearRate = wearRate + expiredServiceFactor
     else
         if spec.isUnderRoof then 
-            wearRate = wearRate * ADS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
+            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
         else
-            wearRate = wearRate * ADS_Config.CORE.DOWNTIME_MULTIPLIER
+            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
         end
     end
 

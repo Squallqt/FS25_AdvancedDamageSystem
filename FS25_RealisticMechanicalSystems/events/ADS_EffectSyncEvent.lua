@@ -1,16 +1,16 @@
-ADS_EffectSyncEvent = {}
-local ADS_EffectSyncEvent_mt = Class(ADS_EffectSyncEvent, Event)
+RMS_EffectSyncEvent = {}
+local RMS_EffectSyncEvent_mt = Class(RMS_EffectSyncEvent, Event)
 
-InitEventClass(ADS_EffectSyncEvent, "ADS_EffectSyncEvent")
+InitEventClass(RMS_EffectSyncEvent, "RMS_EffectSyncEvent")
 
 
-function ADS_EffectSyncEvent.emptyNew()
-    return Event.new(ADS_EffectSyncEvent_mt)
+function RMS_EffectSyncEvent.emptyNew()
+    return Event.new(RMS_EffectSyncEvent_mt)
 end
 
 
-function ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat)
-    local self = ADS_EffectSyncEvent.emptyNew()
+function RMS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat)
+    local self = RMS_EffectSyncEvent.emptyNew()
     self.vehicle    = vehicle
     self.effectId   = effectId   or ""
     self.status     = status     or ""
@@ -21,7 +21,7 @@ function ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, ext
 end
 
 
-function ADS_EffectSyncEvent:writeStream(streamId, connection)
+function RMS_EffectSyncEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteString(streamId,  self.effectId)
     streamWriteString(streamId,  self.status)
@@ -31,7 +31,7 @@ function ADS_EffectSyncEvent:writeStream(streamId, connection)
 end
 
 
-function ADS_EffectSyncEvent:readStream(streamId, connection)
+function RMS_EffectSyncEvent:readStream(streamId, connection)
     self.vehicle    = NetworkUtil.readNodeObject(streamId)
     self.effectId   = streamReadString(streamId)
     self.status     = streamReadString(streamId)
@@ -42,7 +42,7 @@ function ADS_EffectSyncEvent:readStream(streamId, connection)
 end
 
 
-function ADS_EffectSyncEvent:run(connection)
+function RMS_EffectSyncEvent:run(connection)
     local isFromClient = connection ~= nil and not connection:getIsServer()
 
     local vehicle = self.vehicle
@@ -50,7 +50,7 @@ function ADS_EffectSyncEvent:run(connection)
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or spec.isExcludedVehicle then
         return
     end
@@ -74,7 +74,7 @@ function ADS_EffectSyncEvent:run(connection)
         end
 
         if isFromClient and g_server ~= nil then
-            g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), nil, connection, vehicle)
+            g_server:broadcastEvent(RMS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), nil, connection, vehicle)
         end
 
     elseif self.effectId == "ENGINE_FAILURE" then
@@ -85,7 +85,7 @@ function ADS_EffectSyncEvent:run(connection)
         end
 
         if isFromClient and g_server ~= nil then
-            g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), nil, connection, vehicle)
+            g_server:broadcastEvent(RMS_EffectSyncEvent.new(vehicle, self.effectId, self.status, self.timer, self.extraInt, self.extraFloat), nil, connection, vehicle)
         end
 
     elseif self.effectId == "PTO_AUTO_DISENGAGE_CHANCE" then
@@ -101,12 +101,12 @@ function ADS_EffectSyncEvent:run(connection)
 
     elseif self.effectId == "BRAKE_FORCE_MODIFIER" then
         if self.status == "SOUND" then
-            ADS_SoundManager.playSample(spec.samples["brakes" .. self.extraInt])
+            RMS_SoundManager.playSample(spec.samples["brakes" .. self.extraInt])
         end
 
     elseif self.effectId == "OVERHEAT_PROTECTION" then
         if self.status == "ALARM" then
-            ADS_SoundManager.playSample(spec.samples.alarm)
+            RMS_SoundManager.playSample(spec.samples.alarm)
         end
 
     elseif self.effectId == "GEAR_SHIFT_FAILURE_CHANCE" then
@@ -120,7 +120,7 @@ function ADS_EffectSyncEvent:run(connection)
             end
         end
         if self.status == "FAILED" then
-            ADS_SoundManager.playSample(spec.samples["transmissionShiftFailed" .. self.extraInt])
+            RMS_SoundManager.playSample(spec.samples["transmissionShiftFailed" .. self.extraInt])
         end
 
     elseif self.effectId == "GEAR_REJECTION_CHANCE" then
@@ -136,9 +136,9 @@ function ADS_EffectSyncEvent:run(connection)
             end
         end
         if self.status == "REJECTED" then
-            ADS_SoundManager.playSample(spec.samples.gearDisengage1)
+            RMS_SoundManager.playSample(spec.samples.gearDisengage1)
         elseif self.status == "IDLE" and self.extraInt > 0 then
-            ADS_SoundManager.playSample(spec.samples["transmissionShiftFailed" .. self.extraInt])
+            RMS_SoundManager.playSample(spec.samples["transmissionShiftFailed" .. self.extraInt])
         end
 
     elseif self.effectId == "LIGHTS_FLICKER_CHANCE" then
@@ -164,10 +164,10 @@ function ADS_EffectSyncEvent:run(connection)
 end
 
 
-function ADS_EffectSyncEvent.send(vehicle, effectId, status, timer, extraInt, extraFloat)
+function RMS_EffectSyncEvent.send(vehicle, effectId, status, timer, extraInt, extraFloat)
     if g_server ~= nil then
-        g_server:broadcastEvent(ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat), nil, nil, vehicle)
+        g_server:broadcastEvent(RMS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat), nil, nil, vehicle)
     elseif g_client ~= nil and (effectId == "ENGINE_HARD_START_MODIFIER" or effectId == "GLOW_PLUG_HARD_START_MODIFIER" or effectId == "ENGINE_FAILURE") then
-        g_client:getServerConnection():sendEvent(ADS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat))
+        g_client:getServerConnection():sendEvent(RMS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat))
     end
 end

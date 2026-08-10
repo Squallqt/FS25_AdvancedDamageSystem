@@ -31,7 +31,7 @@ local function adsGetInspectionVehicleFromTargeter(player)
         return nil
     end
 
-    local spec = object.spec_AdvancedDamageSystem
+    local spec = object.spec_RealisticMechanicalSystems
     if spec == nil or spec.isExcludedVehicle then
         return nil
     end
@@ -45,10 +45,10 @@ end
 
 local function adsCancelActiveInspection(reasonText)
     local vehicle = adsActiveInspectionVehicle
-    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil then
-        local spec = vehicle.spec_AdvancedDamageSystem
+    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil then
+        local spec = vehicle.spec_RealisticMechanicalSystems
         local inspection = spec.fieldInspection
-        ADS_FieldInspectionEvent.send(vehicle, false)
+        RMS_FieldInspectionEvent.send(vehicle, false)
 
         if inspection ~= nil then
             inspection.isActive = false
@@ -63,22 +63,22 @@ local function adsCancelActiveInspection(reasonText)
     adsInspectionProgressPercent = -1
 
     if reasonText ~= nil and reasonText ~= "" then
-        ADS_Hud.showNotification(reasonText, 1500)
+        RMS_Hud.showNotification(reasonText, 1500)
     else
-        ADS_Hud.hideNotification()
+        RMS_Hud.hideNotification()
     end
 end
 
 local function adsCompleteActiveInspection()
     local vehicle = adsActiveInspectionVehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         adsCancelActiveInspection()
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local inspection = spec.fieldInspection
-    ADS_FieldInspectionEvent.send(vehicle, false)
+    RMS_FieldInspectionEvent.send(vehicle, false)
 
     if inspection ~= nil then
         inspection.isActive = false
@@ -90,20 +90,20 @@ local function adsCompleteActiveInspection()
 
     adsActiveInspectionVehicle = nil
     adsInspectionProgressPercent = -1
-    ADS_Hud.hideNotification()
+    RMS_Hud.hideNotification()
 
-    if ADS_InspectionDialog ~= nil then
-        ADS_InspectionDialog.show(vehicle)
+    if RMS_InspectionDialog ~= nil then
+        RMS_InspectionDialog.show(vehicle)
     end
 end
 
 local function adsUpdateActiveInspection(inputComponent, dt)
     local vehicle = adsActiveInspectionVehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local inspection = spec.fieldInspection
     local player = inputComponent.player
 
@@ -144,7 +144,7 @@ local function adsUpdateActiveInspection(inputComponent, dt)
     local percent = math.floor((inspection.elapsedTime / math.max(inspection.duration, 1)) * 100)
     if percent ~= adsInspectionProgressPercent then
         adsInspectionProgressPercent = percent
-        ADS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), percent), 250)
+        RMS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), percent), 250)
     end
 
     if inspection.elapsedTime >= inspection.duration then

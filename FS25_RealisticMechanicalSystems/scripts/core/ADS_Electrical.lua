@@ -1,10 +1,10 @@
-ADS_Electrical = ADS_Electrical or {}
+RMS_Electrical = RMS_Electrical or {}
 
 -- ==========================================================
 --                     HELPERS
 -- ==========================================================
 
-local sanitizeNumber = AdvancedDamageSystem.sanitizeNumber
+local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
 
 -- ==========================================================
 --                     MAIN
@@ -72,12 +72,12 @@ local function evaluateAlternatorRpmCurve(curveData, rpmNorm)
 end
 
 local function calculateAlternatorOutput(vehicle, isMotorStarted, iLoads, batteryState)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return 0
     end
 
-    local cfg = ADS_Config.ELECTRICAL or {}
+    local cfg = RMS_Config.ELECTRICAL or {}
 
     local iAltAvail = 0
     local iAltRaw = 0
@@ -124,7 +124,7 @@ local function calculateAlternatorOutput(vehicle, isMotorStarted, iLoads, batter
         end
     end
 
-    if ADS_Config.DEBUG then
+    if RMS_Config.DEBUG then
         local dbg = spec.debugData.battery
         dbg.iAltAvail = iAltAvail or 0
         dbg.iAltRaw = iAltRaw or 0
@@ -143,11 +143,11 @@ local function calculateAlternatorOutput(vehicle, isMotorStarted, iLoads, batter
 end
 
 local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
-    local C = ADS_Config.ELECTRICAL or {}
+    local C = RMS_Config.ELECTRICAL or {}
 
    -- base load
     local baseLoadA = isMotorStarted and 18 or C.IDLE_CURRENT_A or 0.5
@@ -193,10 +193,10 @@ local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
     -- starterCranking
     local crankingA = 0
     if spec.isCranking ~= nil and spec.isCranking then
-        crankingA = ADS_Config.ELECTRICAL.BATTERY_CRANK_CURRENT_A * (0.8 + math.random() * 0.4)
+        crankingA = RMS_Config.ELECTRICAL.BATTERY_CRANK_CURRENT_A * (0.8 + math.random() * 0.4)
     end
 
-    local preheatA = ADS_Preheat.isHeating(vehicle)
+    local preheatA = RMS_Preheat.isHeating(vehicle)
         and (C.GLOW_CIRCUIT_PROXY_LOAD_A or 0)
         or 0
 
@@ -208,7 +208,7 @@ local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
     -- total
     local iLoads = baseLoadA + lightsLoadA + cabFanA + winterHeaterA + crankingA + preheatA + pulseA
 
-    if ADS_Config.DEBUG then
+    if RMS_Config.DEBUG then
         local dbg = spec.debugData.battery
         dbg.iLoads = iLoads
         dbg.baseLoadA = baseLoadA
@@ -230,7 +230,7 @@ local function smoothstep(x)
 end
 
 local function getBatteryOpenCircuitVoltage(soc)
-    local C = ADS_Config.ELECTRICAL or {}
+    local C = RMS_Config.ELECTRICAL or {}
     local vEmpty = C.OCV_EMPTY_V
     local vFull = C.OCV_FULL_V
 
@@ -241,7 +241,7 @@ local function getBatteryOpenCircuitVoltage(soc)
 end
 
 local function getBatteryTerminalVoltage(ocvV, iAltAvail, iLoads, isCranking, rIntOhm)
-    local C = ADS_Config.ELECTRICAL or {}
+    local C = RMS_Config.ELECTRICAL or {}
 
     local chargeRisePer20A = C.BATTERY_CHARGE_RISE_PER_20A_V or 0.18
     local chargeRiseMaxV = C.BATTERY_CHARGE_RISE_MAX_V or 1.6
@@ -272,7 +272,7 @@ local function getBatteryTerminalVoltage(ocvV, iAltAvail, iLoads, isCranking, rI
 end
 
 local function getSystemVoltage(isMotorStarted, batteryTerminalV, iAltAvail, iLoads, alternatorHealth)
-    local C = ADS_Config.ELECTRICAL
+    local C = RMS_Config.ELECTRICAL
 
     batteryTerminalV = batteryTerminalV or 12.0
     iAltAvail = math.max(iAltAvail or 0, 0)
@@ -318,7 +318,7 @@ local function getSystemVoltage(isMotorStarted, batteryTerminalV, iAltAvail, iLo
 end
 
 getBatteryChargeAcceptance = function(tempC, soc, health)
-    local C = ADS_Config.ELECTRICAL or {}
+    local C = RMS_Config.ELECTRICAL or {}
 
     local tMin = C.CHARGE_ACCEPT_TEMP_MIN_C or -15
     local tMax = C.CHARGE_ACCEPT_TEMP_MAX_C or 25
@@ -355,13 +355,13 @@ getBatteryChargeAcceptance = function(tempC, soc, health)
     return math.clamp(tempK * socK * healthK, 0.02, 1.0), tempK, socK, healthK
 end
 
-function ADS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engineC, iBatteryA, rintF)
-    local spec = vehicle.spec_AdvancedDamageSystem
+function RMS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engineC, iBatteryA, rintF)
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
 
-    local cfg = ADS_Config.ELECTRICAL or {}
+    local cfg = RMS_Config.ELECTRICAL or {}
 
     dtS = sanitizeNumber(dtS, 0, 0)
     ambientC = sanitizeNumber(ambientC, cfg.AMBIENT_DEFAULT_C or 15, -80, 80)
@@ -402,7 +402,7 @@ function ADS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engine
     -- safety clamp
     spec.batteryTempC = math.clamp(tempC, ambientC, 85)
 
-    if ADS_Config.DEBUG and spec.debugData ~= nil and spec.debugData.battery ~= nil then
+    if RMS_Config.DEBUG and spec.debugData ~= nil and spec.debugData.battery ~= nil then
         local dbg = spec.debugData.battery
         dbg.dtS = dtS
         dbg.ambientC = ambientC
@@ -421,8 +421,8 @@ function ADS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engine
     end
 end
 
-function ADS_Electrical.getEnvironmentTemperatureC()
-    local defaultTemperature = ADS_Config.ELECTRICAL.AMBIENT_DEFAULT_C or 15
+function RMS_Electrical.getEnvironmentTemperatureC()
+    local defaultTemperature = RMS_Config.ELECTRICAL.AMBIENT_DEFAULT_C or 15
     local weather = g_currentMission ~= nil
         and g_currentMission.environment ~= nil
         and g_currentMission.environment.weather ~= nil
@@ -434,31 +434,31 @@ function ADS_Electrical.getEnvironmentTemperatureC()
 end
 
 local function buildBatteryContext(vehicle, dtS)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return nil
     end
 
     local isMotorStarted = vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted() or false
 
-    local environmentTemp = ADS_Electrical.getEnvironmentTemperatureC()
+    local environmentTemp = RMS_Electrical.getEnvironmentTemperatureC()
 
     spec.batteryTempC = sanitizeNumber(spec.batteryTempC, environmentTemp, -80, 85)
     local capF, rintF = getBatteryTempFactors(spec.batteryTempC)
     local iLoads = sanitizeNumber(calculateCurrentLoadAmps(vehicle, isMotorStarted, environmentTemp), 0, 0, 10000)
 
-    local nominalCapacityAh = sanitizeNumber(spec.batteryCapacityAh, ADS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY or 1, 1, 10000)
+    local nominalCapacityAh = sanitizeNumber(spec.batteryCapacityAh, RMS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY or 1, 1, 10000)
     local batteryHealth = sanitizeNumber(spec.batteryHealth, 1.0, 0.0001, 1.0)
 
     local usableCapacityAh = math.max(
-        nominalCapacityAh * capF * ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
+        nominalCapacityAh * capF * RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
         0.01
     )
 
     local effectiveCapacityAh = math.max(usableCapacityAh * batteryHealth, 0.01)
 
     spec.batterySoc = sanitizeNumber(spec.batterySoc, 1.0, 0, 1)
-    local chargeAh = AdvancedDamageSystem.isFiniteNumber(tonumber(spec.batteryChargeAh)) and tonumber(spec.batteryChargeAh) or nil
+    local chargeAh = RealisticMechanicalSystems.isFiniteNumber(tonumber(spec.batteryChargeAh)) and tonumber(spec.batteryChargeAh) or nil
     if chargeAh == nil then
         chargeAh = math.clamp(spec.batterySoc * effectiveCapacityAh, 0, effectiveCapacityAh)
     else
@@ -467,7 +467,7 @@ local function buildBatteryContext(vehicle, dtS)
 
     local soc = sanitizeNumber(chargeAh / effectiveCapacityAh, spec.batterySoc, 0, 1)
 
-    local cfg = ADS_Config.ELECTRICAL or {}
+    local cfg = RMS_Config.ELECTRICAL or {}
     local rRef = math.max(cfg.RINT_REF_OHM or 0.005, 0.0001)
     local maxHealthRintMult = math.max(cfg.BATTERY_HEALTH_RINT_MAX_MULT or 3.0, 1.0)
     local healthRintMult = 1 + (1 - batteryHealth) * (maxHealthRintMult - 1)
@@ -622,7 +622,7 @@ local function calculateBatteryBalanceCurrent(consumerCtx, donorCtx, compositeCt
     end
 
     local cableResistanceOhm = math.max(compositeCtx.cableResistanceOhm or 0.01, 0.0001)
-    local maxCableCurrentA = ADS_Config.ELECTRICAL.EXTERNAL_POWER_MAX_CABLE_CURRENT_A or 400
+    local maxCableCurrentA = RMS_Config.ELECTRICAL.EXTERNAL_POWER_MAX_CABLE_CURRENT_A or 400
 
     local consumerOcvV = tonumber(consumerCtx.ocvV) or 0
     local donorOcvV = tonumber(donorCtx.ocvV) or 0
@@ -738,7 +738,7 @@ local function commitBatteryContext(vehicle, ctx, dt)
     spec.rawBatteryTerminalVoltageV = sanitizeNumber(ctx.rawBatteryTerminalVoltageV, spec.batteryOpenCircuitVoltageV, 0, 30)
     spec.rawSystemVoltageV = sanitizeNumber(ctx.rawSystemVoltageV, spec.rawBatteryTerminalVoltageV, 0, 30)
 
-    local C = ADS_Config.ELECTRICAL or {}
+    local C = RMS_Config.ELECTRICAL or {}
     local safeDt = sanitizeNumber(dt, 0, 0)
     local batteryVAlpha = math.min(safeDt / ((C.BATTERY_VOLTAGE_TAU_MS or 300) + safeDt), 1)
     local systemVAlpha = math.min(safeDt / ((C.SYSTEM_VOLTAGE_TAU_MS or 250) + safeDt), 1)
@@ -856,7 +856,7 @@ local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
     local consumerBatteryA = math.abs(dAhConsumerTotal * 3600 / math.max(dtS, 0.0001))
     local donorBatteryA = math.abs(dAhDonorTotal * 3600 / math.max(dtS, 0.0001))
 
-    ADS_Electrical.updateBatteryTemperatureC(
+    RMS_Electrical.updateBatteryTemperatureC(
         consumerCtx.vehicle,
         dtS,
         consumerCtx.environmentTemp,
@@ -864,7 +864,7 @@ local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
         consumerBatteryA,
         consumerCtx.rintF
     )
-    ADS_Electrical.updateBatteryTemperatureC(
+    RMS_Electrical.updateBatteryTemperatureC(
         donorCtx.vehicle,
         dtS,
         donorCtx.environmentTemp,
@@ -957,12 +957,12 @@ local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
     return consumerCtx, donorCtx, finalCompositeCtx
 end
 
-function ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RMS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local tempC = tonumber(spec.batteryTempC) or 25
     local capF = 1.0
 
@@ -974,7 +974,7 @@ function ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
     local batteryHealth = math.max(tonumber(spec.batteryHealth) or 0, 0.0001)
 
     local usableCapacityAh = math.max(
-        nominalCapacityAh * capF * ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
+        nominalCapacityAh * capF * RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
         0.01
     )
 
@@ -984,8 +984,8 @@ function ADS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
     spec.batteryChargeAh = math.clamp(soc * effectiveCapacityAh, 0, effectiveCapacityAh)
 end
 
-function ADS_Electrical.initVoltagesFromSoc(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+function RMS_Electrical.initVoltagesFromSoc(vehicle)
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local ocvV = sanitizeNumber(getBatteryOpenCircuitVoltage(spec.batterySoc), 12.7, 0, 30)
 
     spec.batteryOpenCircuitVoltageV = ocvV
@@ -995,8 +995,8 @@ function ADS_Electrical.initVoltagesFromSoc(vehicle)
     spec.systemVoltageV = ocvV
 end
 
-function ADS_Electrical:syncDeadBatteryEffect()
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Electrical:syncDeadBatteryEffect()
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
     local breakdownId = 'DEAD_BATTERY'
@@ -1028,8 +1028,8 @@ function ADS_Electrical:syncDeadBatteryEffect()
     end
 end
 
-function ADS_Electrical:syncVoltageSagEffect(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Electrical:syncVoltageSagEffect(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or not self.isServer then return end
 
     local triggerDelayMs = 2000
@@ -1062,8 +1062,8 @@ function ADS_Electrical:syncVoltageSagEffect(dt)
     end
 end
 
-function ADS_Electrical:updateBatteryChargingModel(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Electrical:updateBatteryChargingModel(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -1084,7 +1084,7 @@ function ADS_Electrical:updateBatteryChargingModel(dt)
     resetExternalPowerDebug(spec)
 
     local connectionVehicle = normalizeExternalPowerConnection(spec.externalPowerConnection)
-    local connectionSpec = connectionVehicle ~= nil and connectionVehicle.spec_AdvancedDamageSystem or nil
+    local connectionSpec = connectionVehicle ~= nil and connectionVehicle.spec_RealisticMechanicalSystems or nil
 
     if connectionVehicle ~= nil
         and connectionVehicle ~= self
@@ -1171,7 +1171,7 @@ function ADS_Electrical:updateBatteryChargingModel(dt)
     end
 
     local iBatteryA = math.abs(sanitizeNumber((ctx.iAltAvail or 0) - (ctx.iLoads or 0), 0, -10000, 10000))
-    ADS_Electrical.updateBatteryTemperatureC(
+    RMS_Electrical.updateBatteryTemperatureC(
         self,
         dtS,
         ctx.environmentTemp,
@@ -1186,7 +1186,7 @@ function ADS_Electrical:updateBatteryChargingModel(dt)
     ctx.soc = sanitizeNumber(ctx.chargeAh / capacityAh, 0, 0, 1)
     ctx.ocvV = sanitizeNumber(getBatteryOpenCircuitVoltage(ctx.soc), 12.7, 0, 30)
 
-    local cfg = ADS_Config.ELECTRICAL or {}
+    local cfg = RMS_Config.ELECTRICAL or {}
     local health = sanitizeNumber(spec.batteryHealth, 1, 0.0001, 1.0)
     local rRef = math.max(cfg.RINT_REF_OHM or 0.005, 0.0001)
     local maxHealthRintMult = math.max(cfg.BATTERY_HEALTH_RINT_MAX_MULT or 3.0, 1.0)
@@ -1230,7 +1230,7 @@ function ADS_Electrical:updateBatteryChargingModel(dt)
     dbg.termIsCranking = isCranking and 1 or 0
 end
 
-function ADS_Electrical.isValidPowerPair(vehicleA, vehicleB)
+function RMS_Electrical.isValidPowerPair(vehicleA, vehicleB)
     if vehicleA == nil or vehicleB == nil or vehicleA == vehicleB then
         return false, ''
     end
@@ -1247,7 +1247,7 @@ function ADS_Electrical.isValidPowerPair(vehicleA, vehicleB)
         return false, 'SAME'
     end
 
-    if vehicleA.spec_AdvancedDamageSystem == nil or vehicleB.spec_AdvancedDamageSystem == nil then
+    if vehicleA.spec_RealisticMechanicalSystems == nil or vehicleB.spec_RealisticMechanicalSystems == nil then
         return false, 'NO_ADS'
     end
 
@@ -1271,7 +1271,7 @@ function ADS_Electrical.isValidPowerPair(vehicleA, vehicleB)
     local dy = by - ay
     local dz = bz - az
     
-    local fieldCare = ADS_Config ~= nil and ADS_Config.FIELD_CARE or nil
+    local fieldCare = RMS_Config ~= nil and RMS_Config.FIELD_CARE or nil
     local maxConnectionDistance = (fieldCare ~= nil and fieldCare.JUMPER_CABLES_MAX_CONNECTION_DISTANCE) or 12.0
 
     if MathUtil.vector3Length(dx, dy, dz) > maxConnectionDistance then
@@ -1281,8 +1281,8 @@ function ADS_Electrical.isValidPowerPair(vehicleA, vehicleB)
     return true
 end
 
-function ADS_Electrical:establishExternalPowerConnection(externalConnection)
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Electrical:establishExternalPowerConnection(externalConnection)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or not self.isServer then
         return
     end
@@ -1292,8 +1292,8 @@ function ADS_Electrical:establishExternalPowerConnection(externalConnection)
         otherVehicle = otherVehicle:getRootVehicle()
     end
 
-    local otherSpec = otherVehicle ~= nil and otherVehicle.spec_AdvancedDamageSystem or nil
-    local isValid = ADS_Electrical.isValidPowerPair(self, otherVehicle)
+    local otherSpec = otherVehicle ~= nil and otherVehicle.spec_RealisticMechanicalSystems or nil
+    local isValid = RMS_Electrical.isValidPowerPair(self, otherVehicle)
 
     if isValid then
         spec.externalPowerConnection = otherVehicle
@@ -1310,8 +1310,8 @@ function ADS_Electrical:establishExternalPowerConnection(externalConnection)
     end
 end
 
-function ADS_Electrical:clearExternalPowerConnection(otherVehicle)
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Electrical:clearExternalPowerConnection(otherVehicle)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or not self.isServer then
         return false
     end
@@ -1332,7 +1332,7 @@ function ADS_Electrical:clearExternalPowerConnection(otherVehicle)
 
     spec.externalPowerConnection = nil
 
-    local otherSpec = normalizedOther ~= nil and normalizedOther.spec_AdvancedDamageSystem or nil
+    local otherSpec = normalizedOther ~= nil and normalizedOther.spec_RealisticMechanicalSystems or nil
     if otherSpec ~= nil then
         local reverseConnection = otherSpec.externalPowerConnection
         if type(reverseConnection) == "table" and reverseConnection.object ~= nil then

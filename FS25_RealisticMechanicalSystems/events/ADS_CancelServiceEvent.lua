@@ -1,47 +1,47 @@
--- ADS_CancelServiceEvent
+-- RMS_CancelServiceEvent
 -- Client-to-server event. Cancels an in-progress service on the server.
 
-ADS_CancelServiceEvent = {}
-local ADS_CancelServiceEvent_mt = Class(ADS_CancelServiceEvent, Event)
+RMS_CancelServiceEvent = {}
+local RMS_CancelServiceEvent_mt = Class(RMS_CancelServiceEvent, Event)
 
-InitEventClass(ADS_CancelServiceEvent, "ADS_CancelServiceEvent")
+InitEventClass(RMS_CancelServiceEvent, "RMS_CancelServiceEvent")
 
 
-function ADS_CancelServiceEvent.emptyNew()
-    return Event.new(ADS_CancelServiceEvent_mt)
+function RMS_CancelServiceEvent.emptyNew()
+    return Event.new(RMS_CancelServiceEvent_mt)
 end
 
 
-function ADS_CancelServiceEvent.new(vehicle)
-    local self = ADS_CancelServiceEvent.emptyNew()
+function RMS_CancelServiceEvent.new(vehicle)
+    local self = RMS_CancelServiceEvent.emptyNew()
     self.vehicle = vehicle
     return self
 end
 
 
-function ADS_CancelServiceEvent:writeStream(streamId, connection)
+function RMS_CancelServiceEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
 end
 
 
-function ADS_CancelServiceEvent:readStream(streamId, connection)
+function RMS_CancelServiceEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self:run(connection)
 end
 
 
 -- Server-side execution: validate vehicle, run cancelService.
-function ADS_CancelServiceEvent:run(connection)
+function RMS_CancelServiceEvent:run(connection)
     if not connection:getIsServer() then
-        if self.vehicle ~= nil and self.vehicle:getIsSynchronized() and self.vehicle.spec_AdvancedDamageSystem ~= nil then
+        if self.vehicle ~= nil and self.vehicle:getIsSynchronized() and self.vehicle.spec_RealisticMechanicalSystems ~= nil then
             local userId = g_currentMission.userManager:getUserIdByConnection(connection)
             local farm = g_farmManager:getFarmByUserId(userId)
             if farm == nil or farm.farmId ~= self.vehicle:getOwnerFarmId() then
                 return
             end
 
-            local spec = self.vehicle.spec_AdvancedDamageSystem
-            if spec.currentState == AdvancedDamageSystem.STATUS.READY then
+            local spec = self.vehicle.spec_RealisticMechanicalSystems
+            if spec.currentState == RealisticMechanicalSystems.STATUS.READY then
                 return
             end
 
@@ -52,8 +52,8 @@ end
 
 
 -- Client convenience: send cancel request to the server.
-function ADS_CancelServiceEvent.send(vehicle)
+function RMS_CancelServiceEvent.send(vehicle)
     if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_CancelServiceEvent.new(vehicle))
+        g_client:getServerConnection():sendEvent(RMS_CancelServiceEvent.new(vehicle))
     end
 end

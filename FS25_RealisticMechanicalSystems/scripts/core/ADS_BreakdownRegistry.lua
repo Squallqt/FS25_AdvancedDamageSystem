@@ -2,7 +2,7 @@
 --                    REGISTRY VOCABULARY
 -- ==========================================================
 
-ADS_Breakdowns.DASHBOARD = {
+RMS_Breakdowns.DASHBOARD = {
     ENGINE = "engine",
     WARNING = "warning",
     TRANSMISSION = "transmission",
@@ -14,15 +14,15 @@ ADS_Breakdowns.DASHBOARD = {
     PREHEAT = "preheat"
 }
 
-ADS_Breakdowns.COLORS = {
+RMS_Breakdowns.COLORS = {
     DEFAULT = Dashboard.COLORS.GREY,
     COOL = { 0.0097, 0.4287, 0.6445, 1 },
     WARNING  = { 1, 0.4287, 0.0006, 1 },
     CRITICAL = {0.8069, 0.0097, 0.0097, 1}
 }
 
-local color = ADS_Breakdowns.COLORS
-local db = ADS_Breakdowns.DASHBOARD
+local color = RMS_Breakdowns.COLORS
+local db = RMS_Breakdowns.DASHBOARD
 
 local glowPlugFailureIndicator = {
     id = db.PREHEAT,
@@ -36,7 +36,7 @@ local glowPlugFailureIndicator = {
     blinkWhileActive = true
 }
 
-ADS_Breakdowns.COLOR_PRIORITY = {
+RMS_Breakdowns.COLOR_PRIORITY = {
     [color.CRITICAL] = 3,
     [color.WARNING]  = 2,
     [color.COOL]     = 1,
@@ -47,8 +47,8 @@ ADS_Breakdowns.COLOR_PRIORITY = {
 --                    BREAKDOWN REGISTRY
 -- ==========================================================
 
-local getIsElectricVehicle = ADS_Utils.getIsElectricVehicle
-local hasCVTAddon = ADS_Utils.hasCVTAddon
+local getIsElectricVehicle = RMS_Utils.getIsElectricVehicle
+local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 local function hasPtoCapability(vehicle)
     if vehicle == nil then
@@ -82,9 +82,9 @@ local function hasPtoCapability(vehicle)
     return false
 end
 
-local systems = AdvancedDamageSystem.SYSTEMS
+local systems = RealisticMechanicalSystems.SYSTEMS
 
-ADS_Breakdowns.PARTS = {
+RMS_Breakdowns.PARTS = {
     VEHICLE = "ads_breakdowns_part_vehicle",
     CONSUMABLES = "ads_breakdowns_part_consumables",
     ENGINE = "ads_breakdowns_part_engine",
@@ -119,7 +119,7 @@ ADS_Breakdowns.PARTS = {
     FUEL_LINE = "ads_breakdowns_part_fuel_line"
 }
 
-local parts = ADS_Breakdowns.PARTS
+local parts = RMS_Breakdowns.PARTS
 
 local breakdownPriceMultipliers = {
     ECU_MALFUNCTION = 0.60,
@@ -186,11 +186,11 @@ local breakdownProgressMultipliers = {
 }
 
 local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return 0
     end
 
-    local factorStats = vehicle.spec_AdvancedDamageSystem.factorStats
+    local factorStats = vehicle.spec_RealisticMechanicalSystems.factorStats
     if type(factorStats) ~= "table" then
         return 0
     end
@@ -200,7 +200,7 @@ local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
         targetSystem = systems[targetSystem]
     end
 
-    local systemKey = ADS_Utils ~= nil and ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, targetSystem) or nil
+    local systemKey = RMS_Utils ~= nil and RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, targetSystem) or nil
     if systemKey == nil or systemKey == "" then
         systemKey = string.lower(tostring(targetSystem or ""))
     end
@@ -228,7 +228,7 @@ local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
         return 0
     end
 
-    local factorKeys = AdvancedDamageSystem.FACTOR_STATS_KEYS
+    local factorKeys = RealisticMechanicalSystems.FACTOR_STATS_KEYS
     local numerator = 0
     local denominator = 0
     for statKey, statValue in pairs(systemStats) do
@@ -269,7 +269,7 @@ local function getBreakdownProbabilityWeightPercent(vehicle, systemName, primary
     return math.max(weightedPercent, resolvedFallbackWeight)
 end
 
-ADS_Breakdowns.BreakdownRegistry = {
+RMS_Breakdowns.BreakdownRegistry = {
 
 --------------------- NOT SELECTEBLE BREAKDOWNS (does not happen by chance, but is the result of various conditions) ---------------------
 
@@ -400,7 +400,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         part = parts.VEHICLE,
         isSelectable = false,
         isApplicable = function(vehicle)
-            local spec = vehicle.spec_AdvancedDamageSystem
+            local spec = vehicle.spec_RealisticMechanicalSystems
             if spec == nil then return end
             if spec.isVehicleNeedBlowOut then
                 return true
@@ -666,7 +666,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         system = systems.ELECTRICAL,
         part = parts.ECU,
         isApplicable = function(vehicle)
-            local spec = vehicle.spec_AdvancedDamageSystem
+            local spec = vehicle.spec_RealisticMechanicalSystems
             if spec.year >= 2000 and not getIsElectricVehicle(vehicle) then
                 return true
             end
@@ -758,7 +758,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         system = systems.ELECTRICAL,
         part = parts.WIRING,
         isApplicable = function(vehicle)
-            local spec = vehicle.spec_AdvancedDamageSystem
+            local spec = vehicle.spec_RealisticMechanicalSystems
             return spec.year >= 2000 and vehicle.spec_lights ~= nil
         end,
         probability = function(vehicle)
@@ -920,7 +920,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         system = systems.ELECTRICAL,
         part = parts.GLOW_PLUGS,
         isApplicable = function(vehicle)
-            return ADS_Preheat.isDieselVehicle(vehicle)
+            return RMS_Preheat.isDieselVehicle(vehicle)
         end,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.ELECTRICAL, {"crf", "idfg"}, {"sf"})
@@ -1079,7 +1079,7 @@ ADS_Breakdowns.BreakdownRegistry = {
         part = parts.TURBOCHARGER,
         isApplicable = function(vehicle)
             local motor = vehicle:getMotor()
-            return (motor.peakMotorPower or 0) >= ADS_Config.CORE.TURBO_MIN_POWER_KW
+            return (motor.peakMotorPower or 0) >= RMS_Config.CORE.TURBO_MIN_POWER_KW
         end,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.ENGINE, {"hmf", "mlf"}, {"aicf", "sf"})
@@ -1839,7 +1839,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
             if storeItem.categoryName == "TRUCKS" then return false end
             local vtype = vehicle.type.name
-            local spec = vehicle.spec_AdvancedDamageSystem
+            local spec = vehicle.spec_RealisticMechanicalSystems
             return vtype ~= "car" and vtype ~= "carFillable" and vtype ~= "motorbike" and spec.year >= 1960
         end,
         probability = function(vehicle)
@@ -1906,7 +1906,7 @@ ADS_Breakdowns.BreakdownRegistry = {
             local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
             if storeItem.categoryName == "TRUCKS" then return false end
             local vtype = vehicle.type.name
-            local spec = vehicle.spec_AdvancedDamageSystem
+            local spec = vehicle.spec_RealisticMechanicalSystems
             return vtype ~= "car" and vtype ~= "carFillable" and vtype ~= "motorbike" and spec.year >= 1960
         end,
         probability = function(vehicle)
@@ -2855,20 +2855,20 @@ ADS_Breakdowns.BreakdownRegistry = {
 }
 
 local function wrapBreakdownApplicabilityByEnabledSystem()
-    for _, entry in pairs(ADS_Breakdowns.BreakdownRegistry or {}) do
+    for _, entry in pairs(RMS_Breakdowns.BreakdownRegistry or {}) do
         if type(entry) == "table" and entry.system ~= nil and type(entry.isApplicable) == "function" then
             local originalIsApplicable = entry.isApplicable
 
             entry.isApplicable = function(vehicle)
-                if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+                if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
                     return false
                 end
 
-                local spec = vehicle.spec_AdvancedDamageSystem
+                local spec = vehicle.spec_RealisticMechanicalSystems
                 local systemKey = nil
 
-                if ADS_Utils ~= nil and AdvancedDamageSystem ~= nil and AdvancedDamageSystem.SYSTEMS ~= nil then
-                    systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, entry.system)
+                if RMS_Utils ~= nil and RealisticMechanicalSystems ~= nil and RealisticMechanicalSystems.SYSTEMS ~= nil then
+                    systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, entry.system)
                 end
 
                 if (systemKey == nil or systemKey == "") and type(entry.system) == "string" then

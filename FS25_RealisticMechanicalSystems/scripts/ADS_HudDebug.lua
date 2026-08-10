@@ -1,11 +1,11 @@
-local hasCVTTransmission = ADS_Utils.hasCVTTransmission
-local hasCVTAddon = ADS_Utils.hasCVTAddon
+local hasCVTTransmission = RMS_Utils.hasCVTTransmission
+local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 -- =====================================================================================
 --                              DEBUG HUD ACTIVE
 -- =====================================================================================
 
-function ADS_Hud:renderActiveVehicleDebugCache(cache)
+function RMS_Hud:renderActiveVehicleDebugCache(cache)
     if cache == nil then
         return
     end
@@ -50,12 +50,12 @@ function ADS_Hud:renderActiveVehicleDebugCache(cache)
     setTextColor(1, 1, 1, 1)
 end
 
-function ADS_Hud:drawActiveVehicleHUD()
+function RMS_Hud:drawActiveVehicleHUD()
     local vehicle = self.vehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return
     end
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local motor = vehicle:getMotor()
     if motor == nil then
         return
@@ -64,8 +64,8 @@ function ADS_Hud:drawActiveVehicleHUD()
     local panel = self.activeVehicleDebugPanel
     local debugSnapshot = nil
     if not vehicle.isServer then
-        ADS_DebugSnapshot.request(vehicle)
-        debugSnapshot = ADS_DebugSnapshot.get(vehicle)
+        RMS_DebugSnapshot.request(vehicle)
+        debugSnapshot = RMS_DebugSnapshot.get(vehicle)
         if debugSnapshot == nil then
             local statusHeight = 0.075
             self:drawPanelBackground(panel.x, panel.y, panel.width, statusHeight, {0, 0, 0, 0.7})
@@ -113,7 +113,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     local activeLineHeight = panel.lineHeight + fontStep
     local sectionGap = activeLineHeight * 0.65
 
-    if ADS_Hud.debugViewMode == "factorStats" then
+    if RMS_Hud.debugViewMode == "factorStats" then
         self:drawFactorStatsVehicleHUD(
             vehicle,
             spec,
@@ -263,9 +263,9 @@ function ADS_Hud:drawActiveVehicleHUD()
     end
 
     local function getBreakdownSourceLabel(source)
-        if source == AdvancedDamageSystem.BREAKDOWN_SOURCES.POOR_PARTS then
+        if source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.POOR_PARTS then
             return "PARTS"
-        elseif source == AdvancedDamageSystem.BREAKDOWN_SOURCES.QUICK_FIX then
+        elseif source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.QUICK_FIX then
             return "QFIX"
         end
         return "RAND"
@@ -334,7 +334,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         ), {0.75, 1, 0.85, 1}, 0.95)
     end
 
-    local bcw = ADS_Config.CORE.BASE_SYSTEMS_WEAR
+    local bcw = RMS_Config.CORE.BASE_SYSTEMS_WEAR
 
     local function asPercent(value)
         return (value or 0) * 100
@@ -383,8 +383,8 @@ function ADS_Hud:drawActiveVehicleHUD()
     local drivetrainDbg = debugData.drivetrain or {}
 
     local overviewLines = {}
-    local serviceWearRate = serviceDbg.totalWearRate or ADS_Config.CORE.BASE_SERVICE_WEAR or 0
-    local weatherFactor = ADS_Main.currentWeatherFactor
+    local serviceWearRate = serviceDbg.totalWearRate or RMS_Config.CORE.BASE_SERVICE_WEAR or 0
+    local weatherFactor = RMS_Main.currentWeatherFactor
     local dirtLevel = vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0
     local radiatorClogging = spec.radiatorClogging
     local airIntakeClogging = spec.airIntakeClogging
@@ -570,7 +570,7 @@ function ADS_Hud:drawActiveVehicleHUD()
 
     local function buildSystemLines(systemKey, dbg, maxFactor, factorEntries)
         local lines = {}
-        local systemStressMultiplier = tonumber(ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey]) or 1
+        local systemStressMultiplier = tonumber(RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey]) or 1
         addLine(lines, string.format(
             "C: %.1f (-%.2f)",
             asPercent(getSystemCondition(systemKey)),
@@ -829,10 +829,10 @@ function ADS_Hud:drawActiveVehicleHUD()
         batteryDbg.crankingLoadA or 0
     ), {0.85, 0.95, 1.0, 1}, 0.95)
 
-    local preheatState = tonumber(getDebugStateValue("preheatState", spec.preheatState)) or ADS_Preheat.STATE.IDLE
-    local preheatStateName = tostring(getDebugStateValue("preheatStateName", ADS_Preheat.getStateName(preheatState)))
-    local preheatIsDiesel = getDebugStateValue("preheatIsDiesel", ADS_Preheat.isDieselVehicle(vehicle)) == true
-    local preheatEngineTemperatureC = tonumber(getDebugStateValue("preheatEngineTemperatureC", ADS_Preheat.getEngineTemperatureC(vehicle))) or 0
+    local preheatState = tonumber(getDebugStateValue("preheatState", spec.preheatState)) or RMS_Preheat.STATE.IDLE
+    local preheatStateName = tostring(getDebugStateValue("preheatStateName", RMS_Preheat.getStateName(preheatState)))
+    local preheatIsDiesel = getDebugStateValue("preheatIsDiesel", RMS_Preheat.isDieselVehicle(vehicle)) == true
+    local preheatEngineTemperatureC = tonumber(getDebugStateValue("preheatEngineTemperatureC", RMS_Preheat.getEngineTemperatureC(vehicle))) or 0
     local preheatLampTestActive = getDebugStateValue("preheatLampTestActive", spec.preheatLampTestActive == true) == true
     local preheatLampTestRemainingMs = tonumber(getDebugStateValue("preheatLampTestRemainingMs", spec.preheatLampTestRemainingMs)) or 0
     local preheatRemainingMs = tonumber(getDebugStateValue("preheatRemainingMs", spec.preheatRemainingMs)) or 0
@@ -840,7 +840,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     local preheatWasRequired = getDebugStateValue("preheatWasRequired", spec.preheatWasRequired == true) == true
     local preheatAutomaticCrank = getDebugStateValue("preheatAutomaticCrank", spec.preheatAutomaticCrank == true) == true
     local preheatAutomaticCrankElapsedMs = tonumber(getDebugStateValue("preheatAutomaticCrankElapsedMs", spec.preheatAutomaticCrankElapsedMs)) or 0
-    local preheatGlowPlugFailureSeverity = tonumber(getDebugStateValue("preheatGlowPlugFailureSeverity", ADS_Preheat.getGlowPlugFailureSeverity(vehicle))) or 0
+    local preheatGlowPlugFailureSeverity = tonumber(getDebugStateValue("preheatGlowPlugFailureSeverity", RMS_Preheat.getGlowPlugFailureSeverity(vehicle))) or 0
     local preheatColdStartFaultSeverity = tonumber(getDebugStateValue("preheatColdStartFaultSeverity", spec.preheatColdStartFaultSeverity)) or 0
     local glowHardStartEffect = spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER or nil
     local localGlowHardStartStatus = glowHardStartEffect ~= nil
@@ -871,7 +871,7 @@ function ADS_Hud:drawActiveVehicleHUD()
         preheatLampTestRemainingMs / 1000,
         tostring(preheatAutomaticCrank),
         preheatAutomaticCrankElapsedMs / 1000,
-        ADS_Config.PREHEAT.MAX_AUTOMATIC_CRANK_MS / 1000,
+        RMS_Config.PREHEAT.MAX_AUTOMATIC_CRANK_MS / 1000,
         preheatGlowPlugFailureSeverity,
         preheatColdStartFaultSeverity,
         preheatGlowHardStartStatus,
@@ -888,7 +888,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     end
 
     local serviceDataLines = {}
-    local states = AdvancedDamageSystem.STATUS
+    local states = RealisticMechanicalSystems.STATUS
     local isUnderService = spec.currentState ~= states.READY
     if isUnderService then
         local pendingInspectionQueue = getDebugStateValue("pendingInspectionQueue", spec.pendingInspectionQueue or {}) or {}
@@ -988,7 +988,7 @@ function ADS_Hud:drawActiveVehicleHUD()
                     table.insert(serviceDataLines, line)
                 end
             end
-        elseif spec.currentState == states.MAINTENANCE and spec.serviceOptionOne == AdvancedDamageSystem.MAINTENANCE_TYPES.PREVENTIVE then
+        elseif spec.currentState == states.MAINTENANCE and spec.serviceOptionOne == RealisticMechanicalSystems.MAINTENANCE_TYPES.PREVENTIVE then
             local preventiveStressEntries = buildPendingSystemTransitionEntries(
                 getDebugStateValue("pendingPreventiveSystemStressStart", spec.pendingPreventiveSystemStressStart or {}) or {},
                 getDebugStateValue("pendingPreventiveSystemStressTarget", spec.pendingPreventiveSystemStressTarget or {}) or {},
@@ -1004,8 +1004,8 @@ function ADS_Hud:drawActiveVehicleHUD()
             addLine(serviceDataLines, string.format(
                 "prev sys: %d/%d | factor: %.3f",
                 #preventiveStressEntries,
-                tonumber(ADS_Config.MAINTENANCE.MAINTENANCE_PREVENTIVE_SYSTEMS_COUNT) or 0,
-                tonumber(ADS_Config.MAINTENANCE.MAINTENANCE_PREVENTIVE_STRESS_REMOVE_MULTIPLIER) or 0
+                tonumber(RMS_Config.MAINTENANCE.MAINTENANCE_PREVENTIVE_SYSTEMS_COUNT) or 0,
+                tonumber(RMS_Config.MAINTENANCE.MAINTENANCE_PREVENTIVE_STRESS_REMOVE_MULTIPLIER) or 0
             ), {1, 0.95, 0.75, 1}, 0.95)
 
             local preventiveStressLines = packEntries(preventiveStressEntries, 2, {1, 0.95, 0.75, 1}, 0.95)
@@ -1214,7 +1214,7 @@ function ADS_Hud:drawActiveVehicleHUD()
     self:renderActiveVehicleDebugCache(cache)
 end
 
-function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStatsRaw, panel, activeHeaderSize, activeNormalSize, activeLineHeight, sectionGap)
+function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStatsRaw, panel, activeHeaderSize, activeNormalSize, activeLineHeight, sectionGap)
     local function addLine(target, text, color, sizeScale)
         table.insert(target, {
             text = text,
@@ -1261,7 +1261,7 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
     end
 
     local aliasToDebugKey = {}
-    for debugKey, alias in pairs(AdvancedDamageSystem.FACTOR_STATS_ALIASES or {}) do
+    for debugKey, alias in pairs(RealisticMechanicalSystems.FACTOR_STATS_ALIASES or {}) do
         aliasToDebugKey[tostring(alias)] = tostring(debugKey)
     end
 
@@ -1399,7 +1399,7 @@ function ADS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
             usedSystems[systemKey] = true
             local lines = {}
             local dbg = type(debugData) == "table" and debugData[systemKey] or nil
-            local systemStressMultiplier = tonumber(ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey]) or 1
+            local systemStressMultiplier = tonumber(RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey]) or 1
             addLine(lines, string.format(
                 "total: %.3f%% | stress: %.3f%%",
                 toPct(stats.total),

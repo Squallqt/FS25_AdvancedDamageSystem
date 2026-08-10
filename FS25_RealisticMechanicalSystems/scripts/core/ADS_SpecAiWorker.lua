@@ -32,8 +32,8 @@ local function getIsSoilSamplingActive(vehicle)
     return visit(vehicle)
 end
 
-function AdvancedDamageSystem:resetAiWorkerCruiseControlState(restoreCruiseSpeed)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:resetAiWorkerCruiseControlState(restoreCruiseSpeed)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
     local state = spec.aiWorkerPid
@@ -52,7 +52,7 @@ function AdvancedDamageSystem:resetAiWorkerCruiseControlState(restoreCruiseSpeed
     state.applyTimer = 0
     state.lastAppliedSpeed = nil
 
-    if ADS_Config.DEBUG and spec.debugData and spec.debugData.aiWorker then
+    if RMS_Config.DEBUG and spec.debugData and spec.debugData.aiWorker then
         local dbg = spec.debugData.aiWorker
         dbg.stress = 0
         dbg.filteredStress = 0
@@ -69,7 +69,7 @@ function AdvancedDamageSystem:resetAiWorkerCruiseControlState(restoreCruiseSpeed
     end
 end
 
-function AdvancedDamageSystem:getAiWorkerImplementSpeedLimit()
+function RealisticMechanicalSystems:getAiWorkerImplementSpeedLimit()
     local speedLimit = math.huge
 
     if self.spec_attacherJoints and self.spec_attacherJoints.attachedImplements and next(self.spec_attacherJoints.attachedImplements) ~= nil then
@@ -87,17 +87,17 @@ function AdvancedDamageSystem:getAiWorkerImplementSpeedLimit()
     return speedLimit
 end
 
-function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
+function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     if not self.isServer then return end
-    local spec = self.spec_AdvancedDamageSystem
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
-    if self.propertyState == 4 and not ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION then
+    if self.propertyState == 4 and not RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION then
         self:resetAiWorkerCruiseControlState()
         return
     end
 
-    local config = ADS_Config.CORE and ADS_Config.CORE.AI_WORKER_PID
+    local config = RMS_Config.CORE and RMS_Config.CORE.AI_WORKER_PID
     if config == nil then return end
 
     if spec.aiWorkerPid == nil then
@@ -129,7 +129,7 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
     end
 
     local state = spec.aiWorkerPid
-    local dtMs = math.max(dt or ADS_Config.ON_UPDATE_DELAY, 1)
+    local dtMs = math.max(dt or RMS_Config.ON_UPDATE_DELAY, 1)
     local dtSeconds = math.max(dtMs / 1000, 0.05)
 
     local function normalizeToUnit(value, startValue, fullValue)
@@ -138,8 +138,8 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
     end
 
     local motorLoad = math.max(spec.dynamicMotorLoad or self:getMotorLoadPercentage() or 0, 0)
-    local rawEngineTemperature = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, 20, -80, 160)
-    local rawTransmissionTemperature = AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180)
+    local rawEngineTemperature = RealisticMechanicalSystems.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, 20, -80, 160)
+    local rawTransmissionTemperature = RealisticMechanicalSystems.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180)
     if rawTransmissionTemperature < 0 then
         rawTransmissionTemperature = rawEngineTemperature
     end
@@ -236,7 +236,7 @@ function AdvancedDamageSystem:updateAiWorkerCruiseControl(dt)
 
     state.lastError = error
 
-    if ADS_Config.DEBUG and spec.debugData and spec.debugData.aiWorker then
+    if RMS_Config.DEBUG and spec.debugData and spec.debugData.aiWorker then
         local dbg = spec.debugData.aiWorker
         dbg.stress = stress
         dbg.filteredStress = state.filteredStress

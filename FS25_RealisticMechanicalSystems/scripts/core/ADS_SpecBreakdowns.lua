@@ -1,5 +1,5 @@
-local log_dbg = ADS_Utils.createLogger("[ADS_SPEC]")
-local hasCVTAddon = ADS_Utils.hasCVTAddon
+local log_dbg = RMS_Utils.createLogger("[RMS_SPEC]")
+local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 -- ==========================================================
 --                      HELPER FUNCTIONS
@@ -30,26 +30,26 @@ end
 -- ==========================================================
 
 local function buildGeneralWearBreakdown(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if not spec then
         return
     end
 
-    local generalWearBreakdown = ADS_Utils.shallowCopy(ADS_Breakdowns.BreakdownRegistry.GENERAL_WEAR)
-    local stage = ADS_Utils.shallowCopy(generalWearBreakdown.stages[1])
+    local generalWearBreakdown = RMS_Utils.shallowCopy(RMS_Breakdowns.BreakdownRegistry.GENERAL_WEAR)
+    local stage = RMS_Utils.shallowCopy(generalWearBreakdown.stages[1])
     stage.effects = {}
     generalWearBreakdown.stages = { stage }
 
     local effects = stage.effects
-    local systems = AdvancedDamageSystem.SYSTEMS
+    local systems = RealisticMechanicalSystems.SYSTEMS
 
     for _, systemData in pairs(spec.systems) do
         local systemName = systemData.name
         local systemCondition = vehicle:getSystemConditionLevel(systemName)
         local effect = nil
-        local isLateStage = systemCondition <= ADS_Config.CORE.GENERAL_WEAR_LATE_STAGE_THRESHOLD
+        local isLateStage = systemCondition <= RMS_Config.CORE.GENERAL_WEAR_LATE_STAGE_THRESHOLD
         
-        if systemData.enabled and systemCondition <= ADS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD  then
+        if systemData.enabled and systemCondition <= RMS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD  then
             
             --- ENGINE
             if systemName == systems.ENGINE then
@@ -244,24 +244,24 @@ local function buildGeneralWearBreakdown(vehicle)
 end
 
 local function getBreakdownDefinition(vehicle, breakdownId)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec ~= nil and spec.dynamicBreakdowns ~= nil and spec.dynamicBreakdowns[breakdownId] ~= nil then
         return spec.dynamicBreakdowns[breakdownId]
     end
-    return ADS_Breakdowns.BreakdownRegistry[breakdownId]
+    return RMS_Breakdowns.BreakdownRegistry[breakdownId]
 end
 
-function AdvancedDamageSystem:tryTriggerBreakdown(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:tryTriggerBreakdown(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or dt == 0 then
         return
     end
 
-    local probabilityData = ADS_Config.CORE.BREAKDOWN_PROBABILITIES
-    local conditionEffectiveFloor = ADS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0.15
+    local probabilityData = RMS_Config.CORE.BREAKDOWN_PROBABILITIES
+    local conditionEffectiveFloor = RMS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0.15
 
     for systemName, systemData in pairs(spec.systems) do
-        if systemData.name == AdvancedDamageSystem.SYSTEMS.TRANSMISSION and hasCVTAddon(self) then
+        if systemData.name == RealisticMechanicalSystems.SYSTEMS.TRANSMISSION and hasCVTAddon(self) then
             -- skip transmission breakdowns if CVT addon is present
         else
             local systemCondition = math.max(systemData.condition or 1.0, 0.001)
@@ -272,28 +272,28 @@ function AdvancedDamageSystem:tryTriggerBreakdown(dt)
 
             local stressRatio = math.max(systemStress / effectiveCondition, 0.0)
             if stressRatio >= stressThreshold then
-                local failureChancePerFrame = AdvancedDamageSystem.calculateBreakdownProbability(stressRatio, probabilityData, dt)
+                local failureChancePerFrame = RealisticMechanicalSystems.calculateBreakdownProbability(stressRatio, probabilityData, dt)
                 hourlyProb = 1 - (1 - failureChancePerFrame) ^ (3600000 / dt)
 
                 local random = math.random()
                 if random < failureChancePerFrame or systemStress >= effectiveCondition then
-                    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemData.name)
+                    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemData.name)
                     if systemKey == nil or systemKey == "" then
                         systemKey = string.lower(tostring(systemData.name or ""))
                     end
 
                     local breakdownId = self:getRandomBreakdownBySystem(systemKey)
                     if breakdownId ~= nil then
-                        local registryEntry = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+                        local registryEntry = RMS_Breakdowns.BreakdownRegistry[breakdownId]
                         if registryEntry ~= nil and registryEntry.stages ~= nil and #registryEntry.stages > 0 then
-                            local criticalOutcomeChance = ADS_Utils.getCriticalFailureChance(systemCondition)
+                            local criticalOutcomeChance = RMS_Utils.getCriticalFailureChance(systemCondition)
                             if math.random() < criticalOutcomeChance then
                                 self:addBreakdown(breakdownId, #registryEntry.stages)
                             else
                                 local stage = 1
-                                if systemCondition <= ADS_Config.CORE.GENERAL_WEAR_LATE_STAGE_THRESHOLD then
+                                if systemCondition <= RMS_Config.CORE.GENERAL_WEAR_LATE_STAGE_THRESHOLD then
                                     stage = 3
-                                elseif systemCondition <= ADS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD then
+                                elseif systemCondition <= RMS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD then
                                     stage = 2
                                 end
                                 self:addBreakdown(breakdownId, stage)
@@ -310,11 +310,11 @@ function AdvancedDamageSystem:tryTriggerBreakdown(dt)
                                 local registryEntry = getBreakdownDefinition(self, activeBreakdownId)
                                 if registryEntry ~= nil and registryEntry.stages ~= nil and #registryEntry.stages > 0 then
                                     local breakdownSystem = registryEntry.system
-                                    if type(breakdownSystem) == "string" and AdvancedDamageSystem.SYSTEMS[breakdownSystem] ~= nil then
-                                        breakdownSystem = AdvancedDamageSystem.SYSTEMS[breakdownSystem]
+                                    if type(breakdownSystem) == "string" and RealisticMechanicalSystems.SYSTEMS[breakdownSystem] ~= nil then
+                                        breakdownSystem = RealisticMechanicalSystems.SYSTEMS[breakdownSystem]
                                     end
 
-                                    local breakdownSystemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, breakdownSystem)
+                                    local breakdownSystemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, breakdownSystem)
                                     if breakdownSystemKey == nil or breakdownSystemKey == "" then
                                         breakdownSystemKey = string.lower(tostring(breakdownSystem or ""))
                                     end
@@ -342,12 +342,12 @@ function AdvancedDamageSystem:tryTriggerBreakdown(dt)
                         end
                     end
 
-                    systemData.stress = systemStress * ADS_Config.CORE.STRESS_COOLDOWN
+                    systemData.stress = systemStress * RMS_Config.CORE.STRESS_COOLDOWN
                     systemStress = math.max(systemData.stress or 0.0, 0.0)
 
                     local cooledStressRatio = math.max(systemStress / effectiveCondition, 0.0)
                     if cooledStressRatio >= stressThreshold then
-                        local cooledFailureChancePerFrame = AdvancedDamageSystem.calculateBreakdownProbability(cooledStressRatio, probabilityData, dt)
+                        local cooledFailureChancePerFrame = RealisticMechanicalSystems.calculateBreakdownProbability(cooledStressRatio, probabilityData, dt)
                         hourlyProb = 1 - (1 - cooledFailureChancePerFrame) ^ (3600000 / dt)
                     else
                         hourlyProb = 0.0
@@ -355,7 +355,7 @@ function AdvancedDamageSystem:tryTriggerBreakdown(dt)
                 end
             end
 
-            if ADS_Config.DEBUG and spec.debugData[systemName] ~= nil then
+            if RMS_Config.DEBUG and spec.debugData[systemName] ~= nil then
                 local criticalChance = math.clamp((1 - systemCondition) ^ probabilityData.CRITICAL_DEGREE, probabilityData.CRITICAL_MIN, probabilityData.CRITICAL_MAX)
                 spec.debugData[systemName].breakdownProbability = hourlyProb
                 spec.debugData[systemName].critBreakdownProbability = criticalChance
@@ -364,8 +364,8 @@ function AdvancedDamageSystem:tryTriggerBreakdown(dt)
     end
 end
 
-function AdvancedDamageSystem:getRandomBreakdown()
-    if not self.spec_AdvancedDamageSystem then
+function RealisticMechanicalSystems:getRandomBreakdown()
+    if not self.spec_RealisticMechanicalSystems then
         return nil
     end
 
@@ -373,7 +373,7 @@ function AdvancedDamageSystem:getRandomBreakdown()
     local applicableBreakdowns = {}
     local totalProbability = 0
 
-    for id, breakdownData in pairs(ADS_Breakdowns.BreakdownRegistry) do
+    for id, breakdownData in pairs(RMS_Breakdowns.BreakdownRegistry) do
         if not activeBreakdowns[id] and breakdownData.isSelectable then
             local isApplicable = true
             if breakdownData.isApplicable ~= nil then
@@ -410,23 +410,23 @@ function AdvancedDamageSystem:getRandomBreakdown()
     return nil
 end
 
-function AdvancedDamageSystem:getRandomBreakdownBySystem(systemName)
-    if not self.spec_AdvancedDamageSystem then
+function RealisticMechanicalSystems:getRandomBreakdownBySystem(systemName)
+    if not self.spec_RealisticMechanicalSystems then
         return nil
     end
 
-    local spec = self.spec_AdvancedDamageSystem
+    local spec = self.spec_RealisticMechanicalSystems
 
     if systemName == nil then
         return nil
     end
 
     local targetSystem = systemName
-    if type(targetSystem) == "string" and AdvancedDamageSystem.SYSTEMS[targetSystem] ~= nil then
-        targetSystem = AdvancedDamageSystem.SYSTEMS[targetSystem]
+    if type(targetSystem) == "string" and RealisticMechanicalSystems.SYSTEMS[targetSystem] ~= nil then
+        targetSystem = RealisticMechanicalSystems.SYSTEMS[targetSystem]
     end
 
-    local targetSystemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, targetSystem)
+    local targetSystemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, targetSystem)
     if targetSystemKey == nil or targetSystemKey == "" then
         targetSystemKey = string.lower(tostring(targetSystem))
     end
@@ -439,13 +439,13 @@ function AdvancedDamageSystem:getRandomBreakdownBySystem(systemName)
     local applicableBreakdowns = {}
     local totalProbability = 0
 
-    for id, breakdownData in pairs(ADS_Breakdowns.BreakdownRegistry) do
+    for id, breakdownData in pairs(RMS_Breakdowns.BreakdownRegistry) do
         local breakdownSystem = breakdownData.system
-        if type(breakdownSystem) == "string" and AdvancedDamageSystem.SYSTEMS[breakdownSystem] ~= nil then
-            breakdownSystem = AdvancedDamageSystem.SYSTEMS[breakdownSystem]
+        if type(breakdownSystem) == "string" and RealisticMechanicalSystems.SYSTEMS[breakdownSystem] ~= nil then
+            breakdownSystem = RealisticMechanicalSystems.SYSTEMS[breakdownSystem]
         end
 
-        local breakdownSystemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, breakdownSystem)
+        local breakdownSystemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, breakdownSystem)
         if breakdownSystemKey == nil or breakdownSystemKey == "" then
             breakdownSystemKey = string.lower(tostring(breakdownSystem or ""))
         end
@@ -524,8 +524,8 @@ function AdvancedDamageSystem:getRandomBreakdownBySystem(systemName)
     return nil
 end
 
-function AdvancedDamageSystem:addBreakdown(breakdownId, stageOrOptions)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:addBreakdown(breakdownId, stageOrOptions)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end
 
     local options
@@ -539,7 +539,7 @@ function AdvancedDamageSystem:addBreakdown(breakdownId, stageOrOptions)
     end
 
     local activeBreakdowns = self:getActiveBreakdowns()
-    local breakdownRegistry = ADS_Breakdowns ~= nil and ADS_Breakdowns.BreakdownRegistry or nil
+    local breakdownRegistry = RMS_Breakdowns ~= nil and RMS_Breakdowns.BreakdownRegistry or nil
     if breakdownRegistry == nil then
         log_dbg("addBreakdown skipped: BreakdownRegistry is nil for id:", tostring(breakdownId))
         return
@@ -558,7 +558,7 @@ function AdvancedDamageSystem:addBreakdown(breakdownId, stageOrOptions)
         return
     end
 
-    if activeBreakdownsCount >= ADS_Config.CORE.CONCURRENT_BREAKDOWN_LIMIT_PER_VEHICLE and registryEntry.isSelectable then
+    if activeBreakdownsCount >= RMS_Config.CORE.CONCURRENT_BREAKDOWN_LIMIT_PER_VEHICLE and registryEntry.isSelectable then
         return nil 
     end
 
@@ -575,27 +575,27 @@ function AdvancedDamageSystem:addBreakdown(breakdownId, stageOrOptions)
 
     local resumeTimer = math.max(tonumber(options.resumeTimer) or 0, 0)
     if not currentIsActive and resumeTimer <= 0 then
-        local serviceScale = ADS_Config.CORE.REFERENCE_SERVICE_WEAR / ADS_Config.CORE.BASE_SERVICE_WEAR
-        resumeTimer = ADS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (math.random() + 0.5)
+        local serviceScale = RMS_Config.CORE.REFERENCE_SERVICE_WEAR / RMS_Config.CORE.BASE_SERVICE_WEAR
+        resumeTimer = RMS_Config.CORE.REPEAT_BREAKDOWN_TIME * serviceScale * (math.random() + 0.5)
     end
 
     spec.activeBreakdowns[breakdownId] = {
         stage = math.max(math.floor(tonumber(options.stage) or 1), 1),
         progressTimer = math.max(tonumber(options.progressTimer) or 0, 0),
-        isVisible = ADS_Utils.normalizeBoolValue(options.isVisible, false),
-        isSelectedForRepair = ADS_Utils.normalizeBoolValue(options.isSelectedForRepair, true),
+        isVisible = RMS_Utils.normalizeBoolValue(options.isVisible, false),
+        isSelectedForRepair = RMS_Utils.normalizeBoolValue(options.isSelectedForRepair, true),
         isActive = currentIsActive,
         resumeTimer = resumeTimer,
-        source = options.source or AdvancedDamageSystem.BREAKDOWN_SOURCES.RANDOM
+        source = options.source or RealisticMechanicalSystems.BREAKDOWN_SOURCES.RANDOM
     }
     
     self:recalculateAndApplyEffects()
 
-    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+    RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
 end
 
-function AdvancedDamageSystem:suspendBreakdown(breakdownId, resumeTimer)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:suspendBreakdown(breakdownId, resumeTimer)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns then
         return
     end
@@ -607,15 +607,15 @@ function AdvancedDamageSystem:suspendBreakdown(breakdownId, resumeTimer)
 
     breakdown.isActive = false
     breakdown.resumeTimer = math.max(tonumber(resumeTimer) or 0, 0)
-    breakdown.source = AdvancedDamageSystem.BREAKDOWN_SOURCES.QUICK_FIX
+    breakdown.source = RealisticMechanicalSystems.BREAKDOWN_SOURCES.QUICK_FIX
 
     self:recalculateAndApplyEffects()
 
-    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+    RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
 end
 
-function AdvancedDamageSystem:removeBreakdown(...)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:removeBreakdown(...)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
         return
     end
@@ -625,7 +625,7 @@ function AdvancedDamageSystem:removeBreakdown(...)
     if #idsToRemove == 0 then
         spec.activeBreakdowns = {}
         self:recalculateAndApplyEffects()
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
         return
     end
 
@@ -639,19 +639,19 @@ function AdvancedDamageSystem:removeBreakdown(...)
     
     if removedCount > 0 then
         self:recalculateAndApplyEffects()
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
     end
 end
 
-function AdvancedDamageSystem:hasBreakdown(breakdownId)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:hasBreakdown(breakdownId)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
         return false
     end
 
     if breakdownId == nil then
         for activeBreakdownId, _ in pairs(spec.activeBreakdowns) do
-            local breakdownDef = ADS_Breakdowns.BreakdownRegistry[activeBreakdownId]
+            local breakdownDef = RMS_Breakdowns.BreakdownRegistry[activeBreakdownId]
             if breakdownDef ~= nil and breakdownDef.isSelectable == true then
                 return true
             end
@@ -663,8 +663,8 @@ function AdvancedDamageSystem:hasBreakdown(breakdownId)
     return spec.activeBreakdowns[breakdownId] ~= nil
 end
 
-function AdvancedDamageSystem:hasEffect(effectId)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:hasEffect(effectId)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeEffects or next(spec.activeEffects) == nil then
         return false
     end
@@ -676,13 +676,13 @@ function AdvancedDamageSystem:hasEffect(effectId)
     return spec.activeEffects[effectId] ~= nil
 end
 
-function AdvancedDamageSystem:hasSystemBreakdowns(system)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:hasSystemBreakdowns(system)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
         return false
     end
 
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, system)
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, system)
     if systemKey == nil or systemKey == "" then
         systemKey = type(system) == "string" and string.lower(system) or ""
     end
@@ -692,9 +692,9 @@ function AdvancedDamageSystem:hasSystemBreakdowns(system)
     end
 
     for breakdownId, _ in pairs(spec.activeBreakdowns) do
-        local registryBreakdown = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+        local registryBreakdown = RMS_Breakdowns.BreakdownRegistry[breakdownId]
         if registryBreakdown ~= nil then
-            local breakdownSystemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, registryBreakdown.system)
+            local breakdownSystemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, registryBreakdown.system)
             if breakdownSystemKey == systemKey then
                 return true
             end
@@ -704,13 +704,13 @@ function AdvancedDamageSystem:hasSystemBreakdowns(system)
     return false
 end
 
-function AdvancedDamageSystem:changeBreakdownStage(breakdownId, targetStageOrReverse)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:changeBreakdownStage(breakdownId, targetStageOrReverse)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil or spec.activeBreakdowns[breakdownId] == nil then
         return
     end
     
-    local registryBreakdown = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+    local registryBreakdown = RMS_Breakdowns.BreakdownRegistry[breakdownId]
     local breakdown = spec.activeBreakdowns[breakdownId]
     if registryBreakdown == nil or registryBreakdown.stages == nil or #registryBreakdown.stages == 0 then
         return
@@ -733,21 +733,21 @@ function AdvancedDamageSystem:changeBreakdownStage(breakdownId, targetStageOrRev
         breakdown.stage = targetStage
         self:recalculateAndApplyEffects()
 
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
     end
 end
 
-function AdvancedDamageSystem:processBreakdowns(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:processBreakdowns(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
         return
     end
 
-    local C = ADS_Config.CORE
+    local C = RMS_Config.CORE
     local effectsNeedRecalculation = false
 
     for id, breakdown in pairs(self:getActiveBreakdowns()) do
-        local registryEntry = ADS_Breakdowns.BreakdownRegistry[id]
+        local registryEntry = RMS_Breakdowns.BreakdownRegistry[id]
 
         if registryEntry then
             breakdown.isActive = breakdown.isActive ~= false
@@ -802,19 +802,19 @@ function AdvancedDamageSystem:processBreakdowns(dt)
     if effectsNeedRecalculation then
         self:recalculateAndApplyEffects()
 
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
     end
 end
 
-function AdvancedDamageSystem:processGeneralWearBreakdown()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:processGeneralWearBreakdown()
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec or not self.isServer then
         return
     end
 
     local generalWearId = "GENERAL_WEAR"
 
-    if not ADS_Config.CORE.GENERAL_WEAR_ENABLED then
+    if not RMS_Config.CORE.GENERAL_WEAR_ENABLED then
         if self:hasBreakdown(generalWearId) then
             self:removeBreakdown(generalWearId)
         end
@@ -822,10 +822,10 @@ function AdvancedDamageSystem:processGeneralWearBreakdown()
     end
 
     local isGeneralWearShouldBe = false
-    local needToRecalculate = math.abs(self:getConditionLevel() - spec._prevConditionLevel) > ADS_Config.CORE.BASE_SYSTEMS_WEAR / 5
+    local needToRecalculate = math.abs(self:getConditionLevel() - spec._prevConditionLevel) > RMS_Config.CORE.BASE_SYSTEMS_WEAR / 5
     
     for _, systemData in pairs(spec.systems) do
-        if systemData.enabled and systemData.condition <= ADS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD  then
+        if systemData.enabled and systemData.condition <= RMS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD  then
             isGeneralWearShouldBe = true
         end
     end
@@ -840,14 +840,14 @@ function AdvancedDamageSystem:processGeneralWearBreakdown()
     end
 
     if needToRecalculate and isGeneralWearShouldBe then
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
         self:recalculateAndApplyEffects()
         spec._prevConditionLevel = self:getConditionLevel()
     end
 end
 
-function AdvancedDamageSystem:recalculateAndApplyEffects()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:recalculateAndApplyEffects()
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end
 
     if spec.isExcludedVehicle then
@@ -855,7 +855,7 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
         local previouslyActiveEffects = spec.activeEffects or {}
         spec.activeEffects = {}
 
-        for effectId, applicator in pairs(ADS_Breakdowns.EffectApplicators) do
+        for effectId, applicator in pairs(RMS_Breakdowns.EffectApplicators) do
             if previouslyActiveEffects[effectId] ~= nil and applicator.remove then
                 applicator.remove(self, applicator)
             end
@@ -898,32 +898,32 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
                     local existingEffect = aggregatedEffects[effectId]
 
                     if existingEffect == nil then
-                        local newEffect = ADS_Utils.deepCopy(effectData)
+                        local newEffect = RMS_Utils.deepCopy(effectData)
                         newEffect.value = newValue
                         aggregatedEffects[effectId] = newEffect
                     else
                         if strategy == "sum" then
                             if math.abs(newValue) > math.abs(existingEffect.value) then
-                                existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
+                                existingEffect.extraData = RMS_Utils.deepCopy(effectData.extraData)
                             end
                             existingEffect.value = existingEffect.value + newValue
 
                         elseif strategy == "multiply" then
                             if math.abs(newValue - 1) > math.abs(existingEffect.value - 1) then
-                                existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
+                                existingEffect.extraData = RMS_Utils.deepCopy(effectData.extraData)
                             end
                             existingEffect.value = existingEffect.value * newValue
 
                         elseif strategy == "min" then
                             if newValue < existingEffect.value then
                                 existingEffect.value = newValue
-                                existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
+                                existingEffect.extraData = RMS_Utils.deepCopy(effectData.extraData)
                             end
 
                         elseif strategy == "max" then
                             if newValue > existingEffect.value then
                                 existingEffect.value = newValue
-                                existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
+                                existingEffect.extraData = RMS_Utils.deepCopy(effectData.extraData)
                             end
 
                         elseif strategy == "boolean_or" then
@@ -933,7 +933,7 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
 
                             if isActive then
                                 if effectId == "ENGINE_FAILURE" then
-                                    local newExtraData = ADS_Utils.deepCopy(effectData.extraData)
+                                    local newExtraData = RMS_Utils.deepCopy(effectData.extraData)
 
                                     if existingEffect.extraData == nil then
                                         existingEffect.extraData = newExtraData
@@ -958,7 +958,7 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
                                         end
                                     end
                                 elseif isActive and not wasActive then
-                                    existingEffect.extraData = ADS_Utils.deepCopy(effectData.extraData)
+                                    existingEffect.extraData = RMS_Utils.deepCopy(effectData.extraData)
                                 end
                             end
                         end
@@ -972,12 +972,12 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
         for _, unknownId in ipairs(unknownBreakdownIds) do
             spec.activeBreakdowns[unknownId] = nil
         end
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
     end
 
     spec.activeEffects = aggregatedEffects
 
-    for effectId, applicator in pairs(ADS_Breakdowns.EffectApplicators) do
+    for effectId, applicator in pairs(RMS_Breakdowns.EffectApplicators) do
         local isCurrentlyActive = spec.activeEffects[effectId] ~= nil
         local wasPreviouslyActive = previouslyActiveEffects[effectId] ~= nil
 
@@ -1009,8 +1009,8 @@ function AdvancedDamageSystem:recalculateAndApplyEffects()
     self:recalculateAndApplyIndicators()
 end
 
-function AdvancedDamageSystem:recalculateAndApplyIndicators()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:recalculateAndApplyIndicators()
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end
 
     spec.activeIndicators = {} 
@@ -1019,7 +1019,7 @@ function AdvancedDamageSystem:recalculateAndApplyIndicators()
     local aggregatedIndicatorData = {} 
 
     for id, breakdown in pairs(self:getActiveBreakdowns()) do
-        local registryEntry = ADS_Breakdowns.BreakdownRegistry[id]
+        local registryEntry = RMS_Breakdowns.BreakdownRegistry[id]
         if registryEntry and registryEntry.stages[breakdown.stage] then
             local stageData = registryEntry.stages[breakdown.stage]
 
@@ -1038,8 +1038,8 @@ function AdvancedDamageSystem:recalculateAndApplyIndicators()
 
                     local currentData = aggregatedIndicatorData[id]
 
-                    local newPriority = ADS_Breakdowns.COLOR_PRIORITY[indicatorDef.color] or 0
-                    local existingPriority = ADS_Breakdowns.COLOR_PRIORITY[currentData.color] or 0
+                    local newPriority = RMS_Breakdowns.COLOR_PRIORITY[indicatorDef.color] or 0
+                    local existingPriority = RMS_Breakdowns.COLOR_PRIORITY[currentData.color] or 0
                     
                     if newPriority > existingPriority then
                         currentData.color = indicatorDef.color

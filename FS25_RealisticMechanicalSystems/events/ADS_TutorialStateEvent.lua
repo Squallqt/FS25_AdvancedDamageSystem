@@ -1,15 +1,15 @@
-ADS_TutorialStateEvent = {}
-local ADS_TutorialStateEvent_mt = Class(ADS_TutorialStateEvent, Event)
+RMS_TutorialStateEvent = {}
+local RMS_TutorialStateEvent_mt = Class(RMS_TutorialStateEvent, Event)
 
-InitEventClass(ADS_TutorialStateEvent, "ADS_TutorialStateEvent")
+InitEventClass(RMS_TutorialStateEvent, "RMS_TutorialStateEvent")
 
-function ADS_TutorialStateEvent.emptyNew()
-    return Event.new(ADS_TutorialStateEvent_mt)
+function RMS_TutorialStateEvent.emptyNew()
+    return Event.new(RMS_TutorialStateEvent_mt)
 end
 
-function ADS_TutorialStateEvent.new(state)
-    local self = ADS_TutorialStateEvent.emptyNew()
-    self.state = ADS_Config.createTutorialState(
+function RMS_TutorialStateEvent.new(state)
+    local self = RMS_TutorialStateEvent.emptyNew()
+    self.state = RMS_Config.createTutorialState(
         state ~= nil and state.tutorialMode,
         state ~= nil and state.welcomeMessageSeen,
         state ~= nil and state.messages
@@ -17,22 +17,22 @@ function ADS_TutorialStateEvent.new(state)
     return self
 end
 
-function ADS_TutorialStateEvent:writeStream(streamId, connection)
+function RMS_TutorialStateEvent:writeStream(streamId, connection)
     streamWriteBool(streamId, self.state.tutorialMode)
     streamWriteBool(streamId, self.state.welcomeMessageSeen)
-    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+    for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
         streamWriteBool(streamId, self.state.messages[messageId])
     end
 end
 
-function ADS_TutorialStateEvent:readStream(streamId, connection)
+function RMS_TutorialStateEvent:readStream(streamId, connection)
     local messages = {}
     local tutorialMode = streamReadBool(streamId)
     local welcomeMessageSeen = streamReadBool(streamId)
-    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+    for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
         messages[messageId] = streamReadBool(streamId)
     end
-    self.state = ADS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
+    self.state = RMS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
     self:run(connection)
 end
 
@@ -45,27 +45,27 @@ local function getUniqueUserId(connection)
     return mission.userManager:getUniqueUserIdByUserId(userId)
 end
 
-function ADS_TutorialStateEvent:run(connection)
+function RMS_TutorialStateEvent:run(connection)
     if connection:getIsServer() then
-        ADS_Config.applyTutorialState(self.state)
+        RMS_Config.applyTutorialState(self.state)
         return
     end
 
-    ADS_Config.setTutorialPlayerState(getUniqueUserId(connection), self.state)
+    RMS_Config.setTutorialPlayerState(getUniqueUserId(connection), self.state)
 end
 
---- Pushed by the server to a newly connected client (see FSBaseMission.sendInitialClientState in ADS_Main.lua).
-function ADS_TutorialStateEvent.sendToClient(connection)
+--- Pushed by the server to a newly connected client (see FSBaseMission.sendInitialClientState in RMS_Main.lua).
+function RMS_TutorialStateEvent.sendToClient(connection)
     if g_server == nil then return end
 
-    local state = ADS_Config.getTutorialPlayerState(getUniqueUserId(connection))
+    local state = RMS_Config.getTutorialPlayerState(getUniqueUserId(connection))
     if state ~= nil then
-        connection:sendEvent(ADS_TutorialStateEvent.new(state))
+        connection:sendEvent(RMS_TutorialStateEvent.new(state))
     end
 end
 
-function ADS_TutorialStateEvent.sendToServer(state)
+function RMS_TutorialStateEvent.sendToServer(state)
     if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_TutorialStateEvent.new(state))
+        g_client:getServerConnection():sendEvent(RMS_TutorialStateEvent.new(state))
     end
 end

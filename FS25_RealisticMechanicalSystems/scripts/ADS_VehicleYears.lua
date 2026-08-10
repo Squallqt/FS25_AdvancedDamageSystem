@@ -1,6 +1,6 @@
-ADS_VehicleYears = {}
+RMS_VehicleYears = {}
 
-ADS_VehicleYears.DEFAULT_YEAR = 2000
+RMS_VehicleYears.DEFAULT_YEAR = 2000
 
 local resolvedYears = {}
 
@@ -15,19 +15,19 @@ local function getStoreItemKey(storeItem)
 end
 
 local function getDeclaredYear(xmlFilename)
-    local xmlFile = XMLFile.load("ADS_VehicleYear", xmlFilename)
+    local xmlFile = XMLFile.load("RMS_VehicleYear", xmlFilename)
     local year = tonumber(xmlFile:getString("vehicle.storeData.year"))
     xmlFile:delete()
 
     return year
 end
 
-function ADS_VehicleYears.getYear(storeItem)
+function RMS_VehicleYears.getYear(storeItem)
     local key = getStoreItemKey(storeItem)
     local year = resolvedYears[key]
 
     if year == nil then
-        year = getDeclaredYear(storeItem.xmlFilename) or ADS_VehicleYearsData[key] or ADS_VehicleYears.DEFAULT_YEAR
+        year = getDeclaredYear(storeItem.xmlFilename) or RMS_VehicleYearsData[key] or RMS_VehicleYears.DEFAULT_YEAR
         resolvedYears[key] = year
     end
 

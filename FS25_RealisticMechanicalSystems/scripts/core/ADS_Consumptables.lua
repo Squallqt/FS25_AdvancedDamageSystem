@@ -1,4 +1,4 @@
-ADS_Consumptables = ADS_Consumptables or {}
+RMS_Consumptables = RMS_Consumptables or {}
 
 -- ==========================================================
 --                  HELPER FUNCTIONS
@@ -8,18 +8,18 @@ local function updateFieldInspectionSoundActive(vehicle, spec)
     local isActive = next(spec.fieldInspectionActivePlayers) ~= nil
     if spec.fieldInspectionSoundActive ~= isActive then
         spec.fieldInspectionSoundActive = isActive
-        AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+        RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
     end
 end
 
-function ADS_Consumptables:setFieldInspectionPlayerActive(player, isActive)
+function RMS_Consumptables:setFieldInspectionPlayerActive(player, isActive)
     if not self.isServer or player == nil then
         return
     end
 
-    local spec = self.spec_AdvancedDamageSystem
+    local spec = self.spec_RealisticMechanicalSystems
     if isActive then
-        spec.fieldInspectionActivePlayers[player] = g_time + ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
+        spec.fieldInspectionActivePlayers[player] = g_time + RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
     else
         spec.fieldInspectionActivePlayers[player] = nil
     end
@@ -27,8 +27,8 @@ function ADS_Consumptables:setFieldInspectionPlayerActive(player, isActive)
     updateFieldInspectionSoundActive(self, spec)
 end
 
-function ADS_Consumptables:updateFieldInspectionSound()
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:updateFieldInspectionSound()
+    local spec = self.spec_RealisticMechanicalSystems
 
     if self.isServer then
         for player, endTime in pairs(spec.fieldInspectionActivePlayers) do
@@ -40,7 +40,7 @@ function ADS_Consumptables:updateFieldInspectionSound()
     end
 
     if self.isClient and spec.samples ~= nil then
-        ADS_SoundManager.setSamplePlaying(spec.samples.inspection, not spec.isExcludedVehicle and spec.fieldInspectionSoundActive)
+        RMS_SoundManager.setSamplePlaying(spec.samples.inspection, not spec.isExcludedVehicle and spec.fieldInspectionSoundActive)
     end
 end
 
@@ -48,9 +48,9 @@ end
 --          RADIATOR AND AIR INTAKE CLOGGING
 -- ==========================================================
 
-function ADS_Consumptables:updateRadiatorClogging(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:updateRadiatorClogging(dt)
+    local C = RMS_Config.FIELD_CARE
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -113,7 +113,7 @@ function ADS_Consumptables:updateRadiatorClogging(dt)
             return
         end
 
-        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (ADS_Config.CORE.BASE_SERVICE_WEAR * 10)
+        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (RMS_Config.CORE.BASE_SERVICE_WEAR * 10)
         local totalMultiplier = wetnessFactor * (fieldFactor + dustFactor + debrisFactor) * C.CLOGGING_SPEED
         dbg.totalMultiplier = totalMultiplier
 
@@ -126,9 +126,9 @@ function ADS_Consumptables:updateRadiatorClogging(dt)
     end
 end
 
-function ADS_Consumptables:updateAirIntakeClogging(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:updateAirIntakeClogging(dt)
+    local C = RMS_Config.FIELD_CARE
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -191,7 +191,7 @@ function ADS_Consumptables:updateAirIntakeClogging(dt)
             return
         end
         
-        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (ADS_Config.CORE.BASE_SERVICE_WEAR * 10)
+        local dirtDuration = ((washableSpec.dirtDuration or 0) / 4) * (RMS_Config.CORE.BASE_SERVICE_WEAR * 10)
         local totalMultiplier = wetnessFactor * (fieldFactor + dustFactor + debrisFactor) * C.CLOGGING_SPEED
         dbg.totalMultiplier = totalMultiplier
 
@@ -204,9 +204,9 @@ function ADS_Consumptables:updateAirIntakeClogging(dt)
     end
 end
 
-function ADS_Consumptables:cleanRadiatorAndAirIntake(dt)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:cleanRadiatorAndAirIntake(dt)
+    local C = RMS_Config.FIELD_CARE
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -218,12 +218,12 @@ function ADS_Consumptables:cleanRadiatorAndAirIntake(dt)
     spec.radiatorClogging = math.max(prevRadiatorClogging - cleaningDelta, 0)
     spec.airIntakeClogging = math.max(prevAirIntakeClogging - cleaningDelta, 0)
 
-    if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED ~= nil and not ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED then
-        ADS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED = true
+    if RMS_Config.TUTORIAL_MESSAGES ~= nil and RMS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED ~= nil and not RMS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED then
+        RMS_Config.TUTORIAL_MESSAGES.RAD_OR_INTAKE_CLOGGED = true
     end
 
     if self.isServer then
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
     end
 end
 
@@ -231,9 +231,9 @@ end
 --                  LUBRICATION
 -- ==========================================================
 
-function ADS_Consumptables:onLubricationPeriodChanged()
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:onLubricationPeriodChanged()
+    local C = RMS_Config.FIELD_CARE
+    local spec = self.spec_RealisticMechanicalSystems
     if not self.isServer or spec == nil or spec.isExcludedVehicle or not spec.isVehicleNeedLubricate then
         return
     end
@@ -243,15 +243,15 @@ function ADS_Consumptables:onLubricationPeriodChanged()
             (tonumber(spec.lubricationLevel) or 1.0) - C.LUBRICATION_REDUCE_PER_PERIOD,
             0
         )
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
     end
 
     spec.lubricationUsedThisPeriod = false
 end
 
-function ADS_Consumptables:updateLubricationLevel(operatingDt, motorState)
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:updateLubricationLevel(operatingDt, motorState)
+    local C = RMS_Config.FIELD_CARE
+    local spec = self.spec_RealisticMechanicalSystems
     if not spec.isVehicleNeedLubricate then
         return
     end
@@ -266,24 +266,24 @@ function ADS_Consumptables:updateLubricationLevel(operatingDt, motorState)
     )
 end
 
-function ADS_Consumptables:lubricateVehicle()
-    local C = ADS_Config.FIELD_CARE
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:lubricateVehicle()
+    local C = RMS_Config.FIELD_CARE
+    local spec = self.spec_RealisticMechanicalSystems
 
     spec.lubricationLevel = math.min(spec.lubricationLevel + C.LUBRICATION_RESTORE_PER_USE, 1.0)
     spec.lubricationUsedThisPeriod = true
 
-    if ADS_Config.TUTORIAL_MESSAGES ~= nil and ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then
-        ADS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION = true
+    if RMS_Config.TUTORIAL_MESSAGES ~= nil and RMS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION ~= nil and not RMS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION then
+        RMS_Config.TUTORIAL_MESSAGES.NEEDS_LUBRICATION = true
     end
 
     if self.isServer then
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
     end
 end
 
-function ADS_Consumptables:startFieldVisualInspectionProcess()
-    local spec = self.spec_AdvancedDamageSystem
+function RMS_Consumptables:startFieldVisualInspectionProcess()
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or spec.isExcludedVehicle then
         return false
     end
@@ -295,7 +295,7 @@ function ADS_Consumptables:startFieldVisualInspectionProcess()
         return false
     end
 
-    if self:getCurrentStatus() ~= AdvancedDamageSystem.STATUS.READY then
+    if self:getCurrentStatus() ~= RealisticMechanicalSystems.STATUS.READY then
         return false
     end
 
@@ -310,7 +310,7 @@ function ADS_Consumptables:startFieldVisualInspectionProcess()
 
     inspection.isActive = true
     inspection.elapsedTime = 0
-    inspection.duration = ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
+    inspection.duration = RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION
     inspection.startTime = g_time
     inspection.targetVehicle = self
 
@@ -320,10 +320,10 @@ function ADS_Consumptables:startFieldVisualInspectionProcess()
     end
     inspection.targetNode = node
 
-    ADS_FieldInspectionEvent.send(self, true)
+    RMS_FieldInspectionEvent.send(self, true)
 
-    if self.isClient and ADS_Hud ~= nil then
-        ADS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), 0), inspection.duration)
+    if self.isClient and RMS_Hud ~= nil then
+        RMS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), 0), inspection.duration)
     end
 
     return true

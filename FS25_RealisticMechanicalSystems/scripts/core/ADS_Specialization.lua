@@ -1,4 +1,4 @@
-AdvancedDamageSystem = {
+RealisticMechanicalSystems = {
     STATUS = {
         READY = 'ads_spec_state_ready',
         INSPECTION = 'ads_spec_state_inspection',
@@ -108,52 +108,52 @@ AdvancedDamageSystem = {
 }
 
 -- Display order of the vehicle systems.
-AdvancedDamageSystem.SYSTEMS_ORDER = {
-    AdvancedDamageSystem.SYSTEMS.ENGINE,
-    AdvancedDamageSystem.SYSTEMS.TRANSMISSION,
-    AdvancedDamageSystem.SYSTEMS.HYDRAULICS,
-    AdvancedDamageSystem.SYSTEMS.COOLING,
-    AdvancedDamageSystem.SYSTEMS.ELECTRICAL,
-    AdvancedDamageSystem.SYSTEMS.CHASSIS,
-    AdvancedDamageSystem.SYSTEMS.FUEL
+RealisticMechanicalSystems.SYSTEMS_ORDER = {
+    RealisticMechanicalSystems.SYSTEMS.ENGINE,
+    RealisticMechanicalSystems.SYSTEMS.TRANSMISSION,
+    RealisticMechanicalSystems.SYSTEMS.HYDRAULICS,
+    RealisticMechanicalSystems.SYSTEMS.COOLING,
+    RealisticMechanicalSystems.SYSTEMS.ELECTRICAL,
+    RealisticMechanicalSystems.SYSTEMS.CHASSIS,
+    RealisticMechanicalSystems.SYSTEMS.FUEL
 }
 
 -- Display order of the part quality options.
-AdvancedDamageSystem.PART_TYPES_ORDER = {
-    AdvancedDamageSystem.PART_TYPES.OEM,
-    AdvancedDamageSystem.PART_TYPES.USED,
-    AdvancedDamageSystem.PART_TYPES.AFTERMARKET,
-    AdvancedDamageSystem.PART_TYPES.PREMIUM
+RealisticMechanicalSystems.PART_TYPES_ORDER = {
+    RealisticMechanicalSystems.PART_TYPES.OEM,
+    RealisticMechanicalSystems.PART_TYPES.USED,
+    RealisticMechanicalSystems.PART_TYPES.AFTERMARKET,
+    RealisticMechanicalSystems.PART_TYPES.PREMIUM
 }
 
-AdvancedDamageSystem.modDirectory = g_currentModDirectory
+RealisticMechanicalSystems.modDirectory = g_currentModDirectory
 
-function AdvancedDamageSystem.isFiniteNumber(value)
+function RealisticMechanicalSystems.isFiniteNumber(value)
     return type(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge
 end
 
-function AdvancedDamageSystem.sanitizeNumber(value, fallback, minValue, maxValue)
+function RealisticMechanicalSystems.sanitizeNumber(value, fallback, minValue, maxValue)
     local sanitized = tonumber(value)
     local safeFallback = tonumber(fallback)
 
-    if not AdvancedDamageSystem.isFiniteNumber(safeFallback) then
+    if not RealisticMechanicalSystems.isFiniteNumber(safeFallback) then
         safeFallback = 0
     end
 
-    if not AdvancedDamageSystem.isFiniteNumber(sanitized) then
+    if not RealisticMechanicalSystems.isFiniteNumber(sanitized) then
         sanitized = safeFallback
     end
 
     if minValue ~= nil then
         local minNumber = tonumber(minValue)
-        if AdvancedDamageSystem.isFiniteNumber(minNumber) and sanitized < minNumber then
+        if RealisticMechanicalSystems.isFiniteNumber(minNumber) and sanitized < minNumber then
             sanitized = minNumber
         end
     end
 
     if maxValue ~= nil then
         local maxNumber = tonumber(maxValue)
-        if AdvancedDamageSystem.isFiniteNumber(maxNumber) and sanitized > maxNumber then
+        if RealisticMechanicalSystems.isFiniteNumber(maxNumber) and sanitized > maxNumber then
             sanitized = maxNumber
         end
     end
@@ -168,7 +168,7 @@ source(g_currentModDirectory .. "scripts/core/ADS_Breakdowns.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Consumptables.lua")
 source(g_currentModDirectory .. "scripts/core/ADS_Drivetrain.lua")
 
-AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
+RealisticMechanicalSystems.FACTOR_STATS_ALIASES = {
     expiredServiceFactor = "sf",
     -- engine
     motorLoadFactor = "mlf",
@@ -212,16 +212,16 @@ AdvancedDamageSystem.FACTOR_STATS_ALIASES = {
     instantDamageFactor = "idfg"
 }
 
-AdvancedDamageSystem.FACTOR_STATS_KEYS = {}
-for _, alias in pairs(AdvancedDamageSystem.FACTOR_STATS_ALIASES) do
-    AdvancedDamageSystem.FACTOR_STATS_KEYS[alias] = true
+RealisticMechanicalSystems.FACTOR_STATS_KEYS = {}
+for _, alias in pairs(RealisticMechanicalSystems.FACTOR_STATS_ALIASES) do
+    RealisticMechanicalSystems.FACTOR_STATS_KEYS[alias] = true
 end
 
 -- ==========================================================
 --                          HELPER FUNCTIONS
 -- ==========================================================
 
-local log_dbg = ADS_Utils.createLogger("[ADS_SPEC]")
+local log_dbg = RMS_Utils.createLogger("[RMS_SPEC]")
 
 local function getVehicleOperatingHours(vehicle)
     if vehicle == nil then
@@ -241,7 +241,7 @@ local function getVehicleOperatingHours(vehicle)
 
     return 0
 end
-AdvancedDamageSystem.getVehicleOperatingHours = getVehicleOperatingHours
+RealisticMechanicalSystems.getVehicleOperatingHours = getVehicleOperatingHours
 
 local function ensureFactorStats(spec, vehicle)
     if spec == nil then
@@ -270,7 +270,7 @@ local function ensureFactorStats(spec, vehicle)
 
     return spec.factorStats
 end
-AdvancedDamageSystem.ensureFactorStats = ensureFactorStats
+RealisticMechanicalSystems.ensureFactorStats = ensureFactorStats
 
 local function getTransmissionNameFromXML(vehicle)
     if vehicle == nil then
@@ -299,7 +299,7 @@ local function getTransmissionNameFromXML(vehicle)
 end
 
 local function getTransmissionType(vehicle)
-    local transmissionTypes = AdvancedDamageSystem.TRANSMISSION_TYPES
+    local transmissionTypes = RealisticMechanicalSystems.TRANSMISSION_TYPES
     if vehicle == nil or vehicle.getMotor == nil then
         return transmissionTypes.UNKNOWN
     end
@@ -350,10 +350,10 @@ local function getTransmissionType(vehicle)
     return transmissionTypes.UNKNOWN
 end
 
-AdvancedDamageSystem.getTransmissionType = getTransmissionType
-AdvancedDamageSystem.getTransmissionNameFromXML = getTransmissionNameFromXML
+RealisticMechanicalSystems.getTransmissionType = getTransmissionType
+RealisticMechanicalSystems.getTransmissionNameFromXML = getTransmissionNameFromXML
 
-local hasCVTAddon = ADS_Utils.hasCVTAddon
+local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 local function refreshExclusionState(spec)
     if spec.isExcludedByUser ~= nil then
@@ -362,12 +362,12 @@ local function refreshExclusionState(spec)
         spec.isExcludedVehicle = spec.isExcludedByDefault or spec.isExcludedByRule
     end
 end
-AdvancedDamageSystem.refreshExclusionState = refreshExclusionState
+RealisticMechanicalSystems.refreshExclusionState = refreshExclusionState
 
-AdvancedDamageSystem.SYNC_GROUP_ALL = 2047
+RealisticMechanicalSystems.SYNC_GROUP_ALL = 2047
 
-function AdvancedDamageSystem.raiseADSDirty(vehicle, groupBits)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+function RealisticMechanicalSystems.raiseRMSDirty(vehicle, groupBits)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or not vehicle.isServer or spec.adsDirtyFlag == nil then
         return
     end
@@ -379,8 +379,8 @@ function AdvancedDamageSystem.raiseADSDirty(vehicle, groupBits)
     vehicle:raiseDirtyFlags(spec.adsDirtyFlag)
 end
 
-function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:setRMSUserExcluded(isExcluded, noEventSend)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return false, "unsupported"
     end
@@ -404,17 +404,17 @@ function AdvancedDamageSystem:setADSUserExcluded(isExcluded, noEventSend)
     end
 
     self:recalculateAndApplyEffects()
-    AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP_ALL)
+    RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP_ALL)
 
-    if self.isClient and ADS_Main ~= nil and ADS_Main.hud ~= nil
+    if self.isClient and RMS_Main ~= nil and RMS_Main.hud ~= nil
             and g_localPlayer ~= nil and g_localPlayer.getCurrentVehicle ~= nil
             and g_localPlayer:getCurrentVehicle() == self then
-        ADS_Main.hud:setVehicle(self)
-        ADS_Main.hud:setVisible(not spec.isExcludedVehicle, true)
+        RMS_Main.hud:setVehicle(self)
+        RMS_Main.hud:setVisible(not spec.isExcludedVehicle, true)
     end
 
-    if self.isServer and not noEventSend and ADS_VehicleExclusionEvent ~= nil then
-        ADS_VehicleExclusionEvent.sendToClients(self, spec.isExcludedByUser)
+    if self.isServer and not noEventSend and RMS_VehicleExclusionEvent ~= nil then
+        RMS_VehicleExclusionEvent.sendToClients(self, spec.isExcludedByUser)
     end
 
     return true
@@ -428,7 +428,7 @@ local function getSafeMissionTimeScale()
     end
     return timeScale
 end
-AdvancedDamageSystem.getSafeMissionTimeScale = getSafeMissionTimeScale
+RealisticMechanicalSystems.getSafeMissionTimeScale = getSafeMissionTimeScale
 
 -- ==========================================================
 --                         DIRTY FLAGS HELPERS
@@ -451,7 +451,7 @@ local function getSyncOperatingTime(vehicle)
 
     return tonumber(vehicle.operatingTime) or 0
 end
-AdvancedDamageSystem.getSyncOperatingTime = getSyncOperatingTime
+RealisticMechanicalSystems.getSyncOperatingTime = getSyncOperatingTime
 
 local function serializeBreakdownsForDirtyCheck(breakdownsTable)
     local parts = {}
@@ -472,8 +472,8 @@ local function serializeBreakdownsForDirtyCheck(breakdownsTable)
 end
 
 local function syncFloatChanged(a, b, epsilon)
-    local valueA = AdvancedDamageSystem.sanitizeNumber(a, 0)
-    local valueB = AdvancedDamageSystem.sanitizeNumber(b, 0)
+    local valueA = RealisticMechanicalSystems.sanitizeNumber(a, 0)
+    local valueB = RealisticMechanicalSystems.sanitizeNumber(b, 0)
     return math.abs(valueA - valueB) > (epsilon or 0)
 end
 
@@ -485,7 +485,7 @@ local function markStateDirty(vehicle, spec)
     if spec._lastSyncState_currentState ~= spec.currentState or
        spec._lastSyncState_plannedState ~= spec.plannedState or
        syncFloatChanged(spec._lastSyncState_maintenanceTimer, spec.maintenanceTimer, 1.0) then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.STATE)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.STATE)
             spec._lastSyncState_currentState = spec.currentState
             spec._lastSyncState_plannedState = spec.plannedState
             spec._lastSyncState_maintenanceTimer = spec.maintenanceTimer
@@ -504,7 +504,7 @@ local function markServiceContextDirty(vehicle, spec)
        spec._lastSyncServiceContext_optionTwo ~= spec.serviceOptionTwo or
        spec._lastSyncServiceContext_optionThree ~= spec.serviceOptionThree or
        spec._lastSyncServiceContext_workshopType ~= spec.workshopType then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_CONTEXT)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.SERVICE_CONTEXT)
             spec._lastSyncServiceContext_optionOne = spec.serviceOptionOne
             spec._lastSyncServiceContext_optionTwo = spec.serviceOptionTwo
             spec._lastSyncServiceContext_optionThree = spec.serviceOptionThree
@@ -530,7 +530,7 @@ local function markTelemetryDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncTelemetry_fuelUsageRaw, spec._fuelUsageRaw, 0.3) or
        syncFloatChanged(spec._lastSyncTelemetry_dynamicMotorLoad, dynamicMotorLoad, 0.01) or
        syncFloatChanged(spec._lastSyncTelemetry_wheelSlip, wheelSlip, 0.01) then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TELEMETRY)
             spec._lastSyncTelemetry_operatingTime = operatingTime
             spec._lastSyncTelemetry_realOperatingTime = realOperatingTime
             spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
@@ -551,7 +551,7 @@ local function markThermalDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncThermal_rawTransmissionTemperature, spec.rawTransmissionTemperature, 0.05) or
        syncFloatChanged(spec._lastSyncThermal_thermostatState, spec.thermostatState, 0.05) or
        syncFloatChanged(spec._lastSyncThermal_transmissionThermostatState, spec.transmissionThermostatState, 0.05) then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.THERMAL)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.THERMAL)
             spec._lastSyncThermal_rawEngineTemperature = spec.rawEngineTemperature
             spec._lastSyncThermal_rawTransmissionTemperature = spec.rawTransmissionTemperature
             spec._lastSyncThermal_thermostatState = spec.thermostatState
@@ -575,7 +575,7 @@ local function markElectricalDirty(vehicle, spec)
        spec._lastSyncElectrical_preheatLampTestActive ~= spec.preheatLampTestActive or
        spec._lastSyncElectrical_preheatWasRequired ~= spec.preheatWasRequired or
        spec._lastSyncElectrical_preheatColdStartFaultSeverity ~= spec.preheatColdStartFaultSeverity then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.ELECTRICAL)
             spec._lastSyncElectrical_batterySoc = spec.batterySoc
             spec._lastSyncElectrical_batteryChargeAh = spec.batteryChargeAh
             spec._lastSyncElectrical_batteryTerminalVoltage = spec.batteryTerminalVoltageV
@@ -599,7 +599,7 @@ local function markFieldcareDirty(vehicle, spec)
        syncFloatChanged(spec._lastSyncFieldcare_airIntakeClogging, spec.airIntakeClogging, 0.005) or
        syncFloatChanged(spec._lastSyncFieldcare_lubricationLevel, spec.lubricationLevel, 0.005) or
        spec._lastSyncFieldcare_inspectionSoundActive ~= spec.fieldInspectionSoundActive then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
             spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
             spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
             spec._lastSyncFieldcare_lubricationLevel = spec.lubricationLevel
@@ -651,7 +651,7 @@ local function captureSystemsSync(spec)
     spec._lastSyncWear_systems = snapshot
     spec._lastSyncWear_systemsCount = count
 end
-AdvancedDamageSystem.captureSystemsSync = captureSystemsSync
+RealisticMechanicalSystems.captureSystemsSync = captureSystemsSync
 
 local function markWearDirty(vehicle, spec)
     if not canRaiseDirtyFlag(vehicle, spec) then
@@ -661,7 +661,7 @@ local function markWearDirty(vehicle, spec)
     if syncFloatChanged(spec._lastSyncWear_serviceLevel, spec.serviceLevel, 0.001) or
        syncFloatChanged(spec._lastSyncWear_conditionLevel, spec.conditionLevel, 0.001) or
        getSystemsSyncChanged(spec) then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.WEAR)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.WEAR)
             spec._lastSyncWear_serviceLevel = spec.serviceLevel
             spec._lastSyncWear_conditionLevel = spec.conditionLevel
             captureSystemsSync(spec)
@@ -678,7 +678,7 @@ local function markBreakdownsDirty(vehicle, spec)
 
     local serializedBreakdowns = serializeBreakdownsForDirtyCheck(spec.activeBreakdowns)
     if spec._lastSyncBreakdowns_serialized ~= serializedBreakdowns then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.BREAKDOWNS)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
             spec._lastSyncBreakdowns_serialized = serializedBreakdowns
             return true
     end
@@ -694,7 +694,7 @@ local function markServiceProgressDirty(vehicle, spec)
     if syncFloatChanged(spec._lastSyncServiceProgress_elapsed, spec.pendingProgressElapsedTime,500.0) or
        spec._lastSyncServiceProgress_step ~= spec.pendingProgressStepIndex or
        syncFloatChanged(spec._lastSyncServiceProgress_total, spec.pendingProgressTotalTime, 500.0) then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.SERVICE_PROGRESS)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.SERVICE_PROGRESS)
             spec._lastSyncServiceProgress_elapsed = spec.pendingProgressElapsedTime
             spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
             spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
@@ -746,7 +746,7 @@ local function markTutorialDataDirty(vehicle, spec)
        spec._lastSyncTutorial_hasConnectedPto ~= hasConnectedPto                       or
        spec._lastSyncTutorial_ptoIsTrailerHitch ~= ptoIsTrailerHitch                    or
        syncFloatChanged(spec._lastSyncTutorial_ptoAngle,        ptoAngle,        0.5) then
-            AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TUTORIAL_DATA)
+            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TUTORIAL_DATA)
             spec._lastSyncTutorial_idleTimer       = idleTimer
             spec._lastSyncTutorial_fuelLevel       = fuelLevel
             spec._lastSyncTutorial_luggingTimer    = luggingTimer
@@ -769,12 +769,12 @@ local function markTutorialDataDirty(vehicle, spec)
     return false
 end
 
-function AdvancedDamageSystem.raiseServiceLifecycleDirtyFlags(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+function RealisticMechanicalSystems.raiseServiceLifecycleDirtyFlags(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return false
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local raised = false
 
     if markStateDirty(vehicle, spec) then
@@ -796,13 +796,13 @@ function AdvancedDamageSystem.raiseServiceLifecycleDirtyFlags(vehicle)
     return raised
 end
 
-function AdvancedDamageSystem.forceFinishService(vehicle)
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil or not vehicle.isServer then
+function RealisticMechanicalSystems.forceFinishService(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or not vehicle.isServer then
         return false
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
-    if spec.currentState == AdvancedDamageSystem.STATUS.READY then
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    if spec.currentState == RealisticMechanicalSystems.STATUS.READY then
         return false
     end
 
@@ -816,17 +816,17 @@ function AdvancedDamageSystem.forceFinishService(vehicle)
     local forceDt = math.max(math.ceil(remainingMs / timeScale) + 1, 1)
 
     local previousWorkshopOpen = nil
-    if ADS_Main ~= nil then
-        previousWorkshopOpen = ADS_Main.isWorkshopOpen
-        ADS_Main.isWorkshopOpen = true
+    if RMS_Main ~= nil then
+        previousWorkshopOpen = RMS_Main.isWorkshopOpen
+        RMS_Main.isWorkshopOpen = true
     end
 
     local ok, err = pcall(function()
         vehicle:processService(forceDt)
     end)
 
-    if ADS_Main ~= nil and previousWorkshopOpen ~= nil then
-        ADS_Main.isWorkshopOpen = previousWorkshopOpen
+    if RMS_Main ~= nil and previousWorkshopOpen ~= nil then
+        RMS_Main.isWorkshopOpen = previousWorkshopOpen
     end
 
     if not ok then
@@ -834,7 +834,7 @@ function AdvancedDamageSystem.forceFinishService(vehicle)
         return false, err
     end
 
-    if spec.currentState ~= AdvancedDamageSystem.STATUS.READY then
+    if spec.currentState ~= RealisticMechanicalSystems.STATUS.READY then
         spec.pendingProgressElapsedTime = spec.pendingProgressTotalTime or 0
         spec.maintenanceTimer = 0
         vehicle:completeService()
@@ -847,13 +847,13 @@ end
 --                          REGISTRATION
 -- ==========================================================
 
-function AdvancedDamageSystem.initSpecialization()
+function RealisticMechanicalSystems.initSpecialization()
     local schema = Vehicle.xmlSchema
     local schemaSavegame = Vehicle.xmlSchemaSavegame
 
-    schema:setXMLSpecializationType("AdvancedDamageSystem")
+    schema:setXMLSpecializationType("RealisticMechanicalSystems")
 
-    local baseKey = "vehicles.vehicle(?).AdvancedDamageSystem"
+    local baseKey = "vehicles.vehicle(?).RealisticMechanicalSystems"
     schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#userExclusion", "User decision overriding the automatic exclusion, absent when the user has no opinion")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#service", "Service Level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#condition", "Condition Level")
@@ -931,126 +931,126 @@ function AdvancedDamageSystem.initSpecialization()
     schema:setXMLSpecializationType()
 end
 
-function AdvancedDamageSystem.registerEventListeners(vehicleType)
-    SpecializationUtil.registerEventListener(vehicleType, "onLoad", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onDelete", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onUpdate", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onReadStream", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", AdvancedDamageSystem)
-    SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", AdvancedDamageSystem)
+function RealisticMechanicalSystems.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onLoad", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onDelete", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onUpdate", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onReadStream", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", RealisticMechanicalSystems)
 end
 
-function AdvancedDamageSystem.registerOverwrittenFunctions(vehicleType)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getCanMotorRun", ADS_Breakdowns.getCanMotorRun)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "startMotor", ADS_Breakdowns.startMotor)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateDamageAmount", AdvancedDamageSystem.updateDamageAmount)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "setLightsTypesMask", ADS_Breakdowns.setLightsTypesMask)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSpeedLimit", ADS_Breakdowns.getSpeedLimitOverwrite)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateVehiclePhysics", ADS_Breakdowns.updateVehiclePhysics)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateConsumers", ADS_Breakdowns.updateConsumersOverwrite)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSellPrice", AdvancedDamageSystem.getSellPrice)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateMotorTemperature", AdvancedDamageSystem.updateMotorTemperature)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "setOperatingTime", AdvancedDamageSystem.setOperatingTime)
+function RealisticMechanicalSystems.registerOverwrittenFunctions(vehicleType)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getCanMotorRun", RMS_Breakdowns.getCanMotorRun)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "startMotor", RMS_Breakdowns.startMotor)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateDamageAmount", RealisticMechanicalSystems.updateDamageAmount)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "setLightsTypesMask", RMS_Breakdowns.setLightsTypesMask)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSpeedLimit", RMS_Breakdowns.getSpeedLimitOverwrite)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateVehiclePhysics", RMS_Breakdowns.updateVehiclePhysics)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateConsumers", RMS_Breakdowns.updateConsumersOverwrite)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSellPrice", RealisticMechanicalSystems.getSellPrice)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateMotorTemperature", RealisticMechanicalSystems.updateMotorTemperature)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "setOperatingTime", RealisticMechanicalSystems.setOperatingTime)
 
     
 end
 
-function AdvancedDamageSystem.registerFunctions(vehicleType)
-    SpecializationUtil.registerFunction(vehicleType, "adsUpdate", AdvancedDamageSystem.adsUpdate)
-    SpecializationUtil.registerFunction(vehicleType, "updateVehicleStateSnapshot", AdvancedDamageSystem.updateVehicleStateSnapshot)
-    SpecializationUtil.registerFunction(vehicleType, "setADSUserExcluded", AdvancedDamageSystem.setADSUserExcluded)
+function RealisticMechanicalSystems.registerFunctions(vehicleType)
+    SpecializationUtil.registerFunction(vehicleType, "adsUpdate", RealisticMechanicalSystems.adsUpdate)
+    SpecializationUtil.registerFunction(vehicleType, "updateVehicleStateSnapshot", RealisticMechanicalSystems.updateVehicleStateSnapshot)
+    SpecializationUtil.registerFunction(vehicleType, "setRMSUserExcluded", RealisticMechanicalSystems.setRMSUserExcluded)
     
-    SpecializationUtil.registerFunction(vehicleType, "recalculateAndApplyEffects", AdvancedDamageSystem.recalculateAndApplyEffects)
-    SpecializationUtil.registerFunction(vehicleType, "recalculateAndApplyIndicators", AdvancedDamageSystem.recalculateAndApplyIndicators)
+    SpecializationUtil.registerFunction(vehicleType, "recalculateAndApplyEffects", RealisticMechanicalSystems.recalculateAndApplyEffects)
+    SpecializationUtil.registerFunction(vehicleType, "recalculateAndApplyIndicators", RealisticMechanicalSystems.recalculateAndApplyIndicators)
     
-    SpecializationUtil.registerFunction(vehicleType, "tryTriggerBreakdown", AdvancedDamageSystem.tryTriggerBreakdown)
-    SpecializationUtil.registerFunction(vehicleType, "getRandomBreakdownBySystem", AdvancedDamageSystem.getRandomBreakdownBySystem)
-    SpecializationUtil.registerFunction(vehicleType, "getRandomBreakdown", AdvancedDamageSystem.getRandomBreakdown)
-    SpecializationUtil.registerFunction(vehicleType, "addBreakdown", AdvancedDamageSystem.addBreakdown)
-    SpecializationUtil.registerFunction(vehicleType, "suspendBreakdown", AdvancedDamageSystem.suspendBreakdown)
-    SpecializationUtil.registerFunction(vehicleType, "removeBreakdown", AdvancedDamageSystem.removeBreakdown)
-    SpecializationUtil.registerFunction(vehicleType, "hasBreakdown", AdvancedDamageSystem.hasBreakdown)
-    SpecializationUtil.registerFunction(vehicleType, "hasSystemBreakdowns", AdvancedDamageSystem.hasSystemBreakdowns)
-    SpecializationUtil.registerFunction(vehicleType, "processBreakdowns", AdvancedDamageSystem.processBreakdowns)
-    SpecializationUtil.registerFunction(vehicleType, "changeBreakdownStage", AdvancedDamageSystem.changeBreakdownStage)
-    SpecializationUtil.registerFunction(vehicleType, "getActiveBreakdowns", AdvancedDamageSystem.getActiveBreakdowns)
-    SpecializationUtil.registerFunction(vehicleType, "hasEffect", AdvancedDamageSystem.hasEffect)
-    SpecializationUtil.registerFunction(vehicleType, "processGeneralWearBreakdown", AdvancedDamageSystem.processGeneralWearBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "tryTriggerBreakdown", RealisticMechanicalSystems.tryTriggerBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "getRandomBreakdownBySystem", RealisticMechanicalSystems.getRandomBreakdownBySystem)
+    SpecializationUtil.registerFunction(vehicleType, "getRandomBreakdown", RealisticMechanicalSystems.getRandomBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "addBreakdown", RealisticMechanicalSystems.addBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "suspendBreakdown", RealisticMechanicalSystems.suspendBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "removeBreakdown", RealisticMechanicalSystems.removeBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "hasBreakdown", RealisticMechanicalSystems.hasBreakdown)
+    SpecializationUtil.registerFunction(vehicleType, "hasSystemBreakdowns", RealisticMechanicalSystems.hasSystemBreakdowns)
+    SpecializationUtil.registerFunction(vehicleType, "processBreakdowns", RealisticMechanicalSystems.processBreakdowns)
+    SpecializationUtil.registerFunction(vehicleType, "changeBreakdownStage", RealisticMechanicalSystems.changeBreakdownStage)
+    SpecializationUtil.registerFunction(vehicleType, "getActiveBreakdowns", RealisticMechanicalSystems.getActiveBreakdowns)
+    SpecializationUtil.registerFunction(vehicleType, "hasEffect", RealisticMechanicalSystems.hasEffect)
+    SpecializationUtil.registerFunction(vehicleType, "processGeneralWearBreakdown", RealisticMechanicalSystems.processGeneralWearBreakdown)
     
-    SpecializationUtil.registerFunction(vehicleType, "initService", AdvancedDamageSystem.initService)
-    SpecializationUtil.registerFunction(vehicleType, "processService", AdvancedDamageSystem.processService)
-    SpecializationUtil.registerFunction(vehicleType, "completeService", AdvancedDamageSystem.completeService)
-    SpecializationUtil.registerFunction(vehicleType, "cancelService", AdvancedDamageSystem.cancelService)
+    SpecializationUtil.registerFunction(vehicleType, "initService", RealisticMechanicalSystems.initService)
+    SpecializationUtil.registerFunction(vehicleType, "processService", RealisticMechanicalSystems.processService)
+    SpecializationUtil.registerFunction(vehicleType, "completeService", RealisticMechanicalSystems.completeService)
+    SpecializationUtil.registerFunction(vehicleType, "cancelService", RealisticMechanicalSystems.cancelService)
 
-    SpecializationUtil.registerFunction(vehicleType, "getServiceLevel", AdvancedDamageSystem.getServiceLevel)
-    SpecializationUtil.registerFunction(vehicleType, "getConditionLevel", AdvancedDamageSystem.getConditionLevel)
-    SpecializationUtil.registerFunction(vehicleType, "getSystemConditionLevel", AdvancedDamageSystem.getSystemConditionLevel)
-    SpecializationUtil.registerFunction(vehicleType, "getSystemStressLevel", AdvancedDamageSystem.getSystemStressLevel)
-    SpecializationUtil.registerFunction(vehicleType, "updateServiceLevel", AdvancedDamageSystem.updateServiceLevel)
-    SpecializationUtil.registerFunction(vehicleType, "updateConditionLevel", AdvancedDamageSystem.updateConditionLevel)
+    SpecializationUtil.registerFunction(vehicleType, "getServiceLevel", RealisticMechanicalSystems.getServiceLevel)
+    SpecializationUtil.registerFunction(vehicleType, "getConditionLevel", RealisticMechanicalSystems.getConditionLevel)
+    SpecializationUtil.registerFunction(vehicleType, "getSystemConditionLevel", RealisticMechanicalSystems.getSystemConditionLevel)
+    SpecializationUtil.registerFunction(vehicleType, "getSystemStressLevel", RealisticMechanicalSystems.getSystemStressLevel)
+    SpecializationUtil.registerFunction(vehicleType, "updateServiceLevel", RealisticMechanicalSystems.updateServiceLevel)
+    SpecializationUtil.registerFunction(vehicleType, "updateConditionLevel", RealisticMechanicalSystems.updateConditionLevel)
 
-    SpecializationUtil.registerFunction(vehicleType, "updateSystemConditionAndStress", AdvancedDamageSystem.updateSystemConditionAndStress)
-    SpecializationUtil.registerFunction(vehicleType, "updateEngineSystem", AdvancedDamageSystem.updateEngineSystem)
-    SpecializationUtil.registerFunction(vehicleType, "updateTransmissionSystem", AdvancedDamageSystem.updateTransmissionSystem)
-    SpecializationUtil.registerFunction(vehicleType, "getTransmissionType", AdvancedDamageSystem.getTransmissionType)
-    SpecializationUtil.registerFunction(vehicleType, "updateHydraulicsSystem", AdvancedDamageSystem.updateHydraulicsSystem)
-    SpecializationUtil.registerFunction(vehicleType, "updateCoolingSystem", AdvancedDamageSystem.updateCoolingSystem)
-    SpecializationUtil.registerFunction(vehicleType, "updateElectricalSystem", AdvancedDamageSystem.updateElectricalSystem)
-    SpecializationUtil.registerFunction(vehicleType, "updateChassisSystem", AdvancedDamageSystem.updateChassisSystem)
-    SpecializationUtil.registerFunction(vehicleType, "updateFuelSystem", AdvancedDamageSystem.updateFuelSystem)
-    SpecializationUtil.registerFunction(vehicleType, "applyInstantDamageToSystem", AdvancedDamageSystem.applyInstantDamageToSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updateSystemConditionAndStress", RealisticMechanicalSystems.updateSystemConditionAndStress)
+    SpecializationUtil.registerFunction(vehicleType, "updateEngineSystem", RealisticMechanicalSystems.updateEngineSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updateTransmissionSystem", RealisticMechanicalSystems.updateTransmissionSystem)
+    SpecializationUtil.registerFunction(vehicleType, "getTransmissionType", RealisticMechanicalSystems.getTransmissionType)
+    SpecializationUtil.registerFunction(vehicleType, "updateHydraulicsSystem", RealisticMechanicalSystems.updateHydraulicsSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updateCoolingSystem", RealisticMechanicalSystems.updateCoolingSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updateElectricalSystem", RealisticMechanicalSystems.updateElectricalSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updateChassisSystem", RealisticMechanicalSystems.updateChassisSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updateFuelSystem", RealisticMechanicalSystems.updateFuelSystem)
+    SpecializationUtil.registerFunction(vehicleType, "applyInstantDamageToSystem", RealisticMechanicalSystems.applyInstantDamageToSystem)
     
-    SpecializationUtil.registerFunction(vehicleType, "isUnderService", AdvancedDamageSystem.isUnderService)
-    SpecializationUtil.registerFunction(vehicleType, "isUnderRoof", AdvancedDamageSystem.isUnderRoof)
-    SpecializationUtil.registerFunction(vehicleType, "isUnderRoofRaycastCallback", AdvancedDamageSystem.isUnderRoofRaycastCallback)
-    SpecializationUtil.registerFunction(vehicleType, "getCurrentStatus", AdvancedDamageSystem.getCurrentStatus)
+    SpecializationUtil.registerFunction(vehicleType, "isUnderService", RealisticMechanicalSystems.isUnderService)
+    SpecializationUtil.registerFunction(vehicleType, "isUnderRoof", RealisticMechanicalSystems.isUnderRoof)
+    SpecializationUtil.registerFunction(vehicleType, "isUnderRoofRaycastCallback", RealisticMechanicalSystems.isUnderRoofRaycastCallback)
+    SpecializationUtil.registerFunction(vehicleType, "getCurrentStatus", RealisticMechanicalSystems.getCurrentStatus)
     
-    SpecializationUtil.registerFunction(vehicleType, "updateThermalSystems", ADS_Thermal.updateThermalSystems)
-    SpecializationUtil.registerFunction(vehicleType, "updateEngineThermalModel", ADS_Thermal.updateEngineThermalModel)
-    SpecializationUtil.registerFunction(vehicleType, "updateTransmissionThermalModel", ADS_Thermal.updateTransmissionThermalModel)
-    SpecializationUtil.registerFunction(vehicleType, "getSmoothedTemperature", ADS_Thermal.getSmoothedTemperature)
+    SpecializationUtil.registerFunction(vehicleType, "updateThermalSystems", RMS_Thermal.updateThermalSystems)
+    SpecializationUtil.registerFunction(vehicleType, "updateEngineThermalModel", RMS_Thermal.updateEngineThermalModel)
+    SpecializationUtil.registerFunction(vehicleType, "updateTransmissionThermalModel", RMS_Thermal.updateTransmissionThermalModel)
+    SpecializationUtil.registerFunction(vehicleType, "getSmoothedTemperature", RMS_Thermal.getSmoothedTemperature)
      
-    SpecializationUtil.registerFunction(vehicleType, "updateBatteryChargingModel", ADS_Electrical.updateBatteryChargingModel)
-    SpecializationUtil.registerFunction(vehicleType, "syncDeadBatteryEffect", ADS_Electrical.syncDeadBatteryEffect)
-    SpecializationUtil.registerFunction(vehicleType, "syncVoltageSagEffect", ADS_Electrical.syncVoltageSagEffect)
-    SpecializationUtil.registerFunction(vehicleType, "establishExternalPowerConnection", ADS_Electrical.establishExternalPowerConnection)
-    SpecializationUtil.registerFunction(vehicleType, "clearExternalPowerConnection", ADS_Electrical.clearExternalPowerConnection)
+    SpecializationUtil.registerFunction(vehicleType, "updateBatteryChargingModel", RMS_Electrical.updateBatteryChargingModel)
+    SpecializationUtil.registerFunction(vehicleType, "syncDeadBatteryEffect", RMS_Electrical.syncDeadBatteryEffect)
+    SpecializationUtil.registerFunction(vehicleType, "syncVoltageSagEffect", RMS_Electrical.syncVoltageSagEffect)
+    SpecializationUtil.registerFunction(vehicleType, "establishExternalPowerConnection", RMS_Electrical.establishExternalPowerConnection)
+    SpecializationUtil.registerFunction(vehicleType, "clearExternalPowerConnection", RMS_Electrical.clearExternalPowerConnection)
     
-    SpecializationUtil.registerFunction(vehicleType, "updateDrivetrain", ADS_Drivetrain.updateDrivetrain)
+    SpecializationUtil.registerFunction(vehicleType, "updateDrivetrain", RMS_Drivetrain.updateDrivetrain)
 
-    SpecializationUtil.registerFunction(vehicleType, "updateRadiatorClogging", ADS_Consumptables.updateRadiatorClogging)
-    SpecializationUtil.registerFunction(vehicleType, "updateAirIntakeClogging", ADS_Consumptables.updateAirIntakeClogging)
-    SpecializationUtil.registerFunction(vehicleType, "cleanRadiatorAndAirIntake", ADS_Consumptables.cleanRadiatorAndAirIntake)
-    SpecializationUtil.registerFunction(vehicleType, "updateLubricationLevel", ADS_Consumptables.updateLubricationLevel)
-    SpecializationUtil.registerFunction(vehicleType, "lubricateVehicle", ADS_Consumptables.lubricateVehicle)
-    SpecializationUtil.registerFunction(vehicleType, "startFieldVisualInspectionProcess", ADS_Consumptables.startFieldVisualInspectionProcess)
-    SpecializationUtil.registerFunction(vehicleType, "setFieldInspectionPlayerActive", ADS_Consumptables.setFieldInspectionPlayerActive)
-    SpecializationUtil.registerFunction(vehicleType, "updateFieldInspectionSound", ADS_Consumptables.updateFieldInspectionSound)
+    SpecializationUtil.registerFunction(vehicleType, "updateRadiatorClogging", RMS_Consumptables.updateRadiatorClogging)
+    SpecializationUtil.registerFunction(vehicleType, "updateAirIntakeClogging", RMS_Consumptables.updateAirIntakeClogging)
+    SpecializationUtil.registerFunction(vehicleType, "cleanRadiatorAndAirIntake", RMS_Consumptables.cleanRadiatorAndAirIntake)
+    SpecializationUtil.registerFunction(vehicleType, "updateLubricationLevel", RMS_Consumptables.updateLubricationLevel)
+    SpecializationUtil.registerFunction(vehicleType, "lubricateVehicle", RMS_Consumptables.lubricateVehicle)
+    SpecializationUtil.registerFunction(vehicleType, "startFieldVisualInspectionProcess", RMS_Consumptables.startFieldVisualInspectionProcess)
+    SpecializationUtil.registerFunction(vehicleType, "setFieldInspectionPlayerActive", RMS_Consumptables.setFieldInspectionPlayerActive)
+    SpecializationUtil.registerFunction(vehicleType, "updateFieldInspectionSound", RMS_Consumptables.updateFieldInspectionSound)
 
-    SpecializationUtil.registerFunction(vehicleType, "resetAiWorkerCruiseControlState", AdvancedDamageSystem.resetAiWorkerCruiseControlState)
-    SpecializationUtil.registerFunction(vehicleType, "getAiWorkerImplementSpeedLimit", AdvancedDamageSystem.getAiWorkerImplementSpeedLimit)
-    SpecializationUtil.registerFunction(vehicleType, "updateAiWorkerCruiseControl", AdvancedDamageSystem.updateAiWorkerCruiseControl)
-    SpecializationUtil.registerFunction(vehicleType, "isWarrantyRepairCovered", AdvancedDamageSystem.isWarrantyRepairCovered)
+    SpecializationUtil.registerFunction(vehicleType, "resetAiWorkerCruiseControlState", RealisticMechanicalSystems.resetAiWorkerCruiseControlState)
+    SpecializationUtil.registerFunction(vehicleType, "getAiWorkerImplementSpeedLimit", RealisticMechanicalSystems.getAiWorkerImplementSpeedLimit)
+    SpecializationUtil.registerFunction(vehicleType, "updateAiWorkerCruiseControl", RealisticMechanicalSystems.updateAiWorkerCruiseControl)
+    SpecializationUtil.registerFunction(vehicleType, "isWarrantyRepairCovered", RealisticMechanicalSystems.isWarrantyRepairCovered)
 
-    SpecializationUtil.registerFunction(vehicleType, "getServicePrice", AdvancedDamageSystem.getServicePrice)
-    SpecializationUtil.registerFunction(vehicleType, "getServiceDuration", AdvancedDamageSystem.getServiceDuration)
-    SpecializationUtil.registerFunction(vehicleType, "getServiceFinishTime", AdvancedDamageSystem.getServiceFinishTime)
-    SpecializationUtil.registerFunction(vehicleType, "getBreakdownRepairPrice", AdvancedDamageSystem.getBreakdownRepairPrice)
+    SpecializationUtil.registerFunction(vehicleType, "getServicePrice", RealisticMechanicalSystems.getServicePrice)
+    SpecializationUtil.registerFunction(vehicleType, "getServiceDuration", RealisticMechanicalSystems.getServiceDuration)
+    SpecializationUtil.registerFunction(vehicleType, "getServiceFinishTime", RealisticMechanicalSystems.getServiceFinishTime)
+    SpecializationUtil.registerFunction(vehicleType, "getBreakdownRepairPrice", RealisticMechanicalSystems.getBreakdownRepairPrice)
     
-    SpecializationUtil.registerFunction(vehicleType, "addEntryToMaintenanceLog", AdvancedDamageSystem.addEntryToMaintenanceLog)
-    SpecializationUtil.registerFunction(vehicleType, "getLastInspectedCondition", AdvancedDamageSystem.getLastInspectedCondition)
-    SpecializationUtil.registerFunction(vehicleType, "getLastInspectedService", AdvancedDamageSystem.getLastInspectedService)
-    SpecializationUtil.registerFunction(vehicleType, "getLastInspectionDate", AdvancedDamageSystem.getLastInspectionDate)
-    SpecializationUtil.registerFunction(vehicleType, "getLastMaintenanceDate", AdvancedDamageSystem.getLastMaintenanceDate)
-    SpecializationUtil.registerFunction(vehicleType, "getMaintenanceInterval", AdvancedDamageSystem.getMaintenanceInterval)
-    SpecializationUtil.registerFunction(vehicleType, "getHoursSinceLastMaintenance", AdvancedDamageSystem.getHoursSinceLastMaintenance)
-    SpecializationUtil.registerFunction(vehicleType, "getLastServiceOptions", AdvancedDamageSystem.getLastServiceOptions)
-    SpecializationUtil.registerFunction(vehicleType, "getOverhaulPerformedCount", AdvancedDamageSystem.getOverhaulPerformedCount)
+    SpecializationUtil.registerFunction(vehicleType, "addEntryToMaintenanceLog", RealisticMechanicalSystems.addEntryToMaintenanceLog)
+    SpecializationUtil.registerFunction(vehicleType, "getLastInspectedCondition", RealisticMechanicalSystems.getLastInspectedCondition)
+    SpecializationUtil.registerFunction(vehicleType, "getLastInspectedService", RealisticMechanicalSystems.getLastInspectedService)
+    SpecializationUtil.registerFunction(vehicleType, "getLastInspectionDate", RealisticMechanicalSystems.getLastInspectionDate)
+    SpecializationUtil.registerFunction(vehicleType, "getLastMaintenanceDate", RealisticMechanicalSystems.getLastMaintenanceDate)
+    SpecializationUtil.registerFunction(vehicleType, "getMaintenanceInterval", RealisticMechanicalSystems.getMaintenanceInterval)
+    SpecializationUtil.registerFunction(vehicleType, "getHoursSinceLastMaintenance", RealisticMechanicalSystems.getHoursSinceLastMaintenance)
+    SpecializationUtil.registerFunction(vehicleType, "getLastServiceOptions", RealisticMechanicalSystems.getLastServiceOptions)
+    SpecializationUtil.registerFunction(vehicleType, "getOverhaulPerformedCount", RealisticMechanicalSystems.getOverhaulPerformedCount)
     
 end
 
@@ -1058,8 +1058,8 @@ end
 --                        EVENTS
 -- ==========================================================
 
-function AdvancedDamageSystem:onLeaveVehicle(wasEntered)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:onLeaveVehicle(wasEntered)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -1073,27 +1073,27 @@ function AdvancedDamageSystem:onLeaveVehicle(wasEntered)
     spec.startButtonUp = false
 
     if hadStartInput then
-        ADS_StartButtonEvent.send(self, false, false, false)
+        RMS_StartButtonEvent.send(self, false, false, false)
     end
 
     if self.isServer
         and not self:getIsMotorStarted()
-        and spec.preheatState ~= ADS_Preheat.STATE.IDLE then
-        ADS_Breakdowns.cancelStarterCranking(self)
-        ADS_Preheat.reset(self, false)
+        and spec.preheatState ~= RMS_Preheat.STATE.IDLE then
+        RMS_Breakdowns.cancelStarterCranking(self)
+        RMS_Preheat.reset(self, false)
         if self:getMotorState() ~= MotorState.OFF then
             self:setMotorState(MotorState.OFF)
         end
-        AdvancedDamageSystem.raiseADSDirty(self, AdvancedDamageSystem.SYNC_GROUP.ELECTRICAL)
+        RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.ELECTRICAL)
     end
 end
 
-function AdvancedDamageSystem.updateStartButtonActionEvents(self)
+function RealisticMechanicalSystems.updateStartButtonActionEvents(self)
     if not self.isClient or not self:getIsActiveForInput(true) then
         return
     end
 
-    local spec = self.spec_AdvancedDamageSystem
+    local spec = self.spec_RealisticMechanicalSystems
     local motorizedSpec = self.spec_motorized
     if spec == nil or motorizedSpec == nil or spec.startButtonActionEvents == nil then
         return
@@ -1117,7 +1117,7 @@ function AdvancedDamageSystem.updateStartButtonActionEvents(self)
                 g_inputBinding:setActionEventTextVisibility(actionEventId, not automaticMotorStartEnabled)
 
                 local motorState = self:getMotorState()
-                if motorState == MotorState.STARTING or motorState == MotorState.ON or ADS_Preheat.isFailed(self) then
+                if motorState == MotorState.STARTING or motorState == MotorState.ON or RMS_Preheat.isFailed(self) then
                     g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_VERY_LOW)
                     g_inputBinding:setActionEventText(actionEventId, motorizedSpec.turnOffText)
                 else
@@ -1131,12 +1131,12 @@ function AdvancedDamageSystem.updateStartButtonActionEvents(self)
     end
 end
 
-function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)
+function RealisticMechanicalSystems:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)
     if not self.isClient then
         return
     end
 
-    local spec = self.spec_AdvancedDamageSystem
+    local spec = self.spec_RealisticMechanicalSystems
     local motorizedSpec = self.spec_motorized
     if spec == nil or motorizedSpec == nil then
         return
@@ -1144,7 +1144,7 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
 
     self:clearActionEventsTable(spec.startButtonActionEvents)
 
-    ADS_Drivetrain.registerActionEvents(self, isActiveForInputIgnoreSelection)
+    RMS_Drivetrain.registerActionEvents(self, isActiveForInputIgnoreSelection)
 
     if not isActiveForInputIgnoreSelection then
         return
@@ -1167,7 +1167,7 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
             spec.startButtonActionEvents,
             inputAction,
             self,
-            ADS_Breakdowns.onStartButtonAction,
+            RMS_Breakdowns.onStartButtonAction,
             true,
             true,
             false,
@@ -1183,7 +1183,7 @@ function AdvancedDamageSystem:onRegisterActionEvents(isActiveForInput, isActiveF
         end
     end
 
-    AdvancedDamageSystem.updateStartButtonActionEvents(self)
+    RealisticMechanicalSystems.updateStartButtonActionEvents(self)
 end
 
 -- ==========================================================
@@ -1191,7 +1191,7 @@ end
 -- ==========================================================
 
 local function getConditionLevelFromSellPrice(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
     local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
@@ -1213,7 +1213,7 @@ local function getConditionLevelFromSellPrice(vehicle)
 end
 
 local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdowns)
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if vehicle == nil or spec == nil or spec.isExcludedVehicle then
         return false
     end
@@ -1237,9 +1237,9 @@ local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdow
 
         if vehicle:getOperatingTime() > 0 then
             local operatingHours = tonumber(vehicle:getFormattedOperatingTime()) or 0
-            local lifespanRatio = ADS_Config.CORE.REFERENCE_SYSTEMS_WEAR / ADS_Config.CORE.BASE_SYSTEMS_WEAR
+            local lifespanRatio = RMS_Config.CORE.REFERENCE_SYSTEMS_WEAR / RMS_Config.CORE.BASE_SYSTEMS_WEAR
             local chance = operatingHours / (100 * lifespanRatio)
-            chance = math.clamp(chance * ADS_Config.CORE.USED_VEHICLE_BREAKDOWN_PRESENCE_CHANGE_MUL, 0, ADS_Config.CORE.USED_VEHICLE_BREAKDOWN_PRESENCE_CHANGE_MAX)
+            chance = math.clamp(chance * RMS_Config.CORE.USED_VEHICLE_BREAKDOWN_PRESENCE_CHANGE_MUL, 0, RMS_Config.CORE.USED_VEHICLE_BREAKDOWN_PRESENCE_CHANGE_MAX)
             if math.random() < chance then
                 vehicle:addBreakdown(vehicle:getRandomBreakdown())
             end
@@ -1248,10 +1248,10 @@ local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdow
 
     return true, targetCondition
 end
-AdvancedDamageSystem.initializeVehicleConditionFromVanillaPrice = initializeVehicleConditionFromVanillaPrice
+RealisticMechanicalSystems.initializeVehicleConditionFromVanillaPrice = initializeVehicleConditionFromVanillaPrice
 
 local function registerVehicle(vehicle)
-    if ADS_Main and ADS_Main.vehicles and ADS_Main.vehicles[vehicle.uniqueId] == nil then
+    if RMS_Main and RMS_Main.vehicles and RMS_Main.vehicles[vehicle.uniqueId] == nil then
         local ownerFarmId = vehicle.getOwnerFarmId ~= nil and vehicle:getOwnerFarmId() or vehicle.ownerFarmId
         local hasSupportedPropertyState = vehicle.propertyState == VehiclePropertyState.OWNED
             or vehicle.propertyState == VehiclePropertyState.LEASED
@@ -1262,12 +1262,12 @@ local function registerVehicle(vehicle)
 
         if hasSupportedPropertyState and hasValidOwnerFarm then
 
-            local spec = vehicle.spec_AdvancedDamageSystem
+            local spec = vehicle.spec_RealisticMechanicalSystems
             if spec == nil then return end
 
-            --- Registration in ADS_Main.vehicles
-            ADS_Main.vehicles[vehicle.uniqueId] = vehicle
-            ADS_Main.numVehicles = ADS_Main.numVehicles + 1
+            --- Registration in RMS_Main.vehicles
+            RMS_Main.vehicles[vehicle.uniqueId] = vehicle
+            RMS_Main.numVehicles = RMS_Main.numVehicles + 1
     
             --- if first mod load or used vehicle
             if vehicle.isServer then
@@ -1279,18 +1279,18 @@ local function registerVehicle(vehicle)
 
                     --- Initial report for a new vehicle only, a used one stays uninspected.
                     if not isUsedVehicle and (spec.maintenanceLog == nil or #spec.maintenanceLog == 0) then
-                        vehicle:addEntryToMaintenanceLog(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
+                        vehicle:addEntryToMaintenanceLog(RealisticMechanicalSystems.STATUS.INSPECTION, RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
                     end
             end
 
             --- Updating vehicle's production year
             local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
             if storeItem ~= nil then
-                spec.year = ADS_VehicleYears.getYear(storeItem)
+                spec.year = RMS_VehicleYears.getYear(storeItem)
             end
 
             --- Updating vehicle's reliability and maintainability
-            spec.reliability, spec.maintainability = AdvancedDamageSystem.getBrandReliability(vehicle)
+            spec.reliability, spec.maintainability = RealisticMechanicalSystems.getBrandReliability(vehicle)
 
             local factorStats = ensureFactorStats(spec, vehicle)
             local currentOperatingHours = getVehicleOperatingHours(vehicle)
@@ -1307,11 +1307,11 @@ local function registerVehicle(vehicle)
 end
 
 local function syncColdEngineEffect(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
     if vehicle.isServer then
-        local engTemp = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
+        local engTemp = RealisticMechanicalSystems.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
         local breakdownId = 'COLD_ENGINE'
 
         if engTemp <= -10 and not vehicle:hasBreakdown(breakdownId) then
@@ -1323,10 +1323,10 @@ local function syncColdEngineEffect(vehicle)
 end
 
 local function syncOverheatProtection(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
-    local rawEngineTemp = AdvancedDamageSystem.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
-    local rawTransmissionTemp = not hasCVTAddon(vehicle) and AdvancedDamageSystem.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180) or -99
+    local rawEngineTemp = RealisticMechanicalSystems.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
+    local rawTransmissionTemp = not hasCVTAddon(vehicle) and RealisticMechanicalSystems.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180) or -99
 
     if vehicle.isServer and spec.year >= 2000 then
         local overheatProtectionId = 'OVERHEAT_PROTECTION'
@@ -1337,24 +1337,24 @@ local function syncOverheatProtection(vehicle, dt)
         if vehicle:getIsMotorStarted() then
             if (rawTransmissionTemp > 105 or rawEngineTemp > 105) and not overheatProtection then
                 vehicle:addBreakdown(overheatProtectionId, 1)
-                ADS_SoundManager.playSample(spec.samples.alarm)
-                ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
+                RMS_SoundManager.playSample(spec.samples.alarm)
+                RMS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
             elseif overheatProtection then
                 if vehicle:getCruiseControlState() ~= 0 then
                     vehicle:setCruiseControlState(0, true)
                 end
                 if (rawTransmissionTemp > 125 or rawEngineTemp > 125) and overheatProtection.stage < 4 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    ADS_SoundManager.playSample(spec.samples.alarm)
-                    ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
+                    RMS_SoundManager.playSample(spec.samples.alarm)
+                    RMS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
                 elseif (rawTransmissionTemp > 115 or rawEngineTemp > 115) and overheatProtection.stage < 3 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    ADS_SoundManager.playSample(spec.samples.alarm)
-                    ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
+                    RMS_SoundManager.playSample(spec.samples.alarm)
+                    RMS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
                 elseif (rawTransmissionTemp > 110 or rawEngineTemp > 110) and overheatProtection.stage < 2 then
                     vehicle:changeBreakdownStage(overheatProtectionId)
-                    ADS_SoundManager.playSample(spec.samples.alarm)
-                    ADS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
+                    RMS_SoundManager.playSample(spec.samples.alarm)
+                    RMS_EffectSyncEvent.send(vehicle, overheatProtectionId, "ALARM")
                 end
             end
         end
@@ -1362,7 +1362,7 @@ local function syncOverheatProtection(vehicle, dt)
         if vehicle.isServer then
             local engineFailedEffect = spec.activeEffects.ENGINE_FAILURE
             if rawEngineTemp > 125 and not engineFailedEffect then
-                if math.random() < ADS_Utils.getChancePerFrameFromMeanTime(dt, 3) then
+                if math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, 3) then
                     vehicle:addBreakdown('ENGINE_JAM')
                 end
             end
@@ -1371,12 +1371,12 @@ local function syncOverheatProtection(vehicle, dt)
 end
 
 local function syncAirIntakeCloggingEffect(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isServer then return end
 
     local breakdownId = 'AIRINTAKE_CLOGGING'
     local shouldBeStage = 0
-    local threshold = ADS_Config.FIELD_CARE.AIR_INTAKE_BREAKDOWN_THRESHOLD 
+    local threshold = RMS_Config.FIELD_CARE.AIR_INTAKE_BREAKDOWN_THRESHOLD 
 
     if spec.airIntakeClogging > threshold then
         if spec.airIntakeClogging > (threshold + (threshold / 3 * 2)) then
@@ -1402,7 +1402,7 @@ local function syncAirIntakeCloggingEffect(vehicle)
 end
 
 local function syncDisableAiWorkers(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isServer then
         return
     end
@@ -1412,8 +1412,8 @@ local function syncDisableAiWorkers(vehicle)
             if effectData ~= nil and effectData.extraData ~= nil and effectData.extraData.disableAi then
                 local isCriticalOverload = effectData.extraData.criticalOverload == true
                 local shouldDisableAi = not isCriticalOverload
-                    or (ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD
-                        and (vehicle.propertyState ~= 4 or ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION))
+                    or (RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD
+                        and (vehicle.propertyState ~= 4 or RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION))
 
                 if shouldDisableAi then
                     local autoDriveActive = vehicle.ad ~= nil
@@ -1445,8 +1445,8 @@ end
 local COLD_ENGINE_WARNING_MESSAGE = 'ads_spec_cold_engine_message'
 
 local function getColdEngineStress(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
-    local C = ADS_Config.CORE.ENGINE_FACTOR_DATA
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local C = RMS_Config.CORE.ENGINE_FACTOR_DATA
 
     if not vehicle:getIsMotorStarted()
             or spec.isElectricVehicle
@@ -1462,12 +1462,12 @@ local function getColdEngineStress(vehicle)
 
     local motor = vehicle.spec_motorized.motor
     local rpmLoad = math.clamp(motor:getLastModulatedMotorRpm() / motor.maxRpm, 0, 1)
-    local temperatureFactor = ADS_Utils.calculateQuadraticMultiplier(
+    local temperatureFactor = RMS_Utils.calculateQuadraticMultiplier(
         spec.engineTemperature,
         C.COLD_MOTOR_TEMP_THRESHOLD,
         true
     )
-    local loadFactor = math.clamp(ADS_Utils.calculateQuadraticMultiplier(
+    local loadFactor = math.clamp(RMS_Utils.calculateQuadraticMultiplier(
         motorLoad,
         C.MOTOR_OVERLOADED_THRESHOLD,
         false
@@ -1477,19 +1477,19 @@ local function getColdEngineStress(vehicle)
 
     return temperatureFactor * loadFactor * rpmFactor
 end
-AdvancedDamageSystem.getColdEngineStress = getColdEngineStress
+RealisticMechanicalSystems.getColdEngineStress = getColdEngineStress
 
 local function syncBlinkingWarning(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isClient then return end
 
-    local C = ADS_Config.CORE.ENGINE_FACTOR_DATA
+    local C = RMS_Config.CORE.ENGINE_FACTOR_DATA
     if spec.engineTemperature >= C.COLD_MOTOR_TEMP_THRESHOLD then
         spec.coldEngineExposureMs = 0
         spec.coldEngineWarningShown = false
     end
 
-    if ADS_Config.CORE ~= nil and ADS_Config.CORE.ENABLE_WARNING_MESSAGES == false then
+    if RMS_Config.CORE ~= nil and RMS_Config.CORE.ENABLE_WARNING_MESSAGES == false then
         return
     end
 
@@ -1539,13 +1539,13 @@ local function syncBlinkingWarning(vehicle, dt)
                         and spec.coldEngineExposureMs >= C.COLD_MOTOR_WARNING_EXPOSURE_MS
                         and not spec.coldEngineWarningShown then
                     candidateMessage = COLD_ENGINE_WARNING_MESSAGE
-                elseif spec.engineTemperature >= ADS_Config.CORE.ENGINE_FACTOR_DATA.OVERHEAT_MOTOR_THRESHOLD + 5 and motorLoad > 0.3 then
+                elseif spec.engineTemperature >= RMS_Config.CORE.ENGINE_FACTOR_DATA.OVERHEAT_MOTOR_THRESHOLD + 5 and motorLoad > 0.3 then
                     candidateMessage = 'ads_spec_overheat_engine_message'
                 end
             end
 
             if candidateMessage == nil and spec.transmissionTemperature > -90 then
-                if spec.transmissionTemperature >= ADS_Config.CORE.TRANSMISSION_FACTOR_DATA.OVERHEAT_TRANSMISSION_THRESHOLD + 5 and rpmLoad > 0.75 then
+                if spec.transmissionTemperature >= RMS_Config.CORE.TRANSMISSION_FACTOR_DATA.OVERHEAT_TRANSMISSION_THRESHOLD + 5 and rpmLoad > 0.75 then
                     candidateMessage = 'ads_spec_overheat_transmission_message'
                 end
             end
@@ -1582,12 +1582,12 @@ local function syncBlinkingWarning(vehicle, dt)
 end
 
 local function syncSideNotifications(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isClient then
         return
     end
 
-    if ADS_Config.CORE ~= nil and ADS_Config.CORE.ENABLE_WARNING_MESSAGES == false then
+    if RMS_Config.CORE ~= nil and RMS_Config.CORE.ENABLE_WARNING_MESSAGES == false then
         return
     end
 
@@ -1602,31 +1602,31 @@ local function syncSideNotifications(vehicle)
     end
 
     for _, notificationText in ipairs(spec.pendingSideNotifications) do
-        g_currentMission.hud:addSideNotification(ADS_Breakdowns.COLORS.WARNING, vehicle:getFullName() .. ": " .. notificationText)
+        g_currentMission.hud:addSideNotification(RMS_Breakdowns.COLORS.WARNING, vehicle:getFullName() .. ": " .. notificationText)
     end
 
     spec.pendingSideNotifications = {}
 end
 
 local function syncFuelConsumption(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
     if vehicle.isServer and vehicle.spec_motorized ~= nil then
         if vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted() then
-            spec._fuelUsageRaw = AdvancedDamageSystem.sanitizeNumber(vehicle.spec_motorized.lastFuelUsage, 0, 0, 10000)
+            spec._fuelUsageRaw = RealisticMechanicalSystems.sanitizeNumber(vehicle.spec_motorized.lastFuelUsage, 0, 0, 10000)
         else
             spec._fuelUsageRaw = 0
         end
     end
     if vehicle.isClient and not vehicle.isServer and vehicle.spec_motorized ~= nil then
-        vehicle.spec_motorized.lastFuelUsage = AdvancedDamageSystem.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000)
+        vehicle.spec_motorized.lastFuelUsage = RealisticMechanicalSystems.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000)
     end
 end
 
 local function syncCVTaddonBreakdown(vehicle)
     if not hasCVTAddon(vehicle) then return end
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isServer then return end
 
     local breakdownId = 'CVT_ADDON_MALFUNCTION'
@@ -1660,18 +1660,18 @@ local function syncCVTaddonBreakdown(vehicle)
 end
 
 local function syncOverloadWarning(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isServer then return end
     local period = 60000
-    local wearScale = ADS_Config.CORE.BASE_SYSTEMS_WEAR / ADS_Config.CORE.REFERENCE_SYSTEMS_WEAR
-    local avgStressWarningThreshold = ADS_Config.CORE.AVG_STRESS_WARNING_THRESHOLD * ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
-    local avgStressCriticalThreshold = ADS_Config.CORE.AVG_STRESS_CRITICAL_THRESHOLD * ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
+    local wearScale = RMS_Config.CORE.BASE_SYSTEMS_WEAR / RMS_Config.CORE.REFERENCE_SYSTEMS_WEAR
+    local avgStressWarningThreshold = RMS_Config.CORE.AVG_STRESS_WARNING_THRESHOLD * RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
+    local avgStressCriticalThreshold = RMS_Config.CORE.AVG_STRESS_CRITICAL_THRESHOLD * RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
     local sampleDurationMs = math.max(tonumber(dt) or 0, 1)
     local isMotorStarted = vehicle.getIsMotorStarted ~= nil and vehicle:getIsMotorStarted()
 
     local factorStats = ensureFactorStats(spec, vehicle)
-    local stressMultipliers = ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS or {}
-    local globalStressMultiplier = math.max(tonumber(ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER) or 1.0, 0.0)
+    local stressMultipliers = RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS or {}
+    local globalStressMultiplier = math.max(tonumber(RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER) or 1.0, 0.0)
 
     local overloadFactorAliasesBySystem = {
         engine = { "mlf", "hmf", "lf" },
@@ -1698,7 +1698,7 @@ local function syncOverloadWarning(vehicle, dt)
                 systemData._avgStress = 0
                 systemData._avgStressSamples = {}
 
-                if ADS_Config.DEBUG and spec.debugData ~= nil and spec.debugData[systemName] ~= nil then
+                if RMS_Config.DEBUG and spec.debugData ~= nil and spec.debugData[systemName] ~= nil then
                     spec.debugData[systemName]._avgStress = 0
                 end
             else
@@ -1757,7 +1757,7 @@ local function syncOverloadWarning(vehicle, dt)
                 if systemData._avgStress > maxAvgStress then maxAvgStress = systemData._avgStress end
             end
 
-            if ADS_Config.DEBUG and spec.debugData ~= nil and spec.debugData[systemName] ~= nil then
+            if RMS_Config.DEBUG and spec.debugData ~= nil and spec.debugData[systemName] ~= nil then
                 spec.debugData[systemName]._avgStress = systemData._avgStress
             end
 
@@ -1788,7 +1788,7 @@ local function syncOverloadWarning(vehicle, dt)
 end
 
 local function getSmoothedMotorLoad(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
     if vehicle:getIsMotorStarted() then
@@ -1801,16 +1801,16 @@ local function getSmoothedMotorLoad(vehicle, dt)
     end
 end
 
-function AdvancedDamageSystem:onUpdate(dt, ...)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:onUpdate(dt, ...)
+    local spec = self.spec_RealisticMechanicalSystems
     self:updateFieldInspectionSound()
     if spec.isExcludedVehicle then return end
 
     self:updateVehicleStateSnapshot(dt)
-    AdvancedDamageSystem.updateStartButtonActionEvents(self)
-    ADS_Preheat.update(self, dt)
+    RealisticMechanicalSystems.updateStartButtonActionEvents(self)
+    RMS_Preheat.update(self, dt)
 
-    local updateDelay = ADS_Config.ON_UPDATE_DELAY
+    local updateDelay = RMS_Config.ON_UPDATE_DELAY
     spec.onUpdateTimer = spec.onUpdateTimer + dt
 
     if spec.onUpdateTimer < updateDelay then
@@ -1822,7 +1822,7 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     spec.onUpdateTimer = spec.onUpdateTimer % updateDelay
     local updateDt = updateDelay
 
-    --- Registration in ADS_Main.vehicles and first load checks.
+    --- Registration in RMS_Main.vehicles and first load checks.
     registerVehicle(self)
 
     --- Temperature smoothing
@@ -1868,12 +1868,12 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     if self.isServer and self.getDamageAmount ~= nil and self:getDamageAmount() ~= 0 then self:setDamageAmount(0.0, true) end
     
     --- AI worker overload, temp control
-    if ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL then
+    if RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL then
         self:updateAiWorkerCruiseControl(updateDt)
     end
 
     --- Enables the thermal model for neutral vehicles on the map, should the player happen to use them
-    if self.isServer and ADS_Main and ADS_Main.vehicles and ADS_Main.vehicles[self.uniqueId] == nil and self:getIsControlled() then
+    if self.isServer and RMS_Main and RMS_Main.vehicles and RMS_Main.vehicles[self.uniqueId] == nil and self:getIsControlled() then
         self:updateThermalSystems(updateDt)
     end
 
@@ -1885,8 +1885,8 @@ function AdvancedDamageSystem:onUpdate(dt, ...)
     end
 end
 
-function AdvancedDamageSystem:adsUpdate(dt, isWorkshopOpen)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:adsUpdate(dt, isWorkshopOpen)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec.isExcludedVehicle then return end
 
     -- OP Time update for ADS vehicles
@@ -1963,16 +1963,16 @@ end
 --                OVERWRITTEN FUNCTIONS
 -- ==========================================================
 
-function AdvancedDamageSystem.updateDamageAmount(wearable, superFunc, dt)
-	if wearable.spec_AdvancedDamageSystem ~= nil and not wearable.spec_AdvancedDamageSystem.isExcludedVehicle then
+function RealisticMechanicalSystems.updateDamageAmount(wearable, superFunc, dt)
+	if wearable.spec_RealisticMechanicalSystems ~= nil and not wearable.spec_RealisticMechanicalSystems.isExcludedVehicle then
 		return 0
 	else
 		return superFunc(wearable, dt)
 	end
 end
 
-function AdvancedDamageSystem.setOperatingTime(self, superFunc, operatingTime, isLoading)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems.setOperatingTime(self, superFunc, operatingTime, isLoading)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec ~= nil and not spec.isExcludedVehicle and not isLoading and not spec._allowAdsOperatingTimeWrite then
         return
     end
@@ -1980,29 +1980,29 @@ function AdvancedDamageSystem.setOperatingTime(self, superFunc, operatingTime, i
     superFunc(self, operatingTime, isLoading)
 end
 
-function AdvancedDamageSystem.getSellPrice(self, superFunc)
-	if self.spec_AdvancedDamageSystem ~= nil and not self.spec_AdvancedDamageSystem.isExcludedVehicle then
+function RealisticMechanicalSystems.getSellPrice(self, superFunc)
+	if self.spec_RealisticMechanicalSystems ~= nil and not self.spec_RealisticMechanicalSystems.isExcludedVehicle then
 		local overallCondition = self:getConditionLevel() or 1.0
         local price = self:getPrice() or 0
         local repaintPrice = Wearable.calculateRepaintPrice(price, self:getWearTotalAmount()) * 0.25
         local repairPrice = self:getServicePrice(
-            AdvancedDamageSystem.STATUS.REPAIR,
-            AdvancedDamageSystem.REPAIR_TYPES.MEDIUM,
-            AdvancedDamageSystem.PART_TYPES.OEM, false, AdvancedDamageSystem.WORKSHOP.DEALER, true)
+            RealisticMechanicalSystems.STATUS.REPAIR,
+            RealisticMechanicalSystems.REPAIR_TYPES.MEDIUM,
+            RealisticMechanicalSystems.PART_TYPES.OEM, false, RealisticMechanicalSystems.WORKSHOP.DEALER, true)
         return math.clamp(price * overallCondition - repaintPrice - repairPrice, price * 0.03, price * 0.8)
 	else
 		return superFunc(self)
 	end
 end
 
-function AdvancedDamageSystem.updateMotorTemperature(self, superFunc, dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems.updateMotorTemperature(self, superFunc, dt)
+    local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or spec.isExcludedVehicle or hasCVTAddon(self) then
         return superFunc(self, dt)
     else
         local spec_motorized = self.spec_motorized
         if spec_motorized ~= nil then
-            self.spec_motorized.motorTemperature.value = AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, 20, -80, 160)
+            self.spec_motorized.motorTemperature.value = RealisticMechanicalSystems.sanitizeNumber(spec.engineTemperature, 20, -80, 160)
         end
     end
 end
@@ -2011,35 +2011,35 @@ end
 --                        GETTERS
 -- ==========================================================
 
-function AdvancedDamageSystem:getServiceLevel()
-    return self.spec_AdvancedDamageSystem.serviceLevel
+function RealisticMechanicalSystems:getServiceLevel()
+    return self.spec_RealisticMechanicalSystems.serviceLevel
 end
 
-function AdvancedDamageSystem:getConditionLevel()
-    return self.spec_AdvancedDamageSystem.conditionLevel
+function RealisticMechanicalSystems:getConditionLevel()
+    return self.spec_RealisticMechanicalSystems.conditionLevel
 end
 
-function AdvancedDamageSystem:getSystemConditionLevel(systemName)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemName)
+function RealisticMechanicalSystems:getSystemConditionLevel(systemName)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemName)
     return spec.systems[systemKey].condition
 end
 
-function AdvancedDamageSystem:getSystemStressLevel(systemName)
-    local spec = self.spec_AdvancedDamageSystem
-    local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemName)
+function RealisticMechanicalSystems:getSystemStressLevel(systemName)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemName)
     return spec.systems[systemKey].stress
 end
 
-function AdvancedDamageSystem:isUnderRoofRaycastCallback()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:isUnderRoofRaycastCallback()
+    local spec = self.spec_RealisticMechanicalSystems
     if spec ~= nil then
         spec.roofRaycastHit = true
     end
 end
 
-function AdvancedDamageSystem:isUnderRoof()
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:isUnderRoof()
+    local spec = self.spec_RealisticMechanicalSystems
     local node = self.rootNode
     if (node == nil or node == 0) and self.components ~= nil and self.components[1] ~= nil then
         node = self.components[1].node
@@ -2078,7 +2078,7 @@ function AdvancedDamageSystem:isUnderRoof()
 
     local movementVehicle = self.rootVehicle or self
     local speed = movementVehicle.getLastSpeed ~= nil and math.abs(tonumber(movementVehicle:getLastSpeed(true)) or 0) or 0
-    local stationarySpeedLimit = tonumber(ADS_Config.ROOF_STATIONARY_SPEED_LIMIT) or 0.5
+    local stationarySpeedLimit = tonumber(RMS_Config.ROOF_STATIONARY_SPEED_LIMIT) or 0.5
     local isStationary = speed <= stationarySpeedLimit
 
     if not isStationary then
@@ -2095,7 +2095,7 @@ function AdvancedDamageSystem:isUnderRoof()
     end
 
     local now = (mission ~= nil and mission.time) or g_time or 0
-    local raycastInterval = tonumber(ADS_Config.ROOF_RAYCAST_INTERVAL) or 5000
+    local raycastInterval = tonumber(RMS_Config.ROOF_RAYCAST_INTERVAL) or 5000
     local lastRaycastTime = tonumber(spec.roofLastRaycastTime)
     local needsRaycast = spec.roofWasStationary ~= true
         or lastRaycastTime == nil
@@ -2111,12 +2111,12 @@ function AdvancedDamageSystem:isUnderRoof()
         local roofMask = CollisionFlag.STATIC_OBJECT + CollisionFlag.BUILDING
         raycastClosest(
             x,
-            y + (tonumber(ADS_Config.ROOF_RAYCAST_START_OFFSET) or 1),
+            y + (tonumber(RMS_Config.ROOF_RAYCAST_START_OFFSET) or 1),
             z,
             0,
             1,
             0,
-            tonumber(ADS_Config.ROOF_RAYCAST_DISTANCE) or 40,
+            tonumber(RMS_Config.ROOF_RAYCAST_DISTANCE) or 40,
             "isUnderRoofRaycastCallback",
             self,
             roofMask
@@ -2132,20 +2132,20 @@ function AdvancedDamageSystem:isUnderRoof()
     return isIndoorMask
 end
 
-function AdvancedDamageSystem:isUnderService()
-    return self.spec_AdvancedDamageSystem.currentState ~= AdvancedDamageSystem.STATUS.READY
+function RealisticMechanicalSystems:isUnderService()
+    return self.spec_RealisticMechanicalSystems.currentState ~= RealisticMechanicalSystems.STATUS.READY
 end
 
-function AdvancedDamageSystem:getCurrentStatus()
-    return self.spec_AdvancedDamageSystem.currentState
+function RealisticMechanicalSystems:getCurrentStatus()
+    return self.spec_RealisticMechanicalSystems.currentState
 end
 
-function AdvancedDamageSystem:getActiveBreakdowns()
-    return self.spec_AdvancedDamageSystem.activeBreakdowns
+function RealisticMechanicalSystems:getActiveBreakdowns()
+    return self.spec_RealisticMechanicalSystems.activeBreakdowns
 end
 
-function AdvancedDamageSystem.getBrandReliability(vehicle, storeItem)
-    local year = ADS_VehicleYears.DEFAULT_YEAR
+function RealisticMechanicalSystems.getBrandReliability(vehicle, storeItem)
+    local year = RMS_VehicleYears.DEFAULT_YEAR
     local brandName = 'LIZARD'
     local name = 'LIZARD'
 
@@ -2165,21 +2165,21 @@ function AdvancedDamageSystem.getBrandReliability(vehicle, storeItem)
     end
 
     if storeItem ~= nil then
-        year = ADS_VehicleYears.getYear(storeItem)
+        year = RMS_VehicleYears.getYear(storeItem)
     end
 
     local yearFactor = 0
-    if year < ADS_Config.CORE.RELIABILITY_YEAR_FACTOR_THRESHOLD then
-        yearFactor = math.max(ADS_Config.CORE.RELIABILITY_YEAR_FACTOR_THRESHOLD - year, 0) * ADS_Config.CORE.RELIABILITY_YEAR_FACTOR
+    if year < RMS_Config.CORE.RELIABILITY_YEAR_FACTOR_THRESHOLD then
+        yearFactor = math.max(RMS_Config.CORE.RELIABILITY_YEAR_FACTOR_THRESHOLD - year, 0) * RMS_Config.CORE.RELIABILITY_YEAR_FACTOR
     end
 
-    local modelData = ADS_Config.BRANDS[name]
+    local modelData = RMS_Config.BRANDS[name]
 
     if modelData ~= nil then
         return modelData[1], modelData[2]
     end
 
-    local brandData = ADS_Config.BRANDS[brandName]
+    local brandData = RMS_Config.BRANDS[brandName]
 
     if brandData ~= nil then
         return brandData[1], brandData[2] + yearFactor
@@ -2188,8 +2188,8 @@ function AdvancedDamageSystem.getBrandReliability(vehicle, storeItem)
     end
 end
 
-function AdvancedDamageSystem.calculateBreakdownProbability(level, p, dt)
-    local threshold = math.clamp(tonumber(ADS_Config.CORE.BREAKDOWN_PROBABILITIES.STRESS_THRESHOLD) or 1.0, 0.0, 0.999)
+function RealisticMechanicalSystems.calculateBreakdownProbability(level, p, dt)
+    local threshold = math.clamp(tonumber(RMS_Config.CORE.BREAKDOWN_PROBABILITIES.STRESS_THRESHOLD) or 1.0, 0.0, 0.999)
     local clampedLevel = math.max(tonumber(level) or 0, 0.0)
     local normalizedLevel = math.clamp((clampedLevel - threshold) / math.max(1 - threshold, 0.001), 0.0, 1.0)
 

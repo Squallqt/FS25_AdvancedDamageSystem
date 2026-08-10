@@ -1,20 +1,20 @@
--- ADS_ServiceRequestEvent
+-- RMS_ServiceRequestEvent
 -- Client-to-server event. Sends a service request (inspection/maintenance/repair/overhaul)
 -- to the server for authoritative execution.
 
-ADS_ServiceRequestEvent = {}
-local ADS_ServiceRequestEvent_mt = Class(ADS_ServiceRequestEvent, Event)
+RMS_ServiceRequestEvent = {}
+local RMS_ServiceRequestEvent_mt = Class(RMS_ServiceRequestEvent, Event)
 
-InitEventClass(ADS_ServiceRequestEvent, "ADS_ServiceRequestEvent")
+InitEventClass(RMS_ServiceRequestEvent, "RMS_ServiceRequestEvent")
 
 
-function ADS_ServiceRequestEvent.emptyNew()
-    return Event.new(ADS_ServiceRequestEvent_mt)
+function RMS_ServiceRequestEvent.emptyNew()
+    return Event.new(RMS_ServiceRequestEvent_mt)
 end
 
 
-function ADS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price)
-    local self = ADS_ServiceRequestEvent.emptyNew()
+function RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price)
+    local self = RMS_ServiceRequestEvent.emptyNew()
     self.vehicle = vehicle
     self.serviceType = serviceType
     self.workshopType = workshopType
@@ -26,7 +26,7 @@ function ADS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionO
 end
 
 
-function ADS_ServiceRequestEvent:writeStream(streamId, connection)
+function RMS_ServiceRequestEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteString(streamId, self.serviceType or "")
     streamWriteString(streamId, self.workshopType or "")
@@ -37,7 +37,7 @@ function ADS_ServiceRequestEvent:writeStream(streamId, connection)
 end
 
 
-function ADS_ServiceRequestEvent:readStream(streamId, connection)
+function RMS_ServiceRequestEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self.serviceType = streamReadString(streamId)
     self.workshopType = streamReadString(streamId)
@@ -56,33 +56,33 @@ end
 
 -- Server-side execution: validate vehicle, run initService, debit money.
 -- Price is recalculated server-side to prevent client tampering.
-function ADS_ServiceRequestEvent:run(connection)
+function RMS_ServiceRequestEvent:run(connection)
     if not connection:getIsServer() then
-        if self.vehicle ~= nil and self.vehicle:getIsSynchronized() and self.vehicle.spec_AdvancedDamageSystem ~= nil then
+        if self.vehicle ~= nil and self.vehicle:getIsSynchronized() and self.vehicle.spec_RealisticMechanicalSystems ~= nil then
             local userId = g_currentMission.userManager:getUserIdByConnection(connection)
             local farm = g_farmManager:getFarmByUserId(userId)
             if farm == nil or farm.farmId ~= self.vehicle:getOwnerFarmId() then
                 return
             end
 
-            local spec = self.vehicle.spec_AdvancedDamageSystem
-            if spec.currentState ~= AdvancedDamageSystem.STATUS.READY then
+            local spec = self.vehicle.spec_RealisticMechanicalSystems
+            if spec.currentState ~= RealisticMechanicalSystems.STATUS.READY then
                 return
             end
 
             local validTypes = {
-                [AdvancedDamageSystem.STATUS.INSPECTION] = true,
-                [AdvancedDamageSystem.STATUS.MAINTENANCE] = true,
-                [AdvancedDamageSystem.STATUS.REPAIR] = true,
-                [AdvancedDamageSystem.STATUS.OVERHAUL] = true
+                [RealisticMechanicalSystems.STATUS.INSPECTION] = true,
+                [RealisticMechanicalSystems.STATUS.MAINTENANCE] = true,
+                [RealisticMechanicalSystems.STATUS.REPAIR] = true,
+                [RealisticMechanicalSystems.STATUS.OVERHAUL] = true
             }
             if not validTypes[self.serviceType] then
                 return
             end
 
-            if ADS_Main ~= nil
-                and ADS_Main.isWorkshopTypeOpen ~= nil
-                and not ADS_Main:isWorkshopTypeOpen(self.workshopType) then
+            if RMS_Main ~= nil
+                and RMS_Main.isWorkshopTypeOpen ~= nil
+                and not RMS_Main:isWorkshopTypeOpen(self.workshopType) then
                 return
             end
 
@@ -94,15 +94,15 @@ function ADS_ServiceRequestEvent:run(connection)
                 g_currentMission:addMoney(-1 * serverPrice, self.vehicle:getOwnerFarmId(), MoneyType.VEHICLE_RUNNING_COSTS, true, true)
             end
 
-            ADS_VehicleChangeStatusEvent.send(self.vehicle)
+            RMS_VehicleChangeStatusEvent.send(self.vehicle)
         end
     end
 end
 
 
 -- Client convenience: send service request to the server.
-function ADS_ServiceRequestEvent.send(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price)
+function RMS_ServiceRequestEvent.send(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price)
     if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price))
+        g_client:getServerConnection():sendEvent(RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price))
     end
 end

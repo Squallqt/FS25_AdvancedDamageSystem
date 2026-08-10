@@ -1,29 +1,29 @@
-local ensureFactorStats = AdvancedDamageSystem.ensureFactorStats
-local getVehicleOperatingHours = AdvancedDamageSystem.getVehicleOperatingHours
-local getSyncOperatingTime = AdvancedDamageSystem.getSyncOperatingTime
-local initializeVehicleConditionFromVanillaPrice = AdvancedDamageSystem.initializeVehicleConditionFromVanillaPrice
+local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
+local getVehicleOperatingHours = RealisticMechanicalSystems.getVehicleOperatingHours
+local getSyncOperatingTime = RealisticMechanicalSystems.getSyncOperatingTime
+local initializeVehicleConditionFromVanillaPrice = RealisticMechanicalSystems.initializeVehicleConditionFromVanillaPrice
 
 -- ==========================================================
 --                      CONSOLE COMMANDS
 -- ==========================================================
 
-AdvancedDamageSystem.ConsoleCommands = {}
+RealisticMechanicalSystems.ConsoleCommands = {}
 
-function AdvancedDamageSystem.ConsoleCommands:getTargetVehicle()
-    if AdvancedDamageSystem.ConsoleCommands._overrideVehicle ~= nil then
-        local v = AdvancedDamageSystem.ConsoleCommands._overrideVehicle
-        if v.spec_AdvancedDamageSystem ~= nil then
+function RealisticMechanicalSystems.ConsoleCommands:getTargetVehicle()
+    if RealisticMechanicalSystems.ConsoleCommands._overrideVehicle ~= nil then
+        local v = RealisticMechanicalSystems.ConsoleCommands._overrideVehicle
+        if v.spec_RealisticMechanicalSystems ~= nil then
             return v
         end
-        print("ADS Error: Override vehicle does not have AdvancedDamageSystem support.")
+        print("ADS Error: Override vehicle does not have RealisticMechanicalSystems support.")
         return nil
     end
     local vehicle = g_localPlayer ~= nil
         and g_localPlayer.getCurrentVehicle ~= nil
         and g_localPlayer:getCurrentVehicle()
         or nil
-    if not vehicle or not vehicle.spec_AdvancedDamageSystem then
-        print("ADS Error: You must be in a vehicle with AdvancedDamageSystem support.")
+    if not vehicle or not vehicle.spec_RealisticMechanicalSystems then
+        print("ADS Error: You must be in a vehicle with RealisticMechanicalSystems support.")
         return nil
     end
     return vehicle
@@ -203,7 +203,7 @@ local function syncConsoleCloggingState(vehicle, spec, parent, key)
         end
     end
 
-    AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.FIELDCARE)
+    RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
 
     return true
 end
@@ -255,9 +255,9 @@ local function printSpecValueRecursive(prefix, value, visited, depth)
     print(string.format("%s}", string.rep("  ", depth)))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setConfigVar(rawArgs, rawValue)
+function RealisticMechanicalSystems.ConsoleCommands:setConfigVar(rawArgs, rawValue)
     if not g_currentMission:getIsServer() then
-        ADS_ConsoleCommandEvent.sendToServer("setConfigVar", rawArgs, rawValue, nil)
+        RMS_ConsoleCommandEvent.sendToServer("setConfigVar", rawArgs, rawValue, nil)
         return
     end
     local path = nil
@@ -284,22 +284,22 @@ function AdvancedDamageSystem.ConsoleCommands:setConfigVar(rawArgs, rawValue)
         return
     end
 
-    local parent, key, _, err = resolvePathParent(ADS_Config, path)
+    local parent, key, _, err = resolvePathParent(RMS_Config, path)
     if parent == nil then
-        print(string.format("ADS Error: Invalid ADS_Config path '%s': %s", path, tostring(err)))
+        print(string.format("ADS Error: Invalid RMS_Config path '%s': %s", path, tostring(err)))
         return
     end
 
     local oldValue = parent[key]
     parent[key] = value
 
-    print(string.format("ADS: ADS_Config.%s changed: %s -> %s", path, tostring(oldValue), tostring(value)))
+    print(string.format("ADS: RMS_Config.%s changed: %s -> %s", path, tostring(oldValue), tostring(value)))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setSpecVar(rawArgs, rawValue)
+function RealisticMechanicalSystems.ConsoleCommands:setSpecVar(rawArgs, rawValue)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setSpecVar", rawArgs, rawValue, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setSpecVar", rawArgs, rawValue, vehicle) end
         return
     end
     local vehicle = self:getTargetVehicle()
@@ -323,7 +323,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSpecVar(rawArgs, rawValue)
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local value, valueParsed = parseConsoleValue(valueToken)
     if not valueParsed then
         print("ADS Error: Failed to parse value.")
@@ -341,7 +341,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSpecVar(rawArgs, rawValue)
 
     local syncedCloggingState = syncConsoleCloggingState(vehicle, spec, parent, key)
 
-    print(string.format("ADS: spec_AdvancedDamageSystem.%s changed on '%s': %s -> %s", path, vehicle:getFullName(), tostring(oldValue), tostring(value)))
+    print(string.format("ADS: spec_RealisticMechanicalSystems.%s changed on '%s': %s -> %s", path, vehicle:getFullName(), tostring(oldValue), tostring(value)))
     if syncedCloggingState then
         print(string.format(
             "ADS: clogging state synced on '%s' (dirt=%.2f, radiator=%.2f, airIntake=%.2f).",
@@ -353,10 +353,10 @@ function AdvancedDamageSystem.ConsoleCommands:setSpecVar(rawArgs, rawValue)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:printSpecVar(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:printSpecVar(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("printSpecVar", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("printSpecVar", rawArgs, nil, vehicle) end
         return
     end
 
@@ -371,7 +371,7 @@ function AdvancedDamageSystem.ConsoleCommands:printSpecVar(rawArgs)
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local parent, key, _, err = resolvePathParent(spec, path)
     if parent == nil then
         print(string.format("ADS Error: Invalid ADS spec path '%s': %s", path, tostring(err)))
@@ -380,16 +380,16 @@ function AdvancedDamageSystem.ConsoleCommands:printSpecVar(rawArgs)
 
     local value = parent[key]
     if value == nil then
-        print(string.format("ADS: spec_AdvancedDamageSystem.%s = nil", path))
+        print(string.format("ADS: spec_RealisticMechanicalSystems.%s = nil", path))
         return
     end
 
     if type(value) == "table" then
-        print(string.format("ADS: spec_AdvancedDamageSystem.%s on '%s':", path, vehicle:getFullName()))
-        printSpecValueRecursive("spec_AdvancedDamageSystem." .. path, value, {}, 0)
+        print(string.format("ADS: spec_RealisticMechanicalSystems.%s on '%s':", path, vehicle:getFullName()))
+        printSpecValueRecursive("spec_RealisticMechanicalSystems." .. path, value, {}, 0)
     else
         print(string.format(
-            "ADS: spec_AdvancedDamageSystem.%s on '%s' = %s",
+            "ADS: spec_RealisticMechanicalSystems.%s on '%s' = %s",
             path,
             vehicle:getFullName(),
             tostring(value)
@@ -397,11 +397,11 @@ function AdvancedDamageSystem.ConsoleCommands:printSpecVar(rawArgs)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:listBreakdowns()
+function RealisticMechanicalSystems.ConsoleCommands:listBreakdowns()
     print("--- Available Breakdowns ---")
     
     local breakdownIds = {}
-    for id, data in pairs(ADS_Breakdowns.BreakdownRegistry) do
+    for id, data in pairs(RMS_Breakdowns.BreakdownRegistry) do
         table.insert(breakdownIds, string.format(" - %s (%s)", id, data.part or data.system or "No name"))
     end
 
@@ -414,10 +414,10 @@ function AdvancedDamageSystem.ConsoleCommands:listBreakdowns()
     print("----------------------------")
 end
 
-function AdvancedDamageSystem.ConsoleCommands:addBreakdown(rawArgs, rawArgTwo)
+function RealisticMechanicalSystems.ConsoleCommands:addBreakdown(rawArgs, rawArgTwo)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("addBreakdown", rawArgs, rawArgTwo, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("addBreakdown", rawArgs, rawArgTwo, vehicle) end
         return
     end
     local args = parseArguments(rawArgs, rawArgTwo)
@@ -436,7 +436,7 @@ function AdvancedDamageSystem.ConsoleCommands:addBreakdown(rawArgs, rawArgTwo)
     local breakdownId = string.upper(args[1])
     local stage = tonumber(args[2]) or 1
 
-    local registryEntry = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+    local registryEntry = RMS_Breakdowns.BreakdownRegistry[breakdownId]
     if not registryEntry then
         print(string.format("ADS Error: Breakdown with ID '%s' not found.", breakdownId))
         self:listBreakdowns()
@@ -458,10 +458,10 @@ function AdvancedDamageSystem.ConsoleCommands:addBreakdown(rawArgs, rawArgTwo)
     print(string.format("ADS: Added breakdown '%s' at stage %d to '%s'.", breakdownId, stage, vehicle:getFullName()))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:removeBreakdown(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:removeBreakdown(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("removeBreakdown", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("removeBreakdown", rawArgs, nil, vehicle) end
         return
     end
     local args = parseArguments(rawArgs)
@@ -476,17 +476,17 @@ function AdvancedDamageSystem.ConsoleCommands:removeBreakdown(rawArgs)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:changeBreakdownStage(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:changeBreakdownStage(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("changeBreakdownStage", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("changeBreakdownStage", rawArgs, nil, vehicle) end
         return
     end
     local args = parseArguments(rawArgs)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local advancedCount = 0
 
     local function parseStageArg(rawValue)
@@ -547,20 +547,20 @@ function AdvancedDamageSystem.ConsoleCommands:changeBreakdownStage(rawArgs)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setSystemCondition(rawArgs, rawArgTwo)
+function RealisticMechanicalSystems.ConsoleCommands:setSystemCondition(rawArgs, rawArgTwo)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setSystemCondition", rawArgs, rawArgTwo, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setSystemCondition", rawArgs, rawArgTwo, vehicle) end
         return
     end
     local args = parseArguments(rawArgs, rawArgTwo)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
     
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
 
     local function resolveSystemKey(rawSystem)
-        return ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
+        return RMS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     end
 
     local requestedSystem = args and args[1] or nil
@@ -598,10 +598,10 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemCondition(rawArgs, rawArg
     vehicle:updateConditionLevel()
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setCondition(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setCondition(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setCondition", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setCondition", rawArgs, nil, vehicle) end
         return
     end
 
@@ -611,7 +611,7 @@ function AdvancedDamageSystem.ConsoleCommands:setCondition(rawArgs)
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local targetCondition = tonumber(args and args[1] or nil)
     if targetCondition == nil or targetCondition < 0 or targetCondition > 1 then
         print("ADS Error: Invalid value. Please provide a number between 0.0 and 1.0.")
@@ -634,23 +634,23 @@ function AdvancedDamageSystem.ConsoleCommands:setCondition(rawArgs)
 
     vehicle:updateConditionLevel()
     print(string.format("ADS: Set condition for %d enabled systems on '%s' to %.3f. Final overall condition: %.3f.",
-        changedSystems, vehicle:getFullName(), targetCondition, vehicle.spec_AdvancedDamageSystem.conditionLevel or 0))
+        changedSystems, vehicle:getFullName(), targetCondition, vehicle.spec_RealisticMechanicalSystems.conditionLevel or 0))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setSystemStress(rawArgs, rawArgTwo)
+function RealisticMechanicalSystems.ConsoleCommands:setSystemStress(rawArgs, rawArgTwo)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setSystemStress", rawArgs, rawArgTwo, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setSystemStress", rawArgs, rawArgTwo, vehicle) end
         return
     end
     local args = parseArguments(rawArgs, rawArgTwo)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
 
     local function resolveSystemKey(rawSystem)
-        return ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
+        return RMS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     end
 
     local requestedSystem = args and args[1] or nil
@@ -686,18 +686,18 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemStress(rawArgs, rawArgTwo
     print(string.format("ADS: Set stress for system '%s' on '%s' to %.4f.", tostring(systemKey), vehicle:getFullName(), value))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setSystemStressMultiplier(rawArgs, rawArgTwo)
+function RealisticMechanicalSystems.ConsoleCommands:setSystemStressMultiplier(rawArgs, rawArgTwo)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setSystemStressMultiplier", rawArgs, rawArgTwo, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setSystemStressMultiplier", rawArgs, rawArgTwo, vehicle) end
         return
     end
     local args = parseArguments(rawArgs, rawArgTwo)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
-    local multipliers = ADS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local multipliers = RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS
 
     if multipliers == nil then
         print("ADS Error: SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS is missing in config.")
@@ -715,7 +715,7 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemStressMultiplier(rawArgs,
     end
 
     local function resolveSystemKey(rawSystem)
-        return ADS_Utils.resolveConsoleSystemKey(spec, rawSystem)
+        return RMS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     end
 
     local requestedSystem = args and args[2] or nil
@@ -744,17 +744,17 @@ function AdvancedDamageSystem.ConsoleCommands:setSystemStressMultiplier(rawArgs,
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setService(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setService(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setService", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setService", rawArgs, nil, vehicle) end
         return
     end
     local args = parseArguments(rawArgs)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
     
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local value = 1.0
 
     if args and args[1] then
@@ -770,45 +770,45 @@ function AdvancedDamageSystem.ConsoleCommands:setService(rawArgs)
 
     local interval = vehicle:getMaintenanceInterval()
     local currentHours = spec.realOperatingTime / (60 * 60 * 1000) or vehicle:getFormattedOperatingTime() or 0
-    local serviceExpiredThreshold = math.clamp(tonumber(ADS_Config.CORE.SERVICE_EXPIRED_THRESHOLD) or 0.5, 0, 0.9999)
+    local serviceExpiredThreshold = math.clamp(tonumber(RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD) or 0.5, 0, 0.9999)
     local activeServiceRange = math.max(1 - serviceExpiredThreshold, 0.0001)
     local hoursSinceService = ((1 - value) / activeServiceRange) * interval
     local targetOpHours = currentHours - hoursSinceService
     local found = false
     for i = #spec.maintenanceLog, 1, -1 do
         local entry = spec.maintenanceLog[i]
-        if entry.type == AdvancedDamageSystem.STATUS.MAINTENANCE or entry.id == 1 then
+        if entry.type == RealisticMechanicalSystems.STATUS.MAINTENANCE or entry.id == 1 then
             entry.conditionData.operatingHours = targetOpHours
             entry.conditionData.service = value
             if vehicle.isServer then
-                ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
+                RMS_LogEntrySyncEvent.sendToClients(vehicle, entry)
             end
             found = true
             break
         end
     end
     if not found and vehicle.isServer then
-        vehicle:addEntryToMaintenanceLog(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
+        vehicle:addEntryToMaintenanceLog(RealisticMechanicalSystems.STATUS.INSPECTION, RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
         local entry = spec.maintenanceLog[#spec.maintenanceLog]
         entry.conditionData.operatingHours = targetOpHours
         entry.conditionData.service = value
         entry.isVisible = false
-        ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
+        RMS_LogEntrySyncEvent.sendToClients(vehicle, entry)
     end
 
     print(string.format("ADS: Set Service level for '%s' to %.2f.", vehicle:getFullName(), value))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:resetVehicle()
+function RealisticMechanicalSystems.ConsoleCommands:resetVehicle()
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("resetVehicle", nil, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("resetVehicle", nil, nil, vehicle) end
         return
     end
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
     
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     spec.conditionLevel = 1.0
     spec.serviceLevel = 1.0
     vehicle:removeBreakdown()
@@ -817,34 +817,34 @@ function AdvancedDamageSystem.ConsoleCommands:resetVehicle()
     local found = false
     for i = #spec.maintenanceLog, 1, -1 do
         local entry = spec.maintenanceLog[i]
-        if entry.type == AdvancedDamageSystem.STATUS.MAINTENANCE or entry.id == 1 then
+        if entry.type == RealisticMechanicalSystems.STATUS.MAINTENANCE or entry.id == 1 then
             entry.conditionData.operatingHours = currentHours
             entry.conditionData.condition = 1.0
             entry.conditionData.service = 1.0
             if vehicle.isServer then
-                ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
+                RMS_LogEntrySyncEvent.sendToClients(vehicle, entry)
             end
             found = true
             break
         end
     end
     if not found and vehicle.isServer then
-        vehicle:addEntryToMaintenanceLog(AdvancedDamageSystem.STATUS.INSPECTION, AdvancedDamageSystem.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
+        vehicle:addEntryToMaintenanceLog(RealisticMechanicalSystems.STATUS.INSPECTION, RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
         local entry = spec.maintenanceLog[#spec.maintenanceLog]
         entry.conditionData.operatingHours = currentHours
         entry.conditionData.condition = 1.0
         entry.conditionData.service = 1.0
         entry.isVisible = false
-        ADS_LogEntrySyncEvent.sendToClients(vehicle, entry)
+        RMS_LogEntrySyncEvent.sendToClients(vehicle, entry)
     end
 
     print(string.format("ADS: Fully reset state for '%s'.", vehicle:getFullName()))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:reinitializeVehicle()
+function RealisticMechanicalSystems.ConsoleCommands:reinitializeVehicle()
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("reinitializeVehicle", nil, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("reinitializeVehicle", nil, nil, vehicle) end
         return
     end
 
@@ -861,22 +861,22 @@ function AdvancedDamageSystem.ConsoleCommands:reinitializeVehicle()
         "ADS: Reinitialized '%s' from vanilla resale price. Target condition: %.3f, final overall condition: %.3f.",
         vehicle:getFullName(),
         targetCondition or 0,
-        vehicle.spec_AdvancedDamageSystem.conditionLevel or 0
+        vehicle.spec_RealisticMechanicalSystems.conditionLevel or 0
     ))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
+function RealisticMechanicalSystems.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("startMaintance", rawArgs, rawArgTwo, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("startMaintance", rawArgs, rawArgTwo, vehicle) end
         return
     end
     local args = parseArguments(rawArgs, rawArgTwo)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
-    if spec.currentState ~= AdvancedDamageSystem.STATUS.READY then
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    if spec.currentState ~= RealisticMechanicalSystems.STATUS.READY then
         print(string.format("ADS Error: Vehicle '%s' is already under service (%s).", vehicle:getFullName(), spec.currentState))
         return
     end
@@ -890,7 +890,7 @@ function AdvancedDamageSystem.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
     local maintenanceType = string.lower(args[1])
     local isValidType = false
 
-    for stateName, state in pairs(AdvancedDamageSystem.STATUS) do
+    for stateName, state in pairs(RealisticMechanicalSystems.STATUS) do
         if string.lower(stateName) == maintenanceType then
             isValidType = true
             maintenanceType = state
@@ -898,7 +898,7 @@ function AdvancedDamageSystem.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
         end
     end
     
-    if not isValidType or maintenanceType == AdvancedDamageSystem.STATUS.READY then
+    if not isValidType or maintenanceType == RealisticMechanicalSystems.STATUS.READY then
         print("ADS Error: Invalid maintenance type '"..maintenanceType.."'")
         print("Available types: inspection, maintenance, repair, overhaul")
         return
@@ -907,17 +907,17 @@ function AdvancedDamageSystem.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
     local breakdownCount = tonumber(args[2]) or 1
     local optionOne, optionTwo, optionThree
 
-    if maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
-        optionOne = AdvancedDamageSystem.INSPECTION_TYPES.STANDARD
+    if maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
+        optionOne = RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD
         optionTwo = "NONE"
         optionThree = false
-    elseif maintenanceType == AdvancedDamageSystem.STATUS.MAINTENANCE then
-        optionOne = AdvancedDamageSystem.MAINTENANCE_TYPES.STANDARD
-        optionTwo = AdvancedDamageSystem.PART_TYPES.OEM
+    elseif maintenanceType == RealisticMechanicalSystems.STATUS.MAINTENANCE then
+        optionOne = RealisticMechanicalSystems.MAINTENANCE_TYPES.STANDARD
+        optionTwo = RealisticMechanicalSystems.PART_TYPES.OEM
         optionThree = false
-    elseif maintenanceType == AdvancedDamageSystem.STATUS.REPAIR then
-        optionOne = AdvancedDamageSystem.REPAIR_TYPES.MEDIUM
-        optionTwo = AdvancedDamageSystem.PART_TYPES.OEM
+    elseif maintenanceType == RealisticMechanicalSystems.STATUS.REPAIR then
+        optionOne = RealisticMechanicalSystems.REPAIR_TYPES.MEDIUM
+        optionTwo = RealisticMechanicalSystems.PART_TYPES.OEM
         optionThree = false
 
         local visibleRepairableCount = 0
@@ -945,13 +945,13 @@ function AdvancedDamageSystem.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
             print(string.format("ADS Error: No breakdowns selected for repair on '%s'.", vehicle:getFullName()))
             return
         end
-    elseif maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        optionOne = AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD
+    elseif maintenanceType == RealisticMechanicalSystems.STATUS.OVERHAUL then
+        optionOne = RealisticMechanicalSystems.OVERHAUL_TYPES.STANDARD
         optionTwo = "NONE"
         optionThree = false
     end
 
-    vehicle:initService(maintenanceType, AdvancedDamageSystem.WORKSHOP.OWN, optionOne, optionTwo, optionThree)
+    vehicle:initService(maintenanceType, RealisticMechanicalSystems.WORKSHOP.OWN, optionOne, optionTwo, optionThree)
 
     if spec.currentState == maintenanceType and (spec.maintenanceTimer or 0) > 0 then
         local finishTime, days = vehicle:getServiceFinishTime()
@@ -961,23 +961,23 @@ function AdvancedDamageSystem.ConsoleCommands:startMaintance(rawArgs, rawArgTwo)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:finishMaintance()
+function RealisticMechanicalSystems.ConsoleCommands:finishMaintance()
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("finishMaintance", nil, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("finishMaintance", nil, nil, vehicle) end
         return
     end
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
-    if spec.currentState == AdvancedDamageSystem.STATUS.READY then
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    if spec.currentState == RealisticMechanicalSystems.STATUS.READY then
         print(string.format("ADS: Vehicle '%s' is not under service.", vehicle:getFullName()))
         return
     end
 
     local currentState = spec.currentState
-    local finished, err = AdvancedDamageSystem.forceFinishService(vehicle)
+    local finished, err = RealisticMechanicalSystems.forceFinishService(vehicle)
 
     if not finished then
         print(string.format("ADS Error: Failed to force-finish service for '%s': %s", vehicle:getFullName(), tostring(err)))
@@ -987,11 +987,11 @@ function AdvancedDamageSystem.ConsoleCommands:finishMaintance()
     print(string.format("ADS: Service '%s' force-finished for '%s'.", currentState, vehicle:getFullName()))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:getServiceState()
+function RealisticMechanicalSystems.ConsoleCommands:getServiceState()
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local progressPercent = 0
     if (spec.pendingProgressTotalTime or 0) > 0 then
         progressPercent = math.floor(math.max(0, math.min((spec.pendingProgressElapsedTime or 0) / spec.pendingProgressTotalTime, 1)) * 100)
@@ -1035,11 +1035,11 @@ function AdvancedDamageSystem.ConsoleCommands:getServiceState()
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:showServiceLog(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:showServiceLog(rawArgs)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local log = spec.maintenanceLog or {}
     local args = parseArguments(rawArgs)
 
@@ -1107,12 +1107,12 @@ function AdvancedDamageSystem.ConsoleCommands:showServiceLog(rawArgs)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:getDebugVehicleInfo(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:getDebugVehicleInfo(rawArgs)
     local args = parseArguments(rawArgs)
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
     
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local motor = vehicle:getMotor()
 
     local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
@@ -1123,7 +1123,7 @@ function AdvancedDamageSystem.ConsoleCommands:getDebugVehicleInfo(rawArgs)
     print(string.format("Property state: %s", vehicle.propertyState))
     print(string.format("Transmission: %s, %s, %s", motor.minForwardGearRatio, motor.gearType, motor.groupType))
     print(string.format("ADS transmission type: %s", tostring(vehicle:getTransmissionType())))
-    print(string.format("XML/shop transmission name: %s", tostring(AdvancedDamageSystem.getTransmissionNameFromXML(vehicle))))
+    print(string.format("XML/shop transmission name: %s", tostring(RealisticMechanicalSystems.getTransmissionNameFromXML(vehicle))))
 
     local hasTurboBaseSound = false
     local hasTurboCurrentConfigSound = false
@@ -1215,10 +1215,10 @@ function AdvancedDamageSystem.ConsoleCommands:getDebugVehicleInfo(rawArgs)
     end
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setDirtAmount(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setDirtAmount(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setDirtAmount", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setDirtAmount", rawArgs, nil, vehicle) end
         return
     end
     local vehicle = self:getTargetVehicle()
@@ -1251,10 +1251,10 @@ function AdvancedDamageSystem.ConsoleCommands:setDirtAmount(rawArgs)
     print(string.format("ADS: Set Dirt amount for '%s' to %.2f.", vehicle:getFullName(), value))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setFuelLevel(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setFuelLevel(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setFuelLevel", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setFuelLevel", rawArgs, nil, vehicle) end
         return
     end
     local vehicle = self:getTargetVehicle()
@@ -1324,10 +1324,10 @@ function AdvancedDamageSystem.ConsoleCommands:setFuelLevel(rawArgs)
     ))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setHorsePower(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setHorsePower(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setHorsePower", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setHorsePower", rawArgs, nil, vehicle) end
         return
     end
 
@@ -1457,10 +1457,10 @@ function AdvancedDamageSystem.ConsoleCommands:setHorsePower(rawArgs)
     ))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setOperatingTime(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setOperatingTime(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setOperatingTime", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setOperatingTime", rawArgs, nil, vehicle) end
         return
     end
 
@@ -1484,14 +1484,14 @@ function AdvancedDamageSystem.ConsoleCommands:setOperatingTime(rawArgs)
 
     local operatingTimeMs = hours * 60 * 60 * 1000
     local previousOperatingTimeMs = getSyncOperatingTime(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
 
     spec._allowAdsOperatingTimeWrite = true
     vehicle:setOperatingTime(operatingTimeMs, false)
     spec._allowAdsOperatingTimeWrite = false
     spec.realOperatingTime = operatingTimeMs
 
-    AdvancedDamageSystem.raiseADSDirty(vehicle, AdvancedDamageSystem.SYNC_GROUP.TELEMETRY)
+    RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TELEMETRY)
 
     print(string.format(
         "ADS: Operating time for '%s' changed: %.2f h -> %.2f h (%.0f ms).",
@@ -1502,10 +1502,10 @@ function AdvancedDamageSystem.ConsoleCommands:setOperatingTime(rawArgs)
     ))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setPlowMaxForce(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setPlowMaxForce(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setPlowMaxForce", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setPlowMaxForce", rawArgs, nil, vehicle) end
         return
     end
 
@@ -1575,10 +1575,10 @@ function AdvancedDamageSystem.ConsoleCommands:setPlowMaxForce(rawArgs)
     ))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:resetFactorStats()
+function RealisticMechanicalSystems.ConsoleCommands:resetFactorStats()
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("resetFactorStats", nil, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("resetFactorStats", nil, nil, vehicle) end
         return
     end
     local vehicle = self:getTargetVehicle()
@@ -1586,7 +1586,7 @@ function AdvancedDamageSystem.ConsoleCommands:resetFactorStats()
         return
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local factorStats = ensureFactorStats(spec, vehicle)
 
     for _, systemStats in pairs(factorStats) do
@@ -1605,10 +1605,10 @@ function AdvancedDamageSystem.ConsoleCommands:resetFactorStats()
     print(string.format("ADS: Factor stats reset for '%s'.", vehicle:getFullName()))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:toggleHudDebugView(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:toggleHudDebugView(rawArgs)
     local args = parseArguments(rawArgs)
     local requestedMode = args and args[1] and string.lower(tostring(args[1])) or nil
-    local currentMode = tostring((ADS_Hud ~= nil and ADS_Hud.debugViewMode) or "default")
+    local currentMode = tostring((RMS_Hud ~= nil and RMS_Hud.debugViewMode) or "default")
     local nextMode = "default"
 
     if requestedMode == nil or requestedMode == "" or requestedMode == "toggle" then
@@ -1626,24 +1626,24 @@ function AdvancedDamageSystem.ConsoleCommands:toggleHudDebugView(rawArgs)
         return
     end
 
-    if ADS_Hud ~= nil then
-        ADS_Hud.debugViewMode = nextMode
+    if RMS_Hud ~= nil then
+        RMS_Hud.debugViewMode = nextMode
     end
 
     print(string.format("ADS: HUD debug view mode = %s", nextMode))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:setExcluded(rawArgs)
+function RealisticMechanicalSystems.ConsoleCommands:setExcluded(rawArgs)
     if not g_currentMission:getIsServer() then
         local vehicle = self:getTargetVehicle()
-        if vehicle then ADS_ConsoleCommandEvent.sendToServer("setExcluded", rawArgs, nil, vehicle) end
+        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setExcluded", rawArgs, nil, vehicle) end
         return
     end
 
     local vehicle = self:getTargetVehicle()
     if not vehicle then return end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local args = parseArguments(rawArgs)
     local rawValue = args and args[1] and string.lower(tostring(args[1])) or nil
 
@@ -1669,7 +1669,7 @@ function AdvancedDamageSystem.ConsoleCommands:setExcluded(rawArgs)
         return
     end
 
-    local changed, reason = vehicle:setADSUserExcluded(isExcluded)
+    local changed, reason = vehicle:setRMSUserExcluded(isExcluded)
     if reason == "default" then
         print(string.format("ADS: '%s' is not supported by ADS and cannot be managed.", vehicle:getFullName()))
         return
@@ -1683,46 +1683,46 @@ function AdvancedDamageSystem.ConsoleCommands:setExcluded(rawArgs)
     print(string.format("ADS: '%s' is now %s.", vehicle:getFullName(), isExcluded and "excluded from ADS" or "managed by ADS"))
 end
 
-function AdvancedDamageSystem.ConsoleCommands:debug()
+function RealisticMechanicalSystems.ConsoleCommands:debug()
     if not g_currentMission:getIsServer() then
-        ADS_ConsoleCommandEvent.sendToServer("debug", nil, nil, nil)
+        RMS_ConsoleCommandEvent.sendToServer("debug", nil, nil, nil)
         return
     end
-    if ADS_Config.DEBUG then
-        ADS_Config.DEBUG = false
+    if RMS_Config.DEBUG then
+        RMS_Config.DEBUG = false
     else
-        ADS_Config.DEBUG = true
+        RMS_Config.DEBUG = true
     end
-    if g_server ~= nil and ADS_SettingsSyncEvent ~= nil then
-        g_server:broadcastEvent(ADS_SettingsSyncEvent.new())
+    if g_server ~= nil and RMS_SettingsSyncEvent ~= nil then
+        g_server:broadcastEvent(RMS_SettingsSyncEvent.new())
     end
 end
 
-addConsoleCommand("ads_listBreakdowns", "Lists all available breakdown IDs.", "listBreakdowns", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_addBreakdown", "Adds a breakdown. Usage: ads_addBreakdown [id] [stage]", "addBreakdown", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_removeBreakdown", "Removes a breakdown. Usage: ads_removeBreakdown [id]", "removeBreakdown", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_advanceBreakdown", "Advances a breakdown to the next stage. Usage: ads_advanceBreakdown [id]", "changeBreakdownStage", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setCondition", "Sets condition for all enabled systems. Usage: ads_setCondition [0.0-1.0]", "setCondition", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setSystemCondition", "Sets system condition. Usage: ads_setSystemCondition [system] [0.0-1.0]", "setSystemCondition", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setSystemStress", "Sets system stress. Usage: ads_setSystemStress [system] [>=0.0]", "setSystemStress", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setSystemStressMultiplier", "Sets stress accumulation multiplier. Usage: ads_setSystemStressMultiplier [>=0.0] [system]", "setSystemStressMultiplier", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setService", "Sets vehicle service. Usage: ads_setService [0.0-1.0]", "setService", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_resetVehicle", "Resets vehicle state.", "resetVehicle", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_reinitializeVehicle", "Reinitializes vehicle from vanilla resale price logic.", "reinitializeVehicle", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_startService", "Starts service. Usage: ads_startService <type> [count]", "startMaintance", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_finishService", "Instantly finishes current service.", "finishMaintance", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_getServiceState", "Prints current service/workshop state variables.", "getServiceState", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_showServiceLog", "Shows service log. Usage: ads_showServiceLog [index]", "showServiceLog", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_getDebugVehicleInfo", "Vehicle debug info", "getDebugVehicleInfo", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setDirtAmount", "Sets vehicle dirt amount. Usage: ads_setDirtAmount [0.0-1.0]", "setDirtAmount", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setFuelLevel", "Sets vehicle fuel level. Usage: ads_setFuelLevel [0.0-1.0 or 0..100]", "setFuelLevel", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setHorsePower", "Sets horsepower on current vehicle. Usage: ads_setHorsePower [hp]", "setHorsePower", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setOperatingTime", "Sets operating time on current vehicle. Usage: ads_setOperatingTime [hours]", "setOperatingTime", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setPlowMaxForce", "Sets maxForce on selected/attached plow. Usage: ads_setPlowMaxForce [kN]", "setPlowMaxForce", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_resetFactorStats", "Resets accumulated factor stats for current vehicle.", "resetFactorStats", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_toggleHudDebugView", "Switch debug HUD view. Usage: ads_toggleHudDebugView [default|stats|toggle]", "toggleHudDebugView", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setExcluded", "Excludes or includes the current vehicle in ADS. Usage: ads_setExcluded <true|false>", "setExcluded", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_debug", "Enbales/disabled ADS debug", "debug", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setConfigVar", "Sets ADS_Config variable. Usage: ads_setConfigVar <path> <value>", "setConfigVar", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_setSpecVar", "Sets ADS specialization variable on current vehicle. Usage: ads_setSpecVar <path> <value>", "setSpecVar", AdvancedDamageSystem.ConsoleCommands)
-addConsoleCommand("ads_printSpecVar", "Prints ADS specialization variable on current vehicle. Usage: ads_printSpecVar <path>", "printSpecVar", AdvancedDamageSystem.ConsoleCommands)
+addConsoleCommand("ads_listBreakdowns", "Lists all available breakdown IDs.", "listBreakdowns", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_addBreakdown", "Adds a breakdown. Usage: ads_addBreakdown [id] [stage]", "addBreakdown", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_removeBreakdown", "Removes a breakdown. Usage: ads_removeBreakdown [id]", "removeBreakdown", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_advanceBreakdown", "Advances a breakdown to the next stage. Usage: ads_advanceBreakdown [id]", "changeBreakdownStage", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setCondition", "Sets condition for all enabled systems. Usage: ads_setCondition [0.0-1.0]", "setCondition", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setSystemCondition", "Sets system condition. Usage: ads_setSystemCondition [system] [0.0-1.0]", "setSystemCondition", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setSystemStress", "Sets system stress. Usage: ads_setSystemStress [system] [>=0.0]", "setSystemStress", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setSystemStressMultiplier", "Sets stress accumulation multiplier. Usage: ads_setSystemStressMultiplier [>=0.0] [system]", "setSystemStressMultiplier", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setService", "Sets vehicle service. Usage: ads_setService [0.0-1.0]", "setService", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_resetVehicle", "Resets vehicle state.", "resetVehicle", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_reinitializeVehicle", "Reinitializes vehicle from vanilla resale price logic.", "reinitializeVehicle", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_startService", "Starts service. Usage: ads_startService <type> [count]", "startMaintance", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_finishService", "Instantly finishes current service.", "finishMaintance", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_getServiceState", "Prints current service/workshop state variables.", "getServiceState", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_showServiceLog", "Shows service log. Usage: ads_showServiceLog [index]", "showServiceLog", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_getDebugVehicleInfo", "Vehicle debug info", "getDebugVehicleInfo", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setDirtAmount", "Sets vehicle dirt amount. Usage: ads_setDirtAmount [0.0-1.0]", "setDirtAmount", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setFuelLevel", "Sets vehicle fuel level. Usage: ads_setFuelLevel [0.0-1.0 or 0..100]", "setFuelLevel", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setHorsePower", "Sets horsepower on current vehicle. Usage: ads_setHorsePower [hp]", "setHorsePower", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setOperatingTime", "Sets operating time on current vehicle. Usage: ads_setOperatingTime [hours]", "setOperatingTime", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setPlowMaxForce", "Sets maxForce on selected/attached plow. Usage: ads_setPlowMaxForce [kN]", "setPlowMaxForce", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_resetFactorStats", "Resets accumulated factor stats for current vehicle.", "resetFactorStats", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_toggleHudDebugView", "Switch debug HUD view. Usage: ads_toggleHudDebugView [default|stats|toggle]", "toggleHudDebugView", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setExcluded", "Excludes or includes the current vehicle in ADS. Usage: ads_setExcluded <true|false>", "setExcluded", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_debug", "Enbales/disabled ADS debug", "debug", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setConfigVar", "Sets RMS_Config variable. Usage: ads_setConfigVar <path> <value>", "setConfigVar", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_setSpecVar", "Sets ADS specialization variable on current vehicle. Usage: ads_setSpecVar <path> <value>", "setSpecVar", RealisticMechanicalSystems.ConsoleCommands)
+addConsoleCommand("ads_printSpecVar", "Prints ADS specialization variable on current vehicle. Usage: ads_printSpecVar <path>", "printSpecVar", RealisticMechanicalSystems.ConsoleCommands)

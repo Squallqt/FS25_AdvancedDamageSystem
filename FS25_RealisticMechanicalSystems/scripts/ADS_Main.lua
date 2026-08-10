@@ -1,14 +1,14 @@
-ADS_Main = {}
+RMS_Main = {}
 
-ADS_SoundManager = {}
+RMS_SoundManager = {}
 
-function ADS_SoundManager.playSample(sample)
+function RMS_SoundManager.playSample(sample)
     if sample ~= nil then
         g_soundManager:playSample(sample)
     end
 end
 
-function ADS_SoundManager.stopSample(sample, fadeDuration, force)
+function RMS_SoundManager.stopSample(sample, fadeDuration, force)
     if sample == nil then
         return
     end
@@ -20,30 +20,30 @@ function ADS_SoundManager.stopSample(sample, fadeDuration, force)
     end
 end
 
-function ADS_SoundManager.getIsSamplePlaying(sample)
+function RMS_SoundManager.getIsSamplePlaying(sample)
     return sample ~= nil and g_soundManager:getIsSamplePlaying(sample)
 end
 
-function ADS_SoundManager.setSamplePlaying(sample, shouldPlay, fadeDuration, force)
+function RMS_SoundManager.setSamplePlaying(sample, shouldPlay, fadeDuration, force)
     if sample == nil then
         return
     end
 
-    local isPlaying = ADS_SoundManager.getIsSamplePlaying(sample)
+    local isPlaying = RMS_SoundManager.getIsSamplePlaying(sample)
     if shouldPlay and not isPlaying then
-        ADS_SoundManager.playSample(sample)
+        RMS_SoundManager.playSample(sample)
     elseif not shouldPlay and isPlaying then
-        ADS_SoundManager.stopSample(sample, fadeDuration, force)
+        RMS_SoundManager.stopSample(sample, fadeDuration, force)
     end
 end
 
-function ADS_SoundManager.setSamplePitchOffset(sample, pitchOffset)
+function RMS_SoundManager.setSamplePitchOffset(sample, pitchOffset)
     if sample ~= nil then
         g_soundManager:setSamplePitchOffset(sample, pitchOffset)
     end
 end
 
-function ADS_SoundManager.setSampleVolumeOffset(sample, volumeOffset)
+function RMS_SoundManager.setSampleVolumeOffset(sample, volumeOffset)
     if sample ~= nil then
         g_soundManager:setSampleVolumeOffset(sample, volumeOffset)
     end
@@ -90,8 +90,8 @@ source(g_currentModDirectory .. "events/ADS_DrivetrainEvent.lua")
 source(g_currentModDirectory .. "events/ADS_DebugSnapshotResponseEvent.lua")
 source(g_currentModDirectory .. "events/ADS_DebugSnapshotRequestEvent.lua")
 
-function ADS_Main.loadGuiProfiles()
-    if ADS_Main.guiProfilesLoaded or g_gui == nil then
+function RMS_Main.loadGuiProfiles()
+    if RMS_Main.guiProfilesLoaded or g_gui == nil then
         return
     end
 
@@ -102,35 +102,35 @@ function ADS_Main.loadGuiProfiles()
         g_overlayManager:addTextureConfigFile(modDirectory .. "images/menuIcon.xml", "ads_MenuIcon")
     end
 
-    ADS_Main.guiProfilesLoaded = true
+    RMS_Main.guiProfilesLoaded = true
 end
 
 -- ===========================================================
 --                   SPECIALIZATION REGISTRATION
 -- ===========================================================
 
-function ADS_Main.initSpec()
-    g_specializationManager:addSpecialization("AdvancedDamageSystem", "AdvancedDamageSystem", g_currentModDirectory.."scripts/core/ADS_Specialization.lua", "")
-    TypeManager.finalizeTypes = Utils.appendedFunction(TypeManager.finalizeTypes, ADS_Main.registerSpecializationToVehicles)
+function RMS_Main.initSpec()
+    g_specializationManager:addSpecialization("RealisticMechanicalSystems", "RealisticMechanicalSystems", g_currentModDirectory.."scripts/core/ADS_Specialization.lua", "")
+    TypeManager.finalizeTypes = Utils.appendedFunction(TypeManager.finalizeTypes, RMS_Main.registerSpecializationToVehicles)
 end
 
-local ADS_REQUIRED_SPECIALIZATIONS = {"motorized", "wheels", "enterable"}
+local RMS_REQUIRED_SPECIALIZATIONS = {"motorized", "wheels", "enterable"}
 
-local ADS_REJECTED_SPECIALIZATIONS = {"attachable", "pushHandTool", "locomotive", "motorbike"}
+local RMS_REJECTED_SPECIALIZATIONS = {"attachable", "pushHandTool", "locomotive", "motorbike"}
 
-local function getIsTypeManagedByADS(vehicleType)
+local function getIsTypeManagedByRMS(vehicleType)
 	local specializations = vehicleType.specializationsByName
-	if specializations.AdvancedDamageSystem ~= nil then
+	if specializations.RealisticMechanicalSystems ~= nil then
 		return false
 	end
 
-	for _, name in ipairs(ADS_REQUIRED_SPECIALIZATIONS) do
+	for _, name in ipairs(RMS_REQUIRED_SPECIALIZATIONS) do
 		if specializations[name] == nil then
 			return false
 		end
 	end
 
-	for _, name in ipairs(ADS_REJECTED_SPECIALIZATIONS) do
+	for _, name in ipairs(RMS_REJECTED_SPECIALIZATIONS) do
 		if specializations[name] ~= nil then
 			return false
 		end
@@ -139,12 +139,12 @@ local function getIsTypeManagedByADS(vehicleType)
 	return true
 end
 
-function ADS_Main.registerSpecializationToVehicles()
-	local specName = "AdvancedDamageSystem"
+function RMS_Main.registerSpecializationToVehicles()
+	local specName = "RealisticMechanicalSystems"
 	local specObject = g_specializationManager:getSpecializationObjectByName(specName)
 
 	for _, vehicleType in pairs(g_vehicleTypeManager.types) do
-		if getIsTypeManagedByADS(vehicleType) then
+		if getIsTypeManagedByRMS(vehicleType) then
 			vehicleType.specializationsByName[specName] = specObject
 			table.insert(vehicleType.specializationNames, specName)
 			table.insert(vehicleType.specializations, specObject)
@@ -180,33 +180,33 @@ end
 --             HUD, GUI and Workshop Screen Reg
 -- ==========================================================
 
-function ADS_Main:onStartMission()
-    ADS_Main.loadGuiProfiles()
+function RMS_Main:onStartMission()
+    RMS_Main.loadGuiProfiles()
     self.shopMenuPageInstalled = false
 
-    ADS_WorkshopDialog.register()
-    ADS_MaintenanceLogDialog.register()
-    ADS_ReportDialog.register()
-    ADS_InspectionDialog.register()
-    ADS_SellItemDialog.register()
-    ADS_MaintenanceTwoOptionsDialog.register()
-    ADS_MaintenanceThreeOptionsDialog.register()
-    ADS_WelcomeDialog.register()
+    RMS_WorkshopDialog.register()
+    RMS_MaintenanceLogDialog.register()
+    RMS_ReportDialog.register()
+    RMS_InspectionDialog.register()
+    RMS_SellItemDialog.register()
+    RMS_MaintenanceTwoOptionsDialog.register()
+    RMS_MaintenanceThreeOptionsDialog.register()
+    RMS_WelcomeDialog.register()
 
     local mission = g_currentMission
-    ADS_Main.hud = ADS_Hud:new()
-    ADS_Main.hud:setScale(g_gameSettings:getValue(GameSettings.SETTING.UI_SCALE))
-	ADS_Main.hud:setVehicle(nil)
+    RMS_Main.hud = RMS_Hud:new()
+    RMS_Main.hud:setScale(g_gameSettings:getValue(GameSettings.SETTING.UI_SCALE))
+	RMS_Main.hud:setVehicle(nil)
 
-	table.insert(mission.hud.displayComponents, ADS_Main.hud)
+	table.insert(mission.hud.displayComponents, RMS_Main.hud)
 
 	mission.hud.setControlledVehicle = Utils.appendedFunction(mission.hud.setControlledVehicle, function(self, vehicle)
-		ADS_Main.hud:setVehicle(vehicle)
-		ADS_Main.hud:setVisible(vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle)
+		RMS_Main.hud:setVehicle(vehicle)
+		RMS_Main.hud:setVisible(vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle)
 	end)
 
 	mission.hud.drawControlledEntityHUD = Utils.appendedFunction(mission.hud.drawControlledEntityHUD, function(self)
-		ADS_Main.hud:draw()
+		RMS_Main.hud:draw()
 	end)
 
     -- spec list damage fix (store and garage overwiev)
@@ -214,8 +214,8 @@ function ADS_Main:onStartMission()
         if spec.name == 'wearable' then
             local origFunc = spec.getValueFunc
             spec.getValueFunc = function(s, v)
-                if v ~= nil and v.spec_AdvancedDamageSystem ~= nil and not v.spec_AdvancedDamageSystem.isExcludedVehicle then
-                    return ADS_Utils.formatTimeAgo(v:getLastMaintenanceDate())
+                if v ~= nil and v.spec_RealisticMechanicalSystems ~= nil and not v.spec_RealisticMechanicalSystems.isExcludedVehicle then
+                    return RMS_Utils.formatTimeAgo(v:getLastMaintenanceDate())
                 else
                     return origFunc(s, v)
                 end
@@ -225,18 +225,18 @@ function ADS_Main:onStartMission()
 end
 
 
-function ADS_Main.onCustomRepairClick(screenInstance)
-    ADS_WorkshopDialog.show(screenInstance.vehicle)
+function RMS_Main.onCustomRepairClick(screenInstance)
+    RMS_WorkshopDialog.show(screenInstance.vehicle)
 end
 
 -- workshop repairButton control for ADS vehicles
-function ADS_Main.hookRepairButton(screenInstance, vehicle)
+function RMS_Main.hookRepairButton(screenInstance, vehicle)
     if screenInstance.ads_originalRepairCallback == nil and screenInstance.repairButton.onClickCallback ~= nil then
         screenInstance.ads_originalRepairCallback = screenInstance.repairButton.onClickCallback
     end
-    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         screenInstance.repairButton.onClickCallback = function()           
-            ADS_Main.onCustomRepairClick(screenInstance)
+            RMS_Main.onCustomRepairClick(screenInstance)
         end
         screenInstance.repairButton:setDisabled(false)
     else
@@ -246,24 +246,24 @@ end
 
 
 local function getReliability(storeItem, vehicle)
-    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         return nil
     end
 
     if storeItem.specs.power ~= nil then
-        local reliability = AdvancedDamageSystem.getBrandReliability(nil, storeItem)
-        return ADS_Utils.formatReliability(reliability)
+        local reliability = RealisticMechanicalSystems.getBrandReliability(nil, storeItem)
+        return RMS_Utils.formatReliability(reliability)
     end
 end
 
 local function getMaintainability(storeItem, vehicle)
-    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         return nil
     end
 
     if storeItem.specs.power ~= nil then
-        local _, maintainability = AdvancedDamageSystem.getBrandReliability(nil, storeItem)
-        return ADS_Utils.formatMaintainability(maintainability)
+        local _, maintainability = RealisticMechanicalSystems.getBrandReliability(nil, storeItem)
+        return RMS_Utils.formatMaintainability(maintainability)
     end
 end
 
@@ -271,7 +271,7 @@ end
     g_storeManager:addSpecType("reliability", "shopListAttributeIconReliability", nil, getReliability, StoreSpecies.VEHICLE)
 g_storeManager:addSpecType("maintainability", "shopListAttributeIconMaintainability", nil, getMaintainability, StoreSpecies.VEHICLE)
 
-function ADS_Main.addShopMenuPage(frame, pageName, uvs, predicateFunc, insertAfter)
+function RMS_Main.addShopMenuPage(frame, pageName, uvs, predicateFunc, insertAfter)
     local targetPosition = 0
 
     g_shopMenu.controlIDs[pageName] = nil
@@ -327,22 +327,22 @@ function ADS_Main.addShopMenuPage(frame, pageName, uvs, predicateFunc, insertAft
     g_shopMenu:rebuildTabList()
 end
 
-function ADS_Main:tryRegisterShopMenuPage()
+function RMS_Main:tryRegisterShopMenuPage()
     if self.shopMenuPageInstalled then
         return true
     end
 
-    if ADS_InGameMenuFrame == nil or g_shopMenu == nil then
+    if RMS_InGameMenuFrame == nil or g_shopMenu == nil then
         return false
     end
 
-    if g_shopMenu[ADS_InGameMenuFrame.PAGE_NAME] ~= nil then
+    if g_shopMenu[RMS_InGameMenuFrame.PAGE_NAME] ~= nil then
         self.shopMenuPageInstalled = true
         return true
     end
 
-    local frame = ADS_InGameMenuFrame.register()
-    ADS_Main.addShopMenuPage(frame, ADS_InGameMenuFrame.PAGE_NAME, {0, 0, 1024, 1024}, function()
+    local frame = RMS_InGameMenuFrame.register()
+    RMS_Main.addShopMenuPage(frame, RMS_InGameMenuFrame.PAGE_NAME, {0, 0, 1024, 1024}, function()
         return true
     end, "pageUsedSale")
     frame:initialize()
@@ -353,15 +353,15 @@ end
 
 
 -- adds spec in config screen 
-function ADS_Main.processAttributeData(self, storeItem, vehicle, saleItem)
-    if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+function RMS_Main.processAttributeData(self, storeItem, vehicle, saleItem)
+    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         local reliabilityItemElement = self.attributeItem:clone(self.attributesLayout)
         local reliabilityIconElement = reliabilityItemElement:getDescendantByName("icon")
         local reliabilityTextElement = reliabilityItemElement:getDescendantByName("text")
 
-        local rel, mel = AdvancedDamageSystem.getBrandReliability(vehicle, nil)
+        local rel, mel = RealisticMechanicalSystems.getBrandReliability(vehicle, nil)
         reliabilityIconElement:applyProfile("shopConfigAttributeIconReliability")
-        reliabilityTextElement:setText(ADS_Utils.formatReliability(rel))
+        reliabilityTextElement:setText(RMS_Utils.formatReliability(rel))
         self.attributesLayout:invalidateLayout()
 
         local maintainabilityItemElement = self.attributeItem:clone(self.attributesLayout)
@@ -369,20 +369,20 @@ function ADS_Main.processAttributeData(self, storeItem, vehicle, saleItem)
         local maintainabilityTextElement = maintainabilityItemElement:getDescendantByName("text")
 
         maintainabilityIconElement:applyProfile("shopConfigAttributeIconMaintainability")
-        maintainabilityTextElement:setText(ADS_Utils.formatMaintainability(mel))
+        maintainabilityTextElement:setText(RMS_Utils.formatMaintainability(mel))
         self.attributesLayout:invalidateLayout()
     end
 end
 
 -- garage overwiev fix
-function ADS_Main.populateCellForItemInSection(self, superFunc, list, section, index, cell)
+function RMS_Main.populateCellForItemInSection(self, superFunc, list, section, index, cell)
     if list.id == 'vehiclesList' then
         local vehicle = self.vehicles[index].vehicle
-        if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+        if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
             superFunc(self, list, section, index, cell)
             local condition, isCompleteInspection = vehicle:getLastInspectedCondition()
-            cell:getAttribute("damage"):setText(ADS_Utils.formatCondition(condition, isCompleteInspection))
-            cell:getAttribute("damage"):setTextColor(ADS_Utils.getConditionColor(condition, isCompleteInspection))
+            cell:getAttribute("damage"):setText(RMS_Utils.formatCondition(condition, isCompleteInspection))
+            cell:getAttribute("damage"):setTextColor(RMS_Utils.getConditionColor(condition, isCompleteInspection))
         else
             superFunc(self, list, section, index, cell)
         end
@@ -392,91 +392,91 @@ function ADS_Main.populateCellForItemInSection(self, superFunc, list, section, i
 end
 
 
-FSBaseMission.onStartMission = Utils.prependedFunction(FSBaseMission.onStartMission, ADS_Main.onStartMission)
-FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, ADS_Config.saveToXMLFile)
+FSBaseMission.onStartMission = Utils.prependedFunction(FSBaseMission.onStartMission, RMS_Main.onStartMission)
+FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, RMS_Config.saveToXMLFile)
 Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, function()
-    ADS_Config.loadFromXMLFile()
+    RMS_Config.loadFromXMLFile()
 end)
 FSBaseMission.sendInitialClientState = Utils.appendedFunction(FSBaseMission.sendInitialClientState, function(_, connection)
     if g_server ~= nil then
-        connection:sendEvent(ADS_SettingsSyncEvent.new())
-        ADS_TutorialStateEvent.sendToClient(connection)
+        connection:sendEvent(RMS_SettingsSyncEvent.new())
+        RMS_TutorialStateEvent.sendToClient(connection)
     end
 end)
-WorkshopScreen.setVehicle = Utils.appendedFunction(WorkshopScreen.setVehicle, ADS_Main.hookRepairButton)
-InGameMenuStatisticsFrame.populateCellForItemInSection = Utils.overwrittenFunction(InGameMenuStatisticsFrame.populateCellForItemInSection, ADS_Main.populateCellForItemInSection)
-ShopConfigScreen.processAttributeData = Utils.appendedFunction(ShopConfigScreen.processAttributeData, ADS_Main.processAttributeData)
+WorkshopScreen.setVehicle = Utils.appendedFunction(WorkshopScreen.setVehicle, RMS_Main.hookRepairButton)
+InGameMenuStatisticsFrame.populateCellForItemInSection = Utils.overwrittenFunction(InGameMenuStatisticsFrame.populateCellForItemInSection, RMS_Main.populateCellForItemInSection)
+ShopConfigScreen.processAttributeData = Utils.appendedFunction(ShopConfigScreen.processAttributeData, RMS_Main.processAttributeData)
 
 
-ADS_Main.initSpec()
+RMS_Main.initSpec()
 
 -- ==========================================================
 --                        CORE UPDATE
 -- ==========================================================
 
-ADS_Main.vehicles = {}
-ADS_Main.numVehicles = 0
-ADS_Main.previousKey = nil
-ADS_Main.updateAlphaTimer = 0
-ADS_Main.workshopCheckTimer = 0
-ADS_Main.isWorkshopOpen = true
-ADS_Main.currentWeather = WeatherType.SUN
-ADS_Main.currentWeatherFactor = 1.0
+RMS_Main.vehicles = {}
+RMS_Main.numVehicles = 0
+RMS_Main.previousKey = nil
+RMS_Main.updateAlphaTimer = 0
+RMS_Main.workshopCheckTimer = 0
+RMS_Main.isWorkshopOpen = true
+RMS_Main.currentWeather = WeatherType.SUN
+RMS_Main.currentWeatherFactor = 1.0
 
 -- Compute workshop open/close from config hours and current game time.
 -- Runs on all machines for consistent local state.
-function ADS_Main:evaluateWorkshopState()
+function RMS_Main:evaluateWorkshopState()
     if g_currentMission == nil or g_currentMission.environment == nil then
         return self.isWorkshopOpen
     end
     local currentDayHour = g_currentMission.environment.dayTime / (60 * 60 * 1000)
-    return (currentDayHour >= ADS_Config.WORKSHOP.OPEN_HOUR
-        and currentDayHour < ADS_Config.WORKSHOP.CLOSE_HOUR)
+    return (currentDayHour >= RMS_Config.WORKSHOP.OPEN_HOUR
+        and currentDayHour < RMS_Config.WORKSHOP.CLOSE_HOUR)
 end
 
-function ADS_Main:isWorkshopTypeAlwaysAvailable(workshopType)
-    local workshopConfig = ADS_Config.WORKSHOP
+function RMS_Main:isWorkshopTypeAlwaysAvailable(workshopType)
+    local workshopConfig = RMS_Config.WORKSHOP
 
-    if workshopType == AdvancedDamageSystem.WORKSHOP.DEALER then
+    if workshopType == RealisticMechanicalSystems.WORKSHOP.DEALER then
         return workshopConfig.DEALER_ALWAYS_AVAILABLE == true
-    elseif workshopType == AdvancedDamageSystem.WORKSHOP.MOBILE then
+    elseif workshopType == RealisticMechanicalSystems.WORKSHOP.MOBILE then
         return workshopConfig.MOBILE_ALWAYS_AVAILABLE == true
-    elseif workshopType == AdvancedDamageSystem.WORKSHOP.OWN then
+    elseif workshopType == RealisticMechanicalSystems.WORKSHOP.OWN then
         return workshopConfig.OWN_ALWAYS_AVAILABLE == true
     end
 
     return false
 end
 
-function ADS_Main:isWorkshopTypeOpen(workshopType)
+function RMS_Main:isWorkshopTypeOpen(workshopType)
     return self:isWorkshopTypeAlwaysAvailable(workshopType) or self.isWorkshopOpen == true
 end
 
 
 -- Re-evaluate and broadcast workshop state immediately (settings change).
-function ADS_Main:forceWorkshopUpdate(forceNotify)
+function RMS_Main:forceWorkshopUpdate(forceNotify)
     local isWorkshopOpen = self:evaluateWorkshopState()
     if forceNotify or isWorkshopOpen ~= self.isWorkshopOpen then
         self.isWorkshopOpen = isWorkshopOpen
         if g_currentMission:getIsServer() then
-            ADS_WorkshopChangeStatusEvent.send(self.isWorkshopOpen)
+            RMS_WorkshopChangeStatusEvent.send(self.isWorkshopOpen)
         end
-        g_messageCenter:publish(MessageType.ADS_WORKSHOP_CHANGE_STATUS, self.isWorkshopOpen)
+        g_messageCenter:publish(MessageType.RMS_WORKSHOP_CHANGE_STATUS, self.isWorkshopOpen)
     end
 end
 
-function ADS_Main:onPeriodChanged()
+function RMS_Main:onPeriodChanged()
     if not g_currentMission:getIsServer() then
         return
     end
 
     for _, vehicle in pairs(self.vehicles) do
-        ADS_Consumptables.onLubricationPeriodChanged(vehicle)
+        RMS_Consumptables.onLubricationPeriodChanged(vehicle)
     end
 end
 
 
-function ADS_Main:update(dt)
+function RMS_Main:update(dt)
     if g_currentMission ~= nil and g_currentMission.getIsClient ~= nil and g_currentMission:getIsClient() then
         if not self.shopMenuPageInstalled then
             self:tryRegisterShopMenuPage()
@@ -484,26 +484,26 @@ function ADS_Main:update(dt)
     end
 
     local function updateOpenWorkshopDialog()
-        local dialog = ADS_WorkshopDialog.INSTANCE
-        if dialog == nil or not dialog.isDialogOpen or dialog.vehicle == nil or dialog.vehicle.spec_AdvancedDamageSystem == nil then
+        local dialog = RMS_WorkshopDialog.INSTANCE
+        if dialog == nil or not dialog.isDialogOpen or dialog.vehicle == nil or dialog.vehicle.spec_RealisticMechanicalSystems == nil then
             return
         end
 
         local currentStatus = dialog.vehicle:getCurrentStatus()
         if dialog.lastObservedStatus ~= currentStatus then
             dialog:updateScreen()
-        elseif currentStatus ~= AdvancedDamageSystem.STATUS.READY then
+        elseif currentStatus ~= RealisticMechanicalSystems.STATUS.READY then
             dialog:updateServiceProgressText()
         end
     end
 
     --- workshop
     self.workshopCheckTimer = self.workshopCheckTimer + dt
-    if self.workshopFirstEval == nil or self.workshopCheckTimer >= ADS_Config.CORE_UPDATE_DELAY then
+    if self.workshopFirstEval == nil or self.workshopCheckTimer >= RMS_Config.CORE_UPDATE_DELAY then
         self.workshopFirstEval = true
         self:forceWorkshopUpdate()
-        if self.workshopCheckTimer >= ADS_Config.CORE_UPDATE_DELAY then
-            self.workshopCheckTimer = self.workshopCheckTimer % ADS_Config.CORE_UPDATE_DELAY
+        if self.workshopCheckTimer >= RMS_Config.CORE_UPDATE_DELAY then
+            self.workshopCheckTimer = self.workshopCheckTimer % RMS_Config.CORE_UPDATE_DELAY
         end
     end
 
@@ -516,7 +516,7 @@ function ADS_Main:update(dt)
     self.updateAlphaTimer = self.updateAlphaTimer + dt
 
     --- vehicles
-    local timePerVehicle = ADS_Config.CORE_UPDATE_DELAY / self.numVehicles
+    local timePerVehicle = RMS_Config.CORE_UPDATE_DELAY / self.numVehicles
     local vehiclesToUpdate = math.floor(self.updateAlphaTimer / timePerVehicle)
 
     if vehiclesToUpdate < 1 then
@@ -532,24 +532,24 @@ function ADS_Main:update(dt)
              self.previousKey, vehicle = next(self.vehicles)
         end
         
-        if vehicle ~= nil and vehicle.spec_AdvancedDamageSystem ~= nil and not vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
-            vehicle:adsUpdate(ADS_Config.CORE_UPDATE_DELAY, self.isWorkshopOpen)
+        if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
+            vehicle:adsUpdate(RMS_Config.CORE_UPDATE_DELAY, self.isWorkshopOpen)
 
             --- meta
-            local spec = vehicle.spec_AdvancedDamageSystem
-            spec.metaUpdateTimer = spec.metaUpdateTimer + ADS_Config.CORE_UPDATE_DELAY
-            if spec.metaUpdateTimer > ADS_Config.META_UPDATE_DELAY then
+            local spec = vehicle.spec_RealisticMechanicalSystems
+            spec.metaUpdateTimer = spec.metaUpdateTimer + RMS_Config.CORE_UPDATE_DELAY
+            if spec.metaUpdateTimer > RMS_Config.META_UPDATE_DELAY then
 
                 if g_currentMission ~= nil and g_currentMission.environment ~= nil and g_currentMission.environment.weather ~= nil then
-                    ADS_Main.currentWeather = g_currentMission.environment.weather:getCurrentWeatherType()
-                    if ADS_Main.currentWeather == WeatherType.RAIN then
-                        ADS_Main.currentWeatherFactor = ADS_Config.CORE.RAIN_FACTOR or 1.0
-                    elseif ADS_Main.currentWeather == WeatherType.SNOW then
-                        ADS_Main.currentWeatherFactor = ADS_Config.CORE.SNOW_FACTOR or 1.0
-                    elseif ADS_Main.currentWeather == WeatherType.HAIL then
-                        ADS_Main.currentWeatherFactor = ADS_Config.CORE.HAIL_FACTOR or 1.0
+                    RMS_Main.currentWeather = g_currentMission.environment.weather:getCurrentWeatherType()
+                    if RMS_Main.currentWeather == WeatherType.RAIN then
+                        RMS_Main.currentWeatherFactor = RMS_Config.CORE.RAIN_FACTOR or 1.0
+                    elseif RMS_Main.currentWeather == WeatherType.SNOW then
+                        RMS_Main.currentWeatherFactor = RMS_Config.CORE.SNOW_FACTOR or 1.0
+                    elseif RMS_Main.currentWeather == WeatherType.HAIL then
+                        RMS_Main.currentWeatherFactor = RMS_Config.CORE.HAIL_FACTOR or 1.0
                     else
-                        ADS_Main.currentWeatherFactor = 1.0
+                        RMS_Main.currentWeatherFactor = 1.0
                     end
                 end
 
@@ -557,7 +557,7 @@ function ADS_Main:update(dt)
                     spec.isUnderRoof = vehicle:isUnderRoof()
                 end
 
-                spec.metaUpdateTimer = spec.metaUpdateTimer - ADS_Config.META_UPDATE_DELAY
+                spec.metaUpdateTimer = spec.metaUpdateTimer - RMS_Config.META_UPDATE_DELAY
   
             end
         end
@@ -566,12 +566,12 @@ function ADS_Main:update(dt)
     updateOpenWorkshopDialog()
 end
 
-function ADS_Main:loadMap()
-    ADS_Main.loadGuiProfiles()
-    ADS_SettingsPage.reset()
+function RMS_Main:loadMap()
+    RMS_Main.loadGuiProfiles()
+    RMS_SettingsPage.reset()
     self.shopMenuPageInstalled = false
-    ADS_Config.resetTutorialStateSession()
-    ADS_Config.loadFromXMLFile()
+    RMS_Config.resetTutorialStateSession()
+    RMS_Config.loadFromXMLFile()
     self:tryRegisterShopMenuPage()
 
     if g_currentMission:getIsServer() then
@@ -586,18 +586,18 @@ function ADS_Main:loadMap()
     delete(soundsXmlFile)
 end
 
-function ADS_Main:deleteMap()
+function RMS_Main:deleteMap()
     g_messageCenter:unsubscribe(MessageType.PERIOD_CHANGED, self)
     self.shopMenuPageInstalled = false
-    ADS_Main.guiProfilesLoaded = nil
-    ADS_Config._loaded = nil
-    ADS_Config.resetTutorialStateSession()
-    ADS_SettingsPage.reset()
+    RMS_Main.guiProfilesLoaded = nil
+    RMS_Config._loaded = nil
+    RMS_Config.resetTutorialStateSession()
+    RMS_SettingsPage.reset()
 
     g_soundManager:deleteSamples(self.samples)
     self.samples = nil
 end
 
-addModEventListener(ADS_Main)
+addModEventListener(RMS_Main)
 
 

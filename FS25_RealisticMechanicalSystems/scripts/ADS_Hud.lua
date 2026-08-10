@@ -1,11 +1,11 @@
-ADS_Hud = {}
-ADS_Hud.modDirectory = g_currentModDirectory
-ADS_Hud.debugViewMode = ADS_Hud.debugViewMode or "default"
-local ADS_Hud_mt = Class(ADS_Hud, HUDDisplay)
+RMS_Hud = {}
+RMS_Hud.modDirectory = g_currentModDirectory
+RMS_Hud.debugViewMode = RMS_Hud.debugViewMode or "default"
+local RMS_Hud_mt = Class(RMS_Hud, HUDDisplay)
 
-ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE = 64
-ADS_Hud.ROUNDED_PANEL_CORNER_SIZE = 5
-ADS_Hud.ROUNDED_PANEL_UV = {
+RMS_Hud.ROUNDED_PANEL_TEXTURE_SIZE = 64
+RMS_Hud.ROUNDED_PANEL_CORNER_SIZE = 5
+RMS_Hud.ROUNDED_PANEL_UV = {
     topLeft     = {  0,  0,  5,  5 },
     top         = {  5,  0, 54,  5 },
     topRight    = { 59,  0,  5,  5 },
@@ -16,14 +16,14 @@ ADS_Hud.ROUNDED_PANEL_UV = {
     bottom      = {  5, 59, 54,  5 },
     bottomRight = { 59, 59,  5,  5 }
 }
-ADS_Hud.COLOR_GAME_GREEN = HUD.COLOR.ACTIVE
-ADS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME = "ADS_NOTIFICATION"
-ADS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED = 0.009
-ADS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED = 0.0035
-ADS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED = 0.0015
+RMS_Hud.COLOR_GAME_GREEN = HUD.COLOR.ACTIVE
+RMS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME = "RMS_NOTIFICATION"
+RMS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED = 0.009
+RMS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED = 0.0035
+RMS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED = 0.0015
 
-function ADS_Hud:new()
-	local self = ADS_Hud:superClass().new(ADS_Hud_mt)
+function RMS_Hud:new()
+	local self = RMS_Hud:superClass().new(RMS_Hud_mt)
 	self.vehicle = nil
     self.telemetryDisplayValues = {
         consumptionPerArea = 0,
@@ -32,7 +32,7 @@ function ADS_Hud:new()
 
     self.roundedPanelOverlay = Overlay.new(self.modDirectory .. "hud/panelRounded.dds", 0, 0, 0, 0)
 
-    g_overlayManager:addTextureConfigFile(ADS_Hud.modDirectory .. "hud/ads_dashboardHud.xml", "ads_DashboardHud")
+    g_overlayManager:addTextureConfigFile(RMS_Hud.modDirectory .. "hud/ads_dashboardHud.xml", "ads_DashboardHud")
     self.wheelSlipHud = {
         icon = g_overlayManager:createOverlay("ads_DashboardHud.wheelSlip", 0, 0, 0, 0)
     }
@@ -184,7 +184,7 @@ function ADS_Hud:new()
     return self
 end
 
-function ADS_Hud:delete()
+function RMS_Hud:delete()
     self.roundedPanelOverlay:delete()
     self.roundedPanelOverlay = nil
     self.notificationDividerOverlay:delete()
@@ -218,14 +218,14 @@ function ADS_Hud:delete()
         self.notificationCloseGlyph = nil
     end
 
-    ADS_Hud:superClass().delete(self)
+    RMS_Hud:superClass().delete(self)
 end
 
-function ADS_Hud:setVisible(isVisible)
+function RMS_Hud:setVisible(isVisible)
     self.activeVehicleDebugPanel.isVisible = isVisible
 end
 
-function ADS_Hud:setVehicle(vehicle)
+function RMS_Hud:setVehicle(vehicle)
     if self.vehicle ~= vehicle then
         self.indicatorRuntime = {}
         self.activeVehicleDebugCache.lastUpdateTime = -math.huge
@@ -239,7 +239,7 @@ function ADS_Hud:setVehicle(vehicle)
     self.vehicle = vehicle
 end
 
-function ADS_Hud:getIndicatorRuntimeState(indicatorId)
+function RMS_Hud:getIndicatorRuntimeState(indicatorId)
     if self.indicatorRuntime == nil then
         self.indicatorRuntime = {}
     end
@@ -259,7 +259,7 @@ function ADS_Hud:getIndicatorRuntimeState(indicatorId)
     return self.indicatorRuntime[indicatorId]
 end
 
-function ADS_Hud:startIndicatorBlink(indicatorId)
+function RMS_Hud:startIndicatorBlink(indicatorId)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.getMotorState == nil or vehicle:getMotorState() ~= MotorState.ON then
@@ -274,9 +274,9 @@ function ADS_Hud:startIndicatorBlink(indicatorId)
     runtimeState.blinkStartTime = now
 end
 
-function ADS_Hud:applyIndicatorBlink(indicatorId, targetColor, blinkWhileActive)
+function RMS_Hud:applyIndicatorBlink(indicatorId, targetColor, blinkWhileActive)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
-    local colors = ADS_Breakdowns ~= nil and ADS_Breakdowns.COLORS or nil
+    local colors = RMS_Breakdowns ~= nil and RMS_Breakdowns.COLORS or nil
     local vehicle = self.vehicle
     if runtimeState == nil or colors == nil or runtimeState.blinkActive ~= true then
         return targetColor
@@ -306,9 +306,9 @@ function ADS_Hud:applyIndicatorBlink(indicatorId, targetColor, blinkWhileActive)
     return targetColor
 end
 
-function ADS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, severity)
+function RMS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, severity)
     local vehicle = self.vehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return false
     end
 
@@ -321,7 +321,7 @@ function ADS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, seve
         return false
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     local samples = spec.samples
     if samples == nil then
         return false
@@ -345,16 +345,16 @@ function ADS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, seve
         return false
     end
 
-    ADS_SoundManager.playSample(sample)
+    RMS_SoundManager.playSample(sample)
     runtimeState.lastSoundTime = now
     runtimeState.soundPlayedForCurrentActivation = true
     runtimeState.lastSoundSeverity = severity or 0
     return true
 end
 
-function ADS_Hud:syncIndicatorActivation(indicatorId, shouldLight, targetColor)
+function RMS_Hud:syncIndicatorActivation(indicatorId, shouldLight, targetColor)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
-    local colors = ADS_Breakdowns ~= nil and ADS_Breakdowns.COLORS or nil
+    local colors = RMS_Breakdowns ~= nil and RMS_Breakdowns.COLORS or nil
     local severity = 0
 
     if shouldLight and colors ~= nil then
@@ -398,7 +398,7 @@ function ADS_Hud:syncIndicatorActivation(indicatorId, shouldLight, targetColor)
     end
 end
 
-function ADS_Hud:getVehicleTypeCategoryLabel(vehicle)
+function RMS_Hud:getVehicleTypeCategoryLabel(vehicle)
     local vehicleTypeName = "-"
     local categoryName = "-"
 
@@ -416,14 +416,14 @@ function ADS_Hud:getVehicleTypeCategoryLabel(vehicle)
     return string.format("%s/%s", vehicleTypeName, categoryName)
 end
 
-local hasCVTTransmission = ADS_Utils.hasCVTTransmission
-local hasCVTAddon = ADS_Utils.hasCVTAddon
+local hasCVTTransmission = RMS_Utils.hasCVTTransmission
+local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 -- =====================================================================================
 --                              DRAW
 -- =====================================================================================
 
-function ADS_Hud:draw()
+function RMS_Hud:draw()
     if g_currentMission == nil then
         return
     end
@@ -437,7 +437,7 @@ function ADS_Hud:draw()
 
     self:drawNotificationPanel()
 
-    if ADS_Config.DEBUG and g_currentMission.isMasterUser and self.vehicle ~= nil and self.activeVehicleDebugPanel.isVisible then
+    if RMS_Config.DEBUG and g_currentMission.isMasterUser and self.vehicle ~= nil and self.activeVehicleDebugPanel.isVisible then
         self:drawActiveVehicleHUD()
     end
 
@@ -451,19 +451,19 @@ end
 --                              NOTIFICATION PANEL
 -- =====================================================================================
 
-function ADS_Hud.showNotification(text, durationMs, title, playSound)
-    if ADS_Main ~= nil and ADS_Main.hud ~= nil then
-        ADS_Main.hud:setNotification(text, durationMs, title, playSound)
+function RMS_Hud.showNotification(text, durationMs, title, playSound)
+    if RMS_Main ~= nil and RMS_Main.hud ~= nil then
+        RMS_Main.hud:setNotification(text, durationMs, title, playSound)
     end
 end
 
-function ADS_Hud.hideNotification()
-    if ADS_Main ~= nil and ADS_Main.hud ~= nil then
-        ADS_Main.hud:clearNotification()
+function RMS_Hud.hideNotification()
+    if RMS_Main ~= nil and RMS_Main.hud ~= nil then
+        RMS_Main.hud:clearNotification()
     end
 end
 
-function ADS_Hud:setNotification(text, durationMs, title, playSound)
+function RMS_Hud:setNotification(text, durationMs, title, playSound)
     local panel = self.notificationPanel
     local normalizedText = tostring(text or ""):gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
     local normalizedTitle = tostring(title or ""):gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
@@ -489,11 +489,11 @@ function ADS_Hud:setNotification(text, durationMs, title, playSound)
     panel.isVisible = true
 
     if playSound then
-        ADS_SoundManager.playSample(ADS_Main.samples.notification2D)
+        RMS_SoundManager.playSample(RMS_Main.samples.notification2D)
     end
 end
 
-function ADS_Hud:clearNotification()
+function RMS_Hud:clearNotification()
     local panel = self.notificationPanel
     panel.title = nil
     panel.text = nil
@@ -502,11 +502,11 @@ function ADS_Hud:clearNotification()
     panel.isPersistent = false
 end
 
-function ADS_Hud:setNotificationInputActive(isActive)
+function RMS_Hud:setNotificationInputActive(isActive)
     local inputBinding = g_inputBinding
 
     if isActive and not self.isNotificationInputActive then
-        inputBinding:setContext(ADS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME, true, false)
+        inputBinding:setContext(RMS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME, true, false)
 
         local _, eventId = inputBinding:registerActionEvent(InputAction.ADS_CLOSE_NOTIFICATION, self, self.onCloseNotificationInput, false, true, false, true)
         inputBinding:setActionEventTextVisibility(eventId, false)
@@ -520,17 +520,17 @@ function ADS_Hud:setNotificationInputActive(isActive)
     end
 end
 
-function ADS_Hud:onCloseNotificationInput()
+function RMS_Hud:onCloseNotificationInput()
     self:closePersistentNotification()
 end
 
-function ADS_Hud:hasClosableNotification()
+function RMS_Hud:hasClosableNotification()
     local panel = self.notificationPanel
 
     return panel ~= nil and panel.isVisible and panel.isPersistent
 end
 
-function ADS_Hud:closePersistentNotification()
+function RMS_Hud:closePersistentNotification()
     if not self:hasClosableNotification() then
         return false
     end
@@ -540,7 +540,7 @@ function ADS_Hud:closePersistentNotification()
     return true
 end
 
-function ADS_Hud:wrapNotificationText(text, maxWidth, textSize)
+function RMS_Hud:wrapNotificationText(text, maxWidth, textSize)
     local words = {}
     for word in tostring(text or ""):gmatch("%S+") do
         table.insert(words, word)
@@ -571,7 +571,7 @@ function ADS_Hud:wrapNotificationText(text, maxWidth, textSize)
     return lines
 end
 
-function ADS_Hud:drawNotificationDivider(x, y, width, height, color)
+function RMS_Hud:drawNotificationDivider(x, y, width, height, color)
     local snappedX = math.floor(x * g_screenWidth + 0.5) / g_screenWidth
     local snappedY = math.floor(y * g_screenHeight + 0.5) / g_screenHeight
     local snappedWidth = math.max(math.floor(width * g_screenWidth + 0.5) / g_screenWidth, 1 / g_screenWidth)
@@ -584,16 +584,16 @@ function ADS_Hud:drawNotificationDivider(x, y, width, height, color)
     overlay:render()
 end
 
-function ADS_Hud:getNotificationCloseGlyph(glyphWidth, glyphHeight)
+function RMS_Hud:getNotificationCloseGlyph(glyphWidth, glyphHeight)
     if self.notificationCloseGlyph == nil then
         self.notificationCloseGlyph = InputGlyphElement.new(g_inputDisplayManager, glyphWidth, glyphHeight)
-        self.notificationCloseGlyph:setKeyboardGlyphColor(ADS_Hud.COLOR_GAME_GREEN, {0, 0, 0, 0.8})
-        self.notificationCloseGlyph:setButtonGlyphColor(ADS_Hud.COLOR_GAME_GREEN)
+        self.notificationCloseGlyph:setKeyboardGlyphColor(RMS_Hud.COLOR_GAME_GREEN, {0, 0, 0, 0.8})
+        self.notificationCloseGlyph:setButtonGlyphColor(RMS_Hud.COLOR_GAME_GREEN)
     elseif self.notificationCloseGlyph.baseWidth ~= glyphWidth or self.notificationCloseGlyph.baseHeight ~= glyphHeight then
         self.notificationCloseGlyph:delete()
         self.notificationCloseGlyph = InputGlyphElement.new(g_inputDisplayManager, glyphWidth, glyphHeight)
-        self.notificationCloseGlyph:setKeyboardGlyphColor(ADS_Hud.COLOR_GAME_GREEN, {0, 0, 0, 0.8})
-        self.notificationCloseGlyph:setButtonGlyphColor(ADS_Hud.COLOR_GAME_GREEN)
+        self.notificationCloseGlyph:setKeyboardGlyphColor(RMS_Hud.COLOR_GAME_GREEN, {0, 0, 0, 0.8})
+        self.notificationCloseGlyph:setButtonGlyphColor(RMS_Hud.COLOR_GAME_GREEN)
         self.notificationCloseGlyphInputMode = nil
     end
 
@@ -606,7 +606,7 @@ function ADS_Hud:getNotificationCloseGlyph(glyphWidth, glyphHeight)
     return self.notificationCloseGlyph
 end
 
-function ADS_Hud:snapScreenRect(x, y, width, height)
+function RMS_Hud:snapScreenRect(x, y, width, height)
     local snappedX = math.floor(x * g_screenWidth + 0.5) / g_screenWidth
     local snappedY = math.floor(y * g_screenHeight + 0.5) / g_screenHeight
     local snappedWidth = math.max(math.floor(width * g_screenWidth + 0.5) / g_screenWidth, 1 / g_screenWidth)
@@ -615,7 +615,7 @@ function ADS_Hud:snapScreenRect(x, y, width, height)
     return snappedX, snappedY, snappedWidth, snappedHeight
 end
 
-function ADS_Hud:renderPanelQuad(x, y, width, height, color, uvs)
+function RMS_Hud:renderPanelQuad(x, y, width, height, color, uvs)
     if self.roundedPanelOverlay == nil or width <= 0 or height <= 0 then
         return
     end
@@ -623,21 +623,21 @@ function ADS_Hud:renderPanelQuad(x, y, width, height, color, uvs)
     local overlay = self.roundedPanelOverlay
     overlay:setPosition(x, y)
     overlay:setDimension(width, height)
-    overlay:setUVs(GuiUtils.getUVs(uvs, {ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE, ADS_Hud.ROUNDED_PANEL_TEXTURE_SIZE}))
+    overlay:setUVs(GuiUtils.getUVs(uvs, {RMS_Hud.ROUNDED_PANEL_TEXTURE_SIZE, RMS_Hud.ROUNDED_PANEL_TEXTURE_SIZE}))
     overlay:setColor(color[1], color[2], color[3], color[4] or 1)
     overlay:render()
 end
 
-function ADS_Hud:drawPanelBackground(x, y, width, height, color)
+function RMS_Hud:drawPanelBackground(x, y, width, height, color)
     local panelColor = color or {0, 0, 0, 0.7}
 
     local panelX, panelY, panelWidth, panelHeight = self:snapScreenRect(x, y, width, height)
     local cornerWidth = math.min(
-        math.floor(self:scalePixelToScreenWidth(ADS_Hud.ROUNDED_PANEL_CORNER_SIZE) * g_screenWidth + 0.5) / g_screenWidth,
+        math.floor(self:scalePixelToScreenWidth(RMS_Hud.ROUNDED_PANEL_CORNER_SIZE) * g_screenWidth + 0.5) / g_screenWidth,
         panelWidth * 0.5
     )
     local cornerHeight = math.min(
-        math.floor(self:scalePixelToScreenHeight(ADS_Hud.ROUNDED_PANEL_CORNER_SIZE) * g_screenHeight + 0.5) / g_screenHeight,
+        math.floor(self:scalePixelToScreenHeight(RMS_Hud.ROUNDED_PANEL_CORNER_SIZE) * g_screenHeight + 0.5) / g_screenHeight,
         panelHeight * 0.5
     )
     local leftX = panelX
@@ -648,7 +648,7 @@ function ADS_Hud:drawPanelBackground(x, y, width, height, color)
     local topY = panelY + panelHeight - cornerHeight
     local centerWidth = math.max(rightX - centerX, 0)
     local centerHeight = math.max(topY - centerY, 0)
-    local uv = ADS_Hud.ROUNDED_PANEL_UV
+    local uv = RMS_Hud.ROUNDED_PANEL_UV
 
     self:renderPanelQuad(leftX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomLeft)
     self:renderPanelQuad(centerX, bottomY, centerWidth, cornerHeight, panelColor, uv.bottom)
@@ -663,7 +663,7 @@ function ADS_Hud:drawPanelBackground(x, y, width, height, color)
     self:renderPanelQuad(rightX, topY, cornerWidth, cornerHeight, panelColor, uv.topRight)
 end
 
-function ADS_Hud:drawNotificationPanel()
+function RMS_Hud:drawNotificationPanel()
     local panel = self.notificationPanel
     if panel == nil or not panel.isVisible or panel.text == nil then
         return
@@ -718,7 +718,7 @@ function ADS_Hud:drawNotificationPanel()
         setTextAlignment(RenderText.ALIGN_CENTER)
         setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_TOP)
         setTextBold(true)
-        setTextColor(unpack(ADS_Hud.COLOR_GAME_GREEN))
+        setTextColor(unpack(RMS_Hud.COLOR_GAME_GREEN))
 
         for _, line in ipairs(titleLines) do
             renderText(centerX, currentY, titleTextSize, line)
@@ -727,7 +727,7 @@ function ADS_Hud:drawNotificationPanel()
 
         local dividerWidth = panel.width - panel.padding * 2
         local dividerY = currentY - dividerSpacing - titleDividerHeight * 0.5
-        self:drawNotificationDivider(panel.x + panel.padding, dividerY, dividerWidth, titleDividerHeight, ADS_Hud.COLOR_GAME_GREEN)
+        self:drawNotificationDivider(panel.x + panel.padding, dividerY, dividerWidth, titleDividerHeight, RMS_Hud.COLOR_GAME_GREEN)
 
         currentY = currentY - panel.titleSpacing - titleTextExtraSpacing
     end
@@ -745,7 +745,7 @@ function ADS_Hud:drawNotificationPanel()
     if hasTitle then
         local dividerWidth = panel.width - panel.padding * 2
         local bottomDividerY = currentY - dividerSpacing - bottomDividerTextSpacing - titleDividerHeight * 0.5
-        self:drawNotificationDivider(panel.x + panel.padding, bottomDividerY, dividerWidth, titleDividerHeight, ADS_Hud.COLOR_GAME_GREEN)
+        self:drawNotificationDivider(panel.x + panel.padding, bottomDividerY, dividerWidth, titleDividerHeight, RMS_Hud.COLOR_GAME_GREEN)
 
         if closeGlyphVisible then
             local glyph = self:getNotificationCloseGlyph(closeGlyphWidth, closeGlyphHeight)
@@ -779,7 +779,7 @@ end
 --                              DASHBOARD
 -- =====================================================================================
 
-function ADS_Hud:storeScaledValues()
+function RMS_Hud:storeScaledValues()
 
     self.dashExtension.stretchWidth = self:scalePixelToScreenWidth(25)
 
@@ -873,20 +873,20 @@ function ADS_Hud:storeScaledValues()
     self.fuelConsumptionHud.iconGap = self:scalePixelToScreenWidth(6)
 end
 
-function ADS_Hud:drawDashboard()
-    if self.vehicle == nil or self.vehicle.spec_AdvancedDamageSystem == nil or self.vehicle.spec_AdvancedDamageSystem.isExcludedVehicle then
+function RMS_Hud:drawDashboard()
+    if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil or self.vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         return
     end
 
     local vehicle = self.vehicle
-    local spec = vehicle.spec_AdvancedDamageSystem
-    local colors = ADS_Breakdowns.COLORS
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local colors = RMS_Breakdowns.COLORS
     local activeIndicators = spec.activeIndicators
     local serviceInterval = (self.vehicle:getHoursSinceLastMaintenance() or 0) / (self.vehicle:getMaintenanceInterval() or 5)
     local isServiceOverdue = serviceInterval > 1.0
     local motorState = vehicle:getMotorState()
-    local preheatState = spec.preheatState or ADS_Preheat.STATE.IDLE
-    local isLampTestActive = ADS_Preheat.isLampTestActive(vehicle)
+    local preheatState = spec.preheatState or RMS_Preheat.STATE.IDLE
+    local isLampTestActive = RMS_Preheat.isLampTestActive(vehicle)
 
     local function calculateIndicatorTargetColor(hudIndicatorId, mutateActiveState)
         local targetColor = colors.DEFAULT
@@ -922,9 +922,9 @@ function ADS_Hud:drawDashboard()
                 end
             end
 
-            local isEngineNotHeated = spec.engineTemperature < ADS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
+            local isEngineNotHeated = spec.engineTemperature < RMS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
             local isTransmissionNotHeated =
-                (hasCVTTransmission(vehicle) and not hasCVTAddon(vehicle) and spec.transmissionTemperature < ADS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD) or
+                (hasCVTTransmission(vehicle) and not hasCVTAddon(vehicle) and spec.transmissionTemperature < RMS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD) or
                 (hasCVTAddon(vehicle) and spec.transmissionTemperature < 55)
 
             if hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and isEngineNotHeated then targetColor = colors.COOL
@@ -941,7 +941,7 @@ function ADS_Hud:drawDashboard()
                 targetColor = colors.WARNING
                 isRoutineIgnitionIndicator = true
             elseif hudIndicatorId == self.indicators.preheat.name
-                    and preheatState == ADS_Preheat.STATE.PREHEATING
+                    and preheatState == RMS_Preheat.STATE.PREHEATING
                     and targetColor == colors.DEFAULT then
                 targetColor = colors.WARNING
                 isRoutineIgnitionIndicator = true
@@ -999,8 +999,8 @@ function ADS_Hud:drawDashboard()
         local targetMotorLoad = math.clamp(tonumber(spec.dynamicMotorLoad) or 0, 0, 1)
         local currentMotorLoad = math.clamp(tonumber(self.telemetryDisplayValues.motorLoad) or 0, 0, 1)
         local interpolationSpeed = targetMotorLoad < 0.8
-            and ADS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED
-            or ADS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED
+            and RMS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED
+            or RMS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED
         motorLoad = self:interpolateTelemetryValue(currentMotorLoad, targetMotorLoad, interpolationSpeed)
     end
     self.telemetryDisplayValues.motorLoad = motorLoad
@@ -1029,7 +1029,7 @@ function ADS_Hud:drawDashboard()
     end
 
     local motorLoadTextColor = {1, 1, 1, 1}
-    if motorLoad > ADS_Config.CORE.ENGINE_FACTOR_DATA.MOTOR_OVERLOADED_THRESHOLD then
+    if motorLoad > RMS_Config.CORE.ENGINE_FACTOR_DATA.MOTOR_OVERLOADED_THRESHOLD then
         motorLoadTextColor = colors.WARNING
     end
 
@@ -1069,7 +1069,7 @@ function ADS_Hud:drawDashboard()
         setTextColor(1, 1, 1, 1)
     end
 
-    if ADS_Drivetrain == nil or not ADS_Drivetrain.getIsRoadVehicleCategory(vehicle) then
+    if RMS_Drivetrain == nil or not RMS_Drivetrain.getIsRoadVehicleCategory(vehicle) then
         self:drawWheelSlipDisplay(spec, posX, posY)
     end
     self:drawDrivetrainDisplay(vehicle, spec, posX, posY)
@@ -1079,7 +1079,7 @@ function ADS_Hud:drawDashboard()
     setTextBold(false)
 end
 
-function ADS_Hud:drawWheelSlipDisplay(spec, posX, posY)
+function RMS_Hud:drawWheelSlipDisplay(spec, posX, posY)
     if self.wheelSlipHud == nil or self.wheelSlipHud.icon == nil then
         return
     end
@@ -1103,49 +1103,49 @@ function ADS_Hud:drawWheelSlipDisplay(spec, posX, posY)
     setTextColor(1, 1, 1, 1)
 end
 
-function ADS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
-    if self.drivetrainHud == nil or ADS_Drivetrain == nil then
+function RMS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
+    if self.drivetrainHud == nil or RMS_Drivetrain == nil then
         return
     end
 
-    if not ADS_Drivetrain.getIsAvailable(vehicle) then
+    if not RMS_Drivetrain.getIsAvailable(vehicle) then
         return
     end
 
-    local state = ADS_Drivetrain.getState(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then
         return
     end
 
-    local colors = ADS_Breakdowns.COLORS
+    local colors = RMS_Breakdowns.COLORS
     local iconId, color
     local showAutoBadge = false
     local windupStress = tonumber(state.windupStress) or 0
-    local windupWarningActive = state.windupActive == true and windupStress > ADS_Config.DRIVETRAIN.WINDUP_4WD_WARNING_THRESHOLD
+    local windupWarningActive = state.windupActive == true and windupStress > RMS_Config.DRIVETRAIN.WINDUP_4WD_WARNING_THRESHOLD
 
     if state.diffLockEngaged then
-        local fourWheelDrive = state.driveMode == ADS_Drivetrain.MODE.FOUR_WD
-            or (state.driveMode == ADS_Drivetrain.MODE.AUTO and state.autoEngaged)
-        iconId = (fourWheelDrive and ADS_Drivetrain.getHasCenterDifferential(vehicle)) and "diffLockCenter" or "diffLockRear"
+        local fourWheelDrive = state.driveMode == RMS_Drivetrain.MODE.FOUR_WD
+            or (state.driveMode == RMS_Drivetrain.MODE.AUTO and state.autoEngaged)
+        iconId = (fourWheelDrive and RMS_Drivetrain.getHasCenterDifferential(vehicle)) and "diffLockCenter" or "diffLockRear"
         color = colors.WARNING
 
-        if windupStress > ADS_Config.DRIVETRAIN.WINDUP_CRITICAL_THRESHOLD then
+        if windupStress > RMS_Config.DRIVETRAIN.WINDUP_CRITICAL_THRESHOLD then
             local blinkOn = math.floor((g_time or 0) / 250) % 2 == 0
             color = blinkOn and colors.CRITICAL or colors.WARNING
         end
     else
-        if not ADS_Drivetrain.getHasCenterDifferential(vehicle) then
+        if not RMS_Drivetrain.getHasCenterDifferential(vehicle) then
             iconId = "diffLockRear"
             color = colors.DEFAULT
-        elseif state.driveMode == ADS_Drivetrain.MODE.TWO_WD then
+        elseif state.driveMode == RMS_Drivetrain.MODE.TWO_WD then
             iconId = "drivelineOpen"
             color = {1, 1, 1, 0.85}
-        elseif state.driveMode == ADS_Drivetrain.MODE.FOUR_WD then
+        elseif state.driveMode == RMS_Drivetrain.MODE.FOUR_WD then
             iconId = "drivelineEngaged"
-            color = windupWarningActive and colors.WARNING or ADS_Hud.COLOR_GAME_GREEN
+            color = windupWarningActive and colors.WARNING or RMS_Hud.COLOR_GAME_GREEN
         else
             iconId = state.autoEngaged and "drivelineEngaged" or "drivelineOpen"
-            color = state.autoEngaged and (windupWarningActive and colors.WARNING or ADS_Hud.COLOR_GAME_GREEN) or {1, 1, 1, 0.85}
+            color = state.autoEngaged and (windupWarningActive and colors.WARNING or RMS_Hud.COLOR_GAME_GREEN) or {1, 1, 1, 0.85}
             showAutoBadge = true
         end
     end
@@ -1174,15 +1174,15 @@ function ADS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
     end
 end
 
-function ADS_Hud:drawParkBrakeDisplay(vehicle)
+function RMS_Hud:drawParkBrakeDisplay(vehicle)
     if self.parkBrakeHud == nil or self.parkBrakeHud.icon == nil then
         return
     end
-    if not ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED or ADS_Drivetrain == nil then
+    if not RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED or RMS_Drivetrain == nil then
         return
     end
 
-    local state = ADS_Drivetrain.getState(vehicle)
+    local state = RMS_Drivetrain.getState(vehicle)
     if state == nil or state.parkExternallyManaged then
         return -- EV's own parking brake (and HUD) takes over
     end
@@ -1199,7 +1199,7 @@ function ADS_Hud:drawParkBrakeDisplay(vehicle)
         gearIconY + (gearIconHeight - (self.parkBrakeHud.height or 0)) * 0.5 + (self.parkBrakeHud.offsetY or 0))
     icon:setVisible(true)
 
-    local colors = ADS_Breakdowns.COLORS
+    local colors = RMS_Breakdowns.COLORS
     local color = state.parkBrake and colors.CRITICAL or colors.DEFAULT
     icon:setColor(color[1], color[2], color[3], color[4])
     icon:render()
@@ -1209,7 +1209,7 @@ end
 --                          TELEMETRY CARDS HUD
 -- =====================================================================================
 
-function ADS_Hud:drawTelemetryCards()
+function RMS_Hud:drawTelemetryCards()
     local speedMeter = g_currentMission.hud.speedMeter
     if speedMeter == nil or speedMeter.speedBg == nil then
         return
@@ -1220,7 +1220,7 @@ function ADS_Hud:drawTelemetryCards()
     self:drawFuelConsumption(cardRightX)
 end
 
-function ADS_Hud:getConsumptionAreaRate()
+function RMS_Hud:getConsumptionAreaRate()
     local vehicle = self.vehicle
     if vehicle == nil then
         return 0, 0
@@ -1236,7 +1236,7 @@ function ADS_Hud:getConsumptionAreaRate()
     return speed, (speed * width) / 10
 end
 
-function ADS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolationSpeed)
+function RMS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolationSpeed)
     if currentValue == targetValue then
         return targetValue
     end
@@ -1246,9 +1246,9 @@ function ADS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolat
     return limitFunc(currentValue + interpolationSpeed * direction * (tonumber(g_currentDt) or 0), targetValue)
 end
 
-function ADS_Hud:drawFuelConsumption(cardRightX)
+function RMS_Hud:drawFuelConsumption(cardRightX)
     local vehicle = self.vehicle
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil or vehicle.spec_motorized == nil then
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or vehicle.spec_motorized == nil then
         return
     end
 
@@ -1271,7 +1271,7 @@ function ADS_Hud:drawFuelConsumption(cardRightX)
     consumptionPerArea = self:interpolateTelemetryValue(
         self.telemetryDisplayValues.consumptionPerArea,
         consumptionPerArea,
-        ADS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED
+        RMS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED
     )
     self.telemetryDisplayValues.consumptionPerArea = consumptionPerArea
 
@@ -1350,8 +1350,8 @@ end
 --                              LOAD / MASS HUD
 -- =====================================================================================
 
-function ADS_Hud:getLoadSeverityColor(severity)
-    local colors = ADS_Breakdowns.COLORS
+function RMS_Hud:getLoadSeverityColor(severity)
+    local colors = RMS_Breakdowns.COLORS
     local s = math.clamp(tonumber(severity) or 0, 0, 1)
 
     if s <= 0 then
@@ -1366,11 +1366,11 @@ function ADS_Hud:getLoadSeverityColor(severity)
     }
 end
 
-function ADS_Hud:formatMass(massTons)
+function RMS_Hud:formatMass(massTons)
     return string.format("%.1f t", math.max(tonumber(massTons) or 0, 0))
 end
 
-function ADS_Hud:getStableDisplayMass(cacheKey, massTons)
+function RMS_Hud:getStableDisplayMass(cacheKey, massTons)
     local mass = math.max(tonumber(massTons) or 0, 0)
     local displayStep = 0.1
     local roundedMass = math.floor(mass / displayStep + 0.5) * displayStep
@@ -1384,13 +1384,13 @@ function ADS_Hud:getStableDisplayMass(cacheKey, massTons)
     return cachedMass
 end
 
-function ADS_Hud:drawLoadMass(cardRightX)
+function RMS_Hud:drawLoadMass(cardRightX)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.getTotalMass == nil then
         return cardRightX
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return cardRightX
     end
@@ -1402,7 +1402,7 @@ function ADS_Hud:drawLoadMass(cardRightX)
 
     local selfMass  = tonumber(vehicle:getTotalMass(true)) or 0
     local totalMass = tonumber(vehicle:getTotalMass())     or 0
-    local lockedHookLiftContainer = ADS_Utils.getLockedHookLiftContainer(vehicle)
+    local lockedHookLiftContainer = RMS_Utils.getLockedHookLiftContainer(vehicle)
     local carriedMass = lockedHookLiftContainer ~= nil and (tonumber(lockedHookLiftContainer:getTotalMass()) or 0) or 0
     local vehicleMass = math.min(selfMass + carriedMass, totalMass)
     local towedMass = math.max(totalMass - vehicleMass, 0)
@@ -1416,15 +1416,15 @@ function ADS_Hud:drawLoadMass(cardRightX)
         local ratioBasis = isTruck and totalMass or towedMass
         local powerToWeight = horsepower / math.max(ratioBasis, 0.01)
 
-        local threshold, fullEffect = ADS_Utils.getHeavyTrailerRatioLevels(isTruck)
+        local threshold, fullEffect = RMS_Utils.getHeavyTrailerRatioLevels(isTruck)
 
-        local trailerSeverity = ADS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
+        local trailerSeverity = RMS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
 
-        local hydraulicsConfig = ADS_Config.CORE.HYDRAULICS_FACTOR_DATA
+        local hydraulicsConfig = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
         local liftThreshold = tonumber(hydraulicsConfig.HEAVY_LIFT_FACTOR_THRESHOLD) or 0.6
         local liftedMass = math.max(tonumber(spec.liftedMass) or 0, 0)
         local liftMassRatio = selfMass > 0 and (liftedMass / selfMass) or 0
-        local liftSeverity = ADS_Utils.calculateQuadraticMultiplier(liftMassRatio, liftThreshold, false)
+        local liftSeverity = RMS_Utils.calculateQuadraticMultiplier(liftMassRatio, liftThreshold, false)
 
         loadColor = self:getLoadSeverityColor(math.max(trailerSeverity, liftSeverity))
     end
@@ -1531,12 +1531,12 @@ SpeedMeterDisplay.draw = function(self, ...)
         return originalSpeedMeterDisplayDraw(self, ...)
     end
 
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec ~= nil and spec.isExcludedVehicle then
         return originalSpeedMeterDisplayDraw(self, ...)
     end
 
-    local adsHud = ADS_Main ~= nil and ADS_Main.hud or nil
+    local adsHud = RMS_Main ~= nil and RMS_Main.hud or nil
     local dashExt = nil
     if spec ~= nil and adsHud ~= nil and adsHud.dashExtension ~= nil and adsHud.dashExtension.stretchWidth ~= nil then
         dashExt = adsHud.dashExtension
@@ -1590,7 +1590,7 @@ SpeedMeterDisplay.draw = function(self, ...)
             elseif isCompleteInspection then
                 customDamageAmount = math.min(1 - condition, INSPECTED_DAMAGE_CEILING)
             else
-                customDamageAmount = TIER_DAMAGE_AMOUNTS[ADS_Utils.getConditionTier(condition)]
+                customDamageAmount = TIER_DAMAGE_AMOUNTS[RMS_Utils.getConditionTier(condition)]
             end
         else
             customDamageAmount = selectedTool:getDamageAmount()
@@ -1634,24 +1634,24 @@ end
 --                         VEHICLE INFO PANEL
 -- =====================================================================================
 
-function ADS_Hud:showInfoVehicle(box)
-    if self.spec_AdvancedDamageSystem ~= nil and not self.spec_AdvancedDamageSystem.isExcludedVehicle then
-        local spec = self.spec_AdvancedDamageSystem
+function RMS_Hud:showInfoVehicle(box)
+    if self.spec_RealisticMechanicalSystems ~= nil and not self.spec_RealisticMechanicalSystems.isExcludedVehicle then
+        local spec = self.spec_RealisticMechanicalSystems
         
-        box:addLine(g_i18n:getText('ads_ws_label_condition'), ADS_Utils.formatCondition(self:getLastInspectedCondition()))
-        box:addLine(g_i18n:getText("ads_ws_label_last_inspection"), ADS_Utils.formatTimeAgo(self:getLastInspectionDate()))
-        box:addLine(g_i18n:getText("ads_ws_label_last_maintenance"), ADS_Utils.formatTimeAgo(self:getLastMaintenanceDate()))
-        box:addLine(g_i18n:getText("ads_ws_label_service_interval"), ADS_Utils.formatOperatingHours(self:getHoursSinceLastMaintenance(), self:getMaintenanceInterval()))
+        box:addLine(g_i18n:getText('ads_ws_label_condition'), RMS_Utils.formatCondition(self:getLastInspectedCondition()))
+        box:addLine(g_i18n:getText("ads_ws_label_last_inspection"), RMS_Utils.formatTimeAgo(self:getLastInspectionDate()))
+        box:addLine(g_i18n:getText("ads_ws_label_last_maintenance"), RMS_Utils.formatTimeAgo(self:getLastMaintenanceDate()))
+        box:addLine(g_i18n:getText("ads_ws_label_service_interval"), RMS_Utils.formatOperatingHours(self:getHoursSinceLastMaintenance(), self:getMaintenanceInterval()))
 
         
-        if spec.currentState ~= AdvancedDamageSystem.STATUS.READY and spec.currentState ~= AdvancedDamageSystem.STATUS.BROKEN then
-            local maintenanceStatusText = string.format(g_i18n:getText("ads_spec_last_maintenance_until_format"), g_i18n:getText(spec.currentState), ADS_Utils.formatFinishTime(self:getServiceFinishTime()))
+        if spec.currentState ~= RealisticMechanicalSystems.STATUS.READY and spec.currentState ~= RealisticMechanicalSystems.STATUS.BROKEN then
+            local maintenanceStatusText = string.format(g_i18n:getText("ads_spec_last_maintenance_until_format"), g_i18n:getText(spec.currentState), RMS_Utils.formatFinishTime(self:getServiceFinishTime()))
             box:addLine(maintenanceStatusText)
         end
     end
 end
 
-Vehicle.showInfo = Utils.appendedFunction(Vehicle.showInfo, ADS_Hud.showInfoVehicle)
+Vehicle.showInfo = Utils.appendedFunction(Vehicle.showInfo, RMS_Hud.showInfoVehicle)
 
 -- ==========================================================
 --                       HUD MODULES

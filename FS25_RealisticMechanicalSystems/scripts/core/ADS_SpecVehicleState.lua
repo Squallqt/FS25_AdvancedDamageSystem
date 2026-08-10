@@ -3,7 +3,7 @@
 -- ==========================================================
 
 local function updateActiveDraftStats(vehicle)  -- calculates the current active draft demand from attached implements
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return 0, 0
     end
@@ -67,7 +67,7 @@ local function updateAvgDynamicMotorLoadWindow(spec, dynamicMotorLoad, dt)
         return 0
     end
 
-    if not ADS_Config.DEBUG then
+    if not RMS_Config.DEBUG then
         spec._avgDynamicMotorLoadSamples = nil
         spec.avgDynamicMotorLoad = 0
         return 0
@@ -123,7 +123,7 @@ local function updateAvgSpeedWindow(spec, speed, dt)
         return 0
     end
 
-    if not ADS_Config.DEBUG then
+    if not RMS_Config.DEBUG then
         spec._avgSpeedSamples = nil
         spec.avgSpeed = 0
         return 0
@@ -175,12 +175,12 @@ local function updateAvgSpeedWindow(spec, speed, dt)
 end
 
 local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with driveline vibration under active field work
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return 0
     end
 
-    local motorLoad = AdvancedDamageSystem.sanitizeNumber(vehicle:getMotorLoadPercentage(), 0, 0, 1.5)
+    local motorLoad = RealisticMechanicalSystems.sanitizeNumber(vehicle:getMotorLoadPercentage(), 0, 0, 1.5)
     local hasMoreRealistic = g_modIsLoaded ~= nil and g_modIsLoaded["MoreRealistic"] == true
 
     if hasMoreRealistic then
@@ -207,16 +207,16 @@ local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with dr
 
         if isWorking then
             local motor = vehicle:getMotor()
-            local peakPowerHp = AdvancedDamageSystem.sanitizeNumber((motor.peakMotorPower or 0) * 1.36, 0, 0)
-            local avgAbsDiffAcc = AdvancedDamageSystem.sanitizeNumber(spec.avgAbsDiffAcc, 0, 0, 100)
+            local peakPowerHp = RealisticMechanicalSystems.sanitizeNumber((motor.peakMotorPower or 0) * 1.36, 0, 0)
+            local avgAbsDiffAcc = RealisticMechanicalSystems.sanitizeNumber(spec.avgAbsDiffAcc, 0, 0, 100)
             if peakPowerHp > 0.001 then
-                local activeDraftEffectiveForceCap = AdvancedDamageSystem.sanitizeNumber(spec.activeDraftEffectiveForceCap, 0, 0, 1000000)
+                local activeDraftEffectiveForceCap = RealisticMechanicalSystems.sanitizeNumber(spec.activeDraftEffectiveForceCap, 0, 0, 1000000)
                 dynamicMotorLoad = math.min(motorLoad + math.min(avgAbsDiffAcc / 3, 0.15) * ((activeDraftEffectiveForceCap / peakPowerHp) / 0.15) ^ 2, 1.15)
             end
         end
     end
 
-    spec.dynamicMotorLoad = AdvancedDamageSystem.sanitizeNumber(dynamicMotorLoad, motorLoad, 0, 1.5)
+    spec.dynamicMotorLoad = RealisticMechanicalSystems.sanitizeNumber(dynamicMotorLoad, motorLoad, 0, 1.5)
 
     updateAvgDynamicMotorLoadWindow(spec, spec.dynamicMotorLoad or motorLoad, dt)
     updateAvgSpeedWindow(spec, vehicle:getLastSpeed(), dt)
@@ -268,7 +268,7 @@ local function updateAvgAbsDiffAccWindow(spec, motor, dt) -- Tracks the rolling 
 end
 
 local function updateStarterState(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return false
     end
@@ -288,7 +288,7 @@ end
 --- transmission
 local function updateWheelSlip(vehicle)
     local spec_wheels = vehicle.spec_wheels
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -299,7 +299,7 @@ local function updateWheelSlip(vehicle)
         return
     end
 
-    local brakeThreshold = tonumber(ADS_Config.CORE.CHASSIS_FACTOR_DATA.BRAKE_PEDAL_THRESHOLD) or 0.15
+    local brakeThreshold = tonumber(RMS_Config.CORE.CHASSIS_FACTOR_DATA.BRAKE_PEDAL_THRESHOLD) or 0.15
     if (tonumber(spec_wheels.brakePedal) or 0) > brakeThreshold then
         spec.wheelSlipIntensity = 0
         spec._wheelSlipPreviousSample = 0
@@ -307,7 +307,7 @@ local function updateWheelSlip(vehicle)
         return
     end
 
-    local drivetrainState = ADS_Drivetrain ~= nil and ADS_Drivetrain.getState(vehicle) or nil
+    local drivetrainState = RMS_Drivetrain ~= nil and RMS_Drivetrain.getState(vehicle) or nil
     local wheelSpeedSum = 0
     local drivenWheelCount = 0
     local function addWheelSpeed(wheelIndex)
@@ -324,14 +324,14 @@ local function updateWheelSlip(vehicle)
     end
 
     local layout = drivetrainState ~= nil and drivetrainState.layout or nil
-    if ADS_Drivetrain ~= nil and ADS_Drivetrain.getIsAvailable(vehicle) and layout ~= nil then
+    if RMS_Drivetrain ~= nil and RMS_Drivetrain.getIsAvailable(vehicle) and layout ~= nil then
         for _, wheelIndex in ipairs(layout.primaryWheelIndices) do
             addWheelSpeed(wheelIndex)
         end
 
         local fourWheelDrive = layout.centerIdx0 == nil
-            or drivetrainState.driveMode == ADS_Drivetrain.MODE.FOUR_WD
-            or (drivetrainState.driveMode == ADS_Drivetrain.MODE.AUTO and drivetrainState.autoEngaged)
+            or drivetrainState.driveMode == RMS_Drivetrain.MODE.FOUR_WD
+            or (drivetrainState.driveMode == RMS_Drivetrain.MODE.AUTO and drivetrainState.autoEngaged)
         if fourWheelDrive then
             for _, wheelIndex in ipairs(layout.engageableWheelIndices) do
                 addWheelSpeed(wheelIndex)
@@ -393,7 +393,7 @@ end
 
 local function updateWheelGroundState(vehicle)
     local spec_wheels = vehicle.spec_wheels
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
     if spec_wheels == nil or spec_wheels.wheels == nil then
         spec.avgTireGroundFrictionCoeff = 0
@@ -463,7 +463,7 @@ local function isTrailerJointType(jointTypeId)
 end
 
 local function getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return false
     end
@@ -502,7 +502,7 @@ local function getToolMotionFlags(vehicle)
 end
 
 local function updateImplementChainState(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return 0
     end
@@ -690,7 +690,7 @@ local function updateImplementChainState(vehicle, dt)
         end
     end
 
-    local lockedHookLiftContainer = ADS_Utils.getLockedHookLiftContainer(vehicle)
+    local lockedHookLiftContainer = RMS_Utils.getLockedHookLiftContainer(vehicle)
     for _, branch in ipairs(liftBranches) do
         if not isTrailerJointType(branch.jointTypeId) and branch.root ~= lockedHookLiftContainer then
             local carriedRatio = branch.mass > 0 and math.clamp((branch.mass - branch.supportLoad) / branch.mass, 0, 1) or 0
@@ -741,7 +741,7 @@ end
 --- chassis
 
 local function updateChassisVibState(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -802,7 +802,7 @@ local function updateChassisVibState(vehicle, dt)
         vibAvgDensityType = countDensityType > 0 and (sumDensityType / countDensityType) or 0
         vibSpeedFactor = math.clamp(speed, 0.0, 50.0) / 50.0
         if vehicle.getIsOnField ~= nil and vehicle:getIsOnField() then
-            vibFieldMultiplier = tonumber(ADS_Config.CORE.CHASSIS_FACTOR_DATA.VIB_FIELD_MULTIPLIER) or 1.3
+            vibFieldMultiplier = tonumber(RMS_Config.CORE.CHASSIS_FACTOR_DATA.VIB_FIELD_MULTIPLIER) or 1.3
         end
     end
 
@@ -819,14 +819,14 @@ local function updateChassisVibState(vehicle, dt)
 end
 
 local function updateChassisSteeringState(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
 
     local steerState = spec.chassisSteerState
     local speed = vehicle:getLastSpeed()
-    local C = ADS_Config.CORE.CHASSIS_FACTOR_DATA
+    local C = RMS_Config.CORE.CHASSIS_FACTOR_DATA
     local steerSpeedThreshold = tonumber(C.STEER_LOAD_SPEED_THRESHOLD) or 4.0
     local steeringPosition = 0
     local drivableSpec = vehicle.spec_drivable
@@ -861,7 +861,7 @@ local function updateChassisSteeringState(vehicle, dt)
     if vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels ~= nil then
         for _, wheel in ipairs(vehicle.spec_wheels.wheels) do
             local physics = wheel.physics
-            if physics ~= nil and ADS_Drivetrain.getIsWheelSteerable(wheel) then
+            if physics ~= nil and RMS_Drivetrain.getIsWheelSteerable(wheel) then
                 steeringMagnitude = math.max(steeringMagnitude, math.abs(tonumber(physics.steeringAngle) or 0))
             end
 
@@ -891,7 +891,7 @@ local function updateChassisSteeringState(vehicle, dt)
 end
 
 local function updateChassisBrakingState(vehicle)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -933,7 +933,7 @@ local function updateChassisBrakingState(vehicle)
         isBrakingByAxis = movingDirection ~= 0 and axisForward ~= 0 and math.sign(movingDirection) ~= math.sign(axisForward)
     end
 
-    local brakePedalThreshold = tonumber(ADS_Config.CORE.CHASSIS_FACTOR_DATA.BRAKE_PEDAL_THRESHOLD) or 0.15
+    local brakePedalThreshold = tonumber(RMS_Config.CORE.CHASSIS_FACTOR_DATA.BRAKE_PEDAL_THRESHOLD) or 0.15
     local brakePedal = math.clamp(brakePedalRaw, 0, 1)
     local isBraking = isBrakingByAxis or brakePedal > brakePedalThreshold
 
@@ -948,7 +948,7 @@ local function updateChassisBrakingState(vehicle)
 end
 
 local function updateFuelState(vehicle, dt)
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
         return
     end
@@ -1026,7 +1026,7 @@ local function updateFuelState(vehicle, dt)
             end
         end
 
-        local currentFuelUsageLh = AdvancedDamageSystem.sanitizeNumber(motorizedSpec.lastFuelUsage, 0, 0, 10000)
+        local currentFuelUsageLh = RealisticMechanicalSystems.sanitizeNumber(motorizedSpec.lastFuelUsage, 0, 0, 10000)
 
         local missionInfo = g_currentMission ~= nil and g_currentMission.missionInfo or nil
         local usageFactor = 1.5
@@ -1067,16 +1067,16 @@ local function updateFuelState(vehicle, dt)
             end
         end
 
-        fuelState.temperature = math.max(AdvancedDamageSystem.sanitizeNumber(spec.engineTemperature, environmentTemp, -80, 160) / 3.6, environmentTemp)
+        fuelState.temperature = math.max(RealisticMechanicalSystems.sanitizeNumber(spec.engineTemperature, environmentTemp, -80, 160) / 3.6, environmentTemp)
 
-        local idleSpeedThreshold = ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_SPEED_THRESHOLD
-        local idleLoadThreshold = ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_LOAD_THRESHOLD
+        local idleSpeedThreshold = RMS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_SPEED_THRESHOLD
+        local idleLoadThreshold = RMS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_LOAD_THRESHOLD
         local motorLoad = vehicle.getMotorLoadPercentage ~= nil and (vehicle:getMotorLoadPercentage() or 0) or 0
         local idleTimer = math.max(tonumber(fuelState.idleTimer) or 0, 0)
         local isIdle = (vehicle:getLastSpeed() or 0) <= idleSpeedThreshold and motorLoad <= idleLoadThreshold
 
         if isIdle then
-            idleTimer = math.min(idleTimer + (dt / 1000), ADS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_FACTOR_MAX_TIMER)
+            idleTimer = math.min(idleTimer + (dt / 1000), RMS_Config.CORE.FUEL_FACTOR_DATA.IDLE_DEPOSIT_FACTOR_MAX_TIMER)
         else
             idleTimer = 0
         end
@@ -1089,13 +1089,13 @@ local function updateFuelState(vehicle, dt)
 end
 
 --- update state
-function AdvancedDamageSystem:updateVehicleStateSnapshot(dt)
-    local spec = self.spec_AdvancedDamageSystem
+function RealisticMechanicalSystems:updateVehicleStateSnapshot(dt)
+    local spec = self.spec_RealisticMechanicalSystems
     if not self.isServer or spec == nil or spec.isExcludedVehicle then return end
 
-    local delayOne = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
-    local delayTwo = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
-    local delayThree = ADS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
+    local delayOne = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
+    local delayTwo = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
+    local delayThree = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
 
     spec.updateVehicleStateTimerOne = spec.updateVehicleStateTimerOne + dt
     spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo + dt

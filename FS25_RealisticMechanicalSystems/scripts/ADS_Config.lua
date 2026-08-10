@@ -1,5 +1,5 @@
 
-ADS_Config = {
+RMS_Config = {
     VER = 136,
 
     -- Enables or disables extensive debug logging in the console.
@@ -763,150 +763,150 @@ ADS_Config = {
     }
 }
 
-function ADS_Config.resetTutorialMessages()
-    for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-        ADS_Config.TUTORIAL_MESSAGES[messageId] = false
+function RMS_Config.resetTutorialMessages()
+    for messageId, _ in pairs(RMS_Config.TUTORIAL_MESSAGES) do
+        RMS_Config.TUTORIAL_MESSAGES[messageId] = false
     end
 end
 
-ADS_Config.TUTORIAL_MESSAGE_IDS = {}
-for messageId, _ in pairs(ADS_Config.TUTORIAL_MESSAGES) do
-    table.insert(ADS_Config.TUTORIAL_MESSAGE_IDS, messageId)
+RMS_Config.TUTORIAL_MESSAGE_IDS = {}
+for messageId, _ in pairs(RMS_Config.TUTORIAL_MESSAGES) do
+    table.insert(RMS_Config.TUTORIAL_MESSAGE_IDS, messageId)
 end
-table.sort(ADS_Config.TUTORIAL_MESSAGE_IDS)
+table.sort(RMS_Config.TUTORIAL_MESSAGE_IDS)
 
-ADS_Config.TUTORIAL_PLAYER_STATES = {}
-ADS_Config.TUTORIAL_STATE_LOADED = false
-ADS_Config.TUTORIAL_LOCAL_USER_ID = nil
+RMS_Config.TUTORIAL_PLAYER_STATES = {}
+RMS_Config.TUTORIAL_STATE_LOADED = false
+RMS_Config.TUTORIAL_LOCAL_USER_ID = nil
 
-function ADS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
+function RMS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
     local state = {
         tutorialMode = tutorialMode ~= false,
         welcomeMessageSeen = welcomeMessageSeen == true,
         messages = {}
     }
 
-    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+    for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
         state.messages[messageId] = messages ~= nil and messages[messageId] == true or false
     end
 
     return state
 end
 
-function ADS_Config.captureTutorialState()
-    return ADS_Config.createTutorialState(
-        ADS_Config.TUTORIAL_MODE,
-        ADS_Config.WELCOME_MESSAGE_SEEN,
-        ADS_Config.TUTORIAL_MESSAGES
+function RMS_Config.captureTutorialState()
+    return RMS_Config.createTutorialState(
+        RMS_Config.TUTORIAL_MODE,
+        RMS_Config.WELCOME_MESSAGE_SEEN,
+        RMS_Config.TUTORIAL_MESSAGES
     )
 end
 
-function ADS_Config.applyTutorialState(state)
-    local normalized = ADS_Config.createTutorialState(
+function RMS_Config.applyTutorialState(state)
+    local normalized = RMS_Config.createTutorialState(
         state ~= nil and state.tutorialMode,
         state ~= nil and state.welcomeMessageSeen,
         state ~= nil and state.messages
     )
 
-    ADS_Config.TUTORIAL_MODE = normalized.tutorialMode
-    ADS_Config.WELCOME_MESSAGE_SEEN = normalized.welcomeMessageSeen
-    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
-        ADS_Config.TUTORIAL_MESSAGES[messageId] = normalized.messages[messageId]
+    RMS_Config.TUTORIAL_MODE = normalized.tutorialMode
+    RMS_Config.WELCOME_MESSAGE_SEEN = normalized.welcomeMessageSeen
+    for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
+        RMS_Config.TUTORIAL_MESSAGES[messageId] = normalized.messages[messageId]
     end
-    ADS_Config.TUTORIAL_STATE_LOADED = true
+    RMS_Config.TUTORIAL_STATE_LOADED = true
 end
 
-function ADS_Config.resetLocalTutorialState()
-    ADS_Config.TUTORIAL_MODE = true
-    ADS_Config.WELCOME_MESSAGE_SEEN = false
-    for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
-        ADS_Config.TUTORIAL_MESSAGES[messageId] = false
+function RMS_Config.resetLocalTutorialState()
+    RMS_Config.TUTORIAL_MODE = true
+    RMS_Config.WELCOME_MESSAGE_SEEN = false
+    for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
+        RMS_Config.TUTORIAL_MESSAGES[messageId] = false
     end
-    ADS_Config.TUTORIAL_STATE_LOADED = false
-    ADS_Config.TUTORIAL_LOCAL_USER_ID = nil
+    RMS_Config.TUTORIAL_STATE_LOADED = false
+    RMS_Config.TUTORIAL_LOCAL_USER_ID = nil
 end
 
-function ADS_Config.resetTutorialStateSession()
-    ADS_Config.TUTORIAL_PLAYER_STATES = {}
-    ADS_Config.resetLocalTutorialState()
+function RMS_Config.resetTutorialStateSession()
+    RMS_Config.TUTORIAL_PLAYER_STATES = {}
+    RMS_Config.resetLocalTutorialState()
 end
 
-function ADS_Config.getTutorialPlayerState(uniqueUserId)
+function RMS_Config.getTutorialPlayerState(uniqueUserId)
     if uniqueUserId == nil or uniqueUserId == "" then return nil end
 
     uniqueUserId = tostring(uniqueUserId)
-    local state = ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId]
+    local state = RMS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId]
     if state == nil then
-        state = ADS_Config.createTutorialState()
-        ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId] = state
+        state = RMS_Config.createTutorialState()
+        RMS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId] = state
     end
-    return ADS_Config.createTutorialState(state.tutorialMode, state.welcomeMessageSeen, state.messages)
+    return RMS_Config.createTutorialState(state.tutorialMode, state.welcomeMessageSeen, state.messages)
 end
 
-function ADS_Config.setTutorialPlayerState(uniqueUserId, state)
+function RMS_Config.setTutorialPlayerState(uniqueUserId, state)
     if uniqueUserId == nil or uniqueUserId == "" or state == nil then return end
-    ADS_Config.TUTORIAL_PLAYER_STATES[tostring(uniqueUserId)] = ADS_Config.createTutorialState(
+    RMS_Config.TUTORIAL_PLAYER_STATES[tostring(uniqueUserId)] = RMS_Config.createTutorialState(
         state.tutorialMode,
         state.welcomeMessageSeen,
         state.messages
     )
 end
 
-function ADS_Config.ensureLocalTutorialState()
-    if ADS_Config.TUTORIAL_STATE_LOADED then return true end
+function RMS_Config.ensureLocalTutorialState()
+    if RMS_Config.TUTORIAL_STATE_LOADED then return true end
     if g_server == nil or g_localPlayer == nil or g_localPlayer.getUniqueUserId == nil then return false end
 
     local uniqueUserId = g_localPlayer:getUniqueUserId()
-    local state = ADS_Config.getTutorialPlayerState(uniqueUserId)
+    local state = RMS_Config.getTutorialPlayerState(uniqueUserId)
     if state == nil then return false end
 
-    ADS_Config.TUTORIAL_LOCAL_USER_ID = uniqueUserId
-    ADS_Config.applyTutorialState(state)
+    RMS_Config.TUTORIAL_LOCAL_USER_ID = uniqueUserId
+    RMS_Config.applyTutorialState(state)
     return true
 end
 
-function ADS_Config.syncTutorialState()
-    if not ADS_Config.TUTORIAL_STATE_LOADED and not ADS_Config.ensureLocalTutorialState() then return end
+function RMS_Config.syncTutorialState()
+    if not RMS_Config.TUTORIAL_STATE_LOADED and not RMS_Config.ensureLocalTutorialState() then return end
 
-    local state = ADS_Config.captureTutorialState()
+    local state = RMS_Config.captureTutorialState()
     if g_server ~= nil then
-        ADS_Config.setTutorialPlayerState(ADS_Config.TUTORIAL_LOCAL_USER_ID, state)
-    elseif ADS_TutorialStateEvent ~= nil then
-        ADS_TutorialStateEvent.sendToServer(state)
+        RMS_Config.setTutorialPlayerState(RMS_Config.TUTORIAL_LOCAL_USER_ID, state)
+    elseif RMS_TutorialStateEvent ~= nil then
+        RMS_TutorialStateEvent.sendToServer(state)
     end
 end
 
-ADS_Config.savegameFile = "advancedDamageSystem.xml"
+RMS_Config.savegameFile = "advancedDamageSystem.xml"
 
 local function log_dbg(...)
-    if ADS_Config.DEBUG then
+    if RMS_Config.DEBUG then
         local args = {...}
         for i = 1, #args do args[i] = tostring(args[i]) end
-        print("[ADS_CFG] " .. table.concat(args, " "))
+        print("[RMS_CFG] " .. table.concat(args, " "))
     end
 end
 
 local function saveTutorialPlayerStates(xmlFile, root)
     local userIds = {}
-    for uniqueUserId, _ in pairs(ADS_Config.TUTORIAL_PLAYER_STATES) do
+    for uniqueUserId, _ in pairs(RMS_Config.TUTORIAL_PLAYER_STATES) do
         table.insert(userIds, uniqueUserId)
     end
     table.sort(userIds)
 
     for index, uniqueUserId in ipairs(userIds) do
-        local state = ADS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId]
+        local state = RMS_Config.TUTORIAL_PLAYER_STATES[uniqueUserId]
         local key = string.format("%s.tutorialPlayers.player(%d)", root, index - 1)
         setXMLString(xmlFile, key .. "#uniqueUserId", uniqueUserId)
         setXMLBool(xmlFile, key .. ".tutorialMode", state.tutorialMode)
         setXMLBool(xmlFile, key .. ".welcomeMessageSeen", state.welcomeMessageSeen)
-        for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+        for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
             setXMLBool(xmlFile, key .. ".messages." .. messageId, state.messages[messageId] == true)
         end
     end
 end
 
 local function loadTutorialPlayerStates(xmlFile, root)
-    ADS_Config.TUTORIAL_PLAYER_STATES = {}
+    RMS_Config.TUTORIAL_PLAYER_STATES = {}
     local index = 0
 
     while true do
@@ -915,10 +915,10 @@ local function loadTutorialPlayerStates(xmlFile, root)
         if uniqueUserId == nil then break end
 
         local messages = {}
-        for _, messageId in ipairs(ADS_Config.TUTORIAL_MESSAGE_IDS) do
+        for _, messageId in ipairs(RMS_Config.TUTORIAL_MESSAGE_IDS) do
             messages[messageId] = getXMLBool(xmlFile, key .. ".messages." .. messageId) == true
         end
-        ADS_Config.setTutorialPlayerState(uniqueUserId, {
+        RMS_Config.setTutorialPlayerState(uniqueUserId, {
             tutorialMode = getXMLBool(xmlFile, key .. ".tutorialMode"),
             welcomeMessageSeen = getXMLBool(xmlFile, key .. ".welcomeMessageSeen"),
             messages = messages
@@ -930,7 +930,7 @@ end
 -- ============================================================
 -- SAVE
 -- ============================================================
-function ADS_Config.saveToXMLFile()
+function RMS_Config.saveToXMLFile()
     if g_currentMission == nil or not g_currentMission:getIsServer() then
         return false
     end
@@ -945,7 +945,7 @@ function ADS_Config.saveToXMLFile()
         savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
     end
 
-    local xmlFileName = savegameFolderPath .. "/" .. ADS_Config.savegameFile
+    local xmlFileName = savegameFolderPath .. "/" .. RMS_Config.savegameFile
 
     local xmlFile = createXMLFile("advancedDamageSystem", xmlFileName, "advancedDamageSystem")
     if xmlFile == nil or xmlFile == 0 then
@@ -956,67 +956,67 @@ function ADS_Config.saveToXMLFile()
     local root = "advancedDamageSystem"
 
     -- Version
-    setXMLFloat(xmlFile, root .. ".VER", ADS_Config.VER)
+    setXMLFloat(xmlFile, root .. ".VER", RMS_Config.VER)
 
     -- CORE
-    setXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR",      ADS_Config.CORE.BASE_SERVICE_WEAR)
-    setXMLFloat(xmlFile, root .. ".BASE_SYSTEMS_WEAR",      ADS_Config.CORE.BASE_SYSTEMS_WEAR)
-    setXMLFloat(xmlFile, root .. ".DOWNTIME_MULTIPLIER",    ADS_Config.CORE.DOWNTIME_MULTIPLIER)
-    setXMLFloat(xmlFile, root .. ".SYSTEM_STRESS_GLOBAL_MULTIPLIER", ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER)
-    setXMLBool (xmlFile, root .. ".GENERAL_WEAR_ENABLED",   ADS_Config.CORE.GENERAL_WEAR_ENABLED)
-    setXMLBool (xmlFile, root .. ".ENABLE_WARNING_MESSAGES", ADS_Config.CORE.ENABLE_WARNING_MESSAGES)
-    setXMLBool (xmlFile, root .. ".AI_OVERLOAD_CONTROL",    ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL)
-    setXMLBool (xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_OVERLOAD", ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD)
-    setXMLBool (xmlFile, root .. ".CONTRACT_VEHICLE_PROTECTION", ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION)
-    setXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS", ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS)
-    setXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED",     ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED)
+    setXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR",      RMS_Config.CORE.BASE_SERVICE_WEAR)
+    setXMLFloat(xmlFile, root .. ".BASE_SYSTEMS_WEAR",      RMS_Config.CORE.BASE_SYSTEMS_WEAR)
+    setXMLFloat(xmlFile, root .. ".DOWNTIME_MULTIPLIER",    RMS_Config.CORE.DOWNTIME_MULTIPLIER)
+    setXMLFloat(xmlFile, root .. ".SYSTEM_STRESS_GLOBAL_MULTIPLIER", RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER)
+    setXMLBool (xmlFile, root .. ".GENERAL_WEAR_ENABLED",   RMS_Config.CORE.GENERAL_WEAR_ENABLED)
+    setXMLBool (xmlFile, root .. ".ENABLE_WARNING_MESSAGES", RMS_Config.CORE.ENABLE_WARNING_MESSAGES)
+    setXMLBool (xmlFile, root .. ".AI_OVERLOAD_CONTROL",    RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL)
+    setXMLBool (xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_OVERLOAD", RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD)
+    setXMLBool (xmlFile, root .. ".CONTRACT_VEHICLE_PROTECTION", RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION)
+    setXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS", RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS)
+    setXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED",     RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED)
 
     -- MAINTENANCE
-    setXMLBool (xmlFile, root .. ".INSTANT_INSPECTION",     ADS_Config.MAINTENANCE.INSTANT_INSPECTION)
-    setXMLBool (xmlFile, root .. ".PARK_VEHICLE",           ADS_Config.MAINTENANCE.PARK_VEHICLE)
-    setXMLBool (xmlFile, root .. ".WARRANTY_ENABLED",       ADS_Config.MAINTENANCE.WARRANTY_ENABLED)
-    setXMLFloat(xmlFile, root .. ".PRICE_MULTIPLIER",       ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER)
-    setXMLFloat(xmlFile, root .. ".TIME_MULTIPLIER",        ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER)
+    setXMLBool (xmlFile, root .. ".INSTANT_INSPECTION",     RMS_Config.MAINTENANCE.INSTANT_INSPECTION)
+    setXMLBool (xmlFile, root .. ".PARK_VEHICLE",           RMS_Config.MAINTENANCE.PARK_VEHICLE)
+    setXMLBool (xmlFile, root .. ".WARRANTY_ENABLED",       RMS_Config.MAINTENANCE.WARRANTY_ENABLED)
+    setXMLFloat(xmlFile, root .. ".PRICE_MULTIPLIER",       RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER)
+    setXMLFloat(xmlFile, root .. ".TIME_MULTIPLIER",        RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER)
 
     -- WORKSHOP
-    setXMLBool (xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE",       ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE)
-    setXMLBool (xmlFile, root .. ".MOBILE_ALWAYS_AVAILABLE",       ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE)
-    setXMLBool (xmlFile, root .. ".OWN_ALWAYS_AVAILABLE",          ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE)
-    setXMLBool (xmlFile, root .. ".MOBILE_WORKSHOP_RESTRICTIONS_ENABLED", ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED)
-    setXMLFloat(xmlFile, root .. ".OPEN_HOUR",              ADS_Config.WORKSHOP.OPEN_HOUR)
-    setXMLFloat(xmlFile, root .. ".CLOSE_HOUR",             ADS_Config.WORKSHOP.CLOSE_HOUR)
+    setXMLBool (xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE",       RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE)
+    setXMLBool (xmlFile, root .. ".MOBILE_ALWAYS_AVAILABLE",       RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE)
+    setXMLBool (xmlFile, root .. ".OWN_ALWAYS_AVAILABLE",          RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE)
+    setXMLBool (xmlFile, root .. ".MOBILE_WORKSHOP_RESTRICTIONS_ENABLED", RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED)
+    setXMLFloat(xmlFile, root .. ".OPEN_HOUR",              RMS_Config.WORKSHOP.OPEN_HOUR)
+    setXMLFloat(xmlFile, root .. ".CLOSE_HOUR",             RMS_Config.WORKSHOP.CLOSE_HOUR)
 
     -- THERMAL
-    setXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT",        ADS_Config.THERMAL.ENGINE_MAX_HEAT)
-    setXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT",         ADS_Config.THERMAL.TRANS_MAX_HEAT)
-    setXMLFloat(xmlFile, root .. ".TEMPERATURE_CHANGE_SPEED", ADS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED)
-    setXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE",     ADS_Config.THERMAL.MAX_DIRT_INFLUENCE)
-    setXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER",    ADS_Config.THERMAL.WARMING_BOOST_POWER)
-    setXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER", ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER)
+    setXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT",        RMS_Config.THERMAL.ENGINE_MAX_HEAT)
+    setXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT",         RMS_Config.THERMAL.TRANS_MAX_HEAT)
+    setXMLFloat(xmlFile, root .. ".TEMPERATURE_CHANGE_SPEED", RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED)
+    setXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE",     RMS_Config.THERMAL.MAX_DIRT_INFLUENCE)
+    setXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER",    RMS_Config.THERMAL.WARMING_BOOST_POWER)
+    setXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER", RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER)
 
     -- ELECTRICAL
-    setXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR", ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR)
-    setXMLFloat(xmlFile, root .. ".ALT_MAX_OUTPUT",         ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT)
-    setXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A",         ADS_Config.ELECTRICAL.IDLE_CURRENT_A)
+    setXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR", RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR)
+    setXMLFloat(xmlFile, root .. ".ALT_MAX_OUTPUT",         RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT)
+    setXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A",         RMS_Config.ELECTRICAL.IDLE_CURRENT_A)
 
     -- FIELD CARE
-    setXMLFloat(xmlFile, root .. ".CLOGGING_SPEED",         ADS_Config.FIELD_CARE.CLOGGING_SPEED)
-    setXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION", ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION)
-    setXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR", ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR)
+    setXMLFloat(xmlFile, root .. ".CLOGGING_SPEED",         RMS_Config.FIELD_CARE.CLOGGING_SPEED)
+    setXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION", RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION)
+    setXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR", RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR)
 
     -- DRIVETRAIN
-    setXMLBool (xmlFile, root .. ".DRIVETRAIN_ENABLED",           ADS_Config.DRIVETRAIN.ENABLED)
-    setXMLBool (xmlFile, root .. ".DRIVETRAIN_ALLOW_AUTO_MODE",   ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE)
-    setXMLBool (xmlFile, root .. ".DRIVETRAIN_WINDUP_DAMAGE",     ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED)
-    setXMLFloat(xmlFile, root .. ".DRIVETRAIN_DIFFLOCK_RELEASE_SPEED", ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED)
-    setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED", ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED)
-    setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO",    ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_ENABLED",           RMS_Config.DRIVETRAIN.ENABLED)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_ALLOW_AUTO_MODE",   RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_WINDUP_DAMAGE",     RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED)
+    setXMLFloat(xmlFile, root .. ".DRIVETRAIN_DIFFLOCK_RELEASE_SPEED", RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED", RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED)
+    setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO",    RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE)
 
     -- DEBUG
-    setXMLBool (xmlFile, root .. ".DEBUG_MODE",             ADS_Config.DEBUG)
+    setXMLBool (xmlFile, root .. ".DEBUG_MODE",             RMS_Config.DEBUG)
 
-    if ADS_Config.TUTORIAL_STATE_LOADED and ADS_Config.TUTORIAL_LOCAL_USER_ID ~= nil then
-        ADS_Config.setTutorialPlayerState(ADS_Config.TUTORIAL_LOCAL_USER_ID, ADS_Config.captureTutorialState())
+    if RMS_Config.TUTORIAL_STATE_LOADED and RMS_Config.TUTORIAL_LOCAL_USER_ID ~= nil then
+        RMS_Config.setTutorialPlayerState(RMS_Config.TUTORIAL_LOCAL_USER_ID, RMS_Config.captureTutorialState())
     end
     saveTutorialPlayerStates(xmlFile, root)
 
@@ -1028,8 +1028,8 @@ end
 -- ============================================================
 -- LOAD
 -- ============================================================
-function ADS_Config.loadFromXMLFile()
-    if ADS_Config._loaded then
+function RMS_Config.loadFromXMLFile()
+    if RMS_Config._loaded then
         return
     end
 
@@ -1048,7 +1048,7 @@ function ADS_Config.loadFromXMLFile()
         savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
     end
 
-    local xmlFileName = savegameFolderPath .. "/" .. ADS_Config.savegameFile
+    local xmlFileName = savegameFolderPath .. "/" .. RMS_Config.savegameFile
 
     if not fileExists(xmlFileName) then
         return
@@ -1071,148 +1071,148 @@ function ADS_Config.loadFromXMLFile()
 
     -- CORE
     v = getXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR")
-    if v ~= nil then ADS_Config.CORE.BASE_SERVICE_WEAR = v end
+    if v ~= nil then RMS_Config.CORE.BASE_SERVICE_WEAR = v end
 
     v = getXMLFloat(xmlFile, root .. ".BASE_SYSTEMS_WEAR")
-    if v ~= nil then ADS_Config.CORE.BASE_SYSTEMS_WEAR = v end
+    if v ~= nil then RMS_Config.CORE.BASE_SYSTEMS_WEAR = v end
 
     v = getXMLFloat(xmlFile, root .. ".DOWNTIME_MULTIPLIER")
-    if v ~= nil then ADS_Config.CORE.DOWNTIME_MULTIPLIER = v end
+    if v ~= nil then RMS_Config.CORE.DOWNTIME_MULTIPLIER = v end
 
     v = getXMLFloat(xmlFile, root .. ".SYSTEM_STRESS_GLOBAL_MULTIPLIER")
-    if v ~= nil then ADS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER = v end
+    if v ~= nil then RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER = v end
 
     v = getXMLBool(xmlFile, root .. ".GENERAL_WEAR_ENABLED")
-    if v ~= nil then ADS_Config.CORE.GENERAL_WEAR_ENABLED = v end
+    if v ~= nil then RMS_Config.CORE.GENERAL_WEAR_ENABLED = v end
 
     v = getXMLBool(xmlFile, root .. ".ENABLE_WARNING_MESSAGES")
-    if v ~= nil then ADS_Config.CORE.ENABLE_WARNING_MESSAGES = v end
+    if v ~= nil then RMS_Config.CORE.ENABLE_WARNING_MESSAGES = v end
 
     v = getXMLBool(xmlFile, root .. ".AI_OVERLOAD_CONTROL")
-    if v ~= nil then ADS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = v end
+    if v ~= nil then RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL = v end
 
     v = getXMLBool(xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_OVERLOAD")
     if v == nil then
         -- Compatibility with the short-lived broader setting name.
         v = getXMLBool(xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_FAILURE")
     end
-    if v ~= nil then ADS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD = v end
+    if v ~= nil then RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD = v end
 
     v = getXMLBool(xmlFile, root .. ".CONTRACT_VEHICLE_PROTECTION")
-    if v ~= nil then ADS_Config.CORE.CONTRACT_VEHICLE_PROTECTION = v end
+    if v ~= nil then RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION = v end
 
     v = getXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS")
-    if v ~= nil then ADS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = v end
+    if v ~= nil then RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = v end
 
     v = getXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED")
-    if v ~= nil then ADS_Config.CORE.AI_WORKER_PID.MIN_SPEED = v end
+    if v ~= nil then RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED = v end
 
     -- MAINTENANCE
     v = getXMLBool(xmlFile, root .. ".INSTANT_INSPECTION")
-    if v ~= nil then ADS_Config.MAINTENANCE.INSTANT_INSPECTION = v end
+    if v ~= nil then RMS_Config.MAINTENANCE.INSTANT_INSPECTION = v end
 
     v = getXMLBool(xmlFile, root .. ".PARK_VEHICLE")
-    if v ~= nil then ADS_Config.MAINTENANCE.PARK_VEHICLE = v end
+    if v ~= nil then RMS_Config.MAINTENANCE.PARK_VEHICLE = v end
 
     v = getXMLBool(xmlFile, root .. ".WARRANTY_ENABLED")
-    if v ~= nil then ADS_Config.MAINTENANCE.WARRANTY_ENABLED = v end
+    if v ~= nil then RMS_Config.MAINTENANCE.WARRANTY_ENABLED = v end
 
     v = getXMLFloat(xmlFile, root .. ".PRICE_MULTIPLIER")
-    if v ~= nil then ADS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER = v end
+    if v ~= nil then RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER = v end
 
     v = getXMLFloat(xmlFile, root .. ".TIME_MULTIPLIER")
-    if v ~= nil then ADS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER = v end
+    if v ~= nil then RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER = v end
 
     -- WORKSHOP
     v = getXMLBool(xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE")
     if v ~= nil then
-        ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v
+        RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v
     else
         v = getXMLBool(xmlFile, root .. ".ALWAYS_AVAILABLE")
-        if v ~= nil then ADS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v end
+        if v ~= nil then RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v end
     end
 
     v = getXMLBool(xmlFile, root .. ".MOBILE_ALWAYS_AVAILABLE")
-    if v ~= nil then ADS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE = v end
+    if v ~= nil then RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE = v end
 
     v = getXMLBool(xmlFile, root .. ".OWN_ALWAYS_AVAILABLE")
-    if v ~= nil then ADS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE = v end
+    if v ~= nil then RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE = v end
 
     v = getXMLBool(xmlFile, root .. ".MOBILE_WORKSHOP_RESTRICTIONS_ENABLED")
-    if v ~= nil then ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = v end
+    if v ~= nil then RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = v end
 
     v = getXMLFloat(xmlFile, root .. ".OPEN_HOUR")
-    if v ~= nil then ADS_Config.WORKSHOP.OPEN_HOUR = v end
+    if v ~= nil then RMS_Config.WORKSHOP.OPEN_HOUR = v end
 
     v = getXMLFloat(xmlFile, root .. ".CLOSE_HOUR")
-    if v ~= nil then ADS_Config.WORKSHOP.CLOSE_HOUR = v end
+    if v ~= nil then RMS_Config.WORKSHOP.CLOSE_HOUR = v end
 
     -- THERMAL
     v = getXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT")
-    if v ~= nil then ADS_Config.THERMAL.ENGINE_MAX_HEAT = v end
+    if v ~= nil then RMS_Config.THERMAL.ENGINE_MAX_HEAT = v end
 
     v = getXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT")
-    if v ~= nil then ADS_Config.THERMAL.TRANS_MAX_HEAT = v end
+    if v ~= nil then RMS_Config.THERMAL.TRANS_MAX_HEAT = v end
 
     v = getXMLFloat(xmlFile, root .. ".TEMPERATURE_CHANGE_SPEED")
-    if v ~= nil then ADS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = math.clamp(v, 0.5, 2.0) end
+    if v ~= nil then RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = math.clamp(v, 0.5, 2.0) end
 
     v = getXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE")
-    if v ~= nil then ADS_Config.THERMAL.MAX_DIRT_INFLUENCE = v end
+    if v ~= nil then RMS_Config.THERMAL.MAX_DIRT_INFLUENCE = v end
 
     v = getXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER")
-    if v ~= nil then ADS_Config.THERMAL.WARMING_BOOST_POWER = v end
+    if v ~= nil then RMS_Config.THERMAL.WARMING_BOOST_POWER = v end
 
     v = getXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER")
-    if v ~= nil then ADS_Config.THERMAL.COOLING_SLOWDOWN_POWER = v end
+    if v ~= nil then RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER = v end
 
     -- ELECTRICAL
     v = getXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR")
-    if v ~= nil then ADS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = v end
+    if v ~= nil then RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = v end
 
     v = getXMLFloat(xmlFile, root .. ".ALT_MAX_OUTPUT")
-    if v ~= nil then ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT = v end
+    if v ~= nil then RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT = v end
 
     v = getXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A")
-    if v ~= nil then ADS_Config.ELECTRICAL.IDLE_CURRENT_A = v end
+    if v ~= nil then RMS_Config.ELECTRICAL.IDLE_CURRENT_A = v end
 
     -- FIELD CARE
     v = getXMLFloat(xmlFile, root .. ".CLOGGING_SPEED")
-    if v ~= nil then ADS_Config.FIELD_CARE.CLOGGING_SPEED = v end
+    if v ~= nil then RMS_Config.FIELD_CARE.CLOGGING_SPEED = v end
 
     v = getXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION")
-    if v ~= nil then ADS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = v end
+    if v ~= nil then RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION = v end
 
     v = getXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR")
-    if v ~= nil then ADS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = math.clamp(v, 0, 0.05) end
+    if v ~= nil then RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = math.clamp(v, 0, 0.05) end
 
     -- DRIVETRAIN
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_ENABLED")
-    if v ~= nil then ADS_Config.DRIVETRAIN.ENABLED = v end
+    if v ~= nil then RMS_Config.DRIVETRAIN.ENABLED = v end
 
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_ALLOW_AUTO_MODE")
-    if v ~= nil then ADS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = v end
+    if v ~= nil then RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE = v end
 
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_WINDUP_DAMAGE")
-    if v ~= nil then ADS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = v end
+    if v ~= nil then RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED = v end
 
     v = getXMLFloat(xmlFile, root .. ".DRIVETRAIN_DIFFLOCK_RELEASE_SPEED")
-    if v ~= nil then ADS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = math.clamp(v, 10, 40) end
+    if v ~= nil then RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED = math.clamp(v, 10, 40) end
 
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED")
-    if v ~= nil then ADS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = v end
+    if v ~= nil then RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED = v end
 
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO")
-    if v ~= nil then ADS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = v end
+    if v ~= nil then RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = v end
 
     -- DEBUG
     v = getXMLBool(xmlFile, root .. ".DEBUG_MODE")
-    if v ~= nil then ADS_Config.DEBUG = v end
+    if v ~= nil then RMS_Config.DEBUG = v end
 
     if g_currentMission:getIsServer() then
         loadTutorialPlayerStates(xmlFile, root)
     end
 
     delete(xmlFile)
-    ADS_Config._loaded = true
+    RMS_Config._loaded = true
 end

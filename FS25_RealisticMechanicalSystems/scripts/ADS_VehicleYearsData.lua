@@ -1,5 +1,5 @@
 --- Generated table of vehicle production years, keyed by store item path.
-ADS_VehicleYearsData = {
+RMS_VehicleYearsData = {
     ["$data/handtools/brandless/horsebrush/horsebrush.xml"] = 1911,
     ["$data/handtools/husqvarna/xp550/xp550.xml"] = 1959,
     ["$data/handtools/jonsered/cs2252/cs2252.xml"] = 1959,

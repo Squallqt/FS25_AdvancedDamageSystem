@@ -1,7 +1,7 @@
-ADS_ReportDialog = {}
-ADS_ReportDialog.INSTANCE = nil
+RMS_ReportDialog = {}
+RMS_ReportDialog.INSTANCE = nil
 
-local ADS_ReportDialog_mt = Class(ADS_ReportDialog, MessageDialog)
+local RMS_ReportDialog_mt = Class(RMS_ReportDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 local REPORT_TABLE_MIN_ROWS_MAIN = 10
 local REPORT_TABLE_MIN_ROWS_BOTTOM = 4
@@ -179,7 +179,7 @@ local RECOMMENDATION_RULES = {
     }
 }
 
-local log_dbg = ADS_Utils.createLogger("[ADS_REPORT_DIALOG]")
+local log_dbg = RMS_Utils.createLogger("[RMS_REPORT_DIALOG]")
 
 local function getTextOrFallback(key, fallback)
     local text = g_i18n:getText(key)
@@ -192,7 +192,7 @@ end
 function getSystemDisplayName(systemKey)
     local normalizedKey = string.lower(tostring(systemKey or ""))
 
-    for enumKey, l10nKey in pairs(AdvancedDamageSystem.SYSTEMS or {}) do
+    for enumKey, l10nKey in pairs(RealisticMechanicalSystems.SYSTEMS or {}) do
         if string.lower(enumKey) == normalizedKey then
             return getTextOrFallback(l10nKey, tostring(systemKey))
         end
@@ -225,7 +225,7 @@ local function getStressLabel(stress, condition)
     local safeCondition = math.max(tonumber(condition) or 0, 0.001)
     local normalizedStress = math.max(math.min((tonumber(stress) or 0.0) / safeCondition, 1.0), 0.0)
 
-    if normalizedStress < ADS_Config.CORE.BREAKDOWN_PROBABILITIES.STRESS_THRESHOLD then
+    if normalizedStress < RMS_Config.CORE.BREAKDOWN_PROBABILITIES.STRESS_THRESHOLD then
         return getTextOrFallback("ads_report_stress_absent", "Absent")
     elseif normalizedStress < 0.4 then
         return getTextOrFallback("ads_report_stress_low", "Low")
@@ -307,35 +307,35 @@ local function buildRecommendationsData(vehicle, reportEntry, metrics)
     return recommendations
 end
 
-function ADS_ReportDialog.register()
-    local dialog = ADS_ReportDialog.new()
-    g_gui:loadGui(modDirectory .. "gui/ADS_ReportDialog.xml", "ADS_ReportDialog", dialog)
-    ADS_ReportDialog.INSTANCE = dialog
+function RMS_ReportDialog.register()
+    local dialog = RMS_ReportDialog.new()
+    g_gui:loadGui(modDirectory .. "gui/ADS_ReportDialog.xml", "RMS_ReportDialog", dialog)
+    RMS_ReportDialog.INSTANCE = dialog
 end
 
-function ADS_ReportDialog.new(target, customMt)
-    local dialog = MessageDialog.new(target, customMt or ADS_ReportDialog_mt)
+function RMS_ReportDialog.new(target, customMt)
+    local dialog = MessageDialog.new(target, customMt or RMS_ReportDialog_mt)
     dialog.vehicle = nil
     return dialog
 end
 
-function ADS_ReportDialog.show(vehicle, logEntry)
+function RMS_ReportDialog.show(vehicle, logEntry)
 
-    if logEntry == nil or not AdvancedDamageSystem.getIsLogEntryHasReport(logEntry) then
+    if logEntry == nil or not RealisticMechanicalSystems.getIsLogEntryHasReport(logEntry) then
         log_dbg("Invalid log entry")
         return
     end
 
-    if ADS_ReportDialog.INSTANCE == nil then ADS_ReportDialog.register() end
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil then return end
+    if RMS_ReportDialog.INSTANCE == nil then RMS_ReportDialog.register() end
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then return end
     
-    local dialog = ADS_ReportDialog.INSTANCE
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local dialog = RMS_ReportDialog.INSTANCE
+    local spec = vehicle.spec_RealisticMechanicalSystems
 
     dialog.maintenanceLog = spec.maintenanceLog or {}
     dialog.vehicle = vehicle
     dialog.lastReport = logEntry
-    dialog.isCompleteInspection = AdvancedDamageSystem.getIsCompleteReport(logEntry)
+    dialog.isCompleteInspection = RealisticMechanicalSystems.getIsCompleteReport(logEntry)
 
     dialog.overallAssessmentData = {}
     dialog.systemConditionData = {}
@@ -344,12 +344,12 @@ function ADS_ReportDialog.show(vehicle, logEntry)
     dialog.recommendationsData = {}
     
     dialog:updateScreen()
-    g_gui:showDialog("ADS_ReportDialog")
+    g_gui:showDialog("RMS_ReportDialog")
 end
 
-function ADS_ReportDialog:updateScreen()
+function RMS_ReportDialog:updateScreen()
     if self.vehicle == nil then return end
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
 
     self.overallAssessmentData = {}
     self.systemConditionData = {}
@@ -359,7 +359,7 @@ function ADS_ReportDialog:updateScreen()
 
     local balanceText = g_i18n:formatMoney(g_currentMission:getMoney(), 0, true, false)
     self.balanceElement:setText(balanceText)
-    ADS_Utils.updateMoneyBoxLayout(
+    RMS_Utils.updateMoneyBoxLayout(
         self.balanceTitleElement,
         self.balanceElement,
         self.moneyBox,
@@ -405,20 +405,20 @@ function ADS_ReportDialog:updateScreen()
     -- condition and service
     local condition = self.lastReport.conditionData.condition or 1.0
     local service = self.lastReport.conditionData.service or 1.0
-    local serviceIntervalRemaining = ADS_Utils.getServiceIntervalRemainingRatio(service)
+    local serviceIntervalRemaining = RMS_Utils.getServiceIntervalRemainingRatio(service)
     table.insert(self.overallAssessmentData, {'ads_report_overall_assessment_condition', condition})
     table.insert(self.overallAssessmentData, {'ads_report_overall_assessment_service', serviceIntervalRemaining, service})
 
     -- currentMTBF calculation
     local systems = self.lastReport.conditionData.systems or {}
     local lowestCondition = 1.0
-    local minMTBF = ADS_Config.CORE.BREAKDOWN_PROBABILITIES.MAX_MTBF
+    local minMTBF = RMS_Config.CORE.BREAKDOWN_PROBABILITIES.MAX_MTBF
     local totalCurrentSystemCondition = 0.0
     local enabledSystemsCount = 0
     for _, systemData in pairs(systems) do
         if systemData.enabled ~= false then
             local systemCondition = math.max(math.min(systemData.condition or 1.0, 1.0), 0.0)
-            local mtbf = ADS_Utils.getEstimatedMTBF(systemCondition, systemData.stress)
+            local mtbf = RMS_Utils.getEstimatedMTBF(systemCondition, systemData.stress)
             minMTBF = (mtbf < minMTBF and mtbf) or minMTBF
             lowestCondition = (systemCondition < lowestCondition and systemCondition) or lowestCondition
             totalCurrentSystemCondition = totalCurrentSystemCondition + systemCondition
@@ -432,12 +432,12 @@ function ADS_ReportDialog:updateScreen()
     table.insert(self.overallAssessmentData, {'ads_report_overall_assessment_mtbf', minMTBF})
 
     -- current crit failure risk
-    local critFailureRisk = ADS_Utils.getCriticalFailureChance(lowestCondition)
+    local critFailureRisk = RMS_Utils.getCriticalFailureChance(lowestCondition)
     table.insert(self.overallAssessmentData, {'ads_report_overall_assessment_crit_fail_risk', critFailureRisk})
     
     -- wear rate
     local reportReliability = math.max(tonumber(self.lastReport.conditionData.reliability or spec.reliability) or 1.0, 0.001)
-    local nominalWearRate = ADS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability
+    local nominalWearRate = RMS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability
     local wearRate = nominalWearRate
     local startOperatingTime = 0.0
     local startCondition = 1.0
@@ -451,7 +451,7 @@ function ADS_ReportDialog:updateScreen()
             startCondition = entry.conditionData.condition or 1.0
             startSystems = entry.conditionData.systems or {}
             break
-        elseif entry.type == AdvancedDamageSystem.STATUS.OVERHAUL then
+        elseif entry.type == RealisticMechanicalSystems.STATUS.OVERHAUL then
             startOperatingTime = entry.conditionData.operatingHours or 0
             startCondition = entry.conditionData.condition or 1.0
             startSystems = entry.conditionData.systems or {}
@@ -509,8 +509,8 @@ function ADS_ReportDialog:updateScreen()
 --                   SYSTEM CONDITION   
 -- ==========================================================
 
-    for _, systemL10nKey in ipairs(AdvancedDamageSystem.SYSTEMS_ORDER) do
-        local systemKey = ADS_Utils.getSystemKey(AdvancedDamageSystem.SYSTEMS, systemL10nKey)
+    for _, systemL10nKey in ipairs(RealisticMechanicalSystems.SYSTEMS_ORDER) do
+        local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemL10nKey)
         local systemData = systems[systemKey]
         if type(systemData) == "table" and systemData.enabled ~= false then
             local systemCondition = math.max(math.min(systemData.condition or 1.0, 1.0), 0.0)
@@ -524,7 +524,7 @@ function ADS_ReportDialog:updateScreen()
 -- ==========================================================
 
     local activeEffects = self.lastReport.conditionData.activeEffects or {}
-    local nominalBatteryCapacityAh = ADS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY or 0
+    local nominalBatteryCapacityAh = RMS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY or 0
     local batterySoc = clampUnitRatio(self.lastReport.conditionData.batterySoc or 1)
     local batteryHealth = clampUnitRatio(1.0 + (getEffectValue(activeEffects, "BATTERY_HEALTH_MODIFIER") or 0))
     local alternatorHealth = clampUnitRatio(1.0 + (getEffectValue(activeEffects, "ALTERNATOR_HEALTH_MODIFIER") or 0))
@@ -690,7 +690,7 @@ function ADS_ReportDialog:updateScreen()
         high = 130
     })
 
-    if ADS_Breakdowns.BreakdownRegistry.HYDRAULIC_PUMP_MALFUNCTION.isApplicable(self.vehicle) then
+    if RMS_Breakdowns.BreakdownRegistry.HYDRAULIC_PUMP_MALFUNCTION.isApplicable(self.vehicle) then
         local hydraulicEfficiencyModifier = 1.0 + (getEffectValue(activeEffects, "HYDRAULIC_SPEED_MODIFIER") or 0)
         addVehicleSpec({
             key = "ads_report_system_condition_hydraulic",
@@ -700,7 +700,7 @@ function ADS_ReportDialog:updateScreen()
         })
     end
 
-    local nominalAlternatorCurrent = ADS_Config.ELECTRICAL.ALT_MAX_OUTPUT or 0
+    local nominalAlternatorCurrent = RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT or 0
     local currentAlternatorCurrent = nominalAlternatorCurrent * alternatorHealth
     addVehicleSpec({
         key = "ads_report_vehicle_spec_max_alternator_current",
@@ -749,7 +749,7 @@ function ADS_ReportDialog:updateScreen()
 
     for _, breakdownId in ipairs(breakdownIds) do
         local breakdownData = reportActiveBreakdowns[breakdownId]
-        local registryEntry = ADS_Breakdowns.BreakdownRegistry[breakdownId]
+        local registryEntry = RMS_Breakdowns.BreakdownRegistry[breakdownId]
 
         if breakdownId == "MAINTENANCE_WITH_POOR_QUALITY_CONSUMABLES" then
             reportMetrics.hasPoorQualityConsumablesBreakdown = true
@@ -765,19 +765,19 @@ function ADS_ReportDialog:updateScreen()
 
                 if breakdownData.isActive ~= false then
                     reportMetrics.visibleSelectableActiveBreakdownsCount = reportMetrics.visibleSelectableActiveBreakdownsCount + 1
-                elseif breakdownData.source == AdvancedDamageSystem.BREAKDOWN_SOURCES.POOR_PARTS then
+                elseif breakdownData.source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.POOR_PARTS then
                     appendUniqueText(reportMetrics.inactivePoorPartsNames, inactivePoorPartsSeen, partText)
-                elseif breakdownData.source == AdvancedDamageSystem.BREAKDOWN_SOURCES.QUICK_FIX then
+                elseif breakdownData.source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.QUICK_FIX then
                     appendUniqueText(reportMetrics.inactiveQuickFixPartsNames, inactiveQuickFixSeen, partText)
                 end
 
                 local severityText = g_i18n:getText(stageData.severity)
                 local descriptionText = g_i18n:getText(stageData.description)
 
-                if breakdownData.isActive == false and breakdownData.source == AdvancedDamageSystem.BREAKDOWN_SOURCES.QUICK_FIX then
+                if breakdownData.isActive == false and breakdownData.source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.QUICK_FIX then
                     severityText = g_i18n:getText("ads_breakdowns_quick_fix_stage")
                     descriptionText = g_i18n:getText("ads_breakdowns_temporarily_repaired_description")
-                elseif breakdownData.isActive == false and breakdownData.source == AdvancedDamageSystem.BREAKDOWN_SOURCES.POOR_PARTS then
+                elseif breakdownData.isActive == false and breakdownData.source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.POOR_PARTS then
                     severityText = g_i18n:getText("ads_breakdowns_defected_parts_stage")
                     descriptionText = g_i18n:getText("ads_breakdowns_defected_parts_detected_description")
                 end
@@ -821,7 +821,7 @@ function ADS_ReportDialog:updateScreen()
     self.recommendationsTable:reloadData()
 end
 
-function ADS_ReportDialog:getNumberOfItemsInSection(list, section)
+function RMS_ReportDialog:getNumberOfItemsInSection(list, section)
     if list == self.overallAssessmentTable then
         return #self.overallAssessmentData
     elseif list == self.systemConditionTable then
@@ -835,7 +835,7 @@ function ADS_ReportDialog:getNumberOfItemsInSection(list, section)
     end
 end
 
-function ADS_ReportDialog:populateCellForItemInSection(list, section, index, cell)
+function RMS_ReportDialog:populateCellForItemInSection(list, section, index, cell)
     if list == self.overallAssessmentTable then
         self:populateOverallAssessmentCell(index, cell)
     elseif list == self.systemConditionTable then
@@ -849,7 +849,7 @@ function ADS_ReportDialog:populateCellForItemInSection(list, section, index, cel
     end
 end
 
-function ADS_ReportDialog:populateOverallAssessmentCell(index, cell)
+function RMS_ReportDialog:populateOverallAssessmentCell(index, cell)
     local data = self.overallAssessmentData[index]
     if not data then return end
 
@@ -863,16 +863,16 @@ function ADS_ReportDialog:populateOverallAssessmentCell(index, cell)
         return
     end
 
-    local spec = self.vehicle.spec_AdvancedDamageSystem
-    local maxMtbf = ADS_Config.CORE.BREAKDOWN_PROBABILITIES.MAX_MTBF / 60
-    local minMtbf = ADS_Config.CORE.BREAKDOWN_PROBABILITIES.MIN_MTBF / 60
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
+    local maxMtbf = RMS_Config.CORE.BREAKDOWN_PROBABILITIES.MAX_MTBF / 60
+    local minMtbf = RMS_Config.CORE.BREAKDOWN_PROBABILITIES.MIN_MTBF / 60
     local diffMtbf = maxMtbf - minMtbf
-    local minCrit = ADS_Config.CORE.BREAKDOWN_PROBABILITIES.CRITICAL_MIN
-    local maxCrit = ADS_Config.CORE.BREAKDOWN_PROBABILITIES.CRITICAL_MAX
+    local minCrit = RMS_Config.CORE.BREAKDOWN_PROBABILITIES.CRITICAL_MIN
+    local maxCrit = RMS_Config.CORE.BREAKDOWN_PROBABILITIES.CRITICAL_MAX
     local critDiff = maxCrit - minCrit
     local reportReliability = math.max(tonumber(self.lastReport.conditionData.reliability or spec.reliability) or 1.0, 0.001)
-    local rel = 1 / (ADS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability)
-    local nominalWearRate = ADS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability
+    local rel = 1 / (RMS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability)
+    local nominalWearRate = RMS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability
 
     local assessmentConfig = {
         ads_report_overall_assessment_condition =  {inverted = false, ideal = 0.8, high = 0.6, mid = 0.4, low = 0.2, stdVisible = true, isPercent = true},
@@ -895,9 +895,9 @@ function ADS_ReportDialog:populateOverallAssessmentCell(index, cell)
             return 0.5, 0.5, 0.5, 1.0
         end
         if cfg.inverted then
-            return ADS_Utils.getValueColorInverted(val, cfg.ideal, cfg.low, cfg.mid, cfg.high, smooth)
+            return RMS_Utils.getValueColorInverted(val, cfg.ideal, cfg.low, cfg.mid, cfg.high, smooth)
         else
-            return ADS_Utils.getValueColor(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, smooth)
+            return RMS_Utils.getValueColor(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, smooth)
         end
     end
     
@@ -924,9 +924,9 @@ function ADS_ReportDialog:populateOverallAssessmentCell(index, cell)
 
         if cfg.stdVisible then
             if key == 'ads_report_overall_assessment_condition' then
-                valueElement:setText(ADS_Utils.getValueLabel(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, table.unpack(conditionStateTexts)))
+                valueElement:setText(RMS_Utils.getValueLabel(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, table.unpack(conditionStateTexts)))
             elseif key == 'ads_report_overall_assessment_service' then
-                 valueElement:setText(ADS_Utils.formatService(rawVal, false))
+                 valueElement:setText(RMS_Utils.formatService(rawVal, false))
             end
         else
             valueElement:setText(g_i18n:getText('ads_report_state_not_available'))
@@ -936,7 +936,7 @@ function ADS_ReportDialog:populateOverallAssessmentCell(index, cell)
 
 end
 
-function ADS_ReportDialog:populateSystemConditionCell(index, cell)
+function RMS_ReportDialog:populateSystemConditionCell(index, cell)
     local data = self.systemConditionData[index]
     if not data then return end
 
@@ -963,11 +963,11 @@ function ADS_ReportDialog:populateSystemConditionCell(index, cell)
     local stressLabel = getStressLabel(stress, condition)
 
     local function getConditionColor(smooth)
-        return ADS_Utils.getValueColor(val, 95, 80, 60, 40, smooth)
+        return RMS_Utils.getValueColor(val, 95, 80, 60, 40, smooth)
     end
 
     local function getRiskColor(smooth)
-        return ADS_Utils.getValueColorInverted(riskValue, 20, 40, 60, 80, smooth)
+        return RMS_Utils.getValueColorInverted(riskValue, 20, 40, 60, 80, smooth)
     end
 
     cell:getAttribute("reportTableSystemConditionTitle"):setText(g_i18n:getText(key))
@@ -992,14 +992,14 @@ function ADS_ReportDialog:populateSystemConditionCell(index, cell)
         }
 
         cell:getAttribute("reportTableSystemConditionTitle"):setTextColor(1.0, 1.0, 1.0, 1.0)
-        valueElement:setText(ADS_Utils.getValueLabel(val, 80, 60, 40, 20, table.unpack(stateTexts)))
+        valueElement:setText(RMS_Utils.getValueLabel(val, 80, 60, 40, 20, table.unpack(stateTexts)))
         riskElement:setText(g_i18n:getText("ads_report_state_not_available"))
         valueElement:setTextColor(getConditionColor(false))
         riskElement:setTextColor(0.5, 0.5, 0.5, 1.0)
     end
 end
 
-function ADS_ReportDialog:populateVehicleSpecCell(index, cell)
+function RMS_ReportDialog:populateVehicleSpecCell(index, cell)
     local data = self.vehicleSpecData[index]
     if not data then return end
 
@@ -1032,9 +1032,9 @@ function ADS_ReportDialog:populateVehicleSpecCell(index, cell)
             return 0.5, 0.5, 0.5, 1.0
         end
         if cfg.inverted then
-            return ADS_Utils.getValueColorInverted(val, cfg.ideal, cfg.low, cfg.mid, cfg.high, smooth)
+            return RMS_Utils.getValueColorInverted(val, cfg.ideal, cfg.low, cfg.mid, cfg.high, smooth)
         else
-            return ADS_Utils.getValueColor(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, smooth)
+            return RMS_Utils.getValueColor(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, smooth)
         end
     end
 
@@ -1067,9 +1067,9 @@ function ADS_ReportDialog:populateVehicleSpecCell(index, cell)
             elseif forceNumericPercent then
                 displayText = string.format("%.1f %%", val)
             elseif cfg.inverted then
-                displayText = ADS_Utils.getValueLabelInverted(val, cfg.ideal, cfg.low, cfg.mid, cfg.high, table.unpack(stateTexts))
+                displayText = RMS_Utils.getValueLabelInverted(val, cfg.ideal, cfg.low, cfg.mid, cfg.high, table.unpack(stateTexts))
             else
-                displayText = ADS_Utils.getValueLabel(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, table.unpack(stateTexts))
+                displayText = RMS_Utils.getValueLabel(val, cfg.ideal, cfg.high, cfg.mid, cfg.low, table.unpack(stateTexts))
             end
         else
             displayText = g_i18n:getText("ads_report_state_not_available")
@@ -1090,12 +1090,12 @@ function ADS_ReportDialog:populateVehicleSpecCell(index, cell)
     valueElement:setTextColor(getColor(self.isCompleteInspection))
 end
 
-function ADS_ReportDialog:populateBreakdownsCell(index, cell)
+function RMS_ReportDialog:populateBreakdownsCell(index, cell)
     local data = self.breakdownsData[index]
     cell:getAttribute("reportBreakdownsRow"):setText(data or "")
 end
 
-function ADS_ReportDialog:populateRecommendationsCell(index, cell)
+function RMS_ReportDialog:populateRecommendationsCell(index, cell)
     local data = self.recommendationsData[index]
     cell:getAttribute("reportRecRow"):setText(data or "")
 end
@@ -1104,15 +1104,15 @@ end
 -- CALLBACKS & EVENTS
 -- ====================================================================
 
-function ADS_ReportDialog:onClickBack()
+function RMS_ReportDialog:onClickBack()
     self:close()
 end
 
-function ADS_ReportDialog:onOpen(superFunc)
+function RMS_ReportDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
 end
 
-function ADS_ReportDialog:onClose(superFunc)
+function RMS_ReportDialog:onClose(superFunc)
     self.vehicle = nil
     g_messageCenter:unsubscribeAll(self)
 end

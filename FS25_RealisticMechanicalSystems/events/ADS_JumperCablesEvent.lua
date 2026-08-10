@@ -1,7 +1,7 @@
-ADS_JumperCablesEvent = {}
-local ADS_JumperCablesEvent_mt = Class(ADS_JumperCablesEvent, Event)
+RMS_JumperCablesEvent = {}
+local RMS_JumperCablesEvent_mt = Class(RMS_JumperCablesEvent, Event)
 
-InitEventClass(ADS_JumperCablesEvent, "ADS_JumperCablesEvent")
+InitEventClass(RMS_JumperCablesEvent, "RMS_JumperCablesEvent")
 
 
 local function getHandToolSpec(tool)
@@ -28,13 +28,13 @@ local function getHandToolSpec(tool)
 end
 
 
-function ADS_JumperCablesEvent.emptyNew()
-    return Event.new(ADS_JumperCablesEvent_mt)
+function RMS_JumperCablesEvent.emptyNew()
+    return Event.new(RMS_JumperCablesEvent_mt)
 end
 
 
-function ADS_JumperCablesEvent.new(tool, state, targetVehicle, connectedVehicleA, connectedVehicleB)
-    local self = ADS_JumperCablesEvent.emptyNew()
+function RMS_JumperCablesEvent.new(tool, state, targetVehicle, connectedVehicleA, connectedVehicleB)
+    local self = RMS_JumperCablesEvent.emptyNew()
     self.tool = tool
     self.state = state or ""
     self.targetVehicle = targetVehicle
@@ -44,7 +44,7 @@ function ADS_JumperCablesEvent.new(tool, state, targetVehicle, connectedVehicleA
 end
 
 
-function ADS_JumperCablesEvent:writeStream(streamId, connection)
+function RMS_JumperCablesEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.tool)
     streamWriteString(streamId, self.state)
     NetworkUtil.writeNodeObject(streamId, self.targetVehicle)
@@ -53,7 +53,7 @@ function ADS_JumperCablesEvent:writeStream(streamId, connection)
 end
 
 
-function ADS_JumperCablesEvent:readStream(streamId, connection)
+function RMS_JumperCablesEvent:readStream(streamId, connection)
     self.tool = NetworkUtil.readNodeObject(streamId)
     self.state = streamReadString(streamId)
     self.targetVehicle = NetworkUtil.readNodeObject(streamId)
@@ -63,7 +63,7 @@ function ADS_JumperCablesEvent:readStream(streamId, connection)
 end
 
 
-function ADS_JumperCablesEvent:run(connection)
+function RMS_JumperCablesEvent:run(connection)
     local tool = self.tool
     if tool == nil or not tool:getIsSynchronized() then
         return
@@ -88,15 +88,15 @@ function ADS_JumperCablesEvent:run(connection)
 end
 
 
-function ADS_JumperCablesEvent.sendRequest(tool, state, targetVehicle)
+function RMS_JumperCablesEvent.sendRequest(tool, state, targetVehicle)
     if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(ADS_JumperCablesEvent.new(tool, state, targetVehicle, nil, nil))
+        g_client:getServerConnection():sendEvent(RMS_JumperCablesEvent.new(tool, state, targetVehicle, nil, nil))
     end
 end
 
 
-function ADS_JumperCablesEvent.broadcastState(tool, state, targetVehicle, connectedVehicleA, connectedVehicleB)
+function RMS_JumperCablesEvent.broadcastState(tool, state, targetVehicle, connectedVehicleA, connectedVehicleB)
     if g_server ~= nil then
-        g_server:broadcastEvent(ADS_JumperCablesEvent.new(tool, state, targetVehicle, connectedVehicleA, connectedVehicleB), nil, nil, tool)
+        g_server:broadcastEvent(RMS_JumperCablesEvent.new(tool, state, targetVehicle, connectedVehicleA, connectedVehicleB), nil, nil, tool)
     end
 end

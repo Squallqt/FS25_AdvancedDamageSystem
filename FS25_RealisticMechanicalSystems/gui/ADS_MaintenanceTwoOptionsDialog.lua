@@ -1,17 +1,17 @@
-ADS_MaintenanceTwoOptionsDialog = {}
-ADS_MaintenanceTwoOptionsDialog.INSTANCE = nil
+RMS_MaintenanceTwoOptionsDialog = {}
+RMS_MaintenanceTwoOptionsDialog.INSTANCE = nil
 
-local ADS_MaintenanceTwoOptionsDialog_mt = Class(ADS_MaintenanceTwoOptionsDialog, MessageDialog)
+local RMS_MaintenanceTwoOptionsDialog_mt = Class(RMS_MaintenanceTwoOptionsDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
-function ADS_MaintenanceTwoOptionsDialog.register()
-    local dialog = ADS_MaintenanceTwoOptionsDialog.new()
-    g_gui:loadGui(modDirectory .. "gui/ADS_MaintenanceTwoOptionsDialog.xml", "ADS_MaintenanceTwoOptionsDialog", dialog)
-    ADS_MaintenanceTwoOptionsDialog.INSTANCE = dialog
+function RMS_MaintenanceTwoOptionsDialog.register()
+    local dialog = RMS_MaintenanceTwoOptionsDialog.new()
+    g_gui:loadGui(modDirectory .. "gui/ADS_MaintenanceTwoOptionsDialog.xml", "RMS_MaintenanceTwoOptionsDialog", dialog)
+    RMS_MaintenanceTwoOptionsDialog.INSTANCE = dialog
 end
 
-function ADS_MaintenanceTwoOptionsDialog.new(target, customMt)
-    local dialog = MessageDialog.new(target, customMt or ADS_MaintenanceTwoOptionsDialog_mt)
+function RMS_MaintenanceTwoOptionsDialog.new(target, customMt)
+    local dialog = MessageDialog.new(target, customMt or RMS_MaintenanceTwoOptionsDialog_mt)
     dialog.vehicle = nil
     dialog.optionOneValues = nil
     dialog.serviceInfoData = {}
@@ -25,27 +25,27 @@ end
 
 local function getMobileWorkshopAvailability(dialog)
     local vehicle = dialog ~= nil and dialog.vehicle or nil
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
-    local workshopType = ADS_WorkshopDialog.INSTANCE ~= nil and ADS_WorkshopDialog.INSTANCE.workshopType or (spec ~= nil and spec.workshopType or nil)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
+    local workshopType = RMS_WorkshopDialog.INSTANCE ~= nil and RMS_WorkshopDialog.INSTANCE.workshopType or (spec ~= nil and spec.workshopType or nil)
 
-    if vehicle == nil or spec == nil or workshopType ~= AdvancedDamageSystem.WORKSHOP.MOBILE then
+    if vehicle == nil or spec == nil or workshopType ~= RealisticMechanicalSystems.WORKSHOP.MOBILE then
         return true
     end
 
-    if not ADS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED then
+    if not RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED then
         return true
     end
 
-    local serviceKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.STATUS, dialog.maintenanceType)
+    local serviceKey = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.STATUS, dialog.maintenanceType)
     local optionKey
 
-    if dialog.maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
-        optionKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.INSPECTION_TYPES, dialog.selectedOptionOne)
-    elseif dialog.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        optionKey = ADS_Utils.getKeyByValue(AdvancedDamageSystem.OVERHAUL_TYPES, dialog.selectedOptionOne)
+    if dialog.maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
+        optionKey = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.INSPECTION_TYPES, dialog.selectedOptionOne)
+    elseif dialog.maintenanceType == RealisticMechanicalSystems.STATUS.OVERHAUL then
+        optionKey = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.OVERHAUL_TYPES, dialog.selectedOptionOne)
     end
 
-    local limits = ADS_Config.WORKSHOP.MOBILE_WORKSHOP_SERVICES_BY_MAINTAINABILITY
+    local limits = RMS_Config.WORKSHOP.MOBILE_WORKSHOP_SERVICES_BY_MAINTAINABILITY
     local requiredMaintainability = limits ~= nil and serviceKey ~= nil and optionKey ~= nil and limits[serviceKey] ~= nil and limits[serviceKey][optionKey] or 0
     local currentMaintainability = spec.maintainability or 0
 
@@ -54,11 +54,11 @@ end
 
 local function getSelectedWorkshopAvailability(dialog)
     local vehicle = dialog ~= nil and dialog.vehicle or nil
-    local spec = vehicle ~= nil and vehicle.spec_AdvancedDamageSystem or nil
-    local workshopType = ADS_WorkshopDialog.INSTANCE ~= nil and ADS_WorkshopDialog.INSTANCE.workshopType or (spec ~= nil and spec.workshopType or nil)
+    local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
+    local workshopType = RMS_WorkshopDialog.INSTANCE ~= nil and RMS_WorkshopDialog.INSTANCE.workshopType or (spec ~= nil and spec.workshopType or nil)
 
-    if ADS_Main ~= nil and ADS_Main.isWorkshopTypeOpen ~= nil then
-        return ADS_Main:isWorkshopTypeOpen(workshopType)
+    if RMS_Main ~= nil and RMS_Main.isWorkshopTypeOpen ~= nil then
+        return RMS_Main:isWorkshopTypeOpen(workshopType)
     end
 
     return true
@@ -83,11 +83,11 @@ local function getSelectedProcedureDisplayName(dialog)
     return string.format("%s %s", optionOneText, typeText)
 end
 
-function ADS_MaintenanceTwoOptionsDialog.show(vehicle, maintenanceType)
-    if ADS_MaintenanceTwoOptionsDialog.INSTANCE == nil then ADS_MaintenanceTwoOptionsDialog.register() end
-    if vehicle == nil or vehicle.spec_AdvancedDamageSystem == nil or maintenanceType == nil then return end
+function RMS_MaintenanceTwoOptionsDialog.show(vehicle, maintenanceType)
+    if RMS_MaintenanceTwoOptionsDialog.INSTANCE == nil then RMS_MaintenanceTwoOptionsDialog.register() end
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or maintenanceType == nil then return end
     
-    local dialog = ADS_MaintenanceTwoOptionsDialog.INSTANCE
+    local dialog = RMS_MaintenanceTwoOptionsDialog.INSTANCE
     dialog.vehicle = vehicle
     dialog.maintenanceType = maintenanceType
 
@@ -99,21 +99,21 @@ function ADS_MaintenanceTwoOptionsDialog.show(vehicle, maintenanceType)
         dialog.optionThree:setState(BinaryOptionElement.STATE_LEFT)
     end
 
-    if dialog.maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
-        dialog.selectedOptionOne = AdvancedDamageSystem.INSPECTION_TYPES.STANDARD
-    elseif dialog.maintenanceType == AdvancedDamageSystem.STATUS.OVERHAUL then
-        dialog.selectedOptionOne = AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD
+    if dialog.maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
+        dialog.selectedOptionOne = RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD
+    elseif dialog.maintenanceType == RealisticMechanicalSystems.STATUS.OVERHAUL then
+        dialog.selectedOptionOne = RealisticMechanicalSystems.OVERHAUL_TYPES.STANDARD
     end
     dialog.selectedOptionThree = false
     
     dialog:updateScreen()
-    g_gui:showDialog("ADS_MaintenanceTwoOptionsDialog")
+    g_gui:showDialog("RMS_MaintenanceTwoOptionsDialog")
 end
 
-function ADS_MaintenanceTwoOptionsDialog:updateScreen()
+function RMS_MaintenanceTwoOptionsDialog:updateScreen()
     if self.vehicle == nil then return end
 
-    local spec = self.vehicle.spec_AdvancedDamageSystem
+    local spec = self.vehicle.spec_RealisticMechanicalSystems
 
     -- title
     self.dialogTitleElement:setText(g_i18n:getText(self.maintenanceType))
@@ -122,30 +122,30 @@ function ADS_MaintenanceTwoOptionsDialog:updateScreen()
     local optionOneText = ""
     local optionOneOptions = {}
 
-    if self.maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
+    if self.maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
         optionOneText = g_i18n:getText("ads_option_menu_option_one_title_inspection")
-        local instantInspection = ADS_Config.MAINTENANCE.INSTANT_INSPECTION
+        local instantInspection = RMS_Config.MAINTENANCE.INSTANT_INSPECTION
         if instantInspection then
             self.optionOneValues = {
-                AdvancedDamageSystem.INSPECTION_TYPES.STANDARD,
-                AdvancedDamageSystem.INSPECTION_TYPES.COMPLETE
+                RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD,
+                RealisticMechanicalSystems.INSPECTION_TYPES.COMPLETE
             }
-            if self.selectedOptionOne == AdvancedDamageSystem.INSPECTION_TYPES.VISUAL then
-                self.selectedOptionOne = AdvancedDamageSystem.INSPECTION_TYPES.STANDARD
+            if self.selectedOptionOne == RealisticMechanicalSystems.INSPECTION_TYPES.VISUAL then
+                self.selectedOptionOne = RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD
             end
         else
             self.optionOneValues = {
-                AdvancedDamageSystem.INSPECTION_TYPES.STANDARD,
-                AdvancedDamageSystem.INSPECTION_TYPES.VISUAL,
-                AdvancedDamageSystem.INSPECTION_TYPES.COMPLETE
+                RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD,
+                RealisticMechanicalSystems.INSPECTION_TYPES.VISUAL,
+                RealisticMechanicalSystems.INSPECTION_TYPES.COMPLETE
             }
         end
     else
         optionOneText = g_i18n:getText("ads_option_menu_option_one_title_overhaul")
         self.optionOneValues = {
-            AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD,
-            AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL,
-            AdvancedDamageSystem.OVERHAUL_TYPES.FULL
+            RealisticMechanicalSystems.OVERHAUL_TYPES.STANDARD,
+            RealisticMechanicalSystems.OVERHAUL_TYPES.PARTIAL,
+            RealisticMechanicalSystems.OVERHAUL_TYPES.FULL
         }
     end
 
@@ -167,15 +167,15 @@ function ADS_MaintenanceTwoOptionsDialog:updateScreen()
     local isWorkshopOpen = getSelectedWorkshopAvailability(self)
 
     -- price, duration, finishtime
-    local workshopType = ADS_WorkshopDialog.INSTANCE ~= nil and ADS_WorkshopDialog.INSTANCE.workshopType or spec.workshopType
+    local workshopType = RMS_WorkshopDialog.INSTANCE ~= nil and RMS_WorkshopDialog.INSTANCE.workshopType or spec.workshopType
     local priceValue = g_i18n:formatMoney(self.vehicle:getServicePrice(self.maintenanceType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, workshopType), 0, true, false)
     local durationValue = ""
-    if ADS_Config.MAINTENANCE.INSTANT_INSPECTION and  self.maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
+    if RMS_Config.MAINTENANCE.INSTANT_INSPECTION and  self.maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
         durationValue = g_i18n:getText("ads_option_menu_duration_instant")
     else
-        durationValue = ADS_Utils.formatDuration(self.vehicle:getServiceDuration(self.maintenanceType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, workshopType))
+        durationValue = RMS_Utils.formatDuration(self.vehicle:getServiceDuration(self.maintenanceType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, workshopType))
     end
-    local finishTimeValue = ADS_Utils.formatFinishTime(self.vehicle:getServiceFinishTime(self.maintenanceType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, workshopType))
+    local finishTimeValue = RMS_Utils.formatFinishTime(self.vehicle:getServiceFinishTime(self.maintenanceType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, workshopType))
 
     self.serviceInfoData = {
         {title = ensureTrailingColon(g_i18n:getText("ads_option_menu_price_text")), value = priceValue},
@@ -189,18 +189,18 @@ function ADS_MaintenanceTwoOptionsDialog:updateScreen()
 
 
     -- disclaimers
-    if self.maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
+    if self.maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
         local disclaimerByType = {
-            [AdvancedDamageSystem.INSPECTION_TYPES.STANDARD] = g_i18n:getText("ads_option_menu_inspection_standard_description"),
-            [AdvancedDamageSystem.INSPECTION_TYPES.VISUAL] = g_i18n:getText("ads_option_menu_inspection_visual_description"),
-            [AdvancedDamageSystem.INSPECTION_TYPES.COMPLETE] = g_i18n:getText("ads_option_menu_inspection_complete_description")
+            [RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD] = g_i18n:getText("ads_option_menu_inspection_standard_description"),
+            [RealisticMechanicalSystems.INSPECTION_TYPES.VISUAL] = g_i18n:getText("ads_option_menu_inspection_visual_description"),
+            [RealisticMechanicalSystems.INSPECTION_TYPES.COMPLETE] = g_i18n:getText("ads_option_menu_inspection_complete_description")
         }
         self.optionOneDisclaimer:setText(disclaimerByType[self.selectedOptionOne] or "")
     else
         local disclaimerByType = {
-            [AdvancedDamageSystem.OVERHAUL_TYPES.STANDARD] = g_i18n:getText("ads_option_menu_overhaul_standard_description"),
-            [AdvancedDamageSystem.OVERHAUL_TYPES.PARTIAL]  = g_i18n:getText("ads_option_menu_overhaul_partial_description"),
-            [AdvancedDamageSystem.OVERHAUL_TYPES.FULL]     = g_i18n:getText("ads_option_menu_overhaul_full_description")
+            [RealisticMechanicalSystems.OVERHAUL_TYPES.STANDARD] = g_i18n:getText("ads_option_menu_overhaul_standard_description"),
+            [RealisticMechanicalSystems.OVERHAUL_TYPES.PARTIAL]  = g_i18n:getText("ads_option_menu_overhaul_partial_description"),
+            [RealisticMechanicalSystems.OVERHAUL_TYPES.FULL]     = g_i18n:getText("ads_option_menu_overhaul_full_description")
         }
         self.optionOneDisclaimer:setText(disclaimerByType[self.selectedOptionOne] or "")
     end
@@ -217,7 +217,7 @@ function ADS_MaintenanceTwoOptionsDialog:updateScreen()
     
 
     -- option three
-    if self.maintenanceType == AdvancedDamageSystem.STATUS.INSPECTION then
+    if self.maintenanceType == RealisticMechanicalSystems.STATUS.INSPECTION then
         self.optionThreeText:setText(g_i18n:getText("ads_option_menu_perform_repair"))
         self.optionThreeDisclaimer:setText(g_i18n:getText("ads_option_menu_option_three_disclaimer_repair_after_detection"))
     else
@@ -234,24 +234,24 @@ end
 -- CALLBACKS & EVENTS
 -- ====================================================================
 
-function ADS_MaintenanceTwoOptionsDialog:onClickOptionOne(index)
+function RMS_MaintenanceTwoOptionsDialog:onClickOptionOne(index)
     self.selectedOptionOne = self.optionOneValues[index] or self.selectedOptionOne
     self:updateScreen()
 end
 
-function ADS_MaintenanceTwoOptionsDialog:onClickOptionThree(state, binaryOptionElement)
+function RMS_MaintenanceTwoOptionsDialog:onClickOptionThree(state, binaryOptionElement)
     self.selectedOptionThree = (state == BinaryOptionElement.STATE_RIGHT)
     self:updateScreen()
 end
 
-function ADS_MaintenanceTwoOptionsDialog:onClickStartService()
+function RMS_MaintenanceTwoOptionsDialog:onClickStartService()
     if not getMobileWorkshopAvailability(self) or not getSelectedWorkshopAvailability(self) then
         return
     end
 
     local vehicle = self.vehicle
-    local workshopType = ADS_WorkshopDialog.INSTANCE.workshopType
-    local spec = vehicle.spec_AdvancedDamageSystem
+    local workshopType = RMS_WorkshopDialog.INSTANCE.workshopType
+    local spec = vehicle.spec_RealisticMechanicalSystems
     
     local price = vehicle:getServicePrice(self.maintenanceType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, workshopType)
     
@@ -267,20 +267,20 @@ function ADS_MaintenanceTwoOptionsDialog:onClickStartService()
         spec.serviceOptionThree = self.selectedOptionThree
         vehicle:initService(self.maintenanceType, workshopType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree)
         g_currentMission:addMoney(-1 * price, vehicle:getOwnerFarmId(), MoneyType.VEHICLE_RUNNING_COSTS, true, true)
-        ADS_VehicleChangeStatusEvent.send(vehicle)
+        RMS_VehicleChangeStatusEvent.send(vehicle)
     else
         -- Client: only send request to server
-        ADS_ServiceRequestEvent.send(vehicle, self.maintenanceType, workshopType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, price)
+        RMS_ServiceRequestEvent.send(vehicle, self.maintenanceType, workshopType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, price)
     end
     
     self:close()
 end
 
-function ADS_MaintenanceTwoOptionsDialog:onClickBack()
+function RMS_MaintenanceTwoOptionsDialog:onClickBack()
     self:close()
 end
 
-function ADS_MaintenanceTwoOptionsDialog:getNumberOfItemsInSection(list, section)
+function RMS_MaintenanceTwoOptionsDialog:getNumberOfItemsInSection(list, section)
     if list == self.serviceInfoTable then
         return #self.serviceInfoData
     end
@@ -288,7 +288,7 @@ function ADS_MaintenanceTwoOptionsDialog:getNumberOfItemsInSection(list, section
     return 0
 end
 
-function ADS_MaintenanceTwoOptionsDialog:populateCellForItemInSection(list, section, index, cell)
+function RMS_MaintenanceTwoOptionsDialog:populateCellForItemInSection(list, section, index, cell)
     if list ~= self.serviceInfoTable then
         return
     end
@@ -306,7 +306,7 @@ function ADS_MaintenanceTwoOptionsDialog:populateCellForItemInSection(list, sect
     valueElement:setTextColor(1, 1, 1, 1)
 end
 
-function ADS_MaintenanceTwoOptionsDialog:onOpen(superFunc)
+function RMS_MaintenanceTwoOptionsDialog:onOpen(superFunc)
     if self.optionThree ~= nil then
         self.optionThree.useYesNoTexts = true
         if self.optionThree.setIsChecked ~= nil then
@@ -319,7 +319,7 @@ function ADS_MaintenanceTwoOptionsDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
 end
 
-function ADS_MaintenanceTwoOptionsDialog:onClose(superFunc)
+function RMS_MaintenanceTwoOptionsDialog:onClose(superFunc)
     self.vehicle = nil
     g_messageCenter:unsubscribeAll(self)
 end
