@@ -1,0 +1,142 @@
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <GuiElement profile="newLayer"/>
+    <RoundCorner profile="rms_dialogScreenBlocker" id="dialogScreenBlocker"/>
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
+
+    <GuiElement profile="rms_dialogBg" id="dialogElement" with="anchorMiddleCenter"  position="0px -50px">
+        <ThreePartBitmap profile="fs25_dialogBgMiddle"/>
+        <ThreePartBitmap profile="fs25_dialogBgTop"/>
+        <ThreePartBitmap profile="fs25_dialogBgBottom"/>
+        
+        <GuiElement profile="fs25_dialogContentContainer">
+
+            <GuiElement profile="fs25_menuHeaderPanel" absoluteSizeOffset="0px 0px">
+                <Bitmap profile="fs25_menuHeaderIconBg">
+                    <Bitmap profile="fs25_menuHeaderIcon" imageSliceId="gui.icon_vehicleDealer_machines" />
+                </Bitmap>
+                <Text profile="fs25_menuHeaderTitle" id="headerText" text="$l10n_rms_report_header_title"/>
+                <RoundCorner profile="fs25_shopMoneyBoxBg" id="moneyBoxBg"/>
+                <BoxLayout profile="fs25_shopMoneyBox" id="moneyBox">
+                    <Text profile="fs25_shopBalance" id="balanceTitleElement" text="$l10n_ui_balance" />
+                    <Text profile="fs25_shopMoney" id="balanceElement"/>
+                </BoxLayout>
+            </GuiElement>
+            
+            <!-- =============================================================== -->
+            <!-- REPORT INFO                                                    -->
+            <!-- =============================================================== -->
+            <GuiElement profile="rms_logInfoContainer">
+               <ThreePartBitmap profile="rms_containerFrame"/>
+                    <Text profile="rms_headerBoldText" id="reportTitle" text="$l10n_rms_report_header_title" position="30px 60px" size="100% 40px"/>
+
+                    <Text profile="rms_textBold" id="vehicleNameTitle" text="$l10n_rms_report_vehicle_name_title" position="30px 100px"/>
+                    <Text profile="fs25_textDefault" id="vehicleNameValue" text="Fendt 500" position="250px 100px" textBold="false"/>
+
+                    <Text profile="rms_textBold" id="reportDateTitle" text="$l10n_rms_report_date_title" position="500px 100px"/>
+                    <Text profile="fs25_textDefault" id="reportDateValue" text="01 Aug '01" position="750px 100px"/>
+
+                    <Text profile="rms_textBold" id="vehicleAgeTitle" text="$l10n_rms_report_vehicle_age_title" position="970px 100px"/>
+                    <Text profile="fs25_textDefault" id="vehicleAgeValue" text="12 months" position="1220px 100px"/>
+
+                    <Text profile="rms_textBold" id="vehicleOperatingHoursTitle" text="$l10n_rms_report_vehicle_operating_hours_title" position="30px 60px"/>
+                    <Text profile="fs25_textDefault" id="vehicleOperatingHoursValue" text="23.3 h." position="250px 60px"/>
+
+                    <Text profile="rms_textBold" id="inspectionTypeTitle" text="$l10n_rms_report_inspection_type_title" position="500px 60px"/>
+                    <Text profile="fs25_textDefault" id="inspectionTypeValue" text="Comprehensive" position="750px 60px"/>
+
+                    <Text profile="rms_textBold" id="inspectionLocationTitle" text="$l10n_rms_report_inspection_location_title" position="970px 60px"/>
+                    <Text profile="fs25_textDefault" id="inspectionLocationValue" text="Dealer" position="1220px 60px"/>
+
+                    <ThreePartBitmap profile="rms_textSeporator" position="-5px 85px" size="1350px 1dp" />
+
+            </GuiElement>
+
+            <!-- =============================================================== -->
+            <!-- VEHICLE STATS                                                   -->
+            <!-- =============================================================== -->
+            <GuiElement profile="rms_reportStatsContainer">
+               <ThreePartBitmap profile="rms_containerFrame"/>
+                
+                <!-- LEFT PART -->
+                <Bitmap profile="rms_tableList" id="tableHeaderBox" position="20px -15px" size="380px 50px">
+                    <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_overall_assessment_title"/>
+                    <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+                </Bitmap>
+                
+                <SmoothList profile="rms_tableList" id="overallAssessmentTable" position="20px -75px" size="380px 510px">
+                    <ListItem profile="rms_tableListItem" name="overallAssessmentRowTemplate" size="380px 40.77px" >
+                        <Text profile="rms_tableRowCellLeft" position="10px 0px" size="250px 40.77px" name="reportTableOverallAssessmentTitle" />
+                        <Text profile="rms_tableRowCellRight" position="260px 0px" size="110px 40.77px" name="reportTableOverallAssessmentValue" />
+                    </ListItem>
+                </SmoothList>
+
+                <!-- MIDDLE PART -->
+                <Bitmap profile="rms_tableList" id="tableHeaderBox" position="500px -15px" size="380px 50px">
+                    <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_system_condition_title"/>
+                    <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+                </Bitmap>
+                
+                <SmoothList profile="rms_tableList" id="systemConditionTable" position="500px -75px" size="380px 510px">
+                    <ListItem profile="rms_tableListItem" name="systemConditionRowTemplate" size="380px 40.77px" >
+                        <Text profile="rms_tableRowCellLeft" position="10px 0px" size="190px 40.77px" name="reportTableSystemConditionTitle" />
+                        <Text profile="rms_tableRowCellRight" position="200px 0px" size="80px 40.77px" name="reportTableSystemConditionValue" />
+                        <Text profile="rms_tableRowCellRight" position="290px 0px" size="80px 40.77px" name="reportTableSystemRiskValue" />
+                    </ListItem>
+                </SmoothList>
+
+                <!-- RIGHT PART -->
+                <Bitmap profile="rms_tableList" id="tableHeaderBox" position="980px -15px" size="380px 50px">
+                    <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_vehicle_specs_title"/>
+                    <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+                </Bitmap>
+                
+                <SmoothList profile="rms_tableList" id="vehicleSpecTable" position="980px -75px" size="380px 510px">
+                    <ListItem profile="rms_tableListItem" name="vehicleSpecRowTemplate" size="380px 40.77px" >
+                        <Text profile="rms_tableRowCellLeft" position="10px 0px" size="220px 40.77px" name="reportTableVehicleSpecTitle" textLayoutMode="scrolling" />
+                        <Text profile="rms_tableRowCellRight" position="235px 0px" size="135px 40.77px" name="reportTableVehicleSpecValue" />
+                    </ListItem>
+                </SmoothList>
+                
+            </GuiElement>
+
+            <!-- =============================================================== -->`   
+            <!-- BREAKDOWNS AND RECOMMENDATIONS PANEL                            -->
+            <!-- =============================================================== -->
+            
+            <GuiElement profile="rms_reportBreakdownsContainer">
+                <ThreePartBitmap profile="rms_containerFrame"/>
+
+                <Bitmap profile="rms_tableList" id="reportBreakdwonsTableHeader" position="20px 0px" size="650px 50px">
+                    <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_detected_breakdowns_title"/>
+                    <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+                </Bitmap>
+                
+                <SmoothList profile="rms_tableList" id="breakdownsTable" position="20px -60px" size="650px 123px">
+                    <ListItem profile="rms_tableListItem" name="reportBreakdownsRowTemplate" size="650px 30.77px" >
+                        <Text profile="rms_tableRowCellLeft" position="10px 0px" size="630px 30.77px" name="reportBreakdownsRow" textLayoutMode="scrolling" />
+                    </ListItem>
+                </SmoothList>
+            </GuiElement>
+
+            <GuiElement profile="rms_reportRecContainer">
+                <ThreePartBitmap profile="rms_containerFrame"/>
+
+                <Bitmap profile="rms_tableList" id="recommendationsTableHeader" position="20px 0px" size="650px 50px">
+                    <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_recommendations_title"/>
+                    <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+                </Bitmap>
+                
+                <SmoothList profile="rms_tableList" id="recommendationsTable" position="20px -60px" size="650px 123px">
+                    <ListItem profile="rms_tableListItem" name="reportRecRowTemplate" size="650px 30.77px" >
+                        <Text profile="rms_tableRowCellLeft" position="10px 0px" size="630px 30.77px" name="reportRecRow" textLayoutMode="scrolling" />
+                    </ListItem>
+                </SmoothList>
+            </GuiElement>
+        </GuiElement> 
+
+        <!-- Buttons -->
+        <BoxLayout profile="fs25_dialogButtonBox">
+            <Button profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" id="backButton"/>
+        </BoxLayout>
+    </GuiElement>
+</GUI>

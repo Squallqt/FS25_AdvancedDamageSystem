@@ -1,8 +1,8 @@
 <handTool type="airBlower" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/handTool.xsd">
     <storeData>
-        <name>$l10n_ads_air_blower_name</name>
+        <name>$l10n_rms_air_blower_name</name>
         <functions>
-            <function>$l10n_ads_air_blower_function</function>
+            <function>$l10n_rms_air_blower_function</function>
         </functions>
         <image>objects/airBlower/store_airBlower.dds</image>
         <price>50</price>
@@ -16,7 +16,7 @@
 
     <base canBeDropped="true" canBeSaved="true">
         <filename>objects/airBlower/airBlower.i3d</filename>
-        <typeDesc>$l10n_ads_air_blower_name</typeDesc>
+        <typeDesc>$l10n_rms_air_blower_name</typeDesc>
         <graphics node="graphics" lockFirstPerson="true"/>
         <handNode node="handNode"/>
         <firstPersonNode node="firstPersonNode"/>

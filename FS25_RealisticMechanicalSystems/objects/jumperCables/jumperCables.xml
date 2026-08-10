@@ -1,8 +1,8 @@
 <handTool type="jumperCables" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/handTool.xsd">
     <storeData>
-        <name>$l10n_ads_jumper_cables_name</name>
+        <name>$l10n_rms_jumper_cables_name</name>
         <functions>
-            <function>$l10n_ads_jumper_cables_function</function>
+            <function>$l10n_rms_jumper_cables_function</function>
         </functions>
         <image>objects/jumperCables/store_jumperCables.dds</image>
         <price>10</price>
@@ -16,7 +16,7 @@
 
     <base canBeDropped="true" canBeSaved="true">
         <filename>objects/jumperCables/jumperCables.i3d</filename>
-        <typeDesc>$l10n_ads_jumper_cables_name</typeDesc>
+        <typeDesc>$l10n_rms_jumper_cables_name</typeDesc>
         <graphics node="graphics" lockFirstPerson="true"/>
         <handNode node="handNode"/>
         <firstPersonNode node="firstPersonNode"/>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <GuiElement profile="newLayer"/>
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
+
+    <GuiElement profile="rms_sellDialogBg" id="dialogElement" with="anchorMiddleCenter" position="0px -20px">
+        <ThreePartBitmap profile="fs25_dialogBgMiddle"/>
+        <ThreePartBitmap profile="fs25_dialogBgTop"/>
+        <ThreePartBitmap profile="fs25_dialogBgBottom"/>
+
+        <GuiElement profile="fs25_dialogContentContainer">
+            <Text profile="fs25_dialogTitle" id="dialogTitleElement" position="0px -30px" text="$l10n_button_return"/>
+
+            <Bitmap profile="rms_sellVehicleImage" id="vehicleImageElement"/>
+            <Text profile="rms_sellVehicleName" id="vehicleNameElement" text="Vehicle Name"/>
+
+            <GuiElement profile="rms_sellCostsContainer">
+                <SmoothList profile="rms_dialogInfoTable" id="costList" position="0px 0px" size="320px 130px">
+                    <ListItem profile="rms_dialogInfoRow" name="costRowTemplate" size="320px 26px">
+                        <Text profile="rms_dialogInfoTitle" position="16px 0px" size="164px 26px" name="costLabel" textLayoutMode="scrolling"/>
+                        <Text profile="rms_dialogInfoValue" position="190px 0px" size="114px 26px" name="costValue" textLayoutMode="scrolling"/>
+                    </ListItem>
+                </SmoothList>
+            </GuiElement>
+
+            <Text profile="rms_sellTotalText" id="totalAmountElement" text="-"/>
+        </GuiElement>
+
+        <BoxLayout profile="fs25_dialogButtonBox">
+            <Button profile="buttonOK" text="$l10n_button_yes" onClick="onClickYes"/>
+            <Button profile="buttonBack" text="$l10n_button_no" onClick="onClickNo"/>
+        </BoxLayout>
+    </GuiElement>
+</GUI>

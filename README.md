@@ -20,7 +20,7 @@ If you do not want to read the full guide at the bottom of this page but still w
    By default, the recommended interval is about `5 operating hours` on average. You can check it:
    - in the workshop,
    - in the vehicle info panel when looking at the machine,
-   - in the ADS fleet management menu opened with the `P` key.  
+   - in the RMS fleet management menu opened with the `P` key.  
    
    Once the interval is reached, perform the `Maintenance` procedure in the workshop.
 
@@ -56,28 +56,28 @@ For testing and debugging, RMS includes console commands. Most commands require 
 
 | Command | Description | Usage Example |
 | --- | --- | --- |
-| **ads_debug** | Toggles ADS debug mode on/off. | `ads_debug` |
-| **ads_listBreakdowns** | Lists all available breakdown IDs from the registry. | `ads_listBreakdowns` |
-| **ads_addBreakdown** | Adds a breakdown to the current vehicle. Optional arguments: breakdown ID and stage. | `ads_addBreakdown ECU_MALFUNCTION 2` |
-| **ads_removeBreakdown** | Removes a specific breakdown from the current vehicle. If no ID is provided, all active breakdowns are removed. | `ads_removeBreakdown ECU_MALFUNCTION` |
-| **ads_advanceBreakdown** | Advances a specific active breakdown to the next stage. If no ID is provided, all active breakdowns are advanced where possible. | `ads_advanceBreakdown ECU_MALFUNCTION` |
-| **ads_setCondition** | Sets the Condition value for all enabled systems on the current vehicle (`0.0`-`1.0`). | `ads_setCondition 0.5` |
-| **ads_setSystemCondition** | Sets Condition for one specific system on the current vehicle (`0.0`-`1.0`). | `ads_setSystemCondition engine 0.75` |
-| **ads_setSystemStress** | Sets Stress for one specific system on the current vehicle (`>= 0.0`). | `ads_setSystemStress electrical 0.25` |
-| **ads_setSystemStressMultiplier** | Sets the stress accumulation multiplier for one system, or for all systems if no system is specified. | `ads_setSystemStressMultiplier 12 electrical` |
-| **ads_setService** | Sets the current vehicle's Service level (`0.0`-`1.0`). | `ads_setService 0.2` |
-| **ads_resetVehicle** | Fully resets the current vehicle state: condition, service, and active breakdowns. | `ads_resetVehicle` |
-| **ads_startService** | Starts service on the current vehicle. Types: `inspection`, `maintenance`, `repair`, `overhaul`. With `repair`, optional `[count]` selects how many visible breakdowns to repair. | `ads_startService repair 2` |
-| **ads_finishService** | Instantly finishes the currently active service on the current vehicle. | `ads_finishService` |
-| **ads_getServiceState** | Prints the current workshop and service state variables for the current vehicle. | `ads_getServiceState` |
-| **ads_showServiceLog** | Prints the vehicle's service log. Optional `[index]` shows one entry in detailed form. | `ads_showServiceLog 1` |
-| **ads_getDebugVehicleInfo** | Prints detailed debug information about the current vehicle. Optional argument also lists attached specializations. | `ads_getDebugVehicleInfo 1` |
-| **ads_setDirtAmount** | Sets the current vehicle's dirt level (`0.0`-`1.0`). | `ads_setDirtAmount 0.8` |
-| **ads_setFuelLevel** | Sets the current vehicle's fuel level using either a `0.0`-`1.0` value or `0`-`100` percent. | `ads_setFuelLevel 25` |
-| **ads_resetFactorStats** | Resets the accumulated factor statistics for the current vehicle. | `ads_resetFactorStats` |
-| **ads_toggleHudDebugView** | Switches the ADS HUD debug view between normal and factor stats modes. | `ads_toggleHudDebugView stats` |
-| **ads_setConfigVar** | Changes a value inside `RMS_Config` at runtime. Intended for testing and debugging. | `ads_setConfigVar CORE.BASE_SYSTEMS_WEAR 0.02` |
-| **ads_setSpecVar** | Changes a value inside `spec_RealisticMechanicalSystems` on the current vehicle. Intended for testing and debugging. | `ads_setSpecVar systems.engine.condition 0.85` |
+| **rms_debug** | Toggles RMS debug mode on/off. | `rms_debug` |
+| **rms_listBreakdowns** | Lists all available breakdown IDs from the registry. | `rms_listBreakdowns` |
+| **rms_addBreakdown** | Adds a breakdown to the current vehicle. Optional arguments: breakdown ID and stage. | `rms_addBreakdown ECU_MALFUNCTION 2` |
+| **rms_removeBreakdown** | Removes a specific breakdown from the current vehicle. If no ID is provided, all active breakdowns are removed. | `rms_removeBreakdown ECU_MALFUNCTION` |
+| **rms_advanceBreakdown** | Advances a specific active breakdown to the next stage. If no ID is provided, all active breakdowns are advanced where possible. | `rms_advanceBreakdown ECU_MALFUNCTION` |
+| **rms_setCondition** | Sets the Condition value for all enabled systems on the current vehicle (`0.0`-`1.0`). | `rms_setCondition 0.5` |
+| **rms_setSystemCondition** | Sets Condition for one specific system on the current vehicle (`0.0`-`1.0`). | `rms_setSystemCondition engine 0.75` |
+| **rms_setSystemStress** | Sets Stress for one specific system on the current vehicle (`>= 0.0`). | `rms_setSystemStress electrical 0.25` |
+| **rms_setSystemStressMultiplier** | Sets the stress accumulation multiplier for one system, or for all systems if no system is specified. | `rms_setSystemStressMultiplier 12 electrical` |
+| **rms_setService** | Sets the current vehicle's Service level (`0.0`-`1.0`). | `rms_setService 0.2` |
+| **rms_resetVehicle** | Fully resets the current vehicle state: condition, service, and active breakdowns. | `rms_resetVehicle` |
+| **rms_startService** | Starts service on the current vehicle. Types: `inspection`, `maintenance`, `repair`, `overhaul`. With `repair`, optional `[count]` selects how many visible breakdowns to repair. | `rms_startService repair 2` |
+| **rms_finishService** | Instantly finishes the currently active service on the current vehicle. | `rms_finishService` |
+| **rms_getServiceState** | Prints the current workshop and service state variables for the current vehicle. | `rms_getServiceState` |
+| **rms_showServiceLog** | Prints the vehicle's service log. Optional `[index]` shows one entry in detailed form. | `rms_showServiceLog 1` |
+| **rms_getDebugVehicleInfo** | Prints detailed debug information about the current vehicle. Optional argument also lists attached specializations. | `rms_getDebugVehicleInfo 1` |
+| **rms_setDirtAmount** | Sets the current vehicle's dirt level (`0.0`-`1.0`). | `rms_setDirtAmount 0.8` |
+| **rms_setFuelLevel** | Sets the current vehicle's fuel level using either a `0.0`-`1.0` value or `0`-`100` percent. | `rms_setFuelLevel 25` |
+| **rms_resetFactorStats** | Resets the accumulated factor statistics for the current vehicle. | `rms_resetFactorStats` |
+| **rms_toggleHudDebugView** | Switches the RMS HUD debug view between normal and factor stats modes. | `rms_toggleHudDebugView stats` |
+| **rms_setConfigVar** | Changes a value inside `RMS_Config` at runtime. Intended for testing and debugging. | `rms_setConfigVar CORE.BASE_SYSTEMS_WEAR 0.02` |
+| **rms_setSpecVar** | Changes a value inside `spec_RealisticMechanicalSystems` on the current vehicle. Intended for testing and debugging. | `rms_setSpecVar systems.engine.condition 0.85` |
 
 ## Detailed Technical Guide
 

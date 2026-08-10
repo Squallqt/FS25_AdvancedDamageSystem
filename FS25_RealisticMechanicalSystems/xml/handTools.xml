@@ -1,20 +1,20 @@
 <handTools>
     <types>
         <type name="greaseGun" parent="base" xmlFile="objects/greaseGun/greaseGun.xml">
-            <specialization name="adsHandTools"/>
+            <specialization name="rmsHandTools"/>
         </type>
         <type name="airBlower" parent="base" xmlFile="objects/airBlower/airBlower.xml">
-            <specialization name="adsHandTools"/>
+            <specialization name="rmsHandTools"/>
         </type>
         <type name="jumperCables" parent="base" xmlFile="objects/jumperCables/jumperCables.xml">
-            <specialization name="adsHandTools"/>
+            <specialization name="rmsHandTools"/>
         </type>
     </types>
 
     <specializations>
         <specialization
-            name="adsHandTools"
-            className="adsHandTools"
-            filename="scripts/ADS_HandTools.lua"/>
+            name="rmsHandTools"
+            className="rmsHandTools"
+            filename="scripts/RMS_HandTools.lua"/>
     </specializations>
 </handTools>

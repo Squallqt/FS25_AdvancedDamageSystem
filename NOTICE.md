@@ -8,7 +8,7 @@ Credits and acknowledgements:
 - Frvetz - creator of the Realistic Damage System mod for FS22; credited for permission to use ideas from that project and for early support.
 
 Third-party data:
-- The vehicle production years in `FS25_RealisticMechanicalSystems/scripts/ADS_VehicleYearsData.lua` are derived from the FS25 Vehicle Years database by Emil Gydesen (thalley), https://gitlab.com/thalley/fs25_vehicle_years, distributed under the GNU General Public License version 3 or later. The entries with a known year are converted to a Lua lookup table by `tools/generate_vehicle_years.py`.
+- The vehicle production years in `FS25_RealisticMechanicalSystems/scripts/RMS_VehicleYearsData.lua` are derived from the FS25 Vehicle Years database by Emil Gydesen (thalley), https://gitlab.com/thalley/fs25_vehicle_years, distributed under the GNU General Public License version 3 or later. The entries with a known year are converted to a Lua lookup table by `tools/generate_vehicle_years.py`.
 
 Original project:
 - Project: Advanced Damage System

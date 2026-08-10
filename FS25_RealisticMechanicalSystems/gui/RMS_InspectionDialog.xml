@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <GuiElement profile="newLayer" />
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg" />
+    <GuiElement profile="rms_inspectionDialogBg" id="dialogElement">
+        <ThreePartBitmap profile="fs25_dialogBgMiddleSmall" />
+        <ThreePartBitmap profile="fs25_dialogBgTopSmall" />
+        <ThreePartBitmap profile="fs25_dialogBgBottom" />
+
+        <GuiElement profile="fs25_dialogContentContainer">
+            <Text profile="fs25_dialogTitle" id="dialogTitleElement" position="0px -30px" text="$l10n_rms_inspection_dialog_title"/>
+
+            <!-- fluids -->
+            <Bitmap profile="rms_tableList" id="technicalFluidsHeaderBox" position="20px -90px" size="560px 36px">
+                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_fluids"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+            </Bitmap>
+            <SmoothList profile="rms_tableList" id="technicalFluidsList" position="20px -130px" size="560px 130px">
+                <ListItem profile="rms_tableListItem" name="technicalFluidsRowTemplate" size="560px 30px">
+                    <Text profile="rms_tableRowCellLeft" position="10px 0px" size="260px 30px" name="inspectionTitle" />
+                    <Text profile="rms_tableRowCellRight" position="290px 0px" size="260px 30px" name="inspectionValue" />
+                </ListItem>
+            </SmoothList>
+
+            <!-- cooling and air -->
+            <Bitmap profile="rms_tableList" id="coolingAndAirHeaderBox" position="20px -270px" size="560px 36px">
+                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_cooling_air"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+            </Bitmap>
+            <SmoothList profile="rms_tableList" id="coolingAndAirList" position="20px -310px" size="560px 100px">
+                <ListItem profile="rms_tableListItem" name="coolingAndAirRowTemplate" size="560px 30px">
+                    <Text profile="rms_tableRowCellLeft" position="10px 0px" size="260px 30px" name="inspectionTitle" />
+                    <Text profile="rms_tableRowCellRight" position="290px 0px" size="260px 30px" name="inspectionValue" />
+                </ListItem>
+            </SmoothList>
+
+            <!-- lubrication -->
+            <Bitmap profile="rms_tableList" id="lubricationHeaderBox" position="20px -410px" size="560px 36px">
+                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_lubrication"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+            </Bitmap>
+            <SmoothList profile="rms_tableList" id="lubricationList" position="20px -450px" size="560px 35px">
+                <ListItem profile="rms_tableListItem" name="lubricationRowTemplate" size="560px 30px">
+                    <Text profile="rms_tableRowCellLeft" position="10px 0px" size="260px 30px" name="inspectionTitle" />
+                    <Text profile="rms_tableRowCellRight" position="290px 0px" size="260px 30px" name="inspectionValue" />
+                </ListItem>
+            </SmoothList>
+            
+            <!-- footer -->
+            <Bitmap profile="rms_tableList" id="additionalHeaderBox" position="20px -490px" size="560px 36px">
+                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_additional"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
+            </Bitmap>
+            <Text profile="rms_inspectionAdditionalText" id="additionalText" position="10px -530px" size="540px 80px" text="$l10n_rms_inspection_no_suspicious_symptoms"/>
+        </GuiElement>
+
+        <BoxLayout profile="fs25_dialogButtonBox">
+            <Button profile="buttonBack" text="$l10n_button_close" onClick="onClickBack" />
+        </BoxLayout>
+    </GuiElement>
+</GUI>

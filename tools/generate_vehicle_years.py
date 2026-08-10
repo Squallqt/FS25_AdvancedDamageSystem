@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Regenerates scripts/ADS_VehicleYearsData.lua from the upstream Vehicle Years database.
+"""Regenerates scripts/RMS_VehicleYearsData.lua from the upstream Vehicle Years database.
 
 Usage: python tools/generate_vehicle_years.py
 """
@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 SOURCE_URL = "https://gitlab.com/thalley/fs25_vehicle_years/-/raw/main/data/vehicle_years.xml"
-TARGET = Path(__file__).resolve().parent.parent / "FS25_RealisticMechanicalSystems" / "scripts" / "ADS_VehicleYearsData.lua"
+TARGET = Path(__file__).resolve().parent.parent / "FS25_RealisticMechanicalSystems" / "scripts" / "RMS_VehicleYearsData.lua"
 OLDEST_YEAR = 1800
 NEWEST_YEAR = 2100
 
@@ -54,7 +54,7 @@ def main() -> None:
     years = collect_years(root)
 
     lines = ["--- Generated table of vehicle production years, keyed by store item path.",
-             "ADS_VehicleYearsData = {"]
+             "RMS_VehicleYearsData = {"]
     lines += [f'    ["{key}"] = {years[key]},' for key in sorted(years)]
     lines += ["}", ""]
 
