@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="La oruga parece floja, con una tensión notablemente desigual."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="La oruga está visiblemente combada y la tensión parece gravemente comprometida."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Sistema de Daños Avanzado"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="Vehículos RMS"/>
         <text name="rms_ingame_menu_section_service" text="En mantenimiento"/>
         <text name="rms_ingame_menu_header_vehicle" text="Vehículo"/>

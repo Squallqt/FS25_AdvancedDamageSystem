@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Il cingolo appare allentato, con una tensione visibilmente irregolare."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Il cingolo presenta un evidente cedimento, e la tensione appare gravemente compromessa."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Sistema Avanzato Danni"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="Veicoli RMS"/>
         <text name="rms_ingame_menu_section_service" text="In manutenzione"/>
         <text name="rms_ingame_menu_header_vehicle" text="Veicolo"/>

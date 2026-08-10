@@ -8,9 +8,39 @@
         <fr>Systèmes Mécaniques Réalistes</fr>
     </title>
     <description>
-        <en><![CDATA[Realistic Mechanical Systems adds a deep vehicle wear, failure, diagnostics, maintenance, and repair system to Farming Simulator 25. Instead of relying on a single generic condition value, each machine is built around multiple individual systems with their own condition, wear factors, stress accumulation, and risk of failure. Vehicle behaviour and the nature of breakdowns depend on operating conditions, load, temperature, and service quality.
+        <en><![CDATA[Your machines finally wear out like real ones.
 
-The mod includes a temperature model for key systems, advanced battery, alternator, and diesel preheating simulation, realistic breakdown logic, expanded workshop workflows, service reports, maintenance history, and pre-shift inspections. As a result, vehicle management becomes a strategic part of gameplay: service takes time, poor operation increases the risk of failures, and neglecting machine condition can disrupt critical field work. A responsible farmer who looks after equipment, services it on time, and avoids unnecessary abuse will keep the fleet reliable and avoid serious problems during the season.
+Each vehicle is built from up to 7 individual systems: engine, transmission, hydraulics, cooling, fuel, electrical, and chassis. Every one tracks its own condition, its own stress, and its own way of failing. Service on time, work within the machine's limits, and catch the first symptoms: the cheapest repair is always the earliest one.
+
+WEAR AND STRESS
+- Condition falls about 1% per operating hour under normal use, far faster under abuse, and each system has its own wear factors
+- Stress builds only through mistakes: overload, overheating, cold running under load, wheel slip, oversized implements
+- A breakdown becomes likely as stress approaches condition, and low condition makes it likely to strike at its worst stage straight away
+- Overdue service accelerates wear across every system, the engine most of all
+
+BREAKDOWNS
+- 28 breakdowns spread across the 7 systems, each in four stages from a barely noticeable loss to total failure
+- The type is not random: the mod tracks which wear factors you trigger most and picks the failure your habits earned
+- Stage 1 is silent and shows only through symptoms, RPM fluctuations, dark smoke, knocking, whistling; dashboard indicators light from stage 2
+- Old machines also degrade permanently, losing engine power, transmission bite, battery performance, and cooling efficiency
+
+WORKSHOP
+- Four procedures, Inspection, Maintenance, Repair, and Overhaul, each with options that change price, duration, and quality
+- Part quality from Used to Premium: cheap parts are more often defective and bring the same fault back
+- Everything takes real time, and the workshop closes overnight, so planning when a machine goes in matters
+- A full defectoscopy reveals hidden faults, defective parts, and exact condition values
+
+DAILY CARE
+- Hold R near a vehicle for a pre-shift inspection of fluids, radiator, and air intake
+- Air Blower clears the cooling pack and air intake, Grease Gun restores lubrication on machines that need it
+
+SIMULATION
+- Engine and CVT thermal models driven by load, ambient temperature, dirt, airflow, and thermostat behaviour that follows production year
+- Battery and alternator modelled as a real circuit, with cold-weather capacity loss, internal resistance, voltage sag, and jumper cables between vehicles
+- Automatic temperature-based diesel preheating with its own glow-plug breakdown
+- Drivetrain management on tractors: 4x2 / 4WD / AUTO modes, differential locks, and a parking brake
+- Reliability and maintainability per brand and production year, shown in the shop
+- Multiplayer and dedicated server, 15 languages
 
 Changelog 0.9.3.0 [WIP]:
 - Fixed & improved translations
@@ -35,9 +65,39 @@ Changelog 0.9.3.0 [WIP]:
 - Vehicle exclusions now follow what a machine can actually do instead of its type name; any automatic exclusion can be reverted with rms_setExcluded false, except on electric vehicles
 - Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for RMS]]></en>
 
-        <de><![CDATA[Realistische Mechaniksysteme fügen Farming Simulator 25 ein tiefgehendes System für Verschleiß, Ausfälle, Diagnose, Wartung und Reparatur von Fahrzeugen hinzu. Anstelle eines einzigen allgemeinen Zustandswerts besteht jede Maschine aus mehreren einzelnen Systemen mit eigenem Zustand, eigenen Verschleißfaktoren, Stressaufbau und Ausfallrisiko. Fahrverhalten und Art der Defekte hängen von Einsatzbedingungen, Belastung, Temperatur und Wartungsqualität ab.
+        <de><![CDATA[Ihre Maschinen verschleißen endlich wie echte.
 
-Der Mod umfasst ein Temperaturmodell für wichtige Systeme, eine erweiterte Batterie-, Lichtmaschinen- und Diesel-Vorglühsimulation, realistische Ausfalllogik, erweiterte Werkstattabläufe, Serviceberichte, Wartungshistorie und Vorschicht-Inspektionen. Dadurch wird Fahrzeugmanagement zu einem strategischen Teil des Gameplays: Wartung kostet Zeit, falscher Einsatz erhöht das Ausfallrisiko, und vernachlässigter Maschinenzustand kann wichtige Feldarbeiten gefährden. Ein verantwortungsvoller Landwirt, der seine Technik pflegt, rechtzeitig wartet und unnötige Überlastung vermeidet, hält seinen Fuhrpark zuverlässig und vermeidet ernsthafte Probleme in der Saison.
+Jedes Fahrzeug besteht aus bis zu 7 einzelnen Systemen: Motor, Getriebe, Hydraulik, Kühlung, Kraftstoff, Elektrik und Fahrwerk. Jedes führt seinen eigenen Zustand, seine eigene Belastung und seine eigene Art auszufallen. Rechtzeitig warten, die Maschine in ihren Grenzen bewegen und die ersten Anzeichen erkennen: Die günstigste Reparatur ist immer die früheste.
+
+VERSCHLEISS UND BELASTUNG
+- Der Zustand sinkt im Normalbetrieb um etwa 1% je Betriebsstunde, bei Missbrauch deutlich schneller, und jedes System hat eigene Verschleißfaktoren
+- Belastung entsteht nur durch Fehler: Überlast, Überhitzung, Arbeit mit kaltem Motor, Radschlupf, zu schwere Anbaugeräte
+- Ein Defekt wird wahrscheinlich, sobald die Belastung den Zustand erreicht; bei niedrigem Zustand tritt er häufig sofort in der schwersten Stufe auf
+- Überfällige Wartung beschleunigt den Verschleiß aller Systeme, allen voran des Motors
+
+DEFEKTE
+- 28 Defekte über die 7 Systeme verteilt, jeder in vier Stufen vom kaum spürbaren Verlust bis zum Totalausfall
+- Die Art ist nicht zufällig: Der Mod verfolgt, welche Verschleißfaktoren Sie am häufigsten auslösen, und wählt den dazu passenden Ausfall
+- Stufe 1 bleibt stumm und zeigt sich nur über Symptome, schwankende Drehzahl, dunkler Rauch, Klopfen, Pfeifen; Armaturenbrettanzeigen leuchten ab Stufe 2
+- Alte Maschinen bauen zudem dauerhaft ab und verlieren Motorleistung, Kraftübertragung, Batterieleistung und Kühlwirkung
+
+WERKSTATT
+- Vier Verfahren, Inspektion, Wartung, Reparatur und Grundüberholung, jeweils mit Optionen für Preis, Dauer und Qualität
+- Teilequalität von Gebraucht bis Premium: Billigteile sind häufiger defekt und holen denselben Fehler zurück
+- Alles braucht echte Zeit, und die Werkstatt schließt über Nacht, weshalb die Terminplanung zählt
+- Eine vollständige Defektoskopie deckt verborgene Fehler, defekte Teile und exakte Zustandswerte auf
+
+TÄGLICHE PFLEGE
+- R in Fahrzeugnähe gedrückt halten für eine Kontrolle von Flüssigständen, Kühler und Luftansaugung vor Schichtbeginn
+- Der Luftblaser reinigt Kühlerpaket und Ansaugung, die Fettpresse stellt die Schmierung wieder her
+
+SIMULATION
+- Thermische Modelle für Motor und CVT, getrieben von Last, Außentemperatur, Verschmutzung, Fahrtwind und einem Thermostatverhalten, das dem Baujahr folgt
+- Batterie und Lichtmaschine als echter Stromkreis, mit Kälteverlust, Innenwiderstand, Spannungseinbruch und Starthilfekabeln zwischen Fahrzeugen
+- Automatisches temperaturabhängiges Diesel-Vorglühen mit eigener Glühkerzenstörung
+- Antriebsstrangverwaltung für Traktoren: Modi 4x2 / Allrad / AUTO, Differentialsperren und Feststellbremse
+- Zuverlässigkeit und Wartungsfreundlichkeit je Marke und Baujahr, im Shop sichtbar
+- Mehrspieler und Dedicated Server, 15 Sprachen
 
 Changelog 0.9.3.0 [WIP]:
 - Übersetzungen korrigiert und verbessert
@@ -62,9 +122,39 @@ Changelog 0.9.3.0 [WIP]:
 - Fahrzeugausschlüsse richten sich jetzt nach den tatsächlichen Fähigkeiten einer Maschine statt nach ihrem Typnamen; jeder automatische Ausschluss lässt sich mit rms_setExcluded false aufheben, außer bei Elektrofahrzeugen
 - Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für RMS installiert war]]></de>
         
-        <fr><![CDATA[Systèmes Mécaniques Réalistes ajoutent à Farming Simulator 25 un système approfondi d'usure, de pannes, de diagnostic, d'entretien et de réparation des véhicules. Au lieu de reposer sur une seule valeur générale d'état, chaque machine est composée de plusieurs systèmes distincts ayant leur propre état, leurs propres facteurs d'usure, leur accumulation de stress et leur risque de panne. Le comportement de la machine et la nature des défaillances dépendent des conditions d'utilisation, de la charge, de la température et de la qualité de l'entretien.
+        <fr><![CDATA[Vos machines s'usent enfin comme les vraies.
 
-Le mod comprend un modèle thermique pour les systèmes clés, une simulation avancée de la batterie, de l'alternateur et du préchauffage diesel, une logique de pannes réaliste, des procédures d'atelier étendues, des rapports d'intervention, un historique d'entretien et des inspections avant prise de poste. La gestion du matériel devient ainsi une dimension stratégique du gameplay : l'entretien prend du temps, une mauvaise utilisation augmente le risque de panne, et négliger l'état des machines peut compromettre des travaux de campagne essentiels. Un agriculteur consciencieux qui surveille son matériel, l'entretient à temps et évite les mauvais traitements inutiles conservera une flotte fiable et évitera de graves problèmes en saison.
+Chaque véhicule est composé de 7 systèmes distincts au maximum : moteur, transmission, hydraulique, refroidissement, carburant, électricité et châssis. Chacun suit son propre état, sa propre contrainte et sa propre façon de lâcher. Entretenir à l'heure, travailler dans les limites de la machine et repérer les premiers signes : la réparation la moins chère est toujours la plus précoce.
+
+USURE ET CONTRAINTE
+- L'état baisse d'environ 1% par heure de fonctionnement en usage normal, bien plus vite en cas d'abus, et chaque système a ses propres facteurs d'usure
+- La contrainte ne s'accumule que par les erreurs : surcharge, surchauffe, travail moteur froid, patinage, outils trop lourds
+- Une panne devient probable dès que la contrainte rejoint l'état, et un état faible la fait souvent survenir d'emblée à son stade le plus grave
+- Un entretien en retard accélère l'usure de tous les systèmes, du moteur en premier
+
+PANNES
+- 28 pannes réparties sur les 7 systèmes, chacune en quatre stades, de la perte à peine perceptible à la défaillance totale
+- Le type n'est pas aléatoire : le mod suit les facteurs d'usure que vous déclenchez le plus et choisit la panne que vos habitudes ont préparée
+- Le stade 1 est muet et ne se trahit que par des symptômes, régime instable, fumée noire, cognement, sifflement ; les témoins s'allument à partir du stade 2
+- Les machines âgées se dégradent aussi durablement et perdent puissance moteur, transmission, performance de batterie et efficacité de refroidissement
+
+ATELIER
+- Quatre procédures, inspection, entretien, réparation et révision, chacune avec des options qui changent le prix, la durée et la qualité
+- Qualité des pièces de l'occasion au premium : les pièces bon marché sont plus souvent défectueuses et ramènent la même panne
+- Tout prend un temps réel, et l'atelier ferme la nuit : planifier le passage d'une machine compte autant que le payer
+- Une défectoscopie complète révèle les pannes cachées, les pièces défectueuses et les valeurs exactes
+
+ENTRETIEN QUOTIDIEN
+- Maintenir R près d'un véhicule pour une inspection de prise de poste : niveaux, radiateur, admission d'air
+- La soufflette nettoie le bloc de refroidissement et l'admission, la pompe à graisse rétablit le graissage des machines qui en demandent
+
+SIMULATION
+- Modèles thermiques moteur et CVT pilotés par la charge, la température extérieure, la salissure, le flux d'air et un comportement de thermostat qui suit le millésime
+- Batterie et alternateur simulés comme un vrai circuit, avec perte de capacité au froid, résistance interne, chute de tension et câbles de démarrage entre véhicules
+- Préchauffage diesel automatique selon la température, avec sa propre panne de bougies
+- Gestion de transmission sur les tracteurs : modes 4x2 / 4RM / AUTO, blocages de différentiel et frein de parking
+- Fiabilité et facilité d'entretien par marque et par millésime, affichées en boutique
+- Multijoueur et serveur dédié, 15 langues
 
 Changelog 0.9.3.0 [WIP] :
 - Correction & amélioration des traductions

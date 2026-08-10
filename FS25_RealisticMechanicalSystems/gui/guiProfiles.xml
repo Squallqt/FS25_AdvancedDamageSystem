@@ -381,10 +381,6 @@
         <textAutoWidth value="false"/>
         <textAlignment value="center"/>
     </Profile>
-    <Profile name="rms_menuHeaderButtonRight" extends="rms_menuHeaderButtonLeft">
-        <textAutoWidth value="false"/>
-        <textAlignment value="right"/>
-    </Profile>
     <Profile name="rms_menuVehicleList" extends="emptyPanel" with="anchorStretchingYLeft pivotTopLeft">
         <position value="0px -34px"/>
         <absoluteSizeOffset value="0px 20px"/>

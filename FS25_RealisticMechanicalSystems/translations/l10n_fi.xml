@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Tela näyttää löysältä ja epätasainen kireys on havaittavissa."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Tela roikkuu näkyvästi ja kireys näyttää vakavasti kompromissoidulta."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Edistyksellinen vauriojärjestelmä"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="RMS-ajoneuvot"/>
         <text name="rms_ingame_menu_section_service" text="Huollossa"/>
         <text name="rms_ingame_menu_header_vehicle" text="Ajoneuvo"/>
@@ -662,10 +662,10 @@
         <text name="rms_tutorialResetTips_tooltip" text="Nollaa opetusvihjehistoria ja näytä kaikki vihjeet uudelleen."/>
         <text name="rms_tutorialResetConfirm_title" text="Nollataanko opetusvihj eet?"/>
         <text name="rms_tutorialResetConfirm_message" text="Nollataanko opetusvihjehistoria ja näytetäänkö kaikki vihjeet uudelleen?"/>
-        <text name="rms_tutorial_welcome_dialog_title" text="Tervetuloa edistykselliseen vauriojärjestelmään"/>
+        <text name="rms_tutorial_welcome_dialog_title" text="Tervetuloa Realistic Mechanical Systems -modiin"/>
         <text name="rms_tutorial_welcome_disable_button" text="Poista vihjeet käytöstä"/>
         <text name="rms_tutorial_welcome_enable_button" text="Ota vihjeet käyttöön"/>
-        <text name="rms_tutorial_welcome_message" text="Tämä modi uudistaa täysin pelin ajoneuvovauriot ja huoltojärjestelmät. Muutoksia on paljon, joten opetusvihjeitä ilmestyy ajoittain. Ne auttavat sinua ymmärtämään uudet mekaniikat nopeammin, välttämään yleisiä virheitä ja pitämään koneet toimintakunnossa.&#10;&#10;Halutessasi voit poistaa opetusvihjeet käytöstä nyt. Voit aina ottaa ne uudelleen käyttöön modin asetuksissa Edistyksellinen vauriojärjestelmä -osiossa."/>
+        <text name="rms_tutorial_welcome_message" text="Tämä modi uudistaa täysin pelin ajoneuvovauriot ja huoltojärjestelmät. Muutoksia on paljon, joten opetusvihjeitä ilmestyy ajoittain. Ne auttavat sinua ymmärtämään uudet mekaniikat nopeammin, välttämään yleisiä virheitä ja pitämään koneet toimintakunnossa.&#10;&#10;Halutessasi voit poistaa opetusvihjeet käytöstä nyt. Voit aina ottaa ne uudelleen käyttöön modin asetuksissa Realistic Mechanical Systems -osiossa."/>
         <text name="rms_tutorial_service_due_soon_title" text="Määräaikaishuolto"/>
         <text name="rms_tutorial_service_due_soon_message" text="%s tarvitsee pian huollon.&#10;&#10;RMS:ssä ajoneuvot vaativat säännöllistä huoltoa. Jos viivästytät sitä, vikaantumisriski kasvaa merkittävästi.&#10;&#10;Vieraile lähimmässä korjaamossa ja valitse &quot;Huolto&quot;. Huoltoväliä voidaan säätää modin asetuksissa."/>
         <text name="rms_tutorial_service_interval_expired_title" text="Huoltoväli ylitetty"/>

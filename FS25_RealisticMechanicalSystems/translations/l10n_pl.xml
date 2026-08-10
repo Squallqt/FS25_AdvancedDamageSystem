@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Prowadnica jest luźna, wykazując zauważalne różnice w napięciu."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Prowadnica widocznie opada, a napięcie jest znacznie obniżone."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Zaawansowany system uszkodzeń"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="Pojazdy RMS"/>
         <text name="rms_ingame_menu_section_service" text="W serwisie"/>
         <text name="rms_ingame_menu_header_vehicle" text="Pojazd"/>

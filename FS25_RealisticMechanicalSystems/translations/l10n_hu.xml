@@ -662,10 +662,10 @@
         <text name="rms_tutorialResetTips_tooltip" text="Visszaállítja az oktató tippek előzményeit, és újra megjeleníti az összes tippet."/>
         <text name="rms_tutorialResetConfirm_title" text="Oktató tippek visszaállítása?"/>
         <text name="rms_tutorialResetConfirm_message" text="Visszaállítod az oktató tippek előzményeit, és újra megjeleníted az összes tippet?"/>
-        <text name="rms_tutorial_welcome_dialog_title" text="Üdvözöl az Realistic Mechanical Systems"/>
+        <text name="rms_tutorial_welcome_dialog_title" text="Üdvözöl a Realistic Mechanical Systems"/>
         <text name="rms_tutorial_welcome_disable_button" text="Tippek kikapcsolása"/>
         <text name="rms_tutorial_welcome_enable_button" text="Tippek bekapcsolása"/>
-        <text name="rms_tutorial_welcome_message" text="Ez a mod teljesen átdolgozza a játék járműsérülési és karbantartási rendszerét. Sok változás van, ezért időnként oktató tippek jelennek meg. Ezek segítenek gyorsabban megérteni az új mechanikákat, elkerülni a gyakori hibákat, és megóvni a gépeidet a meghibásodástól.&#10;&#10;Ha szeretnéd, most azonnal kikapcsolhatod az oktató tippeket. Később bármikor újra bekapcsolhatod őket a mod beállításaiban, az Realistic Mechanical Systems szekció alatt."/>
+        <text name="rms_tutorial_welcome_message" text="Ez a mod teljesen átdolgozza a játék járműsérülési és karbantartási rendszerét. Sok változás van, ezért időnként oktató tippek jelennek meg. Ezek segítenek gyorsabban megérteni az új mechanikákat, elkerülni a gyakori hibákat, és megóvni a gépeidet a meghibásodástól.&#10;&#10;Ha szeretnéd, most azonnal kikapcsolhatod az oktató tippeket. Később bármikor újra bekapcsolhatod őket a mod beállításaiban, a Realistic Mechanical Systems szekció alatt."/>
         <text name="rms_tutorial_service_due_soon_title" text="Időszakos karbantartás"/>
         <text name="rms_tutorial_service_due_soon_message" text="%s hamarosan karbantartást igényel.&#10;&#10;Az RMS-ben a járművek rendszeres szervizt igényelnek. Ha halogatod, a meghibásodások kockázata jelentősen nő.&#10;&#10;Látogass el a legközelebbi műhelybe, és válaszd a „Karbantartás” lehetőséget. A szervizintervallum a mod beállításaiban módosítható."/>
         <text name="rms_tutorial_service_interval_expired_title" text="Lejárt a szervizintervallum"/>

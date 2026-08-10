@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="A esteira parece frouxa, com tensão visivelmente irregular."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="A esteira apresenta afundamento visível, e a tensão parece fortemente comprometida."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Sistema de Danos Avançado"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="Veículos RMS"/>
         <text name="rms_ingame_menu_section_service" text="Em manutenção"/>
         <text name="rms_ingame_menu_header_vehicle" text="Veículo"/>

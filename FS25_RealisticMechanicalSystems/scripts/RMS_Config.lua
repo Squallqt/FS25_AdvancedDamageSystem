@@ -1,7 +1,5 @@
 
 RMS_Config = {
-    VER = 136,
-
     -- Enables or disables extensive debug logging in the console.
     -- When true, the mod will print detailed information about its calculations,
     -- such as wear rates, breakdown checks, and temperature changes.
@@ -955,9 +953,6 @@ function RMS_Config.saveToXMLFile()
 
     local root = "realisticMechanicalSystems"
 
-    -- Version
-    setXMLFloat(xmlFile, root .. ".VER", RMS_Config.VER)
-
     -- CORE
     setXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR",      RMS_Config.CORE.BASE_SERVICE_WEAR)
     setXMLFloat(xmlFile, root .. ".BASE_SYSTEMS_WEAR",      RMS_Config.CORE.BASE_SYSTEMS_WEAR)
@@ -1062,12 +1057,6 @@ function RMS_Config.loadFromXMLFile()
 
     local root = "realisticMechanicalSystems"
     local v
-
-    local savedVersion = getXMLFloat(xmlFile, root .. ".VER")
-    if savedVersion == nil then
-        delete(xmlFile)
-        return
-    end
 
     -- CORE
     v = getXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR")

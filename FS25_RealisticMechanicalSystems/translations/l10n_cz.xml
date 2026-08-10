@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Pás se zdá být volný, s patrným nerovnoměrným napnutím."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Pás je viditelně prověšený a napnutí se zdá být kriticky narušené."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Pokročilý systém poškození RMS"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="RMS Vozidla"/>
         <text name="rms_ingame_menu_section_service" text="V servisu"/>
         <text name="rms_ingame_menu_header_vehicle" text="Vozidlo"/>

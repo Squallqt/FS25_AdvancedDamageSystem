@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="트랙이 느슨해 보이며 장력이 뚜렷하게 불균형합니다."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="트랙이 눈에 띄게 처져 있으며 장력이 심각하게 훼손되었습니다."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="고급 손상 시스템"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="RMS 차량"/>
         <text name="rms_ingame_menu_section_service" text="정비 중"/>
         <text name="rms_ingame_menu_header_vehicle" text="차량"/>

@@ -627,7 +627,7 @@
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Bant gevşek görünüyor ve gerginlikte belirgin bir dengesizlik var."/>
         <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Ray gözle görülür şekilde sarkmış durumda ve gerginliği ciddi şekilde bozulmuş görünüyor."/>
         <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Gelişmiş Hasar Sistemi"/>
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
         <text name="rms_ingame_menu_section_active" text="RMS Araçları"/>
         <text name="rms_ingame_menu_section_service" text="Serviste"/>
         <text name="rms_ingame_menu_header_vehicle" text="Araç"/>
@@ -662,10 +662,10 @@
         <text name="rms_tutorialResetTips_tooltip" text="Öğretici ipucu geçmişini sıfırla ve tüm ipuçlarını yeniden göster."/>
         <text name="rms_tutorialResetConfirm_title" text="Öğretici ipuçlarını sıfırla?"/>
         <text name="rms_tutorialResetConfirm_message" text="Öğretici ipucu geçmişini sıfırlayıp tüm ipuçlarını yeniden göstermek ister misiniz?"/>
-        <text name="rms_tutorial_welcome_dialog_title" text="Gelişmiş Hasar Sistemine Hoş Geldiniz"/>
+        <text name="rms_tutorial_welcome_dialog_title" text="Realistic Mechanical Systems'e Hoş Geldiniz"/>
         <text name="rms_tutorial_welcome_disable_button" text="İpuçlarını Devre Dışı Bırak"/>
         <text name="rms_tutorial_welcome_enable_button" text="İpuçlarını Etkinleştir"/>
-        <text name="rms_tutorial_welcome_message" text="Bu mod, oyundaki araç hasar ve bakım sistemlerini tamamen yeniliyor. Çok sayıda değişiklik olduğu için zaman zaman öğretici ipuçları görünecektir. Bu ipuçları, yeni mekanikleri daha hızlı anlamanıza, sık yapılan hatalardan kaçınmanıza ve araçlarınızın arızalanmasını önlemenize yardımcı olacaktır.&#10;&#10;İsterseniz, öğretici ipuçlarını hemen devre dışı bırakabilirsiniz. Daha sonra mod ayarlarında, “Gelişmiş Hasar Sistemi” bölümü altında bu ipuçlarını istediğiniz zaman tekrar etkinleştirebilirsiniz."/>
+        <text name="rms_tutorial_welcome_message" text="Bu mod, oyundaki araç hasar ve bakım sistemlerini tamamen yeniliyor. Çok sayıda değişiklik olduğu için zaman zaman öğretici ipuçları görünecektir. Bu ipuçları, yeni mekanikleri daha hızlı anlamanıza, sık yapılan hatalardan kaçınmanıza ve araçlarınızın arızalanmasını önlemenize yardımcı olacaktır.&#10;&#10;İsterseniz, öğretici ipuçlarını hemen devre dışı bırakabilirsiniz. Daha sonra mod ayarlarında, “Realistic Mechanical Systems” bölümü altında bu ipuçlarını istediğiniz zaman tekrar etkinleştirebilirsiniz."/>
         <text name="rms_tutorial_service_due_soon_title" text="Periyodik Bakım"/>
         <text name="rms_tutorial_service_due_soon_message" text="%s yakında bakıma ihtiyaç duyacak.&#10;&#10;RMS'de araçların düzenli bakıma ihtiyacı vardır. Bakımı ertelerseniz, arıza riski önemli ölçüde artar.&#10;&#10;En yakın tamirhaneye gidin ve “Bakım” seçeneğini seçin. Bakım aralığı, mod ayarlarından değiştirilebilir."/>
         <text name="rms_tutorial_service_interval_expired_title" text="Servis Aralığı Süresi Doldu"/>
