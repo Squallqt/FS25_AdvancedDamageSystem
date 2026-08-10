@@ -1,6 +1,6 @@
-adsHandTools = {}
+rmsHandTools = {}
 
-local specName = "spec_" .. g_currentModName .. ".adsHandTools"
+local specName = "spec_" .. g_currentModName .. ".rmsHandTools"
 
 local function getRaycastDistance()
     local fieldCare = RMS_Config ~= nil and RMS_Config.FIELD_CARE or nil
@@ -266,35 +266,35 @@ end
 --                     REGISTRATION & INIT
 -- ==========================================================
 
-function adsHandTools.prerequisitesPresent(specializations)
+function rmsHandTools.prerequisitesPresent(specializations)
     return true
 end
 
-function adsHandTools.registerFunctions(handTool)
-    SpecializationUtil.registerFunction(handTool, "handToolRaycastCallback", adsHandTools.handToolRaycastCallback)
-    SpecializationUtil.registerFunction(handTool, "applyAirBlowerNetworkState", adsHandTools.applyAirBlowerNetworkState)
-    SpecializationUtil.registerFunction(handTool, "tryUseGreaseGunServer", adsHandTools.tryUseGreaseGunServer)
-    SpecializationUtil.registerFunction(handTool, "handleJumperCablesActionServer", adsHandTools.handleJumperCablesActionServer)
-    SpecializationUtil.registerFunction(handTool, "applyJumperCablesState", adsHandTools.applyJumperCablesState)
+function rmsHandTools.registerFunctions(handTool)
+    SpecializationUtil.registerFunction(handTool, "handToolRaycastCallback", rmsHandTools.handToolRaycastCallback)
+    SpecializationUtil.registerFunction(handTool, "applyAirBlowerNetworkState", rmsHandTools.applyAirBlowerNetworkState)
+    SpecializationUtil.registerFunction(handTool, "tryUseGreaseGunServer", rmsHandTools.tryUseGreaseGunServer)
+    SpecializationUtil.registerFunction(handTool, "handleJumperCablesActionServer", rmsHandTools.handleJumperCablesActionServer)
+    SpecializationUtil.registerFunction(handTool, "applyJumperCablesState", rmsHandTools.applyJumperCablesState)
 end
 
-function adsHandTools.registerEventListeners(handTool)
-    SpecializationUtil.registerEventListener(handTool, "onLoad", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onPostLoad", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onDelete", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onUpdate", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onWriteStream", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onReadStream", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onHeldStart", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onHeldEnd", adsHandTools)
-    SpecializationUtil.registerEventListener(handTool, "onRegisterActionEvents", adsHandTools)
+function rmsHandTools.registerEventListeners(handTool)
+    SpecializationUtil.registerEventListener(handTool, "onLoad", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onPostLoad", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onDelete", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onUpdate", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onWriteStream", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onReadStream", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onHeldStart", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onHeldEnd", rmsHandTools)
+    SpecializationUtil.registerEventListener(handTool, "onRegisterActionEvents", rmsHandTools)
 end
 
-function adsHandTools:onLoad(savegame)
+function rmsHandTools:onLoad(savegame)
     ensureSpec(self)
 end
 
-function adsHandTools:onPostLoad(savegame)
+function rmsHandTools:onPostLoad(savegame)
     local spec = ensureSpec(self)
     spec.toolKind = getToolKind(self)
     spec.activateText = getDefaultActionText(self)
@@ -327,7 +327,7 @@ function adsHandTools:onPostLoad(savegame)
     spec.samples = spec.samples or {}
 
     if self.isClient then
-        local xmlSoundFile = loadXMLFile("adsHandToolSounds", self.baseDirectory .. "sounds/ads_sounds.xml")
+        local xmlSoundFile = loadXMLFile("rmsHandToolSounds", self.baseDirectory .. "sounds/ads_sounds.xml")
         if xmlSoundFile ~= nil then
             if spec.toolKind == "airBlower" then
                 spec.samples.airBlower = g_soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "airBlowerTool", self.baseDirectory, self.components, 0, AudioGroup.VEHICLE, self.i3dMappings, self)
@@ -380,7 +380,7 @@ function adsHandTools:onPostLoad(savegame)
     end
 end
 
-function adsHandTools:onWriteStream(streamId, connection)
+function rmsHandTools:onWriteStream(streamId, connection)
     local spec = ensureSpec(self)
     if spec.toolKind == "airBlower" and not connection:getIsServer() then
         streamWriteBool(streamId, spec.networkUseActive)
@@ -389,7 +389,7 @@ function adsHandTools:onWriteStream(streamId, connection)
     end
 end
 
-function adsHandTools:onReadStream(streamId, connection)
+function rmsHandTools:onReadStream(streamId, connection)
     local spec = ensureSpec(self)
     if spec.toolKind == "airBlower" and connection:getIsServer() then
         local isActive = streamReadBool(streamId)
@@ -399,7 +399,7 @@ function adsHandTools:onReadStream(streamId, connection)
     end
 end
 
-function adsHandTools:onDelete()
+function rmsHandTools:onDelete()
     local spec = ensureSpec(self)
 
     setToolSoundState(self, false)
@@ -441,7 +441,7 @@ end
 --                        EVENTS
 -- ==========================================================
 
-function adsHandTools:onHeldStart()
+function rmsHandTools:onHeldStart()
     if g_localPlayer == nil or self:getCarryingPlayer() ~= g_localPlayer then
         return
     end
@@ -463,7 +463,7 @@ function adsHandTools:onHeldStart()
 
 end
 
-function adsHandTools:onHeldEnd()
+function rmsHandTools:onHeldEnd()
     local spec = ensureSpec(self)
 
     if spec.toolKind == "airBlower" and spec.lastSentNetworkState == "start" then
@@ -485,7 +485,7 @@ function adsHandTools:onHeldEnd()
 
 end
 
-function adsHandTools:applyAirBlowerNetworkState(state, targetVehicle, targetDistance)
+function rmsHandTools:applyAirBlowerNetworkState(state, targetVehicle, targetDistance)
     local spec = ensureSpec(self)
     if spec.toolKind ~= "airBlower" then
         return false
@@ -510,7 +510,7 @@ function adsHandTools:applyAirBlowerNetworkState(state, targetVehicle, targetDis
     return true
 end
 
-function adsHandTools:tryUseGreaseGunServer(targetVehicle, connection)
+function rmsHandTools:tryUseGreaseGunServer(targetVehicle, connection)
     if not self.isServer then
         return false
     end
@@ -549,7 +549,7 @@ function adsHandTools:tryUseGreaseGunServer(targetVehicle, connection)
     return true
 end
 
-function adsHandTools:handleJumperCablesActionServer(state, targetVehicle, connection)
+function rmsHandTools:handleJumperCablesActionServer(state, targetVehicle, connection)
     if not self.isServer then
         return false
     end
@@ -636,7 +636,7 @@ function adsHandTools:handleJumperCablesActionServer(state, targetVehicle, conne
     return resultState == "jumperSelected" or resultState == "jumperConnected" or resultState == "jumperDisconnected"
 end
 
-function adsHandTools:applyJumperCablesState(state, targetVehicle, connectedVehicleA, connectedVehicleB)
+function rmsHandTools:applyJumperCablesState(state, targetVehicle, connectedVehicleA, connectedVehicleB)
     local spec = ensureSpec(self)
     spec.connectedVehicleA = connectedVehicleA
     spec.connectedVehicleB = connectedVehicleB
@@ -682,7 +682,7 @@ end
 --                        CALLBACKS
 -- ==========================================================
 
-function adsHandTools:onRegisterActionEvents()
+function rmsHandTools:onRegisterActionEvents()
     local spec = ensureSpec(self)
     if not self:getIsActiveForInput(true) then
         return
@@ -695,7 +695,7 @@ function adsHandTools:onRegisterActionEvents()
     local _, eventId = self:addActionEvent(
         InputAction.ACTIVATE_HANDTOOL,
         self,
-        adsHandTools.onActionCallback,
+        rmsHandTools.onActionCallback,
         true,
         true,
         false,
@@ -712,7 +712,7 @@ function adsHandTools:onRegisterActionEvents()
     end
 end
 
-function adsHandTools:onActionCallback(actionName, inputValue)
+function rmsHandTools:onActionCallback(actionName, inputValue)
     local spec = ensureSpec(self)
     local isPressed = inputValue > 0
 
@@ -796,7 +796,7 @@ function adsHandTools:onActionCallback(actionName, inputValue)
     end
 end
 
-function adsHandTools:handToolRaycastCallback(hitActorId, x, y, z, distance, nx, ny, nz, subShapeIndex, hitShapeId)
+function rmsHandTools:handToolRaycastCallback(hitActorId, x, y, z, distance, nx, ny, nz, subShapeIndex, hitShapeId)
     local spec = ensureSpec(self)
     local vehicle = g_currentMission.nodeToObject[hitActorId] or g_currentMission:getNodeObject(hitActorId)
 
@@ -827,7 +827,7 @@ end
 --                        UPDATE
 -- ==========================================================
 
-function adsHandTools:onUpdate(dt)
+function rmsHandTools:onUpdate(dt)
     local spec = ensureSpec(self)
     local carryingPlayer = self:getCarryingPlayer()
     local isLocalOwner = carryingPlayer ~= nil and carryingPlayer.isOwner

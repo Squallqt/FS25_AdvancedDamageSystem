@@ -76,8 +76,8 @@ For testing and debugging, RMS includes console commands. Most commands require 
 | **ads_setFuelLevel** | Sets the current vehicle's fuel level using either a `0.0`-`1.0` value or `0`-`100` percent. | `ads_setFuelLevel 25` |
 | **ads_resetFactorStats** | Resets the accumulated factor statistics for the current vehicle. | `ads_resetFactorStats` |
 | **ads_toggleHudDebugView** | Switches the ADS HUD debug view between normal and factor stats modes. | `ads_toggleHudDebugView stats` |
-| **ads_setConfigVar** | Changes a value inside `ADS_Config` at runtime. Intended for testing and debugging. | `ads_setConfigVar CORE.BASE_SYSTEMS_WEAR 0.02` |
-| **ads_setSpecVar** | Changes a value inside `spec_AdvancedDamageSystem` on the current vehicle. Intended for testing and debugging. | `ads_setSpecVar systems.engine.condition 0.85` |
+| **ads_setConfigVar** | Changes a value inside `RMS_Config` at runtime. Intended for testing and debugging. | `ads_setConfigVar CORE.BASE_SYSTEMS_WEAR 0.02` |
+| **ads_setSpecVar** | Changes a value inside `spec_RealisticMechanicalSystems` on the current vehicle. Intended for testing and debugging. | `ads_setSpecVar systems.engine.condition 0.85` |
 
 ## Detailed Technical Guide
 

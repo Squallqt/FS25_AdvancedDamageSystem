@@ -250,8 +250,8 @@ function RMS_DebugSnapshot.apply(vehicle, snapshot)
         return
     end
 
-    spec.adsDebugSnapshot = snapshot
-    spec.adsDebugSnapshotReceivedAt = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
+    spec.rmsDebugSnapshot = snapshot
+    spec.rmsDebugSnapshotReceivedAt = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
 end
 
 function RMS_DebugSnapshot.get(vehicle)
@@ -260,13 +260,13 @@ function RMS_DebugSnapshot.get(vehicle)
         return nil
     end
 
-    local receivedAt = tonumber(spec.adsDebugSnapshotReceivedAt)
+    local receivedAt = tonumber(spec.rmsDebugSnapshotReceivedAt)
     local now = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
     if receivedAt == nil or now - receivedAt > RMS_DebugSnapshot.MAX_SNAPSHOT_AGE_MS then
         return nil
     end
 
-    return spec.adsDebugSnapshot
+    return spec.rmsDebugSnapshot
 end
 
 function RMS_DebugSnapshot.request(vehicle)

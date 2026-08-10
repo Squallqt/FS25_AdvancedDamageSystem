@@ -1486,9 +1486,9 @@ function RealisticMechanicalSystems.ConsoleCommands:setOperatingTime(rawArgs)
     local previousOperatingTimeMs = getSyncOperatingTime(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
 
-    spec._allowAdsOperatingTimeWrite = true
+    spec._allowRMSOperatingTimeWrite = true
     vehicle:setOperatingTime(operatingTimeMs, false)
-    spec._allowAdsOperatingTimeWrite = false
+    spec._allowRMSOperatingTimeWrite = false
     spec.realOperatingTime = operatingTimeMs
 
     RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TELEMETRY)

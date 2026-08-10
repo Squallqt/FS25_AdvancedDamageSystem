@@ -266,7 +266,7 @@ end
 function RMS_InGameMenuFrame.register()
     local frame = RMS_InGameMenuFrame.new()
     local filename = RMS_InGameMenuFrame.MOD_DIR .. "gui/ADS_InGameMenuFrame.xml"
-    g_gui:loadGui(filename, "adsInGameMenuFleetFrame", frame, false)
+    g_gui:loadGui(filename, "rmsInGameMenuFleetFrame", frame, false)
     return frame
 end
 

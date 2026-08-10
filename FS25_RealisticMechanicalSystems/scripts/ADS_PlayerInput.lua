@@ -1,22 +1,22 @@
-local adsInspectionVehicle = nil
-local adsInspectionActionId = nil
-local adsInspectionHoldVehicle = nil
-local adsInspectionHoldTime = 0
-local adsInspectionHoldThreshold = 600
-local adsInspectionHoldTriggered = false
+local rmsInspectionVehicle = nil
+local rmsInspectionActionId = nil
+local rmsInspectionHoldVehicle = nil
+local rmsInspectionHoldTime = 0
+local rmsInspectionHoldThreshold = 600
+local rmsInspectionHoldTriggered = false
 
-local adsActiveInspectionVehicle = nil
-local adsInspectionProgressPercent = -1
-local adsInspectionMaxDistance = 6.0
+local rmsActiveInspectionVehicle = nil
+local rmsInspectionProgressPercent = -1
+local rmsInspectionMaxDistance = 6.0
 
 
-local function adsResetInspectionHoldState()
-    adsInspectionHoldVehicle = nil
-    adsInspectionHoldTime = 0
-    adsInspectionHoldTriggered = false
+local function rmsResetInspectionHoldState()
+    rmsInspectionHoldVehicle = nil
+    rmsInspectionHoldTime = 0
+    rmsInspectionHoldTriggered = false
 end
 
-local function adsGetInspectionVehicleFromTargeter(player)
+local function rmsGetInspectionVehicleFromTargeter(player)
     local object = nil
 
     if player.targeter ~= nil then
@@ -43,8 +43,8 @@ local function adsGetInspectionVehicleFromTargeter(player)
     return object
 end
 
-local function adsCancelActiveInspection(reasonText)
-    local vehicle = adsActiveInspectionVehicle
+local function rmsCancelActiveInspection(reasonText)
+    local vehicle = rmsActiveInspectionVehicle
     if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil then
         local spec = vehicle.spec_RealisticMechanicalSystems
         local inspection = spec.fieldInspection
@@ -59,8 +59,8 @@ local function adsCancelActiveInspection(reasonText)
         end
     end
 
-    adsActiveInspectionVehicle = nil
-    adsInspectionProgressPercent = -1
+    rmsActiveInspectionVehicle = nil
+    rmsInspectionProgressPercent = -1
 
     if reasonText ~= nil and reasonText ~= "" then
         RMS_Hud.showNotification(reasonText, 1500)
@@ -69,10 +69,10 @@ local function adsCancelActiveInspection(reasonText)
     end
 end
 
-local function adsCompleteActiveInspection()
-    local vehicle = adsActiveInspectionVehicle
+local function rmsCompleteActiveInspection()
+    local vehicle = rmsActiveInspectionVehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
-        adsCancelActiveInspection()
+        rmsCancelActiveInspection()
         return
     end
 
@@ -88,8 +88,8 @@ local function adsCompleteActiveInspection()
         inspection.targetVehicle = nil
     end
 
-    adsActiveInspectionVehicle = nil
-    adsInspectionProgressPercent = -1
+    rmsActiveInspectionVehicle = nil
+    rmsInspectionProgressPercent = -1
     RMS_Hud.hideNotification()
 
     if RMS_InspectionDialog ~= nil then
@@ -97,8 +97,8 @@ local function adsCompleteActiveInspection()
     end
 end
 
-local function adsUpdateActiveInspection(inputComponent, dt)
-    local vehicle = adsActiveInspectionVehicle
+local function rmsUpdateActiveInspection(inputComponent, dt)
+    local vehicle = rmsActiveInspectionVehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return
     end
@@ -108,134 +108,134 @@ local function adsUpdateActiveInspection(inputComponent, dt)
     local player = inputComponent.player
 
     if inspection == nil or not inspection.isActive then
-        adsCancelActiveInspection()
+        rmsCancelActiveInspection()
         return
     end
 
     if player == nil or not player.isControlled then
-        adsCancelActiveInspection()
+        rmsCancelActiveInspection()
         return
     end
 
     if player:getIsInVehicle() or player:getAreHandsHoldingObject() or player:getIsHoldingHandTool() then
-        adsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
+        rmsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
         return
     end
 
-    local currentTargetVehicle = adsGetInspectionVehicleFromTargeter(player)
+    local currentTargetVehicle = rmsGetInspectionVehicleFromTargeter(player)
     if currentTargetVehicle ~= vehicle then
-        adsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
+        rmsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
         return
     end
 
     if player.rootNode == nil then
-        adsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
+        rmsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
         return
     end
 
     local distance = vehicle:getDistanceToNode(player.rootNode)
-    if distance == nil or distance > adsInspectionMaxDistance then
-        adsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
+    if distance == nil or distance > rmsInspectionMaxDistance then
+        rmsCancelActiveInspection(g_i18n:getText("ads_field_inspection_cancelled"))
         return
     end
 
     inspection.elapsedTime = math.min(inspection.elapsedTime + dt, inspection.duration)
 
     local percent = math.floor((inspection.elapsedTime / math.max(inspection.duration, 1)) * 100)
-    if percent ~= adsInspectionProgressPercent then
-        adsInspectionProgressPercent = percent
+    if percent ~= rmsInspectionProgressPercent then
+        rmsInspectionProgressPercent = percent
         RMS_Hud.showNotification(string.format(g_i18n:getText("ads_field_inspection_progress"), percent), 250)
     end
 
     if inspection.elapsedTime >= inspection.duration then
-        adsCompleteActiveInspection()
+        rmsCompleteActiveInspection()
     end
 end
 
-local function adsOnInputFieldInspection(actionName, inputValue, callbackState, isAnalog)
-    if adsActiveInspectionVehicle ~= nil then
+local function rmsOnInputFieldInspection(actionName, inputValue, callbackState, isAnalog)
+    if rmsActiveInspectionVehicle ~= nil then
         return
     end
 
-    if adsInspectionVehicle == nil then
-        adsResetInspectionHoldState()
+    if rmsInspectionVehicle == nil then
+        rmsResetInspectionHoldState()
         return
     end
 
     if inputValue == 0 then
-        adsResetInspectionHoldState()
+        rmsResetInspectionHoldState()
         return
     end
 
-    if adsInspectionHoldVehicle ~= adsInspectionVehicle then
-        adsInspectionHoldVehicle = adsInspectionVehicle
-        adsInspectionHoldTime = 0
-        adsInspectionHoldTriggered = false
+    if rmsInspectionHoldVehicle ~= rmsInspectionVehicle then
+        rmsInspectionHoldVehicle = rmsInspectionVehicle
+        rmsInspectionHoldTime = 0
+        rmsInspectionHoldTriggered = false
     end
 
-    if adsInspectionHoldTriggered then
+    if rmsInspectionHoldTriggered then
         return
     end
 
-    adsInspectionHoldTime = adsInspectionHoldTime + g_currentDt
+    rmsInspectionHoldTime = rmsInspectionHoldTime + g_currentDt
 
-    if adsInspectionHoldTime >= adsInspectionHoldThreshold then
-        adsInspectionHoldTriggered = true
+    if rmsInspectionHoldTime >= rmsInspectionHoldThreshold then
+        rmsInspectionHoldTriggered = true
 
-        if adsInspectionHoldVehicle ~= nil and adsInspectionHoldVehicle.startFieldVisualInspectionProcess ~= nil then
-            local started = adsInspectionHoldVehicle:startFieldVisualInspectionProcess()
+        if rmsInspectionHoldVehicle ~= nil and rmsInspectionHoldVehicle.startFieldVisualInspectionProcess ~= nil then
+            local started = rmsInspectionHoldVehicle:startFieldVisualInspectionProcess()
 
             if started then
-                adsActiveInspectionVehicle = adsInspectionHoldVehicle
-                adsInspectionProgressPercent = -1
+                rmsActiveInspectionVehicle = rmsInspectionHoldVehicle
+                rmsInspectionProgressPercent = -1
             end
         end
 
-        adsResetInspectionHoldState()
+        rmsResetInspectionHoldState()
     end
 end
 
-local function adsOnPlayerInputComponentUpdate(inputComponent, superFunc, dt)
+local function rmsOnPlayerInputComponentUpdate(inputComponent, superFunc, dt)
     superFunc(inputComponent, dt)
 
     if not inputComponent.player.isOwner
         or g_inputBinding:getContextName() ~= PlayerInputComponent.INPUT_CONTEXT_NAME
-        or adsInspectionActionId == nil then
+        or rmsInspectionActionId == nil then
         return
     end
 
-    if adsActiveInspectionVehicle ~= nil then
-        g_inputBinding:setActionEventActive(adsInspectionActionId, false)
-        adsUpdateActiveInspection(inputComponent, dt)
+    if rmsActiveInspectionVehicle ~= nil then
+        g_inputBinding:setActionEventActive(rmsInspectionActionId, false)
+        rmsUpdateActiveInspection(inputComponent, dt)
         return
     end
 
-    local previousVehicle = adsInspectionVehicle
-    adsInspectionVehicle = nil
+    local previousVehicle = rmsInspectionVehicle
+    rmsInspectionVehicle = nil
 
     local player = inputComponent.player
     if player.isControlled
         and not player:getIsInVehicle()
         and not player:getAreHandsHoldingObject()
         and not player:getIsHoldingHandTool() then
-        adsInspectionVehicle = adsGetInspectionVehicleFromTargeter(player)
+        rmsInspectionVehicle = rmsGetInspectionVehicleFromTargeter(player)
     end
 
-    if adsInspectionVehicle ~= previousVehicle then
-        adsResetInspectionHoldState()
+    if rmsInspectionVehicle ~= previousVehicle then
+        rmsResetInspectionHoldState()
     end
 
-    local isActive = adsInspectionVehicle ~= nil
-    g_inputBinding:setActionEventActive(adsInspectionActionId, isActive)
+    local isActive = rmsInspectionVehicle ~= nil
+    g_inputBinding:setActionEventActive(rmsInspectionActionId, isActive)
 
     if isActive then
-        g_inputBinding:setActionEventText(adsInspectionActionId, g_i18n:getText("ads_field_inspection_hold_to_start"))
+        g_inputBinding:setActionEventText(rmsInspectionActionId, g_i18n:getText("ads_field_inspection_hold_to_start"))
     else
-        adsResetInspectionHoldState()
+        rmsResetInspectionHoldState()
     end
 end
 
-local function adsOnPlayerInputComponentRegisterActionEvents(inputComponent)
+local function rmsOnPlayerInputComponentRegisterActionEvents(inputComponent)
     if not inputComponent.player.isOwner then
         return
     end
@@ -245,7 +245,7 @@ local function adsOnPlayerInputComponentRegisterActionEvents(inputComponent)
     local _, eventId = g_inputBinding:registerActionEvent(
         InputAction.ADS_FIELD_INSPECTION,
         inputComponent,
-        adsOnInputFieldInspection,
+        rmsOnInputFieldInspection,
         true,
         true,
         true,
@@ -254,15 +254,15 @@ local function adsOnPlayerInputComponentRegisterActionEvents(inputComponent)
         true
     )
 
-    adsInspectionActionId = eventId
+    rmsInspectionActionId = eventId
 
-    if adsInspectionActionId ~= nil then
-        g_inputBinding:setActionEventActive(adsInspectionActionId, false)
-        g_inputBinding:setActionEventTextPriority(adsInspectionActionId, GS_PRIO_NORMAL)
+    if rmsInspectionActionId ~= nil then
+        g_inputBinding:setActionEventActive(rmsInspectionActionId, false)
+        g_inputBinding:setActionEventTextPriority(rmsInspectionActionId, GS_PRIO_NORMAL)
     end
 
     g_inputBinding:endActionEventsModification()
 end
 
-PlayerInputComponent.update = Utils.overwrittenFunction(PlayerInputComponent.update, adsOnPlayerInputComponentUpdate)
-PlayerInputComponent.registerActionEvents = Utils.appendedFunction(PlayerInputComponent.registerActionEvents, adsOnPlayerInputComponentRegisterActionEvents)
+PlayerInputComponent.update = Utils.overwrittenFunction(PlayerInputComponent.update, rmsOnPlayerInputComponentUpdate)
+PlayerInputComponent.registerActionEvents = Utils.appendedFunction(PlayerInputComponent.registerActionEvents, rmsOnPlayerInputComponentRegisterActionEvents)

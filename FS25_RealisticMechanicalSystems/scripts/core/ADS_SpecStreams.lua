@@ -8,8 +8,8 @@ function RealisticMechanicalSystems:onWriteStream(streamId, connection)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
-    if spec.adsPendingByConnection ~= nil then
-        spec.adsPendingByConnection[connection] = 0
+    if spec.rmsPendingByConnection ~= nil then
+        spec.rmsPendingByConnection[connection] = 0
     end
 
     if streamWriteBool(streamId, spec.isExcludedByUser ~= nil) then
@@ -203,8 +203,8 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
     if spec == nil then return end
 
     if not connection:getIsServer() then
-        local pending = spec.adsPendingByConnection[connection] or 0
-        spec.adsPendingByConnection[connection] = 0
+        local pending = spec.rmsPendingByConnection[connection] or 0
+        spec.rmsPendingByConnection[connection] = 0
 
         -- [1] State
         if streamWriteBool(streamId, bit32.band(pending, RealisticMechanicalSystems.SYNC_GROUP.STATE) ~= 0) then

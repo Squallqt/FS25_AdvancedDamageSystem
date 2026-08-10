@@ -264,7 +264,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
     local existingRealOperatingTime = tonumber(self.spec_RealisticMechanicalSystems.realOperatingTime) or 0
     self.spec_RealisticMechanicalSystems.realOperatingTime = math.max(existingRealOperatingTime, currentOperatingTime)
     self.spec_RealisticMechanicalSystems._prevConditionLevel = 0
-    self.spec_RealisticMechanicalSystems._allowAdsOperatingTimeWrite = false
+    self.spec_RealisticMechanicalSystems._allowRMSOperatingTimeWrite = false
 
     self.spec_RealisticMechanicalSystems.systems = {
         engine = { name = RealisticMechanicalSystems.SYSTEMS.ENGINE, condition = 1.0, stress = 0.0, enabled = true },
@@ -694,8 +694,8 @@ function RealisticMechanicalSystems:onLoad(savegame)
 
     if self.isServer then
         local spec = self.spec_RealisticMechanicalSystems
-        spec.adsDirtyFlag = self:getNextDirtyFlag()
-        spec.adsPendingByConnection = {}
+        spec.rmsDirtyFlag = self:getNextDirtyFlag()
+        spec.rmsPendingByConnection = {}
     end
 end
 
@@ -963,7 +963,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     }
 
     -- Sounds Loading
-    local xmlSoundFile = loadXMLFile("ads_sounds", RealisticMechanicalSystems.modDirectory .. "sounds/ads_sounds.xml")
+    local xmlSoundFile = loadXMLFile("rmsSounds", RealisticMechanicalSystems.modDirectory .. "sounds/ads_sounds.xml")
     if spec.samples == nil then
         spec.samples = {}
     end

@@ -9,7 +9,7 @@ RMS_Telemetry.startedAt = nil
 RMS_Telemetry.stoppedAt = nil
 RMS_Telemetry.vehicleId = nil
 RMS_Telemetry.vehicleName = nil
-RMS_Telemetry.filePrefix = "ads_telemetry"
+RMS_Telemetry.filePrefix = "rmsTelemetry"
 RMS_Telemetry.fileSequence = 0
 RMS_Telemetry.recordingScenario = nil
 RMS_Telemetry.sessionInfo = nil
@@ -159,7 +159,7 @@ function RMS_Telemetry:buildOutputFilePath()
     local safeScenarioName = sanitizeFileName(self.recordingScenario or "default")
     local baseName = string.format(
         "%s_%s_%s_%s_%03d",
-        tostring(self.filePrefix or "ads_telemetry"),
+        tostring(self.filePrefix or "rmsTelemetry"),
         safeScenarioName,
         safeVehicleName,
         safeVehicleId,

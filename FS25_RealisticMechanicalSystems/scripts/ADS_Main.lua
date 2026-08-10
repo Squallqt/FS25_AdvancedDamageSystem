@@ -157,7 +157,7 @@ end
 -- ===========================================================
 
 local htPath = modDirectory .. "xml/handTools.xml"
-local xmlFile = XMLFile.loadIfExists("adsHandTools", htPath)
+local xmlFile = XMLFile.loadIfExists("rmsHandTools", htPath)
 
 if xmlFile ~= nil then
     xmlFile:iterate("handTools.specializations.specialization", function(_, key)
@@ -231,8 +231,8 @@ end
 
 -- workshop repairButton control for ADS vehicles
 function RMS_Main.hookRepairButton(screenInstance, vehicle)
-    if screenInstance.ads_originalRepairCallback == nil and screenInstance.repairButton.onClickCallback ~= nil then
-        screenInstance.ads_originalRepairCallback = screenInstance.repairButton.onClickCallback
+    if screenInstance.rmsOriginalRepairCallback == nil and screenInstance.repairButton.onClickCallback ~= nil then
+        screenInstance.rmsOriginalRepairCallback = screenInstance.repairButton.onClickCallback
     end
     if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         screenInstance.repairButton.onClickCallback = function()           
@@ -240,7 +240,7 @@ function RMS_Main.hookRepairButton(screenInstance, vehicle)
         end
         screenInstance.repairButton:setDisabled(false)
     else
-        screenInstance.repairButton.onClickCallback = screenInstance.ads_originalRepairCallback
+        screenInstance.repairButton.onClickCallback = screenInstance.rmsOriginalRepairCallback
     end
 end
 
@@ -533,7 +533,7 @@ function RMS_Main:update(dt)
         end
         
         if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
-            vehicle:adsUpdate(RMS_Config.CORE_UPDATE_DELAY, self.isWorkshopOpen)
+            vehicle:rmsUpdate(RMS_Config.CORE_UPDATE_DELAY, self.isWorkshopOpen)
 
             --- meta
             local spec = vehicle.spec_RealisticMechanicalSystems
@@ -578,7 +578,7 @@ function RMS_Main:loadMap()
         g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, self.onPeriodChanged, self)
     end
 
-    local soundsXmlFile = loadXMLFile("adsSounds2D", Utils.getFilename("sounds/ads_sounds.xml", modDirectory))
+    local soundsXmlFile = loadXMLFile("rmsSounds2D", Utils.getFilename("sounds/ads_sounds.xml", modDirectory))
     self.samples = {
         notification2D = g_soundManager:loadSample2DFromXML(soundsXmlFile, "sounds", "notification2D", modDirectory, 1, AudioGroup.GUI),
         maintenanceCompleted2D = g_soundManager:loadSample2DFromXML(soundsXmlFile, "sounds", "maintenanceCompleted2D", modDirectory, 1, AudioGroup.GUI)

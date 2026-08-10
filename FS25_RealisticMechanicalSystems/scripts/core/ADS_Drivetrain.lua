@@ -39,7 +39,7 @@ local function readEnhancedVehicleSettings()
     local diffEnabled, parkEnabled = true, true
     local path = getUserProfileAppPath() .. "modSettings/FS25_EnhancedVehicle/FS25_EnhancedVehicle_v1.xml"
     if fileExists(path) then
-        local xml = loadXMLFile("adsEvConfig", path)
+        local xml = loadXMLFile("rmsEvConfig", path)
         if xml ~= nil and xml ~= 0 then
             local diffValue = getXMLBool(xml, "FS25_EnhancedVehicle.global.functions#diffIsEnabled")
             if diffValue ~= nil then diffEnabled = diffValue end

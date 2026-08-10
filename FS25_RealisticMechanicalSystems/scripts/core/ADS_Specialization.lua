@@ -368,15 +368,15 @@ RealisticMechanicalSystems.SYNC_GROUP_ALL = 2047
 
 function RealisticMechanicalSystems.raiseRMSDirty(vehicle, groupBits)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
-    if spec == nil or not vehicle.isServer or spec.adsDirtyFlag == nil then
+    if spec == nil or not vehicle.isServer or spec.rmsDirtyFlag == nil then
         return
     end
 
-    for connection, mask in pairs(spec.adsPendingByConnection) do
-        spec.adsPendingByConnection[connection] = bit32.bor(mask, groupBits)
+    for connection, mask in pairs(spec.rmsPendingByConnection) do
+        spec.rmsPendingByConnection[connection] = bit32.bor(mask, groupBits)
     end
 
-    vehicle:raiseDirtyFlags(spec.adsDirtyFlag)
+    vehicle:raiseDirtyFlags(spec.rmsDirtyFlag)
 end
 
 function RealisticMechanicalSystems:setRMSUserExcluded(isExcluded, noEventSend)
@@ -437,7 +437,7 @@ RealisticMechanicalSystems.getSafeMissionTimeScale = getSafeMissionTimeScale
 local SYSTEM_SYNC_EPSILON = 0.001
 
 local function canRaiseDirtyFlag(vehicle, spec)
-    return vehicle ~= nil and vehicle.isServer and spec ~= nil and spec.adsDirtyFlag ~= nil
+    return vehicle ~= nil and vehicle.isServer and spec ~= nil and spec.rmsDirtyFlag ~= nil
 end
 
 local function getSyncOperatingTime(vehicle)
@@ -961,7 +961,7 @@ function RealisticMechanicalSystems.registerOverwrittenFunctions(vehicleType)
 end
 
 function RealisticMechanicalSystems.registerFunctions(vehicleType)
-    SpecializationUtil.registerFunction(vehicleType, "adsUpdate", RealisticMechanicalSystems.adsUpdate)
+    SpecializationUtil.registerFunction(vehicleType, "rmsUpdate", RealisticMechanicalSystems.rmsUpdate)
     SpecializationUtil.registerFunction(vehicleType, "updateVehicleStateSnapshot", RealisticMechanicalSystems.updateVehicleStateSnapshot)
     SpecializationUtil.registerFunction(vehicleType, "setRMSUserExcluded", RealisticMechanicalSystems.setRMSUserExcluded)
     
@@ -1207,8 +1207,8 @@ local function getConditionLevelFromSellPrice(vehicle)
     local repaintPrice = Wearable.calculateRepaintPrice(price, vehicle:getWearTotalAmount())
     local repairPrice = vehicle:getRepairPrice()
     local vanillaSellPrice = Vehicle.calculateSellPrice(storeItem, vehicle.age, vehicle.operatingTime, price, repairPrice, repaintPrice)
-    local adsSellPriceForCondition = vanillaSellPrice + repairPrice + (repaintPrice * 0.75)
-    local targetCondition = math.clamp(adsSellPriceForCondition / price, 0.01, 1.0)
+    local rmsSellPriceForCondition = vanillaSellPrice + repairPrice + (repaintPrice * 0.75)
+    local targetCondition = math.clamp(rmsSellPriceForCondition / price, 0.01, 1.0)
     return targetCondition
 end
 
@@ -1885,7 +1885,7 @@ function RealisticMechanicalSystems:onUpdate(dt, ...)
     end
 end
 
-function RealisticMechanicalSystems:adsUpdate(dt, isWorkshopOpen)
+function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
     local spec = self.spec_RealisticMechanicalSystems
     if spec.isExcludedVehicle then return end
 
@@ -1906,9 +1906,9 @@ function RealisticMechanicalSystems:adsUpdate(dt, isWorkshopOpen)
         end
 
         spec.realOperatingTime = (spec.realOperatingTime or 0) + dt
-        spec._allowAdsOperatingTimeWrite = true
+        spec._allowRMSOperatingTimeWrite = true
         self:setOperatingTime(currentOperatingTime + operatingDt, false)
-        spec._allowAdsOperatingTimeWrite = false
+        spec._allowRMSOperatingTimeWrite = false
     end
 
     self:updateThermalSystems(dt)
@@ -1973,7 +1973,7 @@ end
 
 function RealisticMechanicalSystems.setOperatingTime(self, superFunc, operatingTime, isLoading)
     local spec = self.spec_RealisticMechanicalSystems
-    if spec ~= nil and not spec.isExcludedVehicle and not isLoading and not spec._allowAdsOperatingTimeWrite then
+    if spec ~= nil and not spec.isExcludedVehicle and not isLoading and not spec._allowRMSOperatingTimeWrite then
         return
     end
 

@@ -876,7 +876,7 @@ function RMS_Config.syncTutorialState()
     end
 end
 
-RMS_Config.savegameFile = "advancedDamageSystem.xml"
+RMS_Config.savegameFile = "realisticMechanicalSystems.xml"
 
 local function log_dbg(...)
     if RMS_Config.DEBUG then
@@ -947,13 +947,13 @@ function RMS_Config.saveToXMLFile()
 
     local xmlFileName = savegameFolderPath .. "/" .. RMS_Config.savegameFile
 
-    local xmlFile = createXMLFile("advancedDamageSystem", xmlFileName, "advancedDamageSystem")
+    local xmlFile = createXMLFile("realisticMechanicalSystems", xmlFileName, "realisticMechanicalSystems")
     if xmlFile == nil or xmlFile == 0 then
         log_dbg("SAVE ERROR - createXMLFile returned", tostring(xmlFile))
         return false
     end
 
-    local root = "advancedDamageSystem"
+    local root = "realisticMechanicalSystems"
 
     -- Version
     setXMLFloat(xmlFile, root .. ".VER", RMS_Config.VER)
@@ -1054,13 +1054,13 @@ function RMS_Config.loadFromXMLFile()
         return
     end
 
-    local xmlFile = loadXMLFile("advancedDamageSystem", xmlFileName)
+    local xmlFile = loadXMLFile("realisticMechanicalSystems", xmlFileName)
     if xmlFile == nil or xmlFile == 0 then
         log_dbg("LOAD ERROR - loadXMLFile returned", tostring(xmlFile))
         return
     end
 
-    local root = "advancedDamageSystem"
+    local root = "realisticMechanicalSystems"
     local v
 
     local savedVersion = getXMLFloat(xmlFile, root .. ".VER")

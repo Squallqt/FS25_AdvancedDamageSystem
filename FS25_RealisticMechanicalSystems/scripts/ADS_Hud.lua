@@ -1536,10 +1536,10 @@ SpeedMeterDisplay.draw = function(self, ...)
         return originalSpeedMeterDisplayDraw(self, ...)
     end
 
-    local adsHud = RMS_Main ~= nil and RMS_Main.hud or nil
+    local rmsHud = RMS_Main ~= nil and RMS_Main.hud or nil
     local dashExt = nil
-    if spec ~= nil and adsHud ~= nil and adsHud.dashExtension ~= nil and adsHud.dashExtension.stretchWidth ~= nil then
-        dashExt = adsHud.dashExtension
+    if spec ~= nil and rmsHud ~= nil and rmsHud.dashExtension ~= nil and rmsHud.dashExtension.stretchWidth ~= nil then
+        dashExt = rmsHud.dashExtension
 
         local extScaleWidth = self.gearBarScaleWidth
         if vehicle.spec_motorized ~= nil then

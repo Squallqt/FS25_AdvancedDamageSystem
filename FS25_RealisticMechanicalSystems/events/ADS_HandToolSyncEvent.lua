@@ -10,7 +10,7 @@ local function getHandToolSpec(tool)
     end
 
     if g_currentModName ~= nil then
-        local spec = tool["spec_" .. g_currentModName .. ".adsHandTools"]
+        local spec = tool["spec_" .. g_currentModName .. ".rmsHandTools"]
         if spec ~= nil then
             return spec
         end
@@ -19,7 +19,7 @@ local function getHandToolSpec(tool)
     for key, value in pairs(tool) do
         if type(key) == "string"
             and string.sub(key, 1, 5) == "spec_"
-            and string.sub(key, -13) == ".adsHandTools" then
+            and string.sub(key, -13) == ".rmsHandTools" then
             return value
         end
     end
