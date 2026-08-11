@@ -91,7 +91,7 @@ local function getIsUnsupportedVehicle(vehicle)
 end
 
 local function getIsAuxiliaryMachine(vehicle)
-    return not vehicle:getIsTabbable()
+    return not vehicle.xmlFile:getValue("vehicle.enterable#isTabbable", true)
 end
 
 local function getIsVehicleNeedLubricate(vehicle)
