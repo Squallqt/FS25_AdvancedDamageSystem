@@ -2324,6 +2324,34 @@ function RMS_Breakdowns.onStartButtonAction(self, actionName, inputValue, callba
     end
 end
 
+local function isColdGlowPlugStartBlocked(vehicle)
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    if spec == nil or spec.isExcludedVehicle or spec.activeEffects == nil then
+        return false
+    end
+
+    local effect = spec.activeEffects.GLOW_PLUG_HARD_START_MODIFIER
+
+    return effect ~= nil
+        and effect.extraData ~= nil
+        and effect.extraData.blockStart == true
+        and RMS_Preheat.getRequiredDurationMs(vehicle) > 0
+end
+
+function RMS_Breakdowns.getCanStartAIVehicle(self, superFunc, ...)
+    if not superFunc(self, ...) then
+        return false
+    end
+
+    if self.getIsMotorStarted ~= nil
+        and not self:getIsMotorStarted()
+        and isColdGlowPlugStartBlocked(self) then
+        return false
+    end
+
+    return true
+end
+
 function RMS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
     local spec = self.spec_RealisticMechanicalSystems
     local engineFailure = spec and spec.activeEffects.ENGINE_FAILURE
@@ -2334,6 +2362,15 @@ function RMS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
     end
     local isGlowPlugStartBlocked = glowPlugHardStart ~= nil
         and glowPlugHardStart.extraData.blockStart == true
+
+    if self:getIsAIActive() and not engineFailure then
+        if isColdGlowPlugStartBlocked(self) then
+            return
+        end
+
+        superFunc(self, noEventSend)
+        return
+    end
 
     if RMS_Preheat.shouldDeferStart(self, passed) then
         return
@@ -2359,11 +2396,6 @@ function RMS_Breakdowns.startMotor(self, superFunc, noEventSend, passed)
 
 
     if spec == nil or (engineFailure == nil and selectedHardStart == nil) or passed then
-        superFunc(self, noEventSend)
-        return
-    end
-
-    if self:getIsAIActive() and not engineFailure and not isGlowPlugStartBlocked then
         superFunc(self, noEventSend)
         return
     end
