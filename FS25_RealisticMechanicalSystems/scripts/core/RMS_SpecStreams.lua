@@ -82,6 +82,9 @@ function RealisticMechanicalSystems:onWriteStream(streamId, connection)
     -- [Group 11] Drivetrain
     RMS_Drivetrain.writeStreamState(self, streamId)
 
+    -- [Group 12] Exhaust deposits
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.fuelState.wetStackingLevel, 0, 0, 1))
+
 end
 
 function RealisticMechanicalSystems:onReadStream(streamId, connection)
@@ -194,6 +197,9 @@ function RealisticMechanicalSystems:onReadStream(streamId, connection)
     -- [Group 11] Drivetrain
     RMS_Drivetrain.readStreamState(self, streamId)
 
+    -- [Group 12] Exhaust deposits
+    spec.fuelState.wetStackingLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
+
     self:recalculateAndApplyEffects()
     self:recalculateAndApplyIndicators()
 end
@@ -228,6 +234,7 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec._fuelUsageRaw, 0, 0, 10000))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 1))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.fuelState.wetStackingLevel, 0, 0, 1))
         end
 
         -- [4] Thermal
@@ -343,6 +350,7 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
             spec._netDynamicMotorLoad = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1.5)
             spec.dynamicMotorLoad = spec._netDynamicMotorLoad
             spec.wheelSlipIntensity = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
+            spec.fuelState.wetStackingLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
         end
 
         -- [4] Thermal

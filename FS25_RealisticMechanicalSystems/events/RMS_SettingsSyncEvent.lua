@@ -58,6 +58,8 @@ function RMS_SettingsSyncEvent.new()
     self.drivetrainDiffLockReleaseSpeed = RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED
     self.drivetrainParkBrakeEnabled = RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED
     self.drivetrainParkBrakeAuto   = RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE
+    self.exhaustSmokeEnabled       = RMS_Config.EXHAUST.ENABLED
+    self.exhaustSmokeIntensity     = RMS_Config.EXHAUST.INTENSITY
 
     return self
 end
@@ -105,6 +107,8 @@ function RMS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.drivetrainDiffLockReleaseSpeed or 10)
     streamWriteBool(streamId,    self.drivetrainParkBrakeEnabled ~= false)
     streamWriteBool(streamId,    self.drivetrainParkBrakeAuto ~= false)
+    streamWriteBool(streamId,    self.exhaustSmokeEnabled ~= false)
+    streamWriteFloat32(streamId, self.exhaustSmokeIntensity or 1.0)
 end
 
 
@@ -150,6 +154,8 @@ function RMS_SettingsSyncEvent:readStream(streamId, connection)
     self.drivetrainDiffLockReleaseSpeed = streamReadFloat32(streamId)
     self.drivetrainParkBrakeEnabled = streamReadBool(streamId)
     self.drivetrainParkBrakeAuto   = streamReadBool(streamId)
+    self.exhaustSmokeEnabled       = streamReadBool(streamId)
+    self.exhaustSmokeIntensity     = streamReadFloat32(streamId)
 
     self:run(connection)
 end
@@ -204,6 +210,8 @@ local function applyConfig(event)
     RMS_Config.DRIVETRAIN.DIFFLOCK_AUTO_RELEASE_SPEED       = math.clamp(tonumber(event.drivetrainDiffLockReleaseSpeed) or 10, 10, 40)
     RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED                 = event.drivetrainParkBrakeEnabled ~= false
     RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE               = event.drivetrainParkBrakeAuto ~= false
+    RMS_Config.EXHAUST.ENABLED                              = event.exhaustSmokeEnabled ~= false
+    RMS_Config.EXHAUST.INTENSITY                            = math.clamp(tonumber(event.exhaustSmokeIntensity) or 1.0, 1, 3)
 
     local newConfig = {
         parkVehicle = event.parkVehicle,

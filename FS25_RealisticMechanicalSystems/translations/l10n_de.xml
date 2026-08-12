@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Fahrzeuglebensdauer"/>
         <text name="rms_downtimeWear_label" text="Passiver Verschleiß"/>
         <text name="rms_generalWearEnabled_label" text="Altersbedingter Verschleiß"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Abgasrauch"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Steuert die Abgasfahne nach dem tatsächlichen Motorzustand: schwarz bei Überlast, langem Leerlauf unter geringer Last, verstopftem Ansaugtrakt oder verschlissener Einspritzung, blau wenn ein müder Motor Öl verbrennt, weiß wenn Kraftstoff unverbrannt entweicht. Ältere Maschinen rauchen deutlich stärker als moderne, die kaum rauchen, solange nichts ernsthaft defekt ist."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Rauchintensität"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Skaliert die Sichtbarkeit des Rauchs, ohne seine Ursachen zu verändern. Höhere Werte machen Symptome auch aus der Ferne erkennbar."/>
         <text name="rms_systemStressRate_label" text="Systemstress-Aufbau"/>
         <text name="rms_batteryCapacity_label" text="Batteriekapazität"/>
         <text name="rms_thermalSensitivity_label" text="Thermische Empfindlichkeit"/>

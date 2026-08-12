@@ -57,13 +57,26 @@ local function buildGeneralWearBreakdown(vehicle)
                 --- early stage
                 effect = {
                     id = "ENGINE_TORQUE_MODIFIER",
-                    value = function() 
+                    value = function()
                         local baseEffect = -0.30
                         local condition = systemCondition
                         local multiplier = (1 - condition) ^ 3
                         return baseEffect * multiplier
                     end,
                     aggregation = "sum"
+                }
+                if effect ~= nil then table.insert(effects, effect) end
+
+                --- oil smoke from engine wear
+                effect = {
+                    id = "EXHAUST_OIL",
+                    value = function()
+                        local baseEffect = 0.55
+                        local condition = systemCondition
+                        local multiplier = (1 - condition) ^ 2
+                        return baseEffect * multiplier
+                    end,
+                    aggregation = "max"
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 

@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Jármű élettartama"/>
         <text name="rms_downtimeWear_label" text="Passzív kopás"/>
         <text name="rms_generalWearEnabled_label" text="Életkor miatti kopás"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Kipufogófüst"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="A kipufogófüstöt a motor valós állapota vezérli: fekete túlterhelésnél, hosszan tartó kis terhelésű alapjáratnál, eltömődött szívócsatornánál vagy kopott befecskendezésnél, kék amikor a fáradt motor olajat éget, fehér amikor üzemanyag égetlenül távozik. A régebbi gépek sokkal jobban füstölnek, mint a modernek, amelyek komoly hiba nélkül alig füstölnek."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Füst erőssége"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="A füst láthatóságát állítja, az okait nem. A magasabb értékek távolról is olvashatóvá teszik a tüneteket."/>
         <text name="rms_systemStressRate_label" text="Rendszerterhelés üteme"/>
         <text name="rms_batteryCapacity_label" text="Akkumulátor kapacitása"/>
         <text name="rms_thermalSensitivity_label" text="Hőérzékenység"/>

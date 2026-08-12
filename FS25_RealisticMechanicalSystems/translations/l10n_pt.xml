@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Vida útil do veículo"/>
         <text name="rms_downtimeWear_label" text="Desgaste passivo"/>
         <text name="rms_generalWearEnabled_label" text="Desgaste relacionado à idade"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Fumo do escape"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Comanda o penacho do escape pelo estado real do motor: preto em sobrecarga, após marcha lenta prolongada com pouca carga, admissão entupida ou injeção desgastada, azul quando um motor cansado queima óleo, branco quando o combustível sai por queimar. As máquinas antigas fumegam muito mais do que as modernas, que quase não fumegam enquanto não houver uma avaria séria."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intensidade do fumo"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Ajusta a visibilidade do fumo sem alterar as suas causas. Valores altos tornam os sintomas legíveis à distância."/>
         <text name="rms_systemStressRate_label" text="Taxa de acumulação de esforço"/>
         <text name="rms_batteryCapacity_label" text="Capacidade da bateria"/>
         <text name="rms_thermalSensitivity_label" text="Sensibilidade térmica"/>

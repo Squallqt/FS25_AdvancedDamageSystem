@@ -1082,9 +1082,20 @@ local function updateFuelState(vehicle, dt)
         end
 
         fuelState.idleTimer = idleTimer
+        fuelState.wetStackingLevel = RMS_Exhaust.calculateWetStackingLevel({
+            currentLevel = fuelState.wetStackingLevel,
+            idleTimer = idleTimer,
+            load = motorLoad,
+            dt = dt,
+            engineTemperature = spec.rawEngineTemperature or spec.engineTemperature,
+            isIdle = isIdle,
+            isDiesel = spec.isDieselVehicle,
+            isMotorStarted = true
+        })
     else
         fuelState.currentUsageRatio = 0
         fuelState.temperature = 0
+        fuelState.idleTimer = 0
     end
 end
 

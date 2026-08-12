@@ -161,6 +161,7 @@ function RealisticMechanicalSystems:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#batteryTempC", RealisticMechanicalSystems.sanitizeNumber(spec.batteryTempC, 20, -80, 85))
         xmlFile:setValue(key .. "#radiatorClogging", math.max(spec.radiatorClogging or 0, 0))
         xmlFile:setValue(key .. "#airIntakeClogging", math.max(spec.airIntakeClogging or 0, 0))
+        xmlFile:setValue(key .. "#wetStackingLevel", RealisticMechanicalSystems.sanitizeNumber(spec.fuelState.wetStackingLevel, 0, 0, 1))
         xmlFile:setValue(key .. "#lubricationLevel", math.clamp(spec.lubricationLevel or 1.0, 0.0, 1.0))
         xmlFile:setValue(key .. "#lubricationUsedThisPeriod", spec.lubricationUsedThisPeriod == true)
         xmlFile:setValue(key .. "#thermostatState", RealisticMechanicalSystems.sanitizeNumber(spec.thermostatState, 0.0, 0.0, 1.0))
@@ -312,6 +313,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.startButtonHeld = false
     self.spec_RealisticMechanicalSystems.startButtonUp = false
     RMS_Preheat.initSpec(self)
+    RMS_Exhaust.initSpec(self)
 
     self.spec_RealisticMechanicalSystems.drivetrainActionEvents = {}
     RMS_Drivetrain.initSpec(self)
@@ -656,7 +658,8 @@ function RealisticMechanicalSystems:onLoad(savegame)
         level = 0,
         currentUsageRatio = 0,
         temperature = 0,
-        idleTimer = 0
+        idleTimer = 0,
+        wetStackingLevel = 0
     }
     self.spec_RealisticMechanicalSystems.isHarvesting = false
 
@@ -752,6 +755,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
         spec.batteryTempC = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#batteryTempC", spec.batteryTempC), 20, -80, 85)
         spec.radiatorClogging = math.max(savegame.xmlFile:getValue(key .. "#radiatorClogging", spec.radiatorClogging), 0)
         spec.airIntakeClogging = math.max(savegame.xmlFile:getValue(key .. "#airIntakeClogging", spec.airIntakeClogging), 0)
+        spec.fuelState.wetStackingLevel = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#wetStackingLevel", spec.fuelState.wetStackingLevel), 0, 0, 1)
         spec.lubricationLevel = math.clamp(savegame.xmlFile:getValue(key .. "#lubricationLevel", spec.lubricationLevel), 0.0, 1.0)
         spec.lubricationUsedThisPeriod = savegame.xmlFile:getValue(key .. "#lubricationUsedThisPeriod", true)
         spec.thermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
@@ -1125,6 +1129,9 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     spec._lastSyncServiceProgress_elapsed = spec.pendingProgressElapsedTime
     spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
     spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
+    --- [10] tutorial data
+    spec._lastSyncTutorial_idleTimer = spec.fuelState.idleTimer
+    spec._lastSyncTutorial_fuelLevel = spec.fuelState.level
 
     RMS_Electrical.initVoltagesFromSoc(self)
 

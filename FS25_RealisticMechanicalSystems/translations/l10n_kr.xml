@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="차량 수명"/>
         <text name="rms_downtimeWear_label" text="패시브 마모"/>
         <text name="rms_generalWearEnabled_label" text="노후 마모"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="배기 연기"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="엔진의 실제 상태에 따라 배기 연기를 표현합니다. 과부하, 저부하 장시간 공회전, 흡기 막힘, 분사 장치 마모에서는 검은색, 노후한 엔진이 오일을 태울 때는 파란색, 연료가 연소되지 않고 배출될 때는 흰색으로 나타납니다. 오래된 기계일수록 훨씬 많은 연기를 내며, 최신 기계는 심각한 고장이 없는 한 거의 연기를 내지 않습니다."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="연기 강도"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="연기의 원인은 그대로 두고 가시성만 조절합니다. 값이 높을수록 멀리서도 증상을 알아보기 쉽습니다."/>
         <text name="rms_systemStressRate_label" text="시스템 스트레스율"/>
         <text name="rms_batteryCapacity_label" text="배터리 용량"/>
         <text name="rms_thermalSensitivity_label" text="열 민감도"/>

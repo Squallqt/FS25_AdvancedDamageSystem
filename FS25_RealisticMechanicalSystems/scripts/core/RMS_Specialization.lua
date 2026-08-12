@@ -164,6 +164,7 @@ end
 source(g_currentModDirectory .. "scripts/core/RMS_Thermal.lua")
 source(g_currentModDirectory .. "scripts/core/RMS_Electrical.lua")
 source(g_currentModDirectory .. "scripts/core/RMS_Preheat.lua")
+source(g_currentModDirectory .. "scripts/core/RMS_Exhaust.lua")
 source(g_currentModDirectory .. "scripts/core/RMS_Breakdowns.lua")
 source(g_currentModDirectory .. "scripts/core/RMS_Consumptables.lua")
 source(g_currentModDirectory .. "scripts/core/RMS_Drivetrain.lua")
@@ -398,6 +399,9 @@ function RealisticMechanicalSystems:setRMSUserExcluded(isExcluded, noEventSend)
     refreshExclusionState(spec)
 
     if spec.isExcludedVehicle then
+        if self.isClient then
+            RMS_Exhaust.reset(self)
+        end
         spec.pendingSideNotifications = {}
     else
         spec.lubricationUsedThisPeriod = true
@@ -869,6 +873,7 @@ function RealisticMechanicalSystems.initSpecialization()
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#batteryTempC", "Battery Temperature")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#radiatorClogging", "Radiator clogging level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airIntakeClogging", "Air intake clogging level")
+    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#wetStackingLevel", "Wet stacking deposit level")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lubricationLevel", "Lubrication level")
     schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#lubricationUsedThisPeriod", "Whether the vehicle was used during the current period")
     schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#thermostatState", "Engine Thermostat Position")
@@ -937,6 +942,7 @@ function RealisticMechanicalSystems.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDelete", RealisticMechanicalSystems)
     SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", RealisticMechanicalSystems)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", RealisticMechanicalSystems)
+    SpecializationUtil.registerEventListener(vehicleType, "onPostUpdateTick", RealisticMechanicalSystems)
     SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", RealisticMechanicalSystems)
     SpecializationUtil.registerEventListener(vehicleType, "onReadStream", RealisticMechanicalSystems)
     SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", RealisticMechanicalSystems)
@@ -1878,12 +1884,24 @@ function RealisticMechanicalSystems:onUpdate(dt, ...)
         self:updateThermalSystems(updateDt)
     end
 
+    --- Exhaust smoke colour, opacity and plume size
+    if self.isClient then
+        RMS_Exhaust.update(self, updateDt)
+    end
+
     --- Random and permanent effects from breakdowns. Skip if spec.activeEffects is empty
     if spec ~= nil and spec.activeFunctions ~= nil and next(spec.activeFunctions) ~= nil then
         for _ , func in pairs(spec.activeFunctions) do
             func(self, updateDt)
         end
     end
+end
+
+function RealisticMechanicalSystems:onPostUpdateTick(dt, ...)
+    local spec = self.spec_RealisticMechanicalSystems
+    if not self.isClient or spec.isExcludedVehicle then return end
+
+    RMS_Exhaust.applyShader(self)
 end
 
 function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)

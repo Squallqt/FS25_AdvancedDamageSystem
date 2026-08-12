@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Životnost vozidla"/>
         <text name="rms_downtimeWear_label" text="Pasivní opotřebení"/>
         <text name="rms_generalWearEnabled_label" text="Opotřebení úměrné věku"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Kouř z výfuku"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Řídí výfukový oblak podle skutečného stavu motoru: černý při přetížení, dlouhém volnoběhu s nízkým zatížením, ucpaném sání nebo opotřebeném vstřikování, modrý když unavený motor spaluje olej, bílý když palivo odchází nespálené. Starší stroje kouří výrazně více než moderní, které téměř nekouří, dokud nenastane vážná závada."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intenzita kouře"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Upravuje viditelnost kouře, aniž by měnila jeho příčiny. Vyšší hodnoty usnadňují rozpoznání příznaků z dálky."/>
         <text name="rms_systemStressRate_label" text="Míra namáhání systému"/>
         <text name="rms_batteryCapacity_label" text="Kapacita baterie"/>
         <text name="rms_thermalSensitivity_label" text="Tepelná citlivost"/>

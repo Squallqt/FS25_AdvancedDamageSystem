@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Durata utile del veicolo"/>
         <text name="rms_downtimeWear_label" text="Usura passiva"/>
         <text name="rms_generalWearEnabled_label" text="Usura legata all'età"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Fumo di scarico"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Governa il pennacchio di scarico in base allo stato reale del motore: nero in sovraccarico, dopo un minimo prolungato a basso carico, con presa d'aria ostruita o iniezione usurata, blu quando un motore stanco brucia olio, bianco quando il carburante esce incombusto. Le macchine più vecchie fumano molto più di quelle moderne, che quasi non fumano finché non c'è un guasto serio."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intensità del fumo"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Regola la visibilità del fumo senza modificarne le cause. Valori alti rendono i sintomi leggibili da lontano."/>
         <text name="rms_systemStressRate_label" text="Velocità accumulo stress di sistema"/>
         <text name="rms_batteryCapacity_label" text="Capacità della batteria"/>
         <text name="rms_thermalSensitivity_label" text="Sensibilità termica"/>

@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Vida útil do veículo"/>
         <text name="rms_downtimeWear_label" text="Desgaste passivo"/>
         <text name="rms_generalWearEnabled_label" text="Desgaste relacionado à idade"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Fumaça do escapamento"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Comanda a fumaça do escapamento pelo estado real do motor: preta em sobrecarga, após marcha lenta prolongada com pouca carga, admissão entupida ou injeção gasta, azul quando um motor cansado queima óleo, branca quando combustível sai sem queimar. Máquinas antigas fumaçam muito mais que as modernas, que quase não fumaçam enquanto não há um defeito sério."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intensidade da fumaça"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Ajusta a visibilidade da fumaça sem mudar suas causas. Valores altos deixam os sintomas legíveis de longe."/>
         <text name="rms_systemStressRate_label" text="Velocidade de acúmulo de estresse"/>
         <text name="rms_batteryCapacity_label" text="Capacidade da bateria"/>
         <text name="rms_thermalSensitivity_label" text="Sensibilidade térmica"/>

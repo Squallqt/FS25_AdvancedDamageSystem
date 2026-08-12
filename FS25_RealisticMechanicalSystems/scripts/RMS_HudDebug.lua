@@ -486,6 +486,30 @@ function RMS_Hud:drawActiveVehicleHUD()
         end
     end
 
+    do
+        local smoke = spec.exhaustSmoke
+        local exhaustEffectCount = vehicle.spec_motorized ~= nil and vehicle.spec_motorized.exhaustEffects ~= nil
+            and #vehicle.spec_motorized.exhaustEffects or 0
+        addLine(overviewLines, string.format(
+            "Exhaust: active: %s | nodes: %d | int: %.2f | era: %.2f | stageV: %s | def: %s | wet: %.2f%% | soot: %.2f%% | oil: %.2f%% | unburnt: %.2f%% | alpha: %.2f-%.2f | rgb: %.2f/%.2f/%.2f",
+            tostring(smoke.isActive == true),
+            exhaustEffectCount,
+            RMS_Config.EXHAUST.INTENSITY,
+            smoke.eraFactor,
+            tostring(smoke.isStageV == true),
+            tostring(smoke.hasDEF == true),
+            asPercent(spec.fuelState ~= nil and spec.fuelState.wetStackingLevel or 0),
+            asPercent(smoke.soot),
+            asPercent(smoke.oil),
+            asPercent(smoke.unburnt),
+            smoke.alphaIdle,
+            smoke.alphaFull,
+            smoke.red,
+            smoke.green,
+            smoke.blue
+        ), {1, 1, 1, 1}, 0.95)
+    end
+
     local engineMaxFactor = math.max(
         engineDbg.motorLoadFactor or 0,
         engineDbg.airIntakeCloggingFactor or 0,

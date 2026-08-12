@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Durée de vie du véhicule"/>
         <text name="rms_downtimeWear_label" text="Usure passive"/>
         <text name="rms_generalWearEnabled_label" text="Usure liée à l'âge"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Fumée d'échappement"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Pilote le panache d'échappement selon l'état réel du moteur : noire en surcharge, après un long ralenti à faible charge, avec une admission colmatée ou une injection usée, bleue quand un moteur fatigué brûle de l'huile, blanche quand du carburant part imbrûlé. Les machines anciennes fument bien plus que les modernes, qui ne fument presque pas tant que rien n'est vraiment cassé."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intensité de la fumée"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Ajuste la visibilité de la fumée sans changer ses causes. Des valeurs élevées rendent les symptômes lisibles de loin."/>
         <text name="rms_systemStressRate_label" text="Vitesse d'accumulation du stress"/>
         <text name="rms_batteryCapacity_label" text="Capacité de la batterie"/>
         <text name="rms_thermalSensitivity_label" text="Sensibilité thermique"/>

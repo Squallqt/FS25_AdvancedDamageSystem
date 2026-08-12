@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Термін служби техніки"/>
         <text name="rms_downtimeWear_label" text="Пасивний знос"/>
         <text name="rms_generalWearEnabled_label" text="Віковий знос"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Вихлопний дим"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Задає вихлопний дим за реальним станом двигуна: чорний при перевантаженні, тривалому холостому ході з малим навантаженням, забитому повітрозабірнику чи зношеній паливній апаратурі, синій коли втомлений мотор палить оливу, білий коли пальне виходить незгорілим. Стара техніка димить помітно сильніше за сучасну, яка майже не димить, доки немає серйозної несправності."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Інтенсивність диму"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Змінює помітність диму, не торкаючись його причин. Високі значення дозволяють розпізнавати симптоми здалеку."/>
         <text name="rms_systemStressRate_label" text="Рівень стресу систем"/>
         <text name="rms_batteryCapacity_label" text="Ємність акумулятора"/>
         <text name="rms_thermalSensitivity_label" text="Теплова чутливість"/>

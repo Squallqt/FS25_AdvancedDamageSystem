@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Vehicle Lifespan"/>
         <text name="rms_downtimeWear_label" text="Passive Wear"/>
         <text name="rms_generalWearEnabled_label" text="Age-Related Wear"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Exhaust Smoke"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Drives the exhaust plume from the real state of the engine: black under overload, prolonged low-load idling, a clogged air intake or worn injection, blue when a tired engine burns oil, white when fuel leaves unburnt. Older machines smoke far more than modern ones, which barely smoke at all unless something is seriously wrong."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Smoke Intensity"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Scales how visible the smoke is without changing what causes it. Higher values make symptoms easier to read from a distance."/>
         <text name="rms_systemStressRate_label" text="System Stress Rate"/>
         <text name="rms_batteryCapacity_label" text="Battery Capacity"/>
         <text name="rms_thermalSensitivity_label" text="Thermal Sensitivity"/>

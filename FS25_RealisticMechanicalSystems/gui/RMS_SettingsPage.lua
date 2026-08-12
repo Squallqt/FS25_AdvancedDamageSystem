@@ -27,6 +27,8 @@ local function buildPendingConfigFromRMSConfig()
         baseSystemsWear = RMS_Config.CORE.BASE_SYSTEMS_WEAR,
         downtimeMultiplier = RMS_Config.CORE.DOWNTIME_MULTIPLIER,
         generalWearEnabled = RMS_Config.CORE.GENERAL_WEAR_ENABLED,
+        exhaustSmokeEnabled = RMS_Config.EXHAUST.ENABLED,
+        exhaustSmokeIntensity = RMS_Config.EXHAUST.INTENSITY,
         enableWarningMessages = RMS_Config.CORE.ENABLE_WARNING_MESSAGES,
         systemStressGlobalMultiplier = RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER,
         aiOverloadControl = RMS_Config.CORE.AI_OVERLOAD_AND_OVERHEAT_CONTROL,
@@ -294,6 +296,9 @@ function RMS_SettingsPage.commitPendingConfig(current, pending)
     RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS = pending.aiWorkerTargetStress
     RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED = pending.aiWorkerMinSpeed
 
+    RMS_Config.EXHAUST.ENABLED = pending.exhaustSmokeEnabled
+    RMS_Config.EXHAUST.INTENSITY = pending.exhaustSmokeIntensity
+
     RMS_Config.MAINTENANCE.INSTANT_INSPECTION = pending.instantInspection
     RMS_Config.MAINTENANCE.PARK_VEHICLE = pending.parkVehicle
     RMS_Config.MAINTENANCE.WARRANTY_ENABLED = pending.warrantyEnabled
@@ -435,6 +440,18 @@ function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
         "onGeneralWearEnabledChanged",
         g_i18n:getText("rms_generalWearEnabled_label"),
         g_i18n:getText("rms_generalWearEnabled_tooltip")
+    )
+    page.rmsExhaustSmokeEnabled = RMS_SettingsPage:addBinaryOption(
+        page,
+        "onExhaustSmokeEnabledChanged",
+        g_i18n:getText("rms_exhaustSmokeEnabled_label"),
+        g_i18n:getText("rms_exhaustSmokeEnabled_tooltip")
+    )
+    page.rmsExhaustSmokeIntensity = RMS_SettingsPage:addMultiTextOption(
+        page, "onExhaustSmokeIntensityChanged",
+        RMS_SettingsPage.steps.exhaustSmokeIntensity.texts,
+        g_i18n:getText("rms_exhaustSmokeIntensity_label"),
+        g_i18n:getText("rms_exhaustSmokeIntensity_tooltip")
     )
 
     RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("rms_ws_header_title"))
@@ -841,7 +858,8 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     setIndex(currentPage.rmsAiWorkerTargetStress, steps.aiWorkerTargetStress.values, pending.aiWorkerTargetStress)
     setIndex(currentPage.rmsAiWorkerMinSpeed, steps.aiWorkerMinSpeed.values, pending.aiWorkerMinSpeed)
     setIndex(currentPage.rmsDrivetrainDiffLockReleaseSpeed, steps.diffLockReleaseSpeed.values, pending.drivetrainDiffLockReleaseSpeed)
-    
+    setIndex(currentPage.rmsExhaustSmokeIntensity, steps.exhaustSmokeIntensity.values, pending.exhaustSmokeIntensity)
+
     if tutorialOption ~= nil then
         tutorialOption:setIsChecked(pending.tutorialMode, false, false)
     end
@@ -849,6 +867,7 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     currentPage.rmsParkVehicle:setIsChecked(pending.parkVehicle, false, false)
     currentPage.rmsWarrantyEnabled:setIsChecked(pending.warrantyEnabled, false, false)
     currentPage.rmsGeneralWearEnabled:setIsChecked(pending.generalWearEnabled, false, false)
+    currentPage.rmsExhaustSmokeEnabled:setIsChecked(pending.exhaustSmokeEnabled, false, false)
     currentPage.rmsWarningMessages:setIsChecked(pending.enableWarningMessages, false, false)
     currentPage.rmsAiOverloadAndOverheatControl:setIsChecked(pending.aiOverloadControl, false, false)
     currentPage.rmsAiDisableOnCriticalOverload:setIsChecked(pending.aiDisableOnCriticalOverload, false, false)
@@ -881,6 +900,8 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     currentPage.rmsConditionWear:setDisabled(disableAll)
     currentPage.rmsDowntimeWear:setDisabled(disableAll)
     currentPage.rmsGeneralWearEnabled:setDisabled(disableAll)
+    currentPage.rmsExhaustSmokeEnabled:setDisabled(disableAll)
+    currentPage.rmsExhaustSmokeIntensity:setDisabled(disableAll or not pending.exhaustSmokeEnabled)
 
     currentPage.rmsSystemStressRate:setDisabled(disableAll)
     currentPage.rmsBatteryCapacity:setDisabled(disableAll)
@@ -926,6 +947,18 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
 end
 
 -- --- Callback Handlers --- --
+function RMS_SettingsPage:onExhaustSmokeEnabledChanged(state)
+    getPendingConfig().exhaustSmokeEnabled = (state == BinaryOptionElement.STATE_RIGHT)
+    RMS_SettingsPage.rmsHasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function RMS_SettingsPage:onExhaustSmokeIntensityChanged(state)
+    getPendingConfig().exhaustSmokeIntensity = RMS_SettingsPage.steps.exhaustSmokeIntensity.values[state]
+    RMS_SettingsPage.rmsHasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
 function RMS_SettingsPage:onServiceWearChanged(state)
     getPendingConfig().baseServiceWear = RMS_SettingsPage.steps.serviceWear.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
@@ -1567,6 +1600,11 @@ function RMS_SettingsPage:generateAllSteps()
         end
         self.steps.thermalPower = data
     end
+
+    -- Exhaust Smoke Intensity: 100% to 300%.
+    self.steps.exhaustSmokeIntensity = createSteps(1.0, 9, 0.25, function(v)
+        return string.format("%.0f%%", v * 100)
+    end)
 
     -- Clogging Speed: 10% to 300%
     self.steps.cloggingSpeed = createSteps(0.1, 30, 0.1, function(v)

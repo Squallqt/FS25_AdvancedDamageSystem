@@ -21,7 +21,7 @@ WEAR AND STRESS
 BREAKDOWNS
 - 28 breakdowns spread across the 7 systems, each in four stages from a barely noticeable loss to total failure
 - The type is not random: the mod tracks which wear factors you trigger most and picks the failure your habits earned
-- Stage 1 is silent and shows only through symptoms, RPM fluctuations, dark smoke, knocking, whistling; dashboard indicators light from stage 2
+- Stage 1 is silent and shows only through symptoms, RPM fluctuations, coloured exhaust smoke, knocking, whistling; dashboard indicators light from stage 2
 - Old machines also degrade permanently, losing engine power, transmission bite, battery performance, and cooling efficiency
 
 WORKSHOP
@@ -38,6 +38,7 @@ SIMULATION
 - Engine and CVT thermal models driven by load, ambient temperature, dirt, airflow, and thermostat behaviour that follows production year
 - Battery and alternator modelled as a real circuit, with cold-weather capacity loss, internal resistance, voltage sag, and jumper cables between vehicles
 - Automatic temperature-based diesel preheating with its own glow-plug breakdown
+- Exhaust smoke driven by production year, emission profile, engine wear, load, temperature, prolonged idling and the type of active fault: black soot, blue oil or white unburnt fuel
 - Drivetrain management on tractors: 4x2 / 4WD / AUTO modes, differential locks, and a parking brake
 - Reliability and maintainability per brand and production year, shown in the shop
 - Multiplayer and dedicated server, 15 languages
@@ -63,7 +64,8 @@ Changelog 0.9.3.0 [WIP]:
 - Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C
 - Added automatic temperature-based diesel preheating, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
 - Vehicle exclusions now follow what a machine can actually do instead of its type name; any automatic exclusion can be reverted with rms_setExcluded false, except on electric vehicles
-- Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for RMS]]></en>
+- Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for RMS
+- Added exhaust smoke driven by vehicle age, engine wear, load and active faults]]></en>
 
         <de><![CDATA[Ihre Maschinen verschleißen endlich wie echte.
 
@@ -78,7 +80,7 @@ VERSCHLEISS UND BELASTUNG
 DEFEKTE
 - 28 Defekte über die 7 Systeme verteilt, jeder in vier Stufen vom kaum spürbaren Verlust bis zum Totalausfall
 - Die Art ist nicht zufällig: Der Mod verfolgt, welche Verschleißfaktoren Sie am häufigsten auslösen, und wählt den dazu passenden Ausfall
-- Stufe 1 bleibt stumm und zeigt sich nur über Symptome, schwankende Drehzahl, dunkler Rauch, Klopfen, Pfeifen; Armaturenbrettanzeigen leuchten ab Stufe 2
+- Stufe 1 bleibt stumm und zeigt sich nur über Symptome, schwankende Drehzahl, farbiger Abgasrauch, Klopfen, Pfeifen; Armaturenbrettanzeigen leuchten ab Stufe 2
 - Alte Maschinen bauen zudem dauerhaft ab und verlieren Motorleistung, Kraftübertragung, Batterieleistung und Kühlwirkung
 
 WERKSTATT
@@ -95,6 +97,7 @@ SIMULATION
 - Thermische Modelle für Motor und CVT, getrieben von Last, Außentemperatur, Verschmutzung, Fahrtwind und einem Thermostatverhalten, das dem Baujahr folgt
 - Batterie und Lichtmaschine als echter Stromkreis, mit Kälteverlust, Innenwiderstand, Spannungseinbruch und Starthilfekabeln zwischen Fahrzeugen
 - Automatisches temperaturabhängiges Diesel-Vorglühen mit eigener Glühkerzenstörung
+- Abgasrauch nach Baujahr, Emissionsprofil, Motorverschleiß, Last, Temperatur, langem Leerlauf und Art des aktiven Defekts: schwarzer Ruß, blaues Öl oder weißer unverbrannter Kraftstoff
 - Antriebsstrangverwaltung für Traktoren: Modi 4x2 / Allrad / AUTO, Differentialsperren und Feststellbremse
 - Zuverlässigkeit und Wartungsfreundlichkeit je Marke und Baujahr, im Shop sichtbar
 - Mehrspieler und Dedicated Server, 15 Sprachen
@@ -120,7 +123,8 @@ Changelog 0.9.3.0 [WIP]:
 - CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C
 - Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt, mit Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung
 - Fahrzeugausschlüsse richten sich jetzt nach den tatsächlichen Fähigkeiten einer Maschine statt nach ihrem Typnamen; jeder automatische Ausschluss lässt sich mit rms_setExcluded false aufheben, außer bei Elektrofahrzeugen
-- Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für RMS installiert war]]></de>
+- Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für RMS installiert war
+- Abgasrauch hinzugefügt, gesteuert von Fahrzeugalter, Motorverschleiß, Last und aktiven Defekten]]></de>
         
         <fr><![CDATA[Vos machines s'usent enfin comme les vraies.
 
@@ -135,7 +139,7 @@ USURE ET CONTRAINTE
 PANNES
 - 28 pannes réparties sur les 7 systèmes, chacune en quatre stades, de la perte à peine perceptible à la défaillance totale
 - Le type n'est pas aléatoire : le mod suit les facteurs d'usure que vous déclenchez le plus et choisit la panne que vos habitudes ont préparée
-- Le stade 1 est muet et ne se trahit que par des symptômes, régime instable, fumée noire, cognement, sifflement ; les témoins s'allument à partir du stade 2
+- Le stade 1 est muet et ne se trahit que par des symptômes, régime instable, fumée d'échappement colorée, cognement, sifflement ; les témoins s'allument à partir du stade 2
 - Les machines âgées se dégradent aussi durablement et perdent puissance moteur, transmission, performance de batterie et efficacité de refroidissement
 
 ATELIER
@@ -152,6 +156,7 @@ SIMULATION
 - Modèles thermiques moteur et CVT pilotés par la charge, la température extérieure, la salissure, le flux d'air et un comportement de thermostat qui suit le millésime
 - Batterie et alternateur simulés comme un vrai circuit, avec perte de capacité au froid, résistance interne, chute de tension et câbles de démarrage entre véhicules
 - Préchauffage diesel automatique selon la température, avec sa propre panne de bougies
+- Fumée d'échappement pilotée par le millésime, le profil d'émissions, l'usure moteur, la charge, la température, le ralenti prolongé et le type de panne active : suie noire, huile bleue ou carburant imbrûlé blanc
 - Gestion de transmission sur les tracteurs : modes 4x2 / 4RM / AUTO, blocages de différentiel et frein de parking
 - Fiabilité et facilité d'entretien par marque et par millésime, affichées en boutique
 - Multijoueur et serveur dédié, 15 langues
@@ -177,7 +182,8 @@ Changelog 0.9.3.0 [WIP] :
 - Recalibrage des températures de boîte CVT sur les données réelles d'huile de transmission : le thermostat régule désormais à 85 °C au lieu de 75 °C, et l'usure par surchauffe démarre à 100 °C au lieu de 95 °C
 - Ajout du préchauffage diesel automatique selon la température, avec charge batterie, témoin dédié, didacticiel et panne de bougies en quatre stades
 - Les exclusions de véhicules reposent désormais sur les capacités réelles d'une machine au lieu de son nom de type ; toute exclusion automatique peut être annulée avec rms_setExcluded false, sauf sur les véhicules électriques
-- Les millésimes des véhicules sont désormais déterminés par le mod lui-même ; Vehicle Years n'est plus requis et peut être désinstallé s'il n'était installé que pour RMS]]></fr>
+- Les millésimes des véhicules sont désormais déterminés par le mod lui-même ; Vehicle Years n'est plus requis et peut être désinstallé s'il n'était installé que pour RMS
+- Ajout d'une fumée d'échappement pilotée par l'âge du véhicule, l'usure moteur, la charge et les pannes actives]]></fr>
         
     </description>
     <storeItems>

@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Vida útil del vehículo"/>
         <text name="rms_downtimeWear_label" text="Desgaste pasivo"/>
         <text name="rms_generalWearEnabled_label" text="Desgaste por edad"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Humo de escape"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Controla el penacho de escape según el estado real del motor: negro con sobrecarga, ralentí prolongado a baja carga, admisión obstruida o inyección desgastada, azul cuando un motor cansado quema aceite, blanco cuando el combustible sale sin quemar. Las máquinas antiguas humean mucho más que las modernas, que apenas humean mientras no haya una avería seria."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intensidad del humo"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Ajusta la visibilidad del humo sin cambiar sus causas. Los valores altos permiten distinguir los síntomas desde lejos."/>
         <text name="rms_systemStressRate_label" text="Tasa de estrés del sistema"/>
         <text name="rms_batteryCapacity_label" text="Capacidad de la batería"/>
         <text name="rms_thermalSensitivity_label" text="Sensibilidad térmica"/>

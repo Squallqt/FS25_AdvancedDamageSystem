@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Okres eksploatacji pojazdu"/>
         <text name="rms_downtimeWear_label" text="Naturalne zużycie"/>
         <text name="rms_generalWearEnabled_label" text="Zużycie wynikające z wieku"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Dym z wydechu"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Steruje smugą spalin na podstawie rzeczywistego stanu silnika: czarna przy przeciążeniu, długiej pracy na biegu jałowym z małym obciążeniem, zatkanym wlocie powietrza lub zużytym wtrysku, niebieska gdy zmęczony silnik spala olej, biała gdy paliwo uchodzi niespalone. Starsze maszyny dymią znacznie mocniej niż nowoczesne, które prawie nie dymią, dopóki nie dojdzie do poważnej usterki."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Intensywność dymu"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Skaluje widoczność dymu bez zmiany jego przyczyn. Wyższe wartości ułatwiają odczytanie objawów z daleka."/>
         <text name="rms_systemStressRate_label" text="Wskaźnik obciążenia systemu"/>
         <text name="rms_batteryCapacity_label" text="Pojemność akumulatora"/>
         <text name="rms_thermalSensitivity_label" text="Czułość na temperaturę"/>

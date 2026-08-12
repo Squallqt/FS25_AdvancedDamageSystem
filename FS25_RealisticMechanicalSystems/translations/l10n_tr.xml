@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Aracın Kullanım Ömrü"/>
         <text name="rms_downtimeWear_label" text="Pasif Aşınma"/>
         <text name="rms_generalWearEnabled_label" text="Yaşla İlgili Aşınma"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Egzoz Dumanı"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Egzoz dumanını motorun gerçek durumuna göre belirler: aşırı yükte, düşük yükte uzun süre rölantide, tıkalı hava girişinde veya yıpranmış enjeksiyonda siyah, yorgun bir motor yağ yaktığında mavi, yakıt yanmadan çıktığında beyaz. Eski makineler modern olanlardan çok daha fazla duman atar; modern makineler ciddi bir arıza olmadıkça neredeyse hiç duman çıkarmaz."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Duman Yoğunluğu"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Dumanın nedenlerini değiştirmeden görünürlüğünü ölçekler. Yüksek değerler belirtileri uzaktan okunabilir kılar."/>
         <text name="rms_systemStressRate_label" text="Sistem Stres Oranı"/>
         <text name="rms_batteryCapacity_label" text="Pil Kapasitesi"/>
         <text name="rms_thermalSensitivity_label" text="Termal Hassasiyet"/>

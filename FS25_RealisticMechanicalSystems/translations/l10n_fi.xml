@@ -61,6 +61,10 @@
         <text name="rms_vehicleLifespan_label" text="Ajoneuvon käyttöikä"/>
         <text name="rms_downtimeWear_label" text="Passiivinen kuluminen"/>
         <text name="rms_generalWearEnabled_label" text="Ikääntymiseen liittyvä kuluminen"/>
+        <text name="rms_exhaustSmokeEnabled_label" text="Pakokaasusavu"/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Ohjaa pakokaasupilveä moottorin todellisen kunnon mukaan: musta ylikuormituksessa, pitkän vähäkuormitteisen joutokäynnin jälkeen, tukkeutuneessa ilmanotossa tai kuluneessa ruiskutuksessa, sininen kun väsynyt moottori polttaa öljyä, valkoinen kun polttoaine poistuu palamattomana. Vanhemmat koneet savuavat huomattavasti enemmän kuin uudet, jotka tuskin savuavat ennen kuin jokin on vakavasti rikki."/>
+        <text name="rms_exhaustSmokeIntensity_label" text="Savun voimakkuus"/>
+        <text name="rms_exhaustSmokeIntensity_tooltip" text="Säätää savun näkyvyyttä muuttamatta sen syitä. Suuremmat arvot tekevät oireista helpommin havaittavia kaukaa."/>
         <text name="rms_systemStressRate_label" text="Järjestelmän stressinopeus"/>
         <text name="rms_batteryCapacity_label" text="Akun kapasiteetti"/>
         <text name="rms_thermalSensitivity_label" text="Terminen herkkyys"/>

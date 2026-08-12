@@ -684,7 +684,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 repairPrice = 1.0 * breakdownPriceMultipliers.ECU_MALFUNCTION,
                 effects = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.10, aggregation = "sum"},
-                    { id = "DARK_EXHAUST_EFFECT", value = 0.40, aggregation = "max" },
+                    { id = "EXHAUST_SOOT", value = 0.25, aggregation = "max" },
                 },
                 indicators = {
                     {  
@@ -714,7 +714,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 effects = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.20, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.2, aggregation = "sum" },
-                    { id = "DARK_EXHAUST_EFFECT", value = 0.50, aggregation = "max" }
+                    { id = "EXHAUST_SOOT", value = 0.45, aggregation = "max" }
                 },
                 indicators = {
                     { id = db.ENGINE, color = color.WARNING, switchOn = true, switchOff = false }
@@ -731,7 +731,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.5, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
                     { id = "ENGINE_HARD_START_MODIFIER", value = 2, aggregation = "max", extraData = { timer = 0, status = 'IDLE'}},
-                    { id = "DARK_EXHAUST_EFFECT", value = 1.0, aggregation = "max" }
+                    { id = "EXHAUST_SOOT", value = 0.80, aggregation = "max" }
                 },
                 indicators = {
                     { id = db.ENGINE, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -1094,6 +1094,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 effects = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.10, aggregation = "sum" },
                     { id = "TURBO_WHISTLE_NOISE_EFFECT", value = 0.25, aggregation = "max" },
+                    { id = "EXHAUST_SOOT", value = 0.20, aggregation = "max" },
                 }
             },
             {
@@ -1106,6 +1107,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.25, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.20, aggregation = "sum" },
                     { id = "TURBO_WHISTLE_NOISE_EFFECT", value = 0.35, aggregation = "max" },
+                    { id = "EXHAUST_SOOT", value = 0.40, aggregation = "max" },
+                    { id = "EXHAUST_OIL", value = 0.25, aggregation = "max" },
                 },
                 indicators = {
                     { id = db.ENGINE, color = color.WARNING, switchOn = true, switchOff = false }
@@ -1122,6 +1125,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.40, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
                     { id = "TURBO_WHISTLE_NOISE_EFFECT", value = 0.6, aggregation = "max" },
+                    { id = "EXHAUST_SOOT", value = 0.65, aggregation = "max" },
+                    { id = "EXHAUST_OIL", value = 0.50, aggregation = "max" },
                 },
                 inspection = {
                     { additional = "rms_inspection_hint_turbocharger_malfunction_stage3" },
@@ -1140,6 +1145,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.50, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.60, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
+                    { id = "EXHAUST_SOOT", value = 0.90, aggregation = "max" },
+                    { id = "EXHAUST_OIL", value = 0.70, aggregation = "max" },
                 },
                 inspection = {
                     { additional = "rms_inspection_hint_turbocharger_malfunction_stage4" },
@@ -1257,7 +1264,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.04, aggregation = "sum" },
                     { id = "VALVE_TRAIN_NOISE_EFFECT", value = 0.5, aggregation = "max" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.05, aggregation = "sum" },
-                    
+                    { id = "EXHAUST_OIL", value = 0.20, aggregation = "max" },
                 }
             },
             {
@@ -1270,6 +1277,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.12, aggregation = "sum" },
                     { id = "VALVE_TRAIN_NOISE_EFFECT", value = 0.7, aggregation = "max" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.10, aggregation = "sum" },
+                    { id = "EXHAUST_OIL", value = 0.40, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.3, aggregation = "max", extraData = {timer = 0, duration = 300, status = 'IDLE', amplitude = 0.6, motorLoad = 0.8, cruiseState = 0} }
                 },
                 indicators = {
@@ -1287,6 +1295,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.20, aggregation = "sum" },
                     { id = "VALVE_TRAIN_NOISE_EFFECT", value = 1.0, aggregation = "max" },
+                    { id = "EXHAUST_OIL", value = 0.65, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.15, extraData = {timer = 0, duration = 500, status = 'IDLE', amplitude = 1.0, motorLoad = 0.5, cruiseState = 0}, aggregation = "max" }
                 },
                 indicators = {
@@ -2611,6 +2620,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.4, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 20.0, aggregation = "min" },
                     { id = "ENGINE_HARD_START_MODIFIER", value = 4, aggregation = "max", extraData = { timer = 0, status = 'IDLE'}},
+                    { id = "EXHAUST_UNBURNT", value = 0.20, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.2, aggregation = "max", extraData = {timer = 0, duration = 400, status = 'IDLE', amplitude = 1.0, motorLoad = 0.7, cruiseState = 0} }
                 },
                 indicators = {
@@ -2639,6 +2649,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 1.0, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
                     { id = "ENGINE_HARD_START_MODIFIER", value = 6, aggregation = "max", extraData = { timer = 0, status = 'IDLE'}},
+                    { id = "EXHAUST_UNBURNT", value = 0.30, aggregation = "max" },
+                    { id = "EXHAUST_SOOT", value = 0.15, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.15, aggregation = "max", extraData = {timer = 0, duration = 500, status = 'IDLE', amplitude = 1.0, motorLoad = 0.5, cruiseState = 0} }
                 },
                 indicators = {
@@ -2682,6 +2694,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "IDLE_HUNTING_EFFECT", value = 0.05, aggregation = "max", extraData = { timer = 0, period = 1800, rpmBackup = 0} },
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.08, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.10, aggregation = "sum" },
+                    { id = "EXHAUST_SOOT", value = 0.20, aggregation = "max" },
+                    { id = "EXHAUST_UNBURNT", value = 0.15, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.4, aggregation = "max", extraData = {timer = 0, duration = 300, status = 'IDLE', amplitude = 0.6, motorLoad = 0.9, cruiseState = 0} }
                 }
             },
@@ -2696,6 +2710,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.20, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.25, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 30.0, aggregation = "min" },
+                    { id = "EXHAUST_SOOT", value = 0.40, aggregation = "max" },
+                    { id = "EXHAUST_UNBURNT", value = 0.30, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.3, aggregation = "max", extraData = {timer = 0, duration = 400, status = 'IDLE', amplitude = 0.8, motorLoad = 0.8, cruiseState = 0} }
                 },
                 indicators = {
@@ -2713,6 +2729,8 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.35, aggregation = "sum" },
                     { id = "FUEL_CONSUMPTION_MODIFIER", value = 0.50, aggregation = "sum" },
                     { id = "ENGINE_HARD_START_MODIFIER", value = 6, aggregation = "max", extraData = { timer = 0, status = 'IDLE'}},
+                    { id = "EXHAUST_SOOT", value = 0.70, aggregation = "max" },
+                    { id = "EXHAUST_UNBURNT", value = 0.50, aggregation = "max" },
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.2, aggregation = "max", extraData = {timer = 0, duration = 500, status = 'IDLE', amplitude = 1.0, motorLoad = 0.7, cruiseState = 0} }
                 },
                 indicators = {
@@ -2767,6 +2785,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                      { id = "ENGINE_HESITATION_CHANCE", value = 0.3, aggregation = "max", extraData = {timer = 0, duration = 400, status = 'IDLE', amplitude = 0.7, motorLoad = 0.9, cruiseState = 0} },
                      { id = "ENGINE_TORQUE_MODIFIER", value = -0.06, aggregation = "sum" },
                      { id = "ENGINE_STALLS_CHANCE", value = 30.0, aggregation = "min" },
+                     { id = "EXHAUST_UNBURNT", value = 0.15, aggregation = "max" },
                 }
             },
             { 
@@ -2779,7 +2798,9 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.2, aggregation = "max", extraData = {timer = 0, duration = 500, status = 'IDLE', amplitude = 0.7, motorLoad = 0.9, cruiseState = 0} },
                     { id = "ENGINE_TORQUE_MODIFIER", value = -0.1, aggregation = "sum" },
                     { id = "ENGINE_STALLS_CHANCE", value = 20.0, aggregation = "min" },
-                } 
+                    { id = "EXHAUST_UNBURNT", value = 0.25, aggregation = "max" },
+                    { id = "EXHAUST_SOOT", value = 0.15, aggregation = "max" },
+                }
             },
             { 
                 severity = "rms_breakdowns_severity_critical",
@@ -2825,7 +2846,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.3, aggregation = "max", extraData = {timer = 0, duration = 300, status = 'IDLE', amplitude = 0.6, motorLoad = 0.5, cruiseState = 0} },
                     { id = "ENGINE_HARD_START_MODIFIER", value = 2, aggregation = "max", extraData = { timer = 0, status = 'IDLE', count = 0}},
                     { id = "ENGINE_STALLS_CHANCE", value = 20.0, aggregation = "min" },
-                    
+                    { id = "EXHAUST_UNBURNT", value = 0.20, aggregation = "max" },
                 }
             },
             {
@@ -2838,6 +2859,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "ENGINE_HESITATION_CHANCE", value = 0.2, aggregation = "max", extraData = {timer = 0, duration = 500, status = 'IDLE', amplitude = 0.7, motorLoad = 0.5, cruiseState = 0} },
                     { id = "ENGINE_HARD_START_MODIFIER", value = 3, aggregation = "max", extraData = {timer = 0, status = 'IDLE'}},
                     { id = "ENGINE_STALLS_CHANCE", value = 10.0, aggregation = "min" },
+                    { id = "EXHAUST_UNBURNT", value = 0.35, aggregation = "max" },
                 }
             },
             {

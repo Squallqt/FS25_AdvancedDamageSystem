@@ -581,6 +581,94 @@ RMS_Config = {
         PARKBRAKE_AUTO_MODE = true
     },
 
+    -- ====================================================================================
+    -- EXHAUST SMOKE PARAMETERS
+    -- Colour and opacity of the exhaust effect, driven by three smoke channels.
+    -- ====================================================================================
+    EXHAUST = {
+        ENABLED = true,
+        INTENSITY = 1.0,
+
+        -- Smoke tints, mixed by channel intensity over the healthy base colour.
+        SOOT_TINT = {0.020, 0.020, 0.025},
+        OIL_TINT = {0.050, 0.090, 0.350},
+        UNBURNT_TINT = {0.980, 0.980, 0.980},
+        HEALTHY_TINT = {0.550, 0.560, 0.580},
+
+        -- Exponent applied to the healthy weight, above 1 the tint takes over faster.
+        TINT_CONCENTRATION = 2.0,
+
+        -- Shader alpha at idle and at maximum rpm, from a healthy engine to fully saturated smoke.
+        HEALTHY_ALPHA_IDLE = 0.10,
+        HEALTHY_ALPHA_FULL = 0.40,
+        SATURATED_ALPHA_IDLE = 4.00,
+        SATURATED_ALPHA_FULL = 10.00,
+
+        -- A healthy plume is reduced by the emission era and by the available fuel profile metadata.
+        DEF_HEALTHY_ALPHA_FACTOR = 0.10,
+        METHANE_HEALTHY_ALPHA_FACTOR = 0.05,
+        METHANE_SOOT_FACTOR = 0.10,
+
+        -- Fault smoke is less dense at idle and reaches full density under load.
+        LOAD_DENSITY_IDLE_FACTOR = 0.65,
+
+        -- Channel smoothing time constants in milliseconds.
+        RISE_TAU = 250,
+        FALL_TAU = 1200,
+
+        -- Share of the nominal era factor kept by fault smoke on a recent machine.
+        ERA_BREAKDOWN_FLOOR = 0.60,
+
+        -- EU non-road emission eras. The factor applies to normal smoke.
+        ERA_FACTORS = {
+            {2001, 1.00},
+            {2006, 0.75},
+            {2011, 0.55},
+            {2014, 0.40},
+            {9999, 0.30}
+        },
+
+        -- Stage V particulate control is inferred only where year and engine power support it.
+        STAGE_V = {
+            OUTER_POWER_YEAR = 2019,
+            MID_POWER_YEAR = 2020,
+            MIN_POWER_KW = 19,
+            MID_POWER_MIN_KW = 56,
+            MID_POWER_MAX_KW = 130,
+            MAX_POWER_KW = 560,
+            SOOT_FACTOR = 0.15,
+            HEALTHY_ALPHA_FACTOR = 0.15
+        },
+        SOOT = {
+            LOAD_THRESHOLD = 0.80,
+            LOAD_FULL = 1.05,
+            LOAD_MAX = 0.35,
+            WET_STACKING_MAX = 0.35,
+            TRANSIENT_LOAD_RATE = 1.2,
+            TRANSIENT_MAX = 0.50,
+            AIR_INTAKE_KNEE = 0.50,
+            AIR_INTAKE_MAX = 0.30,
+            SERVICE_THRESHOLD = 0.50,
+            SERVICE_MAX = 0.10,
+            BREAKDOWN_MAX = 1.00
+        },
+
+        OIL = {
+            IDLE_LOAD_THRESHOLD = 0.30,
+            IDLE_BOOST = 1.60,
+            BREAKDOWN_MAX = 1.00
+        },
+
+        UNBURNT = {
+            COLD_THRESHOLD_C = 50,
+            COLD_FULL_C = -10,
+            COLD_MAX = 0.50,
+            CRANKING_BOOST = 2.00,
+            PREHEAT_FAULT_MAX = 0.40,
+            BREAKDOWN_MAX = 1.00
+        }
+    },
+
     PREHEAT = {
         LAMP_TEST_DURATION_MS = 1000,
         MAX_AUTOMATIC_CRANK_MS = 10000,
@@ -1007,6 +1095,10 @@ function RMS_Config.saveToXMLFile()
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED", RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED)
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO",    RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE)
 
+    -- EXHAUST
+    setXMLBool (xmlFile, root .. ".EXHAUST_SMOKE_ENABLED",   RMS_Config.EXHAUST.ENABLED)
+    setXMLFloat(xmlFile, root .. ".EXHAUST_SMOKE_INTENSITY", RMS_Config.EXHAUST.INTENSITY)
+
     -- DEBUG
     setXMLBool (xmlFile, root .. ".DEBUG_MODE",             RMS_Config.DEBUG)
 
@@ -1193,6 +1285,13 @@ function RMS_Config.loadFromXMLFile()
 
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO")
     if v ~= nil then RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = v end
+
+    -- EXHAUST
+    v = getXMLBool(xmlFile, root .. ".EXHAUST_SMOKE_ENABLED")
+    if v ~= nil then RMS_Config.EXHAUST.ENABLED = v end
+
+    v = getXMLFloat(xmlFile, root .. ".EXHAUST_SMOKE_INTENSITY")
+    if v ~= nil then RMS_Config.EXHAUST.INTENSITY = math.clamp(v, 1, 3) end
 
     -- DEBUG
     v = getXMLBool(xmlFile, root .. ".DEBUG_MODE")

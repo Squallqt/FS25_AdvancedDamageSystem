@@ -52,9 +52,23 @@ Cold-engine and cold-shock factors do not apply to AI workers.
 
 Breakdown probability depends entirely on how close a system's Stress is to its Condition. Condition also sets the chance of a **critical** failure, one that appears straight at stage 4 and skips the rest. The type is not random: the mod tracks which wear factors have been active most and picks the failure that history makes most likely.
 
-Most breakdowns run through four stages, **Minor**, **Moderate**, **Major**, and **Critical**, each costing more to repair than the last. Progression is context-dependent; some faults only worsen while the machine performs the work that causes them. Modern vehicles get dashboard indicators from stage 2, but stage 1 is silent and only shows itself through symptoms: fluctuating RPM, dark smoke, knocking, squealing. Catching one there costs almost nothing.
+Most breakdowns run through four stages, **Minor**, **Moderate**, **Major**, and **Critical**, each costing more to repair than the last. Progression is context-dependent; some faults only worsen while the machine performs the work that causes them. Modern vehicles get dashboard indicators from stage 2, but stage 1 is silent and only shows itself through symptoms: fluctuating RPM, coloured exhaust smoke, knocking, squealing. Catching one there costs almost nothing.
 
 Beyond individual failures, low Condition triggers a permanent **General Wear and Tear** effect: an old machine loses engine power, transmission bite, battery performance, and cooling efficiency even with nothing formally broken.
+
+### Reading the smoke
+
+The exhaust plume is a real diagnostic channel, not decoration. Its colour comes from three mixed sources, its density from how bad things are.
+
+| Colour | What it means | Usual causes |
+| --- | --- | --- |
+| Black | Too much fuel for the available air | Overload, clogged air intake, worn turbocharger, failing injectors, ECU fault |
+| Blue | The engine is burning its own oil | Worn engine at low Condition, leaking turbocharger seals, valve train wear |
+| White | Fuel leaving the engine unburnt | Cold engine, failed glow plugs, failing injection or a starving fuel system |
+
+Production year matters as much as condition. With the same fault, an older machine always smokes more, and a recent one running AdBlue shows almost nothing until something actually breaks. Working under load thickens the plume and can blacken it on its own, while engine speed only changes how large it looks.
+
+Leaving a diesel idling also leaves its mark. Past a long idle under `30%` load, unburnt carbon builds up and darkens the plume. The deposit survives an engine stop and a save, then burns off only once the engine is warm and working under load.
 
 <details>
 <summary><strong>Full breakdown list</strong></summary>
@@ -116,7 +130,9 @@ Every brand carries two ratings based on its real-world reputation, both shown i
 - **Reliability** slows Condition loss, lowers base breakdown probability, and lengthens service intervals. Premium European and American brands generally rate higher than budget or older Eastern European ones.
 - **Maintainability** cuts the money and time of every workshop operation and improves how much an overhaul recovers. Simple older machines usually beat modern electronics-heavy ones.
 
-Vehicles also age: production year drives thermostat behaviour, overheat protection, and which breakdowns can occur at all.
+Vehicles also age: production year drives thermostat behaviour, overheat protection, how much the machine smokes, and which breakdowns can occur at all.
+
+Two settings cover the exhaust: `Exhaust Smoke` turns the model on or off, and `Smoke Intensity` scales opacity from `100%` to `300%` without changing the calculated causes or colours. Turning the model off restores the vehicle's native values.
 
 ## Thermal Model
 
@@ -153,7 +169,7 @@ If a battery is too flat to start, jumper cables link both vehicles into a share
 ### Reading the warning signs
 
 1. Watch the dashboard indicators, which light from stage 2 on modern vehicles.
-2. Listen for knocking, whistling, and grinding, and look for smoke or unstable RPM; stage 1 is otherwise silent.
+2. Listen for knocking, whistling, and grinding, and read the exhaust: black means the engine is choking on fuel it cannot burn, blue means it is burning oil, white means fuel is leaving the engine unburnt. Stage 1 is otherwise silent.
 3. Run a pre-shift inspection when something feels off, then a workshop inspection if it does not clear.
 4. Repair early. A stage 1 fault costs a fraction of a critical one.
 
@@ -198,6 +214,7 @@ For testing and debugging. Most require you to be inside a vehicle that supports
 
 ### v0.9.3.0 [WIP]
 
+- Added exhaust smoke driven by vehicle age, engine wear, load and active faults
 - Fixed and improved translations
 - Added drivetrain management for tractors: 4x2 / 4WD / AUTO drive modes and differential locks, with key bindings, a HUD indicator, and settings
 - Turning on hard ground with locked differentials now damages the transmission
