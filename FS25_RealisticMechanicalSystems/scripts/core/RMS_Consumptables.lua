@@ -88,10 +88,9 @@ function RMS_Consumptables:updateRadiatorClogging(dt)
     local wetnessFactor = math.max(baseWetnessFactor ^ 3, 0)
     local isOnField = self:getIsOnField()
     local hasDust = isOnField and spec.isImplementLowered and lastSpeed > 0.1
-    local hasDebris = spec.isHarvesting
     local fieldFactor = 0.5
     local dustFactor = hasDust and 1.0 or 0.0
-    local debrisFactor = hasDebris and 2.0 or 0.0
+    local debrisFactor = spec.hasDebris and 2.0 or 0.0
 
     if washableSpec ~= nil then
         fieldFactor = isOnField and (washableSpec.fieldMultiplier or 1.0) or 0.5
@@ -105,7 +104,7 @@ function RMS_Consumptables:updateRadiatorClogging(dt)
     dbg.baseWetnessFactor = baseWetnessFactor
     dbg.isOnField = isOnField
     dbg.hasDust = hasDust
-    dbg.hasDebris = hasDebris
+    dbg.hasDebris = spec.hasDebris
     dbg.totalMultiplier = 0.0
 
     if lastSpeed > 0.5 and spec.radiatorClogging < dirtLevel then
@@ -166,10 +165,9 @@ function RMS_Consumptables:updateAirIntakeClogging(dt)
     local wetnessFactor = baseWetnessFactor
     local isOnField = self:getIsOnField()
     local hasDust = isOnField and spec.isImplementLowered and lastSpeed > 0.1
-    local hasDebris = spec.isHarvesting
     local fieldFactor = 1.0
     local dustFactor = hasDust and 2.0 or 0.0
-    local debrisFactor = hasDebris and 1.0 or 0.0
+    local debrisFactor = spec.hasDebris and 1.0 or 0.0
 
     if washableSpec ~= nil then
         fieldFactor = isOnField and (washableSpec.fieldMultiplier or 2.0) or 1.0
@@ -183,7 +181,7 @@ function RMS_Consumptables:updateAirIntakeClogging(dt)
     dbg.baseWetnessFactor = baseWetnessFactor
     dbg.isOnField = isOnField
     dbg.hasDust = hasDust
-    dbg.hasDebris = hasDebris
+    dbg.hasDebris = spec.hasDebris
     dbg.totalMultiplier = 0.0
 
     if lastSpeed > 0.5 and spec.airIntakeClogging < dirtLevel then

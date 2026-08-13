@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="변속기 서모스탷"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="유압 펌프"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="유압 실린더"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="PTO 클러치"/>
         <text name="rms_breakdowns_part_brake_system" text="브레이크 시스템"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="휠 베어링"/>
         <text name="rms_breakdowns_part_steering_linkage" text="스티어링 링케이지"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="유압 실린더 심각한 내부 누설. 작동이 느리고 힘이 없으며 기구가 부하를 견디지 못하고 처집니다."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="치명적인 유압 실린더 내부 누설. 유압 이동 기능을 상실했고 부하 유지가 불가능합니다."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="유압 실린더 누설 치명적"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="PTO 클러치 슬립. PTO로 전달되는 토크가 줄어들고 부하 시 차단될 수 있습니다."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="보통 수준의 PTO 클러치 슬립. 토크가 현저히 줄어들고 부하 시 자동 차단이 빈번하게 발생합니다."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="심각한 PTO 클러치 슬립. 가용 토크가 대폭 감소하여 장비의 안정적인 작동이 불가능합니다."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="치명적인 PTO 클러치 고장. 토크 전달이 상실되어 작동할 수 없습니다."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="PTO 고장"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="휠 허브 베어링 마모. 소음과 진동이 발생하며 최고 속도가 약간 제한되고 구름 저항이 늘어납니다."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="휠 허브 베어링 보통 마모. 소음과 진동이 뚜렷하며 속도가 줄고 구동계 부하가 증가합니다."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="휠 허브 베어링 심각한 마모. 강한 진동과 대폭적인 속도 감소가 발생하며 베어링 고착 소음이 들릴 수 있습니다."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="이동식"/>
         <text name="rms_spec_system_engine" text="엔진"/>
         <text name="rms_spec_system_transmission" text="변속기"/>
-        <text name="rms_spec_system_hydraulics" text="유압 / PTO"/>
+        <text name="rms_spec_system_hydraulics" text="유압"/>
         <text name="rms_spec_system_cooling" text="냉각 시스템"/>
         <text name="rms_spec_system_electrical" text="전기 시스템"/>
         <text name="rms_spec_system_chassis" text="섀시"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="이 작업기는 %s 차량에 너무 무거운 것 같습니다. 유압 시스템이 한계까지 일하고 있으며, 이는 수명에 부정적인 영향을 줍니다.&#10;&#10;간단한 기준을 따르세요. 작업기 무게는 차량 자체 중량의 60%%를 넘지 않아야 합니다."/>
         <text name="rms_tutorial_cold_engine_title" text="차량 예열하기"/>
         <text name="rms_tutorial_cold_engine_message" text="작업에 투입하기 전에 항상 차량을 예열하세요. 엔진뿐만 아니라 다른 여러 부품들도 예열 시간이 필요합니다. 유압 오일, CVT 변속기, 심지어 연료 온도까지도 그렇습니다. 특히 혹한기에는 더욱 그렇습니다. 차가운 상태로 차량을 운행하면 여러 시스템에 문제가 생길 수 있습니다.&#10;&#10;엔진 온도가 50도(122°F)를 넘으면 모든 것이 충분히 예열된 것이며 차량을 안전하게 사용할 수 있습니다."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="PTO 각도 과다"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="주의하세요. 차량과 작업기 사이의 PTO 각도가 너무 큽니다. 프로펠러 샤프트가 강한 맥동과 함께 작동하기 시작하고, 진동이 증가하며 마모가 빠르게 쌓입니다.&#10;&#10;각도를 30도 이하로 유지하고, 급회전이나 두렁 끝 선회 시에는 가능하면 PTO를 해제하세요."/>
         <text name="rms_tutorial_overload_indicator_title" text="과부하 경고"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s에 큰 부하가 걸리고 있습니다. 방금 계기판에 켜진 경고등이 이를 알려주고 있습니다.&#10;&#10;현재 작업에 필요한 힘이 이 기계에 부족할 수 있습니다. 부하를 줄여 보세요. 크루즈 컨트롤로 속도를 제한하거나, 최대 출력으로 계속 밀어붙이기보다는 스로틀을 조금 줄이세요."/>
         <text name="rms_tutorial_engine_overload_title" text="엔진 과부하"/>

@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostato de la transmisión"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Bomba hidráulica"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Cilindro hidráulico"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Embrague TDF"/>
         <text name="rms_breakdowns_part_brake_system" text="Sistema de frenos"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Rodamiento de rueda"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Dirección"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Fuga interna severa en un cilindro hidráulico. El accionamiento hidráulico es lento y débil, y los implementos acoplados no pueden mantener la posición de manera fiable bajo carga."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Fuga interna crítica en un cilindro hidráulico. El movimiento hidráulico está casi perdido y ya no es posible mantener la carga."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Fuga de cilindro hidráulico crítica"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Deslizamiento del embrague TDF. La transmisión de par a través de la TDF se reduce y la TDF puede desacoplarse bajo carga."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Deslizamiento moderado del embrague TDF. La transmisión de par a través de la TDF se reduce significativamente y el desacoplamiento automático de la TDF bajo carga ocurre con frecuencia."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Deslizamiento severo del embrague TDF. El par utilizable de la TDF está muy reducido y no se puede garantizar la operación estable de los equipos accionados por TDF."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Fallo crítico del embrague TDF. La transmisión de par a través de la TDF se pierde y la operación de la TDF no es posible."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Fallo de TDF"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Desgaste del rodamiento del cubo de la rueda. Hay ruido y vibración del rodamiento, la velocidad máxima está ligeramente limitada y la resistencia a la rodadura aumenta."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Desgaste moderado del rodamiento del cubo de la rueda. El ruido y la vibración del rodamiento son pronunciados, la velocidad máxima se reduce y la carga del tren motriz aumenta."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Desgaste severo del rodamiento del cubo de la rueda. La vibración es fuerte, la velocidad máxima se reduce significativamente, la carga del tren motriz se eleva y puede ocurrir ruido de agarrotamiento."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Móvil"/>
         <text name="rms_spec_system_engine" text="Motor"/>
         <text name="rms_spec_system_transmission" text="Transmisión"/>
-        <text name="rms_spec_system_hydraulics" text="Hidráulica / TDF"/>
+        <text name="rms_spec_system_hydraulics" text="Hidráulica"/>
         <text name="rms_spec_system_cooling" text="Sistema de Refrigeración"/>
         <text name="rms_spec_system_electrical" text="Sistema Eléctrico"/>
         <text name="rms_spec_system_chassis" text="Chasis"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Parece que este implemento es demasiado pesado para tu %s. La hidráulica está trabajando al límite, y eso afectará negativamente a su vida útil.&#10;&#10;Sigue una regla sencilla: el peso del implemento no debería superar el 60%% del propio peso del vehículo."/>
         <text name="rms_tutorial_cold_engine_title" text="Calienta tu máquina"/>
         <text name="rms_tutorial_cold_engine_message" text="Calienta siempre tu máquina antes de ponerla a trabajar. Además del motor, hay muchas otras partes que también necesitan tiempo para calentarse: el aceite hidráulico, la transmisión CVT e incluso la temperatura del combustible, especialmente en tiempo de heladas. Trabajar con la máquina en frío puede causar problemas en varios sistemas.&#10;&#10;Si la temperatura del motor supera los 50 grados (122°F), todo estará ya correctamente calentado y la máquina podrá usarse con seguridad."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Ángulo de la TDF demasiado pronunciado"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Cuidado: el ángulo de la TDF entre tu máquina y el implemento es demasiado grande. El eje cardán empieza a trabajar con pulsaciones fuertes, aumentan las vibraciones y el desgaste crece rápidamente.&#10;&#10;Mantén el ángulo por debajo de 30 grados e intenta desconectar la TDF en giros cerrados y maniobras en cabecera."/>
         <text name="rms_tutorial_overload_indicator_title" text="Aviso de sobrecarga"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s está trabajando bajo una carga elevada. El testigo de advertencia que acaba de encenderse en el salpicadero te lo está indicando.&#10;&#10;Puede que la máquina no tenga suficiente potencia para la tarea actual. Intenta reducir la carga: limita la velocidad con el control de crucero o afloja el acelerador en lugar de trabajar a plena potencia."/>
         <text name="rms_tutorial_engine_overload_title" text="Sobrecarga del motor"/>

@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Vaihteiston termostaatti"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulipumppu"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulisylinteri"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Voimanottokytkin"/>
         <text name="rms_breakdowns_part_brake_system" text="Jarrujärjestelmä"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Pyörän laakeri"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Ohjausvarsisto"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vakava sisäinen vuoto hydraulisylinterissä. Hydraulinen toimilaite on hidas ja heikko, eivätkä kiinnitetyt laitteet pysty luotettavasti pitämään asentoaan kuormituksessa."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kriittinen sisäinen vuoto hydraulisylinterissä. Hydraulinen liike on lähes lakannut eikä kuorman pitäminen ole enää mahdollista."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Hydraulisylinterin vuoto kriittistä"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Voimanoton kytkimen luistaminen. Vääntömomentin siirto voimanoton kautta on alentunut ja voimanotto saattaa irrota kuormituksessa."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Kohtalainen voimanoton kytkimen luistaminen. Vääntömomentin siirto voimanoton kautta on merkittävästi alentunut ja automaattinen voimanoton irrottaminen kuormituksessa tapahtuu usein."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Vakava voimanoton kytkimen luistaminen. Käyttökelpoinen voimanoton vääntömomentti on voimakkaasti alentunut eikä voimanoton käyttämien laitteiden vakaa toiminta ole taattua."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Kriittinen voimanoton kytkimen vaurio. Vääntömomentin siirto voimanoton kautta on lakannut eikä voimanoton käyttö ole mahdollista."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Voimanoton vaurio"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Pyörän navan laakerin kuluminen. Laakerin melu ja tärinä ovat läsnä, maksimaalinen nopeus on hieman rajoittunut ja vierintävastus on lisääntynyt."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Kohtalainen pyörän navan laakerin kuluminen. Laakerin melu ja tärinä ovat voimakkaita, maksimaalinen nopeus on alentunut ja voimansiirron kuorma on lisääntynyt."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Vakava pyörän navan laakerin kuluminen. Tärinä on voimakasta, maksimaalinen nopeus on merkittävästi alentunut, voimansiirron kuorma on kohonnut ja jumiutumismelua voi esiintyä."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Liikkuva"/>
         <text name="rms_spec_system_engine" text="Moottori"/>
         <text name="rms_spec_system_transmission" text="Vaihteisto"/>
-        <text name="rms_spec_system_hydraulics" text="Hydrauliikka / Voimanotto"/>
+        <text name="rms_spec_system_hydraulics" text="Hydrauliikka"/>
         <text name="rms_spec_system_cooling" text="Jäähdytysjärjestelmä"/>
         <text name="rms_spec_system_electrical" text="Sähköjärjestelmä"/>
         <text name="rms_spec_system_chassis" text="Alusta"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Näyttää siltä, että tämä laite on liian raskas %s:lle. Hydrauliikka toimii äärirajoillaan, mikä vaikuttaa negatiivisesti sen käyttöikään.&#10;&#10;Noudata yksinkertaista sääntöä: kiinnitteen paino ei saa ylittää 60%% ajoneuvon omasta painosta."/>
         <text name="rms_tutorial_cold_engine_title" text="Lämmitä koneesi"/>
         <text name="rms_tutorial_cold_engine_message" text="Lämmitä koneesi aina ennen töihin ryhtymistä. Moottorin lisäksi on monia muita osia, jotka tarvitsevat lämmitysajan: hydrauliöljy, CVT-vaihteisto ja jopa polttoaineen lämpötila — erityisesti pakkassäällä. Koneen käyttäminen kylmänä voi aiheuttaa ongelmia useissa järjestelmissä.&#10;&#10;Jos moottorin lämpötila on yli 50 astetta, kaikki on kunnolla lämmennyt ja konetta voidaan käyttää turvallisesti."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Voimanoton kulma liian suuri"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Ole varovainen: voimanoton kulma koneen ja laitteen välillä on liian suuri. Nivelakseli alkaa toimia voimakkailla pulssaatioilla, tärinä lisääntyy ja kuluminen kasvaa nopeasti.&#10;&#10;Pidä kulma alle 30 asteen ja yritä irrottaa voimanotto teräskääntöjen ja pääkäännösten aikana."/>
         <text name="rms_tutorial_overload_indicator_title" text="Ylikuormitusvaroitus"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s on raskaassa kuormituksessa. Kojelaudalle äsken syttynyt varoitusvalo kertoo sinulle tästä.&#10;&#10;Koneessa ei ehkä ole tarpeeksi tehoa nykyiseen tehtävään. Yritä vähentää kuormaa: rajoita nopeuttasi vakionopeussäätimellä tai hellitä kaasua täysitehon ajamisen sijaan."/>
         <text name="rms_tutorial_engine_overload_title" text="Moottorin ylikuormitus"/>

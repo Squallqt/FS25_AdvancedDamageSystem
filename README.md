@@ -40,7 +40,7 @@ Four factors apply to every system: **overdue service**, **an active breakdown i
 | --- | --- |
 | **Engine** | Load above `90%`; air intake clogged past `50%`; cold running below `50C` at high RPM load; overheating above `95C` under load |
 | **Transmission** | Sustained pull above `85%` load, building over `90` seconds; lugging (high load, low RPM); wheel slip above `5%` under `20 km/h`; heavy trailer below `10 hp/t` (`6 hp/t` for trucks); on CVT, cold oil below `45C` and overheating above `100C` |
-| **Hydraulics** | Active work under load; lifted mass above `60%` of vehicle mass; cold oil below `30C`; PTO angle beyond `30` degrees |
+| **Hydraulics** | Active work under load; lifted mass above `60%` of vehicle mass; cold oil below `30C` |
 | **Cooling** | Thermostat effort above `85%`; engine above `95C`; cold shock below `50C` at high RPM load |
 | **Electrical** | Lights on; rain, snow, or hail on an outdoor vehicle; starter cranking; engine above `95C` |
 | **Chassis** | Vibration over rough ground at speed; steering load under `4 km/h`; braking above `2 km/h` while towing |
@@ -91,7 +91,6 @@ Leaving a diesel idling also leaves its mark. Past a long idle under `30%` load,
 | Transmission Thermostat Malfunction | CVT | Oil never reaches correct temperature |
 | Hydraulic Pump Malfunction | Hydraulic vehicles from `1960+` | Hydraulic system inoperable |
 | Hydraulic Cylinder Internal Leak | Hydraulic vehicles from `1960+` | Movement almost lost, no load holding |
-| PTO Clutch Slip | PTO-capable | PTO operation impossible |
 | Brake Malfunction | Wheeled | Braking impossible |
 | Bearing Wear | Wheeled | Wheel rotation blocked |
 | Steering Linkage Wear | Wheeled without tracks | Directional control unsafe |

@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostato da transmissão"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Bomba hidráulica"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Cilindro hidráulico"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Embreagem da TDP"/>
         <text name="rms_breakdowns_part_brake_system" text="Sistema de freio"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Rolamento da roda"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Braçagem da direção"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vazamento interno severo do cilindro hidráulico. A força hidráulica cai drasticamente, a retenção de carga se torna pouco confiável e a operação é gravemente degradada."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Falha crítica do cilindro hidráulico. A pressão interna não pode mais ser mantida e a operação hidráulica normal é impossível."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Falha no cilindro hidráulico"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Deslizamento leve da embreagem da TDP. Uma pequena parte da potência é perdida durante a transferência para a ferramenta."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Deslizamento moderado da embreagem da TDP. A transmissão de potência torna-se notavelmente menos eficiente sob carga."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Deslizamento severo da embreagem da TDP. A transferência de potência é bastante reduzida e a operação da ferramenta se torna instável."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Falha crítica da embreagem da TDP. A TDP não pode mais transmitir potência corretamente."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Deslizamento da embreagem da TDP"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Desgaste leve dos rolamentos. A resistência mecânica aumenta ligeiramente e um ruído de operação incomum pode aparecer."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Desgaste moderado dos rolamentos. O atrito aumenta notavelmente, o ruído torna-se mais pronunciado e a eficiência mecânica diminui."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Desgaste severo dos rolamentos. O atrito é alto, o ruído é significativo e existe um risco real de travamento sob carga."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Móvel"/>
         <text name="rms_spec_system_engine" text="Motor"/>
         <text name="rms_spec_system_transmission" text="Transmissão"/>
-        <text name="rms_spec_system_hydraulics" text="Hidráulica / TDP"/>
+        <text name="rms_spec_system_hydraulics" text="Hidráulica"/>
         <text name="rms_spec_system_cooling" text="Sistema de arrefecimento"/>
         <text name="rms_spec_system_electrical" text="Sistema elétrico"/>
         <text name="rms_spec_system_chassis" text="Chassi"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Parece que este implemento está pesado demais para o seu %s. A hidráulica está trabalhando no limite, e isso vai afetar negativamente sua vida útil.&#10;&#10;Siga uma regra simples: o peso do implemento não deve exceder 60%% do peso próprio do veículo."/>
         <text name="rms_tutorial_cold_engine_title" text="Aqueça sua máquina"/>
         <text name="rms_tutorial_cold_engine_message" text="Sempre aqueça sua máquina antes de colocá-la para trabalhar. Além do motor, há várias outras partes que também precisam de tempo para aquecer: o óleo hidráulico, a transmissão CVT e até a temperatura do combustível, especialmente em tempo de geada. Operar a máquina fria pode causar problemas em vários sistemas.&#10;&#10;Se a temperatura do motor estiver acima de 50 graus (122°F), tudo já está aquecido adequadamente e a máquina pode ser usada com segurança."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Ângulo da TDP muito acentuado"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Cuidado: o ângulo da TDP entre sua máquina e o implemento está grande demais. O eixo cardã começa a trabalhar com pulsos fortes, a vibração aumenta e o desgaste cresce rapidamente.&#10;&#10;Mantenha o ângulo abaixo de 30 graus e tente desengatar a TDP em curvas fechadas e manobras na cabeceira."/>
         <text name="rms_tutorial_overload_indicator_title" text="Aviso de sobrecarga"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s está sob carga pesada. O indicador de aviso que acabou de acender no painel está informando isso.&#10;&#10;A máquina pode não ter potência suficiente para a tarefa atual. Tente reduzir a carga: limite sua velocidade com o controle de cruzeiro ou alivie o acelerador em vez de trabalhar em potência máxima."/>
         <text name="rms_tutorial_engine_overload_title" text="Sobrecarga do motor"/>

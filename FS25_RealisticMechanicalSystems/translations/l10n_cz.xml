@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostat převodovky"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulické čerpadlo"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulický válec"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Spojka vývodové hřídele (PTO)"/>
         <text name="rms_breakdowns_part_brake_system" text="Brzdový systém"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Ložisko kola"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Táhla řízení"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vážná vnitřní netěsnost válce. Hydraulický pohyb je pomalý a slabý, nářadí neudrží polohu pod zatížením."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritická vnitřní netěsnost válce. Hydraulický pohyb téměř ustal a udržení nákladu již není možné."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Kritický únik hydraulického válce"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Prokluz spojky vývodové hřídele (PTO). Přenos točivého momentu je snížen a hřídel se může pod zatížením odpojit."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Střední prokluz spojky PTO. Přenos výkonu je výrazně omezen a dochází k častému automatickému odpojování pod zátěží."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Silný prokluz spojky PTO. Použitelný výkon hřídele je silně redukován a stabilní provoz připojeného nářadí nelze zajistit."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Kritické selhání spojky PTO. Přenos momentu byl ztracen a provoz vývodové hřídele není možný."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Selhání PTO"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Opotřebení ložiska náboje kola. Jsou přítomny hluk a vibrace ložiska, maximální rychlost je mírně omezena a valivý odpor je zvýšen."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Střední opotřebení ložiska náboje. Hluk a vibrace jsou výrazné, maximální rychlost snížena a zatížení pohonného ústrojí zvýšeno."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Silné opotřebení ložiska náboje. Silné vibrace, výrazně snížená maximální rychlost, vysoké zatížení pohonu, může se objevit zvuk zadírání."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobilní"/>
         <text name="rms_spec_system_engine" text="Motor"/>
         <text name="rms_spec_system_transmission" text="Převodovka"/>
-        <text name="rms_spec_system_hydraulics" text="Hydraulika / PTO"/>
+        <text name="rms_spec_system_hydraulics" text="Hydraulika"/>
         <text name="rms_spec_system_cooling" text="Chladicí systém"/>
         <text name="rms_spec_system_electrical" text="Elektrický systém"/>
         <text name="rms_spec_system_chassis" text="Podvozek"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Zdá se, že toto nářadí je pro vaše %s příliš těžké. Hydraulika pracuje na hranici svých možností, což negativně ovlivní její životnost.&#10;&#10;Držte se pravidla: váha nářadí by neměla přesáhnout 60 %% vlastní váhy vozidla."/>
         <text name="rms_tutorial_cold_engine_title" text="Zahřejte svůj stroj"/>
         <text name="rms_tutorial_cold_engine_message" text="Předtím než se pustíte do práce, nechte stroj vždy zahřát. Kromě motoru potřebuje čas i mnoho dalších částí: hydraulický olej, převodovka CVT a dokonce i palivo – zejména v mrazivém počasí. Provoz stroje „za studena“ může způsobit problémy v mnoha systémech.&#10;&#10;Pokud je teplota motoru nad 50 stupňů, je vše dostatečně prohřáté a stroj lze bezpečně používat."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Příliš ostrý úhel hřídele"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Pozor: úhel kloubového hřídele (PTO) mezi strojem a nářadím je příliš velký. Hřídel začíná pracovat s rázy, zvyšují se vibrace a opotřebení rapidně roste.&#10;&#10;Snažte se držet úhel pod 30 stupňů a při ostrém zatáčení na souvratích náhon raději vypínejte."/>
         <text name="rms_tutorial_overload_indicator_title" text="Varování před přetížením"/>
         <text name="rms_tutorial_overload_indicator_message" text="Vozidlo %s je pod velkým zatížením. Upozorňuje vás na to varovná kontrolka, která se právě rozsvítila na palubní desce.&#10;&#10;Stroj zřejmě nemá dostatek výkonu pro aktuální úkol. Zkuste snížit zátěž: omezte rychlost pomocí tempomatu nebo uberte plyn, místo abyste jeli na plný výkon."/>
         <text name="rms_tutorial_engine_overload_title" text="Přetížení motoru"/>

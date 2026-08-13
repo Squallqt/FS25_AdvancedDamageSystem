@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Термостат трансмісії"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Гідравлічний насос"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Гідроциліндр"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Муфта ВВП"/>
         <text name="rms_breakdowns_part_brake_system" text="Гальмівна система"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Підшипник колеса"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Рульова тяга"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Сильний внутрішній витік у гідроциліндрі. Робота повільна та слабка, обладнання не може надійно тримати позицію."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Критичний витік у гідроциліндрі. Рух майже відсутній, утримання вантажу неможливе."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Критичний витік гідроциліндра"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Пробуксовування муфти ВВП. Передача моменту знижена, ВВП може вимикатися під навантаженням."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Середнє пробуксовування муфти ВВП. Передача моменту значно знижена, часті самовільні вимкнення ВВП."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Сильне пробуксовування муфти ВВП. Корисний момент вкрай низький, стабільна робота обладнання не забезпечується."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Критична відмова муфти ВВП. Передача моменту повністю відсутня."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Відмова ВВП"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Знос підшипника ступиці. Присутні шум та вібрація, максимальна швидкість злегка обмежена."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Середній знос підшипника ступиці. Шум та вібрація виражені, навантаження на трансмісію зросло."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Сильний знос підшипника ступиці. Сильна вібрація, значне обмеження швидкості, можливий скрегіт заклинювання."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Мобільна"/>
         <text name="rms_spec_system_engine" text="Двигун"/>
         <text name="rms_spec_system_transmission" text="Трансмісія"/>
-        <text name="rms_spec_system_hydraulics" text="Гідравліка / ВВП"/>
+        <text name="rms_spec_system_hydraulics" text="Гідравліка"/>
         <text name="rms_spec_system_cooling" text="Система охолодження"/>
         <text name="rms_spec_system_electrical" text="Електросистема"/>
         <text name="rms_spec_system_chassis" text="Ходова частина"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Схоже, це знаряддя занадто важке для вашого %s. Гідравліка працює на межі можливостей, що негативно вплине на її ресурс.&#10;&#10;Дотримуйтесь правила: вага обладнання не повинна перевищувати 60%% від власної ваги техніки."/>
         <text name="rms_tutorial_cold_engine_title" text="Прогрійте машину"/>
         <text name="rms_tutorial_cold_engine_message" text="Завжди прогрівайте техніку перед роботою. Крім двигуна, прогріву потребують гідравлічне масло, варіатор і навіть паливо — особливо в морози. Робота «на холодну» спричиняє проблеми в багатьох системах одночасно.&#10;&#10;Коли температура двигуна вище 50 градусів (122°F), техніка готова до безпечного використання."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Гострий кут ВВП"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Обережно: кут вала ВВП між машиною та знаряддям занадто великий. Вал починає працювати з ривками, вібрація зростає, а знос накопичується дуже швидко.&#10;&#10;Тримайте кут менше 30 градусів і намагайтеся вимикати ВВП під час крутих поворотів."/>
         <text name="rms_tutorial_overload_indicator_title" text="Попередження про перевантаження"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s працює під великим навантаженням. Про це сигналізує індикатор, що спалахнув на панелі.&#10;&#10;Машині може бракувати потужності для поточного завдання. Спробуйте зменшити навантаження: обмежте швидкість круїз-контролем або скиньте газ замість роботи «в підлогу»."/>
         <text name="rms_tutorial_engine_overload_title" text="Перевантаження двигуна"/>

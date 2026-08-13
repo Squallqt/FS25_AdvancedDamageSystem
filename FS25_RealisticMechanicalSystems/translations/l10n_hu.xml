@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Váltó termosztátja"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hidraulikaszivattyú"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hidraulikahenger"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="TLT-kuplung"/>
         <text name="rms_breakdowns_part_brake_system" text="Fékrendszer"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Kerékcsapágy"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Kormánymű rudazata"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Súlyos belső szivárgás egy hidraulikahengerben. A hidraulika lassú és gyenge, a csatlakoztatott munkagépek nem tartják megbízhatóan a pozíciójukat terhelés alatt."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritikus belső szivárgás egy hidraulikahengerben. A hidraulikus mozgás szinte megszűnt, és a terhelés megtartása már nem lehetséges."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Kritikus hidraulikahenger-szivárgás"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="TLT-kuplung csúszása. A TLT-n keresztüli nyomatékátvitel csökkent, és a TLT terhelés alatt lekapcsolhat."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Közepes TLT-kuplungcsúszás. A TLT-n keresztüli nyomatékátvitel jelentősen csökkent, és terhelés alatt gyakori az automatikus TLT-lekapcsolás."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Súlyos TLT-kuplungcsúszás. A használható TLT-nyomaték erősen csökkent, a TLT-hajtású eszközök stabil működése nem biztosítható."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Kritikus TLT-kuplunghiba. A TLT-n keresztüli nyomatékátvitel megszűnt, a TLT működtetése nem lehetséges."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="TLT-hiba"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Kerékagycsapágy-kopás. Csapágyzaj és vibráció jelentkezik, a maximális sebesség kissé korlátozott, a gördülési ellenállás megnőtt."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Közepes kerékagycsapágy-kopás. A csapágyzaj és a vibráció erősebb, a maximális sebesség csökkent, és a hajtáslánc terhelése nőtt."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Súlyos kerékagycsapágy-kopás. A vibráció erős, a maximális sebesség jelentősen csökkent, a hajtáslánc terhelése magasabb, és megszorulási zaj is jelentkezhet."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobil"/>
         <text name="rms_spec_system_engine" text="Motor"/>
         <text name="rms_spec_system_transmission" text="Váltó"/>
-        <text name="rms_spec_system_hydraulics" text="Hidraulika / TLT"/>
+        <text name="rms_spec_system_hydraulics" text="Hidraulika"/>
         <text name="rms_spec_system_cooling" text="Hűtőrendszer"/>
         <text name="rms_spec_system_electrical" text="Elektromos rendszer"/>
         <text name="rms_spec_system_chassis" text="Alváz"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Úgy tűnik, ez a munkagép túl nehéz ehhez: %s. A hidraulika a határán dolgozik, ami negatívan befolyásolja az élettartamát.&#10;&#10;Kövess egy egyszerű szabályt: a csatlakoztatott eszköz tömege ne haladja meg a jármű saját tömegének 60%%-át."/>
         <text name="rms_tutorial_cold_engine_title" text="Melegítsd be a gépet"/>
         <text name="rms_tutorial_cold_engine_message" text="Munka előtt mindig melegítsd be a gépet. A motoron kívül sok más alkatrésznek is idő kell a bemelegedéshez: a hidraulikaolajnak, a CVT váltónak, sőt még az üzemanyag hőmérsékletének is — különösen fagyos időben. Hidegen terhelni a gépet több rendszerben is problémákat okozhat.&#10;&#10;Ha a motor hőmérséklete 50 fok (122°F) felett van, minden megfelelően bemelegedett, és a gép biztonságosan használható."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Túl nagy TLT-szög"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Vigyázz: a géped és a munkagép közötti TLT-szög túl nagy. A kardántengely erős lüktetéssel kezd dolgozni, nő a vibráció, és gyorsan halmozódik a kopás.&#10;&#10;Tartsd a szöget 30 fok alatt, és próbáld kikapcsolni a TLT-t éles fordulókban és táblavégi manővereknél."/>
         <text name="rms_tutorial_overload_indicator_title" text="Túlterhelés figyelmeztetés"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s nagy terhelés alatt van. Ezt jelzi a műszerfalon most felgyulladt figyelmeztető lámpa.&#10;&#10;Lehet, hogy a gépnek nincs elég ereje az aktuális feladathoz. Próbáld csökkenteni a terhelést: korlátozd a sebességet tempomattal, vagy vegyél vissza a gázból ahelyett, hogy teljes erőn dolgoztatod."/>
         <text name="rms_tutorial_engine_overload_title" text="Motor túlterhelése"/>

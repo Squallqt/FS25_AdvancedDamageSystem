@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Getriebethermostat"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulikpumpe"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulikzylinder"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Zapfwellenkupplung"/>
         <text name="rms_breakdowns_part_brake_system" text="Bremssystem"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Radlager"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Lenkgestänge"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Schwere interne Leckage im Hydraulikzylinder. Die Hydraulikkraft ist stark reduziert, Lasten können nur unzuverlässig gehalten werden und die Funktion ist stark beeinträchtigt."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritischer Ausfall des Hydraulikzylinders. Der Innendruck kann nicht mehr gehalten werden und ein normaler Hydraulikbetrieb ist unmöglich."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Ausfall des Hydraulikzylinders"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Leichter Schlupf der Zapfwellenkupplung. Ein kleiner Teil der Leistung geht bei der Übertragung auf das Anbaugerät verloren."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Mäßiger Schlupf der Zapfwellenkupplung. Die Leistungsübertragung wird unter Last deutlich ineffizienter."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Starker Schlupf der Zapfwellenkupplung. Die Leistungsübertragung ist stark reduziert und der Betrieb des Anbaugeräts wird instabil."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Kritischer Ausfall der Zapfwellenkupplung. Die Zapfwelle kann die Leistung nicht mehr zuverlässig übertragen."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Schlupf der Zapfwellenkupplung"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Leichter Lagerverschleiß. Der mechanische Widerstand steigt leicht an und ungewöhnliche Laufgeräusche können auftreten."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Mäßiger Lagerverschleiß. Die Reibung steigt deutlich, das Geräusch wird stärker und die mechanische Effizienz sinkt."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Starker Lagerverschleiß. Die Reibung ist hoch, die Geräuschentwicklung deutlich und unter Last besteht echte Fressgefahr."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobil"/>
         <text name="rms_spec_system_engine" text="Motor"/>
         <text name="rms_spec_system_transmission" text="Getriebe"/>
-        <text name="rms_spec_system_hydraulics" text="Hydraulik / Zapfwelle"/>
+        <text name="rms_spec_system_hydraulics" text="Hydraulik"/>
         <text name="rms_spec_system_cooling" text="Kühlsystem"/>
         <text name="rms_spec_system_electrical" text="Elektrik"/>
         <text name="rms_spec_system_chassis" text="Fahrwerk"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Dieses Anbaugerät ist offenbar zu schwer für Ihren %s. Die Hydraulik arbeitet bereits am Limit, und das wirkt sich negativ auf ihre Lebensdauer aus.&#10;&#10;Eine einfache Faustregel: Das Gewicht des Anbaugeräts sollte 60%% des Eigengewichts des Fahrzeugs nicht überschreiten."/>
         <text name="rms_tutorial_cold_engine_title" text="Maschine aufwärmen"/>
         <text name="rms_tutorial_cold_engine_message" text="Wärmen Sie Ihre Maschine immer auf, bevor Sie sie einsetzen. Nicht nur der Motor braucht Zeit auf Temperatur zu kommen, sondern auch viele andere Baugruppen: Hydrauliköl, das CVT-Getriebe und sogar der Kraftstoff, besonders bei Frost. Ein kalter Betrieb kann deshalb in mehreren Systemen Probleme verursachen.&#10;&#10;Liegt die Motortemperatur über 50 Grad (122°F), ist alles ausreichend warm und die Maschine kann bedenkenlos eingesetzt werden."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Zapfwellenwinkel zu groß"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Vorsicht: Der Zapfwellenwinkel zwischen Ihrer Maschine und dem Anbaugerät ist zu groß. Die Gelenkwelle läuft dann mit harten Impulsen, die Vibrationen nehmen zu und der Verschleiß steigt schnell an.&#10;&#10;Halten Sie den Winkel unter 30 Grad und schalten Sie die Zapfwelle bei scharfen Kurven und Wendemanövern möglichst aus."/>
         <text name="rms_tutorial_overload_indicator_title" text="Überlastungswarnung"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s steht unter hoher Last. Darauf weist Sie die Warnleuchte hin, die gerade im Armaturenbrett aufgeleuchtet ist.&#10;&#10;Möglicherweise hat die Maschine nicht genug Leistung für die aktuelle Arbeit. Versuchen Sie, die Last zu verringern: Begrenzen Sie Ihre Geschwindigkeit mit dem Tempomat oder nehmen Sie etwas Gas weg, statt mit voller Leistung zu fahren."/>
         <text name="rms_tutorial_engine_overload_title" text="Motorüberlastung"/>

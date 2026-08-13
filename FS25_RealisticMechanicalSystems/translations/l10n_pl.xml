@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostat skrzyni biegów"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Pompa hydrauliczna"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Siłownik hydrauliczny"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Sprzęgło wałka WOM"/>
         <text name="rms_breakdowns_part_brake_system" text="Układ hamulcowy"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Łożysko piasty koła"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Układ drążków kierowniczych"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Poważny wewnętrzny wyciek w siłowniku hydraulicznym. Działanie hydrauliki jest wolne i słabe, a podłączony osprzęt nie utrzymuje stabilnie pozycji pod obciążeniem."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Krytyczny wewnętrzny wyciek w siłowniku hydraulicznym. Ruch hydrauliczny jest niemal utracony, a utrzymanie obciążenia nie jest możliwe."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Krytyczny wyciek siłownika hydraulicznego"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Ślizganie sprzęgła WOM. Zmniejszone przenoszenie momentu i możliwe rozłączanie pod obciążeniem."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Średni poślizg sprzęgła WOM. Wyraźnie zmniejszone przenoszenie momentu i częste odłączanie pod obciążeniem."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Poważny poślizg sprzęgła WOM. Znaczne ograniczenie momentu i niestabilna praca osprzętu."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Całkowita awaria sprzęgła WOM. Brak przeniesienia momentu i brak działania WOM."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Usterka wałka odbioru mocy"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Wytarte łożysko piasty koła. Słyszalny hałas, drgania i zwiększone opory toczenia."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Średnie zużycie łożyska piasty koła. Wyraźny hałas, drgania i spadek prędkości maksymalnej."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Poważne zużycie łożyska piasty koła. Silne drgania, duży spadek prędkości i ryzyko zatarcia."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobilny warsztat."/>
         <text name="rms_spec_system_engine" text="Silnik"/>
         <text name="rms_spec_system_transmission" text="Skrzynia biegów"/>
-        <text name="rms_spec_system_hydraulics" text="Układ hydrauliczny / Wał odbioru mocy"/>
+        <text name="rms_spec_system_hydraulics" text="Układ hydrauliczny"/>
         <text name="rms_spec_system_cooling" text="Układ chłodzenia."/>
         <text name="rms_spec_system_electrical" text="Układ elektryczny."/>
         <text name="rms_spec_system_chassis" text="Podwozie"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Wygląda na to, że ten osprzęt jest za ciężki dla Twojego %s. Hydraulika pracuje na granicy możliwości, co negatywnie wpłynie na jej żywotność.&#10;&#10;Trzymaj się prostej zasady: masa osprzętu nie powinna przekraczać 60%% masy własnej pojazdu."/>
         <text name="rms_tutorial_cold_engine_title" text="Rozgrzej maszynę"/>
         <text name="rms_tutorial_cold_engine_message" text="Zawsze rozgrzewaj maszynę przed rozpoczęciem pracy. Oprócz silnika wiele innych podzespołów także potrzebuje czasu, aby osiągnąć właściwą temperaturę: olej hydrauliczny, przekładnia CVT, a nawet paliwo, szczególnie podczas mrozu. Praca na zimno może powodować problemy w wielu układach.&#10;&#10;Jeśli temperatura silnika przekracza 50 stopni (122°F), wszystko jest już odpowiednio rozgrzane i maszyna może być bezpiecznie używana."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Zbyt duży kąt WOM"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Uważaj: kąt WOM między Twoją maszyną a osprzętem jest zbyt duży. Wał napędowy zaczyna pracować z mocnymi pulsacjami, rosną drgania i szybko narasta zużycie.&#10;&#10;Utrzymuj kąt poniżej 30 stopni i staraj się wyłączać WOM podczas ostrych skrętów oraz nawrotów na uwrociach."/>
         <text name="rms_tutorial_overload_indicator_title" text="Ostrzeżenie o przeciążeniu"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s pracuje pod dużym obciążeniem. Informuje Cię o tym kontrolka ostrzegawcza, która właśnie zapaliła się na desce rozdzielczej.&#10;&#10;Maszyna może nie mieć wystarczającej mocy do bieżącego zadania. Spróbuj zmniejszyć obciążenie: ogranicz prędkość tempomatem albo odpuść gaz zamiast pracować na pełnej mocy."/>
         <text name="rms_tutorial_engine_overload_title" text="Przeciążenie silnika"/>

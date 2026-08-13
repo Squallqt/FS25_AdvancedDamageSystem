@@ -50,38 +50,6 @@ RMS_Breakdowns.COLOR_PRIORITY = {
 local getIsElectricVehicle = RMS_Utils.getIsElectricVehicle
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 
-local function hasPtoCapability(vehicle)
-    if vehicle == nil then
-        return false
-    end
-
-    local ptoSpec = vehicle.spec_powerTakeOffs
-    if ptoSpec ~= nil then
-        local outputCount = ptoSpec.outputPowerTakeOffs ~= nil and #ptoSpec.outputPowerTakeOffs or 0
-        local inputCount = ptoSpec.inputPowerTakeOffs ~= nil and #ptoSpec.inputPowerTakeOffs or 0
-        local localCount = ptoSpec.localPowerTakeOffs ~= nil and #ptoSpec.localPowerTakeOffs or 0
-        if outputCount > 0 or inputCount > 0 or localCount > 0 then
-            return true
-        end
-    end
-
-    if vehicle.getOutputPowerTakeOffs ~= nil then
-        local outputs = vehicle:getOutputPowerTakeOffs()
-        if outputs ~= nil and next(outputs) ~= nil then
-            return true
-        end
-    end
-
-    if vehicle.getInputPowerTakeOffs ~= nil then
-        local inputs = vehicle:getInputPowerTakeOffs()
-        if inputs ~= nil and next(inputs) ~= nil then
-            return true
-        end
-    end
-
-    return false
-end
-
 local systems = RealisticMechanicalSystems.SYSTEMS
 
 RMS_Breakdowns.PARTS = {
@@ -105,7 +73,6 @@ RMS_Breakdowns.PARTS = {
     TRANSMISSION_THERMOSTAT = "rms_breakdowns_part_transmission_thermostat",
     HYDRAULIC_PUMP = "rms_breakdowns_part_hydraulic_pump",
     HYDRAULIC_CYLINDER = "rms_breakdowns_part_hydraulic_cylinder",
-    PTO_CLUTCH = "rms_breakdowns_part_pto_clutch",
     BRAKE_SYSTEM = "rms_breakdowns_part_brake_system",
     WHEEL_BEARING = "rms_breakdowns_part_wheel_bearing",
     STEERING_LINKAGE = "rms_breakdowns_part_steering_linkage",
@@ -139,7 +106,6 @@ local breakdownPriceMultipliers = {
     TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.20,
     HYDRAULIC_PUMP_MALFUNCTION = 0.90,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 1.0,
-    PTO_CLUTCH_SLIP = 1.25,
     BRAKE_MALFUNCTION = 0.35,
     BEARING_WEAR = 0.55,
     STEERING_LINKAGE_WEAR = 0.45,
@@ -171,7 +137,6 @@ local breakdownProgressMultipliers = {
     TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.3,
     HYDRAULIC_PUMP_MALFUNCTION = 1.1,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 0.6,
-    PTO_CLUTCH_SLIP = 0.75,
     BRAKE_MALFUNCTION = 0.9,
     BEARING_WEAR = 1.2,
     STEERING_LINKAGE_WEAR = 1.2,
@@ -1990,73 +1955,6 @@ RMS_Breakdowns.BreakdownRegistry = {
         }
     },
 
-    PTO_CLUTCH_SLIP   = {
-        isSelectable = true,
-        system = systems.HYDRAULICS,
-        part = parts.PTO_CLUTCH,
-        isApplicable = function(vehicle)
-            return hasPtoCapability(vehicle)
-        end,
-        probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"saf"}, {"of", "sf"})
-        end,
-        stages = {
-            {
-                severity = "rms_breakdowns_severity_minor",
-                description = "rms_breakdowns_pto_clutch_slip_stage1_description",
-                detectionChance = 1.0,
-                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_CLUTCH_SLIP,
-                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_CLUTCH_SLIP,
-                effects = {
-                    { id = "PTO_TORQUE_TRANSFER_MODIFIER", value = 0.2, aggregation = "max" },
-                    { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 24, aggregation = "min", extraData = {status = 'IDLE'} }
-                }
-            },
-            {
-                severity = "rms_breakdowns_severity_moderate",
-                description = "rms_breakdowns_pto_clutch_slip_stage2_description",
-                detectionChance = 1.0,
-                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_CLUTCH_SLIP,
-                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_CLUTCH_SLIP,
-                effects = {
-                    { id = "PTO_TORQUE_TRANSFER_MODIFIER", value = 0.4, aggregation = "max" },
-                    { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 12, aggregation = "min", extraData = {status = 'IDLE'}}
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
-                }
-            },
-            { 
-                severity = "rms_breakdowns_severity_major",
-                description = "rms_breakdowns_pto_clutch_slip_stage3_description",
-                detectionChance = 1.0,
-                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_CLUTCH_SLIP,
-                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_CLUTCH_SLIP,
-                effects = { 
-                    { id = "PTO_TORQUE_TRANSFER_MODIFIER", value = 0.6, aggregation = "max" },
-                    { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 6.0, aggregation = "min", extraData = {status = 'IDLE'} }
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
-                }
-            },
-            { 
-                severity = "rms_breakdowns_severity_critical",
-                description = "rms_breakdowns_pto_clutch_slip_stage4_description",
-                detectionChance = 1.0,
-                progressMultiplier = 0,
-                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_CLUTCH_SLIP,
-                effects = {
-                    { id = "PTO_FAILURE", value = 1.0, aggregation = "max", extraData = {message = "rms_breakdowns_pto_clutch_slip_stage4_message", reason = "BREAKDOWN", disableAi = true}},
-                },
-                indicators = {
-                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
-                
-                }
-            }
-        }
-    },
-    
     -- chassis system
     BRAKE_MALFUNCTION = {
         isSelectable = true,

@@ -523,8 +523,7 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     local systemData = spec.systems.hydraulics
     local expiredServiceFactor = 0
     local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
-    local heavyLiftFactor, operatingFactor, coldOilFactor, sharpAngleFactor, vibFactor = 0, 0, 0, 0, 0
-    local ptoSharpAngleDeg = spec.maxConnectedPtoAngleDeg
+    local heavyLiftFactor, operatingFactor, coldOilFactor, vibFactor = 0, 0, 0, 0
     local vibState = spec.chassisVibState
     local vibSignal = vibState.signal
     local vibRaw = vibState.raw
@@ -540,7 +539,7 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     end
 
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
-        if spec.isImplementLifted or spec.isImplementOperating or spec.isPtoActive then
+        if spec.isImplementLifted or spec.isImplementOperating then
             -- operating and cold oil
             if spec.isImplementOperating then
                 systemData.operatingTimer = math.min(systemData.operatingTimer + dt, 30000)
@@ -587,21 +586,6 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
                 wearRate = wearRate + vibFactor
             end
 
-            if spec.isPtoActive then
-                -- pto sharp angle factor
-                local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
-                local hasConnectedPto = spec.hasConnectedPto == true
-                ptoSharpAngleDeg = ptoAngleDeg
-                local sharpAngleThreshold = RMS_Utils.getPtoSharpAngleThreshold(spec)
-
-                if hasConnectedPto and ptoAngleDeg > sharpAngleThreshold and not spec.isExcludedFromPTOSharpAngleFactor then
-                    sharpAngleFactor = RMS_Utils.calculateQuadraticMultiplier(ptoAngleDeg, sharpAngleThreshold, false, 50)
-                    sharpAngleFactor = sharpAngleFactor * (C.PTO_SHARP_ANGLE_FACTOR_MULTIPLIER or 0)
-                    sharpAngleFactor = math.min(sharpAngleFactor, C.PTO_SHARP_ANGLE_FACTOR_MULTIPLIER or sharpAngleFactor)
-                    wearRate = wearRate + sharpAngleFactor
-                end
-            end
-
         else
             --idling
             wearRate = wearRate * C.HYDRAULICS_IDLING_MULTIPLIER
@@ -634,9 +618,7 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
         vibSignal = vibSignal,
         vibRaw = vibRaw,
         vibFieldMultiplier = vibFieldMultiplier,
-        coldOilFactor = coldOilFactor,
-        sharpAngleFactor = sharpAngleFactor,
-        ptoSharpAngleDeg = ptoSharpAngleDeg
+        coldOilFactor = coldOilFactor
     })
 end
 

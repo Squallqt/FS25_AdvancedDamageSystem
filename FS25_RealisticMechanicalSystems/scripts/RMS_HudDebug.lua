@@ -532,8 +532,7 @@ function RMS_Hud:drawActiveVehicleHUD()
         hydraulicsDbg.heavyLiftFactor or 0,
         hydraulicsDbg.operatingFactor or 0,
         hydraulicsDbg.vibFactor or 0,
-        hydraulicsDbg.coldOilFactor or 0,
-        hydraulicsDbg.sharpAngleFactor or 0
+        hydraulicsDbg.coldOilFactor or 0
     ) * bcw
     local coolingMaxFactor = math.max(
         coolingDbg.expiredServiceFactor or 0,
@@ -651,8 +650,7 @@ function RMS_Hud:drawActiveVehicleHUD()
         { shortName = "hlf", statKey = "hlf", value = hydraulicsDbg.heavyLiftFactor or 0, extraInfo = string.format("mr: %.2f", asPercent(hydraulicsDbg.heavyLiftMassRatio or 0)) },
         { shortName = "of", statKey = "of", value = hydraulicsDbg.operatingFactor or 0, extraInfo = string.format("om: %.2f t: %ds", hydraulicsDbg.operatingMassRatio or 0, math.floor(((hydraulicsDbg.operatingTimer or 0) / 1000) + 0.0001)) },
         { shortName = "vf", statKey = "vf", value = hydraulicsDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(hydraulicsDbg.vibRaw or 0), asPercent(hydraulicsDbg.vibSignal or 0)) },
-        { shortName = "cof", statKey = "cof", value = hydraulicsDbg.coldOilFactor or 0 },
-        { shortName = "saf", statKey = "saf", value = hydraulicsDbg.sharpAngleFactor or 0, extraInfo = string.format("%.1f deg", hydraulicsDbg.ptoSharpAngleDeg or 0) }
+        { shortName = "cof", statKey = "cof", value = hydraulicsDbg.coldOilFactor or 0 }
     })
 
     local coolingLines = buildSystemLines("cooling", coolingDbg, coolingMaxFactor, {
@@ -1051,15 +1049,13 @@ function RMS_Hud:drawActiveVehicleHUD()
     addLine(implementLines, "", {1, 1, 1, 1}, 0.95)
     local debugImplements = getDebugStateValue("implements", spec.implements or {}) or {}
     addLine(implementLines, string.format(
-        "Implements: lowered: %s | operating: %s | lifted: %s | operatingMass: %.1f | liftedMass: %.1f | connectedPto: %s | ptoActive: %s | harvesting: %s",
+        "Implements: lowered: %s | operating: %s | lifted: %s | operatingMass: %.1f | liftedMass: %.1f | debris: %s",
         tostring(getDebugStateValue("isImplementLowered", spec.isImplementLowered == true) == true),
         tostring(getDebugStateValue("isImplementOperating", spec.isImplementOperating == true) == true),
         tostring(getDebugStateValue("isImplementLifted", spec.isImplementLifted == true) == true),
         tonumber(getDebugStateValue("operatingMass", spec.operatingMass)) or 0,
         tonumber(getDebugStateValue("liftedMass", spec.liftedMass)) or 0,
-        tostring(getDebugStateValue("hasConnectedPto", spec.hasConnectedPto == true) == true),
-        tostring(getDebugStateValue("isPtoActive", spec.isPtoActive == true) == true),
-        tostring(getDebugStateValue("isHarvesting", spec.isHarvesting == true) == true)
+        tostring(getDebugStateValue("hasDebris", spec.hasDebris == true) == true)
     ), {1, 1, 1, 1}, 0.95)
 
     for index, impl in ipairs(debugImplements) do
@@ -1298,11 +1294,6 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
             local ratio = tonumber(dbg.heavyLiftMassRatio)
             if ratio ~= nil then
                 return string.format("massRatio %.3f", ratio)
-            end
-        elseif debugKey == "sharpAngleFactor" then
-            local angle = tonumber(dbg.ptoSharpAngleDeg)
-            if angle ~= nil then
-                return string.format("angle %.1fdeg", angle)
             end
         elseif debugKey == "steerLoadFactor" then
             local parts = {}

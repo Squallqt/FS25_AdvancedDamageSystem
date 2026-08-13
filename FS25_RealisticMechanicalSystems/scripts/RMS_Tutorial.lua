@@ -120,9 +120,6 @@ function RMS_Tutorial:update(dt)
             local vehicleMass = vehicle.getTotalMass ~= nil and (vehicle:getTotalMass(true) or 0) or 0
             local heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
             local heavyLiftThreshold = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
-            local ptoAngleDeg = spec.maxConnectedPtoAngleDeg
-            local hasConnectedPto = spec.hasConnectedPto == true
-            local sharpAngleThreshold = RMS_Utils.getPtoSharpAngleThreshold(spec)
             local transmissionConfig = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
             local chassisBrakeState = spec.chassisBrakeState
             local isTruck = spec.isTruck == true
@@ -524,22 +521,6 @@ function RMS_Tutorial:update(dt)
                 messagedData.HEAVY_LIFT = true
                 self.messageDowntime = downtimeAfterMessage
 
-            --- pto sharp angle
-            elseif not messagedData.PTO_SHARP_ANGLE
-                and hydraulicsSystemEnabled
-                and isMotorStarted
-                and spec.isPtoActive
-                and hasConnectedPto
-                and ptoAngleDeg > sharpAngleThreshold
-                and not spec.isExcludedFromPTOSharpAngleFactor then
-                RMS_Hud.showNotification(
-                    g_i18n:getText("rms_tutorial_pto_sharp_angle_message"),
-                    0,
-                    g_i18n:getText("rms_tutorial_pto_sharp_angle_title"),
-                    true
-                )
-                messagedData.PTO_SHARP_ANGLE = true
-                self.messageDowntime = downtimeAfterMessage
             -- ==========================================================
             -- SERVICE
             -- ==========================================================

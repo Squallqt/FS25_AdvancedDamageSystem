@@ -190,63 +190,6 @@ function RMS_Breakdowns.setLightsTypesMask(self, superFunc, lightsTypesMask, for
 end
 
 -- ==========================================================
--- PTO_FAILURE
-RMS_Breakdowns.EffectApplicators.PTO_FAILURE = {
-    getEffectName = function() return "PTO_FAILURE" end,
-    apply = function(vehicle, effectData, handler)
-        local effectName = handler.getEffectName()
-
-        local function forceDisablePtoConsumers(rootVehicle)
-            local turnedOff = false
-            local visited = {}
-
-            local function walk(vehicleObj)
-                if vehicleObj == nil or visited[vehicleObj] then
-                    return
-                end
-                visited[vehicleObj] = true
-
-                local ptoCapable = vehicleObj.getDoConsumePtoPower ~= nil
-                    or vehicleObj.getIsPowerTakeOffActive ~= nil
-                    or vehicleObj.getPtoRpm ~= nil
-
-                local isTurnedOn = vehicleObj.getIsTurnedOn ~= nil and vehicleObj:getIsTurnedOn() or false
-                if ptoCapable and isTurnedOn and vehicleObj.setIsTurnedOn ~= nil then
-                    vehicleObj:setIsTurnedOn(false)
-                    turnedOff = true
-                end
-
-                if vehicleObj.getAttachedImplements ~= nil then
-                    local implements = vehicleObj:getAttachedImplements() or {}
-                    for _, implement in pairs(implements) do
-                        if implement ~= nil and implement.object ~= nil then
-                            walk(implement.object)
-                        end
-                    end
-                end
-            end
-
-            walk(rootVehicle)
-            return turnedOff
-        end
-
-        local activeFunc = function(v, dt)
-            local effect = v.spec_RealisticMechanicalSystems.activeEffects[effectName]
-            if effect == nil or (tonumber(effect.value) or 0) <= 0 then
-                return
-            end
-            effect.extraData = effect.extraData or {}
-            forceDisablePtoConsumers(v)
-        end
-
-        addFuncToActive(vehicle, effectName, activeFunc)
-    end,
-    remove = function(vehicle, handler)
-        removeFuncFromActive(vehicle, handler.getEffectName())
-    end
-}
-                 
--- ==========================================================
 local function getWheelSeizureTargetWheel(vehicle)
     local spec_rms = vehicle.spec_RealisticMechanicalSystems
     local spec_wheels = vehicle.spec_wheels
@@ -583,47 +526,6 @@ if VehicleMotor ~= nil and VehicleMotor.getTorqueCurveValue ~= nil then
             end
         end
         return torque
-    end)
-end
-                  
--- ==========================================================
--- PTO_TORQUE_TRANSFER_MODIFIER
-RMS_Breakdowns.EffectApplicators.PTO_TORQUE_TRANSFER_MODIFIER = {
-
-}
-
-if PowerConsumer ~= nil and PowerConsumer.getTotalConsumedPtoTorque ~= nil then
-    local rmsPtoCallDepth = 0
-    PowerConsumer.getTotalConsumedPtoTorque = Utils.overwrittenFunction(PowerConsumer.getTotalConsumedPtoTorque, function(self, superFunc, excludeVehicle, expected, ignoreTurnOnPeak)
-        rmsPtoCallDepth = rmsPtoCallDepth + 1
-        local callDepth = rmsPtoCallDepth
-
-        local ok, torque, virtualMultiplicator = pcall(superFunc, self, excludeVehicle, expected, ignoreTurnOnPeak)
-        if not ok then
-            rmsPtoCallDepth = math.max(rmsPtoCallDepth - 1, 0)
-            log_hook_error("PowerConsumer.getTotalConsumedPtoTorque", torque)
-            return 0, 1
-        end
-
-        if callDepth == 1 then
-            local rootVehicle = self
-            if rootVehicle ~= nil and rootVehicle.getRootVehicle ~= nil then
-                rootVehicle = rootVehicle:getRootVehicle()
-            end
-
-            local spec = rootVehicle ~= nil and rootVehicle.spec_RealisticMechanicalSystems or nil
-            local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects.PTO_TORQUE_TRANSFER_MODIFIER or nil
-            if effect ~= nil then
-                local effectValue = tonumber(effect.value) or 0
-                local transferScale = math.max(0, 1 + effectValue)
-                local modifiedTorque = torque * transferScale
-
-                torque = modifiedTorque
-            end
-        end
-
-        rmsPtoCallDepth = math.max(rmsPtoCallDepth - 1, 0)
-        return torque, virtualMultiplicator
     end)
 end
                   
@@ -1985,26 +1887,26 @@ RMS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
 RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
     getEffectName = function() return "PTO_AUTO_DISENGAGE_CHANCE" end,
     apply = function(vehicle, effectData, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        if spec.year < 1990 then
+            return
+        end
+
         local effectName = handler.getEffectName()
 
         local function hasActivePtoLoad(rootVehicle)
-            if rootVehicle == nil then
+            if rootVehicle == nil or rootVehicle.getOutputPowerTakeOffs == nil then
                 return false
             end
 
-            local ptoActive = rootVehicle.getIsPowerTakeOffActive ~= nil and rootVehicle:getIsPowerTakeOffActive() or false
-            local ptoConsuming = rootVehicle.getDoConsumePtoPower ~= nil and rootVehicle:getDoConsumePtoPower() or false
-            local ptoRpm = rootVehicle.getPtoRpm ~= nil and (tonumber(rootVehicle:getPtoRpm()) or 0) or 0
-            local ptoTorque = 0
-
-            if PowerConsumer ~= nil and PowerConsumer.getTotalConsumedPtoTorque ~= nil then
-                local ok, torqueValue = pcall(PowerConsumer.getTotalConsumedPtoTorque, rootVehicle, nil, nil, true)
-                if ok then
-                    ptoTorque = tonumber(torqueValue) or 0
+            for _, output in pairs(rootVehicle:getOutputPowerTakeOffs()) do
+                local consumer = output.connectedVehicle
+                if output.connectedInput ~= nil and consumer:getIsPowerTakeOffActive() then
+                    return true
                 end
             end
 
-            return ptoActive or ptoConsuming or ptoRpm > 10 or ptoTorque > 0.001
+            return false
         end
 
         local function disengagePtoConsumers(rootVehicle)
@@ -2017,18 +1919,19 @@ RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
                 end
                 visited[vehicleObj] = true
 
-                local isTurnedOn = vehicleObj.getIsTurnedOn ~= nil and vehicleObj:getIsTurnedOn() or false
-                if isTurnedOn and vehicleObj.setIsTurnedOn ~= nil then
-                    vehicleObj:setIsTurnedOn(false)
-                    turnedOff = true
+                if vehicleObj.getOutputPowerTakeOffs == nil then
+                    return
                 end
 
-                if vehicleObj.getAttachedImplements ~= nil then
-                    local implements = vehicleObj:getAttachedImplements() or {}
-                    for _, implement in pairs(implements) do
-                        if implement ~= nil and implement.object ~= nil then
-                            walk(implement.object)
+                for _, output in pairs(vehicleObj:getOutputPowerTakeOffs()) do
+                    local consumer = output.connectedVehicle
+                    if output.connectedInput ~= nil then
+                        local isTurnedOn = consumer.getIsTurnedOn ~= nil and consumer:getIsTurnedOn() or false
+                        if isTurnedOn and consumer.setIsTurnedOn ~= nil then
+                            consumer:setIsTurnedOn(false)
+                            turnedOff = true
                         end
+                        walk(consumer)
                     end
                 end
             end

@@ -229,9 +229,7 @@ function RMS_DebugSnapshot.build(vehicle)
             isImplementLifted = spec.isImplementLifted == true,
             operatingMass = tonumber(spec.operatingMass) or 0,
             liftedMass = tonumber(spec.liftedMass) or 0,
-            hasConnectedPto = spec.hasConnectedPto == true,
-            isPtoActive = spec.isPtoActive == true,
-            isHarvesting = spec.isHarvesting == true
+            hasDebris = spec.hasDebris == true
         }
     }
 end

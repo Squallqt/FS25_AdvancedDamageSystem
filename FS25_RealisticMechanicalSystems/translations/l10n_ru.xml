@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Термостат трансмиссии"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Гидравлический насос"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Гидроцилиндр"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Муфта ВОМ"/>
         <text name="rms_breakdowns_part_brake_system" text="Тормозная система"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Подшипник колеса"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Рулевая тяга"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Сильная внутренняя утечка в гидроцилиндре. Гидравлическое усилие сильно снижено, удержание нагрузки ненадежно, работа серьезно ухудшена."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Критический отказ гидроцилиндра. Внутреннее давление больше не удерживается, нормальная работа гидравлики невозможна."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Отказ гидроцилиндра"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Легкое проскальзывание муфты ВОМ. Небольшая часть мощности теряется при передаче на агрегат."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Умеренное проскальзывание муфты ВОМ. Передача мощности под нагрузкой становится заметно менее эффективной."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Сильное проскальзывание муфты ВОМ. Передача мощности резко снижена, работа агрегата становится нестабильной."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Критический отказ муфты ВОМ. Вал отбора мощности больше не может надежно передавать мощность."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Проскальзывание муфты ВОМ"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Легкий износ подшипников. Механическое сопротивление немного возрастает, возможен необычный шум при работе."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Умеренный износ подшипников. Трение заметно увеличивается, шум становится выраженнее, механическая эффективность падает."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Сильный износ подшипников. Трение высокое, шум сильный, под нагрузкой есть реальный риск заклинивания."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Мобильный"/>
         <text name="rms_spec_system_engine" text="Двигатель"/>
         <text name="rms_spec_system_transmission" text="Трансмиссия"/>
-        <text name="rms_spec_system_hydraulics" text="Гидравлика / ВОМ"/>
+        <text name="rms_spec_system_hydraulics" text="Гидравлика"/>
         <text name="rms_spec_system_cooling" text="Система охлаждения"/>
         <text name="rms_spec_system_electrical" text="Электросистема"/>
         <text name="rms_spec_system_chassis" text="Ходовая часть"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Похоже, данная навеска слишком тяжёлая для вашего %s. Гидравлика работает на пределе, а это не может положительно сказаться на сроке её службы.&#10;&#10;Ориентируйтесь на простое правило: масса навески должна составлять не более 60%% массы самой техники."/>
         <text name="rms_tutorial_cold_engine_title" text="Прогревайте свою технику"/>
         <text name="rms_tutorial_cold_engine_message" text="Всегда прогревайте свою технику перед использованием. Помимо двигателя, в машине есть и другие узлы, которым требуется прогрев: гидравлическое масло, коробка CVT и даже топливо — особенно в мороз. Поэтому эксплуатация на холодную чревата проблемами сразу в нескольких системах.&#10;&#10;Если температура двигателя выше 50 градусов (122°F), значит всё уже прогрелось как следует, и технику можно смело эксплуатировать."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Слишком большой угол ВОМ"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Аккуратнее: угол ВОМ между вашей техникой и агрегатом слишком большой. Кардан начинает работать с рывками, растут вибрации и быстро увеличивается износ вала.&#10;&#10;Держите угол не более 30 градусов и старайтесь отключать ВОМ на резких поворотах и разворотах."/>
         <text name="rms_tutorial_overload_indicator_title" text="Предупреждение о перегрузке"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s работает под высокой нагрузкой. Об этом вас предупреждает индикатор, который только что загорелся на приборной панели.&#10;&#10;Возможно, машине не хватает мощности для текущей работы. Попробуйте снизить нагрузку: ограничьте скорость круиз-контролем или немного сбросьте газ вместо того, чтобы работать на полной мощности."/>
         <text name="rms_tutorial_engine_overload_title" text="Перегрузка двигателя"/>

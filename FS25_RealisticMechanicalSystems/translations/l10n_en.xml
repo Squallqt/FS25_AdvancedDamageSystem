@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Transmission thermostat"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulic pump"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulic cylinder"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="PTO clutch"/>
         <text name="rms_breakdowns_part_brake_system" text="Brake system"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Wheel bearing"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Steering linkage"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Severe internal leakage in a hydraulic cylinder. Hydraulic actuation is slow and weak, and attached implements cannot reliably hold position under load."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Critical internal leakage in a hydraulic cylinder. Hydraulic movement is almost lost and load holding is no longer possible."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Hydraulic cylinder leakage critical"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="PTO clutch slip. Torque transmission through the PTO is reduced and the PTO may disengage under load."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Moderate PTO clutch slip. Torque transmission through the PTO is significantly reduced and automatic PTO disengagement under load occurs frequently."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Severe PTO clutch slip. Usable PTO torque is heavily reduced and stable operation of PTO-driven equipment cannot be ensured."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Critical PTO clutch failure. Torque transmission through the PTO is lost and PTO operation is not possible."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="PTO failure"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Wheel hub bearing wear. Bearing noise and vibration are present, maximum speed is slightly limited, and rolling resistance is increased."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Moderate wheel hub bearing wear. Bearing noise and vibration are pronounced, maximum speed is reduced, and drivetrain load is increased."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Severe wheel hub bearing wear. Vibration is strong, maximum speed is significantly reduced, drivetrain load is elevated, and seizure noise may occur."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobile"/>
         <text name="rms_spec_system_engine" text="Engine"/>
         <text name="rms_spec_system_transmission" text="Transmission"/>
-        <text name="rms_spec_system_hydraulics" text="Hydraulics / PTO"/>
+        <text name="rms_spec_system_hydraulics" text="Hydraulics"/>
         <text name="rms_spec_system_cooling" text="Cooling System"/>
         <text name="rms_spec_system_electrical" text="Electrical System"/>
         <text name="rms_spec_system_chassis" text="Chassis"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="It looks like this implement is too heavy for your %s. The hydraulics are working at their limit, which will negatively affect their service life.&#10;&#10;Follow a simple rule: the attachment weight should not exceed 60%% of the vehicle's own weight."/>
         <text name="rms_tutorial_cold_engine_title" text="Warm Up Your Machine"/>
         <text name="rms_tutorial_cold_engine_message" text="Always warm up your machine before putting it to work. Besides the engine, there are many other parts that need time to warm up as well: hydraulic oil, the CVT transmission, and even the fuel temperature — especially in freezing weather. Running the machine cold can cause problems across multiple systems.&#10;&#10;If the engine temperature is above 50 degrees (122°F), everything is warmed up properly and the machine can be used safely."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="PTO Angle Too Sharp"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Be careful: the PTO angle between your machine and the implement is too large. The driveshaft starts working with harsh pulsations, vibration increases, and wear builds up quickly.&#10;&#10;Keep the angle below 30 degrees and try to disengage the PTO during sharp turns and headland maneuvers."/>
         <text name="rms_tutorial_overload_indicator_title" text="Overload Warning"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s is under heavy load. The warning indicator that just lit up on the dashboard is letting you know.&#10;&#10;The machine may not have enough power for the current task. Try reducing the load: limit your speed with cruise control, or ease off the throttle instead of running at full power."/>
         <text name="rms_tutorial_engine_overload_title" text="Engine Overload"/>

@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostato del cambio"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Pompa idraulica"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Cilindro idraulico"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Frizione PDF"/>
         <text name="rms_breakdowns_part_brake_system" text="Impianto frenante"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Cuscinetto ruota"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Tiranteria sterzo"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Grave perdita interna in un cilindro idraulico. L'attuazione è lenta e debole e gli attrezzi collegati non mantengono affidabilmente la posizione sotto carico."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Perdita interna critica in un cilindro idraulico. Il movimento idraulico è quasi assente e non è più possibile mantenere il carico."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Perdita critica cilindro idraulico"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Slittamento della frizione PDF. La trasmissione della coppia tramite PDF è ridotta e la PDF può disinserirsi sotto carico."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Slittamento moderato della frizione PDF. La trasmissione della coppia tramite PDF è fortemente ridotta e il disinserimento automatico sotto carico avviene spesso."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Grave slittamento della frizione PDF. La coppia utile disponibile alla PDF è fortemente ridotta e il funzionamento stabile delle attrezzature azionate non può essere garantito."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Guasto critico della frizione PDF. La trasmissione della coppia tramite PDF è persa e il funzionamento della PDF non è possibile."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Guasto PDF"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Usura del cuscinetto mozzo ruota. Sono presenti rumorosità e vibrazioni, la velocità massima è leggermente limitata e la resistenza al rotolamento aumenta."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Usura moderata del cuscinetto mozzo ruota. Rumorosità e vibrazioni sono marcate, la velocità massima cala e aumenta il carico sulla trasmissione."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Grave usura del cuscinetto mozzo ruota. Le vibrazioni sono forti, la velocità massima è sensibilmente ridotta, il carico sulla trasmissione aumenta e può comparire rumore di grippaggio."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobile"/>
         <text name="rms_spec_system_engine" text="Motore"/>
         <text name="rms_spec_system_transmission" text="Trasmissione"/>
-        <text name="rms_spec_system_hydraulics" text="Impianto idraulico / PDF"/>
+        <text name="rms_spec_system_hydraulics" text="Impianto idraulico"/>
         <text name="rms_spec_system_cooling" text="Sistema di raffreddamento"/>
         <text name="rms_spec_system_electrical" text="Impianto elettrico"/>
         <text name="rms_spec_system_chassis" text="Telaio"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Sembra che questo attrezzo sia troppo pesante per il tuo %s. L'idraulica sta lavorando al limite e questo avrà un effetto negativo sulla sua durata.&#10;&#10;Segui una regola semplice: il peso dell'attrezzo non dovrebbe superare il 60%% del peso proprio del veicolo."/>
         <text name="rms_tutorial_cold_engine_title" text="Scalda la tua macchina"/>
         <text name="rms_tutorial_cold_engine_message" text="Scalda sempre la tua macchina prima di metterla al lavoro. Oltre al motore, anche molte altre parti hanno bisogno di tempo per andare in temperatura: l'olio idraulico, la trasmissione CVT e perfino il carburante, soprattutto con il gelo. Usare la macchina a freddo può causare problemi in più sistemi.&#10;&#10;Se la temperatura del motore supera i 50 gradi (122°F), tutto sarà sufficientemente caldo e la macchina potrà essere usata in sicurezza."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Angolo PDF troppo accentuato"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Attenzione: l'angolo della PDF tra la tua macchina e l'attrezzo è troppo grande. L'albero cardanico inizia a lavorare con forti pulsazioni, le vibrazioni aumentano e l'usura cresce rapidamente.&#10;&#10;Mantieni l'angolo sotto i 30 gradi e cerca di disinnestare la PDF durante le curve strette e le manovre di fine campo."/>
         <text name="rms_tutorial_overload_indicator_title" text="Avviso di sovraccarico"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s sta lavorando sotto forte carico. La spia che si è appena accesa sul cruscotto te lo sta segnalando.&#10;&#10;La macchina potrebbe non avere abbastanza potenza per il lavoro attuale. Prova a ridurre il carico: limita la velocità con il cruise control oppure alleggerisci l'acceleratore invece di lavorare a piena potenza."/>
         <text name="rms_tutorial_engine_overload_title" text="Sovraccarico motore"/>

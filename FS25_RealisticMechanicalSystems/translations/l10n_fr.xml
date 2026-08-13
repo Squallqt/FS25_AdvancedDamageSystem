@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Thermostat de transmission"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Pompe hydraulique"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Vérin hydraulique"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Embrayage de PDF"/>
         <text name="rms_breakdowns_part_brake_system" text="Système de freinage"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Roulement de roue"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Tringlerie de direction"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Fuite interne sévère du vérin hydraulique. La force hydraulique chute fortement, le maintien de charge devient peu fiable et le fonctionnement est gravement dégradé."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Défaillance critique du vérin hydraulique. La pression interne ne peut plus être maintenue et le fonctionnement hydraulique normal est impossible."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Défaillance du vérin hydraulique"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Patinage léger de l'embrayage de PDF. Une petite partie de la puissance est perdue lors du transfert à l'outil."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Patinage modéré de l'embrayage de PDF. La transmission de puissance devient nettement moins efficace sous charge."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Patinage sévère de l'embrayage de PDF. Le transfert de puissance est fortement réduit et le fonctionnement de l'outil devient instable."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Défaillance critique de l'embrayage de PDF. La PDF ne peut plus transmettre correctement la puissance."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Patinage de l’embrayage de PDF"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Usure légère des roulements. La résistance mécanique augmente légèrement et un bruit de fonctionnement inhabituel peut apparaître."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Usure modérée des roulements. La friction augmente nettement, le bruit devient plus marqué et l'efficacité mécanique diminue."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Usure sévère des roulements. La friction est élevée, le bruit est important et il existe un risque réel de grippage sous charge."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobile"/>
         <text name="rms_spec_system_engine" text="Moteur"/>
         <text name="rms_spec_system_transmission" text="Transmission"/>
-        <text name="rms_spec_system_hydraulics" text="Hydraulique / PDF"/>
+        <text name="rms_spec_system_hydraulics" text="Hydraulique"/>
         <text name="rms_spec_system_cooling" text="Système de refroidissement"/>
         <text name="rms_spec_system_electrical" text="Système électrique"/>
         <text name="rms_spec_system_chassis" text="Châssis"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Cet outil semble trop lourd pour votre %s. L'hydraulique travaille à sa limite, ce qui aura un effet négatif sur sa durée de vie.&#10;&#10;Suivez une règle simple : le poids de l'outil ne devrait pas dépasser 60%% du poids propre du véhicule."/>
         <text name="rms_tutorial_cold_engine_title" text="Faites chauffer votre machine"/>
         <text name="rms_tutorial_cold_engine_message" text="Faites toujours chauffer votre machine avant de la mettre au travail. Outre le moteur, beaucoup d'autres éléments ont aussi besoin de temps pour monter en température : l'huile hydraulique, la transmission CVT et même le carburant, surtout par temps de gel. Utiliser la machine à froid peut provoquer des problèmes dans plusieurs systèmes.&#10;&#10;Si la température moteur dépasse 50 degrés (122°F), tout est correctement monté en température et la machine peut être utilisée en sécurité."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Angle de PDF trop important"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Attention : l'angle de la PDF entre votre machine et l'outil est trop important. L'arbre de transmission commence à travailler avec de fortes pulsations, les vibrations augmentent et l'usure s'accélère rapidement.&#10;&#10;Gardez l'angle sous 30 degrés et essayez de désengager la PDF lors des virages serrés et des manœuvres en bout de champ."/>
         <text name="rms_tutorial_overload_indicator_title" text="Avertissement de surcharge"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s est soumis à une forte charge. Le voyant qui vient de s’allumer sur le tableau de bord vous en avertit.&#10;&#10;La machine n’a peut-être pas assez de puissance pour la tâche en cours. Essayez de réduire la charge : limitez votre vitesse avec le régulateur, ou relâchez légèrement l’accélérateur au lieu de rouler à pleine puissance."/>
         <text name="rms_tutorial_engine_overload_title" text="Surcharge moteur"/>

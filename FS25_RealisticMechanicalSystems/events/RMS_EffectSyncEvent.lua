@@ -94,11 +94,6 @@ function RMS_EffectSyncEvent:run(connection)
             effect.extraData.status = self.status
         end
 
-    elseif self.effectId == "PTO_FAILED" then
-        if vehicle:getIsActiveForInput(true) then
-            g_currentMission:showBlinkingWarning(g_i18n:getText("rms_breakdowns_pto_auto_disengage_message"), 4000)
-        end
-
     elseif self.effectId == "BRAKE_FORCE_MODIFIER" then
         if self.status == "SOUND" then
             RMS_SoundManager.playSample(spec.samples["brakes" .. self.extraInt])

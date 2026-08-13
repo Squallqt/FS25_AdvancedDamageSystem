@@ -188,7 +188,6 @@ RealisticMechanicalSystems.FACTOR_STATS_ALIASES = {
     heavyLiftFactor = "hlf",
     operatingFactor = "of",
     coldOilFactor = "cof",
-    sharpAngleFactor = "saf",
     -- cooling
     highCoolingFactor = "hcf",
     overheatFactor = "ohf",
@@ -729,10 +728,6 @@ local function markTutorialDataDirty(vehicle, spec)
     local elecSys      = spec.systems ~= nil and spec.systems.electrical or nil
     local crankingTimer = elecSys ~= nil and (tonumber(elecSys.crankingTimer) or 0) or 0
     local liftedMass     = tonumber(spec.liftedMass)              or 0
-    local isPtoActive    = spec.isPtoActive    == true
-    local hasConnectedPto = spec.hasConnectedPto == true
-    local ptoAngle       = tonumber(spec.maxConnectedPtoAngleDeg) or 0
-    local ptoIsTrailerHitch = spec.ptoConnectionIsTrailerHitch == true
 
     if syncFloatChanged(spec._lastSyncTutorial_idleTimer,       idleTimer,       1.0)   or
        syncFloatChanged(spec._lastSyncTutorial_fuelLevel,       fuelLevel,       0.01)  or
@@ -745,11 +740,7 @@ local function markTutorialDataDirty(vehicle, spec)
        spec._lastSyncTutorial_groundContact ~= groundContact                           or
        spec._lastSyncTutorial_isMoving      ~= isMoving                                or
        syncFloatChanged(spec._lastSyncTutorial_crankingTimer,   crankingTimer,   100.0) or
-       syncFloatChanged(spec._lastSyncTutorial_liftedMass,      liftedMass,      0.01)  or
-       spec._lastSyncTutorial_isPtoActive    ~= isPtoActive                            or
-       spec._lastSyncTutorial_hasConnectedPto ~= hasConnectedPto                       or
-       spec._lastSyncTutorial_ptoIsTrailerHitch ~= ptoIsTrailerHitch                    or
-       syncFloatChanged(spec._lastSyncTutorial_ptoAngle,        ptoAngle,        0.5) then
+       syncFloatChanged(spec._lastSyncTutorial_liftedMass,      liftedMass,      0.01) then
             RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TUTORIAL_DATA)
             spec._lastSyncTutorial_idleTimer       = idleTimer
             spec._lastSyncTutorial_fuelLevel       = fuelLevel
@@ -763,10 +754,6 @@ local function markTutorialDataDirty(vehicle, spec)
             spec._lastSyncTutorial_isMoving        = isMoving
             spec._lastSyncTutorial_crankingTimer   = crankingTimer
             spec._lastSyncTutorial_liftedMass      = liftedMass
-            spec._lastSyncTutorial_isPtoActive     = isPtoActive
-            spec._lastSyncTutorial_hasConnectedPto = hasConnectedPto
-            spec._lastSyncTutorial_ptoIsTrailerHitch = ptoIsTrailerHitch
-            spec._lastSyncTutorial_ptoAngle        = ptoAngle
             return true
     end
 

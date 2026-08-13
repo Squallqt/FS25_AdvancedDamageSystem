@@ -518,82 +518,7 @@ local function updateImplementChainState(vehicle, dt)
     local implements = {}
     local liftBranches = {}
     local visited = {}
-    local maxConnectedPtoAngleDeg = 0
-    local hasConnectedPto = false
-    local isPtoActive = false
-    local ptoConnectionIsTrailerHitch = false
     local maxCutterArea = 0
-
-    local function updatePtoActivityState(vehicleObj)
-        local ptoActive = vehicleObj.getIsPowerTakeOffActive ~= nil and vehicleObj:getIsPowerTakeOffActive() or false
-        local ptoConsuming = vehicleObj.getDoConsumePtoPower ~= nil and vehicleObj:getDoConsumePtoPower() or false
-        local ptoRpm = vehicleObj.getPtoRpm ~= nil and (tonumber(vehicleObj:getPtoRpm()) or 0) or 0
-
-        local ptoTorque = 0
-        if PowerConsumer ~= nil and PowerConsumer.getTotalConsumedPtoTorque ~= nil then
-            local ok, torqueValue = pcall(PowerConsumer.getTotalConsumedPtoTorque, vehicleObj, nil, nil, true)
-            if ok then
-                ptoTorque = tonumber(torqueValue) or 0
-            end
-        end
-
-        if ptoActive or ptoConsuming or ptoRpm > 10 or ptoTorque > 0.001 then
-            isPtoActive = true
-        end
-    end
-
-    local function updateConnectedPtoState(parentObj, jointDescIndex, supportWheelCount)
-        if parentObj ~= nil and parentObj.getOutputPowerTakeOffsByJointDescIndex ~= nil and jointDescIndex ~= nil then
-            local outputs = parentObj:getOutputPowerTakeOffsByJointDescIndex(jointDescIndex) or {}
-            for _, output in ipairs(outputs) do
-                if output ~= nil and output.connectedInput ~= nil then
-                    hasConnectedPto = true
-
-                    -- towed implements have support wheels in ground contact; they use
-                    -- wide-angle PTO shafts by design and must not trigger the sharp-angle penalty
-                    if supportWheelCount > 0 then
-                        ptoConnectionIsTrailerHitch = true
-                    end
-
-                    local inputPto = output.connectedInput
-                    local outputNode = output.outputNode
-                    local inputNode = inputPto ~= nil and inputPto.inputNode or nil
-
-                    if outputNode ~= nil and inputNode ~= nil then
-                        local outDirX, outDirY, outDirZ = localDirectionToWorld(outputNode, 0, 0, 1)
-                        local inDirX, inDirY, inDirZ = localDirectionToWorld(inputNode, 0, 0, 1)
-                        local angleDeg = nil
-
-                        outDirX, outDirY, outDirZ = MathUtil.vector3Normalize(outDirX, outDirY, outDirZ)
-                        inDirX, inDirY, inDirZ = MathUtil.vector3Normalize(inDirX, inDirY, inDirZ)
-
-                        local outLen = MathUtil.vector3Length(outDirX, outDirY, outDirZ)
-                        local inLen = MathUtil.vector3Length(inDirX, inDirY, inDirZ)
-                        if outLen > 0.0001 and inLen > 0.0001 then
-                            local cosine = MathUtil.dotProduct(outDirX, outDirY, outDirZ, inDirX, inDirY, inDirZ)
-                            angleDeg = math.deg(math.acos(math.abs(math.clamp(cosine, -1.0, 1.0))))
-                        end
-
-                        if angleDeg == nil then
-                            local x1, y1, z1 = getWorldTranslation(outputNode)
-                            local x2, y2, z2 = getWorldTranslation(inputNode)
-                            local dx, dy, dz = x1 - x2, y1 - y2, z1 - z2
-                            local length = MathUtil.vector3Length(dx, dy, dz)
-                            if length > 0.0001 then
-                                local length2D = MathUtil.vector2Length(dx, dz)
-                                local cosine = math.clamp(length2D / length, -1.0, 1.0)
-                                angleDeg = math.deg(math.acos(cosine))
-                            end
-                        end
-
-                        if angleDeg ~= nil then
-                            maxConnectedPtoAngleDeg = math.max(maxConnectedPtoAngleDeg, angleDeg)
-                        end
-                    end
-                end
-            end
-        end
-    end
 
     local function collectImplementState(vehicleObj, parentObj, jointDesc, jointDescIndex, isHead, liftBranch)
         if vehicleObj == nil or visited[vehicleObj] then
@@ -601,8 +526,6 @@ local function updateImplementChainState(vehicle, dt)
         end
 
         visited[vehicleObj] = true
-        updatePtoActivityState(vehicleObj)
-
         local supportWheelCount, supportWheelLoad = getWheelSupportState(vehicleObj)
         local isMoving = false
         if isHead then
@@ -614,7 +537,6 @@ local function updateImplementChainState(vehicle, dt)
         else
             local moveKey = string.format("%s:%s", tostring(vehicleObj), tostring(jointDescIndex or -1))
             isMoving = getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
-            updateConnectedPtoState(parentObj, jointDescIndex, supportWheelCount)
         end
 
         local isFoldMoving, isPlowRotationMoving, isCylinderedMoving = getToolMotionFlags(vehicleObj)
@@ -730,12 +652,8 @@ local function updateImplementChainState(vehicle, dt)
 
     spec.hydraulicsMoveAlphaCache = nextMoveAlphaCache
     spec.hydraulicsLiftRatioCache = nextLiftRatioCache
-    spec.maxConnectedPtoAngleDeg = maxConnectedPtoAngleDeg
-    spec.hasConnectedPto = hasConnectedPto
-    spec.isPtoActive = isPtoActive
-    spec.ptoConnectionIsTrailerHitch = ptoConnectionIsTrailerHitch
     spec.implements = implements
-    spec.isHarvesting = maxCutterArea > 0 and isOnField and lastSpeed >= 0.5 and isTurnedOn
+    spec.hasDebris = maxCutterArea > 0 and isOnField and lastSpeed >= 0.5 and isTurnedOn
 end
 
 --- chassis

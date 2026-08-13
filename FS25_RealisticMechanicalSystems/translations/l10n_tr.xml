@@ -186,7 +186,6 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Şanzıman termostatı"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hidrolik pompa"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hidrolik silindir"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Kuyruk mili(PTO) kavraması"/>
         <text name="rms_breakdowns_part_brake_system" text="Fren sistemi"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Tekerlek yatağı"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Direksiyon bağlantı sistemi"/>
@@ -306,11 +305,6 @@
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Hidrolik silindirde ciddi bir iç sızıntı var. Hidrolik hareket yavaş ve zayıftır; ayrıca bağlı ekipmanlar, yük altında konumlarını güvenilir bir şekilde koruyamamaktadır."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Hidrolik silindirde ciddi bir iç sızıntı. Hidrolik hareket neredeyse tamamen kaybolmuş ve yük tutma artık mümkün değil."/>
         <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Hidrolik silindir sızıntısı kritik"/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage1_description" text="Kuyruk Mili(PTO) kavramasında kayma. PTO üzerinden tork aktarımı azalır ve PTO, yük altında devreden çıkabilir."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage2_description" text="Kuyruk Mili(PTO) kavramasında orta derecede kayma. PTO üzerinden tork aktarımı önemli ölçüde azalmıştır ve yük altında PTO’nun otomatik olarak devreden çıkması sık sık meydana gelmektedir."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage3_description" text="Kuyruk Mili(PTO) kavramasında ciddi kayma. Kullanılabilir PTO torku önemli ölçüde azalmıştır ve PTO ile tahrik edilen ekipmanların istikrarlı çalışması garanti edilememektedir."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_description" text="Kuyruk Mili(PTO) kavramasında ciddi arıza. PTO üzerinden tork aktarımı kesilmiş ve PTO'nun çalıştırılması mümkün değildir."/>
-        <text name="rms_breakdowns_pto_clutch_slip_stage4_message" text="Kuyruk Mili(PTO) arızası"/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Tekerlek göbeği yatağında aşınma. Yatağından gelen ses ve titreşim hissediliyor, azami hız hafifçe kısıtlanıyor ve yuvarlanma direnci artıyor."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Tekerlek göbeği yataklarında orta derecede aşınma. Yatak gürültüsü ve titreşimi belirgindir, azami hız düşer ve aktarma organlarına binen yük artar."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Tekerlek göbeği yataklarında ciddi aşınma. Titreşim şiddetlidir, azami hız önemli ölçüde azalır, aktarma organlarına binen yük artar ve sıkışma sesi duyulabilir."/>
@@ -380,7 +374,7 @@
         <text name="rms_spec_workshop_mobile" text="Mobil"/>
         <text name="rms_spec_system_engine" text="Motor"/>
         <text name="rms_spec_system_transmission" text="Şanzıman"/>
-        <text name="rms_spec_system_hydraulics" text="Hidrolik / Güç Çıkışı (Kuyruk mili)"/>
+        <text name="rms_spec_system_hydraulics" text="Hidrolik"/>
         <text name="rms_spec_system_cooling" text="Soğutma Sistemi"/>
         <text name="rms_spec_system_electrical" text="Elektrik Sistemi"/>
         <text name="rms_spec_system_chassis" text="Şasi"/>
@@ -720,8 +714,6 @@
         <text name="rms_tutorial_heavy_lift_message" text="Görünüşe göre bu ekipman, %s'niz için fazla ağır. Hidrolik sistem sınırında çalışıyor ve bu durum sistemin kullanım ömrünü olumsuz etkileyecektir.&#10;&#10;Basit bir kurala uyun: Ekipmanın ağırlığı, aracın kendi ağırlığının %%60'ını aşmamalıdır."/>
         <text name="rms_tutorial_cold_engine_title" text="Makinenizi Isıtın"/>
         <text name="rms_tutorial_cold_engine_message" text="Makinenizi çalıştırmadan önce daima ısıtın. Motorun yanı sıra, ısınması için zamana ihtiyaç duyan birçok başka parça da vardır: hidrolik yağı, Otomatik Şanzıman(CVT) ve hatta yakıt sıcaklığı — özellikle dondurucu soğuklarda. Makineyi soğukken çalıştırmak, birçok sistemde sorunlara yol açabilir.&#10;&#10;Motor sıcaklığı 50 derecenin üzerindeyse, her şey düzgün bir şekilde ısınmıştır ve makine güvenle kullanılabilir."/>
-        <text name="rms_tutorial_pto_sharp_angle_title" text="Kuyruk Mili(PTO) Açısı Çok Keskin"/>
-        <text name="rms_tutorial_pto_sharp_angle_message" text="Dikkat edin: Makineniz ile ek ekipman arasındaki Kuyruk Mili(PTO) açısı çok geniş. Kuyruk mili sert titreşimlerle çalışmaya başlıyor, titreşim artıyor ve aşınma hızla artıyor.&#10;&#10;Açıyı 30 derecenin altında tutun ve keskin dönüşler ile tarla kenarı manevraları sırasında Kuyruk Mili(PTO)’ni devre dışı bırakmaya çalışın."/>
         <text name="rms_tutorial_overload_indicator_title" text="Aşırı Yük Uyarısı"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s ağır yük altında. Gösterge panelinde az önce yanan uyarı ışığı size bunu bildiriyor.&#10;&#10;Makine, mevcut görev için yeterli güce sahip olmayabilir. Yükü azaltmayı deneyin: hız sabitleyiciyi kullanarak hızınızı sınırlayın ya da tam güçte çalışmak yerine gazdan biraz çekin."/>
         <text name="rms_tutorial_engine_overload_title" text="Motor Aşırı Yüklemesi"/>

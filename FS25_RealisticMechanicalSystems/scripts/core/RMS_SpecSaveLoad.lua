@@ -9,19 +9,6 @@ local captureSystemsSync = RealisticMechanicalSystems.captureSystemsSync
 --                      HELPER FUNCTIONS
 -- ==========================================================
 
-local PTO_SHARP_ANGLE_EXCLUDED_TYPES = {
-    combineDrivable = true,
-    combineCutter = true,
-    combineCutterFruitPreparer = true,
-    cottonHarvester = true,
-    riceHarvester = true,
-    vineHarvester = true,
-    balerDrivable = true,
-    selfPropelledMower = true,
-    woodHarvester = true,
-    ricePlanter = true
-}
-
 local function createEmptyFactorStats(systems)
     local result = {}
     if type(systems) ~= "table" then
@@ -439,8 +426,6 @@ function RealisticMechanicalSystems:onLoad(savegame)
             vibRaw = 0,
             vibFieldMultiplier = 1,
             coldOilFactor = 0,
-            sharpAngleFactor = 0,
-            ptoSharpAngleDeg = 0,
             breakdownProbability = 0,
             critBreakdownProbability = 0
         },
@@ -592,7 +577,6 @@ function RealisticMechanicalSystems:onLoad(savegame)
         }
     }
 
-    self.spec_RealisticMechanicalSystems.isExcludedFromPTOSharpAngleFactor = false
     self.spec_RealisticMechanicalSystems.isUnderRoof = true
     self.spec_RealisticMechanicalSystems.roofRaycastHit = false
     self.spec_RealisticMechanicalSystems.roofRaycastResult = nil
@@ -617,10 +601,6 @@ function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.isImplementOperating = false
     self.spec_RealisticMechanicalSystems.liftedMass = 0
     self.spec_RealisticMechanicalSystems.operatingMass = 0
-    self.spec_RealisticMechanicalSystems.isPtoActive = false
-    self.spec_RealisticMechanicalSystems.maxConnectedPtoAngleDeg = 0
-    self.spec_RealisticMechanicalSystems.ptoConnectionIsTrailerHitch = false
-    self.spec_RealisticMechanicalSystems.hasConnectedPto = false
     self.spec_RealisticMechanicalSystems.hydraulicsMoveAlphaCache = {}
     self.spec_RealisticMechanicalSystems.hydraulicsLiftRatioCache = {}
     self.spec_RealisticMechanicalSystems.chassisVibState = {
@@ -661,7 +641,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
         idleTimer = 0,
         wetStackingLevel = 0
     }
-    self.spec_RealisticMechanicalSystems.isHarvesting = false
+    self.spec_RealisticMechanicalSystems.hasDebris = false
 
     self.spec_RealisticMechanicalSystems.onUpdateTimer = RMS_Config.ON_UPDATE_DELAY
     self.spec_RealisticMechanicalSystems.updateVehicleStateTimerOne = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
@@ -1075,8 +1055,6 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
         end
     end
 
-    local vtype = self.type.name
-    spec.isExcludedFromPTOSharpAngleFactor = PTO_SHARP_ANGLE_EXCLUDED_TYPES[vtype] == true
     enableOrDisableSystems(self)
     spec.isVehicleNeedLubricate = getIsVehicleNeedLubricate(self)
     spec.isVehicleNeedBlowOut = getIsVehicleNeedBlowOut(self)

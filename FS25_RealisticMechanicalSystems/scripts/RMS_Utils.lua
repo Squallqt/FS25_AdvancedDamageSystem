@@ -1096,15 +1096,6 @@ function RMS_Utils.getHeavyTrailerRatioLevels(isTruck)
     return C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD, C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT
 end
 
--- Returns the PTO angle threshold in degrees of the current connection type.
-function RMS_Utils.getPtoSharpAngleThreshold(spec)
-    local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
-    if spec.ptoConnectionIsTrailerHitch == true then
-        return C.PTO_SHARP_ANGLE_WIDE_THRESHOLD
-    end
-    return C.PTO_SHARP_ANGLE_FACTOR_THRESHOLD
-end
-
 function RMS_Utils.createLogger(prefix)
     return function(...)
         if RMS_Config ~= nil and RMS_Config.DEBUG then

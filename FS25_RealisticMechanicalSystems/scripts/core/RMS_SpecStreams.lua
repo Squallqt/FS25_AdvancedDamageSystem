@@ -307,10 +307,6 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
             local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(elecSys ~= nil and elecSys.crankingTimer or 0, 0, 0, 10000))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.liftedMass, 0, 0))
-            streamWriteBool(streamId, spec.isPtoActive == true)
-            streamWriteBool(streamId, spec.hasConnectedPto == true)
-            streamWriteBool(streamId, spec.ptoConnectionIsTrailerHitch == true)
-            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.maxConnectedPtoAngleDeg, 0, 0, 180))
         end
     end
 end
@@ -447,10 +443,6 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
                 elecSys.crankingTimer = crankingTimer
             end
             spec.liftedMass           = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
-            spec.isPtoActive          = streamReadBool(streamId)
-            spec.hasConnectedPto      = streamReadBool(streamId)
-            spec.ptoConnectionIsTrailerHitch = streamReadBool(streamId)
-            spec.maxConnectedPtoAngleDeg = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 180)
         end
     end
 end
