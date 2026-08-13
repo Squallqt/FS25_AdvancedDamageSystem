@@ -3,21 +3,7 @@ RMS_Hud.modDirectory = g_currentModDirectory
 RMS_Hud.debugViewMode = RMS_Hud.debugViewMode or "default"
 local RMS_Hud_mt = Class(RMS_Hud, HUDDisplay)
 
-RMS_Hud.ROUNDED_PANEL_TEXTURE_SIZE = 64
-RMS_Hud.ROUNDED_PANEL_CORNER_SIZE = 5
-RMS_Hud.ROUNDED_PANEL_UV = {
-    topLeft     = {  0,  0,  5,  5 },
-    top         = {  5,  0, 54,  5 },
-    topRight    = { 59,  0,  5,  5 },
-    left        = {  0,  5,  5, 54 },
-    center      = {  5,  5, 54, 54 },
-    right       = { 59,  5,  5, 54 },
-    bottomLeft  = {  0, 59,  5,  5 },
-    bottom      = {  5, 59, 54,  5 },
-    bottomRight = { 59, 59,  5,  5 }
-}
 RMS_Hud.COLOR_GAME_GREEN = HUD.COLOR.ACTIVE
-RMS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME = "RMS_NOTIFICATION"
 RMS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED = 0.009
 RMS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED = 0.0035
 RMS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED = 0.0015
@@ -29,8 +15,6 @@ function RMS_Hud:new()
         consumptionPerArea = 0,
         motorLoad = 0
     }
-
-    self.roundedPanelOverlay = Overlay.new(self.modDirectory .. "hud/panelRounded.dds", 0, 0, 0, 0)
 
     g_overlayManager:addTextureConfigFile(RMS_Hud.modDirectory .. "hud/rms_dashboardHud.xml", "rms_DashboardHud")
     self.wheelSlipHud = {
@@ -131,31 +115,19 @@ function RMS_Hud:new()
     self.loadMassText = {}
 
     self.notificationPanel = {
-        x = 0.40,
-        y = 0.14,   
-        width = 0.20,
-        padding = 0.01,
-        lineHeight = 0.016,
-        titleLineHeight = 0.018,
-        titleSpacing = 0.006,
-        titleDividerHeight = 0.001,
-        dividerSpacing = 0.003,
-        bottomDividerSpacing = 2,
-        persistentDurationMs = 60000,
-        dividerBackground = "dataS/menu/base/graph_pixel.dds",
         title = nil,
         text = nil,
-        endTime = 0,
+        endTime = nil,
         isVisible = false,
         isPersistent = false,
         closeGlyphSize = 26,
         closeGlyphTextSpacing = 6
     }
 
-    self.notificationDividerOverlay = Overlay.new(self.notificationPanel.dividerBackground, 0, 0, 0, 0)
     self.notificationCloseGlyph = nil
     self.notificationCloseGlyphInputMode = nil
-    self.isNotificationInputActive = false
+    self.notificationInputContextName = nil
+    self.notificationCloseActionEventId = nil
 
     self.activeVehicleDebugPanel = {
         x = 0.20,
@@ -185,10 +157,7 @@ function RMS_Hud:new()
 end
 
 function RMS_Hud:delete()
-    self.roundedPanelOverlay:delete()
-    self.roundedPanelOverlay = nil
-    self.notificationDividerOverlay:delete()
-    self.notificationDividerOverlay = nil
+    self:setNotificationInputActive(false)
     self.wheelSlipHud.icon:delete()
     self.wheelSlipHud.icon = nil
     self.fuelConsumptionHud.icon:delete()
@@ -429,7 +398,8 @@ function RMS_Hud:draw()
     end
 
     local isHudVisible = g_currentMission.hud.isVisible
-    self:setNotificationInputActive(isHudVisible and self:hasClosableNotification())
+    local isGuiVisible = g_gui ~= nil and g_gui:getIsGuiVisible()
+    self:setNotificationInputActive(isHudVisible and not isGuiVisible and self:hasClosableNotification())
 
     if not isHudVisible then
         return
@@ -483,9 +453,11 @@ function RMS_Hud:setNotification(text, durationMs, title, playSound)
     panel.title = normalizedTitle
     panel.text = normalizedText
     panel.isPersistent = parsedDurationMs ~= nil and parsedDurationMs <= 0
-    panel.endTime = panel.isPersistent
-        and (g_time + math.max(panel.persistentDurationMs or 25000, 0))
-        or (g_time + math.max(parsedDurationMs or 3000, 0))
+    if panel.isPersistent then
+        panel.endTime = nil
+    else
+        panel.endTime = g_time + math.max(parsedDurationMs or 3000, 0)
+    end
     panel.isVisible = true
 
     if playSound then
@@ -497,26 +469,43 @@ function RMS_Hud:clearNotification()
     local panel = self.notificationPanel
     panel.title = nil
     panel.text = nil
-    panel.endTime = 0
+    panel.endTime = nil
     panel.isVisible = false
     panel.isPersistent = false
 end
 
 function RMS_Hud:setNotificationInputActive(isActive)
     local inputBinding = g_inputBinding
+    local contextName = isActive and inputBinding.currentContextName or nil
 
-    if isActive and not self.isNotificationInputActive then
-        inputBinding:setContext(RMS_Hud.NOTIFICATION_INPUT_CONTEXT_NAME, true, false)
+    if self.notificationCloseActionEventId ~= nil
+        and (not isActive or self.notificationInputContextName ~= contextName) then
+        inputBinding:beginActionEventsModification(self.notificationInputContextName)
+        inputBinding:removeActionEvent(self.notificationCloseActionEventId)
+        inputBinding:endActionEventsModification()
 
-        local _, eventId = inputBinding:registerActionEvent(InputAction.RMS_CLOSE_NOTIFICATION, self, self.onCloseNotificationInput, false, true, false, true)
+        self.notificationInputContextName = nil
+        self.notificationCloseActionEventId = nil
+    end
+
+    if isActive and contextName ~= nil and self.notificationCloseActionEventId == nil then
+        inputBinding:beginActionEventsModification(contextName)
+        local _, eventId = inputBinding:registerActionEvent(
+            InputAction.RMS_CLOSE_NOTIFICATION,
+            self,
+            self.onCloseNotificationInput,
+            false,
+            true,
+            false,
+            true,
+            nil,
+            false
+        )
         inputBinding:setActionEventTextVisibility(eventId, false)
+        inputBinding:endActionEventsModification()
 
-        self.isNotificationInputActive = true
-    elseif not isActive and self.isNotificationInputActive then
-        inputBinding:removeActionEventsByTarget(self)
-        inputBinding:revertContext(true)
-
-        self.isNotificationInputActive = false
+        self.notificationInputContextName = contextName
+        self.notificationCloseActionEventId = eventId
     end
 end
 
@@ -540,48 +529,18 @@ function RMS_Hud:closePersistentNotification()
     return true
 end
 
-function RMS_Hud:wrapNotificationText(text, maxWidth, textSize)
-    local words = {}
-    for word in tostring(text or ""):gmatch("%S+") do
-        table.insert(words, word)
-    end
-
-    local lines = {}
-    local currentLine = ""
-
-    for _, word in ipairs(words) do
-        local candidate = currentLine == "" and word or (currentLine .. " " .. word)
-
-        if currentLine == "" or getTextWidth(textSize, candidate) <= maxWidth then
-            currentLine = candidate
-        else
-            table.insert(lines, currentLine)
-            currentLine = word
-        end
-    end
-
-    if currentLine ~= "" then
-        table.insert(lines, currentLine)
-    end
-
-    if #lines == 0 then
-        table.insert(lines, "")
-    end
-
-    return lines
-end
-
 function RMS_Hud:drawNotificationDivider(x, y, width, height, color)
-    local snappedX = math.floor(x * g_screenWidth + 0.5) / g_screenWidth
-    local snappedY = math.floor(y * g_screenHeight + 0.5) / g_screenHeight
-    local snappedWidth = math.max(math.floor(width * g_screenWidth + 0.5) / g_screenWidth, 1 / g_screenWidth)
-    local snappedHeight = math.max(math.floor(height * g_screenHeight + 0.5) / g_screenHeight, 1 / g_screenHeight)
-
-    local overlay = self.notificationDividerOverlay
-    overlay:setPosition(snappedX, snappedY)
-    overlay:setDimension(snappedWidth, snappedHeight)
-    overlay:setColor(unpack(color))
-    overlay:render()
+    local snappedX, snappedY, snappedWidth, snappedHeight = self:snapScreenRect(x, y, width, height)
+    drawFilledRect(
+        snappedX,
+        snappedY,
+        snappedWidth,
+        snappedHeight,
+        color[1],
+        color[2],
+        color[3],
+        color[4] or 1
+    )
 end
 
 function RMS_Hud:getNotificationCloseGlyph(glyphWidth, glyphHeight)
@@ -615,52 +574,24 @@ function RMS_Hud:snapScreenRect(x, y, width, height)
     return snappedX, snappedY, snappedWidth, snappedHeight
 end
 
-function RMS_Hud:renderPanelQuad(x, y, width, height, color, uvs)
-    if self.roundedPanelOverlay == nil or width <= 0 or height <= 0 then
+function RMS_Hud:drawPanelBackground(x, y, width, height, color)
+    if width <= 0 or height <= 0 then
         return
     end
 
-    local overlay = self.roundedPanelOverlay
-    overlay:setPosition(x, y)
-    overlay:setDimension(width, height)
-    overlay:setUVs(GuiUtils.getUVs(uvs, {RMS_Hud.ROUNDED_PANEL_TEXTURE_SIZE, RMS_Hud.ROUNDED_PANEL_TEXTURE_SIZE}))
-    overlay:setColor(color[1], color[2], color[3], color[4] or 1)
-    overlay:render()
-end
-
-function RMS_Hud:drawPanelBackground(x, y, width, height, color)
     local panelColor = color or {0, 0, 0, 0.7}
-
     local panelX, panelY, panelWidth, panelHeight = self:snapScreenRect(x, y, width, height)
-    local cornerWidth = math.min(
-        math.floor(self:scalePixelToScreenWidth(RMS_Hud.ROUNDED_PANEL_CORNER_SIZE) * g_screenWidth + 0.5) / g_screenWidth,
-        panelWidth * 0.5
+    drawFilledRectRound(
+        panelX,
+        panelY,
+        panelWidth,
+        panelHeight,
+        0.25,
+        panelColor[1],
+        panelColor[2],
+        panelColor[3],
+        panelColor[4] or 1
     )
-    local cornerHeight = math.min(
-        math.floor(self:scalePixelToScreenHeight(RMS_Hud.ROUNDED_PANEL_CORNER_SIZE) * g_screenHeight + 0.5) / g_screenHeight,
-        panelHeight * 0.5
-    )
-    local leftX = panelX
-    local centerX = panelX + cornerWidth
-    local rightX = panelX + panelWidth - cornerWidth
-    local bottomY = panelY
-    local centerY = panelY + cornerHeight
-    local topY = panelY + panelHeight - cornerHeight
-    local centerWidth = math.max(rightX - centerX, 0)
-    local centerHeight = math.max(topY - centerY, 0)
-    local uv = RMS_Hud.ROUNDED_PANEL_UV
-
-    self:renderPanelQuad(leftX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomLeft)
-    self:renderPanelQuad(centerX, bottomY, centerWidth, cornerHeight, panelColor, uv.bottom)
-    self:renderPanelQuad(rightX, bottomY, cornerWidth, cornerHeight, panelColor, uv.bottomRight)
-
-    self:renderPanelQuad(leftX, centerY, cornerWidth, centerHeight, panelColor, uv.left)
-    self:renderPanelQuad(centerX, centerY, centerWidth, centerHeight, panelColor, uv.center)
-    self:renderPanelQuad(rightX, centerY, cornerWidth, centerHeight, panelColor, uv.right)
-
-    self:renderPanelQuad(leftX, topY, cornerWidth, cornerHeight, panelColor, uv.topLeft)
-    self:renderPanelQuad(centerX, topY, centerWidth, cornerHeight, panelColor, uv.top)
-    self:renderPanelQuad(rightX, topY, cornerWidth, cornerHeight, panelColor, uv.topRight)
 end
 
 function RMS_Hud:drawNotificationPanel()
@@ -669,83 +600,75 @@ function RMS_Hud:drawNotificationPanel()
         return
     end
 
-    if g_time >= panel.endTime then
+    if panel.endTime ~= nil and g_time >= panel.endTime then
         self:clearNotification()
         return
     end
 
-    local titleTextSize = self.text.headerSize
-    local textSize = self.text.normalSize + 0.003
-    local fullTextWidth = panel.width - panel.padding * 2
-    local titleTextWidth = fullTextWidth
-    local titleLines = {}
-
-    if panel.title ~= nil then
-        titleLines = self:wrapNotificationText(panel.title, titleTextWidth, titleTextSize)
-    end
-
-    local lines = self:wrapNotificationText(panel.text, fullTextWidth, textSize)
-    local baseHeight = panel.padding * 2 + panel.lineHeight
-    local hasTitle = #titleLines > 0
-    local titleSpacing = hasTitle and panel.titleSpacing or 0
-    local titleDividerHeight = hasTitle and panel.titleDividerHeight or 0
-    local titleTextExtraSpacing = hasTitle and self:scalePixelToScreenHeight(10) or 0
-    local dividerSpacing = hasTitle and (panel.dividerSpacing + self:scalePixelToScreenHeight(5)) or 0
-    local bottomDividerTextSpacing = hasTitle and self:scalePixelToScreenHeight((panel.bottomDividerSpacing or 2) + 2) or 0
+    local panelWidth = self:scalePixelToScreenWidth(640)
+    local panelX = 0.5 - panelWidth * 0.5
+    local panelY = g_hudAnchorBottom
+    local paddingX = self:scalePixelToScreenWidth(20)
+    local paddingY = self:scalePixelToScreenHeight(20)
+    local maxTextWidth = panelWidth - paddingX * 2
+    local titleTextSize = self:scalePixelToScreenHeight(19)
+    local textSize = self:scalePixelToScreenHeight(17)
+    local titleSpacing = self:scalePixelToScreenHeight(10)
+    local sectionSpacing = self:scalePixelToScreenHeight(15)
+    local dividerHeight = self:scalePixelToScreenHeight(1)
+    local closeRowHeight = self:scalePixelToScreenHeight(30)
+    local hasTitle = panel.title ~= nil
     local closeGlyphVisible = panel.isPersistent and hasTitle
     local closeGlyphWidth = closeGlyphVisible and self:scalePixelToScreenWidth(panel.closeGlyphSize or 18) or 0
     local closeGlyphHeight = closeGlyphVisible and self:scalePixelToScreenHeight(panel.closeGlyphSize or 18) or 0
-    local topSectionHeight = hasTitle and (panel.padding + (#titleLines * panel.titleLineHeight) + dividerSpacing + titleDividerHeight) or 0
-    local bottomSectionHeight = hasTitle and (topSectionHeight + dividerSpacing + bottomDividerTextSpacing) or 0
-    local dynamicHeight = hasTitle
-        and (panel.padding + (#titleLines * panel.titleLineHeight) + titleSpacing + titleTextExtraSpacing + (#lines * panel.lineHeight) + bottomSectionHeight)
-        or (panel.padding * 2 + (#lines * panel.lineHeight))
-    local anchorCenterY = panel.y + baseHeight * 0.5
-    local panelY = anchorCenterY - dynamicHeight * 0.5
-
-    self:drawPanelBackground(
-        panel.x,
-        panelY,
-        panel.width,
-        dynamicHeight,
-        {0, 0, 0, 0.72}
-    )
-
-    local centerX = panel.x + panel.width * 0.5
-    local currentY = panelY + dynamicHeight - panel.padding
-
-    if hasTitle then
-        setTextAlignment(RenderText.ALIGN_CENTER)
-        setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_TOP)
-        setTextBold(true)
-        setTextColor(unpack(RMS_Hud.COLOR_GAME_GREEN))
-
-        for _, line in ipairs(titleLines) do
-            renderText(centerX, currentY, titleTextSize, line)
-            currentY = currentY - panel.titleLineHeight
-        end
-
-        local dividerWidth = panel.width - panel.padding * 2
-        local dividerY = currentY - dividerSpacing - titleDividerHeight * 0.5
-        self:drawNotificationDivider(panel.x + panel.padding, dividerY, dividerWidth, titleDividerHeight, RMS_Hud.COLOR_GAME_GREEN)
-
-        currentY = currentY - panel.titleSpacing - titleTextExtraSpacing
-    end
 
     setTextAlignment(RenderText.ALIGN_CENTER)
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_TOP)
-    setTextBold(false)
-    setTextColor(1, 1, 1, 1)
+    setTextWrapWidth(maxTextWidth)
 
-    for _, line in ipairs(lines) do
-        renderText(centerX, currentY, textSize, line)
-        currentY = currentY - panel.lineHeight
+    local titleHeight = 0
+    if hasTitle then
+        setTextBold(true)
+        titleHeight = getTextHeight(titleTextSize, panel.title)
     end
 
+    setTextBold(false)
+    local textHeight = getTextHeight(textSize, panel.text)
+    local titleSectionHeight = hasTitle and (titleHeight + titleSpacing * 2 + dividerHeight) or 0
+    local closeSectionHeight = hasTitle and (sectionSpacing + dividerHeight + (closeGlyphVisible and closeRowHeight or 0)) or 0
+    local dynamicHeight = paddingY * 2 + titleSectionHeight + textHeight + closeSectionHeight
+
+    self:drawPanelBackground(
+        panelX,
+        panelY,
+        panelWidth,
+        dynamicHeight,
+        HUD.COLOR.BACKGROUND_DARK
+    )
+
+    local centerX = 0.5
+    local dividerWidth = panelWidth - paddingX * 2
+    local currentY = panelY + dynamicHeight - paddingY
+
     if hasTitle then
-        local dividerWidth = panel.width - panel.padding * 2
-        local bottomDividerY = currentY - dividerSpacing - bottomDividerTextSpacing - titleDividerHeight * 0.5
-        self:drawNotificationDivider(panel.x + panel.padding, bottomDividerY, dividerWidth, titleDividerHeight, RMS_Hud.COLOR_GAME_GREEN)
+        setTextBold(true)
+        setTextColor(unpack(RMS_Hud.COLOR_GAME_GREEN))
+        renderText(centerX, currentY, titleTextSize, panel.title)
+        currentY = currentY - titleHeight - titleSpacing
+
+        self:drawNotificationDivider(panelX + paddingX, currentY - dividerHeight, dividerWidth, dividerHeight, RMS_Hud.COLOR_GAME_GREEN)
+        currentY = currentY - dividerHeight - titleSpacing
+    end
+
+    setTextBold(false)
+    setTextColor(1, 1, 1, 1)
+    renderText(centerX, currentY, textSize, panel.text)
+    currentY = currentY - textHeight
+    setTextWrapWidth(0)
+
+    if hasTitle then
+        currentY = currentY - sectionSpacing
+        self:drawNotificationDivider(panelX + paddingX, currentY - dividerHeight, dividerWidth, dividerHeight, RMS_Hud.COLOR_GAME_GREEN)
 
         if closeGlyphVisible then
             local glyph = self:getNotificationCloseGlyph(closeGlyphWidth, closeGlyphHeight)
@@ -756,7 +679,7 @@ function RMS_Hud:drawNotificationPanel()
                 local textSpacing = self:scalePixelToScreenWidth(panel.closeGlyphTextSpacing or 6)
                 local okTextWidth = getTextWidth(okTextSize, okText)
                 local glyphX = centerX - (glyphWidth + textSpacing + okTextWidth) * 0.5
-                local glyphY = panelY + math.max((topSectionHeight - titleDividerHeight - closeGlyphHeight) * 0.5, 0)
+                local glyphY = panelY + paddingY + (closeRowHeight - closeGlyphHeight) * 0.5
                 glyph:setPosition(glyphX, glyphY)
                 glyph:draw()
 

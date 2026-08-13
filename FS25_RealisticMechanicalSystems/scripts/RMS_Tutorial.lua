@@ -69,6 +69,12 @@ function RMS_Tutorial:update(dt)
         return
     end
 
+    if RMS_Main ~= nil
+        and RMS_Main.hud ~= nil
+        and RMS_Main.hud:hasClosableNotification() then
+        return
+    end
+
     self.timer = self.timer + dt
     self.messageDowntime = math.max(self.messageDowntime - dt, 0)
 
