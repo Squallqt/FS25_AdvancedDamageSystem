@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Bekleme Akımı"/>
         <text name="rms_idleCurrent_tooltip" text="Motor dururken aküden çekilen akımı ayarlar. Örneğin, 0,5 A değerinde, 15 Ah’lık bir akünün sıcaklık etkileri hesaba katılmadan tamamen boşalması yaklaşık 30 gerçek saat sürer."/>
         <text name="rms_thermalSensitivity_tooltip" text="Termal modelin davranışını ayarlar. Daha yüksek ayarlar, motor ve şanzımanın yüke, ortam sıcaklığına ve radyatördeki kirlenmeye karşı daha duyarlı hale gelmesini sağlar; bu da aynı koşullar altında daha fazla ısı üretilmesine yol açar."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Termal model hızı"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Motor ve şanzıman sıcaklıklarının değişim hızını ayarlar. Düşük değerler ısınma ve soğumayı yavaşlatır, yüksek değerler her ikisini de hızlandırır. Varsayılan değer 1.4x'tir."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Motor termal model hızı"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Motor sıcaklığının değişim hızını ayarlar. Düşük değerler ısınma ve soğumayı yavaşlatır, yüksek değerler her ikisini de hızlandırır. Varsayılan değer 1.4x'tir."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Şanzıman yağı termal model hızı"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Şanzıman yağı sıcaklığının değişim hızını ayrı olarak ayarlar. Düşük değerler ısınma ve soğumayı yavaşlatır, yüksek değerler her ikisini de hızlandırır. Varsayılan değer 1.0x'tir."/>
         <text name="rms_radiatorDirtInfluence_label" text="Radyatördeki Kirin Etkisi"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Maksimum kir birikimi durumunda radyatörün soğutma kapasitesini bu oranda azaltır."/>
         <text name="rms_warmingBoostPower_label" text="Isınma ve Hızlanma"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Motor ve şanzımanın ısınmasını yapay olarak hızlandırır. Değiştirilmemiş termal davranış için “Kapalı” seçeneğini kullanın."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Motorun ısınmasını yapay olarak hızlandırır. Değiştirilmemiş termal davranış için “Kapalı” seçeneğini kullanın."/>
         <text name="rms_coolingSlowdownPower_label" text="Soğutmada Yavaşlama"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Araç durdurulduktan sonra motor ve şanzımanın soğumasını yapay olarak yavaşlatır. Değiştirilmemiş soğutma için “Kapalı” seçeneğini kullanın."/>
         <text name="rms_thermal_none" text="Pasif"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Ek Çok Ağır"/>
         <text name="rms_tutorial_heavy_lift_message" text="Görünüşe göre bu ekipman, %s'niz için fazla ağır. Hidrolik sistem sınırında çalışıyor ve bu durum sistemin kullanım ömrünü olumsuz etkileyecektir.&#10;&#10;Basit bir kurala uyun: Ekipmanın ağırlığı, aracın kendi ağırlığının %%60'ını aşmamalıdır."/>
         <text name="rms_tutorial_cold_engine_title" text="Makinenizi Isıtın"/>
-        <text name="rms_tutorial_cold_engine_message" text="Makinenizi çalıştırmadan önce daima ısıtın. Motorun yanı sıra, ısınması için zamana ihtiyaç duyan birçok başka parça da vardır: hidrolik yağı, Otomatik Şanzıman(CVT) ve hatta yakıt sıcaklığı — özellikle dondurucu soğuklarda. Makineyi soğukken çalıştırmak, birçok sistemde sorunlara yol açabilir.&#10;&#10;Motor sıcaklığı 50 derecenin üzerindeyse, her şey düzgün bir şekilde ısınmıştır ve makine güvenle kullanılabilir."/>
+        <text name="rms_tutorial_cold_engine_message" text="Motoru yüksek yük altında çalıştırmadan önce kademeli olarak ısıtın. Çalışma sıcaklığına ulaşana kadar orta seviyede gaz ve motor devri kullanın."/>
+        <text name="rms_tutorial_cold_oil_title" text="Soğuk şanzıman yağı"/>
+        <text name="rms_tutorial_cold_oil_message" text="Şanzıman ve hidrolik yağı motordan çok daha yavaş ısınır. Yağ soğukken ağır işlerden kaçının; sakin sürüş ve hafif hidrolik kullanımıyla yağı kademeli olarak ısıtın."/>
         <text name="rms_tutorial_overload_indicator_title" text="Aşırı Yük Uyarısı"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s ağır yük altında. Gösterge panelinde az önce yanan uyarı ışığı size bunu bildiriyor.&#10;&#10;Makine, mevcut görev için yeterli güce sahip olmayabilir. Yükü azaltmayı deneyin: hız sabitleyiciyi kullanarak hızınızı sınırlayın ya da tam güçte çalışmak yerine gazdan biraz çekin."/>
         <text name="rms_tutorial_engine_overload_title" text="Motor Aşırı Yüklemesi"/>

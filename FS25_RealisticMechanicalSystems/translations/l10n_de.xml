@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Ruhestrom"/>
         <text name="rms_idleCurrent_tooltip" text="Legt den Entladestrom der Batterie bei abgestelltem Motor fest. Bei 0,5 A würde eine 15-Ah-Batterie zum Beispiel etwa 30 Echtzeitstunden bis zur vollständigen Entladung benötigen, bevor Temperatureffekte berücksichtigt werden."/>
         <text name="rms_thermalSensitivity_tooltip" text="Passt das Verhalten des thermischen Modells an. Höhere Einstellungen machen Motor und Getriebe empfindlicher gegenüber Last, Umgebungstemperatur und Kühlerverschmutzung und erzeugen unter gleichen Bedingungen mehr Wärme."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Geschwindigkeit des Thermomodells"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Bestimmt, wie schnell sich Motor- und Getriebetemperaturen ändern. Niedrigere Werte verlangsamen Erwärmung und Abkühlung, höhere Werte beschleunigen beides. Standard ist 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Geschwindigkeit des Motorthermomodells"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Bestimmt, wie schnell sich die Motortemperatur ändert. Niedrigere Werte verlangsamen Erwärmung und Abkühlung, höhere Werte beschleunigen beides. Standard ist 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Thermogeschwindigkeit des Getriebeöls"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Bestimmt separat, wie schnell sich die Getriebeöltemperatur ändert. Niedrigere Werte verlangsamen Erwärmung und Abkühlung, höhere Werte beschleunigen beides. Standard ist 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Einfluss der Kühler-Verschmutzung"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Verringert die Kühlleistung des Kühlers bei maximaler Verschmutzung um diesen Prozentsatz."/>
         <text name="rms_warmingBoostPower_label" text="Beschleunigte Aufwärmung"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Beschleunigt künstlich die Aufwärmung von Motor und Getriebe. Verwenden Sie Aus für unverändertes thermisches Verhalten."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Beschleunigt künstlich die Aufwärmung des Motors. Verwenden Sie Aus für unverändertes thermisches Verhalten."/>
         <text name="rms_coolingSlowdownPower_label" text="Verlangsamte Abkühlung"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Verlangsamt künstlich die Abkühlung von Motor und Getriebe nach dem Abstellen des Fahrzeugs. Verwenden Sie Aus für unverändertes Abkühlverhalten."/>
         <text name="rms_thermal_none" text="Passiv"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Anbaugerät zu schwer"/>
         <text name="rms_tutorial_heavy_lift_message" text="Dieses Anbaugerät ist offenbar zu schwer für Ihren %s. Die Hydraulik arbeitet bereits am Limit, und das wirkt sich negativ auf ihre Lebensdauer aus.&#10;&#10;Eine einfache Faustregel: Das Gewicht des Anbaugeräts sollte 60%% des Eigengewichts des Fahrzeugs nicht überschreiten."/>
         <text name="rms_tutorial_cold_engine_title" text="Maschine aufwärmen"/>
-        <text name="rms_tutorial_cold_engine_message" text="Wärmen Sie Ihre Maschine immer auf, bevor Sie sie einsetzen. Nicht nur der Motor braucht Zeit auf Temperatur zu kommen, sondern auch viele andere Baugruppen: Hydrauliköl, das CVT-Getriebe und sogar der Kraftstoff, besonders bei Frost. Ein kalter Betrieb kann deshalb in mehreren Systemen Probleme verursachen.&#10;&#10;Liegt die Motortemperatur über 50 Grad (122°F), ist alles ausreichend warm und die Maschine kann bedenkenlos eingesetzt werden."/>
+        <text name="rms_tutorial_cold_engine_message" text="Wärmen Sie den Motor schonend auf, bevor Sie ihn stark belasten. Fahren Sie mit mäßigem Gas und mittlerer Drehzahl, bis er seine Betriebstemperatur erreicht."/>
+        <text name="rms_tutorial_cold_oil_title" text="Kaltes Getriebeöl"/>
+        <text name="rms_tutorial_cold_oil_message" text="Getriebeöl und Hydrauliköl erwärmen sich deutlich langsamer als der Motor. Vermeiden Sie schwere Arbeiten, solange das Öl kalt ist; wärmen Sie es durch ruhiges Fahren und leichte Hydraulikarbeit allmählich auf."/>
         <text name="rms_tutorial_overload_indicator_title" text="Überlastungswarnung"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s steht unter hoher Last. Darauf weist Sie die Warnleuchte hin, die gerade im Armaturenbrett aufgeleuchtet ist.&#10;&#10;Möglicherweise hat die Maschine nicht genug Leistung für die aktuelle Arbeit. Versuchen Sie, die Last zu verringern: Begrenzen Sie Ihre Geschwindigkeit mit dem Tempomat oder nehmen Sie etwas Gas weg, statt mit voller Leistung zu fahren."/>
         <text name="rms_tutorial_engine_overload_title" text="Motorüberlastung"/>

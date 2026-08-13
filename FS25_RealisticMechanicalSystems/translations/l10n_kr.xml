@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="대기 전류"/>
         <text name="rms_idleCurrent_tooltip" text="엔진이 꺼져 있을 때 배터리 방전 전류를 설정합니다. 예를 들어 0.5A라면 15Ah 배터리는 온도 영향을 제외하고 약 30시간의 실제 시간 후 완전히 방전됩니다."/>
         <text name="rms_thermalSensitivity_tooltip" text="열 모델 동작을 조정합니다. 설정이 높을수록 엔진과 변속기가 부하, 주변 온도, 라디에이터 오염에 더 민감하게 반응하여 동일 조건에서 더 많은 열을 발생시킵니다."/>
-        <text name="rms_temperatureChangeSpeed_label" text="열 모델 속도"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="엔진과 변속기 온도가 변하는 속도를 조정합니다. 낮은 값은 가열과 냉각을 모두 늦추고, 높은 값은 모두 빠르게 합니다. 기본값은 1.4x입니다."/>
+        <text name="rms_temperatureChangeSpeed_label" text="엔진 열 모델 속도"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="엔진 온도가 변하는 속도를 조정합니다. 낮은 값은 가열과 냉각을 모두 늦추고, 높은 값은 모두 빠르게 합니다. 기본값은 1.4x입니다."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="변속기 오일 열 모델 속도"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="변속기 오일 온도가 변하는 속도를 별도로 조정합니다. 낮은 값은 가열과 냉각을 모두 늦추고, 높은 값은 모두 빠르게 합니다. 기본값은 1.0x입니다."/>
         <text name="rms_radiatorDirtInfluence_label" text="라디에이터 오염 영향"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="오염이 최대치일 때 라디에이터의 냉각 성능을 이 비율만큼 감소시킵니다."/>
         <text name="rms_warmingBoostPower_label" text="예열 가속"/>
-        <text name="rms_warmingBoostPower_tooltip" text="엔진과 변속기의 예열 속도를 인위적으로 높입니다. 원래의 열 거동을 유지하려면 끔을 사용하세요."/>
+        <text name="rms_warmingBoostPower_tooltip" text="엔진의 예열 속도를 인위적으로 높입니다. 원래의 열 거동을 유지하려면 끔을 사용하세요."/>
         <text name="rms_coolingSlowdownPower_label" text="냉각 지연"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="차량을 끈 뒤 엔진과 변속기의 냉각 속도를 인위적으로 늦춥니다. 원래의 냉각 거동을 유지하려면 끔을 사용하세요."/>
         <text name="rms_thermal_none" text="패시브"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="너무 무거운 작업기"/>
         <text name="rms_tutorial_heavy_lift_message" text="이 작업기는 %s 차량에 너무 무거운 것 같습니다. 유압 시스템이 한계까지 일하고 있으며, 이는 수명에 부정적인 영향을 줍니다.&#10;&#10;간단한 기준을 따르세요. 작업기 무게는 차량 자체 중량의 60%%를 넘지 않아야 합니다."/>
         <text name="rms_tutorial_cold_engine_title" text="차량 예열하기"/>
-        <text name="rms_tutorial_cold_engine_message" text="작업에 투입하기 전에 항상 차량을 예열하세요. 엔진뿐만 아니라 다른 여러 부품들도 예열 시간이 필요합니다. 유압 오일, CVT 변속기, 심지어 연료 온도까지도 그렇습니다. 특히 혹한기에는 더욱 그렇습니다. 차가운 상태로 차량을 운행하면 여러 시스템에 문제가 생길 수 있습니다.&#10;&#10;엔진 온도가 50도(122°F)를 넘으면 모든 것이 충분히 예열된 것이며 차량을 안전하게 사용할 수 있습니다."/>
+        <text name="rms_tutorial_cold_engine_message" text="엔진에 높은 부하를 가하기 전에 서서히 예열하세요. 엔진이 작동 온도에 도달할 때까지 스로틀과 회전수를 적당히 유지하세요."/>
+        <text name="rms_tutorial_cold_oil_title" text="차가운 변속기 오일"/>
+        <text name="rms_tutorial_cold_oil_message" text="변속기 오일과 유압 오일은 엔진보다 훨씬 천천히 예열됩니다. 오일이 차가울 때는 무거운 작업을 피하고, 부드럽게 주행하며 유압 장치를 가볍게 사용해 서서히 예열하세요."/>
         <text name="rms_tutorial_overload_indicator_title" text="과부하 경고"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s에 큰 부하가 걸리고 있습니다. 방금 계기판에 켜진 경고등이 이를 알려주고 있습니다.&#10;&#10;현재 작업에 필요한 힘이 이 기계에 부족할 수 있습니다. 부하를 줄여 보세요. 크루즈 컨트롤로 속도를 제한하거나, 최대 출력으로 계속 밀어붙이기보다는 스로틀을 조금 줄이세요."/>
         <text name="rms_tutorial_engine_overload_title" text="엔진 과부하"/>

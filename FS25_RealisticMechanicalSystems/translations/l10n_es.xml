@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Corriente en reposo"/>
         <text name="rms_idleCurrent_tooltip" text="Establece la corriente de descarga de la batería con el motor apagado. Por ejemplo, con 0,5 A, una batería de 15 Ah tardaría unas 30 horas reales en descargarse por completo, antes de aplicar los efectos de la temperatura."/>
         <text name="rms_thermalSensitivity_tooltip" text="Ajusta el comportamiento del modelo térmico. Valores más altos hacen que el motor y la transmisión sean más sensibles a la carga, la temperatura ambiente y la suciedad del radiador, generando más calor en las mismas condiciones."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Velocidad del modelo térmico"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Ajusta la rapidez con la que cambian las temperaturas del motor y la transmisión. Los valores bajos ralentizan el calentamiento y el enfriamiento; los altos aceleran ambos. El valor predeterminado es 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Velocidad del modelo térmico del motor"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Ajusta la rapidez con la que cambia la temperatura del motor. Los valores bajos ralentizan el calentamiento y el enfriamiento; los altos aceleran ambos. El valor predeterminado es 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Velocidad térmica del aceite de transmisión"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Ajusta por separado la rapidez con la que cambia la temperatura del aceite de transmisión. Los valores bajos ralentizan el calentamiento y el enfriamiento; los altos aceleran ambos. El valor predeterminado es 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Influencia de la suciedad del radiador"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Reduce la capacidad de refrigeración del radiador en este porcentaje cuando la suciedad alcanza el nivel máximo."/>
         <text name="rms_warmingBoostPower_label" text="Aceleración del calentamiento"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Acelera artificialmente el calentamiento del motor y la transmisión. Usa Desactivado para mantener el comportamiento térmico sin cambios."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Acelera artificialmente el calentamiento del motor. Usa Desactivado para mantener el comportamiento térmico sin cambios."/>
         <text name="rms_coolingSlowdownPower_label" text="Desaceleración del enfriamiento"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Ralentiza artificialmente el enfriamiento del motor y la transmisión después de apagar el vehículo. Usa Desactivado para mantener el enfriamiento sin cambios."/>
         <text name="rms_thermal_none" text="Pasivo"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Implemento demasiado pesado"/>
         <text name="rms_tutorial_heavy_lift_message" text="Parece que este implemento es demasiado pesado para tu %s. La hidráulica está trabajando al límite, y eso afectará negativamente a su vida útil.&#10;&#10;Sigue una regla sencilla: el peso del implemento no debería superar el 60%% del propio peso del vehículo."/>
         <text name="rms_tutorial_cold_engine_title" text="Calienta tu máquina"/>
-        <text name="rms_tutorial_cold_engine_message" text="Calienta siempre tu máquina antes de ponerla a trabajar. Además del motor, hay muchas otras partes que también necesitan tiempo para calentarse: el aceite hidráulico, la transmisión CVT e incluso la temperatura del combustible, especialmente en tiempo de heladas. Trabajar con la máquina en frío puede causar problemas en varios sistemas.&#10;&#10;Si la temperatura del motor supera los 50 grados (122°F), todo estará ya correctamente calentado y la máquina podrá usarse con seguridad."/>
+        <text name="rms_tutorial_cold_engine_message" text="Calienta el motor suavemente antes de someterlo a una carga elevada. Usa un acelerador y un régimen moderados hasta que alcance la temperatura de funcionamiento."/>
+        <text name="rms_tutorial_cold_oil_title" text="Aceite de transmisión frío"/>
+        <text name="rms_tutorial_cold_oil_message" text="El aceite de la transmisión y del sistema hidráulico se calienta mucho más despacio que el motor. Evita los trabajos pesados mientras el aceite esté frío; caliéntalo gradualmente conduciendo con suavidad y usando el sistema hidráulico con poca carga."/>
         <text name="rms_tutorial_overload_indicator_title" text="Aviso de sobrecarga"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s está trabajando bajo una carga elevada. El testigo de advertencia que acaba de encenderse en el salpicadero te lo está indicando.&#10;&#10;Puede que la máquina no tenga suficiente potencia para la tarea actual. Intenta reducir la carga: limita la velocidad con el control de crucero o afloja el acelerador en lugar de trabajar a plena potencia."/>
         <text name="rms_tutorial_engine_overload_title" text="Sobrecarga del motor"/>

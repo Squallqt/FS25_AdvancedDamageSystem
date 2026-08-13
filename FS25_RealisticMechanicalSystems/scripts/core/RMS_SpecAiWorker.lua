@@ -140,7 +140,7 @@ function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     local motorLoad = math.max(spec.dynamicMotorLoad or self:getMotorLoadPercentage() or 0, 0)
     local rawEngineTemperature = RealisticMechanicalSystems.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, 20, -80, 160)
     local rawTransmissionTemperature = RealisticMechanicalSystems.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180)
-    if rawTransmissionTemperature < 0 then
+    if not RMS_Utils.hasCVTTransmission(self) or rawTransmissionTemperature < 0 then
         rawTransmissionTemperature = rawEngineTemperature
     end
 

@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Készenléti áramfelvétel"/>
         <text name="rms_idleCurrent_tooltip" text="Beállítja az akkumulátor merülési áramát leállított motor mellett. Például 0,5 A esetén egy 15 Ah-s akkumulátor nagyjából 30 valós óra alatt merülne le teljesen, még a hőmérsékleti hatások előtt."/>
         <text name="rms_thermalSensitivity_tooltip" text="Módosítja a hőmodell viselkedését. Magasabb beállításon a motor és a váltó érzékenyebb lesz a terhelésre, a környezeti hőmérsékletre és a hűtő szennyeződésére, vagyis azonos körülmények között több hőt termel."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Hőmodell sebessége"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="A motor és a váltó hőmérséklet-változásának sebességét szabályozza. Az alacsonyabb értékek lassítják a melegedést és a hűlést, a magasabbak mindkettőt gyorsítják. Az alapérték 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Motor hőmodelljének sebessége"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="A motor hőmérséklet-változásának sebességét szabályozza. Az alacsonyabb értékek lassítják a melegedést és a hűlést, a magasabbak mindkettőt gyorsítják. Az alapérték 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Váltóolaj hőmodelljének sebessége"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="A váltóolaj hőmérséklet-változásának sebességét külön szabályozza. Az alacsonyabb értékek lassítják a melegedést és a hűlést, a magasabbak mindkettőt gyorsítják. Az alapérték 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Hűtőszennyeződés hatása"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="A hűtő maximális szennyeződésénél ennyi százalékkal csökkenti a hűtési kapacitást."/>
         <text name="rms_warmingBoostPower_label" text="Bemelegedés gyorsítása"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Mesterségesen felgyorsítja a motor és a váltó bemelegedését. Válaszd a Ki opciót a módosítatlan hőmodellhez."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Mesterségesen felgyorsítja a motor bemelegedését. Válaszd a Ki opciót a módosítatlan hőmodellhez."/>
         <text name="rms_coolingSlowdownPower_label" text="Lehűlés lassítása"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Mesterségesen lassítja a motor és a váltó lehűlését a jármű leállítása után. Válaszd a Ki opciót a módosítatlan lehűléshez."/>
         <text name="rms_thermal_none" text="Passzív"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Túl nehéz munkagép"/>
         <text name="rms_tutorial_heavy_lift_message" text="Úgy tűnik, ez a munkagép túl nehéz ehhez: %s. A hidraulika a határán dolgozik, ami negatívan befolyásolja az élettartamát.&#10;&#10;Kövess egy egyszerű szabályt: a csatlakoztatott eszköz tömege ne haladja meg a jármű saját tömegének 60%%-át."/>
         <text name="rms_tutorial_cold_engine_title" text="Melegítsd be a gépet"/>
-        <text name="rms_tutorial_cold_engine_message" text="Munka előtt mindig melegítsd be a gépet. A motoron kívül sok más alkatrésznek is idő kell a bemelegedéshez: a hidraulikaolajnak, a CVT váltónak, sőt még az üzemanyag hőmérsékletének is — különösen fagyos időben. Hidegen terhelni a gépet több rendszerben is problémákat okozhat.&#10;&#10;Ha a motor hőmérséklete 50 fok (122°F) felett van, minden megfelelően bemelegedett, és a gép biztonságosan használható."/>
+        <text name="rms_tutorial_cold_engine_message" text="Nagy terhelés előtt fokozatosan melegítsd be a motort. Használj mérsékelt gázadást és fordulatszámot, amíg el nem éri az üzemi hőmérsékletet."/>
+        <text name="rms_tutorial_cold_oil_title" text="Hideg hajtóműolaj"/>
+        <text name="rms_tutorial_cold_oil_message" text="A hajtóműolaj és a hidraulikaolaj sokkal lassabban melegszik fel, mint a motor. Amíg az olaj hideg, kerüld a nehéz munkát; nyugodt vezetéssel és a hidraulika kis terhelésével fokozatosan melegítsd fel."/>
         <text name="rms_tutorial_overload_indicator_title" text="Túlterhelés figyelmeztetés"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s nagy terhelés alatt van. Ezt jelzi a műszerfalon most felgyulladt figyelmeztető lámpa.&#10;&#10;Lehet, hogy a gépnek nincs elég ereje az aktuális feladathoz. Próbáld csökkenteni a terhelést: korlátozd a sebességet tempomattal, vagy vegyél vissza a gázból ahelyett, hogy teljes erőn dolgoztatod."/>
         <text name="rms_tutorial_engine_overload_title" text="Motor túlterhelése"/>

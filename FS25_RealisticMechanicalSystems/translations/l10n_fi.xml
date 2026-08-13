@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Valmiustilan virta"/>
         <text name="rms_idleCurrent_tooltip" text="Asettaa akun purkausvirran moottorin ollessa sammutettuna. Esimerkiksi 0,5 A:lla 15 Ah:n akku tyhjenisi täyteen noin 30 reaaliaikaisessa tunnissa ennen lämpötilavaikutusten huomioimista."/>
         <text name="rms_thermalSensitivity_tooltip" text="Säätää lämpömallin käyttäytymistä. Suuremmat asetukset tekevät moottorista ja vaihteistosta herkempiä kuormalle, ympäristön lämpötilalle ja jäähdyttimen likaantumiselle — tuottaen enemmän lämpöä samoissa olosuhteissa."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Lämpömallin nopeus"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Säätää moottorin ja vaihteiston lämpötilojen muutosnopeutta. Pienemmät arvot hidastavat lämpenemistä ja jäähtymistä, suuremmat nopeuttavat molempia. Oletusarvo on 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Moottorin lämpömallin nopeus"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Säätää moottorin lämpötilan muutosnopeutta. Pienemmät arvot hidastavat lämpenemistä ja jäähtymistä, suuremmat nopeuttavat molempia. Oletusarvo on 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Vaihteistoöljyn lämpömallin nopeus"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Säätää erikseen vaihteistoöljyn lämpötilan muutosnopeutta. Pienemmät arvot hidastavat lämpenemistä ja jäähtymistä, suuremmat nopeuttavat molempia. Oletusarvo on 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Jäähdyttimen lian vaikutus"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Vähentää jäähdyttimen jäähdytyskapasiteettia tällä prosenttiosuudella maksimiliaantumisessa."/>
         <text name="rms_warmingBoostPower_label" text="Lämpenemisen kiihdytys"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Keinotekoinen moottorin ja vaihteiston lämpenemisen nopeutus. Käytä Pois-asetusta muokkaamattomalle lämpökäyttäytymiselle."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Keinotekoinen moottorin lämpenemisen nopeutus. Käytä Pois-asetusta muokkaamattomalle lämpökäyttäytymiselle."/>
         <text name="rms_coolingSlowdownPower_label" text="Jäähdytyksen hidastus"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Keinotekoinen moottorin ja vaihteiston jäähdytyksen hidastus ajoneuvon sammuttamisen jälkeen. Käytä Pois-asetusta muokkaamattomalle jäähdytykselle."/>
         <text name="rms_thermal_none" text="Passiivinen"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Kiinnike liian raskas"/>
         <text name="rms_tutorial_heavy_lift_message" text="Näyttää siltä, että tämä laite on liian raskas %s:lle. Hydrauliikka toimii äärirajoillaan, mikä vaikuttaa negatiivisesti sen käyttöikään.&#10;&#10;Noudata yksinkertaista sääntöä: kiinnitteen paino ei saa ylittää 60%% ajoneuvon omasta painosta."/>
         <text name="rms_tutorial_cold_engine_title" text="Lämmitä koneesi"/>
-        <text name="rms_tutorial_cold_engine_message" text="Lämmitä koneesi aina ennen töihin ryhtymistä. Moottorin lisäksi on monia muita osia, jotka tarvitsevat lämmitysajan: hydrauliöljy, CVT-vaihteisto ja jopa polttoaineen lämpötila — erityisesti pakkassäällä. Koneen käyttäminen kylmänä voi aiheuttaa ongelmia useissa järjestelmissä.&#10;&#10;Jos moottorin lämpötila on yli 50 astetta, kaikki on kunnolla lämmennyt ja konetta voidaan käyttää turvallisesti."/>
+        <text name="rms_tutorial_cold_engine_message" text="Lämmitä moottori rauhallisesti ennen kovaa kuormitusta. Käytä maltillista kaasua ja kierroslukua, kunnes moottori saavuttaa käyttölämpötilan."/>
+        <text name="rms_tutorial_cold_oil_title" text="Kylmä voimansiirtoöljy"/>
+        <text name="rms_tutorial_cold_oil_message" text="Voimansiirtoöljy ja hydrauliöljy lämpenevät paljon moottoria hitaammin. Vältä raskasta työtä öljyn ollessa kylmää; lämmitä öljy vähitellen ajamalla rauhallisesti ja käyttämällä hydrauliikkaa kevyesti."/>
         <text name="rms_tutorial_overload_indicator_title" text="Ylikuormitusvaroitus"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s on raskaassa kuormituksessa. Kojelaudalle äsken syttynyt varoitusvalo kertoo sinulle tästä.&#10;&#10;Koneessa ei ehkä ole tarpeeksi tehoa nykyiseen tehtävään. Yritä vähentää kuormaa: rajoita nopeuttasi vakionopeussäätimellä tai hellitä kaasua täysitehon ajamisen sijaan."/>
         <text name="rms_tutorial_engine_overload_title" text="Moottorin ylikuormitus"/>

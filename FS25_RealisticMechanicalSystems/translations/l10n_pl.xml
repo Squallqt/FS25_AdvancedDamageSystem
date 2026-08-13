@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Prąd spoczynkowy"/>
         <text name="rms_idleCurrent_tooltip" text="Ustawia prąd rozładowania akumulatora przy wyłączonym silniku. Na przykład przy 0,5 A akumulator 15 Ah rozładowałby się całkowicie po około 30 rzeczywistych godzinach, zanim zostaną uwzględnione efekty temperatury."/>
         <text name="rms_thermalSensitivity_tooltip" text="Dostosuj zachowanie modelu termicznego. Wyższe ustawienia sprawiają, że silnik i skrzynia biegów są bardziej wrażliwe na obciążenie, temperaturę otoczenia oraz zabrudzenie chłodnicy — generując więcej ciepła w tych samych warunkach pracy."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Szybkość modelu termicznego"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Określa szybkość zmian temperatury silnika i skrzyni biegów. Niższe wartości spowalniają nagrzewanie i chłodzenie, a wyższe przyspieszają oba procesy. Wartość domyślna to 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Szybkość modelu termicznego silnika"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Określa szybkość zmian temperatury silnika. Niższe wartości spowalniają nagrzewanie i chłodzenie, a wyższe przyspieszają oba procesy. Wartość domyślna to 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Szybkość cieplna oleju przekładniowego"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Oddzielnie określa szybkość zmian temperatury oleju przekładniowego. Niższe wartości spowalniają nagrzewanie i chłodzenie, a wyższe przyspieszają oba procesy. Wartość domyślna to 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Wpływ zabrudzenia chłodnicy"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Zmniejsza wydajność chłodzenia chłodnicy o ten procent przy maksymalnym zabrudzeniu."/>
         <text name="rms_warmingBoostPower_label" text="Przyspieszenie rozgrzewania"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Sztucznie przyspiesza rozgrzewanie silnika i przekładni. Użyj Wyłączone, aby zachować niezmienione działanie modelu cieplnego."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Sztucznie przyspiesza rozgrzewanie silnika. Użyj Wyłączone, aby zachować niezmienione działanie modelu cieplnego."/>
         <text name="rms_coolingSlowdownPower_label" text="Spowolnienie chłodzenia"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Sztucznie spowalnia chłodzenie silnika i przekładni po wyłączeniu pojazdu. Użyj Wyłączone, aby pozostawić chłodzenie bez zmian."/>
         <text name="rms_thermal_none" text="Pasywny"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Zbyt ciężki osprzęt"/>
         <text name="rms_tutorial_heavy_lift_message" text="Wygląda na to, że ten osprzęt jest za ciężki dla Twojego %s. Hydraulika pracuje na granicy możliwości, co negatywnie wpłynie na jej żywotność.&#10;&#10;Trzymaj się prostej zasady: masa osprzętu nie powinna przekraczać 60%% masy własnej pojazdu."/>
         <text name="rms_tutorial_cold_engine_title" text="Rozgrzej maszynę"/>
-        <text name="rms_tutorial_cold_engine_message" text="Zawsze rozgrzewaj maszynę przed rozpoczęciem pracy. Oprócz silnika wiele innych podzespołów także potrzebuje czasu, aby osiągnąć właściwą temperaturę: olej hydrauliczny, przekładnia CVT, a nawet paliwo, szczególnie podczas mrozu. Praca na zimno może powodować problemy w wielu układach.&#10;&#10;Jeśli temperatura silnika przekracza 50 stopni (122°F), wszystko jest już odpowiednio rozgrzane i maszyna może być bezpiecznie używana."/>
+        <text name="rms_tutorial_cold_engine_message" text="Rozgrzewaj silnik stopniowo przed dużym obciążeniem. Używaj umiarkowanego gazu i obrotów, aż silnik osiągnie temperaturę roboczą."/>
+        <text name="rms_tutorial_cold_oil_title" text="Zimny olej przekładniowy"/>
+        <text name="rms_tutorial_cold_oil_message" text="Olej przekładniowy i hydrauliczny nagrzewają się znacznie wolniej niż silnik. Unikaj ciężkiej pracy, gdy olej jest zimny; rozgrzewaj go stopniowo podczas spokojnej jazdy i lekkiej pracy układu hydraulicznego."/>
         <text name="rms_tutorial_overload_indicator_title" text="Ostrzeżenie o przeciążeniu"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s pracuje pod dużym obciążeniem. Informuje Cię o tym kontrolka ostrzegawcza, która właśnie zapaliła się na desce rozdzielczej.&#10;&#10;Maszyna może nie mieć wystarczającej mocy do bieżącego zadania. Spróbuj zmniejszyć obciążenie: ogranicz prędkość tempomatem albo odpuść gaz zamiast pracować na pełnej mocy."/>
         <text name="rms_tutorial_engine_overload_title" text="Przeciążenie silnika"/>

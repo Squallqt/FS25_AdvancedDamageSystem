@@ -188,6 +188,8 @@ RealisticMechanicalSystems.FACTOR_STATS_ALIASES = {
     heavyLiftFactor = "hlf",
     operatingFactor = "of",
     coldOilFactor = "cof",
+    hotOilFactor = "hof",
+    vibFactor = "vf",
     -- cooling
     highCoolingFactor = "hcf",
     overheatFactor = "ohf",
@@ -199,7 +201,6 @@ RealisticMechanicalSystems.FACTOR_STATS_ALIASES = {
     crankingStressFactor = "crf",
 
     -- chassis
-    vibFactor = "vf",
     steerLoadFactor = "slf",
     brakeMassFactor = "bmf",
 
@@ -354,6 +355,7 @@ RealisticMechanicalSystems.getTransmissionType = getTransmissionType
 RealisticMechanicalSystems.getTransmissionNameFromXML = getTransmissionNameFromXML
 
 local hasCVTAddon = RMS_Utils.hasCVTAddon
+local hasCVTTransmission = RMS_Utils.hasCVTTransmission
 
 local function refreshExclusionState(spec)
     if spec.isExcludedByUser ~= nil then
@@ -1320,7 +1322,7 @@ local function syncOverheatProtection(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then return end
     local rawEngineTemp = RealisticMechanicalSystems.sanitizeNumber(spec.rawEngineTemperature or spec.engineTemperature, -99, -99, 160)
-    local rawTransmissionTemp = not hasCVTAddon(vehicle) and RealisticMechanicalSystems.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180) or -99
+    local rawTransmissionTemp = hasCVTTransmission(vehicle) and not hasCVTAddon(vehicle) and RealisticMechanicalSystems.sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, -99, -99, 180) or -99
 
     if vehicle.isServer and spec.year >= 2000 then
         local overheatProtectionId = 'OVERHEAT_PROTECTION'
@@ -1538,7 +1540,7 @@ local function syncBlinkingWarning(vehicle, dt)
                 end
             end
 
-            if candidateMessage == nil and spec.transmissionTemperature > -90 then
+            if candidateMessage == nil and hasCVTTransmission(vehicle) and spec.transmissionTemperature > -90 then
                 if spec.transmissionTemperature >= RMS_Config.CORE.TRANSMISSION_FACTOR_DATA.OVERHEAT_TRANSMISSION_THRESHOLD + 5 and rpmLoad > 0.75 then
                     candidateMessage = 'rms_spec_overheat_transmission_message'
                 end
@@ -1801,6 +1803,9 @@ function RealisticMechanicalSystems:onUpdate(dt, ...)
     if spec.isExcludedVehicle then return end
 
     self:updateVehicleStateSnapshot(dt)
+    if self.isServer then
+        self:updateThermalSystems(dt, false, true)
+    end
     RealisticMechanicalSystems.updateStartButtonActionEvents(self)
     RMS_Preheat.update(self, dt)
 
@@ -1868,7 +1873,7 @@ function RealisticMechanicalSystems:onUpdate(dt, ...)
 
     --- Enables the thermal model for neutral vehicles on the map, should the player happen to use them
     if self.isServer and RMS_Main and RMS_Main.vehicles and RMS_Main.vehicles[self.uniqueId] == nil and self:getIsControlled() then
-        self:updateThermalSystems(updateDt)
+        self:updateThermalSystems(updateDt, true, false)
     end
 
     --- Exhaust smoke colour, opacity and plume size
@@ -1917,7 +1922,7 @@ function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
         spec._allowRMSOperatingTimeWrite = false
     end
 
-    self:updateThermalSystems(dt)
+    self:updateThermalSystems(dt, true, false)
     self:updateBatteryChargingModel(dt)
 
     if self:isUnderService() then

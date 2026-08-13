@@ -121,6 +121,7 @@ function RMS_Tutorial:update(dt)
             local heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
             local heavyLiftThreshold = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
             local transmissionConfig = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
+            local hydraulicsConfig = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
             local chassisBrakeState = spec.chassisBrakeState
             local isTruck = spec.isTruck == true
             local heavyTrailerMass = math.max(chassisBrakeState.trailerMass, 0)
@@ -328,7 +329,7 @@ function RMS_Tutorial:update(dt)
             -- TRANSMISSION
             -- ==========================================================
             --- cvt overheat
-            elseif not messagedData.CVT_OVERHEAT and transmissionSystemEnabled and isMotorStarted and spec.transmissionTemperature > 100 and not spec.isElectricVehicle then
+            elseif not messagedData.CVT_OVERHEAT and transmissionSystemEnabled and isMotorStarted and spec.transmissionTemperature > 100 and not spec.isElectricVehicle and (RMS_Utils.hasCVTTransmission(vehicle) or RMS_Utils.hasCVTAddon(vehicle)) then
                 RMS_Hud.showNotification(
                     g_i18n:getText("rms_tutorial_cvt_overheat_message"),
                     0,
@@ -510,6 +511,16 @@ function RMS_Tutorial:update(dt)
             -- ==========================================================
             -- HYDRAULIC
             -- ========================================================== 
+            elseif not messagedData.COLD_OIL and (transmissionSystemEnabled or hydraulicsSystemEnabled) and isMotorStarted and spec.transmissionTemperature < hydraulicsConfig.COLD_OIL_THRESHOLD and spec.dynamicMotorLoad >= transmissionConfig.LUGGING_MOTORLOAD_THRESHOLD then
+                RMS_Hud.showNotification(
+                    g_i18n:getText("rms_tutorial_cold_oil_message"),
+                    0,
+                    g_i18n:getText("rms_tutorial_cold_oil_title"),
+                    true
+                )
+                messagedData.COLD_OIL = true
+                self.messageDowntime = downtimeAfterMessage
+
             --- heavy lift
             elseif not messagedData.HEAVY_LIFT and hydraulicsSystemEnabled and isMotorStarted and heavyLiftMassRatio > heavyLiftThreshold then
                 RMS_Hud.showNotification(

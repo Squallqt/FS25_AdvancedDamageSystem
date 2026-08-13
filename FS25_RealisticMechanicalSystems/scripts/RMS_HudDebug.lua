@@ -532,7 +532,8 @@ function RMS_Hud:drawActiveVehicleHUD()
         hydraulicsDbg.heavyLiftFactor or 0,
         hydraulicsDbg.operatingFactor or 0,
         hydraulicsDbg.vibFactor or 0,
-        hydraulicsDbg.coldOilFactor or 0
+        hydraulicsDbg.coldOilFactor or 0,
+        hydraulicsDbg.hotOilFactor or 0
     ) * bcw
     local coolingMaxFactor = math.max(
         coolingDbg.expiredServiceFactor or 0,
@@ -650,7 +651,8 @@ function RMS_Hud:drawActiveVehicleHUD()
         { shortName = "hlf", statKey = "hlf", value = hydraulicsDbg.heavyLiftFactor or 0, extraInfo = string.format("mr: %.2f", asPercent(hydraulicsDbg.heavyLiftMassRatio or 0)) },
         { shortName = "of", statKey = "of", value = hydraulicsDbg.operatingFactor or 0, extraInfo = string.format("om: %.2f t: %ds", hydraulicsDbg.operatingMassRatio or 0, math.floor(((hydraulicsDbg.operatingTimer or 0) / 1000) + 0.0001)) },
         { shortName = "vf", statKey = "vf", value = hydraulicsDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(hydraulicsDbg.vibRaw or 0), asPercent(hydraulicsDbg.vibSignal or 0)) },
-        { shortName = "cof", statKey = "cof", value = hydraulicsDbg.coldOilFactor or 0 }
+        { shortName = "cof", statKey = "cof", value = hydraulicsDbg.coldOilFactor or 0 },
+        { shortName = "hof", statKey = "hof", value = hydraulicsDbg.hotOilFactor or 0 }
     })
 
     local coolingLines = buildSystemLines("cooling", coolingDbg, coolingMaxFactor, {

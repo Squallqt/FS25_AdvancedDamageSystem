@@ -523,7 +523,7 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     local systemData = spec.systems.hydraulics
     local expiredServiceFactor = 0
     local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
-    local heavyLiftFactor, operatingFactor, coldOilFactor, vibFactor = 0, 0, 0, 0
+    local heavyLiftFactor, operatingFactor, coldOilFactor, hotOilFactor, vibFactor = 0, 0, 0, 0, 0
     local vibState = spec.chassisVibState
     local vibSignal = vibState.signal
     local vibRaw = vibState.raw
@@ -550,11 +550,15 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
                     wearRate = wearRate + operatingFactor
                 end
                 -- cold oil
-                if (spec.engineTemperature or 0) < C.COLD_OIL_THRESHOLD then
-                    coldOilFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.COLD_OIL_THRESHOLD, true)
+                if spec.transmissionTemperature < C.COLD_OIL_THRESHOLD then
+                    coldOilFactor = RMS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.COLD_OIL_THRESHOLD, true)
                     coldOilFactor = coldOilFactor * (C.COLD_OIL_MULTIPLIER or 0) * (1 + RMS_Utils.calculateQuadraticMultiplier(operatingMassRatio, 0, false))
                     coldOilFactor = math.min(coldOilFactor, (C.COLD_OIL_MULTIPLIER or 0) * 2)
                     wearRate = wearRate + coldOilFactor
+                elseif spec.transmissionTemperature > C.HOT_OIL_THRESHOLD then
+                    hotOilFactor = RMS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.HOT_OIL_THRESHOLD, false, 120)
+                    hotOilFactor = math.min(hotOilFactor * C.HOT_OIL_MULTIPLIER, C.HOT_OIL_MULTIPLIER)
+                    wearRate = wearRate + hotOilFactor
                 end
             end
 
@@ -618,7 +622,8 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
         vibSignal = vibSignal,
         vibRaw = vibRaw,
         vibFieldMultiplier = vibFieldMultiplier,
-        coldOilFactor = coldOilFactor
+        coldOilFactor = coldOilFactor,
+        hotOilFactor = hotOilFactor
     })
 end
 

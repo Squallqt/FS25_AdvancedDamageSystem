@@ -7,8 +7,6 @@ RMS_Thermal = RMS_Thermal or {}
 -- ==========================================================
 
 local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
-local hasCVTTransmission = RMS_Utils.hasCVTTransmission
-local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 local function getSpeedCooling(vehicle)
     local C = RMS_Config.THERMAL
@@ -24,15 +22,11 @@ end
 --                     MAIN
 -- ==========================================================
 
-function RMS_Thermal:updateThermalSystems(dt)
+function RMS_Thermal:updateThermalSystems(dt, updateEngine, updateTransmission)
     local motor = self:getMotor()
     if not motor then return end
 
     local spec = self.spec_RealisticMechanicalSystems
-    local vehicleHaveCVT = hasCVTTransmission(self)
-    local hasActiveCVTAddon = hasCVTAddon(self)
-    local hasTransmissionTemperature = vehicleHaveCVT or hasActiveCVTAddon
-
     local isMotorStarted = self:getIsMotorStarted()
     local motorLoad = sanitizeNumber(spec.dynamicMotorLoad or self:getMotorLoadPercentage(), 0, 0, 1.5)
     local motorRpm = sanitizeNumber(self:getMotorRpmPercentage(), 0, 0, 1.5)
@@ -52,21 +46,15 @@ function RMS_Thermal:updateThermalSystems(dt)
 
     if (spec.engineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.engineTemperature = eviromentTemp end
     if (spec.rawEngineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawEngineTemperature = eviromentTemp end
-    if hasTransmissionTemperature then
-        if (spec.transmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.transmissionTemperature = eviromentTemp end
-        if (spec.rawTransmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawTransmissionTemperature = eviromentTemp end
-    end
+    if (spec.transmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.transmissionTemperature = eviromentTemp end
+    if (spec.rawTransmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawTransmissionTemperature = eviromentTemp end
 
-    if not spec.isElectricVehicle then
+    if updateEngine and not spec.isElectricVehicle then
         self:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, eviromentTemp, dirt)
     end
 
-    if hasActiveCVTAddon then
-        spec.rawTransmissionTemperature = sanitizeNumber(self.spec_motorized.motorTemperature.value, spec.rawEngineTemperature, -80, 180)
-    elseif vehicleHaveCVT then
+    if updateTransmission then
         self:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
-    else
-        spec.rawTransmissionTemperature = -99
     end
 end
 
@@ -84,7 +72,6 @@ function RMS_Thermal:getSmoothedTemperature(dt)
         local weather = g_currentMission.environment.weather.forecast:getCurrentWeather()
         eviromentTemp = sanitizeNumber(weather ~= nil and weather.temperature or nil, 20, -80, 80)
     end
-    local hasTransmissionTemperature = hasCVTTransmission(self) or hasCVTAddon(self)
     local snapThreshold = 5.0
 
     local rawEngineTemperature = sanitizeNumber(spec.rawEngineTemperature, eviromentTemp, -80, 160)
@@ -95,14 +82,12 @@ function RMS_Thermal:getSmoothedTemperature(dt)
         spec.engineTemperature = math.max(currentEngineTemperature + alpha * (rawEngineTemperature - currentEngineTemperature), eviromentTemp)
     end
 
-    if hasTransmissionTemperature then
-        local rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature, eviromentTemp, -80, 180)
-        local currentTransmissionTemperature = sanitizeNumber(spec.transmissionTemperature, rawTransmissionTemperature, -80, 180)
-        if math.abs(rawTransmissionTemperature - currentTransmissionTemperature) >= snapThreshold then
-            spec.transmissionTemperature = math.max(rawTransmissionTemperature, eviromentTemp)
-        else
-            spec.transmissionTemperature = math.max(currentTransmissionTemperature + alpha * (rawTransmissionTemperature - currentTransmissionTemperature), eviromentTemp)
-        end
+    local rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature, eviromentTemp, -80, 180)
+    local currentTransmissionTemperature = sanitizeNumber(spec.transmissionTemperature, rawTransmissionTemperature, -80, 180)
+    if math.abs(rawTransmissionTemperature - currentTransmissionTemperature) >= snapThreshold then
+        spec.transmissionTemperature = math.max(rawTransmissionTemperature, eviromentTemp)
+    else
+        spec.transmissionTemperature = math.max(currentTransmissionTemperature + alpha * (rawTransmissionTemperature - currentTransmissionTemperature), eviromentTemp)
     end
 end
 
@@ -208,9 +193,10 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
     local accFactor = 1.0
     local cvtSlipActive = false
     local cvtSlipLocked = false
+    local hydraulicHeat = 0
 
     if isMotorStarted == false then
-        return 0, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked
+        return 0, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat
     end
 
     local accelerationAxis = vehicle.getAccelerationAxis ~= nil and sanitizeNumber(vehicle:getAccelerationAxis(), 0, -1, 1) or 0
@@ -245,12 +231,20 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
         wheelSlipFactor = math.min(wheelSlipFactor + (wheelSlipIntensity / 2) * (avgTireGroundFrictionCoeff ^ 2), 1.4)
     end
 
-    local maxHeat = C.TRANS_MAX_HEAT + sanitizeNumber(spec.extraTransmissionHeat, 0, -C.TRANS_MAX_HEAT, 1000)
-    local rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature, 20, -80, 180)
-    local warmBoost = rawTransmissionTemperature < RMS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD and C.WARMING_BOOST_POWER or 1.0
-    local heat = C.TRANS_MIN_HEAT + (maxHeat - C.TRANS_MIN_HEAT) * loadFactor * slipFactor * accFactor * wheelSlipFactor * warmBoost
+    local vehicleMass = math.max(vehicle:getTotalMass(true), 0)
+    if vehicleMass > 0 then
+        if spec.isImplementLifted then
+            hydraulicHeat = hydraulicHeat + math.clamp(spec.liftedMass / vehicleMass, 0, 1) * C.HYDRAULIC_HOLD_HEAT
+        end
+        if spec.isImplementOperating then
+            hydraulicHeat = hydraulicHeat + math.clamp(spec.operatingMass / vehicleMass, 0, 1) * C.HYDRAULIC_OPERATING_HEAT
+        end
+    end
 
-    return heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked
+    local maxHeat = C.TRANS_MAX_HEAT + sanitizeNumber(spec.extraTransmissionHeat, 0, -C.TRANS_MAX_HEAT, 1000)
+    local heat = C.TRANS_MIN_HEAT + (maxHeat - C.TRANS_MIN_HEAT) * loadFactor * slipFactor * accFactor * wheelSlipFactor + hydraulicHeat
+
+    return heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat
 end
 
 local function getTransmissionCooling(vehicle, spec, eviromentTemp, dirt, isMotorStarted)
@@ -285,14 +279,15 @@ function RMS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, mo
     local accFactor = 1.0
     local cvtSlipActive = false
     local cvtSlipLocked = false
+    local hydraulicHeat = 0
 
     local dbg = spec.debugData.transmissionTemp
 
-    heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked = getTransmissionHeat(self, spec, isMotorStarted, motorLoad, motorRpm)
+    heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat = getTransmissionHeat(self, spec, isMotorStarted, motorLoad, motorRpm)
     cooling, radiatorCooling, convectionCooling, speedCooling = getTransmissionCooling(self, spec, eviromentTemp, dirt, isMotorStarted)
 
     local safeDt = sanitizeNumber(dt, 0, 0)
-    spec.rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature + (heat - cooling) * (safeDt / 1000) * C.TEMPERATURE_CHANGE_SPEED, eviromentTemp, -80, 180)
+    spec.rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature + (heat - cooling) * (safeDt / 1000) * C.TRANS_TEMPERATURE_CHANGE_SPEED * C.TRANS_TEMPERATURE_CHANGE_MULTIPLIER, eviromentTemp, -80, 180)
     spec.rawTransmissionTemperature = math.max(spec.rawTransmissionTemperature, eviromentTemp)
 
     local rawTransmissionTemp = sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, eviromentTemp, -80, 180)
@@ -322,7 +317,7 @@ function RMS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, mo
         dbg.accFactor = accFactor
         dbg.cvtSlipActive = cvtSlipActive and 1 or 0
         dbg.cvtSlipLocked = cvtSlipLocked and 1 or 0
-        dbg.extraTransmissionHeat = spec.extraTransmissionHeat or 0
+        dbg.extraTransmissionHeat = (spec.extraTransmissionHeat or 0) + hydraulicHeat
     end
 
     return dbg

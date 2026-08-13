@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Courant de veille"/>
         <text name="rms_idleCurrent_tooltip" text="Définit le courant de décharge de la batterie lorsque le moteur est arrêté. Par exemple, à 0,5 A, une batterie de 15 Ah mettrait environ 30 heures réelles à se décharger complètement, avant la prise en compte des effets de la température."/>
         <text name="rms_thermalSensitivity_tooltip" text="Ajuste le comportement du modèle thermique. Des réglages plus élevés rendent le moteur et la transmission plus sensibles à la charge, à la température ambiante et à l'encrassement du radiateur, générant ainsi plus de chaleur dans les mêmes conditions."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Vitesse du modèle thermique"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Règle la vitesse de variation des températures du moteur et de la transmission. Les valeurs basses ralentissent le réchauffement et le refroidissement, les valeurs élevées accélèrent les deux. La valeur par défaut est 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Vitesse thermique du moteur"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Règle la vitesse de variation de la température du moteur. Les valeurs basses ralentissent le réchauffement et le refroidissement, les valeurs élevées accélèrent les deux. La valeur par défaut est 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Vitesse thermique de l'huile de transmission"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Règle séparément la vitesse de variation de la température de l'huile de transmission. Les valeurs basses ralentissent le réchauffement et le refroidissement, les valeurs élevées accélèrent les deux. La valeur par défaut est 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Influence de l'encrassement du radiateur"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Réduit la capacité de refroidissement du radiateur de ce pourcentage lorsque l’encrassement est maximal."/>
         <text name="rms_warmingBoostPower_label" text="Accélération de la mise en température"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Accélère artificiellement la mise en température du moteur et de la transmission. Utilisez « Arrêt » pour conserver le comportement thermique d’origine."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Accélère artificiellement la mise en température du moteur. Utilisez « Arrêt » pour conserver le comportement thermique d’origine."/>
         <text name="rms_coolingSlowdownPower_label" text="Ralentissement du refroidissement"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Ralentit artificiellement le refroidissement du moteur et de la transmission après l’arrêt du véhicule. Utilisez « Arrêt » pour conserver le comportement de refroidissement d’origine."/>
         <text name="rms_thermal_none" text="Passif"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Outil trop lourd"/>
         <text name="rms_tutorial_heavy_lift_message" text="Cet outil semble trop lourd pour votre %s. L'hydraulique travaille à sa limite, ce qui aura un effet négatif sur sa durée de vie.&#10;&#10;Suivez une règle simple : le poids de l'outil ne devrait pas dépasser 60%% du poids propre du véhicule."/>
         <text name="rms_tutorial_cold_engine_title" text="Faites chauffer votre machine"/>
-        <text name="rms_tutorial_cold_engine_message" text="Faites toujours chauffer votre machine avant de la mettre au travail. Outre le moteur, beaucoup d'autres éléments ont aussi besoin de temps pour monter en température : l'huile hydraulique, la transmission CVT et même le carburant, surtout par temps de gel. Utiliser la machine à froid peut provoquer des problèmes dans plusieurs systèmes.&#10;&#10;Si la température moteur dépasse 50 degrés (122°F), tout est correctement monté en température et la machine peut être utilisée en sécurité."/>
+        <text name="rms_tutorial_cold_engine_message" text="Faites monter le moteur en température progressivement avant de le solliciter fortement. Utilisez une accélération et un régime modérés jusqu'à ce qu'il atteigne sa température de fonctionnement."/>
+        <text name="rms_tutorial_cold_oil_title" text="Huile de transmission froide"/>
+        <text name="rms_tutorial_cold_oil_message" text="L'huile de transmission et hydraulique chauffe beaucoup plus lentement que le moteur. Évitez les travaux lourds tant que l'huile est froide ; faites-la monter progressivement en température en roulant doucement et en sollicitant légèrement l'hydraulique."/>
         <text name="rms_tutorial_overload_indicator_title" text="Avertissement de surcharge"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s est soumis à une forte charge. Le voyant qui vient de s’allumer sur le tableau de bord vous en avertit.&#10;&#10;La machine n’a peut-être pas assez de puissance pour la tâche en cours. Essayez de réduire la charge : limitez votre vitesse avec le régulateur, ou relâchez légèrement l’accélérateur au lieu de rouler à pleine puissance."/>
         <text name="rms_tutorial_engine_overload_title" text="Surcharge moteur"/>

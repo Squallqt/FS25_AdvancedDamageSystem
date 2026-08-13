@@ -53,6 +53,7 @@ local function buildPendingConfigFromRMSConfig()
         engineMaxHeat = RMS_Config.THERMAL.ENGINE_MAX_HEAT,
         transMaxHeat = RMS_Config.THERMAL.TRANS_MAX_HEAT,
         temperatureChangeSpeed = RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED,
+        transTemperatureChangeMultiplier = RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER,
         maxDirtInfluence = RMS_Config.THERMAL.MAX_DIRT_INFLUENCE,
         warmingBoostPower = RMS_Config.THERMAL.WARMING_BOOST_POWER,
         coolingSlowdownPower = RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER,
@@ -315,6 +316,7 @@ function RMS_SettingsPage.commitPendingConfig(current, pending)
     RMS_Config.THERMAL.ENGINE_MAX_HEAT = pending.engineMaxHeat
     RMS_Config.THERMAL.TRANS_MAX_HEAT = pending.transMaxHeat
     RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = pending.temperatureChangeSpeed
+    RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER = pending.transTemperatureChangeMultiplier
     RMS_Config.THERMAL.MAX_DIRT_INFLUENCE = pending.maxDirtInfluence
     RMS_Config.THERMAL.WARMING_BOOST_POWER = pending.warmingBoostPower
     RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER = pending.coolingSlowdownPower
@@ -562,6 +564,13 @@ function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
         RMS_SettingsPage.steps.temperatureChangeSpeed.texts,
         g_i18n:getText("rms_temperatureChangeSpeed_label"),
         g_i18n:getText("rms_temperatureChangeSpeed_tooltip")
+    )
+    page.rmsTransTemperatureChangeMultiplier = RMS_SettingsPage:addMultiTextOption(
+        page,
+        "onTransTemperatureChangeMultiplierChanged",
+        RMS_SettingsPage.steps.transTemperatureChangeMultiplier.texts,
+        g_i18n:getText("rms_transTemperatureChangeMultiplier_label"),
+        g_i18n:getText("rms_transTemperatureChangeMultiplier_tooltip")
     )
     page.rmsRadiatorDirtInfluence = RMS_SettingsPage:addMultiTextOption(
         page,
@@ -849,6 +858,7 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     setIndex(currentPage.rmsMaintenanceDuration, steps.maintDuration.values, pending.globalTimeMultiplier * 100)
     setIndex(currentPage.rmsThermalSensitivity, steps.thermalSensitivity.values, pending.engineMaxHeat)
     setIndex(currentPage.rmsTemperatureChangeSpeed, steps.temperatureChangeSpeed.values, pending.temperatureChangeSpeed)
+    setIndex(currentPage.rmsTransTemperatureChangeMultiplier, steps.transTemperatureChangeMultiplier.values, pending.transTemperatureChangeMultiplier)
     setIndex(currentPage.rmsRadiatorDirtInfluence, steps.radiatorDirtInfluence.values, pending.maxDirtInfluence)
     setIndex(currentPage.rmsWarmingBoostPower, steps.thermalPower.values, pending.warmingBoostPower)
     setIndex(currentPage.rmsCoolingSlowdownPower, steps.thermalPower.values, pending.coolingSlowdownPower)
@@ -924,6 +934,7 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     currentPage.rmsDrivetrainParkBrakeAuto:setDisabled(disableAll or not pending.drivetrainParkBrakeEnabled)
     currentPage.rmsThermalSensitivity:setDisabled(disableAll)
     currentPage.rmsTemperatureChangeSpeed:setDisabled(disableAll)
+    currentPage.rmsTransTemperatureChangeMultiplier:setDisabled(disableAll)
     currentPage.rmsRadiatorDirtInfluence:setDisabled(disableAll)
     currentPage.rmsWarmingBoostPower:setDisabled(disableAll)
     currentPage.rmsCoolingSlowdownPower:setDisabled(disableAll)
@@ -1144,6 +1155,12 @@ end
 
 function RMS_SettingsPage:onTemperatureChangeSpeedChanged(state)
     getPendingConfig().temperatureChangeSpeed = RMS_SettingsPage.steps.temperatureChangeSpeed.values[state]
+    RMS_SettingsPage.rmsHasPendingSettingsChange = true
+    refreshCurrentSettingsPage()
+end
+
+function RMS_SettingsPage:onTransTemperatureChangeMultiplierChanged(state)
+    getPendingConfig().transTemperatureChangeMultiplier = RMS_SettingsPage.steps.transTemperatureChangeMultiplier.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
@@ -1576,8 +1593,11 @@ function RMS_SettingsPage:generateAllSteps()
         }
     }
 
-    -- Overall thermal model speed: 0.5x to 2.0x.
+    -- Engine thermal model speed: 0.5x to 2.0x.
     self.steps.temperatureChangeSpeed = createSteps(0.5, 16, 0.1, function(v)
+        return string.format("%.1fx", v)
+    end)
+    self.steps.transTemperatureChangeMultiplier = createSteps(0.5, 16, 0.1, function(v)
         return string.format("%.1fx", v)
     end)
 

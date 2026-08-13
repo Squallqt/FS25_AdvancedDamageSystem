@@ -426,6 +426,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
             vibRaw = 0,
             vibFieldMultiplier = 1,
             coldOilFactor = 0,
+            hotOilFactor = 0,
             breakdownProbability = 0,
             critBreakdownProbability = 0
         },

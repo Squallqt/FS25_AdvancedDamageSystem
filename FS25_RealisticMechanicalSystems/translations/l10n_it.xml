@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Corrente a riposo"/>
         <text name="rms_idleCurrent_tooltip" text="Imposta la corrente di scarica della batteria a motore spento. Per esempio, con 0,5 A una batteria da 15 Ah impiegherebbe circa 30 ore reali a scaricarsi completamente, prima di considerare gli effetti della temperatura."/>
         <text name="rms_thermalSensitivity_tooltip" text="Regola il comportamento del modello termico. Impostazioni più elevate rendono motore e trasmissione più sensibili al carico, alla temperatura ambiente e all'imbrattamento del radiatore, generando più calore nelle stesse condizioni."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Velocità del modello termico"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Regola la velocità con cui cambiano le temperature di motore e trasmissione. Valori più bassi rallentano riscaldamento e raffreddamento; valori più alti accelerano entrambi. Il valore predefinito è 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Velocità del modello termico del motore"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Regola la velocità con cui cambia la temperatura del motore. Valori più bassi rallentano riscaldamento e raffreddamento; valori più alti accelerano entrambi. Il valore predefinito è 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Velocità termica dell'olio della trasmissione"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Regola separatamente la velocità con cui cambia la temperatura dell'olio della trasmissione. Valori più bassi rallentano riscaldamento e raffreddamento; valori più alti accelerano entrambi. Il valore predefinito è 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Influenza dello sporco sul radiatore"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Riduce la capacità di raffreddamento del radiatore di questa percentuale al massimo accumulo di sporco."/>
         <text name="rms_warmingBoostPower_label" text="Accelerazione riscaldamento"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Accelera artificialmente il riscaldamento di motore e trasmissione. Usa Disattivato per mantenere invariato il comportamento termico."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Accelera artificialmente il riscaldamento del motore. Usa Disattivato per mantenere invariato il comportamento termico."/>
         <text name="rms_coolingSlowdownPower_label" text="Rallentamento raffreddamento"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Rallenta artificialmente il raffreddamento di motore e trasmissione dopo lo spegnimento del veicolo. Usa Disattivato per mantenere invariato il raffreddamento."/>
         <text name="rms_thermal_none" text="Passivo"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Attrezzo troppo pesante"/>
         <text name="rms_tutorial_heavy_lift_message" text="Sembra che questo attrezzo sia troppo pesante per il tuo %s. L'idraulica sta lavorando al limite e questo avrà un effetto negativo sulla sua durata.&#10;&#10;Segui una regola semplice: il peso dell'attrezzo non dovrebbe superare il 60%% del peso proprio del veicolo."/>
         <text name="rms_tutorial_cold_engine_title" text="Scalda la tua macchina"/>
-        <text name="rms_tutorial_cold_engine_message" text="Scalda sempre la tua macchina prima di metterla al lavoro. Oltre al motore, anche molte altre parti hanno bisogno di tempo per andare in temperatura: l'olio idraulico, la trasmissione CVT e perfino il carburante, soprattutto con il gelo. Usare la macchina a freddo può causare problemi in più sistemi.&#10;&#10;Se la temperatura del motore supera i 50 gradi (122°F), tutto sarà sufficientemente caldo e la macchina potrà essere usata in sicurezza."/>
+        <text name="rms_tutorial_cold_engine_message" text="Scalda il motore gradualmente prima di sottoporlo a un carico elevato. Usa acceleratore e regime moderati finché non raggiunge la temperatura di esercizio."/>
+        <text name="rms_tutorial_cold_oil_title" text="Olio della trasmissione freddo"/>
+        <text name="rms_tutorial_cold_oil_message" text="L'olio della trasmissione e dell'impianto idraulico si scalda molto più lentamente del motore. Evita i lavori pesanti finché l'olio è freddo; scaldalo gradualmente guidando con calma e usando poco l'impianto idraulico."/>
         <text name="rms_tutorial_overload_indicator_title" text="Avviso di sovraccarico"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s sta lavorando sotto forte carico. La spia che si è appena accesa sul cruscotto te lo sta segnalando.&#10;&#10;La macchina potrebbe non avere abbastanza potenza per il lavoro attuale. Prova a ridurre il carico: limita la velocità con il cruise control oppure alleggerisci l'acceleratore invece di lavorare a piena potenza."/>
         <text name="rms_tutorial_engine_overload_title" text="Sovraccarico motore"/>

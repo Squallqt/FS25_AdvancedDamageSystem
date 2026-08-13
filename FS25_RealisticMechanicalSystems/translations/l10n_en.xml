@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Standby Current"/>
         <text name="rms_idleCurrent_tooltip" text="Sets the battery drain current while the engine is stopped. For example, at 0.5 A a 15 Ah battery would take about 30 real hours to fully discharge, before temperature effects are applied."/>
         <text name="rms_thermalSensitivity_tooltip" text="Adjusts the thermal model behavior. Higher settings make the engine and transmission more sensitive to load, ambient temperature, and radiator fouling — generating more heat under the same conditions."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Thermal Model Speed"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Scales how quickly engine and transmission temperatures change. Lower values slow both heating and cooling; higher values speed them up. The default is 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Engine Thermal Model Speed"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Scales how quickly engine temperature changes. Lower values slow both heating and cooling; higher values speed them up. The default is 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Transmission Oil Thermal Speed"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Separately scales how quickly transmission oil temperature changes. Lower values slow both heating and cooling; higher values speed them up. The default is 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Radiator Dirt Influence"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Reduces radiator cooling capacity by this percentage at maximum dirt buildup."/>
         <text name="rms_warmingBoostPower_label" text="Warm-up Acceleration"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Artificially speeds up engine and transmission warm-up. Use Off for unmodified thermal behavior."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Artificially speeds up engine warm-up. Use Off for unmodified thermal behavior."/>
         <text name="rms_coolingSlowdownPower_label" text="Cooling Slowdown"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Artificially slows engine and transmission cooling after the vehicle is shut down. Use Off for unmodified cooling."/>
         <text name="rms_thermal_none" text="Passive"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Attachment Too Heavy"/>
         <text name="rms_tutorial_heavy_lift_message" text="It looks like this implement is too heavy for your %s. The hydraulics are working at their limit, which will negatively affect their service life.&#10;&#10;Follow a simple rule: the attachment weight should not exceed 60%% of the vehicle's own weight."/>
         <text name="rms_tutorial_cold_engine_title" text="Warm Up Your Machine"/>
-        <text name="rms_tutorial_cold_engine_message" text="Always warm up your machine before putting it to work. Besides the engine, there are many other parts that need time to warm up as well: hydraulic oil, the CVT transmission, and even the fuel temperature — especially in freezing weather. Running the machine cold can cause problems across multiple systems.&#10;&#10;If the engine temperature is above 50 degrees (122°F), everything is warmed up properly and the machine can be used safely."/>
+        <text name="rms_tutorial_cold_engine_message" text="Warm the engine gently before applying high load. Use moderate throttle and engine speed until it reaches operating temperature."/>
+        <text name="rms_tutorial_cold_oil_title" text="Cold Transmission Oil"/>
+        <text name="rms_tutorial_cold_oil_message" text="Transmission and hydraulic oil warms much more slowly than the engine. Avoid heavy work while the oil is cold; warm it gradually with light driving and light hydraulic use."/>
         <text name="rms_tutorial_overload_indicator_title" text="Overload Warning"/>
         <text name="rms_tutorial_overload_indicator_message" text="%s is under heavy load. The warning indicator that just lit up on the dashboard is letting you know.&#10;&#10;The machine may not have enough power for the current task. Try reducing the load: limit your speed with cruise control, or ease off the throttle instead of running at full power."/>
         <text name="rms_tutorial_engine_overload_title" text="Engine Overload"/>

@@ -82,12 +82,14 @@
         <text name="rms_idleCurrent_label" text="Proud v pohotovostním režimu"/>
         <text name="rms_idleCurrent_tooltip" text="Nastavuje odběr proudu z baterie při vypnutém motoru. Například při 0,5 A by se 15 Ah baterie plně vybila za přibližně 30 reálných hodin (před započtením vlivu teploty)."/>
         <text name="rms_thermalSensitivity_tooltip" text="Upravuje chování tepelného modelu. Vyšší nastavení činí motor a převodovku citlivější na zatížení, okolní teplotu a znečištění chladiče – generují více tepla za stejných podmínek."/>
-        <text name="rms_temperatureChangeSpeed_label" text="Rychlost tepelného modelu"/>
-        <text name="rms_temperatureChangeSpeed_tooltip" text="Určuje, jak rychle se mění teplota motoru a převodovky. Nižší hodnoty zpomalují zahřívání i chladnutí, vyšší hodnoty obojí zrychlují. Výchozí hodnota je 1.4x."/>
+        <text name="rms_temperatureChangeSpeed_label" text="Rychlost tepelného modelu motoru"/>
+        <text name="rms_temperatureChangeSpeed_tooltip" text="Určuje, jak rychle se mění teplota motoru. Nižší hodnoty zpomalují zahřívání i chladnutí, vyšší hodnoty obojí zrychlují. Výchozí hodnota je 1.4x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Rychlost tepelného modelu převodového oleje"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Samostatně určuje, jak rychle se mění teplota převodového oleje. Nižší hodnoty zpomalují zahřívání i chladnutí, vyšší hodnoty obojí zrychlují. Výchozí hodnota je 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Vliv znečištění chladiče"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Snižuje kapacitu chlazení o toto procento při maximálním znečištění chladiče."/>
         <text name="rms_warmingBoostPower_label" text="Zrychlení zahřívání"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Uměle zrychluje zahřívání motoru a převodovky. Použijte 'Vypnuto' pro původní tepelné chování."/>
+        <text name="rms_warmingBoostPower_tooltip" text="Uměle zrychluje zahřívání motoru. Použijte 'Vypnuto' pro původní tepelné chování."/>
         <text name="rms_coolingSlowdownPower_label" text="Zpomalení chladnutí"/>
         <text name="rms_coolingSlowdownPower_tooltip" text="Uměle zpomaluje chladnutí motoru a převodovky po vypnutí vozidla. Použijte 'Vypnuto' pro původní rychlost chladnutí."/>
         <text name="rms_thermal_none" text="Pasivní"/>
@@ -713,7 +715,9 @@
         <text name="rms_tutorial_heavy_lift_title" text="Příliš těžké nářadí"/>
         <text name="rms_tutorial_heavy_lift_message" text="Zdá se, že toto nářadí je pro vaše %s příliš těžké. Hydraulika pracuje na hranici svých možností, což negativně ovlivní její životnost.&#10;&#10;Držte se pravidla: váha nářadí by neměla přesáhnout 60 %% vlastní váhy vozidla."/>
         <text name="rms_tutorial_cold_engine_title" text="Zahřejte svůj stroj"/>
-        <text name="rms_tutorial_cold_engine_message" text="Předtím než se pustíte do práce, nechte stroj vždy zahřát. Kromě motoru potřebuje čas i mnoho dalších částí: hydraulický olej, převodovka CVT a dokonce i palivo – zejména v mrazivém počasí. Provoz stroje „za studena“ může způsobit problémy v mnoha systémech.&#10;&#10;Pokud je teplota motoru nad 50 stupňů, je vše dostatečně prohřáté a stroj lze bezpečně používat."/>
+        <text name="rms_tutorial_cold_engine_message" text="Před vysokým zatížením motor postupně zahřejte. Používejte mírný plyn a otáčky, dokud motor nedosáhne provozní teploty."/>
+        <text name="rms_tutorial_cold_oil_title" text="Studený převodový olej"/>
+        <text name="rms_tutorial_cold_oil_message" text="Převodový a hydraulický olej se zahřívají mnohem pomaleji než motor. Dokud je olej studený, vyhněte se těžké práci; zahřívejte jej postupně klidnou jízdou a lehkým používáním hydrauliky."/>
         <text name="rms_tutorial_overload_indicator_title" text="Varování před přetížením"/>
         <text name="rms_tutorial_overload_indicator_message" text="Vozidlo %s je pod velkým zatížením. Upozorňuje vás na to varovná kontrolka, která se právě rozsvítila na palubní desce.&#10;&#10;Stroj zřejmě nemá dostatek výkonu pro aktuální úkol. Zkuste snížit zátěž: omezte rychlost pomocí tempomatu nebo uberte plyn, místo abyste jeli na plný výkon."/>
         <text name="rms_tutorial_engine_overload_title" text="Přetížení motoru"/>
