@@ -599,7 +599,8 @@ function RealisticMechanicalSystems:addBreakdown(breakdownId, stageOrOptions)
         isSelectedForRepair = RMS_Utils.normalizeBoolValue(options.isSelectedForRepair, true),
         isActive = currentIsActive,
         resumeTimer = resumeTimer,
-        source = options.source or RealisticMechanicalSystems.BREAKDOWN_SOURCES.RANDOM
+        source = options.source or RealisticMechanicalSystems.BREAKDOWN_SOURCES.RANDOM,
+        effectTargetIndex = math.max(math.floor(tonumber(options.effectTargetIndex) or 0), 0)
     }
     
     self:recalculateAndApplyEffects()

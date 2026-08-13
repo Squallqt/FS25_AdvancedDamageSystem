@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostat převodovky"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulické čerpadlo"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulický válec"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Hydraulická hadice"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Hydraulický filtr"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Chladič hydraulického oleje"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Hydraulický rozvaděč"/>
         <text name="rms_breakdowns_part_brake_system" text="Brzdový systém"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Ložisko kola"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Táhla řízení"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Poškozené hydraulické čerpadlo. Nářadí je extrémně pomalé a slabé."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Selhání hydraulického čerpadla. Hydraulický systém je nefunkční."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Selhání hydrauliky"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Vnitřní netěsnost hydraulického válce. Rychlost pohybu je mírně snížena a připojené nářadí se může pod zatížením pomalu sesouvat."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Střední vnitřní netěsnost válce. Rychlost pohybu je znatelně nižší a stabilita držení nákladu je narušena."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vážná vnitřní netěsnost válce. Hydraulický pohyb je pomalý a slabý, nářadí neudrží polohu pod zatížením."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritická vnitřní netěsnost válce. Hydraulický pohyb téměř ustal a udržení nákladu již není možné."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Kritický únik hydraulického válce"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Mírná vnitřní netěsnost hydraulického válce. Zvednuté nářadí pod zatížením pomalu klesá."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Střední vnitřní netěsnost hydraulického válce. Samovolný pokles je znatelný a zrychluje s nesenou hmotností."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vážná vnitřní netěsnost hydraulického válce. Těžké nářadí již nedokáže spolehlivě udržet polohu."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritická vnitřní netěsnost hydraulického válce. Každé zvednuté břemeno rychle samo klesá."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Hydraulická hadice má malou vnější netěsnost. Uniká trochu oleje a odezva hydrauliky je mírně snížena."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Hydraulická hadice viditelně prosakuje. Olej dále uniká a hydraulické funkce reagují pomaleji."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Hydraulická hadice aktivně uniká. Ztráta oleje je zřejmá a hydraulické funkce jsou znatelně slabší."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Hydraulická hadice má vážnou vnější netěsnost. Olej rychle uniká a výkon hydrauliky je výrazně snížen."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Hydraulický filtr začíná omezovat průtok. Hydraulické funkce jsou mírně pomalejší. Běžná údržba filtr vymění."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Hydraulický filtr je středně zanesený. Všechny hydraulické funkce jsou znatelně pomalejší. Běžná údržba filtr vymění."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Hydraulický filtr je silně zanesený. Odezva hydrauliky je velmi pomalá. Běžná údržba filtr vymění."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Hydraulický filtr je téměř ucpaný. Hydraulické funkce téměř nereagují. Běžná údržba filtr vymění."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Chladič hydraulického oleje ztratil část účinnosti. Při delší hydraulické práci teplota oleje mírně stoupá."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Chladič hydraulického oleje pracuje nedostatečně. Při souvislé hydraulické práci teplota oleje znatelně stoupá."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Chladič hydraulického oleje je silně poškozený. Těžká hydraulická práce rychle přehřívá společný olej převodovky a hydrauliky."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Chladič hydraulického oleje selhal. Dlouhá hydraulická práce způsobuje silné přehřívání oleje a urychluje opotřebení čerpadla."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Hydraulický rozvaděč se začíná zadírat. Jedna hydraulická funkce občas zaváhá a pod zatížením ztrácí sílu."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Hydraulický rozvaděč se přerušovaně zadrhává. Jedna hydraulická funkce je pomalejší a s rostoucím zatížením ztrácí více síly."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Hydraulický rozvaděč je silně opotřebený. Jedna hydraulická funkce se pohybuje nepravidelně a pod těžkým zatížením slábne."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Hydraulický rozvaděč je kriticky poškozený. Jedna hydraulická funkce se opakovaně zastavuje a těžkým břemenem sotva pohne."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Opotřebení ložiska náboje kola. Jsou přítomny hluk a vibrace ložiska, maximální rychlost je mírně omezena a valivý odpor je zvýšen."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Střední opotřebení ložiska náboje. Hluk a vibrace jsou výrazné, maximální rychlost snížena a zatížení pohonného ústrojí zvýšeno."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Silné opotřebení ložiska náboje. Silné vibrace, výrazně snížená maximální rychlost, vysoké zatížení pohonu, může se objevit zvuk zadírání."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Motorový olej vypadá tmavší než obvykle."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="Motorový olej se zdá být znečištěný."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Stav oleje se zdá být kritický."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="V oblasti hydraulického válce je patrný slabý mastný film."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Kolem válce je patrný průsak hydraulické kapaliny."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="V blízkosti válce jsou viditelné jasné stopy hydraulické kapaliny."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Jsou viditelné silné stopy hydraulické kapaliny. Oblast válce je jimi silně znečištěna."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Nejsou viditelné žádné vnější stopy oleje. Zkouška držení odhalí mírný pokles pod zatížením."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Nejsou viditelné žádné vnější stopy oleje. Zvednuté nářadí při zkoušce držení pomalu ztrácí výšku."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Nejsou viditelné žádné vnější stopy oleje. Zvednuté nářadí již pod zatížením spolehlivě neudrží polohu."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Nejsou viditelné žádné vnější stopy oleje. Každé zvednuté břemeno při zkoušce držení rychle klesá."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Na hydraulické hadici nebo přípojce je viditelný slabý olejový film."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Z hydraulické hadice nebo přípojky viditelně prosakuje olej."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Podél hydraulické hadice jsou viditelné jasné stopy oleje a čerstvé zvlhnutí."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Hydraulická hadice a její okolí jsou silně znečištěny unikajícím olejem."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="Povrch chladiče je mírně znečištěný."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Chladič je znatelně znečištěný."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Chladič je silně zanesen hlínou a nečistotami."/>

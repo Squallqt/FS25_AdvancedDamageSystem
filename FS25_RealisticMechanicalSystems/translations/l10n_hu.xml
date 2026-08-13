@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Váltó termosztátja"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hidraulikaszivattyú"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hidraulikahenger"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Hidraulikatömlő"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Hidraulikaszűrő"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Hidraulikaolaj-hűtő"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Hidraulikus vezérlőszelep"/>
         <text name="rms_breakdowns_part_brake_system" text="Fékrendszer"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Kerékcsapágy"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Kormánymű rudazata"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Sérült hidraulikaszivattyú. A munkagépek rendkívül lassúak és gyengék."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Hidraulikaszivattyú-hiba. A hidraulikarendszer működésképtelen."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Hidraulikahiba"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Belső szivárgás egy hidraulikahengerben. A hidraulikus működtetés sebessége enyhén csökkent, és a csatlakoztatott munkagépek terhelés alatt lassan elmozdulhatnak."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Közepes belső szivárgás egy hidraulikahengerben. A hidraulikus működtetés érezhetően lassabb, és a terheléstartás stabilitása romlott."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Súlyos belső szivárgás egy hidraulikahengerben. A hidraulika lassú és gyenge, a csatlakoztatott munkagépek nem tartják megbízhatóan a pozíciójukat terhelés alatt."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritikus belső szivárgás egy hidraulikahengerben. A hidraulikus mozgás szinte megszűnt, és a terhelés megtartása már nem lehetséges."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Kritikus hidraulikahenger-szivárgás"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Enyhe belső szivárgás a hidraulikahengerben. A felemelt munkagép terhelés alatt lassan lesüllyed."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Közepes belső szivárgás a hidraulikahengerben. Az önkéntelen süllyedés jól észrevehető, és a teher növekedésével gyorsul."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Súlyos belső szivárgás a hidraulikahengerben. A nehéz munkagépek már nem tartják megbízhatóan a helyzetüket."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritikus belső szivárgás a hidraulikahengerben. Minden felemelt teher gyorsan lesüllyed magától."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Egy hidraulikatömlőn kis külső szivárgás jelent meg. Kevés olaj távozik, és a hidraulika reakciója enyhén romlik."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Egy hidraulikatömlő láthatóan szivárog. Az olajveszteség folytatódik, és a hidraulikus funkciók lassabban reagálnak."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Egy hidraulikatömlő aktívan szivárog. Az olajveszteség egyértelmű, és a hidraulikus funkciók érezhetően gyengébbek."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Egy hidraulikatömlőn súlyos külső szivárgás van. Az olaj gyorsan távozik, és a hidraulika teljesítménye jelentősen csökken."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="A hidraulikaszűrő kezdi korlátozni az áramlást. A hidraulikus funkciók kissé lassabbak. A szokásos karbantartás kicseréli a szűrőt."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="A hidraulikaszűrő közepesen eltömődött. Minden hidraulikus funkció érezhetően lassabb. A szokásos karbantartás kicseréli a szűrőt."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="A hidraulikaszűrő súlyosan eltömődött. A hidraulika nagyon lassan reagál. A szokásos karbantartás kicseréli a szűrőt."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="A hidraulikaszűrő szinte teljesen elzáródott. A hidraulikus funkciók alig reagálnak. A szokásos karbantartás kicseréli a szűrőt."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="A hidraulikaolaj-hűtő veszített a hatékonyságából. Hosszan tartó hidraulikus munka közben az olaj hőmérséklete kissé emelkedik."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="A hidraulikaolaj-hűtő gyengén teljesít. Folyamatos hidraulikus munka közben az olaj hőmérséklete érezhetően emelkedik."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="A hidraulikaolaj-hűtő súlyosan károsodott. A nehéz hidraulikus munka gyorsan túlmelegíti a váltó és a hidraulika közös olaját."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="A hidraulikaolaj-hűtő meghibásodott. A tartós hidraulikus munka erős olajtúlmelegedést okoz és gyorsítja a szivattyú kopását."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Egy hidraulikus vezérlőszelep kezd megszorulni. Egy hidraulikus funkció időnként akadozik és terhelés alatt veszít az erejéből."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Egy hidraulikus vezérlőszelep szakaszosan megszorul. Egy hidraulikus funkció lassabb, és a terhelés növekedésével több erőt veszít."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Egy hidraulikus vezérlőszelep súlyosan kopott. Egy hidraulikus funkció szabálytalanul mozog és nehéz teher alatt erőlködik."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Egy hidraulikus vezérlőszelep kritikusan sérült. Egy hidraulikus funkció ismételten leáll, és alig képes nehéz terhet mozgatni."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Kerékagycsapágy-kopás. Csapágyzaj és vibráció jelentkezik, a maximális sebesség kissé korlátozott, a gördülési ellenállás megnőtt."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Közepes kerékagycsapágy-kopás. A csapágyzaj és a vibráció erősebb, a maximális sebesség csökkent, és a hajtáslánc terhelése nőtt."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Súlyos kerékagycsapágy-kopás. A vibráció erős, a maximális sebesség jelentősen csökkent, a hajtáslánc terhelése magasabb, és megszorulási zaj is jelentkezhet."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="A motorolaj sötétebbnek tűnik a normálisnál."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="A motorolaj szennyezettnek tűnik."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Az olaj állapota kritikusnak tűnik."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Halvány olajos film látható a hidraulikahenger környékén."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Hidraulikaolaj-szivárgásnyom látható a hengernél."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Jól látható hidraulikaolaj-nyomok vannak a henger közelében."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Erős hidraulikaolaj-nyomok láthatók. A henger környéke erősen folyadékszennyezett."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Külső olajnyom nem látható. A tartási próba enyhe süllyedést mutat terhelés alatt."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Külső olajnyom nem látható. A felemelt munkagép lassan veszít a magasságából a tartási próba alatt."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Külső olajnyom nem látható. A felemelt munkagép terhelés alatt már nem tartja megbízhatóan a helyzetét."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Külső olajnyom nem látható. Minden felemelt teher gyorsan lesüllyed a tartási próba alatt."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Vékony olajfilm látható egy hidraulikatömlőn vagy csatlakozón."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Hidraulikaolaj láthatóan szivárog egy tömlőből vagy csatlakozóból."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Egy hidraulikatömlő mentén egyértelmű olajnyomok és friss nedvesség látható."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Egy hidraulikatömlőt és környezetét erősen beszennyezte a kiáramló olaj."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="A hűtő felülete kissé szennyezett."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="A hűtő érezhetően szennyezett."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="A hűtő erősen eltömődött sárral és törmelékkel."/>

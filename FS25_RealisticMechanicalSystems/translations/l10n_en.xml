@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Transmission thermostat"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulic pump"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulic cylinder"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Hydraulic hose"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Hydraulic filter"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Hydraulic oil cooler"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Hydraulic control valve"/>
         <text name="rms_breakdowns_part_brake_system" text="Brake system"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Wheel bearing"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Steering linkage"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Damaged hydraulic pump. Implements are extremely slow and weak."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Hydraulic pump failure. Hydraulic system is inoperable."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Hydraulic failure"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Internal leakage in a hydraulic cylinder. Hydraulic actuation speed is slightly reduced and attached implements may drift slowly under load."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Moderate internal leakage in a hydraulic cylinder. Hydraulic actuation speed is noticeably reduced and load holding stability is impaired."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Severe internal leakage in a hydraulic cylinder. Hydraulic actuation is slow and weak, and attached implements cannot reliably hold position under load."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Critical internal leakage in a hydraulic cylinder. Hydraulic movement is almost lost and load holding is no longer possible."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Hydraulic cylinder leakage critical"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Minor internal leakage in a hydraulic cylinder. A raised implement drifts slowly under load."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Moderate internal leakage in a hydraulic cylinder. Downward drift is noticeable and increases with the carried load."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Severe internal leakage in a hydraulic cylinder. Heavy implements can no longer reliably hold their position."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Critical internal leakage in a hydraulic cylinder. Any raised load drops rapidly on its own."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="A hydraulic hose has a small external leak. A little oil escapes and hydraulic response is slightly reduced."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="A hydraulic hose is visibly seeping. Oil loss continues and hydraulic functions respond more slowly."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="A hydraulic hose is actively leaking. Oil loss is obvious and hydraulic functions are noticeably weakened."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="A hydraulic hose has a severe external leak. Oil is escaping quickly and hydraulic performance is strongly reduced."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="The hydraulic filter is beginning to restrict flow. Hydraulic functions are slightly slower. Routine maintenance replaces the filter."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="The hydraulic filter is moderately clogged. All hydraulic functions are noticeably slower. Routine maintenance replaces the filter."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="The hydraulic filter is severely clogged. Hydraulic response is very slow. Routine maintenance replaces the filter."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="The hydraulic filter is almost blocked. Hydraulic functions barely respond. Routine maintenance replaces the filter."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="The hydraulic oil cooler has lost some efficiency. Oil temperature rises slightly during prolonged hydraulic work."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="The hydraulic oil cooler is underperforming. Oil temperature rises noticeably during sustained hydraulic work."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="The hydraulic oil cooler is badly degraded. Heavy hydraulic work quickly overheats the common transmission and hydraulic oil."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="The hydraulic oil cooler has failed. Prolonged hydraulic work causes severe oil overheating and accelerates pump wear."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="A hydraulic control valve is beginning to stick. One hydraulic function occasionally hesitates and weakens under load."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="A hydraulic control valve is sticking intermittently. One hydraulic function is slower and loses more force as load increases."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="A hydraulic control valve is badly worn. One hydraulic function moves erratically and struggles under heavy load."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="A hydraulic control valve is critically damaged. One hydraulic function repeatedly stops and can barely move a heavy load."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Wheel hub bearing wear. Bearing noise and vibration are present, maximum speed is slightly limited, and rolling resistance is increased."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Moderate wheel hub bearing wear. Bearing noise and vibration are pronounced, maximum speed is reduced, and drivetrain load is increased."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Severe wheel hub bearing wear. Vibration is strong, maximum speed is significantly reduced, drivetrain load is elevated, and seizure noise may occur."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="The engine oil appears darker than normal."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="The engine oil looks contaminated."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="The oil condition appears critical."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="A faint oily film is visible around the hydraulic cylinder area."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Hydraulic seepage is visible around the cylinder."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Clear hydraulic fluid traces are visible near the cylinder."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Heavy hydraulic fluid traces are visible. The cylinder area is heavily contaminated with fluid."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="No external oil trace is visible. A load holding test reveals a slight downward drift."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="No external oil trace is visible. The raised implement slowly loses height during a load holding test."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="No external oil trace is visible. The raised implement cannot reliably hold its position under load."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="No external oil trace is visible. Any raised load drops rapidly during the holding test."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="A faint oily film is visible on a hydraulic hose or fitting."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Hydraulic oil is visibly seeping from a hose or fitting."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Clear hydraulic oil traces and fresh wetting are visible along a hose."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="A hydraulic hose and the surrounding area are heavily contaminated with escaping oil."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="The radiator surface is slightly dirty."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="The radiator is noticeably dirty."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="The radiator is heavily clogged with dirt and debris."/>

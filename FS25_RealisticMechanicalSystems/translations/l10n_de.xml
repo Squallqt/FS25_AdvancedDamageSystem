@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Getriebethermostat"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulikpumpe"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulikzylinder"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Hydraulikschlauch"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Hydraulikfilter"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Hydraulikölkühler"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Hydrauliksteuerventil"/>
         <text name="rms_breakdowns_part_brake_system" text="Bremssystem"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Radlager"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Lenkgestänge"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Beschädigte Hydraulikpumpe. Anbaugeräte sind extrem langsam und schwach."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Ausfall der Hydraulikpumpe. Das Hydrauliksystem ist außer Betrieb."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Hydraulikausfall"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Leckage im Hydraulikzylinder. Die Haltekraft ist leicht reduziert und Bewegungen werden etwas langsamer."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Mäßige interne Leckage im Hydraulikzylinder. Der Druck fällt schneller ab, die Kraft sinkt deutlich und Bewegungen werden sichtbar langsamer."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Schwere interne Leckage im Hydraulikzylinder. Die Hydraulikkraft ist stark reduziert, Lasten können nur unzuverlässig gehalten werden und die Funktion ist stark beeinträchtigt."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritischer Ausfall des Hydraulikzylinders. Der Innendruck kann nicht mehr gehalten werden und ein normaler Hydraulikbetrieb ist unmöglich."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Ausfall des Hydraulikzylinders"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Geringe interne Leckage im Hydraulikzylinder. Ein angehobenes Gerät sinkt unter Last langsam ab."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Mäßige interne Leckage im Hydraulikzylinder. Das selbstständige Absinken ist deutlich und nimmt mit der getragenen Last zu."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Schwere interne Leckage im Hydraulikzylinder. Schwere Geräte können ihre Position nicht mehr zuverlässig halten."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kritische interne Leckage im Hydraulikzylinder. Jede angehobene Last sinkt schnell von selbst ab."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Ein Hydraulikschlauch hat eine kleine äußere Leckage. Etwas Öl tritt aus und die Hydraulik reagiert geringfügig schwächer."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Ein Hydraulikschlauch schwitzt sichtbar. Der Ölverlust hält an und die Hydraulikfunktionen reagieren langsamer."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Ein Hydraulikschlauch ist aktiv undicht. Der Ölverlust ist deutlich und die Hydraulikfunktionen sind merklich schwächer."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Ein Hydraulikschlauch hat eine schwere äußere Leckage. Öl tritt schnell aus und die Hydraulikleistung ist stark reduziert."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Der Hydraulikfilter beginnt den Durchfluss zu begrenzen. Die Hydraulikfunktionen werden etwas langsamer. Die normale Wartung ersetzt den Filter."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Der Hydraulikfilter ist mäßig zugesetzt. Alle Hydraulikfunktionen sind merklich langsamer. Die normale Wartung ersetzt den Filter."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Der Hydraulikfilter ist stark zugesetzt. Die Hydraulik reagiert sehr langsam. Die normale Wartung ersetzt den Filter."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Der Hydraulikfilter ist fast verstopft. Die Hydraulikfunktionen reagieren kaum noch. Die normale Wartung ersetzt den Filter."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Der Hydraulikölkühler hat etwas Wirkung verloren. Bei längerem Hydraulikeinsatz steigt die Öltemperatur leicht an."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Der Hydraulikölkühler arbeitet unzureichend. Bei dauerhaftem Hydraulikeinsatz steigt die Öltemperatur deutlich an."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Der Hydraulikölkühler ist stark beeinträchtigt. Schwere Hydraulikarbeit überhitzt das gemeinsame Getriebe- und Hydrauliköl schnell."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Der Hydraulikölkühler ist ausgefallen. Längerer Hydraulikeinsatz führt zu starker Ölüberhitzung und beschleunigt den Pumpenverschleiß."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Ein Hydrauliksteuerventil beginnt zu klemmen. Eine Hydraulikfunktion stockt gelegentlich und verliert unter Last Kraft."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Ein Hydrauliksteuerventil klemmt zeitweise. Eine Hydraulikfunktion wird langsamer und verliert mit steigender Last mehr Kraft."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Ein Hydrauliksteuerventil ist stark verschlissen. Eine Hydraulikfunktion bewegt sich unregelmäßig und hat unter hoher Last Mühe."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Ein Hydrauliksteuerventil ist kritisch beschädigt. Eine Hydraulikfunktion stoppt wiederholt und kann eine schwere Last kaum bewegen."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Leichter Lagerverschleiß. Der mechanische Widerstand steigt leicht an und ungewöhnliche Laufgeräusche können auftreten."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Mäßiger Lagerverschleiß. Die Reibung steigt deutlich, das Geräusch wird stärker und die mechanische Effizienz sinkt."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Starker Lagerverschleiß. Die Reibung ist hoch, die Geräuschentwicklung deutlich und unter Last besteht echte Fressgefahr."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Das Motoröl ist dunkler als normal."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="Das Motoröl wirkt verunreinigt."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Der Zustand des Motoröls wirkt kritisch."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Im Bereich des Hydraulikzylinders ist ein leichter Ölfilm sichtbar."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Am Zylinder ist Hydrauliköl-Sickerung sichtbar."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Deutliche Spuren von Hydraulikflüssigkeit sind am Zylinder sichtbar."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Starke Spuren von Hydraulikflüssigkeit sind sichtbar. Der Bereich des Zylinders ist stark mit Flüssigkeit verunreinigt."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Äußerlich sind keine Ölspuren sichtbar. Eine Halteprüfung zeigt ein leichtes Absinken unter Last."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Äußerlich sind keine Ölspuren sichtbar. Das angehobene Gerät verliert bei der Halteprüfung langsam an Höhe."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Äußerlich sind keine Ölspuren sichtbar. Das angehobene Gerät kann seine Position unter Last nicht mehr zuverlässig halten."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Äußerlich sind keine Ölspuren sichtbar. Jede angehobene Last sinkt bei der Halteprüfung schnell ab."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="An einem Hydraulikschlauch oder Anschluss ist ein leichter Ölfilm sichtbar."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="An einem Hydraulikschlauch oder Anschluss tritt sichtbar Öl aus."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Entlang eines Hydraulikschlauchs sind deutliche Ölspuren und frische Nässe sichtbar."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Ein Hydraulikschlauch und seine Umgebung sind stark mit austretendem Öl verschmutzt."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="Die Kühleroberfläche ist leicht verschmutzt."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Der Kühler ist deutlich verschmutzt."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Der Kühler ist stark mit Schmutz und Ablagerungen zugesetzt."/>

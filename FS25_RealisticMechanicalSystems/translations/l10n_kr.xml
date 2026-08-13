@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="변속기 서모스탷"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="유압 펌프"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="유압 실린더"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="유압 호스"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="유압 필터"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="유압 오일 냉각기"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="유압 제어 밸브"/>
         <text name="rms_breakdowns_part_brake_system" text="브레이크 시스템"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="휠 베어링"/>
         <text name="rms_breakdowns_part_steering_linkage" text="스티어링 링케이지"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="유압 펌프 손상. 작업 기구가 매우 느리고 힘이 없습니다."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="유압 펌프 고장. 유압 시스템을 사용할 수 없습니다."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="유압 고장"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="유압 실린더 내부 누설. 작동 속도가 약간 줄고 장착된 기구가 부하 시 서서히 처집니다."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="유압 실린더 보통 내부 누설. 작동 속도가 뚜렷이 감소하고 부하 유지 안정성이 떨어집니다."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="유압 실린더 심각한 내부 누설. 작동이 느리고 힘이 없으며 기구가 부하를 견디지 못하고 처집니다."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="치명적인 유압 실린더 내부 누설. 유압 이동 기능을 상실했고 부하 유지가 불가능합니다."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="유압 실린더 누설 치명적"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="유압 실린더에 경미한 내부 누설이 있습니다. 들어 올린 작업기가 부하를 받으면 천천히 내려갑니다."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="유압 실린더에 보통 수준의 내부 누설이 있습니다. 의도하지 않은 하강이 뚜렷하며 적재 하중이 커질수록 빨라집니다."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="유압 실린더에 심각한 내부 누설이 있습니다. 무거운 작업기가 더 이상 위치를 안정적으로 유지하지 못합니다."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="유압 실린더에 치명적인 내부 누설이 있습니다. 들어 올린 모든 하중이 빠르게 저절로 내려갑니다."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="유압 호스에 작은 외부 누유가 있습니다. 소량의 오일이 빠져나가며 유압 반응이 약간 저하됩니다."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="유압 호스에서 누유가 눈에 띕니다. 오일 손실이 계속되고 유압 기능의 반응이 느려집니다."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="유압 호스에서 오일이 계속 새고 있습니다. 오일 손실이 분명하며 유압 기능이 눈에 띄게 약해집니다."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="유압 호스에 심각한 외부 누유가 있습니다. 오일이 빠르게 빠져나가며 유압 성능이 크게 저하됩니다."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="유압 필터가 유량을 제한하기 시작합니다. 유압 기능이 약간 느려집니다. 정기 정비로 필터를 교체할 수 있습니다."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="유압 필터가 보통 수준으로 막혔습니다. 모든 유압 기능이 눈에 띄게 느려집니다. 정기 정비로 필터를 교체할 수 있습니다."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="유압 필터가 심하게 막혔습니다. 유압 반응이 매우 느립니다. 정기 정비로 필터를 교체할 수 있습니다."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="유압 필터가 거의 완전히 막혔습니다. 유압 기능이 거의 반응하지 않습니다. 정기 정비로 필터를 교체할 수 있습니다."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="유압 오일 냉각기의 효율이 조금 떨어졌습니다. 유압 장치를 오래 사용하면 오일 온도가 약간 상승합니다."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="유압 오일 냉각기의 성능이 부족합니다. 유압 장치를 계속 사용하면 오일 온도가 눈에 띄게 상승합니다."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="유압 오일 냉각기가 심하게 손상되었습니다. 무거운 유압 작업은 변속기와 유압 계통의 공용 오일을 빠르게 과열시킵니다."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="유압 오일 냉각기가 고장 났습니다. 장시간 유압 작업을 하면 오일이 심하게 과열되고 펌프 마모가 빨라집니다."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="유압 제어 밸브가 걸리기 시작합니다. 한 유압 기능이 간헐적으로 주저하고 부하에서 힘을 잃습니다."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="유압 제어 밸브가 간헐적으로 걸립니다. 한 유압 기능이 느려지고 부하가 커질수록 더 많은 힘을 잃습니다."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="유압 제어 밸브가 심하게 마모되었습니다. 한 유압 기능이 불규칙하게 움직이고 무거운 부하에서 힘겨워합니다."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="유압 제어 밸브가 치명적으로 손상되었습니다. 한 유압 기능이 반복해서 멈추며 무거운 하중을 거의 움직이지 못합니다."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="휠 허브 베어링 마모. 소음과 진동이 발생하며 최고 속도가 약간 제한되고 구름 저항이 늘어납니다."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="휠 허브 베어링 보통 마모. 소음과 진동이 뚜렷하며 속도가 줄고 구동계 부하가 증가합니다."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="휠 허브 베어링 심각한 마모. 강한 진동과 대폭적인 속도 감소가 발생하며 베어링 고착 소음이 들릴 수 있습니다."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="엔진 오일이 평소보다 어둡게 보입니다."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="엔진 오일이 오염된 것처럼 보입니다."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="오일 상태가 치명적인 것으로 보입니다."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="유압 실린더 주변에 옅은 오일 막이 보입니다."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="실린더 주변에 유압액이 스며나오는 것이 보입니다."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="실린더 근처에 명확한 유압유 흔적이 보입니다."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="심한 유압유 흔적이 보이며 주변이 심하게 오염되었습니다."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="외부 오일 흔적은 보이지 않습니다. 하중 유지 시험에서 약간의 하강이 확인됩니다."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="외부 오일 흔적은 보이지 않습니다. 들어 올린 작업기가 하중 유지 시험 중 천천히 높이를 잃습니다."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="외부 오일 흔적은 보이지 않습니다. 들어 올린 작업기가 더 이상 부하에서 위치를 안정적으로 유지하지 못합니다."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="외부 오일 흔적은 보이지 않습니다. 들어 올린 모든 하중이 유지 시험 중 빠르게 내려갑니다."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="유압 호스나 연결부에 얇은 오일 막이 보입니다."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="유압 호스나 연결부에서 오일이 눈에 띄게 스며나옵니다."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="유압 호스를 따라 뚜렷한 오일 흔적과 새로 젖은 부분이 보입니다."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="유압 호스와 주변이 새어 나온 오일로 심하게 오염되었습니다."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="라디에이터 표면이 약간 더럽습니다."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="라디에이터가 눈에 띄게 더럽습니다."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="라디에이터가 먼지와 파편으로 심하게 막혔습니다."/>

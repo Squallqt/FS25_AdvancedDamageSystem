@@ -165,8 +165,9 @@ function RMS_Utils.serializeBreakdowns(breakdownsTable)
         local active = breakdown.isActive ~= false and 1 or 0
         local resumeTimer = math.max(tonumber(breakdown.resumeTimer) or 0, 0)
         local source = math.max(math.floor(tonumber(breakdown.source) or 0), 0)
+        local effectTargetIndex = math.max(math.floor(tonumber(breakdown.effectTargetIndex) or 0), 0)
 
-        local system = string.format("%s,%d,%.2f,%d,%d,%d,%.2f,%d", id, breakdown.stage, breakdown.progressTimer or 0, visible, selected, active, resumeTimer, source)
+        local system = string.format("%s,%d,%.2f,%d,%d,%d,%.2f,%d,%d", id, breakdown.stage, breakdown.progressTimer or 0, visible, selected, active, resumeTimer, source, effectTargetIndex)
         table.insert(parts, system)
     end
     return table.concat(parts, ";")
@@ -222,7 +223,7 @@ function RMS_Utils.deserializeBreakdowns(breakdownString)
     end
     
     for part in string.gmatch(breakdownString, "([^;]+)") do
-        local id, stage, timer, isVisible, isSelected, isActive, resumeTimer, source = string.match(part, "([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
+        local id, stage, timer, isVisible, isSelected, isActive, resumeTimer, source, effectTargetIndex = string.match(part, "([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),?([^,]*)")
         
         if id then
             breakdowns[id] = {
@@ -232,7 +233,8 @@ function RMS_Utils.deserializeBreakdowns(breakdownString)
                 isSelectedForRepair = (tonumber(isSelected) == 1),
                 isActive = (tonumber(isActive) == 1),
                 resumeTimer = math.max(tonumber(resumeTimer) or 0, 0),
-                source = tonumber(source) or RealisticMechanicalSystems.BREAKDOWN_SOURCES.RANDOM
+                source = tonumber(source) or RealisticMechanicalSystems.BREAKDOWN_SOURCES.RANDOM,
+                effectTargetIndex = math.max(math.floor(tonumber(effectTargetIndex) or 0), 0)
             }
         end
     end

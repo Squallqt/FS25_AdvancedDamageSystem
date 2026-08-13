@@ -533,6 +533,10 @@ function RealisticMechanicalSystems:completeService()
                 systemData.stress = math.max(tonumber(targetStress) or 0, 0)
             end
         end
+
+        if self:hasBreakdown("HYDRAULIC_FILTER_CLOGGING") then
+            self:removeBreakdown("HYDRAULIC_FILTER_CLOGGING")
+        end
     end
 
     if serviceType == states.OVERHAUL then

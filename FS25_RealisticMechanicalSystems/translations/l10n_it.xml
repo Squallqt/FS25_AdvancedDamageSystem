@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostato del cambio"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Pompa idraulica"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Cilindro idraulico"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Tubo idraulico"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Filtro idraulico"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Radiatore dell'olio idraulico"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Valvola di controllo idraulico"/>
         <text name="rms_breakdowns_part_brake_system" text="Impianto frenante"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Cuscinetto ruota"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Tiranteria sterzo"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Pompa idraulica danneggiata. Gli attrezzi sono estremamente lenti e deboli."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Guasto della pompa idraulica. Il sistema idraulico è inutilizzabile."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Guasto idraulico"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Perdita interna in un cilindro idraulico. La velocità di attuazione idraulica è leggermente ridotta e gli attrezzi collegati possono cedere lentamente sotto carico."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Perdita interna moderata in un cilindro idraulico. La velocità di attuazione è sensibilmente ridotta e la stabilità nel mantenimento del carico è compromessa."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Grave perdita interna in un cilindro idraulico. L'attuazione è lenta e debole e gli attrezzi collegati non mantengono affidabilmente la posizione sotto carico."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Perdita interna critica in un cilindro idraulico. Il movimento idraulico è quasi assente e non è più possibile mantenere il carico."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Perdita critica cilindro idraulico"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Lieve perdita interna in un cilindro idraulico. Un attrezzo sollevato scende lentamente sotto carico."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Perdita interna moderata in un cilindro idraulico. La discesa involontaria è evidente e aumenta con il carico trasportato."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Grave perdita interna in un cilindro idraulico. Gli attrezzi pesanti non mantengono più la posizione in modo affidabile."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Perdita interna critica in un cilindro idraulico. Qualsiasi carico sollevato scende rapidamente da solo."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Un tubo idraulico presenta una piccola perdita esterna. Fuoriesce poco olio e la risposta idraulica diminuisce leggermente."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Un tubo idraulico trasuda visibilmente. La perdita d'olio continua e le funzioni idrauliche rispondono più lentamente."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Un tubo idraulico perde attivamente. La perdita d'olio è evidente e le funzioni idrauliche sono sensibilmente indebolite."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Un tubo idraulico presenta una grave perdita esterna. L'olio fuoriesce rapidamente e le prestazioni idrauliche sono fortemente ridotte."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Il filtro idraulico inizia a limitare il flusso. Le funzioni idrauliche sono leggermente più lente. La manutenzione ordinaria sostituisce il filtro."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Il filtro idraulico è moderatamente intasato. Tutte le funzioni idrauliche sono sensibilmente più lente. La manutenzione ordinaria sostituisce il filtro."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Il filtro idraulico è gravemente intasato. La risposta idraulica è molto lenta. La manutenzione ordinaria sostituisce il filtro."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Il filtro idraulico è quasi bloccato. Le funzioni idrauliche rispondono appena. La manutenzione ordinaria sostituisce il filtro."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Il radiatore dell'olio idraulico ha perso parte della sua efficienza. La temperatura dell'olio aumenta leggermente durante un lavoro idraulico prolungato."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Il radiatore dell'olio idraulico rende meno del previsto. La temperatura dell'olio aumenta sensibilmente durante un lavoro idraulico continuo."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Il radiatore dell'olio idraulico è molto deteriorato. Il lavoro idraulico pesante surriscalda rapidamente l'olio comune di trasmissione e idraulica."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Il radiatore dell'olio idraulico è guasto. Il lavoro prolungato provoca un forte surriscaldamento dell'olio e accelera l'usura della pompa."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Una valvola di controllo idraulico inizia a bloccarsi. Una funzione idraulica esita occasionalmente e perde forza sotto carico."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Una valvola di controllo idraulico si blocca a intermittenza. Una funzione idraulica è più lenta e perde più forza con l'aumentare del carico."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Una valvola di controllo idraulico è molto usurata. Una funzione idraulica si muove in modo irregolare e fatica sotto un carico pesante."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Una valvola di controllo idraulico è gravemente danneggiata. Una funzione idraulica si arresta ripetutamente e muove a malapena un carico pesante."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Usura del cuscinetto mozzo ruota. Sono presenti rumorosità e vibrazioni, la velocità massima è leggermente limitata e la resistenza al rotolamento aumenta."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Usura moderata del cuscinetto mozzo ruota. Rumorosità e vibrazioni sono marcate, la velocità massima cala e aumenta il carico sulla trasmissione."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Grave usura del cuscinetto mozzo ruota. Le vibrazioni sono forti, la velocità massima è sensibilmente ridotta, il carico sulla trasmissione aumenta e può comparire rumore di grippaggio."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="L'olio motore appare più scuro del normale."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="L'olio motore appare contaminato."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Le condizioni dell'olio appaiono critiche."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="È visibile una lieve pellicola oleosa attorno all'area del cilindro idraulico."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="È visibile un trafilamento di fluido idraulico attorno al cilindro."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Sono visibili chiare tracce di fluido idraulico vicino al cilindro."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Sono visibili forti tracce di fluido idraulico. L'area del cilindro è fortemente contaminata dal fluido."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Non sono visibili tracce esterne d'olio. Una prova di tenuta rivela una lieve discesa sotto carico."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Non sono visibili tracce esterne d'olio. L'attrezzo sollevato perde lentamente altezza durante la prova di tenuta."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Non sono visibili tracce esterne d'olio. L'attrezzo sollevato non mantiene più affidabilmente la posizione sotto carico."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Non sono visibili tracce esterne d'olio. Qualsiasi carico sollevato scende rapidamente durante la prova di tenuta."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="È visibile una lieve pellicola oleosa su un tubo idraulico o un raccordo."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="È visibile olio idraulico che trasuda da un tubo o da un raccordo."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Lungo un tubo sono visibili chiare tracce d'olio idraulico e umidità recente."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Un tubo idraulico e l'area circostante sono fortemente contaminati dall'olio che fuoriesce."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="La superficie del radiatore è leggermente sporca."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Il radiatore è visibilmente sporco."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Il radiatore è fortemente ostruito da sporco e detriti."/>

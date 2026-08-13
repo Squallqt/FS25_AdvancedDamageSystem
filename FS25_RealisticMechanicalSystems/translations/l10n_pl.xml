@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostat skrzyni biegów"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Pompa hydrauliczna"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Siłownik hydrauliczny"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Przewód hydrauliczny"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Filtr hydrauliczny"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Chłodnica oleju hydraulicznego"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Zawór sterowania hydrauliką"/>
         <text name="rms_breakdowns_part_brake_system" text="Układ hamulcowy"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Łożysko piasty koła"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Układ drążków kierowniczych"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Uszkodzona pompa hydrauliczna. Osprzęt działa bardzo wolno i z niską siłą."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Całkowita awaria pompy hydraulicznej. Układ hydrauliczny nie działa."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Awaria hydrauliki"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Wewnętrzny wyciek w siłowniku hydraulicznym. Prędkość działania hydrauliki jest nieznacznie obniżona, a podłączony osprzęt może powoli opadać pod obciążeniem."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Średni wyciek wewnętrzny siłownika hydraulicznego. Zauważalne spowolnienie pracy i obniżona stabilność pod obciążeniem."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Poważny wewnętrzny wyciek w siłowniku hydraulicznym. Działanie hydrauliki jest wolne i słabe, a podłączony osprzęt nie utrzymuje stabilnie pozycji pod obciążeniem."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Krytyczny wewnętrzny wyciek w siłowniku hydraulicznym. Ruch hydrauliczny jest niemal utracony, a utrzymanie obciążenia nie jest możliwe."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Krytyczny wyciek siłownika hydraulicznego"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Niewielki wewnętrzny wyciek w siłowniku hydraulicznym. Podniesiony osprzęt powoli opada pod obciążeniem."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Umiarkowany wewnętrzny wyciek w siłowniku hydraulicznym. Samoczynne opadanie jest wyraźne i przyspiesza wraz ze wzrostem obciążenia."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Poważny wewnętrzny wyciek w siłowniku hydraulicznym. Ciężki osprzęt nie utrzymuje już niezawodnie swojej pozycji."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Krytyczny wewnętrzny wyciek w siłowniku hydraulicznym. Każdy podniesiony ładunek szybko sam opada."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Przewód hydrauliczny ma niewielki wyciek zewnętrzny. Wyciekła mała ilość oleju, a reakcja hydrauliki jest nieco słabsza."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Przewód hydrauliczny wyraźnie się poci. Ubytek oleju trwa, a funkcje hydrauliczne reagują wolniej."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Przewód hydrauliczny aktywnie przecieka. Ubytek oleju jest oczywisty, a funkcje hydrauliczne są wyraźnie osłabione."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Przewód hydrauliczny ma poważny wyciek zewnętrzny. Olej szybko ucieka, a wydajność hydrauliki jest mocno ograniczona."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Filtr hydrauliczny zaczyna ograniczać przepływ. Funkcje hydrauliczne są nieco wolniejsze. Zwykła konserwacja wymienia filtr."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Filtr hydrauliczny jest umiarkowanie zapchany. Wszystkie funkcje hydrauliczne są wyraźnie wolniejsze. Zwykła konserwacja wymienia filtr."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Filtr hydrauliczny jest mocno zapchany. Hydraulika reaguje bardzo wolno. Zwykła konserwacja wymienia filtr."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Filtr hydrauliczny jest niemal zablokowany. Funkcje hydrauliczne ledwo reagują. Zwykła konserwacja wymienia filtr."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Chłodnica oleju hydraulicznego straciła część wydajności. Temperatura oleju lekko rośnie podczas długiej pracy hydrauliki."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Chłodnica oleju hydraulicznego działa zbyt słabo. Temperatura oleju wyraźnie rośnie podczas ciągłej pracy hydrauliki."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Chłodnica oleju hydraulicznego jest mocno zużyta. Ciężka praca hydrauliki szybko przegrzewa wspólny olej przekładniowy i hydrauliczny."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Chłodnica oleju hydraulicznego uległa awarii. Długa praca hydrauliki silnie przegrzewa olej i przyspiesza zużycie pompy."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Zawór sterowania hydrauliką zaczyna się zacinać. Jedna funkcja hydrauliczna czasem się waha i traci siłę pod obciążeniem."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Zawór sterowania hydrauliką zacina się okresowo. Jedna funkcja hydrauliczna jest wolniejsza i traci więcej siły przy większym obciążeniu."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Zawór sterowania hydrauliką jest mocno zużyty. Jedna funkcja hydrauliczna porusza się nierówno i słabnie pod dużym obciążeniem."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Zawór sterowania hydrauliką jest krytycznie uszkodzony. Jedna funkcja hydrauliczna wielokrotnie się zatrzymuje i ledwo porusza ciężki ładunek."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Wytarte łożysko piasty koła. Słyszalny hałas, drgania i zwiększone opory toczenia."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Średnie zużycie łożyska piasty koła. Wyraźny hałas, drgania i spadek prędkości maksymalnej."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Poważne zużycie łożyska piasty koła. Silne drgania, duży spadek prędkości i ryzyko zatarcia."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Olej silnikowy wygląda na bardziej ciemny niż zwykle."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="W oleju silnikowym widoczne są zanieczyszczenia."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Olej znajduje się w stanie krytycznym."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Widoczne są lekkie ślady oleju w obszarze siłownika hydraulicznego."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Zauważalne jest sączenie się płynu hydraulicznego wokół siłownika."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Zauważalne są wyraźne pozostałości płynu hydraulicznego przy siłowniku."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Występują obfite ślady oleju hydraulicznego. Siłownik jest silnie zanieczyszczony."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Nie widać zewnętrznych śladów oleju. Próba utrzymania ujawnia lekkie opadanie pod obciążeniem."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Nie widać zewnętrznych śladów oleju. Podniesiony osprzęt powoli traci wysokość podczas próby utrzymania."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Nie widać zewnętrznych śladów oleju. Podniesiony osprzęt nie utrzymuje już niezawodnie pozycji pod obciążeniem."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Nie widać zewnętrznych śladów oleju. Każdy podniesiony ładunek szybko opada podczas próby utrzymania."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Na przewodzie hydraulicznym lub złączu widać cienką warstwę oleju."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Z przewodu hydraulicznego lub złącza wyraźnie sączy się olej."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Wzdłuż przewodu hydraulicznego widać wyraźne ślady oleju i świeżą wilgoć."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Przewód hydrauliczny i jego otoczenie są mocno zabrudzone wyciekającym olejem."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="Chłodnica jest lekko zabrudzona."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Widoczne są wyraźne zabrudzenia chłodnicy."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Widoczne jest poważne zatkanie chłodnicy zabrudzeniami i zanieczyszczeniami."/>

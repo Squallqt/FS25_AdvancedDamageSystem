@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Vaihteiston termostaatti"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hydraulipumppu"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hydraulisylinteri"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Hydrauliletku"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Hydraulisuodatin"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Hydrauliöljyn jäähdytin"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Hydraulinen ohjausventtiili"/>
         <text name="rms_breakdowns_part_brake_system" text="Jarrujärjestelmä"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Pyörän laakeri"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Ohjausvarsisto"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Vaurioitunut hydraulipumppu. Laitteet ovat erittäin hitaita ja heikkoja."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Hydraulipumpun vaurio. Hydraulijärjestelmä ei toimi."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Hydraulivaurio"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Sisäinen vuoto hydraulisylinterissä. Hydraulinen toimilaite toimii hieman hitaammin ja kiinnitetyt laitteet saattavat lipua hitaasti kuormituksessa."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Kohtalainen sisäinen vuoto hydraulisylinterissä. Hydraulinen toimilaite toimii havaittavasti hitaammin ja kuorman pitäminen on heikentynyt."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vakava sisäinen vuoto hydraulisylinterissä. Hydraulinen toimilaite on hidas ja heikko, eivätkä kiinnitetyt laitteet pysty luotettavasti pitämään asentoaan kuormituksessa."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Kriittinen sisäinen vuoto hydraulisylinterissä. Hydraulinen liike on lähes lakannut eikä kuorman pitäminen ole enää mahdollista."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Hydraulisylinterin vuoto kriittistä"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Hydraulisylinterissä on pieni sisäinen vuoto. Nostettu työkone laskeutuu hitaasti kuormitettuna."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Hydraulisylinterissä on kohtalainen sisäinen vuoto. Tahaton laskeutuminen on selvästi havaittavaa ja nopeutuu kuorman kasvaessa."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Hydraulisylinterissä on vakava sisäinen vuoto. Raskaat työkoneet eivät enää pysy luotettavasti asennossaan."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Hydraulisylinterissä on kriittinen sisäinen vuoto. Kaikki nostetut kuormat laskeutuvat nopeasti itsestään."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Hydrauliletkussa on pieni ulkoinen vuoto. Hieman öljyä valuu ulos ja hydrauliikan vaste heikkenee lievästi."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Hydrauliletku tihkuu näkyvästi. Öljyä valuu edelleen ja hydraulitoiminnot reagoivat hitaammin."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Hydrauliletku vuotaa aktiivisesti. Öljyn menetys on selvää ja hydraulitoiminnot ovat huomattavasti heikompia."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Hydrauliletkussa on vakava ulkoinen vuoto. Öljy valuu nopeasti ja hydrauliikan teho on voimakkaasti alentunut."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Hydraulisuodatin alkaa rajoittaa virtausta. Hydraulitoiminnot ovat hieman hitaampia. Määräaikaishuolto vaihtaa suodattimen."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Hydraulisuodatin on kohtalaisesti tukossa. Kaikki hydraulitoiminnot ovat selvästi hitaampia. Määräaikaishuolto vaihtaa suodattimen."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Hydraulisuodatin on pahasti tukossa. Hydrauliikan vaste on hyvin hidas. Määräaikaishuolto vaihtaa suodattimen."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Hydraulisuodatin on lähes täysin tukossa. Hydraulitoiminnot tuskin reagoivat. Määräaikaishuolto vaihtaa suodattimen."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Hydrauliöljyn jäähdyttimen teho on hieman heikentynyt. Öljyn lämpötila nousee lievästi pitkän hydraulityön aikana."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Hydrauliöljyn jäähdytin toimii puutteellisesti. Öljyn lämpötila nousee selvästi jatkuvan hydraulityön aikana."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Hydrauliöljyn jäähdytin on pahasti heikentynyt. Raskas hydraulityö ylikuumentaa nopeasti vaihteiston ja hydrauliikan yhteisen öljyn."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Hydrauliöljyn jäähdytin on rikkoutunut. Pitkä hydraulityö ylikuumentaa öljyn voimakkaasti ja nopeuttaa pumpun kulumista."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Hydraulinen ohjausventtiili alkaa takerrella. Yksi hydraulitoiminto epäröi ajoittain ja menettää voimaa kuormitettuna."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Hydraulinen ohjausventtiili takertelee ajoittain. Yksi hydraulitoiminto hidastuu ja menettää enemmän voimaa kuorman kasvaessa."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Hydraulinen ohjausventtiili on pahasti kulunut. Yksi hydraulitoiminto liikkuu epätasaisesti ja kamppailee raskaan kuorman kanssa."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Hydraulinen ohjausventtiili on kriittisesti vaurioitunut. Yksi hydraulitoiminto pysähtelee toistuvasti eikä juuri liikuta raskasta kuormaa."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Pyörän navan laakerin kuluminen. Laakerin melu ja tärinä ovat läsnä, maksimaalinen nopeus on hieman rajoittunut ja vierintävastus on lisääntynyt."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Kohtalainen pyörän navan laakerin kuluminen. Laakerin melu ja tärinä ovat voimakkaita, maksimaalinen nopeus on alentunut ja voimansiirron kuorma on lisääntynyt."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Vakava pyörän navan laakerin kuluminen. Tärinä on voimakasta, maksimaalinen nopeus on merkittävästi alentunut, voimansiirron kuorma on kohonnut ja jumiutumismelua voi esiintyä."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Moottoriöljy näyttää tummemmalta kuin normaalisti."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="Moottoriöljy näyttää saastuneelta."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Öljyn tila näyttää kriittiseltä."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Hydraulisylinterin alueella on nähtävissä heikko öljyinen kalvo."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Sylinterin ympärillä on nähtävissä hydraulivuoto."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Sylinterin lähellä on nähtävissä selviä hydraulinesteen jälkiä."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Runsaita hydraulinesteen jälkiä on nähtävissä. Sylinterin alue on pahasti nesteen saastuttama."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Ulkoisia öljyjälkiä ei näy. Pitotesti paljastaa lievän laskeutumisen kuormitettuna."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Ulkoisia öljyjälkiä ei näy. Nostettu työkone menettää hitaasti korkeutta pitotestin aikana."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Ulkoisia öljyjälkiä ei näy. Nostettu työkone ei enää pysy luotettavasti asennossaan kuormitettuna."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Ulkoisia öljyjälkiä ei näy. Kaikki nostetut kuormat laskeutuvat nopeasti pitotestin aikana."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Hydrauliletkussa tai liittimessä näkyy ohut öljykalvo."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Hydrauliletkusta tai liittimestä tihkuu näkyvästi öljyä."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Hydrauliletkun varrella näkyy selviä öljyjälkiä ja tuoretta kosteutta."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Hydrauliletku ja sen ympäristö ovat pahasti vuotavan öljyn likaamia."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="Jäähdyttimen pinta on hieman likainen."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Jäähdytin on havaittavasti likainen."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Jäähdytin on pahasti tukossa lian ja roskan johdosta."/>

@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Thermostat de transmission"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Pompe hydraulique"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Vérin hydraulique"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Flexible hydraulique"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Filtre hydraulique"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Refroidisseur d'huile hydraulique"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Distributeur hydraulique"/>
         <text name="rms_breakdowns_part_brake_system" text="Système de freinage"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Roulement de roue"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Tringlerie de direction"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Pompe hydraulique endommagée. Les outils sont extrêmement lents et peu puissants."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Défaillance de la pompe hydraulique. Le système hydraulique est hors service."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Défaillance hydraulique."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Fuite interne légère du vérin hydraulique. La force de maintien diminue légèrement et les mouvements deviennent un peu plus lents."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Fuite interne modérée du vérin hydraulique. La pression se perd plus rapidement, la force disponible baisse et les mouvements sont visiblement ralentis."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Fuite interne sévère du vérin hydraulique. La force hydraulique chute fortement, le maintien de charge devient peu fiable et le fonctionnement est gravement dégradé."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Défaillance critique du vérin hydraulique. La pression interne ne peut plus être maintenue et le fonctionnement hydraulique normal est impossible."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Défaillance du vérin hydraulique"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Fuite interne légère du vérin hydraulique. Un outil relevé dérive lentement sous la charge."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Fuite interne modérée du vérin hydraulique. La descente involontaire devient visible et augmente avec la charge portée."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Fuite interne sévère du vérin hydraulique. Les outils lourds ne tiennent plus leur position de manière fiable."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Fuite interne critique du vérin hydraulique. Toute charge relevée redescend rapidement d'elle-même."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Un flexible hydraulique présente une petite fuite externe. Un peu d'huile s'échappe et la réponse hydraulique diminue légèrement."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Un flexible hydraulique suinte visiblement. La perte d'huile continue et les fonctions hydrauliques répondent plus lentement."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Un flexible hydraulique fuit activement. La perte d'huile est évidente et les fonctions hydrauliques sont nettement affaiblies."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Un flexible hydraulique présente une fuite externe sévère. L'huile s'échappe rapidement et les performances hydrauliques chutent fortement."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Le filtre hydraulique commence à limiter le débit. Les fonctions hydrauliques ralentissent légèrement. L'entretien courant remplace le filtre."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Le filtre hydraulique est modérément colmaté. Toutes les fonctions hydrauliques sont nettement plus lentes. L'entretien courant remplace le filtre."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Le filtre hydraulique est fortement colmaté. La réponse hydraulique devient très lente. L'entretien courant remplace le filtre."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Le filtre hydraulique est presque bouché. Les fonctions hydrauliques répondent à peine. L'entretien courant remplace le filtre."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Le refroidisseur d'huile hydraulique perd un peu d'efficacité. La température d'huile augmente légèrement pendant un travail hydraulique prolongé."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Le refroidisseur d'huile hydraulique fonctionne mal. La température d'huile augmente nettement pendant un travail hydraulique continu."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Le refroidisseur d'huile hydraulique est très dégradé. Un travail hydraulique lourd surchauffe rapidement l'huile commune de transmission et d'hydraulique."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Le refroidisseur d'huile hydraulique est en panne. Un travail prolongé provoque une forte surchauffe de l'huile et accélère l'usure de la pompe."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Un distributeur hydraulique commence à gripper. Une fonction hydraulique hésite parfois et perd de la force sous charge."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Un distributeur hydraulique grippe par intermittence. Une fonction hydraulique ralentit et perd davantage de force quand la charge augmente."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Un distributeur hydraulique est très usé. Une fonction hydraulique se déplace de façon erratique et peine sous une charge lourde."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Un distributeur hydraulique est gravement endommagé. Une fonction hydraulique s'arrête sans cesse et déplace à peine une charge lourde."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Usure légère des roulements. La résistance mécanique augmente légèrement et un bruit de fonctionnement inhabituel peut apparaître."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Usure modérée des roulements. La friction augmente nettement, le bruit devient plus marqué et l'efficacité mécanique diminue."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Usure sévère des roulements. La friction est élevée, le bruit est important et il existe un risque réel de grippage sous charge."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="L'huile moteur paraît plus sombre que la normale."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="L'huile moteur semble contaminée."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="L'état de l'huile semble critique."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Un léger film huileux est visible autour du vérin hydraulique."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Un suintement de fluide hydraulique est visible autour du vérin."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Des traces nettes de fluide hydraulique sont visibles près du vérin."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="De fortes traces de fluide hydraulique sont visibles. La zone du vérin est fortement souillée par le fluide."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Aucune trace d'huile externe n'est visible. Un essai de maintien révèle une légère descente sous charge."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Aucune trace d'huile externe n'est visible. L'outil relevé perd lentement de la hauteur pendant l'essai de maintien."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Aucune trace d'huile externe n'est visible. L'outil relevé ne tient plus sa position de manière fiable sous charge."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Aucune trace d'huile externe n'est visible. Toute charge relevée redescend rapidement pendant l'essai de maintien."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Un léger film huileux est visible sur un flexible hydraulique ou un raccord."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Un suintement d'huile hydraulique est visible sur un flexible ou un raccord."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Des traces nettes d'huile hydraulique et une zone fraîchement humide sont visibles le long d'un flexible."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Un flexible hydraulique et la zone voisine sont fortement souillés par l'huile qui s'échappe."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="La surface du radiateur est légèrement sale."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Le radiateur est visiblement sale."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Le radiateur est fortement encrassé par la saleté et les débris."/>

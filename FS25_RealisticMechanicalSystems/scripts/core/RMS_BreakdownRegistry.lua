@@ -73,6 +73,10 @@ RMS_Breakdowns.PARTS = {
     TRANSMISSION_THERMOSTAT = "rms_breakdowns_part_transmission_thermostat",
     HYDRAULIC_PUMP = "rms_breakdowns_part_hydraulic_pump",
     HYDRAULIC_CYLINDER = "rms_breakdowns_part_hydraulic_cylinder",
+    HYDRAULIC_HOSE = "rms_breakdowns_part_hydraulic_hose",
+    HYDRAULIC_FILTER = "rms_breakdowns_part_hydraulic_filter",
+    HYDRAULIC_OIL_COOLER = "rms_breakdowns_part_hydraulic_oil_cooler",
+    HYDRAULIC_SPOOL_VALVE = "rms_breakdowns_part_hydraulic_spool_valve",
     BRAKE_SYSTEM = "rms_breakdowns_part_brake_system",
     WHEEL_BEARING = "rms_breakdowns_part_wheel_bearing",
     STEERING_LINKAGE = "rms_breakdowns_part_steering_linkage",
@@ -106,6 +110,10 @@ local breakdownPriceMultipliers = {
     TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.20,
     HYDRAULIC_PUMP_MALFUNCTION = 0.90,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 1.0,
+    HYDRAULIC_HOSE_EXTERNAL_LEAK = 0.45,
+    HYDRAULIC_FILTER_CLOGGING = 0.35,
+    HYDRAULIC_OIL_COOLER_MALFUNCTION = 0.65,
+    HYDRAULIC_SPOOL_VALVE_MALFUNCTION = 0.75,
     BRAKE_MALFUNCTION = 0.35,
     BEARING_WEAR = 0.55,
     STEERING_LINKAGE_WEAR = 0.45,
@@ -137,6 +145,10 @@ local breakdownProgressMultipliers = {
     TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.3,
     HYDRAULIC_PUMP_MALFUNCTION = 1.1,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 0.6,
+    HYDRAULIC_HOSE_EXTERNAL_LEAK = 0.8,
+    HYDRAULIC_FILTER_CLOGGING = 1.2,
+    HYDRAULIC_OIL_COOLER_MALFUNCTION = 0.9,
+    HYDRAULIC_SPOOL_VALVE_MALFUNCTION = 1.1,
     BRAKE_MALFUNCTION = 0.9,
     BEARING_WEAR = 1.2,
     STEERING_LINKAGE_WEAR = 1.2,
@@ -232,6 +244,14 @@ local function getBreakdownProbabilityWeightPercent(vehicle, systemName, primary
     end
 
     return math.max(weightedPercent, resolvedFallbackWeight)
+end
+
+local function isHydraulicBreakdownApplicable(vehicle)
+    local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
+    if storeItem.categoryName == "TRUCKS" then return false end
+    local vtype = vehicle.type.name
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    return vtype ~= "car" and vtype ~= "carFillable" and vtype ~= "motorbike" and spec.year >= 1960
 end
 
 RMS_Breakdowns.BreakdownRegistry = {
@@ -1809,15 +1829,12 @@ RMS_Breakdowns.BreakdownRegistry = {
         isSelectable = true,
         system = systems.HYDRAULICS,
         part = parts.HYDRAULIC_PUMP,
-        isApplicable = function(vehicle)
-            local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-            if storeItem.categoryName == "TRUCKS" then return false end
-            local vtype = vehicle.type.name
-            local spec = vehicle.spec_RealisticMechanicalSystems
-            return vtype ~= "car" and vtype ~= "carFillable" and vtype ~= "motorbike" and spec.year >= 1960
-        end,
+        isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "of"}, {"cof", "sf"})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"cof", "hof", "sf"}, {})
+        end,
+        isCanProgress = function(vehicle)
+            return vehicle:getIsMotorStarted()
         end,
         stages = {
             {
@@ -1876,15 +1893,13 @@ RMS_Breakdowns.BreakdownRegistry = {
         isSelectable = true,
         system = systems.HYDRAULICS,
         part = parts.HYDRAULIC_CYLINDER,
-        isApplicable = function(vehicle)
-            local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-            if storeItem.categoryName == "TRUCKS" then return false end
-            local vtype = vehicle.type.name
-            local spec = vehicle.spec_RealisticMechanicalSystems
-            return vtype ~= "car" and vtype ~= "carFillable" and vtype ~= "motorbike" and spec.year >= 1960
-        end,
+        isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "of"}, {"sf"})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "of", "vf"}, {})
+        end,
+        isCanProgress = function(vehicle)
+            local spec = vehicle.spec_RealisticMechanicalSystems
+            return spec.isImplementLifted or spec.operatingMass > 0
         end,
         stages = {
             {
@@ -1894,11 +1909,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.10, aggregation = "min" },
                     { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.01, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.5} }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_slight_moisture", additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" },
+                    { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" }
                 }
             },
             {
@@ -1908,11 +1922,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.30, aggregation = "min" },
                     { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.03, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.4}}
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_seepage", additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" },
+                    { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -1925,11 +1938,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = { 
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.55, aggregation = "min" },
                     { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.05, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.2} }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_active_leak", additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" },
+                    { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -1942,11 +1954,283 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = { 
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -7.0, extraData = {message = 'rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message', disableAi = true}, aggregation = "min" },
                     { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 1.0, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.0} }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_severe_leak", additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" },
+                    { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
+    HYDRAULIC_HOSE_EXTERNAL_LEAK = {
+        isSelectable = true,
+        system = systems.HYDRAULICS,
+        part = parts.HYDRAULIC_HOSE,
+        isApplicable = isHydraulicBreakdownApplicable,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "vf"}, {})
+        end,
+        isCanProgress = function(vehicle)
+            local spec = vehicle.spec_RealisticMechanicalSystems
+            return vehicle:getIsMotorStarted() and (spec.isImplementLifted or spec.isImplementOperating)
+        end,
+        stages = {
+            {
+                severity = "rms_breakdowns_severity_minor",
+                description = "rms_breakdowns_hydraulic_hose_external_leak_stage1_description",
+                detectionChance = 1.0,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.05, aggregation = "min" }
+                },
+                inspection = {
+                    { target = "hydraulicFluid", status = "rms_inspection_status_slight_moisture", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage1" }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_moderate",
+                description = "rms_breakdowns_hydraulic_hose_external_leak_stage2_description",
+                detectionChance = 1.0,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.10, aggregation = "min" }
+                },
+                inspection = {
+                    { target = "hydraulicFluid", status = "rms_inspection_status_seepage", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage2" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_major",
+                description = "rms_breakdowns_hydraulic_hose_external_leak_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.20, aggregation = "min" }
+                },
+                inspection = {
+                    { target = "hydraulicFluid", status = "rms_inspection_status_active_leak", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage3" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_critical",
+                description = "rms_breakdowns_hydraulic_hose_external_leak_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.35, aggregation = "min" }
+                },
+                inspection = {
+                    { target = "hydraulicFluid", status = "rms_inspection_status_severe_leak", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage4" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
+    HYDRAULIC_FILTER_CLOGGING = {
+        isSelectable = true,
+        system = systems.HYDRAULICS,
+        part = parts.HYDRAULIC_FILTER,
+        isApplicable = isHydraulicBreakdownApplicable,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "cof"}, {})
+        end,
+        isCanProgress = function(vehicle)
+            return vehicle:getIsMotorStarted()
+        end,
+        stages = {
+            {
+                severity = "rms_breakdowns_severity_minor",
+                description = "rms_breakdowns_hydraulic_filter_clogging_stage1_description",
+                detectionChance = 1.0,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.10, aggregation = "min" }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_moderate",
+                description = "rms_breakdowns_hydraulic_filter_clogging_stage2_description",
+                detectionChance = 1.0,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.25, aggregation = "min" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_major",
+                description = "rms_breakdowns_hydraulic_filter_clogging_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.45, aggregation = "min" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_critical",
+                description = "rms_breakdowns_hydraulic_filter_clogging_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_FILTER_CLOGGING,
+                effects = {
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.70, aggregation = "min" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
+    HYDRAULIC_OIL_COOLER_MALFUNCTION = {
+        isSelectable = true,
+        system = systems.HYDRAULICS,
+        part = parts.HYDRAULIC_OIL_COOLER,
+        isApplicable = isHydraulicBreakdownApplicable,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "hof"}, {})
+        end,
+        isCanProgress = function(vehicle)
+            return vehicle.spec_RealisticMechanicalSystems.isImplementOperating
+        end,
+        stages = {
+            {
+                severity = "rms_breakdowns_severity_minor",
+                description = "rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description",
+                detectionChance = 1.0,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_moderate",
+                description = "rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description",
+                detectionChance = 1.0,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.10, aggregation = "sum" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_major",
+                description = "rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_critical",
+                description = "rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
+                effects = {
+                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.20, aggregation = "sum" }
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
+    HYDRAULIC_SPOOL_VALVE_MALFUNCTION = {
+        isSelectable = true,
+        system = systems.HYDRAULICS,
+        part = parts.HYDRAULIC_SPOOL_VALVE,
+        isApplicable = isHydraulicBreakdownApplicable,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"of", "sf"}, {})
+        end,
+        isCanProgress = function(vehicle)
+            return vehicle.spec_RealisticMechanicalSystems.isImplementOperating
+        end,
+        stages = {
+            {
+                severity = "rms_breakdowns_severity_minor",
+                description = "rms_breakdowns_hydraulic_spool_valve_stage1_description",
+                detectionChance = 1.0,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                effects = {
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.10, aggregation = "min", extraData = {childVehicleHash = ""} },
+                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.15, aggregation = "min" }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_moderate",
+                description = "rms_breakdowns_hydraulic_spool_valve_stage2_description",
+                detectionChance = 1.0,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                effects = {
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.20, aggregation = "min", extraData = {childVehicleHash = ""} },
+                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.30, aggregation = "min" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_major",
+                description = "rms_breakdowns_hydraulic_spool_valve_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                effects = {
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.35, aggregation = "min", extraData = {childVehicleHash = ""} },
+                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.55, aggregation = "min" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_critical",
+                description = "rms_breakdowns_hydraulic_spool_valve_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
+                effects = {
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.50, aggregation = "min", extraData = {childVehicleHash = ""} },
+                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.80, aggregation = "min" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }

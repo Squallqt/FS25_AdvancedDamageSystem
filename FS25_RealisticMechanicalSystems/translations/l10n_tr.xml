@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Şanzıman termostatı"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Hidrolik pompa"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Hidrolik silindir"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Hidrolik hortum"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Hidrolik filtre"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Hidrolik yağ soğutucusu"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Hidrolik kontrol valfi"/>
         <text name="rms_breakdowns_part_brake_system" text="Fren sistemi"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Tekerlek yatağı"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Direksiyon bağlantı sistemi"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Hidrolik pompa arızalı. Ek ekipmanların çalışması son derece yavaş ve güçsüz."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Hidrolik pompa arızası. Hidrolik sistem çalışmıyor."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Hidrolik arızası"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Hidrolik silindirde iç sızıntı. Hidrolik çalıştırma hızı biraz azalır ve bağlı ekipmanlar yük altında yavaşça kayabilir."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Hidrolik silindirde orta derecede iç sızıntı. Hidrolik çalıştırma hızında belirgin bir azalma görülür ve yük tutma kararlılığı bozulur."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Hidrolik silindirde ciddi bir iç sızıntı var. Hidrolik hareket yavaş ve zayıftır; ayrıca bağlı ekipmanlar, yük altında konumlarını güvenilir bir şekilde koruyamamaktadır."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Hidrolik silindirde ciddi bir iç sızıntı. Hidrolik hareket neredeyse tamamen kaybolmuş ve yük tutma artık mümkün değil."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Hidrolik silindir sızıntısı kritik"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Hidrolik silindirde hafif bir iç sızıntı var. Kaldırılmış ekipman yük altında yavaşça iner."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Hidrolik silindirde orta düzeyde iç sızıntı var. İstenmeyen alçalma belirgindir ve taşınan yük arttıkça hızlanır."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Hidrolik silindirde ciddi iç sızıntı var. Ağır ekipmanlar artık konumlarını güvenilir biçimde koruyamaz."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Hidrolik silindirde kritik iç sızıntı var. Kaldırılmış her yük hızla kendiliğinden iner."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Bir hidrolik hortumda küçük bir dış sızıntı var. Bir miktar yağ kaçar ve hidrolik tepki biraz azalır."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Bir hidrolik hortum gözle görülür biçimde sızdırıyor. Yağ kaybı sürer ve hidrolik işlevler daha yavaş tepki verir."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Bir hidrolik hortum aktif olarak sızdırıyor. Yağ kaybı açıktır ve hidrolik işlevler belirgin biçimde zayıflamıştır."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Bir hidrolik hortumda ciddi dış sızıntı var. Yağ hızla kaçar ve hidrolik performans büyük ölçüde düşer."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Hidrolik filtre akışı kısıtlamaya başlıyor. Hidrolik işlevler biraz daha yavaş. Düzenli bakım filtreyi değiştirir."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Hidrolik filtre orta düzeyde tıkalı. Tüm hidrolik işlevler belirgin biçimde daha yavaş. Düzenli bakım filtreyi değiştirir."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Hidrolik filtre ciddi biçimde tıkalı. Hidrolik tepki çok yavaş. Düzenli bakım filtreyi değiştirir."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Hidrolik filtre neredeyse tamamen tıkalı. Hidrolik işlevler güçlükle tepki veriyor. Düzenli bakım filtreyi değiştirir."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Hidrolik yağ soğutucusu veriminin bir kısmını kaybetti. Uzun hidrolik çalışma sırasında yağ sıcaklığı biraz yükselir."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Hidrolik yağ soğutucusu yetersiz çalışıyor. Sürekli hidrolik çalışma sırasında yağ sıcaklığı belirgin biçimde yükselir."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Hidrolik yağ soğutucusu ciddi biçimde yıpranmış. Ağır hidrolik çalışma, şanzıman ve hidrolik sistemin ortak yağını hızla aşırı ısıtır."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Hidrolik yağ soğutucusu arızalandı. Uzun hidrolik çalışma yağı ciddi biçimde aşırı ısıtır ve pompa aşınmasını hızlandırır."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Bir hidrolik kontrol valfi sıkışmaya başlıyor. Bir hidrolik işlev ara sıra takılır ve yük altında güç kaybeder."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Bir hidrolik kontrol valfi aralıklı olarak sıkışıyor. Bir hidrolik işlev yavaşlar ve yük arttıkça daha fazla güç kaybeder."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Bir hidrolik kontrol valfi ciddi biçimde aşınmış. Bir hidrolik işlev düzensiz hareket eder ve ağır yük altında zorlanır."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Bir hidrolik kontrol valfi kritik biçimde hasarlı. Bir hidrolik işlev sürekli durur ve ağır bir yükü güçlükle hareket ettirir."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Tekerlek göbeği yatağında aşınma. Yatağından gelen ses ve titreşim hissediliyor, azami hız hafifçe kısıtlanıyor ve yuvarlanma direnci artıyor."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Tekerlek göbeği yataklarında orta derecede aşınma. Yatak gürültüsü ve titreşimi belirgindir, azami hız düşer ve aktarma organlarına binen yük artar."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Tekerlek göbeği yataklarında ciddi aşınma. Titreşim şiddetlidir, azami hız önemli ölçüde azalır, aktarma organlarına binen yük artar ve sıkışma sesi duyulabilir."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Motor yağı normalden daha koyu görünüyor."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="Motor yağı kirlenmiş görünüyor."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Yağın durumu kritik görünüyor."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Hidrolik silindir bölgesinin çevresinde soluk, yağlı bir tabaka görülüyor."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Silindirin çevresinde hidrolik sızıntı görülüyor."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Silindirin yakınında berrak hidrolik sıvısı izleri görülüyor."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Aşırı miktarda hidrolik sıvısı izleri görülmektedir. Silindir bölgesi sıvıyla aşırı derecede kirlenmiştir."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Dışarıda yağ izi görülmüyor. Yük tutma testi, yük altında hafif bir alçalma gösteriyor."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Dışarıda yağ izi görülmüyor. Kaldırılmış ekipman yük tutma testi sırasında yavaşça yükseklik kaybediyor."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Dışarıda yağ izi görülmüyor. Kaldırılmış ekipman artık yük altında konumunu güvenilir biçimde koruyamıyor."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Dışarıda yağ izi görülmüyor. Kaldırılmış her yük, tutma testi sırasında hızla alçalıyor."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Bir hidrolik hortumda veya bağlantıda ince bir yağ tabakası görülüyor."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Bir hidrolik hortumdan veya bağlantıdan gözle görülür biçimde yağ sızıyor."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Bir hidrolik hortum boyunca belirgin yağ izleri ve taze ıslaklık görülüyor."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Bir hidrolik hortum ve çevresi kaçan yağla yoğun biçimde kirlenmiş."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="Radyatörün yüzeyi biraz kirli."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Radyatörün oldukça kirli olduğu görülüyor."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Radyatör, kir ve kalıntılarla ciddi şekilde tıkanmış durumda."/>

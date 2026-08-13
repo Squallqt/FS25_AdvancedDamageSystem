@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Термостат трансмиссии"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Гидравлический насос"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Гидроцилиндр"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Гидравлический шланг"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Гидравлический фильтр"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Охладитель гидравлического масла"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Гидравлический распределитель"/>
         <text name="rms_breakdowns_part_brake_system" text="Тормозная система"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Подшипник колеса"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Рулевая тяга"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Повреждение гидронасоса. Оборудование работает крайне медленно и слабо."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Отказ гидронасоса. Гидравлическая система неработоспособна."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Отказ гидравлики"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Легкая внутренняя утечка в гидроцилиндре. Удерживающее усилие слегка снижено, движения становятся немного медленнее."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Умеренная внутренняя утечка в гидроцилиндре. Давление теряется быстрее, усилие заметно снижается, движения видимо замедляются."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Сильная внутренняя утечка в гидроцилиндре. Гидравлическое усилие сильно снижено, удержание нагрузки ненадежно, работа серьезно ухудшена."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Критический отказ гидроцилиндра. Внутреннее давление больше не удерживается, нормальная работа гидравлики невозможна."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Отказ гидроцилиндра"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Небольшая внутренняя утечка в гидроцилиндре. Поднятое орудие медленно опускается под нагрузкой."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Умеренная внутренняя утечка в гидроцилиндре. Самопроизвольное опускание заметно и ускоряется с ростом нагрузки."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Сильная внутренняя утечка в гидроцилиндре. Тяжелое орудие больше не может надежно удерживать положение."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Критическая внутренняя утечка в гидроцилиндре. Любой поднятый груз быстро опускается сам."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="На гидравлическом шланге появилась небольшая внешняя утечка. Выходит немного масла, отклик гидравлики слегка снижен."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Гидравлический шланг заметно подтекает. Потеря масла продолжается, гидравлические функции реагируют медленнее."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Гидравлический шланг активно течет. Потеря масла очевидна, гидравлические функции заметно ослаблены."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="На гидравлическом шланге сильная внешняя утечка. Масло быстро уходит, производительность гидравлики значительно снижена."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="Гидравлический фильтр начинает ограничивать поток. Гидравлические функции слегка замедлены. Плановое обслуживание заменит фильтр."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="Гидравлический фильтр умеренно засорен. Все гидравлические функции заметно замедлены. Плановое обслуживание заменит фильтр."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="Гидравлический фильтр сильно засорен. Гидравлика реагирует очень медленно. Плановое обслуживание заменит фильтр."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Гидравлический фильтр почти заблокирован. Гидравлические функции едва реагируют. Плановое обслуживание заменит фильтр."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Охладитель гидравлического масла частично потерял эффективность. При длительной работе гидравлики температура масла слегка повышается."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Охладитель гидравлического масла работает недостаточно эффективно. При непрерывной работе гидравлики температура масла заметно повышается."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Охладитель гидравлического масла сильно изношен. Тяжелая работа гидравлики быстро перегревает общее масло трансмиссии и гидросистемы."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Охладитель гидравлического масла отказал. Длительная работа гидравлики вызывает сильный перегрев масла и ускоряет износ насоса."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Гидравлический распределитель начинает заедать. Одна гидравлическая функция иногда запаздывает и теряет усилие под нагрузкой."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Гидравлический распределитель периодически заедает. Одна гидравлическая функция замедлена и сильнее теряет усилие с ростом нагрузки."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Гидравлический распределитель сильно изношен. Одна гидравлическая функция движется рывками и с трудом работает под большой нагрузкой."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Гидравлический распределитель критически поврежден. Одна гидравлическая функция постоянно останавливается и едва перемещает тяжелый груз."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Легкий износ подшипников. Механическое сопротивление немного возрастает, возможен необычный шум при работе."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Умеренный износ подшипников. Трение заметно увеличивается, шум становится выраженнее, механическая эффективность падает."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Сильный износ подшипников. Трение высокое, шум сильный, под нагрузкой есть реальный риск заклинивания."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Моторное масло заметно темнее нормы."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="Моторное масло выглядит загрязненным."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="Состояние масла выглядит критическим."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="В районе гидроцилиндра заметна слабая маслянистая пленка."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="В районе цилиндра заметно подтекание гидравлической жидкости."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Возле гидроцилиндра хорошо заметны следы гидравлической жидкости."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Следы гидравлической жидкости выражены сильно. Зона гидроцилиндра сильно загрязнена жидкостью."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Внешних следов масла не видно. Проверка удержания выявляет небольшое опускание под нагрузкой."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Внешних следов масла не видно. Поднятое орудие медленно теряет высоту при проверке удержания."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Внешних следов масла не видно. Поднятое орудие больше не удерживает надежно положение под нагрузкой."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Внешних следов масла не видно. Любой поднятый груз быстро опускается при проверке удержания."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="На гидравлическом шланге или соединении видна тонкая масляная пленка."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Из гидравлического шланга или соединения заметно просачивается масло."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Вдоль гидравлического шланга видны четкие следы масла и свежая влага."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Гидравлический шланг и окружающая зона сильно загрязнены вытекающим маслом."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="Поверхность радиатора слегка загрязнена."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Радиатор заметно загрязнен."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Радиатор сильно забит грязью и мусором."/>

@@ -188,6 +188,10 @@
         <text name="rms_breakdowns_part_transmission_thermostat" text="Termostato da transmissão"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Bomba hidráulica"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Cilindro hidráulico"/>
+        <text name="rms_breakdowns_part_hydraulic_hose" text="Mangueira hidráulica"/>
+        <text name="rms_breakdowns_part_hydraulic_filter" text="Filtro hidráulico"/>
+        <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Resfriador do óleo hidráulico"/>
+        <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Válvula de controle hidráulico"/>
         <text name="rms_breakdowns_part_brake_system" text="Sistema de freio"/>
         <text name="rms_breakdowns_part_wheel_bearing" text="Rolamento da roda"/>
         <text name="rms_breakdowns_part_steering_linkage" text="Braçagem da direção"/>
@@ -302,11 +306,26 @@
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Bomba hidráulica danificada. As ferramentas são extremamente lentas e pouco potentes."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Falha da bomba hidráulica. O sistema hidráulico está fora de serviço."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Falha hidráulica."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Pequeno vazamento interno do cilindro hidráulico. A força de retenção diminui ligeiramente e os movimentos tornam-se um pouco mais lentos."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Vazamento interno moderado do cilindro hidráulico. A pressão se perde mais rapidamente, a força disponível diminui e os movimentos são visivelmente mais lentos."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vazamento interno severo do cilindro hidráulico. A força hidráulica cai drasticamente, a retenção de carga se torna pouco confiável e a operação é gravemente degradada."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Falha crítica do cilindro hidráulico. A pressão interna não pode mais ser mantida e a operação hidráulica normal é impossível."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_message" text="Falha no cilindro hidráulico"/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Pequeno vazamento interno no cilindro hidráulico. Um implemento elevado desce lentamente sob carga."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Vazamento interno moderado no cilindro hidráulico. A descida involuntária é perceptível e aumenta com a carga transportada."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Vazamento interno severo no cilindro hidráulico. Implementos pesados já não mantêm a posição de forma confiável."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Vazamento interno crítico no cilindro hidráulico. Qualquer carga elevada desce rapidamente sozinha."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="Uma mangueira hidráulica apresenta um pequeno vazamento externo. Um pouco de óleo escapa e a resposta hidráulica diminui levemente."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Uma mangueira hidráulica apresenta vazamento visível. A perda de óleo continua e as funções hidráulicas respondem mais lentamente."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Uma mangueira hidráulica está vazando ativamente. A perda de óleo é evidente e as funções hidráulicas ficam claramente mais fracas."/>
+        <text name="rms_breakdowns_hydraulic_hose_external_leak_stage4_description" text="Uma mangueira hidráulica apresenta um vazamento externo severo. O óleo escapa rapidamente e o desempenho hidráulico cai muito."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage1_description" text="O filtro hidráulico começa a restringir o fluxo. As funções hidráulicas ficam um pouco mais lentas. A manutenção de rotina substitui o filtro."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage2_description" text="O filtro hidráulico está moderadamente entupido. Todas as funções hidráulicas ficam visivelmente mais lentas. A manutenção de rotina substitui o filtro."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage3_description" text="O filtro hidráulico está muito entupido. A resposta hidráulica é muito lenta. A manutenção de rotina substitui o filtro."/>
+        <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="O filtro hidráulico está quase bloqueado. As funções hidráulicas mal respondem. A manutenção de rotina substitui o filtro."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="O resfriador do óleo hidráulico perdeu parte da eficiência. A temperatura do óleo sobe levemente durante trabalho hidráulico prolongado."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="O resfriador do óleo hidráulico funciona abaixo do normal. A temperatura do óleo sobe visivelmente durante trabalho hidráulico contínuo."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="O resfriador do óleo hidráulico está muito degradado. Trabalho hidráulico pesado superaquece rapidamente o óleo comum da transmissão e da hidráulica."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="O resfriador do óleo hidráulico falhou. Trabalho prolongado provoca forte superaquecimento do óleo e acelera o desgaste da bomba."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Uma válvula de controle hidráulico começa a travar. Uma função hidráulica hesita ocasionalmente e perde força sob carga."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Uma válvula de controle hidráulico trava de forma intermitente. Uma função hidráulica fica mais lenta e perde mais força conforme a carga aumenta."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Uma válvula de controle hidráulico está muito desgastada. Uma função hidráulica se move de forma irregular e sofre sob carga pesada."/>
+        <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Uma válvula de controle hidráulico está criticamente danificada. Uma função hidráulica para repetidamente e mal consegue mover uma carga pesada."/>
         <text name="rms_breakdowns_bearing_wear_stage1_description" text="Desgaste leve dos rolamentos. A resistência mecânica aumenta ligeiramente e um ruído de operação incomum pode aparecer."/>
         <text name="rms_breakdowns_bearing_wear_stage2_description" text="Desgaste moderado dos rolamentos. O atrito aumenta notavelmente, o ruído torna-se mais pronunciado e a eficiência mecânica diminui."/>
         <text name="rms_breakdowns_bearing_wear_stage3_description" text="Desgaste severo dos rolamentos. O atrito é alto, o ruído é significativo e existe um risco real de travamento sob carga."/>
@@ -592,10 +611,14 @@
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="O óleo do motor parece mais escuro que o normal."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="O óleo do motor parece contaminado."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage4" text="O estado do óleo parece crítico."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Uma leve película oleosa é visível ao redor do cilindro hidráulico."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Um suintamento de fluido hidráulico é visível ao redor do cilindro."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Vestígios claros de fluido hidráulico são visíveis perto do cilindro."/>
-        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Fortes vestígios de fluido hidráulico são visíveis. A área do cilindro está fortemente suja pelo fluido."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" text="Nenhum vestígio externo de óleo é visível. Um teste de retenção revela uma leve descida sob carga."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" text="Nenhum vestígio externo de óleo é visível. O implemento elevado perde altura lentamente durante o teste de retenção."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" text="Nenhum vestígio externo de óleo é visível. O implemento elevado já não mantém a posição de forma confiável sob carga."/>
+        <text name="rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" text="Nenhum vestígio externo de óleo é visível. Qualquer carga elevada desce rapidamente durante o teste de retenção."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage1" text="Uma leve película oleosa é visível em uma mangueira hidráulica ou conexão."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage2" text="Óleo hidráulico escorre visivelmente de uma mangueira ou conexão."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage3" text="Vestígios claros de óleo hidráulico e umidade recente são visíveis ao longo de uma mangueira."/>
+        <text name="rms_inspection_hint_hydraulic_hose_external_leak_stage4" text="Uma mangueira hidráulica e a área ao redor estão muito sujas pelo óleo que escapa."/>
         <text name="rms_inspection_hint_radiator_clogging_stage1" text="A superfície do radiador está ligeiramente suja."/>
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="O radiador está visivelmente sujo."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="O radiador está fortemente entupido por sujeira e detritos."/>
