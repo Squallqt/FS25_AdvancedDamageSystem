@@ -1017,6 +1017,64 @@ local function updateFuelState(vehicle, dt)
     end
 end
 
+local function updatePtoState(vehicle, dt)
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local systemData = spec.systems.pto
+
+    if systemData == nil or systemData.enabled == false then
+        spec.isPtoActive = false
+        spec.ptoTorque = 0
+        spec.ptoRpm = 0
+        spec.ptoPower = 0
+        spec.ptoPowerRatio = 0
+        spec.ptoPreviousActiveLinks = {}
+        spec.ptoPendingEngagements = {}
+        return
+    end
+
+    local ptoData = RMS_Utils.getConnectedPtoData(vehicle)
+    local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+    local peakMotorPower = motor ~= nil and (tonumber(motor.peakMotorPower) or 0) or 0
+
+    spec.isPtoActive = ptoData.isActive
+    spec.ptoTorque = math.max(ptoData.torque, 0)
+    spec.ptoRpm = math.max(ptoData.rpm, 0)
+    spec.ptoPower = math.max(ptoData.power, 0)
+    spec.ptoPowerRatio = peakMotorPower > 0 and math.clamp(spec.ptoPower / peakMotorPower, 0, 1.5) or 0
+
+    local previousActiveLinks = spec.ptoPreviousActiveLinks or {}
+    local measurementDelay = RMS_Config.CORE.PTO_FACTOR_DATA.ENGAGEMENT_MEASUREMENT_DELAY
+    for output, _ in pairs(ptoData.activeLinks) do
+        if previousActiveLinks[output] ~= true then
+            spec.ptoEngagementCount = (tonumber(spec.ptoEngagementCount) or 0) + 1
+            table.insert(spec.ptoPendingEngagements, measurementDelay)
+        end
+    end
+    spec.ptoPreviousActiveLinks = ptoData.activeLinks
+
+    for index = #spec.ptoPendingEngagements, 1, -1 do
+        local remaining = (tonumber(spec.ptoPendingEngagements[index]) or 0) - dt
+        if remaining <= 0 then
+            local measuredRatio = spec.ptoPowerRatio
+            spec.ptoLastEngagementRatio = measuredRatio
+            if measuredRatio >= RMS_Config.CORE.PTO_FACTOR_DATA.ENGAGEMENT_LOAD_MINIMUM then
+                spec.ptoEngagementCounter = (tonumber(spec.ptoEngagementCounter) or 0) + measuredRatio
+            end
+            if measuredRatio > RMS_Config.CORE.PTO_FACTOR_DATA.LOAD_FACTOR_THRESHOLD then
+                spec.ptoEngagementSequence = (tonumber(spec.ptoEngagementSequence) or 0) + 1
+            end
+            table.remove(spec.ptoPendingEngagements, index)
+        else
+            spec.ptoPendingEngagements[index] = remaining
+        end
+    end
+
+    if not spec.isPtoActive then
+        local decayPeriod = RMS_Config.CORE.BASE_BREAKDOWN_PROGRESS_TIME
+        spec.ptoEngagementCounter = math.max((tonumber(spec.ptoEngagementCounter) or 0) - dt / decayPeriod, 0)
+    end
+end
+
 --- update state
 function RealisticMechanicalSystems:updateVehicleStateSnapshot(dt)
     local spec = self.spec_RealisticMechanicalSystems
@@ -1025,6 +1083,8 @@ function RealisticMechanicalSystems:updateVehicleStateSnapshot(dt)
     local delayOne = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_ONE
     local delayTwo = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_TWO
     local delayThree = RMS_Config.UPDATE_VEHICLE_STATE_DELAY_THREE
+
+    updatePtoState(self, dt)
 
     spec.updateVehicleStateTimerOne = spec.updateVehicleStateTimerOne + dt
     spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo + dt

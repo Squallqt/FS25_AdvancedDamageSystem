@@ -112,6 +112,13 @@
         <lowpassCutoffFrequency indoor="700" outdoor="20000.0" />
         <lowpassResonance indoor="1.0" outdoor="1.0"/>
     </wheelHubBearingNoise>
+    <ptoBearingNoise file="sounds/wheelHubBearingNoise.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
+        <volume indoor="0.8" outdoor="1.0" />
+        <pitch indoor="1.1" outdoor="1.1" />
+        <lowpassGain indoor="0.5" outdoor="1.0" />
+        <lowpassCutoffFrequency indoor="700" outdoor="20000.0" />
+        <lowpassResonance indoor="1.0" outdoor="1.0"/>
+    </ptoBearingNoise>
     <vibrationNoice file="sounds/vibrationNoice.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
         <volume indoor="0.8" outdoor="1.0" />
         <pitch indoor="1.0" outdoor="1.0" />

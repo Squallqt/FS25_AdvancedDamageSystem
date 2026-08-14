@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="Moottori ei käynnistynyt: katkaise virta ennen uutta yritystä"/>
         <text name="rms_tutorial_preheat_title" text="Dieselin hehkutus"/>
         <text name="rms_tutorial_preheat_message" text="Kun dieselmoottori on kylmä, käynnistysohjaimen yksi painallus kytkee virran ja aloittaa hehkutuksen automaattisesti. Kojelaudan merkkivalot suorittavat itsetestin, minkä jälkeen hehkutuksen merkkivalo palaa, kunnes moottori on valmis. Älä paina uudelleen: käynnistin kytkeytyy automaattisesti merkkivalon sammuttua."/>
+        <text name="rms_spec_system_pto" text="Voimanotto"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="Voimanottokytkin"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="Voimanoton ulostuloakseli"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Voimanottokytkimen alkava kuluminen. Voimanotto voi irrota ajoittain kuormituksen alaisena."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Voimanottokytkimen kohtalainen kuluminen. Automaattiset irtoamiset kuormituksen alaisena yleistyvät."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Voimanottokytkimen vakava kuluminen. Voimanotto irtoaa toistuvasti kuormituksen alaisena."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Voimanottokytkimen kriittinen vaurio. Voimanotto ei enää välitä tehoa."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Voimanoton ulostulolaakerin alkava kuluminen aiheuttaa lievää käyntiääntä."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Voimanoton ulostulolaakerin kohtalainen kuluminen aiheuttaa selvästi kuuluvan äänen."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Voimanoton ulostulolaakerin vakava kuluminen aiheuttaa kovaa ääntä ja ajoittaista irtoamista."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Voimanoton ulostulolaakerin kriittinen vaurio. Voimanottoa ei voi enää käyttää."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Voimanoton kytkentäventtiili toimii ajoittain ja voi hylätä kytkentäkäskyn."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Voimanoton kytkentäventtiili ei usein kykene kytkemään voimanottoa."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Voimanoton kytkentäventtiili on pahasti viallinen ja hylkää useimmat kytkentäyritykset."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Voimanoton kytkentäventtiili on täysin rikkoutunut. Voimanottoa ei voi kytkeä."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Voimanottokytkimen vaurio"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Voimanoton ulostulolaakerin vaurio"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Voimanoton kytkentäventtiilin vaurio"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Voimanoton kytkentä estyi"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Voimanottokytkimessä näkyy ensimmäisiä kuumenemisjälkiä."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Voimanottokytkimen levyissä näkyy selvää kulumista ja kuumenemisjälkiä."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Voimanottokytkimen levyt ovat pahasti kuluneet ja ylikuumentuneet."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Voimanottokytkin ei enää välitä vääntömomenttia."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Voimanoton ulostuloakselissa tuntuu lievää välystä ja karheutta."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Voimanoton ulostuloakselissa on havaittavaa välystä ja laakeriääntä."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Voimanoton ulostulolaakerissa on suuri välys ja se pyörii hyvin karheasti."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Voimanoton ulostulolaakeri tai akseli on rikkoutunut."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Voimanoton kytkentäventtiili reagoi hitaasti tai epätasaisesti."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Voimanoton kytkentäventtiili jättää käskyjä usein suorittamatta."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Voimanoton kytkentäventtiili reagoi enää satunnaisesti."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Voimanoton kytkentäventtiili ei enää reagoi."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Voimanoton kytkentä kuormitettuna"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Kytke voimanotto moottorin alhaisella kierrosluvulla ja anna työkoneen kuormituksen kasvaa vähitellen. Älä kytke voimanottoa täydellä kuormalla."/>
     </texts>
 </l10n>

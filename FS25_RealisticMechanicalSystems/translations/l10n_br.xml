@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="O motor não ligou: desligue a ignição antes de tentar novamente"/>
         <text name="rms_tutorial_preheat_title" text="Pré-aquecimento diesel"/>
         <text name="rms_tutorial_preheat_message" text="Com o motor diesel frio, um toque no comando de partida liga a ignição e inicia automaticamente o ciclo das velas. As luzes do painel executam o autoteste e, depois, a luz de pré-aquecimento permanece acesa até o motor estar pronto. Não repita o comando: o motor de partida é acionado automaticamente quando a luz se apaga."/>
+        <text name="rms_spec_system_pto" text="Tomada de potência"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="Embreagem da TDP"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="Eixo de saída da TDP"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Desgaste inicial da embreagem da TDP. A TDP pode desengatar ocasionalmente sob carga."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Desgaste moderado da embreagem da TDP. Os desengates automáticos sob carga ficam mais frequentes."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Desgaste severo da embreagem da TDP. A TDP desengata repetidamente sob carga."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Falha crítica da embreagem da TDP. A TDP não consegue mais transmitir potência."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="O desgaste inicial do rolamento de saída da TDP causa um leve ruído de funcionamento."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="O desgaste moderado do rolamento de saída da TDP causa um ruído claramente audível."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="O desgaste severo do rolamento de saída da TDP causa ruído forte e desengates ocasionais."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Falha crítica do rolamento de saída da TDP. A TDP não pode mais funcionar."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="A válvula de engate da TDP responde de forma intermitente e pode recusar um comando."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="A válvula de engate da TDP falha com frequência ao acionar a TDP."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="A válvula de engate da TDP está gravemente defeituosa e recusa a maioria das tentativas."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="A válvula de engate da TDP falhou completamente. Não é possível engatar a TDP."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Falha da embreagem da TDP"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Falha do rolamento de saída da TDP"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Falha da válvula de engate da TDP"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Engate da TDP recusado"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="As primeiras marcas de calor estão visíveis na embreagem da TDP."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Os discos da embreagem da TDP mostram desgaste e marcas de calor evidentes."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Os discos da embreagem da TDP estão muito gastos e superaquecidos."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="A embreagem da TDP não consegue mais transmitir torque."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Há uma pequena folga e aspereza no eixo de saída da TDP."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Há folga perceptível e ruído de rolamento no eixo de saída da TDP."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="O rolamento de saída da TDP tem muita folga e gira de forma muito irregular."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="O rolamento ou o eixo de saída da TDP falhou."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="A válvula de engate da TDP reage lentamente ou de forma irregular."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="A válvula de engate da TDP ignora comandos com frequência."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="A válvula de engate da TDP responde apenas esporadicamente."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="A válvula de engate da TDP não responde mais."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Engate da TDP sob carga"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Engate a TDP com o motor em baixa rotação e deixe o implemento aumentar a carga gradualmente. Não engate a TDP em carga máxima."/>
     </texts>
 </l10n>

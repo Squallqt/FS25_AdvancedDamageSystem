@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="Engine did not start: switch the ignition off before retrying"/>
         <text name="rms_tutorial_preheat_title" text="Diesel Preheating"/>
         <text name="rms_tutorial_preheat_message" text="On a cold diesel engine, one press of the start control switches on the ignition and begins the automatic glow-plug cycle. The dashboard lamps perform their self-test, then the preheat lamp remains on until the engine is ready. Do not repeat the command: the starter engages automatically when the lamp goes out."/>
+        <text name="rms_spec_system_pto" text="PTO"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="PTO clutch"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="PTO output shaft"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Early PTO clutch wear. The PTO may occasionally disengage under load."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Moderate PTO clutch wear. Automatic disengagement under load becomes more frequent."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Severe PTO clutch wear. The PTO disengages repeatedly under load."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Critical PTO clutch failure. The PTO can no longer transmit power."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Early wear of the PTO output bearing causes a slight running noise."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Moderate PTO output bearing wear causes a clearly audible noise."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Severe PTO output bearing wear causes loud noise and occasional disengagement."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Critical PTO output bearing failure. PTO operation is no longer possible."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="The PTO engagement valve responds intermittently and may refuse an engagement command."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="The PTO engagement valve frequently fails to engage the PTO."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="The PTO engagement valve is severely faulty and rejects most engagement attempts."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="The PTO engagement valve has failed completely. The PTO cannot be engaged."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="PTO clutch failure"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="PTO output bearing failure"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="PTO engagement valve failure"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="PTO engagement refused"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Initial heat marks are visible on the PTO clutch."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="The PTO clutch discs show clear wear and heat marks."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="The PTO clutch discs are heavily worn and overheated."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="The PTO clutch can no longer transmit torque."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Slight play and roughness are detectable at the PTO output shaft."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Noticeable play and bearing noise are present at the PTO output shaft."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="The PTO output bearing has severe play and runs very roughly."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="The PTO output bearing or shaft has failed."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="The PTO engagement valve reacts slowly or inconsistently."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="The PTO engagement valve frequently misses commands."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="The PTO engagement valve responds only sporadically."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="The PTO engagement valve no longer responds."/>
+        <text name="rms_tutorial_pto_engagement_title" text="PTO Engagement Under Load"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Engage the PTO at low engine speed, then let the implement build up its load gradually. Do not engage the PTO under full load."/>
     </texts>
 </l10n>

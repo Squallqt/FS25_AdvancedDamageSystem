@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="엔진이 시동되지 않음: 다시 시도하기 전에 점화를 끄십시오"/>
         <text name="rms_tutorial_preheat_title" text="디젤 예열"/>
         <text name="rms_tutorial_preheat_message" text="차가운 디젤 엔진에서는 시동 조작을 한 번 누르면 점화가 켜지고 예열 플러그 사이클이 자동으로 시작됩니다. 계기판 경고등이 자체 점검을 수행한 뒤 엔진이 준비될 때까지 예열등이 켜져 있습니다. 조작을 반복하지 마십시오. 예열등이 꺼지면 스타터가 자동으로 작동합니다."/>
+        <text name="rms_spec_system_pto" text="동력 인출 장치"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="PTO 클러치"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="PTO 출력축"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="PTO 클러치의 초기 마모입니다. 부하가 걸리면 PTO가 가끔 해제될 수 있습니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="PTO 클러치가 중간 정도로 마모되었습니다. 부하 시 자동 해제가 더 자주 발생합니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="PTO 클러치가 심하게 마모되었습니다. 부하가 걸리면 PTO가 반복해서 해제됩니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="PTO 클러치의 치명적 고장입니다. PTO가 더 이상 동력을 전달할 수 없습니다."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="PTO 출력 베어링의 초기 마모로 약한 작동 소음이 발생합니다."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="PTO 출력 베어링의 중간 마모로 뚜렷한 소음이 발생합니다."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="PTO 출력 베어링의 심한 마모로 큰 소음과 간헐적인 해제가 발생합니다."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="PTO 출력 베어링의 치명적 고장입니다. PTO를 더 이상 작동할 수 없습니다."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="PTO 작동 밸브가 간헐적으로 반응하며 작동 명령을 거부할 수 있습니다."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="PTO 작동 밸브가 PTO를 자주 연결하지 못합니다."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="PTO 작동 밸브가 심하게 고장 나 대부분의 작동 시도를 거부합니다."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="PTO 작동 밸브가 완전히 고장 났습니다. PTO를 연결할 수 없습니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="PTO 클러치 고장"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="PTO 출력 베어링 고장"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="PTO 작동 밸브 고장"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="PTO 연결이 거부됨"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="PTO 클러치에 초기 과열 흔적이 보입니다."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="PTO 클러치 디스크에 뚜렷한 마모와 과열 흔적이 있습니다."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="PTO 클러치 디스크가 심하게 마모되고 과열되었습니다."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="PTO 클러치가 더 이상 토크를 전달하지 못합니다."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="PTO 출력축에서 약간의 유격과 거친 느낌이 감지됩니다."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="PTO 출력축에서 뚜렷한 유격과 베어링 소음이 발생합니다."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="PTO 출력 베어링의 유격이 크고 매우 거칠게 회전합니다."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="PTO 출력 베어링 또는 축이 고장 났습니다."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="PTO 작동 밸브가 느리거나 불규칙하게 반응합니다."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="PTO 작동 밸브가 명령을 자주 놓칩니다."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="PTO 작동 밸브가 간헐적으로만 반응합니다."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="PTO 작동 밸브가 더 이상 반응하지 않습니다."/>
+        <text name="rms_tutorial_pto_engagement_title" text="부하 상태의 PTO 연결"/>
+        <text name="rms_tutorial_pto_engagement_message" text="엔진 회전수가 낮을 때 PTO를 연결한 뒤 작업기의 부하가 서서히 증가하도록 하십시오. 최대 부하 상태에서 PTO를 연결하지 마십시오."/>
     </texts>
 </l10n>

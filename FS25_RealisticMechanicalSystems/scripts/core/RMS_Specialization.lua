@@ -49,7 +49,8 @@ RealisticMechanicalSystems = {
         COOLING = "rms_spec_system_cooling",
         ELECTRICAL = "rms_spec_system_electrical",
         CHASSIS = "rms_spec_system_chassis",
-        FUEL = "rms_spec_system_fuel"
+        FUEL = "rms_spec_system_fuel",
+        PTO = "rms_spec_system_pto"
     },
 
     BREAKDOWN_SOURCES = {
@@ -115,7 +116,8 @@ RealisticMechanicalSystems.SYSTEMS_ORDER = {
     RealisticMechanicalSystems.SYSTEMS.COOLING,
     RealisticMechanicalSystems.SYSTEMS.ELECTRICAL,
     RealisticMechanicalSystems.SYSTEMS.CHASSIS,
-    RealisticMechanicalSystems.SYSTEMS.FUEL
+    RealisticMechanicalSystems.SYSTEMS.FUEL,
+    RealisticMechanicalSystems.SYSTEMS.PTO
 }
 
 -- Display order of the part quality options.
@@ -210,7 +212,9 @@ RealisticMechanicalSystems.FACTOR_STATS_ALIASES = {
     idleDepositFactor = "idf",
     highPressureFactor = "hpf",
     lubricationFactor = "lubf",
-    instantDamageFactor = "idfg"
+    instantDamageFactor = "idfg",
+    ptoLoadFactor = "plf",
+    ptoEngagementFactor = "pef"
 }
 
 RealisticMechanicalSystems.FACTOR_STATS_KEYS = {}
@@ -665,10 +669,12 @@ local function markWearDirty(vehicle, spec)
 
     if syncFloatChanged(spec._lastSyncWear_serviceLevel, spec.serviceLevel, 0.001) or
        syncFloatChanged(spec._lastSyncWear_conditionLevel, spec.conditionLevel, 0.001) or
+       spec._lastSyncWear_ptoEngagementSequence ~= spec.ptoEngagementSequence or
        getSystemsSyncChanged(spec) then
             RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.WEAR)
             spec._lastSyncWear_serviceLevel = spec.serviceLevel
             spec._lastSyncWear_conditionLevel = spec.conditionLevel
+            spec._lastSyncWear_ptoEngagementSequence = spec.ptoEngagementSequence
             captureSystemsSync(spec)
             return true
     end
@@ -894,6 +900,10 @@ function RealisticMechanicalSystems.initSpecialization()
     schemaSavegame:register(XMLValueType.INT,    baseKey .. "#driveMode", "Drivetrain mode (0=4x2, 1=4WD, 2=AUTO)")
     schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#diffLockRequested", "Differential lock requested")
     schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#parkBrake", "Parking brake engaged")
+    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementCount", "PTO engagement count")
+    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#ptoEngagementCounter", "Weighted PTO engagement counter")
+    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#ptoLastEngagementRatio", "Last measured PTO engagement power ratio")
+    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementSequence", "Severe PTO engagement sequence")
 
     local logKey = baseKey .. ".maintenanceLog.entry(?)"
     schemaSavegame:register(XMLValueType.INT,    logKey .. "#id", "Entry ID")
@@ -995,6 +1005,7 @@ function RealisticMechanicalSystems.registerFunctions(vehicleType)
     SpecializationUtil.registerFunction(vehicleType, "updateTransmissionSystem", RealisticMechanicalSystems.updateTransmissionSystem)
     SpecializationUtil.registerFunction(vehicleType, "getTransmissionType", RealisticMechanicalSystems.getTransmissionType)
     SpecializationUtil.registerFunction(vehicleType, "updateHydraulicsSystem", RealisticMechanicalSystems.updateHydraulicsSystem)
+    SpecializationUtil.registerFunction(vehicleType, "updatePtoSystem", RealisticMechanicalSystems.updatePtoSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateCoolingSystem", RealisticMechanicalSystems.updateCoolingSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateElectricalSystem", RealisticMechanicalSystems.updateElectricalSystem)
     SpecializationUtil.registerFunction(vehicleType, "updateChassisSystem", RealisticMechanicalSystems.updateChassisSystem)
@@ -1941,6 +1952,7 @@ function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
         self:updateEngineSystem(dt)
         self:updateTransmissionSystem(dt)
         self:updateHydraulicsSystem(dt)
+        self:updatePtoSystem(dt)
         self:updateCoolingSystem(dt)
         self:updateElectricalSystem(dt)
         self:updateChassisSystem(dt)

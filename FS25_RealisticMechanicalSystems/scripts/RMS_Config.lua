@@ -56,7 +56,8 @@ RMS_Config = {
             cooling=0.12, 
             electrical=0.10, 
             chassis=0.10, 
-            fuel=0.08
+            fuel=0.08,
+            pto=0.06
         },
 
         AVG_STRESS_WARNING_THRESHOLD = 0.22,
@@ -70,7 +71,8 @@ RMS_Config = {
             cooling=10.0, 
             electrical=10.0, 
             chassis=10.0, 
-            fuel=10.0
+            fuel=10.0,
+            pto=10.0
         },
 
         ENGINE_FACTOR_DATA = {
@@ -134,6 +136,16 @@ RMS_Config = {
             VIB_FACTOR_MAX_SIGNAL = 0.36,
             VIB_FACTOR_MULTIPLIER = 36.0,
             VIB_FIELD_MULTIPLIER = 2.0
+        },
+
+        PTO_FACTOR_DATA = {
+            SERVICE_EXPIRED_MULTIPLIER = 4.0,
+            LOAD_FACTOR_THRESHOLD = 0.55,
+            LOAD_FACTOR_MULTIPLIER = 6.0,
+            ENGAGEMENT_FACTOR_THRESHOLD = 0.0,
+            ENGAGEMENT_FACTOR_MULTIPLIER = 4.0,
+            ENGAGEMENT_MEASUREMENT_DELAY = 2000,
+            ENGAGEMENT_LOAD_MINIMUM = 0.30
         },
 
         COOLING_FACTOR_DATA = {
@@ -849,6 +861,7 @@ RMS_Config = {
         OVERLOAD_INDICATOR = false,
         ENGINE_OVERLOAD = false,
         LUGGING = false,
+        PTO_ENGAGEMENT = false,
     }
 }
 

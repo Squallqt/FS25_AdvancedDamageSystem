@@ -345,6 +345,47 @@ function RMS_Telemetry:collectTransmissionSystemInfo(vehicle)
     }
 end
 
+function RMS_Telemetry:collectPtoSystemInfo(vehicle)
+    if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
+        return nil
+    end
+
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local debugData = nil
+    if vehicle.isServer then
+        debugData = type(spec.debugData) == "table" and spec.debugData or {}
+    else
+        local debugSnapshot = RMS_DebugSnapshot.get(vehicle)
+        if debugSnapshot == nil then
+            return nil
+        end
+        debugData = type(debugSnapshot.debugData) == "table" and debugSnapshot.debugData or {}
+    end
+    local ptoDbg = type(debugData.pto) == "table" and debugData.pto or {}
+    local systemData = spec.systems.pto
+    local systemStats = spec.factorStats.pto
+
+    return {
+        enabled = systemData.enabled ~= false,
+        condition = systemData.condition,
+        stress = systemData.stress,
+        totalWearRate = ptoDbg.totalWearRate or 0,
+        instantStressRate = ptoDbg.instantStressRate or 0,
+        accumulatedStress = systemStats.stress,
+        isActive = ptoDbg.isPtoActive == true,
+        torqueKNm = ptoDbg.ptoTorque or 0,
+        rpm = ptoDbg.ptoRpm or 0,
+        powerKw = ptoDbg.ptoPower or 0,
+        powerRatio = ptoDbg.ptoPowerRatio or 0,
+        engagementCount = ptoDbg.ptoEngagementCount or 0,
+        engagementCounter = ptoDbg.ptoEngagementCounter or 0,
+        lastEngagementRatio = ptoDbg.ptoLastEngagementRatio or 0,
+        expiredServiceFactor = ptoDbg.expiredServiceFactor or 0,
+        ptoLoadFactor = ptoDbg.ptoLoadFactor or 0,
+        ptoEngagementFactor = ptoDbg.ptoEngagementFactor or 0
+    }
+end
+
 function RMS_Telemetry:collectCVTTempInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or not hasCVTTransmission(vehicle) then
         return nil
@@ -497,6 +538,11 @@ function RMS_Telemetry:collectSample(vehicle)
         sample.cvtTemp = self:collectCVTTempInfo(vehicle)
         sample.drivetrain = self:collectDrivetrainInfo(vehicle)
         sample.clogging = self:collectCloggingInfo(vehicle)
+    elseif scenario == "pto" then
+        sample.ptoSystem = self:collectPtoSystemInfo(vehicle)
+        if sample.ptoSystem == nil then
+            return nil
+        end
     end
 
     return sample
@@ -515,6 +561,10 @@ function RMS_Telemetry:update(dt)
     if vehicle == nil then
         self:finishRecording("vehicle_missing")
         return
+    end
+
+    if self.recordingScenario == "pto" and not vehicle.isServer then
+        RMS_DebugSnapshot.request(vehicle)
     end
 
     self.elapsedMs = (self.elapsedMs or 0) + (dt or 0)
@@ -556,7 +606,7 @@ function RMS_Telemetry:startRecording(scenarioName, intervalMs)
     end
 
     local requestedScenario = tostring(scenarioName or "default")
-    if requestedScenario ~= "default" and requestedScenario ~= "transmission" then
+    if requestedScenario ~= "default" and requestedScenario ~= "transmission" and requestedScenario ~= "pto" then
         log_dbg("Telemetry: unsupported scenario:", requestedScenario)
         return false
     end

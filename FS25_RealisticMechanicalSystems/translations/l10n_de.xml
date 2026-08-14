@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="Motor nicht gestartet: Zündung vor erneutem Versuch ausschalten"/>
         <text name="rms_tutorial_preheat_title" text="Diesel-Vorglühen"/>
         <text name="rms_tutorial_preheat_message" text="Bei kaltem Dieselmotor schaltet ein Druck auf die Starttaste die Zündung ein und startet automatisch den Vorglühzyklus. Die Kontrollleuchten führen ihren Selbsttest durch; danach bleibt die Vorglühleuchte an, bis der Motor startbereit ist. Die Taste nicht erneut drücken: Der Anlasser wird automatisch betätigt, sobald die Leuchte erlischt."/>
+        <text name="rms_spec_system_pto" text="Zapfwelle"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="Zapfwellenkupplung"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="Zapfwellenabtriebswelle"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Beginnender Verschleiß der Zapfwellenkupplung. Unter Last kann sich die Zapfwelle gelegentlich abschalten."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Mäßiger Verschleiß der Zapfwellenkupplung. Automatische Abschaltungen unter Last treten häufiger auf."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Starker Verschleiß der Zapfwellenkupplung. Die Zapfwelle schaltet sich unter Last wiederholt ab."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Kritischer Ausfall der Zapfwellenkupplung. Die Zapfwelle kann keine Leistung mehr übertragen."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Beginnender Verschleiß des Zapfwellenabtriebslagers verursacht ein leichtes Laufgeräusch."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Mäßiger Verschleiß des Zapfwellenabtriebslagers verursacht ein deutlich hörbares Geräusch."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Starker Verschleiß des Zapfwellenabtriebslagers verursacht laute Geräusche und gelegentliche Abschaltungen."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Kritischer Ausfall des Zapfwellenabtriebslagers. Ein Zapfwellenbetrieb ist nicht mehr möglich."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Das Zapfwellen-Schaltventil reagiert unregelmäßig und kann einen Einschaltbefehl verweigern."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Das Zapfwellen-Schaltventil kann die Zapfwelle häufig nicht einschalten."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Das Zapfwellen-Schaltventil ist stark gestört und verweigert die meisten Einschaltversuche."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Das Zapfwellen-Schaltventil ist vollständig ausgefallen. Die Zapfwelle lässt sich nicht einschalten."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Ausfall der Zapfwellenkupplung"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Ausfall des Zapfwellenabtriebslagers"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Ausfall des Zapfwellen-Schaltventils"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Einschalten der Zapfwelle verweigert"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="An der Zapfwellenkupplung sind erste Hitzespuren sichtbar."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Die Lamellen der Zapfwellenkupplung zeigen deutlichen Verschleiß und Hitzespuren."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Die Lamellen der Zapfwellenkupplung sind stark verschlissen und überhitzt."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Die Zapfwellenkupplung kann kein Drehmoment mehr übertragen."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="An der Zapfwellenabtriebswelle sind leichtes Spiel und Rauheit feststellbar."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="An der Zapfwellenabtriebswelle sind deutliches Spiel und Lagergeräusche vorhanden."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Das Zapfwellenabtriebslager hat starkes Spiel und läuft sehr rau."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Das Zapfwellenabtriebslager oder die Abtriebswelle ist ausgefallen."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Das Zapfwellen-Schaltventil reagiert langsam oder ungleichmäßig."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Das Zapfwellen-Schaltventil setzt Befehle häufig nicht um."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Das Zapfwellen-Schaltventil reagiert nur noch sporadisch."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Das Zapfwellen-Schaltventil reagiert nicht mehr."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Zapfwelle unter Last einschalten"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Schalten Sie die Zapfwelle bei niedriger Motordrehzahl ein und lassen Sie das Anbaugerät dann allmählich Last aufbauen. Schalten Sie die Zapfwelle nicht unter Volllast ein."/>
     </texts>
 </l10n>

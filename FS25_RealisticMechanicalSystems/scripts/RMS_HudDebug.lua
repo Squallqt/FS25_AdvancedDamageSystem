@@ -378,6 +378,7 @@ function RMS_Hud:drawActiveVehicleHUD()
     local electricalDbg = debugData.electrical or {}
     local chassisDbg = debugData.chassis or {}
     local fuelDbg = debugData.fuel or {}
+    local ptoDbg = debugData.pto or {}
     local serviceDbg = debugData.service or {}
     local batteryDbg = debugData.battery or {}
     local drivetrainDbg = debugData.drivetrain or {}
@@ -563,6 +564,11 @@ function RMS_Hud:drawActiveVehicleHUD()
         fuelDbg.idleDepositFactor or 0,
         fuelDbg.highPressureFactor or 0
     ) * bcw
+    local ptoMaxFactor = math.max(
+        ptoDbg.expiredServiceFactor or 0,
+        ptoDbg.ptoLoadFactor or 0,
+        ptoDbg.ptoEngagementFactor or 0
+    ) * bcw
     local factorStats = {}
     for rawSystemKey, rawStats in pairs(factorStatsSource) do
         if type(rawStats) == "table" then
@@ -687,6 +693,12 @@ function RMS_Hud:drawActiveVehicleHUD()
         { shortName = "hpf", statKey = "hpf", value = fuelDbg.highPressureFactor or 0, extraInfo = string.format("r: %.3f", fuelDbg.currentFuelUsageRatio or 0) }
     })
 
+    local ptoLines = buildSystemLines("pto", ptoDbg, ptoMaxFactor, {
+        { shortName = "sf", statKey = "sf", value = ptoDbg.expiredServiceFactor or 0 },
+        { shortName = "plf", statKey = "plf", value = ptoDbg.ptoLoadFactor or 0, extraInfo = string.format("active: %s rpm: %.0f kW: %.1f r: %.3f", tostring(ptoDbg.isPtoActive == true), ptoDbg.ptoRpm or 0, ptoDbg.ptoPower or 0, ptoDbg.ptoPowerRatio or 0) },
+        { shortName = "pef", statKey = "pef", value = ptoDbg.ptoEngagementFactor or 0, extraInfo = string.format("n: %d c: %.3f last: %.3f", ptoDbg.ptoEngagementCount or 0, ptoDbg.ptoEngagementCounter or 0, ptoDbg.ptoLastEngagementRatio or 0) }
+    })
+
 
     local systemSections = {}
     if isSystemEnabled("engine") then
@@ -709,6 +721,9 @@ function RMS_Hud:drawActiveVehicleHUD()
     end
     if isSystemEnabled("fuel") then
         table.insert(systemSections, {title = "Fuel", lines = fuelLines})
+    end
+    if isSystemEnabled("pto") then
+        table.insert(systemSections, {title = "PTO", lines = ptoLines})
     end
 
     local engineTempLines = {}
@@ -1277,6 +1292,7 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
             electrical = "Electrical",
             chassis = "Chassis",
             fuel = "Fuel",
+            pto = "PTO",
             materialFlow = "Material Flow"
         }
         return names[systemKey] or tostring(systemKey)
@@ -1341,6 +1357,10 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
             if dbg.currentFuelUsageRatio ~= nil then
                 return string.format("ratio %.3f", tonumber(dbg.currentFuelUsageRatio) or 0)
             end
+        elseif debugKey == "ptoLoadFactor" then
+            return string.format("power %.1fkW | ratio %.3f | rpm %.0f", tonumber(dbg.ptoPower) or 0, tonumber(dbg.ptoPowerRatio) or 0, tonumber(dbg.ptoRpm) or 0)
+        elseif debugKey == "ptoEngagementFactor" then
+            return string.format("count %d | weighted %.3f | last %.3f", tonumber(dbg.ptoEngagementCount) or 0, tonumber(dbg.ptoEngagementCounter) or 0, tonumber(dbg.ptoLastEngagementRatio) or 0)
         elseif debugKey == "airIntakeCloggingFactor" then
             if dbg.airIntakeClogging ~= nil then
                 return string.format("clog %.1f%%", (tonumber(dbg.airIntakeClogging) or 0) * 100)
@@ -1406,7 +1426,7 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
 
     local orderedSystems = {
         "engine", "transmission", "hydraulics", "cooling",
-        "electrical", "chassis", "fuel", "materialFlow"
+        "electrical", "chassis", "fuel", "pto", "materialFlow"
     }
 
     local usedSystems = {}

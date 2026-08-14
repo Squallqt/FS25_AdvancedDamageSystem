@@ -627,6 +627,58 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     })
 end
 
+function RealisticMechanicalSystems:updatePtoSystem(dt)
+    local spec = self.spec_RealisticMechanicalSystems
+    local systemData = spec.systems.pto
+    if systemData == nil or systemData.enabled == false then
+        return
+    end
+
+    local C = RMS_Config.CORE.PTO_FACTOR_DATA
+    local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemData.name)
+    local wearRate = 1.0
+    local expiredServiceFactor = 0
+    local ptoLoadFactor = 0
+    local ptoEngagementFactor = 0
+
+    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+        local powerRatio = math.clamp(tonumber(spec.ptoPowerRatio) or 0, 0, 1.5)
+        if spec.isPtoActive and powerRatio > C.LOAD_FACTOR_THRESHOLD then
+            ptoLoadFactor = RMS_Utils.calculateQuadraticMultiplier(powerRatio, C.LOAD_FACTOR_THRESHOLD, false)
+            ptoLoadFactor = math.min(ptoLoadFactor * C.LOAD_FACTOR_MULTIPLIER, C.LOAD_FACTOR_MULTIPLIER)
+            wearRate = wearRate + ptoLoadFactor
+        end
+
+        local engagementCounter = math.max(tonumber(spec.ptoEngagementCounter) or 0, 0)
+        if engagementCounter > C.ENGAGEMENT_FACTOR_THRESHOLD then
+            ptoEngagementFactor = RMS_Utils.calculateQuadraticMultiplier(engagementCounter, C.ENGAGEMENT_FACTOR_THRESHOLD, false)
+            ptoEngagementFactor = math.min(ptoEngagementFactor * C.ENGAGEMENT_FACTOR_MULTIPLIER, C.ENGAGEMENT_FACTOR_MULTIPLIER)
+            wearRate = wearRate + ptoEngagementFactor
+        end
+
+        expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER)
+        wearRate = wearRate + expiredServiceFactor
+    elseif spec.isUnderRoof then
+        wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER
+    else
+        wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
+    end
+
+    self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
+        isPtoActive = spec.isPtoActive == true,
+        expiredServiceFactor = expiredServiceFactor,
+        ptoLoadFactor = ptoLoadFactor,
+        ptoEngagementFactor = ptoEngagementFactor,
+        ptoTorque = spec.ptoTorque,
+        ptoRpm = spec.ptoRpm,
+        ptoPower = spec.ptoPower,
+        ptoPowerRatio = spec.ptoPowerRatio,
+        ptoEngagementCount = spec.ptoEngagementCount,
+        ptoEngagementCounter = spec.ptoEngagementCounter,
+        ptoLastEngagementRatio = spec.ptoLastEngagementRatio
+    })
+end
+
 function RealisticMechanicalSystems:updateCoolingSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized

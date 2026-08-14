@@ -117,6 +117,12 @@ function RMS_Tutorial:update(dt)
             local electricalSystemEnabled = isSystemEnabled("electrical")
             local chassisSystemEnabled = isSystemEnabled("chassis")
             local fuelSystemEnabled = isSystemEnabled("fuel")
+            local ptoSystemEnabled = isSystemEnabled("pto")
+            local ptoEngagementSequence = tonumber(spec.ptoEngagementSequence) or 0
+            local hasNewPtoEngagement = ptoEngagementSequence > (tonumber(spec.ptoTutorialObservedSequence) or 0)
+            if hasNewPtoEngagement then
+                spec.ptoTutorialObservedSequence = ptoEngagementSequence
+            end
             local vehicleMass = vehicle.getTotalMass ~= nil and (vehicle:getTotalMass(true) or 0) or 0
             local heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
             local heavyLiftThreshold = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
@@ -511,6 +517,18 @@ function RMS_Tutorial:update(dt)
             -- ==========================================================
             -- HYDRAULIC
             -- ========================================================== 
+            elseif not messagedData.PTO_ENGAGEMENT
+                and ptoSystemEnabled
+                and hasNewPtoEngagement then
+                RMS_Hud.showNotification(
+                    g_i18n:getText("rms_tutorial_pto_engagement_message"),
+                    0,
+                    g_i18n:getText("rms_tutorial_pto_engagement_title"),
+                    true
+                )
+                messagedData.PTO_ENGAGEMENT = true
+                self.messageDowntime = downtimeAfterMessage
+
             elseif not messagedData.COLD_OIL and (transmissionSystemEnabled or hydraulicsSystemEnabled) and isMotorStarted and spec.transmissionTemperature < hydraulicsConfig.COLD_OIL_THRESHOLD and spec.dynamicMotorLoad >= transmissionConfig.LUGGING_MOTORLOAD_THRESHOLD then
                 RMS_Hud.showNotification(
                     g_i18n:getText("rms_tutorial_cold_oil_message"),

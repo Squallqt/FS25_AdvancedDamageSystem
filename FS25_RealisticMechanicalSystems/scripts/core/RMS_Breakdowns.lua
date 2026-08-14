@@ -1798,6 +1798,14 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                 local boostN = math.clamp(tonumber(motor.lastTurboScale) or 0, 0, 1)
                 local hotN = math.clamp(((tonumber(spec_rms.engineTemperature) or 0) - 70) / 40, 0, 1)
                 local speedMps = tonumber(v:getLastSpeed()) or 0
+                local ptoData = nil
+
+                if gateMode == "pto" then
+                    ptoData = RMS_Utils.getConnectedPtoData(v)
+                    local ptoRpm = math.max(tonumber(ptoData.rpm) or 0, 0)
+                    local ptoMotorRpm = ptoRpm * motor:getPtoMotorRpmRatio()
+                    rpmN = math.clamp((ptoMotorRpm - minRpm) / (maxRpm - minRpm), 0, 1)
+                end
 
                 local dynamicIntensity =
                     (0.30 + 0.70 * rpmN)
@@ -1817,10 +1825,14 @@ local function createEngineNoiseEffectApplicator(effectName, sampleName, gateMod
                     local targetGate = math.clamp((speedMps - speedThresholdMps) / (fullSpeedMps - speedThresholdMps), 0, 1)
                     gate = rmsUpdateNoiseGate(spec_rms, effectName, targetGate, dt)
                     baseVolumeScale = baseVolumeScale * gate
+                elseif gateMode == "pto" then
+                    local targetGate = ptoData ~= nil and ptoData.isActive and (tonumber(ptoData.rpm) or 0) > 0 and 1 or 0
+                    gate = rmsUpdateNoiseGate(spec_rms, effectName, targetGate, dt)
+                    baseVolumeScale = baseVolumeScale * gate
                 end
 
                 if baseVolumeScale <= 0.02 then
-                    if (gateMode == "boost" or gateMode == "speed") and gate > 0.001 then
+                    if (gateMode == "boost" or gateMode == "speed" or gateMode == "pto") and gate > 0.001 then
                         baseVolumeScale = 0.02
                     else
                         rmsStopAndResetNoiseSample(sample)
@@ -1889,6 +1901,7 @@ RMS_Breakdowns.EffectApplicators.FAN_CLUTCH_NOISE_EFFECT = createEngineNoiseEffe
 RMS_Breakdowns.EffectApplicators.VIBRATION_NOISE_EFFECT = createEngineNoiseEffectApplicator("VIBRATION_NOISE_EFFECT", "vibrationNoice", "speed")
 RMS_Breakdowns.EffectApplicators.WHEEL_HUB_BEARING_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_HUB_BEARING_NOISE_EFFECT", "wheelHubBearingNoise", "speed")
 RMS_Breakdowns.EffectApplicators.WHEEL_SEIZURE_GRIND_NOISE_EFFECT = createEngineNoiseEffectApplicator("WHEEL_SEIZURE_GRIND_NOISE_EFFECT", "wheelSeizureGrind", "speed")
+RMS_Breakdowns.EffectApplicators.PTO_BEARING_NOISE_EFFECT = createEngineNoiseEffectApplicator("PTO_BEARING_NOISE_EFFECT", "ptoBearingNoise", "pto")
 
 
 -- ==========================================================
@@ -1981,58 +1994,7 @@ RMS_Breakdowns.EffectApplicators.ENGINE_STALLS_CHANCE = {
 RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
     getEffectName = function() return "PTO_AUTO_DISENGAGE_CHANCE" end,
     apply = function(vehicle, effectData, handler)
-        local spec = vehicle.spec_RealisticMechanicalSystems
-        if spec.year < 1990 then
-            return
-        end
-
         local effectName = handler.getEffectName()
-
-        local function hasActivePtoLoad(rootVehicle)
-            if rootVehicle == nil or rootVehicle.getOutputPowerTakeOffs == nil then
-                return false
-            end
-
-            for _, output in pairs(rootVehicle:getOutputPowerTakeOffs()) do
-                local consumer = output.connectedVehicle
-                if output.connectedInput ~= nil and consumer:getIsPowerTakeOffActive() then
-                    return true
-                end
-            end
-
-            return false
-        end
-
-        local function disengagePtoConsumers(rootVehicle)
-            local turnedOff = false
-            local visited = {}
-
-            local function walk(vehicleObj)
-                if vehicleObj == nil or visited[vehicleObj] then
-                    return
-                end
-                visited[vehicleObj] = true
-
-                if vehicleObj.getOutputPowerTakeOffs == nil then
-                    return
-                end
-
-                for _, output in pairs(vehicleObj:getOutputPowerTakeOffs()) do
-                    local consumer = output.connectedVehicle
-                    if output.connectedInput ~= nil then
-                        local isTurnedOn = consumer.getIsTurnedOn ~= nil and consumer:getIsTurnedOn() or false
-                        if isTurnedOn and consumer.setIsTurnedOn ~= nil then
-                            consumer:setIsTurnedOn(false)
-                            turnedOff = true
-                        end
-                        walk(consumer)
-                    end
-                end
-            end
-
-            walk(rootVehicle)
-            return turnedOff
-        end
 
         local activeFunc = function(v, dt)
 
@@ -2047,7 +2009,7 @@ RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
             end
 
             if effect.extraData.status == "DISENGAGED" then
-                if disengagePtoConsumers(v) then
+                if RMS_Utils.setConnectedPtoConsumersTurnedOn(v, false) then
                     if v:getIsActiveForInput(true) then
                         g_currentMission:showBlinkingWarning(g_i18n:getText("rms_breakdowns_pto_auto_disengage_message"), 4000)
                     end
@@ -2060,7 +2022,7 @@ RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
                 return
             end
 
-            if not hasActivePtoLoad(v) then
+            if not RMS_Utils.getConnectedPtoData(v).isActive then
                 return
             end
 
@@ -2076,6 +2038,114 @@ RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
         removeFuncFromActive(vehicle, handler.getEffectName())
     end
 }
+
+RMS_Breakdowns.EffectApplicators.PTO_FAILURE = {
+    getEffectName = function() return "PTO_FAILURE" end,
+    apply = function(vehicle, effectData, handler)
+        local effectName = handler.getEffectName()
+        local activeFunc = function(v, dt)
+            local effect = v.spec_RealisticMechanicalSystems.activeEffects[effectName]
+            if effect ~= nil and (tonumber(effect.value) or 0) > 0 then
+                RMS_Utils.setConnectedPtoConsumersTurnedOn(v, false)
+            end
+        end
+        addFuncToActive(vehicle, effectName, activeFunc)
+    end,
+    remove = function(vehicle, handler)
+        removeFuncFromActive(vehicle, handler.getEffectName())
+    end
+}
+
+RMS_Breakdowns.EffectApplicators.PTO_ENGAGEMENT_BLOCKED_CHANCE = {
+    getEffectName = function() return "PTO_ENGAGEMENT_BLOCKED_CHANCE" end,
+    apply = function(vehicle, effectData, handler)
+    end,
+    remove = function(vehicle, handler)
+    end
+}
+
+function RMS_Breakdowns.getCanBeTurnedOn(vehicle, superFunc)
+    local canBeTurnedOn, warning = superFunc(vehicle)
+    if not canBeTurnedOn or vehicle.getIsTurnedOn == nil or vehicle:getIsTurnedOn() then
+        return canBeTurnedOn, warning
+    end
+
+    local rootVehicle = vehicle.rootVehicle
+    local spec = rootVehicle ~= nil and rootVehicle.spec_RealisticMechanicalSystems or nil
+    local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects.PTO_ENGAGEMENT_BLOCKED_CHANCE or nil
+    if effect == nil or spec.ptoEngagementAttempt ~= true then
+        return canBeTurnedOn, warning
+    end
+
+    local ptoData = RMS_Utils.getConnectedPtoData(rootVehicle)
+    if ptoData.connectedVehicles[vehicle] ~= true then
+        return canBeTurnedOn, warning
+    end
+
+    if spec.ptoEngagementAttemptBlocked == nil then
+        spec.ptoEngagementAttemptBlocked = math.random() < math.clamp(tonumber(effect.value) or 0, 0, 1)
+    end
+
+    if spec.ptoEngagementAttemptBlocked then
+        if spec.ptoEngagementAttemptWarningShown ~= true
+            and rootVehicle.getIsActiveForInput ~= nil
+            and rootVehicle:getIsActiveForInput(true) then
+            g_currentMission:showBlinkingWarning(g_i18n:getText("rms_breakdowns_pto_engagement_blocked_message"), 4000)
+            spec.ptoEngagementAttemptWarningShown = true
+        end
+        return false, warning
+    end
+
+    return canBeTurnedOn, warning
+end
+
+local function runWithPtoEngagementAttempt(vehicle, callback)
+    local rootVehicle = vehicle.rootVehicle
+    local spec = rootVehicle ~= nil and rootVehicle.spec_RealisticMechanicalSystems or nil
+    if spec ~= nil then
+        spec.ptoEngagementAttempt = true
+        spec.ptoEngagementAttemptBlocked = nil
+        spec.ptoEngagementAttemptWarningShown = nil
+    end
+    local result = {callback()}
+    if spec ~= nil then
+        spec.ptoEngagementAttempt = false
+        spec.ptoEngagementAttemptBlocked = nil
+        spec.ptoEngagementAttemptWarningShown = nil
+    end
+    return unpack(result)
+end
+
+function RMS_Breakdowns.actionEventTurnOn(vehicle, superFunc, actionName, inputValue, callbackState, isAnalog)
+    return runWithPtoEngagementAttempt(vehicle, function()
+        return superFunc(vehicle, actionName, inputValue, callbackState, isAnalog)
+    end)
+end
+
+function RMS_Breakdowns.actionEventTurnOnAll(vehicle, superFunc, actionName, inputValue, callbackState, isAnalog)
+    return runWithPtoEngagementAttempt(vehicle, function()
+        return superFunc(vehicle, actionName, inputValue, callbackState, isAnalog)
+    end)
+end
+
+function RMS_Breakdowns.actionControllerTurnOnEvent(vehicle, superFunc, direction)
+    return runWithPtoEngagementAttempt(vehicle, function()
+        return superFunc(vehicle, direction)
+    end)
+end
+
+if TurnOnVehicle ~= nil and TurnOnVehicle.getCanBeTurnedOn ~= nil then
+    TurnOnVehicle.getCanBeTurnedOn = Utils.overwrittenFunction(TurnOnVehicle.getCanBeTurnedOn, RMS_Breakdowns.getCanBeTurnedOn)
+end
+if TurnOnVehicle ~= nil and TurnOnVehicle.actionEventTurnOn ~= nil then
+    TurnOnVehicle.actionEventTurnOn = Utils.overwrittenFunction(TurnOnVehicle.actionEventTurnOn, RMS_Breakdowns.actionEventTurnOn)
+end
+if TurnOnVehicle ~= nil and TurnOnVehicle.actionEventTurnOnAll ~= nil then
+    TurnOnVehicle.actionEventTurnOnAll = Utils.overwrittenFunction(TurnOnVehicle.actionEventTurnOnAll, RMS_Breakdowns.actionEventTurnOnAll)
+end
+if TurnOnVehicle ~= nil and TurnOnVehicle.actionControllerTurnOnEvent ~= nil then
+    TurnOnVehicle.actionControllerTurnOnEvent = Utils.overwrittenFunction(TurnOnVehicle.actionControllerTurnOnEvent, RMS_Breakdowns.actionControllerTurnOnEvent)
+end
 
 -- ==========================================================
 -- ENGINE_HARD_START_MODIFIER

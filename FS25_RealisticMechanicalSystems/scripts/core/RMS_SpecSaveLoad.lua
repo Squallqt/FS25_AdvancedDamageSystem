@@ -170,6 +170,10 @@ function RealisticMechanicalSystems:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#pendingPreventiveSystemStressTarget", RMS_Utils.serializeNumericMap(spec.pendingPreventiveSystemStressTarget))
         xmlFile:setValue(key .. "#systemsState", RMS_Utils.serializeSystemsState(spec.systems))
         xmlFile:setValue(key .. "#factorStats", RMS_Utils.serializeNumericMap(flattenFactorStats(spec.factorStats)))
+        xmlFile:setValue(key .. "#ptoEngagementCount", spec.ptoEngagementCount or 0)
+        xmlFile:setValue(key .. "#ptoEngagementCounter", spec.ptoEngagementCounter or 0)
+        xmlFile:setValue(key .. "#ptoLastEngagementRatio", spec.ptoLastEngagementRatio or 0)
+        xmlFile:setValue(key .. "#ptoEngagementSequence", spec.ptoEngagementSequence or 0)
         xmlFile:setValue(key .. "#pendingOverhaulSystemStart", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStart))
         xmlFile:setValue(key .. "#pendingOverhaulSystemTarget", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemTarget))
         xmlFile:setValue(key .. "#pendingOverhaulSystemStressStart", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStressStart))
@@ -261,7 +265,8 @@ function RealisticMechanicalSystems:onLoad(savegame)
         cooling = { name = RealisticMechanicalSystems.SYSTEMS.COOLING, condition = 1.0, stress = 0.0, enabled = true },
         electrical = { name = RealisticMechanicalSystems.SYSTEMS.ELECTRICAL, condition = 1.0, stress = 0.0, enabled = true },
         chassis = { name = RealisticMechanicalSystems.SYSTEMS.CHASSIS, condition = 1.0, stress = 0.0, enabled = true },
-        fuel = { name = RealisticMechanicalSystems.SYSTEMS.FUEL, condition = 1.0, stress = 0.0, enabled = true }
+        fuel = { name = RealisticMechanicalSystems.SYSTEMS.FUEL, condition = 1.0, stress = 0.0, enabled = true },
+        pto = { name = RealisticMechanicalSystems.SYSTEMS.PTO, condition = 1.0, stress = 0.0, enabled = true }
     }
     self.spec_RealisticMechanicalSystems.factorStats = createEmptyFactorStats(self.spec_RealisticMechanicalSystems.systems)
     ensureFactorStats(self.spec_RealisticMechanicalSystems, self)
@@ -427,6 +432,25 @@ function RealisticMechanicalSystems:onLoad(savegame)
             vibFieldMultiplier = 1,
             coldOilFactor = 0,
             hotOilFactor = 0,
+            breakdownProbability = 0,
+            critBreakdownProbability = 0
+        },
+
+        pto = {
+            condition = 0,
+            stress = 0,
+            totalWearRate = 0,
+            isPtoActive = false,
+            expiredServiceFactor = 0,
+            ptoLoadFactor = 0,
+            ptoEngagementFactor = 0,
+            ptoTorque = 0,
+            ptoRpm = 0,
+            ptoPower = 0,
+            ptoPowerRatio = 0,
+            ptoEngagementCount = 0,
+            ptoEngagementCounter = 0,
+            ptoLastEngagementRatio = 0,
             breakdownProbability = 0,
             critBreakdownProbability = 0
         },
@@ -604,6 +628,21 @@ function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.operatingMass = 0
     self.spec_RealisticMechanicalSystems.hydraulicsMoveAlphaCache = {}
     self.spec_RealisticMechanicalSystems.hydraulicsLiftRatioCache = {}
+    self.spec_RealisticMechanicalSystems.isPtoActive = false
+    self.spec_RealisticMechanicalSystems.ptoTorque = 0
+    self.spec_RealisticMechanicalSystems.ptoRpm = 0
+    self.spec_RealisticMechanicalSystems.ptoPower = 0
+    self.spec_RealisticMechanicalSystems.ptoPowerRatio = 0
+    self.spec_RealisticMechanicalSystems.ptoEngagementCount = 0
+    self.spec_RealisticMechanicalSystems.ptoEngagementCounter = 0
+    self.spec_RealisticMechanicalSystems.ptoLastEngagementRatio = 0
+    self.spec_RealisticMechanicalSystems.ptoEngagementSequence = 0
+    self.spec_RealisticMechanicalSystems.ptoPreviousActiveLinks = {}
+    self.spec_RealisticMechanicalSystems.ptoPendingEngagements = {}
+    self.spec_RealisticMechanicalSystems.ptoTutorialObservedSequence = 0
+    self.spec_RealisticMechanicalSystems.ptoEngagementAttempt = false
+    self.spec_RealisticMechanicalSystems.ptoEngagementAttemptBlocked = nil
+    self.spec_RealisticMechanicalSystems.ptoEngagementAttemptWarningShown = nil
     self.spec_RealisticMechanicalSystems.chassisVibState = {
         prevSuspension = {},
         smoothed = 0,
@@ -741,6 +780,10 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
         spec.lubricationUsedThisPeriod = savegame.xmlFile:getValue(key .. "#lubricationUsedThisPeriod", true)
         spec.thermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
         spec.transmissionThermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
+        spec.ptoEngagementCount = math.floor(math.max(savegame.xmlFile:getValue(key .. "#ptoEngagementCount", spec.ptoEngagementCount) or 0, 0))
+        spec.ptoEngagementCounter = math.max(savegame.xmlFile:getValue(key .. "#ptoEngagementCounter", spec.ptoEngagementCounter) or 0, 0)
+        spec.ptoLastEngagementRatio = math.clamp(savegame.xmlFile:getValue(key .. "#ptoLastEngagementRatio", spec.ptoLastEngagementRatio) or 0, 0, 1.5)
+        spec.ptoEngagementSequence = math.floor(math.max(savegame.xmlFile:getValue(key .. "#ptoEngagementSequence", spec.ptoEngagementSequence) or 0, 0))
         if spec.engTermPID ~= nil then
             spec.engTermPID.mechPos = spec.thermostatState
         end
@@ -972,6 +1015,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
         spec.samples.turboWhistle = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "turboWhistle", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.fanNoice = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "fanNoice", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.wheelHubBearingNoise = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "wheelHubBearingNoise", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
+        spec.samples.ptoBearingNoise = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "ptoBearingNoise", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.vibrationNoice = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "vibrationNoice", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.wheelSeizureGrind = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "wheelSeizureGrind", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
         spec.samples.gearDisengage1 = soundManager:loadSampleFromXML(xmlSoundFile, "sounds", "gearDisengage1", modDir, root, 1, AudioGroup.VEHICLE, i3d, self)
@@ -1050,6 +1094,8 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
+            elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.PTO then
+                systemData.enabled = RMS_Utils.hasPtoOutputCapability(vehicle)
             else
                 systemData.enabled = true
             end
@@ -1101,6 +1147,8 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     --- [7] wear
     spec._lastSyncWear_serviceLevel = spec.serviceLevel
     spec._lastSyncWear_conditionLevel = spec.conditionLevel
+    spec._lastSyncWear_ptoEngagementSequence = spec.ptoEngagementSequence
+    spec.ptoTutorialObservedSequence = spec.ptoEngagementSequence
     captureSystemsSync(spec)
     --- [8] breakdowns
     spec._lastSyncBreakdowns_serialized = RMS_Utils.serializeBreakdowns(spec.activeBreakdowns or {})

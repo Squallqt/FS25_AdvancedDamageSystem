@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="Двигун не запустився: вимкніть запалювання перед новою спробою"/>
         <text name="rms_tutorial_preheat_title" text="Передпусковий підігрів дизеля"/>
         <text name="rms_tutorial_preheat_message" text="За холодного дизельного двигуна одне натискання команди запуску вмикає запалювання й автоматично запускає цикл розжарювання. Контрольні лампи панелі виконують самоперевірку, після чого лампа передпускового підігріву світиться до готовності двигуна. Не повторюйте команду: стартер увімкнеться автоматично після згасання лампи."/>
+        <text name="rms_spec_system_pto" text="Вал відбору потужності"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="Муфта ВВП"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="Вихідний вал ВВП"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Початкове зношення муфти ВВП. Під навантаженням ВВП може іноді вимикатися."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Помірне зношення муфти ВВП. Автоматичні вимкнення під навантаженням трапляються частіше."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Сильне зношення муфти ВВП. Під навантаженням ВВП постійно вимикається."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Критична відмова муфти ВВП. Вал відбору потужності більше не передає потужність."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Початкове зношення вихідного підшипника ВВП спричиняє слабкий робочий шум."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Помірне зношення вихідного підшипника ВВП спричиняє виразно чутний шум."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Сильне зношення вихідного підшипника ВВП спричиняє гучний шум і періодичні вимкнення."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Критична відмова вихідного підшипника ВВП. Робота ВВП більше неможлива."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Клапан увімкнення ВВП працює нестабільно й може відхилити команду."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Клапан увімкнення ВВП часто не може ввімкнути вал відбору потужності."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Клапан увімкнення ВВП серйозно несправний і відхиляє більшість спроб увімкнення."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Клапан увімкнення ВВП повністю відмовив. Вал відбору потужності неможливо ввімкнути."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Відмова муфти ВВП"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Відмова вихідного підшипника ВВП"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Відмова клапана увімкнення ВВП"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Увімкнення ВВП відхилено"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="На муфті ВВП видно перші сліди перегріву."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Диски муфти ВВП мають явне зношення та сліди перегріву."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Диски муфти ВВП сильно зношені й перегріті."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Муфта ВВП більше не може передавати крутний момент."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="На вихідному валу ВВП відчуваються невеликий люфт і шорсткість."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="На вихідному валу ВВП помітні люфт і шум підшипника."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Вихідний підшипник ВВП має великий люфт і працює дуже нерівно."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Вихідний підшипник або вал ВВП вийшов із ладу."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Клапан увімкнення ВВП реагує повільно або нестабільно."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Клапан увімкнення ВВП часто пропускає команди."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Клапан увімкнення ВВП спрацьовує лише зрідка."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Клапан увімкнення ВВП більше не реагує."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Увімкнення ВВП під навантаженням"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Вмикайте ВВП на низьких обертах двигуна, а потім дайте агрегату поступово набрати навантаження. Не вмикайте ВВП під повним навантаженням."/>
     </texts>
 </l10n>

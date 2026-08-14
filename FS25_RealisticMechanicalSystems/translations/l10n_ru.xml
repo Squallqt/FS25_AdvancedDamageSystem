@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="Двигатель не запустился: выключите зажигание перед новой попыткой"/>
         <text name="rms_tutorial_preheat_title" text="Предпусковой подогрев дизеля"/>
         <text name="rms_tutorial_preheat_message" text="При холодном дизельном двигателе одно нажатие команды запуска включает зажигание и автоматически запускает цикл накаливания. Контрольные лампы панели выполняют самопроверку, затем лампа предпускового подогрева горит до готовности двигателя. Не повторяйте команду: стартер включится автоматически после того, как лампа погаснет."/>
+        <text name="rms_spec_system_pto" text="Вал отбора мощности"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="Муфта ВОМ"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="Выходной вал ВОМ"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Начальный износ муфты ВОМ. Под нагрузкой ВОМ может иногда отключаться."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Умеренный износ муфты ВОМ. Автоматические отключения под нагрузкой происходят чаще."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Сильный износ муфты ВОМ. Под нагрузкой ВОМ постоянно отключается."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Критический отказ муфты ВОМ. Вал отбора мощности больше не передаёт мощность."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Начальный износ выходного подшипника ВОМ вызывает слабый рабочий шум."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Умеренный износ выходного подшипника ВОМ вызывает отчётливо слышимый шум."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Сильный износ выходного подшипника ВОМ вызывает громкий шум и периодические отключения."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Критический отказ выходного подшипника ВОМ. Работа ВОМ больше невозможна."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Клапан включения ВОМ срабатывает нестабильно и может отклонить команду."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Клапан включения ВОМ часто не может включить вал отбора мощности."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Клапан включения ВОМ серьёзно неисправен и отклоняет большинство попыток включения."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Клапан включения ВОМ полностью отказал. Вал отбора мощности невозможно включить."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Отказ муфты ВОМ"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Отказ выходного подшипника ВОМ"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Отказ клапана включения ВОМ"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Включение ВОМ отклонено"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="На муфте ВОМ видны первые следы перегрева."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Диски муфты ВОМ имеют явный износ и следы перегрева."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Диски муфты ВОМ сильно изношены и перегреты."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Муфта ВОМ больше не может передавать крутящий момент."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="На выходном валу ВОМ ощущаются небольшой люфт и шероховатость."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="На выходном валу ВОМ заметны люфт и шум подшипника."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Выходной подшипник ВОМ имеет большой люфт и работает очень неровно."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Выходной подшипник или вал ВОМ вышел из строя."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Клапан включения ВОМ реагирует медленно или нестабильно."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Клапан включения ВОМ часто пропускает команды."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Клапан включения ВОМ срабатывает лишь изредка."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Клапан включения ВОМ больше не реагирует."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Включение ВОМ под нагрузкой"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Включайте ВОМ при низких оборотах двигателя, затем дайте агрегату постепенно набрать нагрузку. Не включайте ВОМ под полной нагрузкой."/>
     </texts>
 </l10n>

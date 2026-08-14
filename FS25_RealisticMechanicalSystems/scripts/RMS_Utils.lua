@@ -20,6 +20,83 @@ function RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     return dt / meanTimeInMs
 end
 
+function RMS_Utils.hasPtoOutputCapability(vehicle)
+    local ptoSpec = vehicle ~= nil and vehicle.spec_powerTakeOffs or nil
+    return ptoSpec ~= nil
+        and type(ptoSpec.outputPowerTakeOffs) == "table"
+        and #ptoSpec.outputPowerTakeOffs > 0
+end
+
+function RMS_Utils.getConnectedPtoData(vehicle)
+    local data = {
+        isActive = false,
+        torque = 0,
+        rpm = 0,
+        power = 0,
+        connectedVehicles = {},
+        activeLinks = {}
+    }
+    local visited = {}
+
+    local function walk(vehicleObj)
+        if vehicleObj == nil or visited[vehicleObj] then
+            return
+        end
+        visited[vehicleObj] = true
+
+        if vehicleObj.getOutputPowerTakeOffs == nil then
+            return
+        end
+
+        local outputs = vehicleObj:getOutputPowerTakeOffs()
+        for _, output in pairs(outputs) do
+            local consumer = output.connectedVehicle
+            if output.connectedInput ~= nil and consumer ~= nil then
+                data.connectedVehicles[consumer] = true
+
+                local isActive = consumer:getIsPowerTakeOffActive()
+                local torque = 0
+                if consumer.getConsumedPtoTorque ~= nil then
+                    local consumedTorque = consumer:getConsumedPtoTorque()
+                    torque = tonumber(consumedTorque) or 0
+                end
+                local rpm = consumer.getPtoRpm ~= nil and (tonumber(consumer:getPtoRpm()) or 0) or 0
+                local power = torque * rpm * math.pi / 30
+
+                data.torque = data.torque + torque
+                data.rpm = math.max(data.rpm, rpm)
+                data.power = data.power + power
+
+                if isActive then
+                    data.isActive = true
+                    data.activeLinks[output] = true
+                end
+
+                walk(consumer)
+            end
+        end
+    end
+
+    walk(vehicle)
+    return data
+end
+
+function RMS_Utils.setConnectedPtoConsumersTurnedOn(vehicle, isTurnedOn)
+    local changed = false
+    local ptoData = RMS_Utils.getConnectedPtoData(vehicle)
+
+    for consumer, _ in pairs(ptoData.connectedVehicles) do
+        if consumer.getIsTurnedOn ~= nil
+            and consumer.setIsTurnedOn ~= nil
+            and consumer:getIsTurnedOn() ~= isTurnedOn then
+            consumer:setIsTurnedOn(isTurnedOn)
+            changed = true
+        end
+    end
+
+    return changed
+end
+
 function RMS_Utils.calculateQuadraticMultiplier(level, threshold, lessIsWorse, customMax)
     if (lessIsWorse and level >= threshold) or (not lessIsWorse and level <= threshold) then
         return 0.0

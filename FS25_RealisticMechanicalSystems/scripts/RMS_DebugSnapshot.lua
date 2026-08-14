@@ -21,6 +21,7 @@ local DEBUG_SECTIONS = {
     "electrical",
     "chassis",
     "fuel",
+    "pto",
     "battery",
     "radiator",
     "engineTemp",

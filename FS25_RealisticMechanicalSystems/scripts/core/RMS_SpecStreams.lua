@@ -1,5 +1,16 @@
 local getSyncOperatingTime = RealisticMechanicalSystems.getSyncOperatingTime
 
+local function writePtoWearState(spec, streamId)
+    streamWriteInt32(streamId, math.floor(RealisticMechanicalSystems.sanitizeNumber(spec.ptoEngagementSequence, 0, 0)))
+end
+
+local function readPtoWearState(spec, streamId, initializeTutorial)
+    spec.ptoEngagementSequence = math.floor(RealisticMechanicalSystems.sanitizeNumber(streamReadInt32(streamId), 0, 0))
+    if initializeTutorial then
+        spec.ptoTutorialObservedSequence = spec.ptoEngagementSequence
+    end
+end
+
 -- ============================================================
 --                         NETWORK STREAMS
 -- ============================================================
@@ -62,6 +73,7 @@ function RealisticMechanicalSystems:onWriteStream(streamId, connection)
     streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.serviceLevel, 1.0, 0.001))
     streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.conditionLevel, 1.0, 0.001, 1.0))
     streamWriteString(streamId, RMS_Utils.serializeSystemsState(spec.systems))
+    writePtoWearState(spec, streamId)
 
     -- [Group 8] Breakdowns
     streamWriteString(streamId, RMS_Utils.serializeBreakdowns(spec.activeBreakdowns or {}))
@@ -175,6 +187,7 @@ function RealisticMechanicalSystems:onReadStream(streamId, connection)
             spec.systems[sysKey].enabled = sysData.enabled
         end
     end
+    readPtoWearState(spec, streamId, true)
 
     -- [Group 8] Breakdowns
     spec.activeBreakdowns = RMS_Utils.deserializeBreakdowns(streamReadString(streamId))
@@ -270,6 +283,7 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.serviceLevel, 1.0, 0.001))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.conditionLevel, 1.0, 0.001, 1.0))
             streamWriteString(streamId, RMS_Utils.serializeSystemsState(spec.systems))
+            writePtoWearState(spec, streamId)
         end
 
         -- [8] Breakdowns
@@ -401,6 +415,7 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
                     spec.systems[sysKey].enabled = sysData.enabled
                 end
             end
+            readPtoWearState(spec, streamId, false)
         end
 
         -- [8] Breakdowns

@@ -796,5 +796,38 @@
         <text name="rms_preheat_start_failed_message" text="A motor nem indult el: újabb próbálkozás előtt kapcsolja ki a gyújtást"/>
         <text name="rms_tutorial_preheat_title" text="Dízel előizzítás"/>
         <text name="rms_tutorial_preheat_message" text="Hideg dízelmotornál az indításvezérlő egyszeri megnyomása bekapcsolja a gyújtást és automatikusan elindítja az izzítási ciklust. A műszerfal lámpái elvégzik az öntesztet, majd az előizzítás jelzőfénye addig világít, amíg a motor készen nem áll. Ne ismételje meg a parancsot: az önindító a jelzőfény kialvásakor automatikusan bekapcsol."/>
+        <text name="rms_spec_system_pto" text="Teljesítményleadó tengely"/>
+        <text name="rms_breakdowns_part_pto_clutch" text="TLT-kuplung"/>
+        <text name="rms_breakdowns_part_pto_output_shaft" text="TLT-kimenőtengely"/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="A TLT-kuplung kezdődő kopása. A TLT terhelés alatt időnként lekapcsolhat."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="A TLT-kuplung közepes kopása. A terhelés alatti automatikus lekapcsolások gyakoribbá válnak."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="A TLT-kuplung súlyos kopása. A TLT terhelés alatt ismételten lekapcsol."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="A TLT-kuplung kritikus meghibásodása. A TLT már nem képes teljesítményt átvinni."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="A TLT kimeneti csapágyának kezdődő kopása enyhe üzemi zajt okoz."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="A TLT kimeneti csapágyának közepes kopása jól hallható zajt okoz."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="A TLT kimeneti csapágyának súlyos kopása erős zajt és időnkénti lekapcsolást okoz."/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="A TLT kimeneti csapágyának kritikus meghibásodása. A TLT már nem működtethető."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="A TLT kapcsolószelepe szakaszosan működik, és visszautasíthat egy kapcsolási parancsot."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="A TLT kapcsolószelepe gyakran nem kapcsolja be a TLT-t."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="A TLT kapcsolószelepe súlyosan hibás, és a legtöbb kapcsolási kísérletet visszautasítja."/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="A TLT kapcsolószelepe teljesen meghibásodott. A TLT nem kapcsolható be."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="TLT-kuplunghiba"/>
+        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="TLT-kimeneti csapágyhiba"/>
+        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="TLT-kapcsolószelep hiba"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="A TLT kapcsolása sikertelen"/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="A TLT-kuplungon kezdeti hőnyomok láthatók."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="A TLT-kuplung tárcsáin egyértelmű kopás és hőnyomok láthatók."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="A TLT-kuplung tárcsái erősen kopottak és túlmelegedtek."/>
+        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="A TLT-kuplung már nem képes nyomatékot átvinni."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="A TLT kimenőtengelyén enyhe játék és érdes járás észlelhető."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="A TLT kimenőtengelyén észrevehető játék és csapágyzaj jelentkezik."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="A TLT kimeneti csapágya erősen lóg és nagyon érdesen jár."/>
+        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="A TLT kimeneti csapágya vagy tengelye meghibásodott."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="A TLT kapcsolószelepe lassan vagy egyenetlenül reagál."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="A TLT kapcsolószelepe gyakran nem hajtja végre a parancsokat."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="A TLT kapcsolószelepe már csak szórványosan reagál."/>
+        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="A TLT kapcsolószelepe már nem reagál."/>
+        <text name="rms_tutorial_pto_engagement_title" text="TLT-kapcsolás terhelés alatt"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Alacsony motorfordulaton kapcsolja be a TLT-t, majd hagyja, hogy a munkagép terhelése fokozatosan növekedjen. Ne kapcsolja be a TLT-t teljes terhelés alatt."/>
     </texts>
 </l10n>
