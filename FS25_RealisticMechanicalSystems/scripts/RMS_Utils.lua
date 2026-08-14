@@ -20,11 +20,58 @@ function RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     return dt / meanTimeInMs
 end
 
+local function getIsCarsStoreCategory(vehicle)
+    if vehicle == nil or vehicle.configFileName == nil or g_storeManager == nil then
+        return false
+    end
+
+    local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
+    if storeItem == nil then
+        return false
+    end
+
+    if storeItem.categoryNames ~= nil then
+        for _, categoryName in ipairs(storeItem.categoryNames) do
+            if string.upper(tostring(categoryName or "")) == "CARS" then
+                return true
+            end
+        end
+    end
+
+    return string.upper(tostring(storeItem.categoryName or "")) == "CARS"
+end
+
 function RMS_Utils.hasPtoOutputCapability(vehicle)
+    if getIsCarsStoreCategory(vehicle) then
+        return false
+    end
+
     local ptoSpec = vehicle ~= nil and vehicle.spec_powerTakeOffs or nil
     return ptoSpec ~= nil
         and type(ptoSpec.outputPowerTakeOffs) == "table"
         and #ptoSpec.outputPowerTakeOffs > 0
+end
+
+function RMS_Utils.hasHydraulicCapability(vehicle)
+    if getIsCarsStoreCategory(vehicle) then
+        return false
+    end
+
+    local attacherJointsSpec = vehicle ~= nil and vehicle.spec_attacherJoints or nil
+    if attacherJointsSpec ~= nil then
+        for _, jointDesc in pairs(attacherJointsSpec.attacherJoints) do
+            local jointType = jointDesc.jointType
+            local isTrailerJoint = jointType == AttacherJoints.JOINTTYPE_TRAILER
+                or jointType == AttacherJoints.JOINTTYPE_TRAILERLOW
+                or jointType == AttacherJoints.JOINTTYPE_TRAILERCAR
+            if jointDesc.allowsLowering and not isTrailerJoint then
+                return true
+            end
+        end
+    end
+
+    local cylinderedSpec = vehicle ~= nil and vehicle.spec_cylindered or nil
+    return cylinderedSpec ~= nil and #cylinderedSpec.movingTools > 0
 end
 
 function RMS_Utils.getConnectedPtoData(vehicle)

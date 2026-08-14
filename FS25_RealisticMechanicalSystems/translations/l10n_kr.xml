@@ -84,8 +84,8 @@
         <text name="rms_thermalSensitivity_tooltip" text="열 모델 동작을 조정합니다. 설정이 높을수록 엔진과 변속기가 부하, 주변 온도, 라디에이터 오염에 더 민감하게 반응하여 동일 조건에서 더 많은 열을 발생시킵니다."/>
         <text name="rms_temperatureChangeSpeed_label" text="엔진 열 모델 속도"/>
         <text name="rms_temperatureChangeSpeed_tooltip" text="엔진 온도가 변하는 속도를 조정합니다. 낮은 값은 가열과 냉각을 모두 늦추고, 높은 값은 모두 빠르게 합니다. 기본값은 1.4x입니다."/>
-        <text name="rms_transTemperatureChangeMultiplier_label" text="변속기 오일 열 모델 속도"/>
-        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="변속기 오일 온도가 변하는 속도를 별도로 조정합니다. 낮은 값은 가열과 냉각을 모두 늦추고, 높은 값은 모두 빠르게 합니다. 기본값은 1.0x입니다."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="변속기·유압 공용 오일 열 모델 속도"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="변속기와 유압 장치가 공유하는 오일의 온도 변화 속도를 별도로 조정합니다. 낮은 값은 가열과 냉각을 모두 늦추고, 높은 값은 모두 빠르게 합니다. 기본값은 1.0x입니다."/>
         <text name="rms_radiatorDirtInfluence_label" text="라디에이터 오염 영향"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="오염이 최대치일 때 라디에이터의 냉각 성능을 이 비율만큼 감소시킵니다."/>
         <text name="rms_warmingBoostPower_label" text="예열 가속"/>
@@ -362,7 +362,7 @@
         <text name="rms_breakdowns_dead_battery_message" text="배터리 방전됨"/>
         <text name="rms_breakdowns_voltage_sag_message" text="시스템 전압 부족"/>
         <text name="rms_breakdowns_engine_stalled_message" text="엔진 정지됨"/>
-        <text name="rms_breakdowns_pto_auto_disengage_message" text="PTO 자동 차단됨"/>
+        <text name="rms_breakdowns_pto_auto_disengage_message" text="PTO가 해제되었습니다"/>
         <text name="rms_breakdowns_gear_disengage_message" text="기어 빠짐"/>
         <text name="rms_breakdown_at_progress_message" text="진행 중"/>
         <!-- Vehicle Specifications -->
@@ -799,9 +799,9 @@
         <text name="rms_spec_system_pto" text="동력 인출 장치"/>
         <text name="rms_breakdowns_part_pto_clutch" text="PTO 클러치"/>
         <text name="rms_breakdowns_part_pto_output_shaft" text="PTO 출력축"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="PTO 클러치의 초기 마모입니다. 부하가 걸리면 PTO가 가끔 해제될 수 있습니다."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="PTO 클러치가 중간 정도로 마모되었습니다. 부하 시 자동 해제가 더 자주 발생합니다."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="PTO 클러치가 심하게 마모되었습니다. 부하가 걸리면 PTO가 반복해서 해제됩니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="PTO 클러치의 초기 마모입니다. PTO가 가끔 해제될 수 있습니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="PTO 클러치가 중간 정도로 마모되었습니다. 해제가 더 자주 발생합니다."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="PTO 클러치가 심하게 마모되었습니다. PTO가 반복해서 해제됩니다."/>
         <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="PTO 클러치의 치명적 고장입니다. PTO가 더 이상 동력을 전달할 수 없습니다."/>
         <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="PTO 출력 베어링의 초기 마모로 약한 작동 소음이 발생합니다."/>
         <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="PTO 출력 베어링의 중간 마모로 뚜렷한 소음이 발생합니다."/>
@@ -827,7 +827,7 @@
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="PTO 작동 밸브가 명령을 자주 놓칩니다."/>
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="PTO 작동 밸브가 간헐적으로만 반응합니다."/>
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="PTO 작동 밸브가 더 이상 반응하지 않습니다."/>
-        <text name="rms_tutorial_pto_engagement_title" text="부하 상태의 PTO 연결"/>
-        <text name="rms_tutorial_pto_engagement_message" text="엔진 회전수가 낮을 때 PTO를 연결한 뒤 작업기의 부하가 서서히 증가하도록 하십시오. 최대 부하 상태에서 PTO를 연결하지 마십시오."/>
+        <text name="rms_tutorial_pto_engagement_title" text="작동 시 높은 PTO 부하"/>
+        <text name="rms_tutorial_pto_engagement_message" text="장비가 작동 직후 많은 동력을 요구해 PTO 마모가 증가합니다. 가능하면 부하가 없는 상태에서 장비를 작동하고, 장비를 구동하는 기계의 출력이 충분한지 확인하십시오."/>
     </texts>
 </l10n>

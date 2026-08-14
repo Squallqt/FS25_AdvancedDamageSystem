@@ -1037,6 +1037,14 @@ function RMS_Electrical:syncVoltageSagEffect(dt)
         spec.syncVoltageSagEffectTimer = triggerDelayMs
     end
 
+    if self:hasBreakdown('DEAD_BATTERY') then
+        spec.syncVoltageSagEffectTimer = triggerDelayMs
+        if self:hasBreakdown('VOLTAGE_SAG') then
+            self:removeBreakdown('VOLTAGE_SAG')
+        end
+        return
+    end
+
     local motorState = self:getMotorState()
     local isCranking = spec.isCranking ~= nil and spec.isCranking
     local breakdownId = 'VOLTAGE_SAG'

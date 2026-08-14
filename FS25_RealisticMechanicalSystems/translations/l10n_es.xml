@@ -84,8 +84,8 @@
         <text name="rms_thermalSensitivity_tooltip" text="Ajusta el comportamiento del modelo térmico. Valores más altos hacen que el motor y la transmisión sean más sensibles a la carga, la temperatura ambiente y la suciedad del radiador, generando más calor en las mismas condiciones."/>
         <text name="rms_temperatureChangeSpeed_label" text="Velocidad del modelo térmico del motor"/>
         <text name="rms_temperatureChangeSpeed_tooltip" text="Ajusta la rapidez con la que cambia la temperatura del motor. Los valores bajos ralentizan el calentamiento y el enfriamiento; los altos aceleran ambos. El valor predeterminado es 1.4x."/>
-        <text name="rms_transTemperatureChangeMultiplier_label" text="Velocidad térmica del aceite de transmisión"/>
-        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Ajusta por separado la rapidez con la que cambia la temperatura del aceite de transmisión. Los valores bajos ralentizan el calentamiento y el enfriamiento; los altos aceleran ambos. El valor predeterminado es 1.0x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Velocidad térmica del aceite de transmisión e hidráulico"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Ajusta por separado la rapidez con la que cambia la temperatura del aceite común de la transmisión y del sistema hidráulico. Los valores bajos ralentizan el calentamiento y el enfriamiento; los altos aceleran ambos. El valor predeterminado es 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Influencia de la suciedad del radiador"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Reduce la capacidad de refrigeración del radiador en este porcentaje cuando la suciedad alcanza el nivel máximo."/>
         <text name="rms_warmingBoostPower_label" text="Aceleración del calentamiento"/>
@@ -362,7 +362,7 @@
         <text name="rms_breakdowns_dead_battery_message" text="Carga de la batería agotada"/>
         <text name="rms_breakdowns_voltage_sag_message" text="Voltaje del sistema insuficiente"/>
         <text name="rms_breakdowns_engine_stalled_message" text="Motor calado"/>
-        <text name="rms_breakdowns_pto_auto_disengage_message" text="TDF desacoplada automáticamente"/>
+        <text name="rms_breakdowns_pto_auto_disengage_message" text="La TDF se ha desacoplado"/>
         <text name="rms_breakdowns_gear_disengage_message" text="Desembrague de marcha"/>
         <text name="rms_breakdown_at_progress_message" text="en curso"/>
         <!-- Vehicle Specifications -->
@@ -799,9 +799,9 @@
         <text name="rms_spec_system_pto" text="Toma de fuerza"/>
         <text name="rms_breakdowns_part_pto_clutch" text="Embrague de la TDF"/>
         <text name="rms_breakdowns_part_pto_output_shaft" text="Eje de salida de la TDF"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Desgaste inicial del embrague de la TDF. La TDF puede desacoplarse ocasionalmente bajo carga."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Desgaste moderado del embrague de la TDF. Los desacoplamientos automáticos bajo carga son más frecuentes."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Desgaste severo del embrague de la TDF. La TDF se desacopla repetidamente bajo carga."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Desgaste inicial del embrague de la TDF. La TDF puede desacoplarse ocasionalmente."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Desgaste moderado del embrague de la TDF. Los desacoplamientos son más frecuentes."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Desgaste severo del embrague de la TDF. La TDF se desacopla repetidamente."/>
         <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Fallo crítico del embrague de la TDF. La TDF ya no puede transmitir potencia."/>
         <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="El desgaste inicial del rodamiento de salida de la TDF produce un ligero ruido de funcionamiento."/>
         <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="El desgaste moderado del rodamiento de salida de la TDF produce un ruido claramente audible."/>
@@ -827,7 +827,7 @@
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="La válvula de acoplamiento de la TDF omite órdenes con frecuencia."/>
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="La válvula de acoplamiento de la TDF solo responde esporádicamente."/>
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="La válvula de acoplamiento de la TDF ya no responde."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Acoplamiento de la TDF bajo carga"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Conecta la TDF a bajo régimen del motor y deja que el implemento aumente la carga de forma gradual. No conectes la TDF a plena carga."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Carga elevada en la TDF al activarla"/>
+        <text name="rms_tutorial_pto_engagement_message" text="El equipo demandó mucha potencia justo después de activarlo, lo que aumenta el desgaste de la TDF. Siempre que sea posible, actívalo sin carga y asegúrate de que la máquina tenga potencia suficiente."/>
     </texts>
 </l10n>

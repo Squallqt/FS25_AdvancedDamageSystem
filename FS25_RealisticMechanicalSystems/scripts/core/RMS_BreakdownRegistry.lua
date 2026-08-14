@@ -255,11 +255,8 @@ local function getBreakdownProbabilityWeightPercent(vehicle, systemName, primary
 end
 
 local function isHydraulicBreakdownApplicable(vehicle)
-    local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-    if storeItem.categoryName == "TRUCKS" then return false end
-    local vtype = vehicle.type.name
     local spec = vehicle.spec_RealisticMechanicalSystems
-    return vtype ~= "car" and vtype ~= "carFillable" and vtype ~= "motorbike" and spec.year >= 1960
+    return RMS_Utils.hasHydraulicCapability(vehicle) and spec.year >= 1960
 end
 
 local function isPtoBreakdownApplicable(vehicle)

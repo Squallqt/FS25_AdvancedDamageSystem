@@ -1073,13 +1073,8 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
-            -- disable hydralic for trucks, cars, motorbikes
             elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.HYDRAULICS then
-                local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-                local vtype = vehicle.type.name
-                if storeItem.categoryName == "TRUCKS" or vtype == "car" or vtype == "carFillable" or vtype == "motorbike" then
-                    systemData.enabled = false
-                end
+                systemData.enabled = RMS_Utils.hasHydraulicCapability(vehicle)
             -- disable cooling for trucks, cars, motorbikes
             elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.COOLING then
                 if spec.isElectricVehicle then

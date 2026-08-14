@@ -84,8 +84,8 @@
         <text name="rms_thermalSensitivity_tooltip" text="Upravuje chování tepelného modelu. Vyšší nastavení činí motor a převodovku citlivější na zatížení, okolní teplotu a znečištění chladiče – generují více tepla za stejných podmínek."/>
         <text name="rms_temperatureChangeSpeed_label" text="Rychlost tepelného modelu motoru"/>
         <text name="rms_temperatureChangeSpeed_tooltip" text="Určuje, jak rychle se mění teplota motoru. Nižší hodnoty zpomalují zahřívání i chladnutí, vyšší hodnoty obojí zrychlují. Výchozí hodnota je 1.4x."/>
-        <text name="rms_transTemperatureChangeMultiplier_label" text="Rychlost tepelného modelu převodového oleje"/>
-        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Samostatně určuje, jak rychle se mění teplota převodového oleje. Nižší hodnoty zpomalují zahřívání i chladnutí, vyšší hodnoty obojí zrychlují. Výchozí hodnota je 1.0x."/>
+        <text name="rms_transTemperatureChangeMultiplier_label" text="Rychlost tepelného modelu převodového a hydraulického oleje"/>
+        <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Samostatně určuje, jak rychle se mění teplota společného převodového a hydraulického oleje. Nižší hodnoty zpomalují zahřívání i chladnutí, vyšší hodnoty obojí zrychlují. Výchozí hodnota je 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Vliv znečištění chladiče"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Snižuje kapacitu chlazení o toto procento při maximálním znečištění chladiče."/>
         <text name="rms_warmingBoostPower_label" text="Zrychlení zahřívání"/>
@@ -362,7 +362,7 @@
         <text name="rms_breakdowns_dead_battery_message" text="Baterie je vybitá"/>
         <text name="rms_breakdowns_voltage_sag_message" text="Nedostatečné systémové napětí"/>
         <text name="rms_breakdowns_engine_stalled_message" text="Motor zhasl"/>
-        <text name="rms_breakdowns_pto_auto_disengage_message" text="PTO automaticky odpojeno"/>
+        <text name="rms_breakdowns_pto_auto_disengage_message" text="PTO se odpojilo"/>
         <text name="rms_breakdowns_gear_disengage_message" text="Rychlostní stupeň vyřazen"/>
         <text name="rms_breakdown_at_progress_message" text="probíhá"/>
         <!-- Vehicle Specifications -->
@@ -799,9 +799,9 @@
         <text name="rms_spec_system_pto" text="Vývodový hřídel"/>
         <text name="rms_breakdowns_part_pto_clutch" text="Spojka vývodového hřídele"/>
         <text name="rms_breakdowns_part_pto_output_shaft" text="Výstupní hřídel PTO"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Počínající opotřebení spojky PTO. Vývodový hřídel se může pod zatížením občas odpojit."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Střední opotřebení spojky PTO. Automatické odpojování pod zatížením je častější."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Silné opotřebení spojky PTO. Vývodový hřídel se pod zatížením opakovaně odpojuje."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Počínající opotřebení spojky PTO. Vývodový hřídel se může občas odpojit."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Střední opotřebení spojky PTO. Odpojování je častější."/>
+        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Silné opotřebení spojky PTO. Vývodový hřídel se opakovaně odpojuje."/>
         <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Kritické selhání spojky PTO. Vývodový hřídel již nemůže přenášet výkon."/>
         <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Počínající opotřebení výstupního ložiska PTO způsobuje slabý provozní hluk."/>
         <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Střední opotřebení výstupního ložiska PTO způsobuje zřetelně slyšitelný hluk."/>
@@ -827,7 +827,7 @@
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Ventil zapínání PTO často nereaguje na povely."/>
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Ventil zapínání PTO reaguje už jen sporadicky."/>
         <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Ventil zapínání PTO již nereaguje."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Zapnutí PTO pod zatížením"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Zapněte vývodový hřídel při nízkých otáčkách motoru a nechte nářadí postupně nabrat zatížení. Nezapínejte PTO při plném zatížení."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Vysoké zatížení vývodového hřídele při zapnutí"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Zařízení krátce po zapnutí vyžadovalo vysoký výkon, což zvyšuje opotřebení vývodového hřídele. Pokud je to možné, zapínejte jej bez zatížení a ujistěte se, že je hnací stroj dostatečně výkonný."/>
     </texts>
 </l10n>

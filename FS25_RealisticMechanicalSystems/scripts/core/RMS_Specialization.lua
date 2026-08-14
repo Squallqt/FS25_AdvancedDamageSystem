@@ -1847,14 +1847,14 @@ function RealisticMechanicalSystems:onUpdate(dt, ...)
     --- Checking for cold engine effect
     syncColdEngineEffect(self)
 
+    --- Checking for dead battery if motor is off
+    self:syncDeadBatteryEffect()
+
     --- Checking for dead alternator or dead battery
     self:syncVoltageSagEffect(updateDt)
 
     --- Checking for airintake clogging
     syncAirIntakeCloggingEffect(self)
-
-    --- Checking for dead battery if motor is off
-    self:syncDeadBatteryEffect()
     
     --- Overheat protection for vehcile > 2000 year and engine failure from overheating for < 2000
     syncOverheatProtection(self, updateDt)
