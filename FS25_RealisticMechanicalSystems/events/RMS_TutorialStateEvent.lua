@@ -36,29 +36,20 @@ function RMS_TutorialStateEvent:readStream(streamId, connection)
     self:run(connection)
 end
 
-local function getUniqueUserId(connection)
-    local mission = g_currentMission
-    if mission == nil or mission.userManager == nil or connection == nil then return nil end
-
-    local userId = mission.userManager:getUserIdByConnection(connection)
-    if userId == nil then return nil end
-    return mission.userManager:getUniqueUserIdByUserId(userId)
-end
-
 function RMS_TutorialStateEvent:run(connection)
     if connection:getIsServer() then
         RMS_Config.applyTutorialState(self.state)
         return
     end
 
-    RMS_Config.setTutorialPlayerState(getUniqueUserId(connection), self.state)
+    RMS_Config.setTutorialPlayerState(RMS_Utils.getUniqueUserIdByConnection(connection), self.state)
 end
 
 --- Pushed by the server to a newly connected client (see FSBaseMission.sendInitialClientState in RMS_Main.lua).
 function RMS_TutorialStateEvent.sendToClient(connection)
     if g_server == nil then return end
 
-    local state = RMS_Config.getTutorialPlayerState(getUniqueUserId(connection))
+    local state = RMS_Config.getTutorialPlayerState(RMS_Utils.getUniqueUserIdByConnection(connection))
     if state ~= nil then
         connection:sendEvent(RMS_TutorialStateEvent.new(state))
     end

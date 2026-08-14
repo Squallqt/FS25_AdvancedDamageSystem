@@ -385,6 +385,17 @@ function RealisticMechanicalSystems.raiseRMSDirty(vehicle, groupBits)
     vehicle:raiseDirtyFlags(spec.rmsDirtyFlag)
 end
 
+function RealisticMechanicalSystems.raiseRMSDirtyForConnection(vehicle, groupBits, connection)
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local mask = spec.rmsPendingByConnection[connection]
+    if mask == nil then
+        return
+    end
+
+    spec.rmsPendingByConnection[connection] = bit32.bor(mask, groupBits)
+    vehicle:raiseDirtyFlags(spec.rmsDirtyFlag)
+end
+
 function RealisticMechanicalSystems:setRMSUserExcluded(isExcluded, noEventSend)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -534,17 +545,19 @@ local function markTelemetryDirty(vehicle, spec)
     local dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
     local wheelSlip = tonumber(spec.wheelSlipIntensity) or 0
 
-    if syncFloatChanged(spec._lastSyncTelemetry_operatingTime, operatingTime, 1.0) or
-       syncFloatChanged(spec._lastSyncTelemetry_realOperatingTime, realOperatingTime, 1.0) or
+    if syncFloatChanged(spec._lastSyncTelemetry_operatingTime, operatingTime, 60000.0) or
+       syncFloatChanged(spec._lastSyncTelemetry_realOperatingTime, realOperatingTime, 60000.0) or
        syncFloatChanged(spec._lastSyncTelemetry_fuelUsageRaw, spec._fuelUsageRaw, 0.3) or
        syncFloatChanged(spec._lastSyncTelemetry_dynamicMotorLoad, dynamicMotorLoad, 0.01) or
-       syncFloatChanged(spec._lastSyncTelemetry_wheelSlip, wheelSlip, 0.01) then
+       syncFloatChanged(spec._lastSyncTelemetry_wheelSlip, wheelSlip, 0.01) or
+       syncFloatChanged(spec._lastSyncTelemetry_liftedMass, spec.liftedMass, 10.0) then
             RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TELEMETRY)
             spec._lastSyncTelemetry_operatingTime = operatingTime
             spec._lastSyncTelemetry_realOperatingTime = realOperatingTime
             spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
             spec._lastSyncTelemetry_dynamicMotorLoad = dynamicMotorLoad
             spec._lastSyncTelemetry_wheelSlip = wheelSlip
+            spec._lastSyncTelemetry_liftedMass = spec.liftedMass
             return true
     end
 
@@ -715,8 +728,33 @@ local function markServiceProgressDirty(vehicle, spec)
     return false
 end
 
+local function getTutorialSyncConnection(vehicle)
+    local connection = vehicle:getOwnerConnection()
+    if connection == nil then
+        return nil
+    end
+
+    local uniqueUserId = RMS_Utils.getUniqueUserIdByConnection(connection)
+    if uniqueUserId == nil then
+        return nil
+    end
+
+    local state = RMS_Config.TUTORIAL_PLAYER_STATES[tostring(uniqueUserId)]
+    if state ~= nil and not state.tutorialMode then
+        return nil
+    end
+
+    return connection
+end
+
 local function markTutorialDataDirty(vehicle, spec)
     if not canRaiseDirtyFlag(vehicle, spec) then
+        return false
+    end
+
+    local tutorialConnection = getTutorialSyncConnection(vehicle)
+    if tutorialConnection == nil then
+        spec._lastSyncTutorial_connection = nil
         return false
     end
 
@@ -735,9 +773,9 @@ local function markTutorialDataDirty(vehicle, spec)
     local isMoving      = steerState.isMoving == true
     local elecSys      = spec.systems ~= nil and spec.systems.electrical or nil
     local crankingTimer = elecSys ~= nil and (tonumber(elecSys.crankingTimer) or 0) or 0
-    local liftedMass     = tonumber(spec.liftedMass)              or 0
 
-    if syncFloatChanged(spec._lastSyncTutorial_idleTimer,       idleTimer,       1.0)   or
+    if spec._lastSyncTutorial_connection ~= tutorialConnection                          or
+       syncFloatChanged(spec._lastSyncTutorial_idleTimer,       idleTimer,       1.0)   or
        syncFloatChanged(spec._lastSyncTutorial_fuelLevel,       fuelLevel,       0.01)  or
        syncFloatChanged(spec._lastSyncTutorial_luggingTimer,    luggingTimer,    100.0) or
        syncFloatChanged(spec._lastSyncTutorial_wheelSlipTimer,  wheelSlipTimer,  100.0) or
@@ -747,9 +785,9 @@ local function markTutorialDataDirty(vehicle, spec)
        spec._lastSyncTutorial_isCranking    ~= isCranking                              or
        spec._lastSyncTutorial_groundContact ~= groundContact                           or
        spec._lastSyncTutorial_isMoving      ~= isMoving                                or
-       syncFloatChanged(spec._lastSyncTutorial_crankingTimer,   crankingTimer,   100.0) or
-       syncFloatChanged(spec._lastSyncTutorial_liftedMass,      liftedMass,      0.01) then
-            RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TUTORIAL_DATA)
+       syncFloatChanged(spec._lastSyncTutorial_crankingTimer,   crankingTimer,   100.0) then
+            RealisticMechanicalSystems.raiseRMSDirtyForConnection(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TUTORIAL_DATA, tutorialConnection)
+            spec._lastSyncTutorial_connection      = tutorialConnection
             spec._lastSyncTutorial_idleTimer       = idleTimer
             spec._lastSyncTutorial_fuelLevel       = fuelLevel
             spec._lastSyncTutorial_luggingTimer    = luggingTimer
@@ -761,7 +799,6 @@ local function markTutorialDataDirty(vehicle, spec)
             spec._lastSyncTutorial_groundContact   = groundContact
             spec._lastSyncTutorial_isMoving        = isMoving
             spec._lastSyncTutorial_crankingTimer   = crankingTimer
-            spec._lastSyncTutorial_liftedMass      = liftedMass
             return true
     end
 

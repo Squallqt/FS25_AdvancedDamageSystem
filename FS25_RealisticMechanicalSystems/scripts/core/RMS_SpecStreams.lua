@@ -248,6 +248,7 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.dynamicMotorLoad, 0, 0, 1.5))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 1))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.fuelState.wetStackingLevel, 0, 0, 1))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.liftedMass, 0, 0))
         end
 
         -- [4] Thermal
@@ -320,7 +321,6 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
             streamWriteBool(streamId, spec.isCranking == true)
             local elecSys = spec.systems ~= nil and spec.systems.electrical or nil
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(elecSys ~= nil and elecSys.crankingTimer or 0, 0, 0, 10000))
-            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.liftedMass, 0, 0))
         end
     end
 end
@@ -361,6 +361,7 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
             spec.dynamicMotorLoad = spec._netDynamicMotorLoad
             spec.wheelSlipIntensity = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
             spec.fuelState.wetStackingLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
+            spec.liftedMass = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
         end
 
         -- [4] Thermal
@@ -457,7 +458,6 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
             if elecSys ~= nil then
                 elecSys.crankingTimer = crankingTimer
             end
-            spec.liftedMass           = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
         end
     end
 end

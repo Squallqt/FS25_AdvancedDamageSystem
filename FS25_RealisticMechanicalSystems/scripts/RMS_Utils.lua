@@ -277,6 +277,14 @@ function RMS_Utils.getKeyByValue(tbl, value)
     return nil
 end
 
+function RMS_Utils.getUniqueUserIdByConnection(connection)
+    local user = g_currentMission.userManager:getUserByConnection(connection)
+    if user == nil then
+        return nil
+    end
+    return user:getUniqueUserId()
+end
+
 -- ==========================================================
 --                          SERIALIZATION   
 -- ==========================================================

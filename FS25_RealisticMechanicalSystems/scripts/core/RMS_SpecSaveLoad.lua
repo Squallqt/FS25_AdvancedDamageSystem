@@ -1120,6 +1120,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     spec._lastSyncTelemetry_realOperatingTime = spec.realOperatingTime
     spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
     spec._lastSyncTelemetry_dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
+    spec._lastSyncTelemetry_liftedMass = spec.liftedMass
     --- [4] thermal
     spec._lastSyncThermal_rawEngineTemperature = spec.rawEngineTemperature
     spec._lastSyncThermal_rawTransmissionTemperature = spec.rawTransmissionTemperature
