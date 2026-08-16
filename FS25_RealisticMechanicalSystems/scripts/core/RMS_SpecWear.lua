@@ -198,7 +198,7 @@ function RealisticMechanicalSystems:updateSystemConditionAndStress(dt, systemNam
     end
 end
 
-function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmount)
+function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmount, factorName)
     local spec = self.spec_RealisticMechanicalSystems
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, system)
     systemKey = resolveSystemKey(spec, systemKey)
@@ -218,6 +218,11 @@ function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmo
     if type(systemStats) == "table" then
         systemStats.total = (tonumber(systemStats.total) or 0) + dmg
         systemStats.stress = (tonumber(systemStats.stress) or 0) + stressToAdd
+
+        local alias = RealisticMechanicalSystems.FACTOR_STATS_ALIASES[tostring(factorName)]
+        if alias ~= nil then
+            systemStats[alias] = (tonumber(systemStats[alias]) or 0) + dmg
+        end
     end
 end
 
@@ -523,92 +528,34 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     local systemData = spec.systems.hydraulics
     local expiredServiceFactor = 0
     local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
-    local heavyLiftFactor, operatingFactor, coldOilFactor, hotOilFactor, vibFactor = 0, 0, 0, 0, 0
-    local vibState = spec.chassisVibState
-    local vibSignal = vibState.signal
-    local vibRaw = vibState.raw
-    local vibFieldMultiplier = vibState.fieldMultiplier
-    local wearRate = 1.0
+    local heavyLiftFactor, operatingFactor, coldOilFactor, hotOilFactor = 0, 0, 0, 0
+    local wearRate = 0
     local vehicleMass = self.getTotalMass ~= nil and (self:getTotalMass(true) or 0) or 0
-    local heavyLiftMassRatio, operatingMassRatio = 0, 0
-    
-    systemData.operatingTimer = tonumber(systemData.operatingTimer) or 0
+    local heavyLiftMassRatio = vehicleMass > 0 and math.max(spec.liftedMass or 0, 0) / vehicleMass or 0
+    heavyLiftFactor = math.clamp(heavyLiftMassRatio, 0, 1)
 
     if not systemData.enabled then
         return
     end
 
-    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
-        if spec.isImplementLifted or spec.isImplementOperating then
-            -- operating and cold oil
-            if spec.isImplementOperating then
-                systemData.operatingTimer = math.min(systemData.operatingTimer + dt, 30000)
-                operatingMassRatio = vehicleMass > 0 and (spec.operatingMass / vehicleMass) or 0
-                if operatingMassRatio > C.OPERATING_FACTOR_THRESHOLD then
-                    operatingFactor = RMS_Utils.calculateQuadraticMultiplier(operatingMassRatio, C.OPERATING_FACTOR_THRESHOLD, false)
-                    operatingFactor = math.min(operatingFactor * (C.OPERATING_FACTOR_MULTIPLIER or 0), C.OPERATING_FACTOR_MULTIPLIER) * math.max(systemData.operatingTimer / 10000, 1)
-                    wearRate = wearRate + operatingFactor
-                end
-                -- cold oil
-                if spec.transmissionTemperature < C.COLD_OIL_THRESHOLD then
-                    coldOilFactor = RMS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.COLD_OIL_THRESHOLD, true)
-                    coldOilFactor = coldOilFactor * (C.COLD_OIL_MULTIPLIER or 0) * (1 + RMS_Utils.calculateQuadraticMultiplier(operatingMassRatio, 0, false))
-                    coldOilFactor = math.min(coldOilFactor, (C.COLD_OIL_MULTIPLIER or 0) * 2)
-                    wearRate = wearRate + coldOilFactor
-                elseif spec.transmissionTemperature > C.HOT_OIL_THRESHOLD then
-                    hotOilFactor = RMS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.HOT_OIL_THRESHOLD, false, 120)
-                    hotOilFactor = math.min(hotOilFactor * C.HOT_OIL_MULTIPLIER, C.HOT_OIL_MULTIPLIER)
-                    wearRate = wearRate + hotOilFactor
-                end
-            end
-
-            -- heavy lift
-            heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
-            if heavyLiftMassRatio > (C.HEAVY_LIFT_FACTOR_THRESHOLD or 0) then
-                heavyLiftFactor = RMS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, C.HEAVY_LIFT_FACTOR_THRESHOLD, false)
-                heavyLiftFactor = heavyLiftFactor * (C.HEAVY_LIFT_FACTOR_MULTIPLIER or 0)
-                heavyLiftFactor = math.min(heavyLiftFactor, C.HEAVY_LIFT_FACTOR_MULTIPLIER or heavyLiftFactor)
-                wearRate = wearRate + heavyLiftFactor
-            end
-
-            -- vibration factor
-            local vibThreshold = tonumber(C.VIB_FACTOR_THRESHOLD) or 0.12
-            if spec.isImplementLifted and vibState.smoothed > vibThreshold then
-                local vibMaxSignal = tonumber(C.VIB_FACTOR_MAX_SIGNAL) or 0.22
-                local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
-                local liftRatioPivot = tonumber(C.HEAVY_LIFT_FACTOR_THRESHOLD) or 0.6
-                local liftRatioInfluence = 1.0
-                if heavyLiftMassRatio > liftRatioPivot then
-                    liftRatioInfluence = 1.0 + RMS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, false, 1.0)
-                elseif heavyLiftMassRatio < liftRatioPivot then
-                    liftRatioInfluence = 1.0 - 0.5 * RMS_Utils.calculateQuadraticMultiplier(heavyLiftMassRatio, liftRatioPivot, true, 0.0)
-                end
-                local vibMultiplier = (tonumber(C.VIB_FACTOR_MULTIPLIER) or 4.0) * vibFieldMultiplier * liftRatioInfluence
-                vibFactor = RMS_Utils.calculateQuadraticMultiplier(vibState.smoothed, vibThreshold, false, vibMaxForCurve)
-                vibFactor = vibFactor * vibMultiplier
-                vibFactor = math.min(vibFactor, vibMultiplier)
-                wearRate = wearRate + vibFactor
-            end
-
-        else
-            --idling
-            wearRate = wearRate * C.HYDRAULICS_IDLING_MULTIPLIER
+    local motorStarted = self.getIsMotorStarted ~= nil and self:getIsMotorStarted()
+    if motorStarted and spec.isHydraulicActive then
+        wearRate = 1
+        operatingFactor = 1
+        local oilTemperature = tonumber(spec.transmissionTemperature) or 20
+        if oilTemperature < C.COLD_OIL_THRESHOLD then
+            coldOilFactor = RMS_Utils.calculateQuadraticMultiplier(oilTemperature, C.COLD_OIL_THRESHOLD, true)
+                * C.COLD_OIL_MULTIPLIER
+            wearRate = wearRate + coldOilFactor
+        elseif oilTemperature > C.HOT_OIL_THRESHOLD then
+            hotOilFactor = RMS_Utils.calculateQuadraticMultiplier(oilTemperature, C.HOT_OIL_THRESHOLD, false, 120)
+                * C.HOT_OIL_MULTIPLIER
+            hotOilFactor = math.min(hotOilFactor, C.HOT_OIL_MULTIPLIER)
+            wearRate = wearRate + hotOilFactor
         end
 
-        -- service factor
         expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER)
         wearRate = wearRate + expiredServiceFactor
-
-    else
-        if spec.isUnderRoof then 
-            wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER 
-        else
-            wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
-        end
-    end
-
-    if not spec.isImplementOperating then
-        systemData.operatingTimer = math.max(systemData.operatingTimer - dt / 3, 0)
     end
 
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
@@ -616,14 +563,9 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
         heavyLiftFactor = heavyLiftFactor,
         heavyLiftMassRatio = heavyLiftMassRatio,
         operatingFactor = operatingFactor,
-        operatingMassRatio = operatingMassRatio,
-        operatingTimer = systemData.operatingTimer or 0,
-        vibFactor = vibFactor,
-        vibSignal = vibSignal,
-        vibRaw = vibRaw,
-        vibFieldMultiplier = vibFieldMultiplier,
         coldOilFactor = coldOilFactor,
-        hotOilFactor = hotOilFactor
+        hotOilFactor = hotOilFactor,
+        isHydraulicActive = spec.isHydraulicActive == true
     })
 end
 
@@ -636,32 +578,21 @@ function RealisticMechanicalSystems:updatePtoSystem(dt)
 
     local C = RMS_Config.CORE.PTO_FACTOR_DATA
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemData.name)
-    local wearRate = 1.0
+    local wearRate = 0
     local expiredServiceFactor = 0
     local ptoLoadFactor = 0
-    local ptoEngagementFactor = 0
+    local ptoEngagementFactor = math.max(tonumber(spec.ptoEngagementPulseCount) or 0, 0)
 
-    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
-        local powerRatio = math.clamp(tonumber(spec.ptoPowerRatio) or 0, 0, 1.5)
-        if spec.isPtoActive and powerRatio > C.LOAD_FACTOR_THRESHOLD then
-            ptoLoadFactor = RMS_Utils.calculateQuadraticMultiplier(powerRatio, C.LOAD_FACTOR_THRESHOLD, false)
-            ptoLoadFactor = math.min(ptoLoadFactor * C.LOAD_FACTOR_MULTIPLIER, C.LOAD_FACTOR_MULTIPLIER)
+    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() and spec.isPtoActive then
+        wearRate = 1
+        local utilization = math.max(tonumber(spec.ptoUtilization) or 0, 0)
+        if utilization > C.LOAD_FACTOR_THRESHOLD then
+            ptoLoadFactor = RMS_Utils.calculatePtoLoadFactor(utilization, C)
             wearRate = wearRate + ptoLoadFactor
-        end
-
-        local engagementCounter = math.max(tonumber(spec.ptoEngagementCounter) or 0, 0)
-        if engagementCounter > C.ENGAGEMENT_FACTOR_THRESHOLD then
-            ptoEngagementFactor = RMS_Utils.calculateQuadraticMultiplier(engagementCounter, C.ENGAGEMENT_FACTOR_THRESHOLD, false)
-            ptoEngagementFactor = math.min(ptoEngagementFactor * C.ENGAGEMENT_FACTOR_MULTIPLIER, C.ENGAGEMENT_FACTOR_MULTIPLIER)
-            wearRate = wearRate + ptoEngagementFactor
         end
 
         expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER)
         wearRate = wearRate + expiredServiceFactor
-    elseif spec.isUnderRoof then
-        wearRate = wearRate * RMS_Config.CORE.UNDER_ROOF_DOWNTIME_MULTIPLIER
-    else
-        wearRate = wearRate * RMS_Config.CORE.DOWNTIME_MULTIPLIER
     end
 
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
@@ -672,11 +603,12 @@ function RealisticMechanicalSystems:updatePtoSystem(dt)
         ptoTorque = spec.ptoTorque,
         ptoRpm = spec.ptoRpm,
         ptoPower = spec.ptoPower,
-        ptoPowerRatio = spec.ptoPowerRatio,
-        ptoEngagementCount = spec.ptoEngagementCount,
-        ptoEngagementCounter = spec.ptoEngagementCounter,
-        ptoLastEngagementRatio = spec.ptoLastEngagementRatio
+        ptoUtilization = spec.ptoUtilization,
+        ptoMotorSideTorque = spec.ptoMotorSideTorque,
+        ptoNativeCapacityTorque = spec.ptoNativeCapacityTorque,
+        ptoEngagementCount = spec.ptoEngagementCount
     })
+    spec.ptoEngagementPulseCount = 0
 end
 
 function RealisticMechanicalSystems:updateCoolingSystem(dt)

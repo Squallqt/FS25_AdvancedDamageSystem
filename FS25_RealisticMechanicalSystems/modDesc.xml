@@ -10,7 +10,7 @@
     <description>
         <en><![CDATA[Your machines finally wear out like real ones.
 
-Each vehicle is built from up to 7 individual systems: engine, transmission, hydraulics, cooling, fuel, electrical, and chassis. Every one tracks its own condition, its own stress, and its own way of failing. Service on time, work within the machine's limits, and catch the first symptoms: the cheapest repair is always the earliest one.
+Each vehicle is built from up to 8 individual systems: engine, transmission, hydraulics, cooling, fuel, electrical, chassis, and PTO. Every one tracks its own condition, its own stress, and its own way of failing. Service on time, work within the machine's limits, and catch the first symptoms: the cheapest repair is always the earliest one.
 
 WEAR AND STRESS
 - Condition falls about 1% per operating hour under normal use, far faster under abuse, and each system has its own wear factors
@@ -19,7 +19,7 @@ WEAR AND STRESS
 - Overdue service accelerates wear across every system, the engine most of all
 
 BREAKDOWNS
-- 28 breakdowns spread across the 7 systems, each in four stages from a barely noticeable loss to total failure
+- 35 breakdowns spread across the 8 systems, each in four stages from Minor to Critical
 - The type is not random: the mod tracks which wear factors you trigger most and picks the failure your habits earned
 - Stage 1 is silent and shows only through symptoms, RPM fluctuations, coloured exhaust smoke, knocking, whistling; dashboard indicators light from stage 2
 - Old machines also degrade permanently, losing engine power, transmission bite, battery performance, and cooling efficiency
@@ -65,11 +65,13 @@ Changelog 0.9.3.0 [WIP]:
 - Added automatic temperature-based diesel preheating, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
 - Vehicle exclusions now follow what a machine can actually do instead of its type name; any automatic exclusion can be reverted with rms_setExcluded false, except on electric vehicles
 - Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for RMS
-- Added exhaust smoke driven by vehicle age, engine wear, load and active faults]]></en>
+- Added exhaust smoke driven by vehicle age, engine wear, load and active faults
+- Reworked hydraulic failures around qualified GIANTS functions while retaining simulated filter and oil-cooler failures
+- Reworked PTO load against the native activation envelope, fixed duplicate consumers, removed instant engagement damage, and restored cutter-drive support]]></en>
 
         <de><![CDATA[Ihre Maschinen verschleißen endlich wie echte.
 
-Jedes Fahrzeug besteht aus bis zu 7 einzelnen Systemen: Motor, Getriebe, Hydraulik, Kühlung, Kraftstoff, Elektrik und Fahrwerk. Jedes führt seinen eigenen Zustand, seine eigene Belastung und seine eigene Art auszufallen. Rechtzeitig warten, die Maschine in ihren Grenzen bewegen und die ersten Anzeichen erkennen: Die günstigste Reparatur ist immer die früheste.
+Jedes Fahrzeug besteht aus bis zu 8 einzelnen Systemen: Motor, Getriebe, Hydraulik, Kühlung, Kraftstoff, Elektrik, Fahrwerk und Zapfwelle. Jedes führt seinen eigenen Zustand, seine eigene Belastung und seine eigene Art auszufallen. Rechtzeitig warten, die Maschine in ihren Grenzen bewegen und die ersten Anzeichen erkennen: Die günstigste Reparatur ist immer die früheste.
 
 VERSCHLEISS UND BELASTUNG
 - Der Zustand sinkt im Normalbetrieb um etwa 1% je Betriebsstunde, bei Missbrauch deutlich schneller, und jedes System hat eigene Verschleißfaktoren
@@ -78,7 +80,7 @@ VERSCHLEISS UND BELASTUNG
 - Überfällige Wartung beschleunigt den Verschleiß aller Systeme, allen voran des Motors
 
 DEFEKTE
-- 28 Defekte über die 7 Systeme verteilt, jeder in vier Stufen vom kaum spürbaren Verlust bis zum Totalausfall
+- 35 Defekte, verteilt auf die 8 Systeme, jeweils in vier Stufen von geringfügig bis kritisch
 - Die Art ist nicht zufällig: Der Mod verfolgt, welche Verschleißfaktoren Sie am häufigsten auslösen, und wählt den dazu passenden Ausfall
 - Stufe 1 bleibt stumm und zeigt sich nur über Symptome, schwankende Drehzahl, farbiger Abgasrauch, Klopfen, Pfeifen; Armaturenbrettanzeigen leuchten ab Stufe 2
 - Alte Maschinen bauen zudem dauerhaft ab und verlieren Motorleistung, Kraftübertragung, Batterieleistung und Kühlwirkung
@@ -124,11 +126,13 @@ Changelog 0.9.3.0 [WIP]:
 - Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt, mit Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung
 - Fahrzeugausschlüsse richten sich jetzt nach den tatsächlichen Fähigkeiten einer Maschine statt nach ihrem Typnamen; jeder automatische Ausschluss lässt sich mit rms_setExcluded false aufheben, außer bei Elektrofahrzeugen
 - Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für RMS installiert war
-- Abgasrauch hinzugefügt, gesteuert von Fahrzeugalter, Motorverschleiß, Last und aktiven Defekten]]></de>
+- Abgasrauch hinzugefügt, gesteuert von Fahrzeugalter, Motorverschleiß, Last und aktiven Defekten
+- Hydraulikdefekte auf qualifizierte GIANTS-Funktionen umgestellt; simulierte Filter- und Ölkühlerdefekte bleiben erhalten
+- Zapfwellenlast an die native Einschaltgrenze angepasst, doppelte Verbraucherzählung behoben, sofortigen Einschaltschaden entfernt und Schneidwerksantriebe wieder unterstützt]]></de>
         
         <fr><![CDATA[Vos machines s'usent enfin comme les vraies.
 
-Chaque véhicule est composé de 7 systèmes distincts au maximum : moteur, transmission, hydraulique, refroidissement, carburant, électricité et châssis. Chacun suit son propre état, sa propre contrainte et sa propre façon de lâcher. Entretenir à l'heure, travailler dans les limites de la machine et repérer les premiers signes : la réparation la moins chère est toujours la plus précoce.
+Chaque véhicule est composé de 8 systèmes distincts au maximum : moteur, transmission, hydraulique, refroidissement, carburant, électricité, châssis et prise de force. Chacun suit son propre état, sa propre contrainte et sa propre façon de lâcher. Entretenir à l'heure, travailler dans les limites de la machine et repérer les premiers signes : la réparation la moins chère est toujours la plus précoce.
 
 USURE ET CONTRAINTE
 - L'état baisse d'environ 1% par heure de fonctionnement en usage normal, bien plus vite en cas d'abus, et chaque système a ses propres facteurs d'usure
@@ -137,7 +141,7 @@ USURE ET CONTRAINTE
 - Un entretien en retard accélère l'usure de tous les systèmes, du moteur en premier
 
 PANNES
-- 28 pannes réparties sur les 7 systèmes, chacune en quatre stades, de la perte à peine perceptible à la défaillance totale
+- 35 pannes réparties sur les 8 systèmes, chacune en quatre stades, de mineur à critique
 - Le type n'est pas aléatoire : le mod suit les facteurs d'usure que vous déclenchez le plus et choisit la panne que vos habitudes ont préparée
 - Le stade 1 est muet et ne se trahit que par des symptômes, régime instable, fumée d'échappement colorée, cognement, sifflement ; les témoins s'allument à partir du stade 2
 - Les machines âgées se dégradent aussi durablement et perdent puissance moteur, transmission, performance de batterie et efficacité de refroidissement
@@ -183,7 +187,9 @@ Changelog 0.9.3.0 [WIP] :
 - Ajout du préchauffage diesel automatique selon la température, avec charge batterie, témoin dédié, didacticiel et panne de bougies en quatre stades
 - Les exclusions de véhicules reposent désormais sur les capacités réelles d'une machine au lieu de son nom de type ; toute exclusion automatique peut être annulée avec rms_setExcluded false, sauf sur les véhicules électriques
 - Les millésimes des véhicules sont désormais déterminés par le mod lui-même ; Vehicle Years n'est plus requis et peut être désinstallé s'il n'était installé que pour RMS
-- Ajout d'une fumée d'échappement pilotée par l'âge du véhicule, l'usure moteur, la charge et les pannes actives]]></fr>
+- Ajout d'une fumée d'échappement pilotée par l'âge du véhicule, l'usure moteur, la charge et les pannes actives
+- Refonte des pannes hydrauliques autour des fonctions GIANTS qualifiées, avec conservation des pannes simulées de filtre et de refroidisseur d'huile
+- Refonte de la charge PDF selon l'enveloppe native d'activation, correction du double comptage, suppression des dommages instantanés d'engagement et prise en charge des entraînements de coupe]]></fr>
         
     </description>
     <storeItems>

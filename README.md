@@ -8,7 +8,7 @@ In-depth vehicle wear, failure, diagnostics, maintenance, and repair system for 
 ![Languages](https://img.shields.io/badge/languages-15-blue.svg)
 [![License](https://img.shields.io/badge/license-GPL--3.0-yellow.svg)](LICENSE)
 
-Every machine is built from up to 7 individual systems, each with its own condition, its own wear factors, and its own way of failing. Service on schedule, work the machine within its limits, and watch for the early symptoms: the cheapest repair is always the one you catch first.
+Every machine is built from up to 8 individual systems, each with its own condition, its own wear factors, and its own way of failing. Service on schedule, work the machine within its limits, and watch for the early symptoms: the cheapest repair is always the one you catch first.
 
 Singleplayer, multiplayer, and dedicated server.
 
@@ -34,17 +34,18 @@ Inspection reports give an approximate status (`OPTIMAL`, `REQUIRED`, `OVERDUE`)
 
 ## Wear Factors
 
-Four factors apply to every system: **overdue service**, **an active breakdown in that system**, **idleness** (an unused system barely wears), and **downtime** (slow passive wear outdoors). Each system then has its own.
+Normal wear depends on system activity. Hydraulics and PTO wear only while active; the other enabled systems retain their idling and downtime wear. Overdue service adds wear while the affected system operates, and poor-quality consumables increase overall Condition wear.
 
 | System | Wear factors |
 | --- | --- |
-| **Engine** | Load above `90%`; air intake clogged past `50%`; cold running below `50C` at high RPM load; overheating above `95C` under load |
-| **Transmission** | Sustained pull above `85%` load, building over `90` seconds; lugging (high load, low RPM); wheel slip above `5%` under `20 km/h`; heavy trailer below `10 hp/t` (`6 hp/t` for trucks); on CVT, cold oil below `45C` and overheating above `100C` |
-| **Hydraulics** | Active work under load; lifted mass above `60%` of vehicle mass; cold oil below `30C` |
+| **Engine** | Load above `85%`; air intake clogged past `50%`; cold running below `50C` at high RPM load; overheating above `95C` under load |
+| **Transmission** | Sustained pull above `85%` load, with an accumulation window scaling from `30` to `90` seconds; lugging (high load, low RPM); wheel slip above `5%` under `20 km/h`; heavy trailer below `10 hp/t` (`6 hp/t` for trucks); on CVT, cold oil below `45C` and overheating above `100C` |
+| **Hydraulics** | Qualified hydraulic movement; cold oil proxy below `30C`; hot oil proxy above `90C` |
 | **Cooling** | Thermostat effort above `85%`; engine above `95C`; cold shock below `50C` at high RPM load |
-| **Electrical** | Lights on; rain, snow, or hail on an outdoor vehicle; starter cranking; engine above `95C` |
-| **Chassis** | Vibration over rough ground at speed; steering load under `4 km/h`; braking above `2 km/h` while towing |
-| **Fuel** | Fuel below `20%` under load; fuel colder than `20C` above `50%` load; idling past `60` seconds; injection pressure above `90%` load |
+| **Electrical** | Lights on; rain, snow, or hail on an outdoor vehicle; starter cranking; engine above `95C`; vibration over rough ground at speed |
+| **Chassis** | Poor lubrication on machines that require greasing; vibration over rough ground at speed; steering load under `4 km/h`; braking above `2 km/h` while towing |
+| **Fuel** | Fuel below `20%` under load; fuel colder than `20C` above `50%` load; idling past `60` seconds; fuel consumption above `80%` of the configured maximum |
+| **PTO** | Active drive; continuous native PTO utilization above `55%`, reaching its full overload factor at `90%`; unique engagement cycles are recorded for fault selection without instant engagement damage |
 
 Cold-engine and cold-shock factors do not apply to AI workers.
 
@@ -88,9 +89,17 @@ Leaving a diesel idling also leaves its mark. Past a long idle under `30%` load,
 | Powershift Pump Malfunction | Powershift | Transmission stuck in neutral |
 | CVT Chain Wear | CVT | Movement no longer reliable |
 | CVT Control Valve Malfunction | CVT | Severely restricted emergency mode |
+| CVT Addon Malfunction | Vehicles using CVT Addon | Complete CVT failure, vehicle cannot move |
 | Transmission Thermostat Malfunction | CVT | Oil never reaches correct temperature |
-| Hydraulic Pump Malfunction | Hydraulic vehicles from `1960+` | Hydraulic system inoperable |
-| Hydraulic Cylinder Internal Leak | Hydraulic vehicles from `1960+` | Movement almost lost, no load holding |
+| Hydraulic Pump Malfunction | Vehicles with qualified hydraulic functions | Hydraulic system inoperable |
+| Hydraulic Cylinder Internal Leak | Vehicles with a qualified hydraulic lift | Raised loads drop rapidly |
+| Hydraulic Hose External Leak | Vehicles with declared hydraulic connections | Hydraulic performance strongly reduced |
+| Hydraulic Filter Clogging | Vehicles with qualified hydraulic functions | Hydraulic functions barely respond |
+| Hydraulic Oil Cooler Malfunction | Vehicles with qualified hydraulic functions | Active hydraulic work overheats the accepted oil-temperature proxy |
+| Hydraulic Control Valve Malfunction | Vehicles with a qualified controllable hydraulic target | One qualified hydraulic function becomes erratic or blocked |
+| PTO Drive Coupling Wear | Vehicles with a physical PTO output | PTO power can no longer be transmitted |
+| PTO Drive Output Bearing Wear | Vehicles with a physical PTO output | PTO operation becomes impossible |
+| PTO Engagement Control Malfunction | Vehicles with a physical PTO output | PTO engagement becomes unreliable, then impossible |
 | Brake Malfunction | Wheeled | Braking impossible |
 | Bearing Wear | Wheeled | Wheel rotation blocked |
 | Steering Linkage Wear | Wheeled without tracks | Directional control unsafe |
@@ -221,6 +230,7 @@ For testing and debugging. Most require you to be inside a vehicle that supports
 - Hands the drivetrain and parking brake over to Enhanced Vehicle when its matching functions are enabled
 - Added a HUD readout of tractor, towed, and combined mass
 - Fixed locked hook-lift containers being classified as towed and continuously lifted loads
+- Removed unnecessary debug log spam from routine UI and configuration updates
 - Extended lubrication to all non-road machines
 - Removed the work process system entirely, with the harvest processing wear and the unloading auger malfunction
 - Reworked cold-engine wear to start only at the dashboard's high-load threshold, with RPM as a secondary factor
@@ -234,6 +244,8 @@ For testing and debugging. Most require you to be inside a vehicle that supports
 - Added automatic temperature-based diesel preheating, with battery load, a dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
 - Vehicle exclusions now follow what a machine can do instead of its type name, and any automatic exclusion can be reverted with `rms_setExcluded false`, except on electric vehicles
 - Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required
+- Reworked hydraulic applicability, activity, progression, and effects around GIANTS-qualified functions; retained filter and oil-cooler failures through explicit simulation proxies
+- Reworked PTO load against GIANTS' native activation envelope, removed duplicate consumer counting and instant engagement damage, and restored cutter-drive support for harvesters
 
 ## Support
 

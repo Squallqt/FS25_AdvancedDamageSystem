@@ -376,10 +376,10 @@ function RMS_Telemetry:collectPtoSystemInfo(vehicle)
         torqueKNm = ptoDbg.ptoTorque or 0,
         rpm = ptoDbg.ptoRpm or 0,
         powerKw = ptoDbg.ptoPower or 0,
-        powerRatio = ptoDbg.ptoPowerRatio or 0,
+        utilization = ptoDbg.ptoUtilization or 0,
+        motorSideTorqueKNm = ptoDbg.ptoMotorSideTorque or 0,
+        nativeCapacityTorqueKNm = ptoDbg.ptoNativeCapacityTorque or 0,
         engagementCount = ptoDbg.ptoEngagementCount or 0,
-        engagementCounter = ptoDbg.ptoEngagementCounter or 0,
-        lastEngagementRatio = ptoDbg.ptoLastEngagementRatio or 0,
         expiredServiceFactor = ptoDbg.expiredServiceFactor or 0,
         ptoLoadFactor = ptoDbg.ptoLoadFactor or 0,
         ptoEngagementFactor = ptoDbg.ptoEngagementFactor or 0
@@ -414,7 +414,8 @@ function RMS_Telemetry:collectCVTTempInfo(vehicle)
         wheelSlipFactor = transmissionTempDbg.wheelSlipFactor or 0,
         cvtSlipActive = transmissionTempDbg.cvtSlipActive or 0,
         cvtSlipLocked = transmissionTempDbg.cvtSlipLocked or 0,
-        extraTransmissionHeat = transmissionTempDbg.extraTransmissionHeat or 0
+        extraTransmissionHeat = transmissionTempDbg.extraTransmissionHeat or 0,
+        hydraulicHeat = transmissionTempDbg.hydraulicHeat or 0
     }
 end
 

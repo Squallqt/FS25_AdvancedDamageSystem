@@ -20,58 +20,225 @@ function RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     return dt / meanTimeInMs
 end
 
-local function getIsCarsStoreCategory(vehicle)
-    if vehicle == nil or vehicle.configFileName == nil or g_storeManager == nil then
-        return false
-    end
-
-    local storeItem = g_storeManager:getItemByXMLFilename(vehicle.configFileName)
-    if storeItem == nil then
-        return false
-    end
-
-    if storeItem.categoryNames ~= nil then
-        for _, categoryName in ipairs(storeItem.categoryNames) do
-            if string.upper(tostring(categoryName or "")) == "CARS" then
-                return true
-            end
-        end
-    end
-
-    return string.upper(tostring(storeItem.categoryName or "")) == "CARS"
-end
-
 function RMS_Utils.hasPtoOutputCapability(vehicle)
-    if getIsCarsStoreCategory(vehicle) then
+    local ptoSpec = vehicle ~= nil and vehicle.spec_powerTakeOffs or nil
+    if ptoSpec == nil or type(ptoSpec.outputPowerTakeOffs) ~= "table" then
         return false
     end
 
-    local ptoSpec = vehicle ~= nil and vehicle.spec_powerTakeOffs or nil
-    return ptoSpec ~= nil
-        and type(ptoSpec.outputPowerTakeOffs) == "table"
-        and #ptoSpec.outputPowerTakeOffs > 0
+    return next(ptoSpec.outputPowerTakeOffs) ~= nil
 end
 
-function RMS_Utils.hasHydraulicCapability(vehicle)
-    if getIsCarsStoreCategory(vehicle) then
+function RMS_Utils.getIsHydraulicLiftJoint(jointDesc)
+    if type(jointDesc) ~= "table" then
         return false
     end
 
+    local jointType = jointDesc.jointType
+    local isTrailerJoint = jointType == AttacherJoints.JOINTTYPE_TRAILER
+        or jointType == AttacherJoints.JOINTTYPE_TRAILERLOW
+        or jointType == AttacherJoints.JOINTTYPE_TRAILERCAR
+    return jointDesc.allowsLowering == true and not isTrailerJoint
+end
+
+function RMS_Utils.hasHydraulicLiftCapability(vehicle)
     local attacherJointsSpec = vehicle ~= nil and vehicle.spec_attacherJoints or nil
     if attacherJointsSpec ~= nil then
         for _, jointDesc in pairs(attacherJointsSpec.attacherJoints) do
-            local jointType = jointDesc.jointType
-            local isTrailerJoint = jointType == AttacherJoints.JOINTTYPE_TRAILER
-                or jointType == AttacherJoints.JOINTTYPE_TRAILERLOW
-                or jointType == AttacherJoints.JOINTTYPE_TRAILERCAR
-            if jointDesc.allowsLowering and not isTrailerJoint then
+            if RMS_Utils.getIsHydraulicLiftJoint(jointDesc) then
                 return true
             end
         end
     end
 
-    local cylinderedSpec = vehicle ~= nil and vehicle.spec_cylindered or nil
-    return cylinderedSpec ~= nil and #cylinderedSpec.movingTools > 0
+    return false
+end
+
+function RMS_Utils.hasHydraulicActuatorCapability(vehicle)
+    if vehicle == nil then
+        return false
+    end
+
+    if RMS_Utils.hasHydraulicLiftCapability(vehicle) then
+        return true
+    end
+
+    local cylinderedSpec = vehicle.spec_cylindered
+    if cylinderedSpec ~= nil and type(cylinderedSpec.movingTools) == "table" then
+        for _, tool in pairs(cylinderedSpec.movingTools) do
+            if RMS_Utils.getIsHydraulicMovingTool(tool) then
+                return true
+            end
+        end
+    end
+    if cylinderedSpec ~= nil and type(cylinderedSpec.movingParts) == "table" then
+        for _, part in pairs(cylinderedSpec.movingParts) do
+            if RMS_Utils.getIsHydraulicMovingTool(part) then
+                return true
+            end
+        end
+    end
+
+    return vehicle.spec_attacherJointControl ~= nil or vehicle.spec_hydraulicHammer ~= nil
+end
+
+local function getIsHydraulicConnectionEntry(entry)
+    return type(entry) == "table"
+        and type(entry.type) == "string"
+        and string.sub(string.upper(entry.type), 1, 9) == "HYDRAULIC"
+end
+
+function RMS_Utils.getIsHydraulicMovingTool(tool)
+    return type(tool) == "table" and tool.playSound == true
+end
+
+function RMS_Utils.hasHydraulicHoseCapability(vehicle, visited)
+    visited = visited or {}
+    if vehicle == nil or visited[vehicle] then
+        return false
+    end
+    visited[vehicle] = true
+
+    local connectionHosesSpec = vehicle.spec_connectionHoses
+    if connectionHosesSpec ~= nil then
+        for _, entry in ipairs(connectionHosesSpec.hoseNodes or {}) do
+            if getIsHydraulicConnectionEntry(entry) then
+                return true
+            end
+        end
+
+        for _, entry in ipairs(connectionHosesSpec.targetNodes or {}) do
+            if getIsHydraulicConnectionEntry(entry) then
+                return true
+            end
+        end
+
+        for _, localHose in ipairs(connectionHosesSpec.localHoseNodes or {}) do
+            if getIsHydraulicConnectionEntry(localHose.hose)
+                or getIsHydraulicConnectionEntry(localHose.target) then
+                return true
+            end
+        end
+
+        for _, entry in ipairs(connectionHosesSpec.customHoses or {}) do
+            if getIsHydraulicConnectionEntry(entry) then
+                return true
+            end
+        end
+
+        for _, entry in ipairs(connectionHosesSpec.customHoseTargets or {}) do
+            if getIsHydraulicConnectionEntry(entry) then
+                return true
+            end
+        end
+    end
+
+    local children = vehicle.getChildVehicles ~= nil and vehicle:getChildVehicles() or {}
+    for _, childVehicle in pairs(children) do
+        if RMS_Utils.hasHydraulicHoseCapability(childVehicle, visited) then
+            return true
+        end
+    end
+
+    return false
+end
+
+function RMS_Utils.hasHydraulicCapability(vehicle)
+    local visited = {}
+
+    local function hasCapability(vehicleObj)
+        if vehicleObj == nil or visited[vehicleObj] then
+            return false
+        end
+        visited[vehicleObj] = true
+
+        if RMS_Utils.hasHydraulicActuatorCapability(vehicleObj) then
+            return true
+        end
+
+        local children = vehicleObj.getChildVehicles ~= nil and vehicleObj:getChildVehicles() or {}
+        for _, childVehicle in pairs(children) do
+            if hasCapability(childVehicle) then
+                return true
+            end
+        end
+
+        return false
+    end
+
+    return hasCapability(vehicle) or RMS_Utils.hasHydraulicHoseCapability(vehicle)
+end
+
+function RMS_Utils.hasHydraulicControllableTargetCapability(vehicle)
+    local visited = {}
+
+    local function hasTarget(vehicleObj)
+        if vehicleObj == nil or visited[vehicleObj] then
+            return false
+        end
+        visited[vehicleObj] = true
+
+        if RMS_Utils.hasHydraulicLiftCapability(vehicleObj) then
+            return true
+        end
+
+        local cylinderedSpec = vehicleObj.spec_cylindered
+        if cylinderedSpec ~= nil then
+            for _, tool in pairs(cylinderedSpec.movingTools or {}) do
+                if RMS_Utils.getIsHydraulicMovingTool(tool)
+                    and (tool.rotSpeed ~= nil or tool.transSpeed ~= nil or tool.animSpeed ~= nil) then
+                    return true
+                end
+            end
+        end
+
+        local children = vehicleObj.getChildVehicles ~= nil and vehicleObj:getChildVehicles() or {}
+        for _, childVehicle in pairs(children) do
+            if hasTarget(childVehicle) then
+                return true
+            end
+        end
+
+        return false
+    end
+
+    return hasTarget(vehicle)
+end
+
+function RMS_Utils.getPtoNativeCapacityData(vehicle, totalTorque)
+    local motor = vehicle ~= nil and vehicle.getMotor ~= nil and vehicle:getMotor() or nil
+    local ptoMotorRpmRatio = motor ~= nil and motor.getPtoMotorRpmRatio ~= nil
+        and (tonumber(motor:getPtoMotorRpmRatio()) or 0) or 0
+    local peakTorque = motor ~= nil and motor.getPeakTorque ~= nil
+        and (tonumber(motor:getPeakTorque()) or 0) or 0
+    local motorSideTorque = ptoMotorRpmRatio > 0 and math.max(tonumber(totalTorque) or 0, 0) / ptoMotorRpmRatio or 0
+    local nativeCapacityTorque = math.max(peakTorque * 0.9, 0)
+    local utilization = nativeCapacityTorque > 0 and motorSideTorque / nativeCapacityTorque or 0
+
+    return utilization, motorSideTorque, nativeCapacityTorque
+end
+
+function RMS_Utils.calculatePtoLoadFactor(utilization, config)
+    local load = math.max(tonumber(utilization) or 0, 0)
+    local threshold = tonumber(config.LOAD_FACTOR_THRESHOLD) or 0
+    if load <= threshold then
+        return 0
+    end
+
+    local multiplier = math.max(tonumber(config.LOAD_FACTOR_MULTIPLIER) or 0, 0)
+    local fullEffect = math.max(tonumber(config.LOAD_FACTOR_FULL_EFFECT) or 1, threshold + 0.0001)
+    local factor = RMS_Utils.calculateQuadraticMultiplier(load, threshold, false, fullEffect) * multiplier
+    return math.min(factor, multiplier)
+end
+
+function RMS_Utils.getPtoEngagementTransitionCount(activeLinks, previousActiveLinks)
+    local count = 0
+    for consumer, _ in pairs(activeLinks or {}) do
+        if previousActiveLinks == nil or previousActiveLinks[consumer] ~= true then
+            count = count + 1
+        end
+    end
+    return count
 end
 
 function RMS_Utils.getConnectedPtoData(vehicle)
@@ -99,24 +266,26 @@ function RMS_Utils.getConnectedPtoData(vehicle)
         for _, output in pairs(outputs) do
             local consumer = output.connectedVehicle
             if output.connectedInput ~= nil and consumer ~= nil then
-                data.connectedVehicles[consumer] = true
+                if data.connectedVehicles[consumer] ~= true then
+                    data.connectedVehicles[consumer] = true
 
-                local isActive = consumer:getIsPowerTakeOffActive()
-                local torque = 0
-                if consumer.getConsumedPtoTorque ~= nil then
-                    local consumedTorque = consumer:getConsumedPtoTorque()
-                    torque = tonumber(consumedTorque) or 0
-                end
-                local rpm = consumer.getPtoRpm ~= nil and (tonumber(consumer:getPtoRpm()) or 0) or 0
-                local power = torque * rpm * math.pi / 30
+                    local isActive = consumer:getIsPowerTakeOffActive()
+                    local torque = 0
+                    if consumer.getConsumedPtoTorque ~= nil then
+                        local consumedTorque = consumer:getConsumedPtoTorque(nil, true)
+                        torque = tonumber(consumedTorque) or 0
+                    end
+                    local rpm = consumer.getPtoRpm ~= nil and (tonumber(consumer:getPtoRpm()) or 0) or 0
+                    local power = torque * rpm * math.pi / 30
 
-                data.torque = data.torque + torque
-                data.rpm = math.max(data.rpm, rpm)
-                data.power = data.power + power
+                    data.torque = data.torque + torque
+                    data.rpm = math.max(data.rpm, rpm)
+                    data.power = data.power + power
 
-                if isActive then
-                    data.isActive = true
-                    data.activeLinks[output] = true
+                    if isActive then
+                        data.isActive = true
+                        data.activeLinks[consumer] = true
+                    end
                 end
 
                 walk(consumer)

@@ -473,32 +473,31 @@ local function getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
     local prevMoveAlpha = prevMoveAlphaCache[moveKey]
     nextMoveAlphaCache[moveKey] = moveAlpha
 
-    if prevMoveAlpha ~= nil then
-        return math.abs(moveAlpha - prevMoveAlpha) > 0.05
-    end
-
     local isMovingRaw = jointDesc ~= nil and jointDesc.isMoving == true
-    return isMovingRaw and moveAlpha > 0.001 and moveAlpha < 0.999
+    return isMovingRaw or (prevMoveAlpha ~= nil and math.abs(moveAlpha - prevMoveAlpha) > 0.0001)
 end
 
-local function getToolMotionFlags(vehicle)
-    local isFoldMoving = false
-    local isPlowRotationMoving = false
+local function getHydraulicMotionFlags(vehicle)
     local isCylinderedMoving = false
-
-    if vehicle ~= nil and vehicle.spec_foldable ~= nil then
-        isFoldMoving = math.abs(vehicle.spec_foldable.foldMoveDirection or 0) > 0.0001
-    end
-
-    if vehicle ~= nil and vehicle.spec_plow ~= nil and vehicle.spec_plow.rotationPart ~= nil and vehicle.spec_plow.rotationPart.turnAnimation ~= nil and vehicle.getIsAnimationPlaying ~= nil then
-        isPlowRotationMoving = vehicle:getIsAnimationPlaying(vehicle.spec_plow.rotationPart.turnAnimation)
-    end    
+    local isAttacherJointControlMoving = false
+    local isHydraulicHammerActive = false
 
     if vehicle ~= nil and vehicle.spec_cylindered ~= nil then
-        isCylinderedMoving = vehicle.spec_cylindered.movingToolNeedsSound == true
+        local cylinderedSpec = vehicle.spec_cylindered
+        isCylinderedMoving = RMS_Utils.hasHydraulicActuatorCapability(vehicle)
+            and (cylinderedSpec.movingToolNeedsSound == true or cylinderedSpec.movingPartNeedsSound == true)
     end
 
-    return isFoldMoving, isPlowRotationMoving, isCylinderedMoving
+    if vehicle ~= nil and vehicle.spec_attacherJointControl ~= nil then
+        local lastMoveTime = tonumber(vehicle.spec_attacherJointControl.lastMoveTime)
+        isAttacherJointControlMoving = lastMoveTime ~= nil and lastMoveTime + 100 > g_time
+    end
+
+    if vehicle ~= nil and vehicle.spec_hydraulicHammer ~= nil and vehicle.getIsTurnedOn ~= nil then
+        isHydraulicHammerActive = vehicle:getIsTurnedOn()
+    end
+
+    return isCylinderedMoving, isAttacherJointControlMoving, isHydraulicHammerActive
 end
 
 local function updateImplementChainState(vehicle, dt)
@@ -508,10 +507,13 @@ local function updateImplementChainState(vehicle, dt)
     end
 
     spec.liftedMass = 0
-    spec.operatingMass = 0
     spec.isImplementLifted = false
     spec.isImplementOperating = false
     spec.isImplementLowered = false
+    spec.isHydraulicActive = false
+    spec.isHydraulicLiftMoving = false
+    spec.hydraulicLiftMassByJoint = {}
+    spec.hydraulicActiveTargetCount = 0
 
     local nextMoveAlphaCache = {}
     local nextLiftRatioCache = {}
@@ -531,15 +533,19 @@ local function updateImplementChainState(vehicle, dt)
         if isHead then
             if vehicleObj.spec_attacherJoints ~= nil and vehicleObj.spec_attacherJoints.attacherJoints ~= nil then
                 for index, headJointDesc in pairs(vehicleObj.spec_attacherJoints.attacherJoints) do
-                    isMoving = isMoving or getMoveState(vehicleObj, "__head:" .. tostring(index), headJointDesc, nextMoveAlphaCache)
+                    if RMS_Utils.getIsHydraulicLiftJoint(headJointDesc) then
+                        isMoving = isMoving or getMoveState(vehicleObj, "__head:" .. tostring(index), headJointDesc, nextMoveAlphaCache)
+                    end
                 end
             end
         else
             local moveKey = string.format("%s:%s", tostring(vehicleObj), tostring(jointDescIndex or -1))
-            isMoving = getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
+            if jointDesc ~= nil and RMS_Utils.getIsHydraulicLiftJoint(jointDesc) then
+                isMoving = getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
+            end
         end
 
-        local isFoldMoving, isPlowRotationMoving, isCylinderedMoving = getToolMotionFlags(vehicleObj)
+        local isCylinderedMoving, isAttacherJointControlMoving, isHydraulicHammerActive = getHydraulicMotionFlags(vehicleObj)
         local isLowered = false
 
         if vehicleObj.getIsLowered ~= nil then
@@ -559,9 +565,9 @@ local function updateImplementChainState(vehicle, dt)
             isLowered = isLowered,
             supportWheelCount = supportWheelCount,
             isMoving = isMoving,
-            isFoldMoving = isFoldMoving,
-            isPlowRotationMoving = isPlowRotationMoving,
             isCylinderedMoving = isCylinderedMoving,
+            isAttacherJointControlMoving = isAttacherJointControlMoving,
+            isHydraulicHammerActive = isHydraulicHammerActive,
             isHead = isHead == true
         }
         table.insert(implements, implementData)
@@ -573,6 +579,8 @@ local function updateImplementChainState(vehicle, dt)
                     mass = 0,
                     supportLoad = 0,
                     jointTypeId = implementData.jointTypeId,
+                    jointDesc = jointDesc,
+                    isMoving = isMoving,
                     isLowered = isLowered
                 }
                 table.insert(liftBranches, liftBranch)
@@ -605,10 +613,12 @@ local function updateImplementChainState(vehicle, dt)
         if impl.isLowered then
             spec.isImplementLowered = true
         end
-        if (impl.isMoving and impl.jointTypeId ~= 0) or impl.isFoldMoving or impl.isPlowRotationMoving or (impl.isCylinderedMoving and not impl.isHead) then
-            spec.isImplementOperating  = true
-            local impMass = impl.supportWheelCount == 0 and impl.mass or impl.mass / 2
-            if not impl.isHead then spec.operatingMass = spec.operatingMass + (impMass or 0) end
+        if impl.isMoving or impl.isCylinderedMoving or impl.isAttacherJointControlMoving or impl.isHydraulicHammerActive then
+            spec.isHydraulicActive = true
+            spec.hydraulicActiveTargetCount = spec.hydraulicActiveTargetCount + 1
+        end
+        if impl.isMoving then
+            spec.isHydraulicLiftMoving = true
         end
     end
 
@@ -640,8 +650,12 @@ local function updateImplementChainState(vehicle, dt)
             nextLiftRatioCache[branch.root] = liftRatioState
 
             if not branch.isLowered then
-                spec.liftedMass = spec.liftedMass + branch.mass * liftRatioState.applied
+                local liftedBranchMass = branch.mass * liftRatioState.applied
+                spec.liftedMass = spec.liftedMass + liftedBranchMass
                 spec.isImplementLifted = spec.isImplementLifted or liftRatioState.applied > 0
+                if branch.jointDesc ~= nil and RMS_Utils.getIsHydraulicLiftJoint(branch.jointDesc) then
+                    spec.hydraulicLiftMassByJoint[branch.jointDesc] = liftedBranchMass
+                end
             end
         end
     end
@@ -652,6 +666,7 @@ local function updateImplementChainState(vehicle, dt)
 
     spec.hydraulicsMoveAlphaCache = nextMoveAlphaCache
     spec.hydraulicsLiftRatioCache = nextLiftRatioCache
+    spec.isImplementOperating = spec.isHydraulicActive
     spec.implements = implements
     spec.hasDebris = maxCutterArea > 0 and isOnField and lastSpeed >= 0.5 and isTurnedOn
 end
@@ -1026,53 +1041,30 @@ local function updatePtoState(vehicle, dt)
         spec.ptoTorque = 0
         spec.ptoRpm = 0
         spec.ptoPower = 0
-        spec.ptoPowerRatio = 0
+        spec.ptoUtilization = 0
+        spec.ptoMotorSideTorque = 0
+        spec.ptoNativeCapacityTorque = 0
         spec.ptoPreviousActiveLinks = {}
-        spec.ptoPendingEngagements = {}
         return
     end
 
     local ptoData = RMS_Utils.getConnectedPtoData(vehicle)
-    local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
-    local peakMotorPower = motor ~= nil and (tonumber(motor.peakMotorPower) or 0) or 0
 
     spec.isPtoActive = ptoData.isActive
     spec.ptoTorque = math.max(ptoData.torque, 0)
     spec.ptoRpm = math.max(ptoData.rpm, 0)
     spec.ptoPower = math.max(ptoData.power, 0)
-    spec.ptoPowerRatio = peakMotorPower > 0 and math.clamp(spec.ptoPower / peakMotorPower, 0, 1.5) or 0
+    spec.ptoUtilization, spec.ptoMotorSideTorque, spec.ptoNativeCapacityTorque =
+        RMS_Utils.getPtoNativeCapacityData(vehicle, spec.ptoTorque)
 
     local previousActiveLinks = spec.ptoPreviousActiveLinks or {}
-    local measurementDelay = RMS_Config.CORE.PTO_FACTOR_DATA.ENGAGEMENT_MEASUREMENT_DELAY
-    for output, _ in pairs(ptoData.activeLinks) do
-        if previousActiveLinks[output] ~= true then
-            spec.ptoEngagementCount = (tonumber(spec.ptoEngagementCount) or 0) + 1
-            table.insert(spec.ptoPendingEngagements, measurementDelay)
-        end
+    local newEngagementCount = RMS_Utils.getPtoEngagementTransitionCount(ptoData.activeLinks, previousActiveLinks)
+    if newEngagementCount > 0 then
+        spec.ptoEngagementCount = (tonumber(spec.ptoEngagementCount) or 0) + newEngagementCount
+        spec.ptoEngagementSequence = (tonumber(spec.ptoEngagementSequence) or 0) + newEngagementCount
+        spec.ptoEngagementPulseCount = (tonumber(spec.ptoEngagementPulseCount) or 0) + newEngagementCount
     end
     spec.ptoPreviousActiveLinks = ptoData.activeLinks
-
-    for index = #spec.ptoPendingEngagements, 1, -1 do
-        local remaining = (tonumber(spec.ptoPendingEngagements[index]) or 0) - dt
-        if remaining <= 0 then
-            local measuredRatio = spec.ptoPowerRatio
-            spec.ptoLastEngagementRatio = measuredRatio
-            if measuredRatio >= RMS_Config.CORE.PTO_FACTOR_DATA.ENGAGEMENT_LOAD_MINIMUM then
-                spec.ptoEngagementCounter = (tonumber(spec.ptoEngagementCounter) or 0) + measuredRatio
-            end
-            if measuredRatio > RMS_Config.CORE.PTO_FACTOR_DATA.LOAD_FACTOR_THRESHOLD then
-                spec.ptoEngagementSequence = (tonumber(spec.ptoEngagementSequence) or 0) + 1
-            end
-            table.remove(spec.ptoPendingEngagements, index)
-        else
-            spec.ptoPendingEngagements[index] = remaining
-        end
-    end
-
-    if not spec.isPtoActive then
-        local decayPeriod = RMS_Config.CORE.BASE_BREAKDOWN_PROGRESS_TIME
-        spec.ptoEngagementCounter = math.max((tonumber(spec.ptoEngagementCounter) or 0) - dt / decayPeriod, 0)
-    end
 end
 
 --- update state

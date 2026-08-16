@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Le filtre hydraulique est presque bouché. Les fonctions hydrauliques répondent à peine. L'entretien courant remplace le filtre."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Le refroidisseur d'huile hydraulique perd un peu d'efficacité. La température d'huile augmente légèrement pendant un travail hydraulique prolongé."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Le refroidisseur d'huile hydraulique fonctionne mal. La température d'huile augmente nettement pendant un travail hydraulique continu."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Le refroidisseur d'huile hydraulique est très dégradé. Un travail hydraulique lourd surchauffe rapidement l'huile commune de transmission et d'hydraulique."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Le refroidisseur d&apos;huile hydraulique est très dégradé. Un travail hydraulique lourd surchauffe rapidement l&apos;huile."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Le refroidisseur d'huile hydraulique est en panne. Un travail prolongé provoque une forte surchauffe de l'huile et accélère l'usure de la pompe."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Un distributeur hydraulique commence à gripper. Une fonction hydraulique hésite parfois et perd de la force sous charge."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Un distributeur hydraulique grippe par intermittence. Une fonction hydraulique ralentit et perd davantage de force quand la charge augmente."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Le démarrage du moteur sur le %s est difficile. Cela peut être causé par une batterie faible, le gel, des défauts mécaniques ou l'usure du démarreur. Pour démarrer le moteur, maintenez le bouton de démarrage enfoncé. Remarque : le système électrique subit de fortes charges au démarrage à cause des courants d'appel élevés !"/>
         <text name="rms_tutorial_critical_failure_title" text="Panne critique"/>
         <text name="rms_tutorial_critical_failure_message" text="Eh bien, pas de chance. Votre %s est complètement immobilisé et ne peut plus se déplacer par ses propres moyens. Vous pouvez utiliser un atelier mobile et effectuer une réparation rapide afin que le véhicule puisse rejoindre l'atelier par lui-même.&#10;&#10;Sinon, il faudra trouver un autre moyen de le récupérer."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Outil trop lourd"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Cet outil semble trop lourd pour votre %s. L'hydraulique travaille à sa limite, ce qui aura un effet négatif sur sa durée de vie.&#10;&#10;Suivez une règle simple : le poids de l'outil ne devrait pas dépasser 60%% du poids propre du véhicule."/>
         <text name="rms_tutorial_cold_engine_title" text="Faites chauffer votre machine"/>
         <text name="rms_tutorial_cold_engine_message" text="Faites monter le moteur en température progressivement avant de le solliciter fortement. Utilisez une accélération et un régime modérés jusqu'à ce qu'il atteigne sa température de fonctionnement."/>
         <text name="rms_tutorial_cold_oil_title" text="Huile de transmission froide"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Préchauffage diesel"/>
         <text name="rms_tutorial_preheat_message" text="Sur un moteur diesel froid, une impulsion sur la commande de démarrage met le contact et lance automatiquement le cycle de préchauffage. Les voyants du tableau de bord effectuent leur contrôle, puis le voyant de préchauffage reste allumé jusqu'à ce que le moteur soit prêt. Ne répétez pas la commande : le démarreur s'engage automatiquement lorsque le voyant s'éteint."/>
         <text name="rms_spec_system_pto" text="Prise de force"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Embrayage de PDF"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Arbre de sortie de PDF"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Usure naissante de l’embrayage de PDF. La PDF peut parfois décrocher."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Usure modérée de l’embrayage de PDF. Les décrochages deviennent plus fréquents."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Usure sévère de l’embrayage de PDF. La PDF décroche régulièrement."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Défaillance critique de l’embrayage de PDF. La PDF ne transmet plus de puissance."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="L’usure naissante du roulement de sortie de PDF produit un léger bruit de fonctionnement."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="L’usure modérée du roulement de sortie de PDF produit un bruit nettement audible."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="L’usure sévère du roulement de sortie de PDF provoque un bruit fort et des décrochages occasionnels."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Défaillance critique du roulement de sortie de PDF. La PDF ne peut plus fonctionner."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="La valve d’engagement de PDF répond par intermittence et peut refuser une commande."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="La valve d’engagement de PDF échoue fréquemment à engager la PDF."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="La valve d’engagement de PDF est gravement défaillante et refuse la plupart des tentatives."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="La valve d’engagement de PDF est totalement hors service. La PDF ne peut plus être engagée."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Défaillance de l’embrayage de PDF"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Défaillance du roulement de sortie de PDF"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Défaillance de la valve d’engagement de PDF"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Couplage d’entraînement de PDF"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Arbre de sortie de PDF"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Usure naissante du couplage d’entraînement de PDF. La PDF peut parfois décrocher."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Usure modérée du couplage d’entraînement de PDF. Les décrochages deviennent plus fréquents."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Usure sévère du couplage d’entraînement de PDF. La PDF décroche régulièrement."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Défaillance critique du couplage d’entraînement de PDF. La PDF ne transmet plus de puissance."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="L’usure naissante du roulement de sortie de PDF produit un léger bruit de fonctionnement."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="L’usure modérée du roulement de sortie de PDF produit un bruit nettement audible."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="L’usure sévère du roulement de sortie de PDF provoque un bruit fort et des décrochages occasionnels."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Défaillance critique du roulement de sortie de PDF. La PDF ne peut plus fonctionner."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="La commande d’engagement de PDF répond par intermittence et peut refuser une commande."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="La commande d’engagement de PDF échoue fréquemment à engager la PDF."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="La commande d’engagement de PDF est gravement défaillante et refuse la plupart des tentatives."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="La commande d’engagement de PDF est totalement hors service. La PDF ne peut plus être engagée."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Défaillance du couplage d’entraînement de PDF"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Défaillance du roulement de sortie de PDF"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Défaillance de la commande d’engagement de PDF"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Engagement de la PDF refusé"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="De premières traces de chauffe sont visibles sur l’embrayage de PDF."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Les disques de l’embrayage de PDF présentent une usure et des traces de chauffe nettes."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Les disques de l’embrayage de PDF sont fortement usés et surchauffés."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="L’embrayage de PDF ne peut plus transmettre le couple."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Un léger jeu et une faible rugosité sont perceptibles sur l’arbre de sortie de PDF."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Un jeu sensible et un bruit de roulement sont présents sur l’arbre de sortie de PDF."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Le roulement de sortie de PDF présente un jeu important et tourne très irrégulièrement."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Le roulement ou l’arbre de sortie de PDF est hors service."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="La valve d’engagement de PDF réagit lentement ou de façon irrégulière."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="La valve d’engagement de PDF manque fréquemment les commandes."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="La valve d’engagement de PDF ne répond plus que sporadiquement."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="La valve d’engagement de PDF ne répond plus."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Forte charge à l’activation de la PDF"/>
-        <text name="rms_tutorial_pto_engagement_message" text="L’équipement a demandé beaucoup de puissance juste après son activation, ce qui augmente l’usure de la PDF. Lorsque c’est possible, mettez-le en marche sans charge et assurez-vous que la machine dispose d’une puissance suffisante."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="Un léger jeu et une faible rugosité sont perceptibles sur l’arbre de sortie de PDF."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="Un jeu sensible et un bruit de roulement sont présents sur l’arbre de sortie de PDF."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Le roulement de sortie de PDF présente un jeu important et tourne très irrégulièrement."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Le roulement ou l’arbre de sortie de PDF est hors service."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="La commande d’engagement de PDF réagit lentement ou de façon irrégulière."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="La commande d’engagement de PDF manque fréquemment les commandes."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="La commande d’engagement de PDF ne répond plus que sporadiquement."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="La commande d’engagement de PDF ne répond plus."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Cycles d’engagement de la PDF"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Les activations répétées de la PDF accumulent des cycles mécaniques d’engagement. Évitez les activations et coupures inutiles."/>
     </texts>
 </l10n>

@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Гідравлічний фільтр майже заблокований. Гідравлічні функції ледве реагують. Планове обслуговування замінить фільтр."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Охолоджувач гідравлічної оливи частково втратив ефективність. Під час тривалої роботи гідравліки температура оливи трохи зростає."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Охолоджувач гідравлічної оливи працює недостатньо ефективно. Під час безперервної роботи гідравліки температура оливи помітно зростає."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Охолоджувач гідравлічної оливи сильно зношений. Важка робота гідравліки швидко перегріває спільну оливу трансмісії та гідросистеми."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Охолоджувач гідравлічної оливи сильно зношений. Важка робота гідравліки швидко перегріває оливу."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Охолоджувач гідравлічної оливи відмовив. Тривала робота гідравліки сильно перегріває оливу й прискорює знос насоса."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Гідравлічний розподільник починає заїдати. Одна гідравлічна функція іноді запізнюється й втрачає силу під навантаженням."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Гідравлічний розподільник періодично заїдає. Одна гідравлічна функція сповільнюється й сильніше втрачає силу зі збільшенням навантаження."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Двигун %s запускається важко. Причиною може бути розряджений акумулятор, мороз, механічні несправності або знос стартера. Щоб завести двигун, утримуйте кнопку запалювання. Примітка: під час запуску електросистема зазнає величезних навантажень!"/>
         <text name="rms_tutorial_critical_failure_title" text="Критична відмова"/>
         <text name="rms_tutorial_critical_failure_message" text="Що ж, це невдача. Ваш %s повністю виведений з ладу і не може рухатися самостійно. Ви можете скористатися мобільною майстернею для швидкого ремонту, щоб машина доїхала до бази своїм ходом.&#10;&#10;В іншому випадку доведеться шукати спосіб евакуації."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Заважке обладнання"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Схоже, це знаряддя занадто важке для вашого %s. Гідравліка працює на межі можливостей, що негативно вплине на її ресурс.&#10;&#10;Дотримуйтесь правила: вага обладнання не повинна перевищувати 60%% від власної ваги техніки."/>
         <text name="rms_tutorial_cold_engine_title" text="Прогрійте машину"/>
         <text name="rms_tutorial_cold_engine_message" text="Перед високим навантаженням прогрівайте двигун поступово. Використовуйте помірну подачу пального та середні оберти, доки двигун не досягне робочої температури."/>
         <text name="rms_tutorial_cold_oil_title" text="Холодна трансмісійна олива"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Передпусковий підігрів дизеля"/>
         <text name="rms_tutorial_preheat_message" text="За холодного дизельного двигуна одне натискання команди запуску вмикає запалювання й автоматично запускає цикл розжарювання. Контрольні лампи панелі виконують самоперевірку, після чого лампа передпускового підігріву світиться до готовності двигуна. Не повторюйте команду: стартер увімкнеться автоматично після згасання лампи."/>
         <text name="rms_spec_system_pto" text="Вал відбору потужності"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Муфта ВВП"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Вихідний вал ВВП"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Початкове зношення муфти ВВП. ВВП може іноді вимикатися."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Помірне зношення муфти ВВП. Вимкнення трапляються частіше."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Сильне зношення муфти ВВП. ВВП неодноразово вимикається."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Критична відмова муфти ВВП. Вал відбору потужності більше не передає потужність."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Початкове зношення вихідного підшипника ВВП спричиняє слабкий робочий шум."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Помірне зношення вихідного підшипника ВВП спричиняє виразно чутний шум."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Сильне зношення вихідного підшипника ВВП спричиняє гучний шум і періодичні вимкнення."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Критична відмова вихідного підшипника ВВП. Робота ВВП більше неможлива."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Клапан увімкнення ВВП працює нестабільно й може відхилити команду."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Клапан увімкнення ВВП часто не може ввімкнути вал відбору потужності."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Клапан увімкнення ВВП серйозно несправний і відхиляє більшість спроб увімкнення."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Клапан увімкнення ВВП повністю відмовив. Вал відбору потужності неможливо ввімкнути."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Відмова муфти ВВП"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Відмова вихідного підшипника ВВП"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Відмова клапана увімкнення ВВП"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Муфта приводу ВВП"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Вихідний вал ВВП"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Початкове зношення муфти ВВП. ВВП може іноді вимикатися."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Помірне зношення муфти ВВП. Вимкнення трапляються частіше."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Сильне зношення муфти ВВП. ВВП неодноразово вимикається."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Критична відмова муфти ВВП. Вал відбору потужності більше не передає потужність."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Початкове зношення вихідного підшипника ВВП спричиняє слабкий робочий шум."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Помірне зношення вихідного підшипника ВВП спричиняє виразно чутний шум."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Сильне зношення вихідного підшипника ВВП спричиняє гучний шум і періодичні вимкнення."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Критична відмова вихідного підшипника ВВП. Робота ВВП більше неможлива."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Керування ввімкненням ВВП працює нестабільно й може відхилити команду."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Керування ввімкненням ВВП часто не може ввімкнути вал відбору потужності."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Керування ввімкненням ВВП серйозно несправний і відхиляє більшість спроб увімкнення."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Керування ввімкненням ВВП повністю відмовив. Вал відбору потужності неможливо ввімкнути."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Відмова муфти ВВП"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Відмова вихідного підшипника ВВП"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Відмова клапана увімкнення ВВП"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Увімкнення ВВП відхилено"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="На муфті ВВП видно перші сліди перегріву."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Диски муфти ВВП мають явне зношення та сліди перегріву."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Диски муфти ВВП сильно зношені й перегріті."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Муфта ВВП більше не може передавати крутний момент."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="На вихідному валу ВВП відчуваються невеликий люфт і шорсткість."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="На вихідному валу ВВП помітні люфт і шум підшипника."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Вихідний підшипник ВВП має великий люфт і працює дуже нерівно."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Вихідний підшипник або вал ВВП вийшов із ладу."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Клапан увімкнення ВВП реагує повільно або нестабільно."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Клапан увімкнення ВВП часто пропускає команди."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Клапан увімкнення ВВП спрацьовує лише зрідка."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Клапан увімкнення ВВП більше не реагує."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Високе навантаження на ВВП під час увімкнення"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Одразу після увімкнення агрегат потребував великої потужності, що збільшує зношення ВВП. За можливості вмикайте його без навантаження та переконайтеся, що потужності машини достатньо."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="На вихідному валу ВВП відчуваються невеликий люфт і шорсткість."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="На вихідному валу ВВП помітні люфт і шум підшипника."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Вихідний підшипник ВВП має великий люфт і працює дуже нерівно."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Вихідний підшипник або вал ВВП вийшов із ладу."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="Керування ввімкненням ВВП реагує повільно або нестабільно."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="Керування ввімкненням ВВП часто пропускає команди."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="Керування ввімкненням ВВП спрацьовує лише зрідка."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="Керування ввімкненням ВВП більше не реагує."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Цикли ввімкнення ВВП"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Повторні ввімкнення ВВП накопичують механічні цикли ввімкнення. Уникайте зайвих вимкнень і повторних ввімкнень."/>
     </texts>
 </l10n>

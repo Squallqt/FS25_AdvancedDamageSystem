@@ -122,30 +122,18 @@ RMS_Config = {
         },
 
         HYDRAULICS_FACTOR_DATA = {
-            HYDRAULICS_IDLING_MULTIPLIER = 0.5,
             SERVICE_EXPIRED_MULTIPLIER = 3.0,
-            HEAVY_LIFT_FACTOR_MULTIPLIER = 1.0,
-            HEAVY_LIFT_FACTOR_THRESHOLD = 0.6,
-            OPERATING_FACTOR_MULTIPLIER = 4.0,
-            OPERATING_FACTOR_THRESHOLD = 0.3,
             COLD_OIL_MULTIPLIER = 0.95,
             COLD_OIL_THRESHOLD = 30,
             HOT_OIL_MULTIPLIER = 100.0,
-            HOT_OIL_THRESHOLD = 90,
-            VIB_FACTOR_THRESHOLD = 0.08,
-            VIB_FACTOR_MAX_SIGNAL = 0.36,
-            VIB_FACTOR_MULTIPLIER = 36.0,
-            VIB_FIELD_MULTIPLIER = 2.0
+            HOT_OIL_THRESHOLD = 90
         },
 
         PTO_FACTOR_DATA = {
             SERVICE_EXPIRED_MULTIPLIER = 4.0,
             LOAD_FACTOR_THRESHOLD = 0.55,
-            LOAD_FACTOR_MULTIPLIER = 6.0,
-            ENGAGEMENT_FACTOR_THRESHOLD = 0.0,
-            ENGAGEMENT_FACTOR_MULTIPLIER = 4.0,
-            ENGAGEMENT_MEASUREMENT_DELAY = 2000,
-            ENGAGEMENT_LOAD_MINIMUM = 0.30
+            LOAD_FACTOR_FULL_EFFECT = 0.90,
+            LOAD_FACTOR_MULTIPLIER = 6.0
         },
 
         COOLING_FACTOR_DATA = {
@@ -494,7 +482,6 @@ RMS_Config = {
         TRANS_MIN_HEAT = 0.0,
         TRANS_TEMPERATURE_CHANGE_SPEED = 0.042,
         TRANS_TEMPERATURE_CHANGE_MULTIPLIER = 1.0,
-        HYDRAULIC_HOLD_HEAT = 0.05,
         HYDRAULIC_OPERATING_HEAT = 0.15,
         -- The temperature (in Celsius) at which the transmission's thermostat begins to open.
         TRANS_THERMOSTAT_MIN_TEMP = 75,
@@ -854,7 +841,6 @@ RMS_Config = {
         BATTERY_LOW = false,
         HARD_START = false,
         CRITICAL_FAILURE = false,
-        HEAVY_LIFT = false,
         COLD_ENGINE = false,
         COLD_OIL = false,
         WHEEL_SLIP = false,

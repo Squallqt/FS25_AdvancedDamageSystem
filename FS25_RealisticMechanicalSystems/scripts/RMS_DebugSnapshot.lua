@@ -228,7 +228,7 @@ function RMS_DebugSnapshot.build(vehicle)
             isImplementLowered = spec.isImplementLowered == true,
             isImplementOperating = spec.isImplementOperating == true,
             isImplementLifted = spec.isImplementLifted == true,
-            operatingMass = tonumber(spec.operatingMass) or 0,
+            hydraulicActiveTargetCount = tonumber(spec.hydraulicActiveTargetCount) or 0,
             liftedMass = tonumber(spec.liftedMass) or 0,
             hasDebris = spec.hasDebris == true
         }

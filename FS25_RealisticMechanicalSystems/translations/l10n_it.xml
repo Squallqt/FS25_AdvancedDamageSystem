@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Il filtro idraulico è quasi bloccato. Le funzioni idrauliche rispondono appena. La manutenzione ordinaria sostituisce il filtro."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Il radiatore dell'olio idraulico ha perso parte della sua efficienza. La temperatura dell'olio aumenta leggermente durante un lavoro idraulico prolungato."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Il radiatore dell'olio idraulico rende meno del previsto. La temperatura dell'olio aumenta sensibilmente durante un lavoro idraulico continuo."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Il radiatore dell'olio idraulico è molto deteriorato. Il lavoro idraulico pesante surriscalda rapidamente l'olio comune di trasmissione e idraulica."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Il radiatore dell&apos;olio idraulico è molto deteriorato. Il lavoro idraulico pesante surriscalda rapidamente l&apos;olio."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Il radiatore dell'olio idraulico è guasto. Il lavoro prolungato provoca un forte surriscaldamento dell'olio e accelera l'usura della pompa."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Una valvola di controllo idraulico inizia a bloccarsi. Una funzione idraulica esita occasionalmente e perde forza sotto carico."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Una valvola di controllo idraulico si blocca a intermittenza. Una funzione idraulica è più lenta e perde più forza con l'aumentare del carico."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Avviare il motore del %s è difficile. Ciò può essere causato da una batteria scarica, temperature rigide, guasti meccanici o usura del motorino d'avviamento. Per avviare il motore, tieni premuto il pulsante di accensione. Nota: l'impianto elettrico subisce forti sollecitazioni all'avvio a causa delle elevate correnti di spunto."/>
         <text name="rms_tutorial_critical_failure_title" text="Guasto critico"/>
         <text name="rms_tutorial_critical_failure_message" text="Beh, che sfortuna. Il tuo %s è completamente fuori uso e non può più muoversi con i propri mezzi. Puoi usare un'officina mobile ed effettuare una riparazione rapida affinché il veicolo riesca a raggiungere da solo l'officina.&#10;&#10;Altrimenti dovrai trovare un altro modo per recuperarlo."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Attrezzo troppo pesante"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Sembra che questo attrezzo sia troppo pesante per il tuo %s. L'idraulica sta lavorando al limite e questo avrà un effetto negativo sulla sua durata.&#10;&#10;Segui una regola semplice: il peso dell'attrezzo non dovrebbe superare il 60%% del peso proprio del veicolo."/>
         <text name="rms_tutorial_cold_engine_title" text="Scalda la tua macchina"/>
         <text name="rms_tutorial_cold_engine_message" text="Scalda il motore gradualmente prima di sottoporlo a un carico elevato. Usa acceleratore e regime moderati finché non raggiunge la temperatura di esercizio."/>
         <text name="rms_tutorial_cold_oil_title" text="Olio della trasmissione freddo"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Preriscaldamento diesel"/>
         <text name="rms_tutorial_preheat_message" text="Con un motore diesel freddo, una pressione del comando di avviamento accende il quadro e avvia automaticamente il ciclo delle candelette. Le spie del cruscotto eseguono l'autotest, poi la spia di preriscaldamento resta accesa finché il motore non è pronto. Non ripetere il comando: il motorino di avviamento si inserisce automaticamente quando la spia si spegne."/>
         <text name="rms_spec_system_pto" text="Presa di forza"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Frizione della PDF"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Albero di uscita della PDF"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Usura iniziale della frizione PDF. La PDF può disinserirsi occasionalmente."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Usura moderata della frizione PDF. I disinserimenti diventano più frequenti."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Usura grave della frizione PDF. La PDF si disinserisce ripetutamente."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Guasto critico della frizione PDF. La PDF non può più trasmettere potenza."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="L’usura iniziale del cuscinetto di uscita della PDF provoca un leggero rumore di funzionamento."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="L’usura moderata del cuscinetto di uscita della PDF provoca un rumore chiaramente udibile."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="L’usura grave del cuscinetto di uscita della PDF provoca forte rumore e disinserimenti occasionali."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Guasto critico del cuscinetto di uscita della PDF. La PDF non può più funzionare."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="La valvola di innesto della PDF risponde in modo intermittente e può rifiutare un comando."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="La valvola di innesto della PDF spesso non riesce a inserire la PDF."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="La valvola di innesto della PDF è gravemente difettosa e rifiuta la maggior parte dei tentativi."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="La valvola di innesto della PDF è completamente guasta. La PDF non può essere inserita."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Guasto della frizione PDF"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Guasto del cuscinetto di uscita della PDF"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Guasto della valvola di innesto della PDF"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Giunto di trasmissione della PDF"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Albero di uscita della PDF"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Usura iniziale della frizione PDF. La PDF può disinserirsi occasionalmente."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Usura moderata della frizione PDF. I disinserimenti diventano più frequenti."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Usura grave della frizione PDF. La PDF si disinserisce ripetutamente."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Guasto critico della frizione PDF. La PDF non può più trasmettere potenza."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="L’usura iniziale del cuscinetto di uscita della PDF provoca un leggero rumore di funzionamento."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="L’usura moderata del cuscinetto di uscita della PDF provoca un rumore chiaramente udibile."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="L’usura grave del cuscinetto di uscita della PDF provoca forte rumore e disinserimenti occasionali."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Guasto critico del cuscinetto di uscita della PDF. La PDF non può più funzionare."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="La comando di innesto della PDF risponde in modo intermittente e può rifiutare un comando."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="La comando di innesto della PDF spesso non riesce a inserire la PDF."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="La comando di innesto della PDF è gravemente difettosa e rifiuta la maggior parte dei tentativi."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="La comando di innesto della PDF è completamente guasta. La PDF non può essere inserita."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Guasto della frizione PDF"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Guasto del cuscinetto di uscita della PDF"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Guasto della comando di innesto della PDF"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Innesto della PDF rifiutato"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Sulla frizione PDF sono visibili le prime tracce di surriscaldamento."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="I dischi della frizione PDF mostrano usura evidente e tracce di surriscaldamento."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="I dischi della frizione PDF sono molto usurati e surriscaldati."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="La frizione PDF non può più trasmettere coppia."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Sull’albero di uscita della PDF si rilevano un leggero gioco e ruvidità."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Sull’albero di uscita della PDF sono presenti gioco evidente e rumore del cuscinetto."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Il cuscinetto di uscita della PDF presenta molto gioco e gira in modo molto irregolare."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Il cuscinetto o l’albero di uscita della PDF è guasto."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="La valvola di innesto della PDF reagisce lentamente o in modo irregolare."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="La valvola di innesto della PDF ignora spesso i comandi."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="La valvola di innesto della PDF risponde solo sporadicamente."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="La valvola di innesto della PDF non risponde più."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Carico elevato sulla PDF all’attivazione"/>
-        <text name="rms_tutorial_pto_engagement_message" text="L’attrezzatura ha richiesto molta potenza subito dopo l’attivazione, aumentando l’usura della PDF. Quando possibile, avviala senza carico e assicurati che la macchina abbia potenza sufficiente."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="Sull’albero di uscita della PDF si rilevano un leggero gioco e ruvidità."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="Sull’albero di uscita della PDF sono presenti gioco evidente e rumore del cuscinetto."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Il cuscinetto di uscita della PDF presenta molto gioco e gira in modo molto irregolare."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Il cuscinetto o l’albero di uscita della PDF è guasto."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="La comando di innesto della PDF reagisce lentamente o in modo irregolare."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="La comando di innesto della PDF ignora spesso i comandi."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="La comando di innesto della PDF risponde solo sporadicamente."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="La comando di innesto della PDF non risponde più."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Cicli di innesto della PDF"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Le attivazioni ripetute della PDF accumulano cicli meccanici di innesto. Evita attivazioni e disattivazioni non necessarie."/>
     </texts>
 </l10n>

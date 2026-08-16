@@ -88,8 +88,8 @@ RMS_Breakdowns.PARTS = {
     FUEL_INJECTORS = "rms_breakdowns_part_fuel_injectors",
     FUEL_FILTER = "rms_breakdowns_part_fuel_filter",
     FUEL_LINE = "rms_breakdowns_part_fuel_line",
-    PTO_CLUTCH = "rms_breakdowns_part_pto_clutch",
-    PTO_OUTPUT_SHAFT = "rms_breakdowns_part_pto_output_shaft"
+    PTO_DRIVE_COUPLING = "rms_breakdowns_part_pto_drive_coupling",
+    PTO_DRIVE_OUTPUT = "rms_breakdowns_part_pto_drive_output"
 }
 
 local parts = RMS_Breakdowns.PARTS
@@ -127,9 +127,9 @@ local breakdownPriceMultipliers = {
     FUEL_INJECTOR_MALFUNCTION = 0.80,
     FUEL_FILTER_CLOGGING = 0.35,
     FUEL_LINE_AIR_LEAK = 0.45,
-    PTO_CLUTCH_WEAR = 1.30,
-    PTO_OUTPUT_BEARING_WEAR = 0.60,
-    PTO_ENGAGEMENT_VALVE_MALFUNCTION = 0.75,
+    PTO_DRIVE_COUPLING_WEAR = 1.30,
+    PTO_DRIVE_OUTPUT_BEARING_WEAR = 0.60,
+    PTO_ENGAGEMENT_CONTROL_MALFUNCTION = 0.75,
 }
 
 local breakdownProgressMultipliers = {
@@ -165,9 +165,9 @@ local breakdownProgressMultipliers = {
     FUEL_INJECTOR_MALFUNCTION = 1.1,
     FUEL_FILTER_CLOGGING = 1.2,
     FUEL_LINE_AIR_LEAK = 0.8,
-    PTO_CLUTCH_WEAR = 1.00,
-    PTO_OUTPUT_BEARING_WEAR = 1.20,
-    PTO_ENGAGEMENT_VALVE_MALFUNCTION = 1.10,
+    PTO_DRIVE_COUPLING_WEAR = 1.00,
+    PTO_DRIVE_OUTPUT_BEARING_WEAR = 1.20,
+    PTO_ENGAGEMENT_CONTROL_MALFUNCTION = 1.10,
 }
 
 local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
@@ -255,8 +255,19 @@ local function getBreakdownProbabilityWeightPercent(vehicle, systemName, primary
 end
 
 local function isHydraulicBreakdownApplicable(vehicle)
-    local spec = vehicle.spec_RealisticMechanicalSystems
-    return RMS_Utils.hasHydraulicCapability(vehicle) and spec.year >= 1960
+    return RMS_Utils.hasHydraulicCapability(vehicle)
+end
+
+local function isHydraulicLiftBreakdownApplicable(vehicle)
+    return isHydraulicBreakdownApplicable(vehicle) and RMS_Utils.hasHydraulicLiftCapability(vehicle)
+end
+
+local function isHydraulicHoseBreakdownApplicable(vehicle)
+    return isHydraulicBreakdownApplicable(vehicle) and RMS_Utils.hasHydraulicHoseCapability(vehicle)
+end
+
+local function isHydraulicActuatorBreakdownApplicable(vehicle)
+    return isHydraulicBreakdownApplicable(vehicle) and RMS_Utils.hasHydraulicControllableTargetCapability(vehicle)
 end
 
 local function isPtoBreakdownApplicable(vehicle)
@@ -1840,10 +1851,10 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_PUMP,
         isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"cof", "hof", "sf"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"of", "cof", "hof", "sf"}, {})
         end,
         isCanProgress = function(vehicle)
-            return vehicle:getIsMotorStarted()
+            return vehicle:getIsMotorStarted() and vehicle.spec_RealisticMechanicalSystems.isHydraulicActive
         end,
         stages = {
             {
@@ -1902,13 +1913,13 @@ RMS_Breakdowns.BreakdownRegistry = {
         isSelectable = true,
         system = systems.HYDRAULICS,
         part = parts.HYDRAULIC_CYLINDER,
-        isApplicable = isHydraulicBreakdownApplicable,
+        isApplicable = isHydraulicLiftBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "of", "vf"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf"}, {})
         end,
         isCanProgress = function(vehicle)
             local spec = vehicle.spec_RealisticMechanicalSystems
-            return spec.isImplementLifted or spec.operatingMass > 0
+            return spec.isImplementLifted or spec.isHydraulicLiftMoving
         end,
         stages = {
             {
@@ -1918,7 +1929,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.01, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.5} }
+                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.01, aggregation = "max", extraData = {status = 'IDLE', timer = 0} }
                 },
                 inspection = {
                     { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage1" }
@@ -1931,7 +1942,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.03, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.4}}
+                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.03, aggregation = "max", extraData = {status = 'IDLE', timer = 0}}
                 },
                 inspection = {
                     { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage2" }
@@ -1947,7 +1958,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = { 
-                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.05, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.2} }
+                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 0.05, aggregation = "max", extraData = {status = 'IDLE', timer = 0} }
                 },
                 inspection = {
                     { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage3" }
@@ -1963,7 +1974,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_CYLINDER_INTERNAL_LEAK,
                 effects = { 
-                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 1.0, aggregation = "max", extraData = {status = 'IDLE', timer = 0, massRatio = 0.0} }
+                    { id = "HYDRAULIC_HOLD_DRIFT_EFFECT", value = 1.0, aggregation = "max", extraData = {status = 'IDLE', timer = 0} }
                 },
                 inspection = {
                     { additional = "rms_inspection_hint_hydraulic_cylinder_internal_leak_stage4" }
@@ -1979,13 +1990,13 @@ RMS_Breakdowns.BreakdownRegistry = {
         isSelectable = true,
         system = systems.HYDRAULICS,
         part = parts.HYDRAULIC_HOSE,
-        isApplicable = isHydraulicBreakdownApplicable,
+        isApplicable = isHydraulicHoseBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "vf"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"of", "sf"}, {})
         end,
         isCanProgress = function(vehicle)
             local spec = vehicle.spec_RealisticMechanicalSystems
-            return vehicle:getIsMotorStarted() and (spec.isImplementLifted or spec.isImplementOperating)
+            return vehicle:getIsMotorStarted() and spec.isHydraulicActive
         end,
         stages = {
             {
@@ -2058,10 +2069,10 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_FILTER,
         isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "cof"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "of"}, {})
         end,
         isCanProgress = function(vehicle)
-            return vehicle:getIsMotorStarted()
+            return vehicle:getIsMotorStarted() and vehicle.spec_RealisticMechanicalSystems.isHydraulicActive
         end,
         stages = {
             {
@@ -2122,10 +2133,10 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_OIL_COOLER,
         isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "hof"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hof", "sf", "of"}, {})
         end,
         isCanProgress = function(vehicle)
-            return vehicle.spec_RealisticMechanicalSystems.isImplementOperating
+            return vehicle:getIsMotorStarted() and vehicle.spec_RealisticMechanicalSystems.isHydraulicActive
         end,
         stages = {
             {
@@ -2135,7 +2146,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 effects = {
-                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.05, aggregation = "sum" }
+                    { id = "HYDRAULIC_HEAT_MODIFIER", value = 0.05, aggregation = "sum" }
                 }
             },
             {
@@ -2145,7 +2156,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 effects = {
-                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.10, aggregation = "sum" }
+                    { id = "HYDRAULIC_HEAT_MODIFIER", value = 0.10, aggregation = "sum" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2158,10 +2169,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 effects = {
-                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
+                    { id = "HYDRAULIC_HEAT_MODIFIER", value = 0.15, aggregation = "sum" }
                 },
                 indicators = {
-                    { id = db.TRANSMISSION, color = color.WARNING, switchOn = true, switchOff = false }
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
                 }
             },
             {
@@ -2171,10 +2182,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_OIL_COOLER_MALFUNCTION,
                 effects = {
-                    { id = "TRANSMISSION_HEAT_MODIFIER", value = 0.20, aggregation = "sum" }
+                    { id = "HYDRAULIC_HEAT_MODIFIER", value = 0.20, aggregation = "sum" }
                 },
                 indicators = {
-                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
+                    { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
                 }
             }
         }
@@ -2184,12 +2195,12 @@ RMS_Breakdowns.BreakdownRegistry = {
         isSelectable = true,
         system = systems.HYDRAULICS,
         part = parts.HYDRAULIC_SPOOL_VALVE,
-        isApplicable = isHydraulicBreakdownApplicable,
+        isApplicable = isHydraulicActuatorBreakdownApplicable,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"of", "sf"}, {})
         end,
         isCanProgress = function(vehicle)
-            return vehicle.spec_RealisticMechanicalSystems.isImplementOperating
+            return vehicle:getIsMotorStarted() and vehicle.spec_RealisticMechanicalSystems.isHydraulicActive
         end,
         stages = {
             {
@@ -2199,8 +2210,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 effects = {
-                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.10, aggregation = "min", extraData = {childVehicleHash = ""} },
-                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.15, aggregation = "min" }
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.10, aggregation = "min", extraData = {childVehicleHash = ""} }
                 }
             },
             {
@@ -2210,8 +2220,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 effects = {
-                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.20, aggregation = "min", extraData = {childVehicleHash = ""} },
-                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.30, aggregation = "min" }
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.20, aggregation = "min", extraData = {childVehicleHash = ""} }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2224,8 +2233,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 effects = {
-                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.35, aggregation = "min", extraData = {childVehicleHash = ""} },
-                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.55, aggregation = "min" }
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.35, aggregation = "min", extraData = {childVehicleHash = ""} }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2238,8 +2246,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_SPOOL_VALVE_MALFUNCTION,
                 effects = {
-                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.50, aggregation = "min", extraData = {childVehicleHash = ""} },
-                    { id = "HYDRAULIC_LOAD_PRESSURE_LOSS_EFFECT", value = -0.80, aggregation = "min" }
+                    { id = "HYDRAULIC_FUNCTION_ERRATIC_EFFECT", value = -0.50, aggregation = "min", extraData = {childVehicleHash = ""} }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2248,10 +2255,10 @@ RMS_Breakdowns.BreakdownRegistry = {
         }
     },
 
-    PTO_CLUTCH_WEAR = {
+    PTO_DRIVE_COUPLING_WEAR = {
         isSelectable = true,
         system = systems.PTO,
-        part = parts.PTO_CLUTCH,
+        part = parts.PTO_DRIVE_COUPLING,
         isApplicable = isPtoBreakdownApplicable,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.PTO, {"plf", "pef"}, {})
@@ -2262,28 +2269,22 @@ RMS_Breakdowns.BreakdownRegistry = {
         stages = {
             {
                 severity = "rms_breakdowns_severity_minor",
-                description = "rms_breakdowns_pto_clutch_wear_stage1_description",
+                description = "rms_breakdowns_pto_drive_coupling_wear_stage1_description",
                 detectionChance = 1.0,
-                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_CLUTCH_WEAR,
-                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_CLUTCH_WEAR,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_DRIVE_COUPLING_WEAR,
+                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_DRIVE_COUPLING_WEAR,
                 effects = {
                     { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 40, aggregation = "min", extraData = {status = "IDLE"} }
-                },
-                inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_clutch_wear_stage1" }
                 }
             },
             {
                 severity = "rms_breakdowns_severity_moderate",
-                description = "rms_breakdowns_pto_clutch_wear_stage2_description",
+                description = "rms_breakdowns_pto_drive_coupling_wear_stage2_description",
                 detectionChance = 1.0,
-                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_CLUTCH_WEAR,
-                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_CLUTCH_WEAR,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_DRIVE_COUPLING_WEAR,
+                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_DRIVE_COUPLING_WEAR,
                 effects = {
                     { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 20, aggregation = "min", extraData = {status = "IDLE"} }
-                },
-                inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_clutch_wear_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2291,15 +2292,12 @@ RMS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "rms_breakdowns_severity_major",
-                description = "rms_breakdowns_pto_clutch_wear_stage3_description",
+                description = "rms_breakdowns_pto_drive_coupling_wear_stage3_description",
                 detectionChance = 1.0,
-                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_CLUTCH_WEAR,
-                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_CLUTCH_WEAR,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_DRIVE_COUPLING_WEAR,
+                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_DRIVE_COUPLING_WEAR,
                 effects = {
                     { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 10, aggregation = "min", extraData = {status = "IDLE"} }
-                },
-                inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_clutch_wear_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2307,15 +2305,12 @@ RMS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "rms_breakdowns_severity_critical",
-                description = "rms_breakdowns_pto_clutch_wear_stage4_description",
+                description = "rms_breakdowns_pto_drive_coupling_wear_stage4_description",
                 detectionChance = 1.0,
                 progressMultiplier = 0,
-                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_CLUTCH_WEAR,
+                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_DRIVE_COUPLING_WEAR,
                 effects = {
-                    { id = "PTO_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = "rms_breakdowns_pto_clutch_wear_stage4_message", disableAi = true} }
-                },
-                inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_clutch_wear_stage4" }
+                    { id = "PTO_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = "rms_breakdowns_pto_drive_coupling_wear_stage4_message", disableAi = true} }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2324,10 +2319,10 @@ RMS_Breakdowns.BreakdownRegistry = {
         }
     },
 
-    PTO_OUTPUT_BEARING_WEAR = {
+    PTO_DRIVE_OUTPUT_BEARING_WEAR = {
         isSelectable = true,
         system = systems.PTO,
-        part = parts.PTO_OUTPUT_SHAFT,
+        part = parts.PTO_DRIVE_OUTPUT,
         isApplicable = isPtoBreakdownApplicable,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.PTO, {"plf", "sf"}, {})
@@ -2338,28 +2333,28 @@ RMS_Breakdowns.BreakdownRegistry = {
         stages = {
             {
                 severity = "rms_breakdowns_severity_minor",
-                description = "rms_breakdowns_pto_output_bearing_wear_stage1_description",
+                description = "rms_breakdowns_pto_drive_output_bearing_wear_stage1_description",
                 detectionChance = 1.0,
-                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_OUTPUT_BEARING_WEAR,
-                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_OUTPUT_BEARING_WEAR,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
+                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
                     { id = "PTO_BEARING_NOISE_EFFECT", value = 0.35, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoShaft", additional = "rms_inspection_hint_pto_output_bearing_wear_stage1" }
+                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage1" }
                 }
             },
             {
                 severity = "rms_breakdowns_severity_moderate",
-                description = "rms_breakdowns_pto_output_bearing_wear_stage2_description",
+                description = "rms_breakdowns_pto_drive_output_bearing_wear_stage2_description",
                 detectionChance = 1.0,
-                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_OUTPUT_BEARING_WEAR,
-                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_OUTPUT_BEARING_WEAR,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
+                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
                     { id = "PTO_BEARING_NOISE_EFFECT", value = 0.60, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoShaft", additional = "rms_inspection_hint_pto_output_bearing_wear_stage2" }
+                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2367,16 +2362,16 @@ RMS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "rms_breakdowns_severity_major",
-                description = "rms_breakdowns_pto_output_bearing_wear_stage3_description",
+                description = "rms_breakdowns_pto_drive_output_bearing_wear_stage3_description",
                 detectionChance = 1.0,
-                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_OUTPUT_BEARING_WEAR,
-                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_OUTPUT_BEARING_WEAR,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
+                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
                     { id = "PTO_BEARING_NOISE_EFFECT", value = 0.85, aggregation = "max" },
                     { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 30, aggregation = "min", extraData = {status = "IDLE"} }
                 },
                 inspection = {
-                    { target = "ptoShaft", additional = "rms_inspection_hint_pto_output_bearing_wear_stage3" }
+                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2384,16 +2379,16 @@ RMS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "rms_breakdowns_severity_critical",
-                description = "rms_breakdowns_pto_output_bearing_wear_stage4_description",
+                description = "rms_breakdowns_pto_drive_output_bearing_wear_stage4_description",
                 detectionChance = 1.0,
                 progressMultiplier = 0,
-                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_OUTPUT_BEARING_WEAR,
+                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
                     { id = "PTO_BEARING_NOISE_EFFECT", value = 1.0, aggregation = "max" },
-                    { id = "PTO_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = "rms_breakdowns_pto_output_bearing_wear_stage4_message", disableAi = true} }
+                    { id = "PTO_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = "rms_breakdowns_pto_drive_output_bearing_wear_stage4_message", disableAi = true} }
                 },
                 inspection = {
-                    { target = "ptoShaft", additional = "rms_inspection_hint_pto_output_bearing_wear_stage4" }
+                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage4" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2402,45 +2397,44 @@ RMS_Breakdowns.BreakdownRegistry = {
         }
     },
 
-    PTO_ENGAGEMENT_VALVE_MALFUNCTION = {
+    PTO_ENGAGEMENT_CONTROL_MALFUNCTION = {
         isSelectable = true,
         system = systems.PTO,
-        part = parts.PTO_CLUTCH,
+        part = parts.PTO_DRIVE_COUPLING,
         isApplicable = function(vehicle)
-            local spec = vehicle.spec_RealisticMechanicalSystems
-            return isPtoBreakdownApplicable(vehicle) and spec.year >= 1990
+            return isPtoBreakdownApplicable(vehicle)
         end,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.PTO, {"pef", "sf"}, {})
         end,
         isCanProgress = function(vehicle)
-            return vehicle:getIsMotorStarted()
+            return vehicle.spec_RealisticMechanicalSystems.isPtoActive
         end,
         stages = {
             {
                 severity = "rms_breakdowns_severity_minor",
-                description = "rms_breakdowns_pto_engagement_valve_malfunction_stage1_description",
+                description = "rms_breakdowns_pto_engagement_control_malfunction_stage1_description",
                 detectionChance = 1.0,
-                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
-                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
+                repairPrice = 1.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
                 effects = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 0.10, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_engagement_valve_malfunction_stage1" }
+                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage1" }
                 }
             },
             {
                 severity = "rms_breakdowns_severity_moderate",
-                description = "rms_breakdowns_pto_engagement_valve_malfunction_stage2_description",
+                description = "rms_breakdowns_pto_engagement_control_malfunction_stage2_description",
                 detectionChance = 1.0,
-                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
-                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
+                repairPrice = 2.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
                 effects = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 0.30, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_engagement_valve_malfunction_stage2" }
+                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2448,15 +2442,15 @@ RMS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "rms_breakdowns_severity_major",
-                description = "rms_breakdowns_pto_engagement_valve_malfunction_stage3_description",
+                description = "rms_breakdowns_pto_engagement_control_malfunction_stage3_description",
                 detectionChance = 1.0,
-                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
-                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
+                repairPrice = 4.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
                 effects = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 0.60, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_engagement_valve_malfunction_stage3" }
+                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2464,15 +2458,15 @@ RMS_Breakdowns.BreakdownRegistry = {
             },
             {
                 severity = "rms_breakdowns_severity_critical",
-                description = "rms_breakdowns_pto_engagement_valve_malfunction_stage4_description",
+                description = "rms_breakdowns_pto_engagement_control_malfunction_stage4_description",
                 detectionChance = 1.0,
                 progressMultiplier = 0,
-                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_VALVE_MALFUNCTION,
+                repairPrice = 8.0 * breakdownPriceMultipliers.PTO_ENGAGEMENT_CONTROL_MALFUNCTION,
                 effects = {
-                    { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 1.0, aggregation = "max", extraData = {message = "rms_breakdowns_pto_engagement_valve_malfunction_stage4_message", disableAi = true} }
+                    { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 1.0, aggregation = "max", extraData = {message = "rms_breakdowns_pto_engagement_control_malfunction_stage4_message", disableAi = true} }
                 },
                 inspection = {
-                    { target = "ptoClutch", additional = "rms_inspection_hint_pto_engagement_valve_malfunction_stage4" }
+                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage4" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }

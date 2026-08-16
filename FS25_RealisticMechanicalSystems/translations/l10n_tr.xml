@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Hidrolik filtre neredeyse tamamen tıkalı. Hidrolik işlevler güçlükle tepki veriyor. Düzenli bakım filtreyi değiştirir."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Hidrolik yağ soğutucusu veriminin bir kısmını kaybetti. Uzun hidrolik çalışma sırasında yağ sıcaklığı biraz yükselir."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Hidrolik yağ soğutucusu yetersiz çalışıyor. Sürekli hidrolik çalışma sırasında yağ sıcaklığı belirgin biçimde yükselir."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Hidrolik yağ soğutucusu ciddi biçimde yıpranmış. Ağır hidrolik çalışma, şanzıman ve hidrolik sistemin ortak yağını hızla aşırı ısıtır."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Hidrolik yağ soğutucusu ciddi biçimde yıpranmış. Ağır hidrolik çalışma yağı hızla aşırı ısıtır."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Hidrolik yağ soğutucusu arızalandı. Uzun hidrolik çalışma yağı ciddi biçimde aşırı ısıtır ve pompa aşınmasını hızlandırır."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Bir hidrolik kontrol valfi sıkışmaya başlıyor. Bir hidrolik işlev ara sıra takılır ve yük altında güç kaybeder."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Bir hidrolik kontrol valfi aralıklı olarak sıkışıyor. Bir hidrolik işlev yavaşlar ve yük arttıkça daha fazla güç kaybeder."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="%s modelinde motoru çalıştırmak zordur. Bunun nedeni akü şarjının düşük olması, donma derecesindeki sıcaklıklar, mekanik arızalar veya marş motorunun aşınması olabilir. Motoru çalıştırmak için kontak düğmesini basılı tutun. Not: Yüksek başlangıç akımları nedeniyle, çalıştırma sırasında elektrik sistemi ağır yüklerle karşı karşıya kalır!"/>
         <text name="rms_tutorial_critical_failure_title" text="Kritik Arıza"/>
         <text name="rms_tutorial_critical_failure_message" text="Eh, bu tam bir talihsizlik. %s'niz tamamen devre dışı kalmış ve artık kendi gücüyle hareket edemiyor. Mobil bir tamir atölyesi kullanarak hızlı bir onarım yapabilir ve aracın kendi başına tamirhaneye ulaşmasını sağlayabilirsiniz.&#10;&#10;Aksi takdirde, aracı kurtarmak için başka bir yol bulmanız gerekecek."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Ek Çok Ağır"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Görünüşe göre bu ekipman, %s'niz için fazla ağır. Hidrolik sistem sınırında çalışıyor ve bu durum sistemin kullanım ömrünü olumsuz etkileyecektir.&#10;&#10;Basit bir kurala uyun: Ekipmanın ağırlığı, aracın kendi ağırlığının %%60'ını aşmamalıdır."/>
         <text name="rms_tutorial_cold_engine_title" text="Makinenizi Isıtın"/>
         <text name="rms_tutorial_cold_engine_message" text="Motoru yüksek yük altında çalıştırmadan önce kademeli olarak ısıtın. Çalışma sıcaklığına ulaşana kadar orta seviyede gaz ve motor devri kullanın."/>
         <text name="rms_tutorial_cold_oil_title" text="Soğuk şanzıman yağı"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Dizel ön ısıtma"/>
         <text name="rms_tutorial_preheat_message" text="Soğuk bir dizel motorda, çalıştırma kumandasına bir kez basmak kontağı açar ve kızdırma döngüsünü otomatik olarak başlatır. Gösterge paneli lambaları kendi testini yapar, ardından motor hazır olana kadar ön ısıtma lambası yanar. Komutu tekrarlamayın: lamba söndüğünde marş motoru otomatik olarak devreye girer."/>
         <text name="rms_spec_system_pto" text="Kuyruk mili"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Kuyruk mili kavraması"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Kuyruk mili çıkış mili"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Kuyruk mili kavramasında başlangıç aşınması. Kuyruk mili ara sıra devreden çıkabilir."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Kuyruk mili kavramasında orta düzey aşınma. Devreden çıkmalar sıklaşır."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Kuyruk mili kavramasında ağır aşınma. Kuyruk mili tekrar tekrar devreden çıkar."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Kuyruk mili kavramasında kritik arıza. Kuyruk mili artık güç aktaramaz."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Kuyruk mili çıkış rulmanındaki başlangıç aşınması hafif çalışma sesi çıkarır."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Kuyruk mili çıkış rulmanındaki orta düzey aşınma belirgin bir ses çıkarır."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Kuyruk mili çıkış rulmanındaki ağır aşınma yüksek ses ve ara sıra devreden çıkma oluşturur."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Kuyruk mili çıkış rulmanında kritik arıza. Kuyruk mili artık çalıştırılamaz."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Kuyruk mili devreye alma valfi düzensiz tepki verir ve bir komutu reddedebilir."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Kuyruk mili devreye alma valfi sık sık kuyruk milini devreye alamaz."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Kuyruk mili devreye alma valfi ağır arızalıdır ve çoğu devreye alma denemesini reddeder."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Kuyruk mili devreye alma valfi tamamen arızalandı. Kuyruk mili devreye alınamaz."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Kuyruk mili kavraması arızası"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Kuyruk mili çıkış rulmanı arızası"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Kuyruk mili devreye alma valfi arızası"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Kuyruk mili tahrik kaplini"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Kuyruk mili çıkış mili"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Kuyruk mili tahrik kaplininda başlangıç aşınması. Kuyruk mili ara sıra devreden çıkabilir."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Kuyruk mili tahrik kaplininda orta düzey aşınma. Devreden çıkmalar sıklaşır."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Kuyruk mili tahrik kaplininda ağır aşınma. Kuyruk mili tekrar tekrar devreden çıkar."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Kuyruk mili tahrik kaplininda kritik arıza. Kuyruk mili artık güç aktaramaz."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Kuyruk mili çıkış rulmanındaki başlangıç aşınması hafif çalışma sesi çıkarır."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Kuyruk mili çıkış rulmanındaki orta düzey aşınma belirgin bir ses çıkarır."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Kuyruk mili çıkış rulmanındaki ağır aşınma yüksek ses ve ara sıra devreden çıkma oluşturur."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Kuyruk mili çıkış rulmanında kritik arıza. Kuyruk mili artık çalıştırılamaz."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Kuyruk mili devreye alma kumandası düzensiz tepki verir ve bir komutu reddedebilir."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Kuyruk mili devreye alma kumandası sık sık kuyruk milini devreye alamaz."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Kuyruk mili devreye alma kumandası ağır arızalıdır ve çoğu devreye alma denemesini reddeder."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Kuyruk mili devreye alma kumandası tamamen arızalandı. Kuyruk mili devreye alınamaz."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Kuyruk mili tahrik kaplini arızası"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Kuyruk mili çıkış rulmanı arızası"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Kuyruk mili devreye alma kumandası arızası"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Kuyruk mili devreye alma reddedildi"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Kuyruk mili kavramasında ilk ısınma izleri görülüyor."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Kuyruk mili kavrama disklerinde belirgin aşınma ve ısınma izleri var."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Kuyruk mili kavrama diskleri çok aşınmış ve aşırı ısınmış."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Kuyruk mili kavraması artık tork aktaramıyor."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Kuyruk mili çıkış milinde hafif boşluk ve pürüzlülük hissediliyor."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Kuyruk mili çıkış milinde belirgin boşluk ve rulman sesi var."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Kuyruk mili çıkış rulmanında büyük boşluk var ve çok pürüzlü dönüyor."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Kuyruk mili çıkış rulmanı veya mili arızalı."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Kuyruk mili devreye alma valfi yavaş veya düzensiz tepki veriyor."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Kuyruk mili devreye alma valfi komutları sık sık kaçırıyor."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Kuyruk mili devreye alma valfi yalnızca ara sıra tepki veriyor."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Kuyruk mili devreye alma valfi artık tepki vermiyor."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Çalıştırma sırasında yüksek kuyruk mili yükü"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Ekipman çalıştırıldıktan hemen sonra yüksek güç talep ederek kuyruk mili aşınmasını artırdı. Mümkünse ekipmanı yüksüz çalıştırın ve makinenin yeterli güce sahip olduğundan emin olun."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="Kuyruk mili çıkış milinde hafif boşluk ve pürüzlülük hissediliyor."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="Kuyruk mili çıkış milinde belirgin boşluk ve rulman sesi var."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Kuyruk mili çıkış rulmanında büyük boşluk var ve çok pürüzlü dönüyor."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Kuyruk mili çıkış rulmanı veya mili arızalı."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="Kuyruk mili devreye alma kumandası yavaş veya düzensiz tepki veriyor."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="Kuyruk mili devreye alma kumandası komutları sık sık kaçırıyor."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="Kuyruk mili devreye alma kumandası yalnızca ara sıra tepki veriyor."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="Kuyruk mili devreye alma kumandası artık tepki vermiyor."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Kuyruk mili devreye alma çevrimleri"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Kuyruk milinin tekrar tekrar devreye alınması mekanik devreye alma çevrimlerini biriktirir. Gereksiz açma ve kapamalardan kaçının."/>
     </texts>
 </l10n>

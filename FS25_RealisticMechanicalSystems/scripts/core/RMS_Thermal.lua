@@ -231,14 +231,9 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
         wheelSlipFactor = math.min(wheelSlipFactor + (wheelSlipIntensity / 2) * (avgTireGroundFrictionCoeff ^ 2), 1.4)
     end
 
-    local vehicleMass = math.max(vehicle:getTotalMass(true), 0)
-    if vehicleMass > 0 then
-        if spec.isImplementLifted then
-            hydraulicHeat = hydraulicHeat + math.clamp(spec.liftedMass / vehicleMass, 0, 1) * C.HYDRAULIC_HOLD_HEAT
-        end
-        if spec.isImplementOperating then
-            hydraulicHeat = hydraulicHeat + math.clamp(spec.operatingMass / vehicleMass, 0, 1) * C.HYDRAULIC_OPERATING_HEAT
-        end
+    if spec.isHydraulicActive then
+        hydraulicHeat = C.HYDRAULIC_OPERATING_HEAT
+            + sanitizeNumber(spec.extraHydraulicHeat, 0, -C.HYDRAULIC_OPERATING_HEAT, 1000)
     end
 
     local maxHeat = C.TRANS_MAX_HEAT + sanitizeNumber(spec.extraTransmissionHeat, 0, -C.TRANS_MAX_HEAT, 1000)
@@ -317,7 +312,8 @@ function RMS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, mo
         dbg.accFactor = accFactor
         dbg.cvtSlipActive = cvtSlipActive and 1 or 0
         dbg.cvtSlipLocked = cvtSlipLocked and 1 or 0
-        dbg.extraTransmissionHeat = (spec.extraTransmissionHeat or 0) + hydraulicHeat
+        dbg.extraTransmissionHeat = spec.extraTransmissionHeat or 0
+        dbg.hydraulicHeat = hydraulicHeat
     end
 
     return dbg

@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Hydraulický filtr je téměř ucpaný. Hydraulické funkce téměř nereagují. Běžná údržba filtr vymění."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Chladič hydraulického oleje ztratil část účinnosti. Při delší hydraulické práci teplota oleje mírně stoupá."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Chladič hydraulického oleje pracuje nedostatečně. Při souvislé hydraulické práci teplota oleje znatelně stoupá."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Chladič hydraulického oleje je silně poškozený. Těžká hydraulická práce rychle přehřívá společný olej převodovky a hydrauliky."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Chladič hydraulického oleje je silně poškozený. Těžká hydraulická práce rychle přehřívá olej."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Chladič hydraulického oleje selhal. Dlouhá hydraulická práce způsobuje silné přehřívání oleje a urychluje opotřebení čerpadla."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Hydraulický rozvaděč se začíná zadírat. Jedna hydraulická funkce občas zaváhá a pod zatížením ztrácí sílu."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Hydraulický rozvaděč se přerušovaně zadrhává. Jedna hydraulická funkce je pomalejší a s rostoucím zatížením ztrácí více síly."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Startování motoru u %s je obtížné. Příčinou může být slabá baterie, mrazy, mechanické závady nebo opotřebovaný startér. Pro nastartování držte tlačítko zapalování déle. Poznámka: Elektrický systém je při startu silně namáhán vysokými nárazovými proudy!"/>
         <text name="rms_tutorial_critical_failure_title" text="Kritické selhání"/>
         <text name="rms_tutorial_critical_failure_message" text="Tak to je smůla. Vaše %s je zcela vyřazeno z provozu a už se nepohne vlastní silou. Můžete využít mobilní dílnu a provést rychlou nouzovou opravu, aby vozidlo dojelo do servisu samo.&#10;&#10;Jinak budete muset vymyslet jiný způsob, jak ho odtáhnout."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Příliš těžké nářadí"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Zdá se, že toto nářadí je pro vaše %s příliš těžké. Hydraulika pracuje na hranici svých možností, což negativně ovlivní její životnost.&#10;&#10;Držte se pravidla: váha nářadí by neměla přesáhnout 60 %% vlastní váhy vozidla."/>
         <text name="rms_tutorial_cold_engine_title" text="Zahřejte svůj stroj"/>
         <text name="rms_tutorial_cold_engine_message" text="Před vysokým zatížením motor postupně zahřejte. Používejte mírný plyn a otáčky, dokud motor nedosáhne provozní teploty."/>
         <text name="rms_tutorial_cold_oil_title" text="Studený převodový olej"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Předehřev vznětového motoru"/>
         <text name="rms_tutorial_preheat_message" text="U studeného vznětového motoru jedno stisknutí ovladače startu zapne zapalování a automaticky zahájí žhavicí cyklus. Kontrolky na palubní desce provedou autotest a poté zůstane kontrolka předehřevu svítit, dokud není motor připraven. Povel neopakujte: startér se zapne automaticky po zhasnutí kontrolky."/>
         <text name="rms_spec_system_pto" text="Vývodový hřídel"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Spojka vývodového hřídele"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Výstupní hřídel PTO"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Počínající opotřebení spojky PTO. Vývodový hřídel se může občas odpojit."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Střední opotřebení spojky PTO. Odpojování je častější."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Silné opotřebení spojky PTO. Vývodový hřídel se opakovaně odpojuje."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Kritické selhání spojky PTO. Vývodový hřídel již nemůže přenášet výkon."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Počínající opotřebení výstupního ložiska PTO způsobuje slabý provozní hluk."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Střední opotřebení výstupního ložiska PTO způsobuje zřetelně slyšitelný hluk."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Silné opotřebení výstupního ložiska PTO způsobuje hlasitý hluk a občasné odpojení."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Kritické selhání výstupního ložiska PTO. Provoz vývodového hřídele již není možný."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Ventil zapínání PTO reaguje nepravidelně a může odmítnout povel k zapnutí."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Ventil zapínání PTO často nedokáže vývodový hřídel zapnout."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Ventil zapínání PTO je silně vadný a odmítá většinu pokusů o zapnutí."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Ventil zapínání PTO zcela selhal. Vývodový hřídel nelze zapnout."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Selhání spojky PTO"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Selhání výstupního ložiska PTO"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Selhání ventilu zapínání PTO"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Spojka pohonu PTO"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Výstupní hřídel PTO"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Počínající opotřebení spojky PTO. Vývodový hřídel se může občas odpojit."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Střední opotřebení spojky PTO. Odpojování je častější."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Silné opotřebení spojky PTO. Vývodový hřídel se opakovaně odpojuje."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Kritické selhání spojky PTO. Vývodový hřídel již nemůže přenášet výkon."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Počínající opotřebení výstupního ložiska PTO způsobuje slabý provozní hluk."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Střední opotřebení výstupního ložiska PTO způsobuje zřetelně slyšitelný hluk."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Silné opotřebení výstupního ložiska PTO způsobuje hlasitý hluk a občasné odpojení."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Kritické selhání výstupního ložiska PTO. Provoz vývodového hřídele již není možný."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Ovládání zapínání PTO reaguje nepravidelně a může odmítnout povel k zapnutí."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Ovládání zapínání PTO často nedokáže vývodový hřídel zapnout."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Ovládání zapínání PTO je silně vadný a odmítá většinu pokusů o zapnutí."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Ovládání zapínání PTO zcela selhal. Vývodový hřídel nelze zapnout."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Selhání spojky PTO"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Selhání výstupního ložiska PTO"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Selhání ventilu zapínání PTO"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Zapnutí PTO odmítnuto"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Na spojce PTO jsou viditelné první stopy přehřátí."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Lamely spojky PTO vykazují zřetelné opotřebení a stopy přehřátí."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Lamely spojky PTO jsou silně opotřebené a přehřáté."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Spojka PTO již nemůže přenášet točivý moment."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Na výstupním hřídeli PTO je zjistitelná mírná vůle a drsný chod."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Na výstupním hřídeli PTO je patrná vůle a hluk ložiska."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Výstupní ložisko PTO má velkou vůli a běží velmi drsně."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Výstupní ložisko nebo hřídel PTO selhaly."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Ventil zapínání PTO reaguje pomalu nebo nepravidelně."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Ventil zapínání PTO často nereaguje na povely."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Ventil zapínání PTO reaguje už jen sporadicky."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Ventil zapínání PTO již nereaguje."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Vysoké zatížení vývodového hřídele při zapnutí"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Zařízení krátce po zapnutí vyžadovalo vysoký výkon, což zvyšuje opotřebení vývodového hřídele. Pokud je to možné, zapínejte jej bez zatížení a ujistěte se, že je hnací stroj dostatečně výkonný."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="Na výstupním hřídeli PTO je zjistitelná mírná vůle a drsný chod."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="Na výstupním hřídeli PTO je patrná vůle a hluk ložiska."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Výstupní ložisko PTO má velkou vůli a běží velmi drsně."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Výstupní ložisko nebo hřídel PTO selhaly."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="Ovládání zapínání PTO reaguje pomalu nebo nepravidelně."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="Ovládání zapínání PTO často nereaguje na povely."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="Ovládání zapínání PTO reaguje už jen sporadicky."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="Ovládání zapínání PTO již nereaguje."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Cykly zapínání PTO"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Opakované zapínání PTO přidává mechanické spínací cykly. Vyhněte se zbytečnému vypínání a zapínání PTO."/>
     </texts>
 </l10n>

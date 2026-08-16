@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Гидравлический фильтр почти заблокирован. Гидравлические функции едва реагируют. Плановое обслуживание заменит фильтр."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Охладитель гидравлического масла частично потерял эффективность. При длительной работе гидравлики температура масла слегка повышается."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Охладитель гидравлического масла работает недостаточно эффективно. При непрерывной работе гидравлики температура масла заметно повышается."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Охладитель гидравлического масла сильно изношен. Тяжелая работа гидравлики быстро перегревает общее масло трансмиссии и гидросистемы."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Охладитель гидравлического масла сильно изношен. Тяжелая работа гидравлики быстро перегревает масло."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Охладитель гидравлического масла отказал. Длительная работа гидравлики вызывает сильный перегрев масла и ускоряет износ насоса."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Гидравлический распределитель начинает заедать. Одна гидравлическая функция иногда запаздывает и теряет усилие под нагрузкой."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Гидравлический распределитель периодически заедает. Одна гидравлическая функция замедлена и сильнее теряет усилие с ростом нагрузки."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Запуск двигателя %s затруднён. Это может быть вызвано низким зарядом аккумулятора, морозом, техническими неисправностями или износом стартера. Чтобы запустить двигатель, удерживайте кнопку запуска. Имейте в виду: электросистема подвергается высоким нагрузкам из-за больших пусковых токов!"/>
         <text name="rms_tutorial_critical_failure_title" text="Критическая поломка"/>
         <text name="rms_tutorial_critical_failure_message" text="Ого, вот это не повезло. Ваш %s полностью неисправен и больше не может передвигаться своим ходом. Вы можете воспользоваться мобильной мастерской и выполнить быстрый ремонт, чтобы техника смогла самостоятельно добраться до мастерской.&#10;&#10;Либо придётся искать другой способ эвакуации."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Слишком тяжёлая навеска"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Похоже, данная навеска слишком тяжёлая для вашего %s. Гидравлика работает на пределе, а это не может положительно сказаться на сроке её службы.&#10;&#10;Ориентируйтесь на простое правило: масса навески должна составлять не более 60%% массы самой техники."/>
         <text name="rms_tutorial_cold_engine_title" text="Прогревайте свою технику"/>
         <text name="rms_tutorial_cold_engine_message" text="Перед высокой нагрузкой прогревайте двигатель постепенно. Используйте умеренную подачу газа и средние обороты, пока двигатель не достигнет рабочей температуры."/>
         <text name="rms_tutorial_cold_oil_title" text="Холодное трансмиссионное масло"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Предпусковой подогрев дизеля"/>
         <text name="rms_tutorial_preheat_message" text="При холодном дизельном двигателе одно нажатие команды запуска включает зажигание и автоматически запускает цикл накаливания. Контрольные лампы панели выполняют самопроверку, затем лампа предпускового подогрева горит до готовности двигателя. Не повторяйте команду: стартер включится автоматически после того, как лампа погаснет."/>
         <text name="rms_spec_system_pto" text="Вал отбора мощности"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Муфта ВОМ"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Выходной вал ВОМ"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Начальный износ муфты ВОМ. ВОМ может иногда отключаться."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Умеренный износ муфты ВОМ. Отключения происходят чаще."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Сильный износ муфты ВОМ. ВОМ неоднократно отключается."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Критический отказ муфты ВОМ. Вал отбора мощности больше не передаёт мощность."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Начальный износ выходного подшипника ВОМ вызывает слабый рабочий шум."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Умеренный износ выходного подшипника ВОМ вызывает отчётливо слышимый шум."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Сильный износ выходного подшипника ВОМ вызывает громкий шум и периодические отключения."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Критический отказ выходного подшипника ВОМ. Работа ВОМ больше невозможна."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Клапан включения ВОМ срабатывает нестабильно и может отклонить команду."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Клапан включения ВОМ часто не может включить вал отбора мощности."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Клапан включения ВОМ серьёзно неисправен и отклоняет большинство попыток включения."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Клапан включения ВОМ полностью отказал. Вал отбора мощности невозможно включить."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Отказ муфты ВОМ"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Отказ выходного подшипника ВОМ"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Отказ клапана включения ВОМ"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Муфта привода ВОМ"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Выходной вал ВОМ"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Начальный износ муфты ВОМ. ВОМ может иногда отключаться."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Умеренный износ муфты ВОМ. Отключения происходят чаще."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Сильный износ муфты ВОМ. ВОМ неоднократно отключается."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Критический отказ муфты ВОМ. Вал отбора мощности больше не передаёт мощность."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Начальный износ выходного подшипника ВОМ вызывает слабый рабочий шум."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Умеренный износ выходного подшипника ВОМ вызывает отчётливо слышимый шум."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Сильный износ выходного подшипника ВОМ вызывает громкий шум и периодические отключения."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Критический отказ выходного подшипника ВОМ. Работа ВОМ больше невозможна."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Управление включением ВОМ срабатывает нестабильно и может отклонить команду."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Управление включением ВОМ часто не может включить вал отбора мощности."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Управление включением ВОМ серьёзно неисправен и отклоняет большинство попыток включения."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Управление включением ВОМ полностью отказал. Вал отбора мощности невозможно включить."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Отказ муфты ВОМ"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Отказ выходного подшипника ВОМ"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Отказ клапана включения ВОМ"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Включение ВОМ отклонено"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="На муфте ВОМ видны первые следы перегрева."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Диски муфты ВОМ имеют явный износ и следы перегрева."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Диски муфты ВОМ сильно изношены и перегреты."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Муфта ВОМ больше не может передавать крутящий момент."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="На выходном валу ВОМ ощущаются небольшой люфт и шероховатость."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="На выходном валу ВОМ заметны люфт и шум подшипника."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Выходной подшипник ВОМ имеет большой люфт и работает очень неровно."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Выходной подшипник или вал ВОМ вышел из строя."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Клапан включения ВОМ реагирует медленно или нестабильно."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Клапан включения ВОМ часто пропускает команды."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Клапан включения ВОМ срабатывает лишь изредка."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Клапан включения ВОМ больше не реагирует."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Высокая нагрузка на ВОМ при включении"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Сразу после включения агрегат потребовал большой мощности, что увеличивает износ ВОМ. По возможности включайте его без нагрузки и убедитесь, что мощности машины достаточно."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="На выходном валу ВОМ ощущаются небольшой люфт и шероховатость."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="На выходном валу ВОМ заметны люфт и шум подшипника."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Выходной подшипник ВОМ имеет большой люфт и работает очень неровно."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Выходной подшипник или вал ВОМ вышел из строя."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="Управление включением ВОМ реагирует медленно или нестабильно."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="Управление включением ВОМ часто пропускает команды."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="Управление включением ВОМ срабатывает лишь изредка."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="Управление включением ВОМ больше не реагирует."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Циклы включения ВОМ"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Повторные включения ВОМ накапливают механические циклы включения. Избегайте ненужных выключений и повторных включений."/>
     </texts>
 </l10n>

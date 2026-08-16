@@ -171,8 +171,6 @@ function RealisticMechanicalSystems:saveToXMLFile(xmlFile, key, usedModNames)
         xmlFile:setValue(key .. "#systemsState", RMS_Utils.serializeSystemsState(spec.systems))
         xmlFile:setValue(key .. "#factorStats", RMS_Utils.serializeNumericMap(flattenFactorStats(spec.factorStats)))
         xmlFile:setValue(key .. "#ptoEngagementCount", spec.ptoEngagementCount or 0)
-        xmlFile:setValue(key .. "#ptoEngagementCounter", spec.ptoEngagementCounter or 0)
-        xmlFile:setValue(key .. "#ptoLastEngagementRatio", spec.ptoLastEngagementRatio or 0)
         xmlFile:setValue(key .. "#ptoEngagementSequence", spec.ptoEngagementSequence or 0)
         xmlFile:setValue(key .. "#pendingOverhaulSystemStart", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemStart))
         xmlFile:setValue(key .. "#pendingOverhaulSystemTarget", RMS_Utils.serializeNumericMap(spec.pendingOverhaulSystemTarget))
@@ -278,6 +276,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.extraServiceWear = 0
     self.spec_RealisticMechanicalSystems.extraEngineHeat = 0
     self.spec_RealisticMechanicalSystems.extraTransmissionHeat = 0
+    self.spec_RealisticMechanicalSystems.extraHydraulicHeat = 0
     self.spec_RealisticMechanicalSystems.extraCurrentPeak = 0
     
     self.spec_RealisticMechanicalSystems.reliability = 1.0
@@ -426,10 +425,6 @@ function RealisticMechanicalSystems:onLoad(savegame)
             heavyLiftFactor = 0,
             heavyLiftMassRatio = 0,
             operatingFactor = 0,
-            vibFactor = 0,
-            vibSignal = 0,
-            vibRaw = 0,
-            vibFieldMultiplier = 1,
             coldOilFactor = 0,
             hotOilFactor = 0,
             breakdownProbability = 0,
@@ -447,10 +442,10 @@ function RealisticMechanicalSystems:onLoad(savegame)
             ptoTorque = 0,
             ptoRpm = 0,
             ptoPower = 0,
-            ptoPowerRatio = 0,
+            ptoUtilization = 0,
+            ptoMotorSideTorque = 0,
+            ptoNativeCapacityTorque = 0,
             ptoEngagementCount = 0,
-            ptoEngagementCounter = 0,
-            ptoLastEngagementRatio = 0,
             breakdownProbability = 0,
             critBreakdownProbability = 0
         },
@@ -581,6 +576,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
             cvtSlipActive = 0,
             cvtSlipLocked = 0,
             extraTransmissionHeat = 0,
+            hydraulicHeat = 0,
             stiction = 0,
             waxSpeed = 0,
             kp = 0
@@ -625,20 +621,23 @@ function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.isImplementLowered = false
     self.spec_RealisticMechanicalSystems.isImplementOperating = false
     self.spec_RealisticMechanicalSystems.liftedMass = 0
-    self.spec_RealisticMechanicalSystems.operatingMass = 0
     self.spec_RealisticMechanicalSystems.hydraulicsMoveAlphaCache = {}
     self.spec_RealisticMechanicalSystems.hydraulicsLiftRatioCache = {}
+    self.spec_RealisticMechanicalSystems.hydraulicLiftMassByJoint = {}
+    self.spec_RealisticMechanicalSystems.hydraulicActiveTargetCount = 0
+    self.spec_RealisticMechanicalSystems.isHydraulicActive = false
+    self.spec_RealisticMechanicalSystems.isHydraulicLiftMoving = false
     self.spec_RealisticMechanicalSystems.isPtoActive = false
     self.spec_RealisticMechanicalSystems.ptoTorque = 0
     self.spec_RealisticMechanicalSystems.ptoRpm = 0
     self.spec_RealisticMechanicalSystems.ptoPower = 0
-    self.spec_RealisticMechanicalSystems.ptoPowerRatio = 0
+    self.spec_RealisticMechanicalSystems.ptoUtilization = 0
+    self.spec_RealisticMechanicalSystems.ptoMotorSideTorque = 0
+    self.spec_RealisticMechanicalSystems.ptoNativeCapacityTorque = 0
     self.spec_RealisticMechanicalSystems.ptoEngagementCount = 0
-    self.spec_RealisticMechanicalSystems.ptoEngagementCounter = 0
-    self.spec_RealisticMechanicalSystems.ptoLastEngagementRatio = 0
     self.spec_RealisticMechanicalSystems.ptoEngagementSequence = 0
+    self.spec_RealisticMechanicalSystems.ptoEngagementPulseCount = 0
     self.spec_RealisticMechanicalSystems.ptoPreviousActiveLinks = {}
-    self.spec_RealisticMechanicalSystems.ptoPendingEngagements = {}
     self.spec_RealisticMechanicalSystems.ptoTutorialObservedSequence = 0
     self.spec_RealisticMechanicalSystems.ptoEngagementAttempt = false
     self.spec_RealisticMechanicalSystems.ptoEngagementAttemptBlocked = nil
@@ -781,8 +780,6 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
         spec.thermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#thermostatState", spec.thermostatState), spec.thermostatState or 0, 0.0, 1.0)
         spec.transmissionThermostatState = RealisticMechanicalSystems.sanitizeNumber(savegame.xmlFile:getValue(key .. "#transmissionThermostatState", spec.transmissionThermostatState), spec.transmissionThermostatState or 0, 0.0, 1.0)
         spec.ptoEngagementCount = math.floor(math.max(savegame.xmlFile:getValue(key .. "#ptoEngagementCount", spec.ptoEngagementCount) or 0, 0))
-        spec.ptoEngagementCounter = math.max(savegame.xmlFile:getValue(key .. "#ptoEngagementCounter", spec.ptoEngagementCounter) or 0, 0)
-        spec.ptoLastEngagementRatio = math.clamp(savegame.xmlFile:getValue(key .. "#ptoLastEngagementRatio", spec.ptoLastEngagementRatio) or 0, 0, 1.5)
         spec.ptoEngagementSequence = math.floor(math.max(savegame.xmlFile:getValue(key .. "#ptoEngagementSequence", spec.ptoEngagementSequence) or 0, 0))
         if spec.engTermPID ~= nil then
             spec.engTermPID.mechPos = spec.thermostatState

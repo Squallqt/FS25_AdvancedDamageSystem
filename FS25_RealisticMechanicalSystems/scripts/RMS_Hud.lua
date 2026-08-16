@@ -1343,13 +1343,7 @@ function RMS_Hud:drawLoadMass(cardRightX)
 
         local trailerSeverity = RMS_Utils.calculateQuadraticMultiplier(powerToWeight, threshold, true, fullEffect)
 
-        local hydraulicsConfig = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
-        local liftThreshold = tonumber(hydraulicsConfig.HEAVY_LIFT_FACTOR_THRESHOLD) or 0.6
-        local liftedMass = math.max(tonumber(spec.liftedMass) or 0, 0)
-        local liftMassRatio = selfMass > 0 and (liftedMass / selfMass) or 0
-        local liftSeverity = RMS_Utils.calculateQuadraticMultiplier(liftMassRatio, liftThreshold, false)
-
-        loadColor = self:getLoadSeverityColor(math.max(trailerSeverity, liftSeverity))
+        loadColor = self:getLoadSeverityColor(trailerSeverity)
     end
 
     local _, smBottomY = g_currentMission.hud.speedMeter:getPosition()

@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="Filtr hydrauliczny jest niemal zablokowany. Funkcje hydrauliczne ledwo reagują. Zwykła konserwacja wymienia filtr."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="Chłodnica oleju hydraulicznego straciła część wydajności. Temperatura oleju lekko rośnie podczas długiej pracy hydrauliki."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="Chłodnica oleju hydraulicznego działa zbyt słabo. Temperatura oleju wyraźnie rośnie podczas ciągłej pracy hydrauliki."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Chłodnica oleju hydraulicznego jest mocno zużyta. Ciężka praca hydrauliki szybko przegrzewa wspólny olej przekładniowy i hydrauliczny."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="Chłodnica oleju hydraulicznego jest mocno zużyta. Ciężka praca hydrauliki szybko przegrzewa olej."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="Chłodnica oleju hydraulicznego uległa awarii. Długa praca hydrauliki silnie przegrzewa olej i przyspiesza zużycie pompy."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Zawór sterowania hydrauliką zaczyna się zacinać. Jedna funkcja hydrauliczna czasem się waha i traci siłę pod obciążeniem."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Zawór sterowania hydrauliką zacina się okresowo. Jedna funkcja hydrauliczna jest wolniejsza i traci więcej siły przy większym obciążeniu."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Uruchomienie silnika w %s jest utrudnione. Może to być spowodowane słabym akumulatorem, mrozem, usterkami mechanicznymi albo zużyciem rozrusznika. Aby uruchomić silnik, przytrzymaj przycisk zapłonu. Uwaga: podczas rozruchu instalacja elektryczna jest mocno obciążona z powodu wysokich prądów rozruchowych."/>
         <text name="rms_tutorial_critical_failure_title" text="Krytyczna awaria"/>
         <text name="rms_tutorial_critical_failure_message" text="No cóż, to pech. Twój %s jest całkowicie unieruchomiony i nie może już poruszać się o własnych siłach. Możesz skorzystać z mobilnego warsztatu i wykonać szybką naprawę, aby pojazd mógł samodzielnie dotrzeć do warsztatu.&#10;&#10;W przeciwnym razie trzeba będzie znaleźć inny sposób na jego odzyskanie."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Zbyt ciężki osprzęt"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Wygląda na to, że ten osprzęt jest za ciężki dla Twojego %s. Hydraulika pracuje na granicy możliwości, co negatywnie wpłynie na jej żywotność.&#10;&#10;Trzymaj się prostej zasady: masa osprzętu nie powinna przekraczać 60%% masy własnej pojazdu."/>
         <text name="rms_tutorial_cold_engine_title" text="Rozgrzej maszynę"/>
         <text name="rms_tutorial_cold_engine_message" text="Rozgrzewaj silnik stopniowo przed dużym obciążeniem. Używaj umiarkowanego gazu i obrotów, aż silnik osiągnie temperaturę roboczą."/>
         <text name="rms_tutorial_cold_oil_title" text="Zimny olej przekładniowy"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Podgrzewanie silnika Diesla"/>
         <text name="rms_tutorial_preheat_message" text="Przy zimnym silniku Diesla jedno naciśnięcie sterowania rozruchem włącza zapłon i automatycznie rozpoczyna cykl świec żarowych. Kontrolki deski rozdzielczej wykonują autotest, a następnie kontrolka podgrzewania pozostaje włączona do chwili gotowości silnika. Nie naciskaj ponownie: rozrusznik włączy się automatycznie po zgaśnięciu kontrolki."/>
         <text name="rms_spec_system_pto" text="Wał odbioru mocy"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Sprzęgło WOM"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Wał wyjściowy WOM"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Początkowe zużycie sprzęgła WOM. WOM może sporadycznie się rozłączać."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Umiarkowane zużycie sprzęgła WOM. Rozłączanie występuje częściej."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Poważne zużycie sprzęgła WOM. WOM wielokrotnie się rozłącza."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Krytyczna awaria sprzęgła WOM. WOM nie może już przenosić mocy."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="Początkowe zużycie łożyska wyjściowego WOM powoduje lekki hałas pracy."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="Umiarkowane zużycie łożyska wyjściowego WOM powoduje wyraźnie słyszalny hałas."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="Poważne zużycie łożyska wyjściowego WOM powoduje głośny hałas i sporadyczne rozłączanie."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Krytyczna awaria łożyska wyjściowego WOM. Praca WOM nie jest już możliwa."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="Zawór załączania WOM działa nieregularnie i może odrzucić polecenie załączenia."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="Zawór załączania WOM często nie uruchamia WOM."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="Zawór załączania WOM jest poważnie uszkodzony i odrzuca większość prób."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="Zawór załączania WOM uległ całkowitej awarii. WOM nie można załączyć."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Awaria sprzęgła WOM"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Awaria łożyska wyjściowego WOM"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Awaria zaworu załączania WOM"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Sprzęgło napędu WOM"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Wał wyjściowy WOM"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Początkowe zużycie sprzęgła WOM. WOM może sporadycznie się rozłączać."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Umiarkowane zużycie sprzęgła WOM. Rozłączanie występuje częściej."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Poważne zużycie sprzęgła WOM. WOM wielokrotnie się rozłącza."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Krytyczna awaria sprzęgła WOM. WOM nie może już przenosić mocy."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Początkowe zużycie łożyska wyjściowego WOM powoduje lekki hałas pracy."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Umiarkowane zużycie łożyska wyjściowego WOM powoduje wyraźnie słyszalny hałas."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Poważne zużycie łożyska wyjściowego WOM powoduje głośny hałas i sporadyczne rozłączanie."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Krytyczna awaria łożyska wyjściowego WOM. Praca WOM nie jest już możliwa."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Sterowanie załączaniem WOM działa nieregularnie i może odrzucić polecenie załączenia."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Sterowanie załączaniem WOM często nie uruchamia WOM."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Sterowanie załączaniem WOM jest poważnie uszkodzony i odrzuca większość prób."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Sterowanie załączaniem WOM uległ całkowitej awarii. WOM nie można załączyć."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Awaria sprzęgła WOM"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Awaria łożyska wyjściowego WOM"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Awaria zaworu załączania WOM"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Załączenie WOM odrzucone"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Na sprzęgle WOM widoczne są pierwsze ślady przegrzania."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Tarcze sprzęgła WOM wykazują wyraźne zużycie i ślady przegrzania."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Tarcze sprzęgła WOM są mocno zużyte i przegrzane."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="Sprzęgło WOM nie może już przenosić momentu obrotowego."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Na wale wyjściowym WOM wyczuwalny jest lekki luz i chropowata praca."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Na wale wyjściowym WOM występuje wyczuwalny luz i hałas łożyska."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="Łożysko wyjściowe WOM ma duży luz i pracuje bardzo nierówno."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="Łożysko lub wał wyjściowy WOM uległ awarii."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="Zawór załączania WOM reaguje wolno lub nieregularnie."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="Zawór załączania WOM często pomija polecenia."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="Zawór załączania WOM reaguje już tylko sporadycznie."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="Zawór załączania WOM nie reaguje."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Wysokie obciążenie WOM przy uruchamianiu"/>
-        <text name="rms_tutorial_pto_engagement_message" text="Osprzęt wymagał dużej mocy tuż po uruchomieniu, co zwiększa zużycie WOM. Jeśli to możliwe, uruchamiaj go bez obciążenia i upewnij się, że maszyna ma wystarczającą moc."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="Na wale wyjściowym WOM wyczuwalny jest lekki luz i chropowata praca."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="Na wale wyjściowym WOM występuje wyczuwalny luz i hałas łożyska."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Łożysko wyjściowe WOM ma duży luz i pracuje bardzo nierówno."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="Łożysko lub wał wyjściowy WOM uległ awarii."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="Sterowanie załączaniem WOM reaguje wolno lub nieregularnie."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="Sterowanie załączaniem WOM często pomija polecenia."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="Sterowanie załączaniem WOM reaguje już tylko sporadycznie."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="Sterowanie załączaniem WOM nie reaguje."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Cykle załączania WOM"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Wielokrotne załączanie WOM gromadzi mechaniczne cykle załączenia. Unikaj niepotrzebnego wyłączania i ponownego włączania."/>
     </texts>
 </l10n>

@@ -532,7 +532,6 @@ function RMS_Hud:drawActiveVehicleHUD()
         hydraulicsDbg.expiredServiceFactor or 0,
         hydraulicsDbg.heavyLiftFactor or 0,
         hydraulicsDbg.operatingFactor or 0,
-        hydraulicsDbg.vibFactor or 0,
         hydraulicsDbg.coldOilFactor or 0,
         hydraulicsDbg.hotOilFactor or 0
     ) * bcw
@@ -655,8 +654,7 @@ function RMS_Hud:drawActiveVehicleHUD()
     local hydraulicsLines = buildSystemLines("hydraulics", hydraulicsDbg, hydraulicsMaxFactor, {
         { shortName = "sf", statKey = "sf", value = hydraulicsDbg.expiredServiceFactor or 0 },
         { shortName = "hlf", statKey = "hlf", value = hydraulicsDbg.heavyLiftFactor or 0, extraInfo = string.format("mr: %.2f", asPercent(hydraulicsDbg.heavyLiftMassRatio or 0)) },
-        { shortName = "of", statKey = "of", value = hydraulicsDbg.operatingFactor or 0, extraInfo = string.format("om: %.2f t: %ds", hydraulicsDbg.operatingMassRatio or 0, math.floor(((hydraulicsDbg.operatingTimer or 0) / 1000) + 0.0001)) },
-        { shortName = "vf", statKey = "vf", value = hydraulicsDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(hydraulicsDbg.vibRaw or 0), asPercent(hydraulicsDbg.vibSignal or 0)) },
+        { shortName = "of", statKey = "of", value = hydraulicsDbg.operatingFactor or 0, extraInfo = string.format("active: %s", tostring(hydraulicsDbg.isHydraulicActive == true)) },
         { shortName = "cof", statKey = "cof", value = hydraulicsDbg.coldOilFactor or 0 },
         { shortName = "hof", statKey = "hof", value = hydraulicsDbg.hotOilFactor or 0 }
     })
@@ -695,8 +693,8 @@ function RMS_Hud:drawActiveVehicleHUD()
 
     local ptoLines = buildSystemLines("pto", ptoDbg, ptoMaxFactor, {
         { shortName = "sf", statKey = "sf", value = ptoDbg.expiredServiceFactor or 0 },
-        { shortName = "plf", statKey = "plf", value = ptoDbg.ptoLoadFactor or 0, extraInfo = string.format("active: %s rpm: %.0f kW: %.1f r: %.3f", tostring(ptoDbg.isPtoActive == true), ptoDbg.ptoRpm or 0, ptoDbg.ptoPower or 0, ptoDbg.ptoPowerRatio or 0) },
-        { shortName = "pef", statKey = "pef", value = ptoDbg.ptoEngagementFactor or 0, extraInfo = string.format("n: %d c: %.3f last: %.3f", ptoDbg.ptoEngagementCount or 0, ptoDbg.ptoEngagementCounter or 0, ptoDbg.ptoLastEngagementRatio or 0) }
+        { shortName = "plf", statKey = "plf", value = ptoDbg.ptoLoadFactor or 0, extraInfo = string.format("active: %s rpm: %.0f kW: %.1f u: %.3f", tostring(ptoDbg.isPtoActive == true), ptoDbg.ptoRpm or 0, ptoDbg.ptoPower or 0, ptoDbg.ptoUtilization or 0) },
+        { shortName = "pef", statKey = "pef", value = ptoDbg.ptoEngagementFactor or 0, extraInfo = string.format("cycles: %d pulse: %.0f", ptoDbg.ptoEngagementCount or 0, ptoDbg.ptoEngagementFactor or 0) }
     })
 
 
@@ -749,7 +747,7 @@ function RMS_Hud:drawActiveVehicleHUD()
     local transmissionTempLines = {}
     if showTransmissionSection then
         addLine(transmissionTempLines, string.format(
-            "T: %.1fC (raw: %.1fC) | ts: %.3f | k/s/w: %.2f/%.3f/%.3f | h: %.3f(l/s/a/ws: %.2f/%.2f/%.2f/%.2f) | c: %.3f(r/s/c: %.3f/%.3f/%.3f) | cvt: a/l=%d/%d eh=%.3f",
+            "T: %.1fC (raw: %.1fC) | ts: %.3f | k/s/w: %.2f/%.3f/%.3f | h: %.3f(l/s/a/ws: %.2f/%.2f/%.2f/%.2f) | c: %.3f(r/s/c: %.3f/%.3f/%.3f) | cvt: a/l=%d/%d eh=%.3f hh=%.3f",
             spec.transmissionTemperature,
             spec.rawTransmissionTemperature or spec.transmissionTemperature or -99,
             spec.transmissionThermostatState,
@@ -767,7 +765,8 @@ function RMS_Hud:drawActiveVehicleHUD()
             (debugData.transmissionTemp or {}).convectionCooling or 0,
             (debugData.transmissionTemp or {}).cvtSlipActive or 0,
             (debugData.transmissionTemp or {}).cvtSlipLocked or 0,
-            (debugData.transmissionTemp or {}).extraTransmissionHeat or 0
+            (debugData.transmissionTemp or {}).extraTransmissionHeat or 0,
+            (debugData.transmissionTemp or {}).hydraulicHeat or 0
         ), getTempColor(spec.transmissionTemperature), 0.95)
     end
 
@@ -1066,18 +1065,18 @@ function RMS_Hud:drawActiveVehicleHUD()
     addLine(implementLines, "", {1, 1, 1, 1}, 0.95)
     local debugImplements = getDebugStateValue("implements", spec.implements or {}) or {}
     addLine(implementLines, string.format(
-        "Implements: lowered: %s | operating: %s | lifted: %s | operatingMass: %.1f | liftedMass: %.1f | debris: %s",
+        "Implements: lowered: %s | hydraulic: %s | lifted: %s | hydraulicTargets: %d | liftedMass: %.1f | debris: %s",
         tostring(getDebugStateValue("isImplementLowered", spec.isImplementLowered == true) == true),
         tostring(getDebugStateValue("isImplementOperating", spec.isImplementOperating == true) == true),
         tostring(getDebugStateValue("isImplementLifted", spec.isImplementLifted == true) == true),
-        tonumber(getDebugStateValue("operatingMass", spec.operatingMass)) or 0,
+        tonumber(getDebugStateValue("hydraulicActiveTargetCount", spec.hydraulicActiveTargetCount)) or 0,
         tonumber(getDebugStateValue("liftedMass", spec.liftedMass)) or 0,
         tostring(getDebugStateValue("hasDebris", spec.hasDebris == true) == true)
     ), {1, 1, 1, 1}, 0.95)
 
     for index, impl in ipairs(debugImplements) do
         addLine(implementLines, string.format(
-            "#%d %s | mass: %.1f | jointType: %s | lowered: %s | supportWheels: %d | moving: %s | foldMoving: %s | plowRotating: %s | cylinderMoving: %s | head: %s",
+            "#%d %s | mass: %.1f | jointType: %s | lowered: %s | supportWheels: %d | liftMoving: %s | cylinderMoving: %s | jointControl: %s | hammer: %s | head: %s",
             index,
             tostring(impl.name or "implement"),
             impl.mass,
@@ -1085,9 +1084,9 @@ function RMS_Hud:drawActiveVehicleHUD()
             tostring(impl.isLowered == true),
             impl.supportWheelCount,
             tostring(impl.isMoving == true),
-            tostring(impl.isFoldMoving == true),
-            tostring(impl.isPlowRotationMoving == true),
             tostring(impl.isCylinderedMoving == true),
+            tostring(impl.isAttacherJointControlMoving == true),
+            tostring(impl.isHydraulicHammerActive == true),
             tostring(impl.isHead == true)
         ), {0.92, 0.96, 1.0, 1}, 0.90)
     end
@@ -1358,9 +1357,9 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
                 return string.format("ratio %.3f", tonumber(dbg.currentFuelUsageRatio) or 0)
             end
         elseif debugKey == "ptoLoadFactor" then
-            return string.format("power %.1fkW | ratio %.3f | rpm %.0f", tonumber(dbg.ptoPower) or 0, tonumber(dbg.ptoPowerRatio) or 0, tonumber(dbg.ptoRpm) or 0)
+            return string.format("power %.1fkW | utilization %.3f | rpm %.0f", tonumber(dbg.ptoPower) or 0, tonumber(dbg.ptoUtilization) or 0, tonumber(dbg.ptoRpm) or 0)
         elseif debugKey == "ptoEngagementFactor" then
-            return string.format("count %d | weighted %.3f | last %.3f", tonumber(dbg.ptoEngagementCount) or 0, tonumber(dbg.ptoEngagementCounter) or 0, tonumber(dbg.ptoLastEngagementRatio) or 0)
+            return string.format("cycles %d | current pulse %.0f", tonumber(dbg.ptoEngagementCount) or 0, tonumber(dbg.ptoEngagementFactor) or 0)
         elseif debugKey == "airIntakeCloggingFactor" then
             if dbg.airIntakeClogging ~= nil then
                 return string.format("clog %.1f%%", (tonumber(dbg.airIntakeClogging) or 0) * 100)

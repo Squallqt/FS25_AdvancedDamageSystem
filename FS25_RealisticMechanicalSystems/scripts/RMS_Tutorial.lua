@@ -123,9 +123,6 @@ function RMS_Tutorial:update(dt)
             if hasNewPtoEngagement then
                 spec.ptoTutorialObservedSequence = ptoEngagementSequence
             end
-            local vehicleMass = vehicle.getTotalMass ~= nil and (vehicle:getTotalMass(true) or 0) or 0
-            local heavyLiftMassRatio = vehicleMass > 0 and (spec.liftedMass / vehicleMass) or 0
-            local heavyLiftThreshold = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA.HEAVY_LIFT_FACTOR_THRESHOLD or 0
             local transmissionConfig = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
             local hydraulicsConfig = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
             local chassisBrakeState = spec.chassisBrakeState
@@ -529,7 +526,11 @@ function RMS_Tutorial:update(dt)
                 messagedData.PTO_ENGAGEMENT = true
                 self.messageDowntime = downtimeAfterMessage
 
-            elseif not messagedData.COLD_OIL and (transmissionSystemEnabled or hydraulicsSystemEnabled) and isMotorStarted and spec.transmissionTemperature < hydraulicsConfig.COLD_OIL_THRESHOLD and spec.dynamicMotorLoad >= transmissionConfig.LUGGING_MOTORLOAD_THRESHOLD then
+            elseif not messagedData.COLD_OIL
+                and (transmissionSystemEnabled or (hydraulicsSystemEnabled and spec.isHydraulicActive))
+                and isMotorStarted
+                and spec.transmissionTemperature < hydraulicsConfig.COLD_OIL_THRESHOLD
+                and spec.dynamicMotorLoad >= transmissionConfig.LUGGING_MOTORLOAD_THRESHOLD then
                 RMS_Hud.showNotification(
                     g_i18n:getText("rms_tutorial_cold_oil_message"),
                     0,
@@ -537,17 +538,6 @@ function RMS_Tutorial:update(dt)
                     true
                 )
                 messagedData.COLD_OIL = true
-                self.messageDowntime = downtimeAfterMessage
-
-            --- heavy lift
-            elseif not messagedData.HEAVY_LIFT and hydraulicsSystemEnabled and isMotorStarted and heavyLiftMassRatio > heavyLiftThreshold then
-                RMS_Hud.showNotification(
-                    string.format(g_i18n:getText("rms_tutorial_heavy_lift_message"), vehicle:getFullName()),
-                    0,
-                    g_i18n:getText("rms_tutorial_heavy_lift_title"),
-                    true
-                )
-                messagedData.HEAVY_LIFT = true
                 self.messageDowntime = downtimeAfterMessage
 
             -- ==========================================================

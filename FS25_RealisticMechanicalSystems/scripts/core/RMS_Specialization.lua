@@ -938,9 +938,7 @@ function RealisticMechanicalSystems.initSpecialization()
     schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#diffLockRequested", "Differential lock requested")
     schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#parkBrake", "Parking brake engaged")
     schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementCount", "PTO engagement count")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#ptoEngagementCounter", "Weighted PTO engagement counter")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#ptoLastEngagementRatio", "Last measured PTO engagement power ratio")
-    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementSequence", "Severe PTO engagement sequence")
+    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementSequence", "PTO engagement cycle sequence")
 
     local logKey = baseKey .. ".maintenanceLog.entry(?)"
     schemaSavegame:register(XMLValueType.INT,    logKey .. "#id", "Entry ID")

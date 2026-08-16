@@ -320,7 +320,7 @@
         <text name="rms_breakdowns_hydraulic_filter_clogging_stage4_description" text="El filtro hidráulico está casi bloqueado. Las funciones hidráulicas apenas responden. El mantenimiento habitual sustituye el filtro."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage1_description" text="El enfriador de aceite hidráulico ha perdido algo de eficacia. La temperatura del aceite aumenta ligeramente durante un trabajo hidráulico prolongado."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage2_description" text="El enfriador de aceite hidráulico rinde por debajo de lo normal. La temperatura del aceite aumenta claramente durante un trabajo hidráulico continuo."/>
-        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="El enfriador de aceite hidráulico está muy deteriorado. El trabajo hidráulico pesado sobrecalienta rápidamente el aceite común de la transmisión y la hidráulica."/>
+        <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage3_description" text="El enfriador de aceite hidráulico está muy deteriorado. El trabajo hidráulico pesado sobrecalienta rápidamente el aceite."/>
         <text name="rms_breakdowns_hydraulic_oil_cooler_malfunction_stage4_description" text="El enfriador de aceite hidráulico ha fallado. El trabajo prolongado provoca un fuerte sobrecalentamiento del aceite y acelera el desgaste de la bomba."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage1_description" text="Una válvula de control hidráulico empieza a atascarse. Una función hidráulica vacila ocasionalmente y pierde fuerza bajo carga."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Una válvula de control hidráulico se atasca de forma intermitente. Una función hidráulica es más lenta y pierde más fuerza al aumentar la carga."/>
@@ -735,8 +735,6 @@
         <text name="rms_tutorial_hard_start_message" text="Arrancar el motor del %s está siendo difícil. Esto puede deberse a una batería baja, a temperaturas de congelación, a fallos mecánicos o al desgaste del motor de arranque. Para arrancar el motor, mantén pulsado el botón de encendido. Nota: el sistema eléctrico sufre grandes cargas durante el arranque debido a las altas corrientes de irrupción."/>
         <text name="rms_tutorial_critical_failure_title" text="Fallo crítico"/>
         <text name="rms_tutorial_critical_failure_message" text="Vaya, qué mala suerte. Tu %s está completamente inutilizado y ya no puede moverse por sus propios medios. Puedes usar un taller móvil y realizar una reparación rápida para que el vehículo pueda llegar al taller por sí mismo.&#10;&#10;De lo contrario, tendrás que buscar otra forma de recuperarlo."/>
-        <text name="rms_tutorial_heavy_lift_title" text="Implemento demasiado pesado"/>
-        <text name="rms_tutorial_heavy_lift_message" text="Parece que este implemento es demasiado pesado para tu %s. La hidráulica está trabajando al límite, y eso afectará negativamente a su vida útil.&#10;&#10;Sigue una regla sencilla: el peso del implemento no debería superar el 60%% del propio peso del vehículo."/>
         <text name="rms_tutorial_cold_engine_title" text="Calienta tu máquina"/>
         <text name="rms_tutorial_cold_engine_message" text="Calienta el motor suavemente antes de someterlo a una carga elevada. Usa un acelerador y un régimen moderados hasta que alcance la temperatura de funcionamiento."/>
         <text name="rms_tutorial_cold_oil_title" text="Aceite de transmisión frío"/>
@@ -797,37 +795,33 @@
         <text name="rms_tutorial_preheat_title" text="Precalentamiento diésel"/>
         <text name="rms_tutorial_preheat_message" text="Con el motor diésel frío, una pulsación del mando de arranque enciende el contacto e inicia automáticamente el ciclo de precalentamiento. Los testigos del cuadro realizan su autocomprobación y, después, el testigo de precalentamiento permanece encendido hasta que el motor está listo. No repitas la orden: el motor de arranque se acciona automáticamente cuando el testigo se apaga."/>
         <text name="rms_spec_system_pto" text="Toma de fuerza"/>
-        <text name="rms_breakdowns_part_pto_clutch" text="Embrague de la TDF"/>
-        <text name="rms_breakdowns_part_pto_output_shaft" text="Eje de salida de la TDF"/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage1_description" text="Desgaste inicial del embrague de la TDF. La TDF puede desacoplarse ocasionalmente."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage2_description" text="Desgaste moderado del embrague de la TDF. Los desacoplamientos son más frecuentes."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage3_description" text="Desgaste severo del embrague de la TDF. La TDF se desacopla repetidamente."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_description" text="Fallo crítico del embrague de la TDF. La TDF ya no puede transmitir potencia."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage1_description" text="El desgaste inicial del rodamiento de salida de la TDF produce un ligero ruido de funcionamiento."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage2_description" text="El desgaste moderado del rodamiento de salida de la TDF produce un ruido claramente audible."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage3_description" text="El desgaste severo del rodamiento de salida de la TDF provoca mucho ruido y desacoplamientos ocasionales."/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_description" text="Fallo crítico del rodamiento de salida de la TDF. La TDF ya no puede funcionar."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage1_description" text="La válvula de acoplamiento de la TDF responde de forma intermitente y puede rechazar una orden."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage2_description" text="La válvula de acoplamiento de la TDF falla con frecuencia al conectar la TDF."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage3_description" text="La válvula de acoplamiento de la TDF está muy averiada y rechaza la mayoría de los intentos."/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_description" text="La válvula de acoplamiento de la TDF ha fallado por completo. No se puede conectar la TDF."/>
-        <text name="rms_breakdowns_pto_clutch_wear_stage4_message" text="Fallo del embrague de la TDF"/>
-        <text name="rms_breakdowns_pto_output_bearing_wear_stage4_message" text="Fallo del rodamiento de salida de la TDF"/>
-        <text name="rms_breakdowns_pto_engagement_valve_malfunction_stage4_message" text="Fallo de la válvula de acoplamiento de la TDF"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Acoplamiento de transmisión de la TDF"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Eje de salida de la TDF"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Desgaste inicial del acoplamiento de transmisión de la TDF. La TDF puede desacoplarse ocasionalmente."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Desgaste moderado del acoplamiento de transmisión de la TDF. Los desacoplamientos son más frecuentes."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Desgaste severo del acoplamiento de transmisión de la TDF. La TDF se desacopla repetidamente."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Fallo crítico del acoplamiento de transmisión de la TDF. La TDF ya no puede transmitir potencia."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="El desgaste inicial del rodamiento de salida de la TDF produce un ligero ruido de funcionamiento."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="El desgaste moderado del rodamiento de salida de la TDF produce un ruido claramente audible."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="El desgaste severo del rodamiento de salida de la TDF provoca mucho ruido y desacoplamientos ocasionales."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Fallo crítico del rodamiento de salida de la TDF. La TDF ya no puede funcionar."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="La mando de acoplamiento de la TDF responde de forma intermitente y puede rechazar una orden."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="La mando de acoplamiento de la TDF falla con frecuencia al conectar la TDF."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="La mando de acoplamiento de la TDF está muy averiada y rechaza la mayoría de los intentos."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="La mando de acoplamiento de la TDF ha fallado por completo. No se puede conectar la TDF."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Fallo del acoplamiento de transmisión de la TDF"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Fallo del rodamiento de salida de la TDF"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Fallo de la mando de acoplamiento de la TDF"/>
         <text name="rms_breakdowns_pto_engagement_blocked_message" text="Acoplamiento de la TDF rechazado"/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage1" text="Se observan las primeras marcas de calor en el embrague de la TDF."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage2" text="Los discos del embrague de la TDF muestran desgaste y marcas de calor evidentes."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage3" text="Los discos del embrague de la TDF están muy desgastados y sobrecalentados."/>
-        <text name="rms_inspection_hint_pto_clutch_wear_stage4" text="El embrague de la TDF ya no puede transmitir par."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage1" text="Se detectan una ligera holgura y aspereza en el eje de salida de la TDF."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage2" text="Hay una holgura apreciable y ruido de rodamiento en el eje de salida de la TDF."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage3" text="El rodamiento de salida de la TDF tiene mucha holgura y gira con gran aspereza."/>
-        <text name="rms_inspection_hint_pto_output_bearing_wear_stage4" text="El rodamiento o el eje de salida de la TDF ha fallado."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage1" text="La válvula de acoplamiento de la TDF reacciona despacio o de forma irregular."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage2" text="La válvula de acoplamiento de la TDF omite órdenes con frecuencia."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage3" text="La válvula de acoplamiento de la TDF solo responde esporádicamente."/>
-        <text name="rms_inspection_hint_pto_engagement_valve_malfunction_stage4" text="La válvula de acoplamiento de la TDF ya no responde."/>
-        <text name="rms_tutorial_pto_engagement_title" text="Carga elevada en la TDF al activarla"/>
-        <text name="rms_tutorial_pto_engagement_message" text="El equipo demandó mucha potencia justo después de activarlo, lo que aumenta el desgaste de la TDF. Siempre que sea posible, actívalo sin carga y asegúrate de que la máquina tenga potencia suficiente."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="Se detectan una ligera holgura y aspereza en el eje de salida de la TDF."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="Hay una holgura apreciable y ruido de rodamiento en el eje de salida de la TDF."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="El rodamiento de salida de la TDF tiene mucha holgura y gira con gran aspereza."/>
+        <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage4" text="El rodamiento o el eje de salida de la TDF ha fallado."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage1" text="La mando de acoplamiento de la TDF reacciona despacio o de forma irregular."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="La mando de acoplamiento de la TDF omite órdenes con frecuencia."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="La mando de acoplamiento de la TDF solo responde esporádicamente."/>
+        <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="La mando de acoplamiento de la TDF ya no responde."/>
+        <text name="rms_tutorial_pto_engagement_title" text="Ciclos de acoplamiento de la TDF"/>
+        <text name="rms_tutorial_pto_engagement_message" text="Las activaciones repetidas de la TDF acumulan ciclos mecánicos de acoplamiento. Evita activarla y desactivarla sin necesidad."/>
     </texts>
 </l10n>
