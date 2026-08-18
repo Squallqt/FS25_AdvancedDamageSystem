@@ -1,19 +1,22 @@
--- RMS_SettingsSyncEvent
--- Client-to-server event. Replicates all adjustable RMS_Config values
--- from the admin client to the dedicated server so both machines share
--- identical tuning.  Sent once after every in-game settings change.
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---Replicates every adjustable RMS_Config value between the admin client, the server and the other clients
 RMS_SettingsSyncEvent = {}
 local RMS_SettingsSyncEvent_mt = Class(RMS_SettingsSyncEvent, Event)
 
 InitEventClass(RMS_SettingsSyncEvent, "RMS_SettingsSyncEvent")
 
 
+---Create instance of Event class
+-- @return table self instance of class event
 function RMS_SettingsSyncEvent.emptyNew()
     return Event.new(RMS_SettingsSyncEvent_mt)
 end
 
 
+---Create new instance of event holding a snapshot of the local configuration
+-- @return table self instance of class event
 function RMS_SettingsSyncEvent.new()
     local self = RMS_SettingsSyncEvent.emptyNew()
 
@@ -66,6 +69,9 @@ function RMS_SettingsSyncEvent.new()
 end
 
 
+---Called on server side on join, values are written in the order readStream expects them
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.baseServiceWear       or 0)
     streamWriteFloat32(streamId, self.baseSystemsWear       or 0)
@@ -114,6 +120,9 @@ function RMS_SettingsSyncEvent:writeStream(streamId, connection)
 end
 
 
+---Called on client side on join, values are read in the order writeStream sends them
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_SettingsSyncEvent:readStream(streamId, connection)
     self.baseServiceWear           = streamReadFloat32(streamId)
     self.baseSystemsWear           = streamReadFloat32(streamId)
@@ -164,7 +173,8 @@ function RMS_SettingsSyncEvent:readStream(streamId, connection)
 end
 
 
--- Apply received values to RMS_Config.
+---Writes the received values into RMS_Config, clamping those with a bounded range
+-- @param table event event carrying the configuration snapshot
 local function applyConfig(event)
     local oldBatteryCapacityFactor = RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
     local oldConfig = {
@@ -224,13 +234,13 @@ local function applyConfig(event)
 
     RMS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
 
+    -- a changed battery capacity factor rescales the charge of every tracked vehicle
     if math.abs((oldBatteryCapacityFactor or 0) - (event.batteryUsableCapacityFactor or 0)) > 0.0001
         and RMS_Main ~= nil and RMS_Main.vehicles ~= nil then
         for _, vehicle in pairs(RMS_Main.vehicles) do
             if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
                 RMS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
 
-                local spec = vehicle.spec_RealisticMechanicalSystems
                 RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.ELECTRICAL)
             end
         end
@@ -240,6 +250,8 @@ local function applyConfig(event)
 end
 
 
+---Applies the configuration, and on the server relays it to the other clients for a master user only
+-- @param Connection connection connection
 function RMS_SettingsSyncEvent:run(connection)
     if not connection:getIsServer() then
         local userId = g_currentMission.userManager:getUserIdByConnection(connection)
@@ -256,7 +268,7 @@ function RMS_SettingsSyncEvent:run(connection)
 end
 
 
--- Send current config from client to server.
+---Send the local configuration from a client to the server
 function RMS_SettingsSyncEvent.send()
     if g_client ~= nil then
         g_client:getServerConnection():sendEvent(RMS_SettingsSyncEvent.new())

@@ -1,19 +1,29 @@
--- RMS_ServiceRequestEvent
--- Client-to-server event. Sends a service request (inspection/maintenance/repair/overhaul)
--- to the server for authoritative execution.
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---Client-to-server request starting an inspection, maintenance, repair or overhaul on a vehicle
 RMS_ServiceRequestEvent = {}
 local RMS_ServiceRequestEvent_mt = Class(RMS_ServiceRequestEvent, Event)
 
 InitEventClass(RMS_ServiceRequestEvent, "RMS_ServiceRequestEvent")
 
 
+---Create instance of Event class
+-- @return table self instance of class event
 function RMS_ServiceRequestEvent.emptyNew()
     return Event.new(RMS_ServiceRequestEvent_mt)
 end
 
 
-function RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price)
+---Create new instance of event
+-- @param table vehicle vehicle
+-- @param string serviceType service status constant
+-- @param string? workshopType workshop the service runs at
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
+-- @return table self instance of class event
+function RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree)
     local self = RMS_ServiceRequestEvent.emptyNew()
     self.vehicle = vehicle
     self.serviceType = serviceType
@@ -21,11 +31,13 @@ function RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionO
     self.optionOne = optionOne
     self.optionTwo = optionTwo
     self.optionThree = optionThree
-    self.price = price
     return self
 end
 
 
+---Called on server side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_ServiceRequestEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteString(streamId, self.serviceType or "")
@@ -33,10 +45,12 @@ function RMS_ServiceRequestEvent:writeStream(streamId, connection)
     streamWriteString(streamId, self.optionOne or "")
     streamWriteString(streamId, self.optionTwo or "")
     streamWriteBool(streamId, self.optionThree or false)
-    streamWriteFloat32(streamId, self.price or 0)
 end
 
 
+---Called on client side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_ServiceRequestEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self.serviceType = streamReadString(streamId)
@@ -44,8 +58,8 @@ function RMS_ServiceRequestEvent:readStream(streamId, connection)
     self.optionOne = streamReadString(streamId)
     self.optionTwo = streamReadString(streamId)
     self.optionThree = streamReadBool(streamId)
-    self.price = streamReadFloat32(streamId)
 
+    -- empty strings map back to missing options
     if self.optionOne == "" then self.optionOne = nil end
     if self.optionTwo == "" then self.optionTwo = nil end
     if self.workshopType == "" then self.workshopType = nil end
@@ -54,8 +68,8 @@ function RMS_ServiceRequestEvent:readStream(streamId, connection)
 end
 
 
--- Server-side execution: validate vehicle, run initService, debit money.
--- Price is recalculated server-side to prevent client tampering.
+---Starts the service on the server after checking farm ownership, vehicle state, service type and workshop hours
+-- @param Connection connection connection
 function RMS_ServiceRequestEvent:run(connection)
     if not connection:getIsServer() then
         if self.vehicle ~= nil and self.vehicle:getIsSynchronized() and self.vehicle.spec_RealisticMechanicalSystems ~= nil then
@@ -86,6 +100,7 @@ function RMS_ServiceRequestEvent:run(connection)
                 return
             end
 
+            -- price is computed on the server, the client never sends one
             local serverPrice = self.vehicle:getServicePrice(self.serviceType, self.optionOne, self.optionTwo, self.optionThree, self.workshopType) or 0
 
             self.vehicle:initService(self.serviceType, self.workshopType, self.optionOne, self.optionTwo, self.optionThree)
@@ -100,9 +115,15 @@ function RMS_ServiceRequestEvent:run(connection)
 end
 
 
--- Client convenience: send service request to the server.
-function RMS_ServiceRequestEvent.send(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price)
+---Send the service request from a client to the server
+-- @param table vehicle vehicle
+-- @param string serviceType service status constant
+-- @param string? workshopType workshop the service runs at
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
+function RMS_ServiceRequestEvent.send(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree)
     if g_client ~= nil then
-        g_client:getServerConnection():sendEvent(RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree, price))
+        g_client:getServerConnection():sendEvent(RMS_ServiceRequestEvent.new(vehicle, serviceType, workshopType, optionOne, optionTwo, optionThree))
     end
 end

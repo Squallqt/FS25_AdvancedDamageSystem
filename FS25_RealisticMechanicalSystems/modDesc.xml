@@ -44,30 +44,30 @@ SIMULATION
 - Multiplayer and dedicated server, 15 languages
 
 Changelog 0.9.3.0 [WIP]:
-- Fixed & improved translations
-- Added drivetrain management for tractors: 4x2 / 4WD / AUTO drive modes and differential locks (new key bindings, HUD indicator, settings)
+- Fixed and improved translations
+- Added drivetrain management for tractors: 4x2, 4WD and AUTO modes with differential locks
 - Turning on hard ground with locked differentials now damages the transmission
-- Added a parking brake with HUD indicator and optional automatic engagement
-- Hands the drivetrain and parking brake over to Enhanced Vehicle when its matching functions are enabled
-- Added a HUD readout of tractor, towed, and combined mass
-- Fixed locked hook-lift containers being classified as towed and continuously lifted loads; they now count as carried vehicle mass
-- Removed unnecessary debug log spam from routine UI and config updates
-- Extended lubrication to all non-road RMS machines
-- Removed the work process system entirely, with the harvest processing wear and the unloading auger malfunction
-- Reworked cold-engine wear to start only at the dashboard's high-load threshold, with RPM as a secondary factor
-- Fixed the debug HUD showing missing or incorrect values for the controlled vehicle on dedicated servers
-- Integrated RMS dashboard indicators into an extended native speedometer layout, with values aligned to their corresponding icons
-- Separated engine and transmission thermal alerts and routed transmission breakdowns to the dedicated transmission indicator; excluded vehicles keep the unmodified native HUD
-- Dashboard indicators no longer disappear at high speed, and the inactive service indicator remains visible in gray
-- Turbocharger wear now applies to every engine of 56 kW (75 hp) or more, instead of a single tractor model
+- Added a parking brake that can engage automatically
+- Drivetrain and parking brake now step aside when Enhanced Vehicle handles them
+- Added a HUD readout of tractor, towed and combined mass
+- Fixed locked hook-lift containers counting as towed instead of carried
+- Removed debug log spam
+- Lubrication now applies to every non-road machine
+- Removed the work process system, its harvest wear and its unloading auger breakdown
+- Cold engine wear now starts only under high load
+- Fixed wrong values in the debug HUD on dedicated servers
+- Dashboard indicators now sit in an extended speedometer layout
+- Engine and transmission now have their own thermal alerts and indicators
+- Fixed dashboard indicators disappearing at high speed
+- Turbocharger wear now applies to every engine of 75 hp or more
 - Added a transmission thermostat breakdown on CVT gearboxes
-- Recalibrated CVT transmission temperatures against real transmission oil data: the thermostat now regulates at 85C instead of 75C, and overheating wear starts at 100C instead of 95C
-- Added automatic temperature-based diesel preheating, with battery load, a dedicated dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
-- Vehicle exclusions now follow what a machine can actually do instead of its type name; any automatic exclusion can be reverted with rms_setExcluded false, except on electric vehicles
-- Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required and can be uninstalled if it was only installed for RMS
+- CVT gearboxes now run hotter before overheating
+- Added automatic diesel preheating in cold weather, with its own glow plug breakdown
+- Vehicle exclusions now follow what a machine can do instead of its type name
+- Vehicle Years is no longer required, the mod resolves production years itself
 - Added exhaust smoke driven by vehicle age, engine wear, load and active faults
-- Reworked hydraulic failures around qualified GIANTS functions while retaining simulated filter and oil-cooler failures
-- Reworked PTO load against the native activation envelope, fixed duplicate consumers, removed instant engagement damage, and restored cutter-drive support]]></en>
+- Hydraulic breakdowns now reach only the machines that really have hydraulics
+- Fixed PTO load and restored cutter drive support]]></en>
 
         <de><![CDATA[Ihre Maschinen verschleißen endlich wie echte.
 
@@ -106,29 +106,29 @@ SIMULATION
 
 Changelog 0.9.3.0 [WIP]:
 - Übersetzungen korrigiert und verbessert
-- Antriebsstrangverwaltung für Traktoren hinzugefügt: Fahrmodi 4x2 / Allrad / AUTO und Differentialsperren (neue Tastenbelegungen, HUD-Anzeige, Einstellungen)
-- Kurvenfahrten auf hartem Boden mit gesperrten Differentialen beschädigen nun das Getriebe
-- Feststellbremse mit HUD-Anzeige und optionalem automatischem Anziehen hinzugefügt
-- Übergibt Antriebsstrang und Feststellbremse an Enhanced Vehicle, wenn dessen entsprechende Funktionen aktiv sind
+- Antriebsverwaltung für Traktoren hinzugefügt: Modi 4x2, 4WD und AUTO mit Differentialsperren
+- Kurvenfahrten auf hartem Boden mit gesperrten Differentialen beschädigen jetzt das Getriebe
+- Feststellbremse hinzugefügt, die automatisch anziehen kann
+- Antrieb und Feststellbremse überlassen Enhanced Vehicle jetzt den Vortritt
 - HUD-Anzeige von Traktor-, Anhänger- und Gesamtmasse hinzugefügt
-- Verriegelte Hakenliftcontainer werden nicht mehr als gezogene und dauerhaft angehobene Lasten eingestuft, sondern als getragene Fahrzeugmasse
-- Unnötige Debug-Log-Ausgaben aus routinemäßigen UI- und Konfigurationsaktualisierungen entfernt
-- Betriebsstundenabhängige Schmierung auf alle RMS-Arbeitsmaschinen außerhalb der Straßenkategorien erweitert
-- Arbeitssystem vollständig entfernt, zusammen mit dem Verschleiß der Ernteverarbeitung und der Störung der Entladeschnecke
-- Verschleiß bei kaltem Motor überarbeitet: Er beginnt erst an der Hochlastschwelle der Armaturenbrettanzeige, die Drehzahl wirkt nur zusätzlich
-- Fehlende oder fehlerhafte Werte im Debug-HUD für das gesteuerte Fahrzeug auf dedizierten Servern behoben
-- RMS-Armaturenbrettanzeigen in ein erweitertes natives Tachometer-Layout integriert und Werte an den zugehörigen Symbolen ausgerichtet
-- Thermische Warnungen für Motor und Getriebe getrennt und Getriebestörungen der eigenen Getriebeanzeige zugeordnet; ausgeschlossene Fahrzeuge behalten das unveränderte native HUD
-- Armaturenbrettanzeigen verschwinden nicht mehr bei hoher Geschwindigkeit, und die inaktive Wartungsanzeige bleibt grau sichtbar
-- Turboladerverschleiß betrifft jetzt jeden Motor ab 56 kW (75 PS) statt nur eines einzigen Traktormodells
+- Verriegelte Hakenliftcontainer zählen nicht mehr als gezogen, sondern als getragen
+- Debug-Log-Ausgaben entfernt
+- Schmierung gilt jetzt für jede nicht straßengebundene Maschine
+- Arbeitssystem entfernt, samt Ernteverschleiß und Entladeschneckenstörung
+- Verschleiß bei kaltem Motor beginnt jetzt erst unter hoher Last
+- Fehlerhafte Werte im Debug-HUD auf Dedicated Servern behoben
+- Armaturenbrettanzeigen sitzen jetzt in einem erweiterten Tachometer-Layout
+- Motor und Getriebe haben jetzt eigene Temperaturwarnungen und Anzeigen
+- Armaturenbrettanzeigen verschwinden nicht mehr bei hoher Geschwindigkeit
+- Turboladerverschleiß betrifft jetzt jeden Motor ab 75 PS
 - Störung des Getriebethermostats für CVT-Getriebe hinzugefügt
-- CVT-Getriebetemperaturen anhand realer Getriebeöldaten neu abgestimmt: Der Thermostat regelt jetzt auf 85 °C statt 75 °C, und der Überhitzungsverschleiß beginnt bei 100 °C statt 95 °C
-- Automatisches temperaturabhängiges Diesel-Vorglühen hinzugefügt, mit Batterielast, eigener Armaturenbrettanzeige, Tutorial-Hinweis und vierstufiger Glühkerzenstörung
-- Fahrzeugausschlüsse richten sich jetzt nach den tatsächlichen Fähigkeiten einer Maschine statt nach ihrem Typnamen; jeder automatische Ausschluss lässt sich mit rms_setExcluded false aufheben, außer bei Elektrofahrzeugen
-- Fahrzeugbaujahre werden jetzt vom Mod selbst ermittelt; Vehicle Years wird nicht mehr benötigt und kann deinstalliert werden, sofern es nur für RMS installiert war
+- CVT-Getriebe laufen jetzt heißer, bevor sie überhitzen
+- Automatisches Diesel-Vorglühen bei Kälte hinzugefügt, mit eigener Glühkerzenstörung
+- Fahrzeugausschlüsse richten sich jetzt nach dem Können einer Maschine statt nach ihrem Typnamen
+- Vehicle Years wird nicht mehr benötigt, der Mod ermittelt die Baujahre selbst
 - Abgasrauch hinzugefügt, gesteuert von Fahrzeugalter, Motorverschleiß, Last und aktiven Defekten
-- Hydraulikdefekte auf qualifizierte GIANTS-Funktionen umgestellt; simulierte Filter- und Ölkühlerdefekte bleiben erhalten
-- Zapfwellenlast an die native Einschaltgrenze angepasst, doppelte Verbraucherzählung behoben, sofortigen Einschaltschaden entfernt und Schneidwerksantriebe wieder unterstützt]]></de>
+- Hydraulikdefekte treffen jetzt nur noch Maschinen mit echter Hydraulik
+- Zapfwellenlast korrigiert und Schneidwerksantriebe wieder unterstützt]]></de>
         
         <fr><![CDATA[Vos machines s'usent enfin comme les vraies.
 
@@ -166,30 +166,30 @@ SIMULATION
 - Multijoueur et serveur dédié, 15 langues
 
 Changelog 0.9.3.0 [WIP] :
-- Correction & amélioration des traductions
-- Ajout de la gestion de transmission pour les tracteurs : modes 4x2 / 4RM / AUTO et blocages de différentiel (nouveaux raccourcis, témoin HUD, réglages)
-- Braquer sur sol dur avec les différentiels bloqués endommage désormais la transmission
-- Ajout d'un frein de parking avec témoin HUD et serrage automatique optionnel
-- Cède la transmission et le frein de parking à Enhanced Vehicle quand ses fonctions correspondantes sont activées
-- Ajout d'un affichage HUD des masses tracteur, tractée et totale
-- Correction des caissons hook-lift verrouillés classés comme charges tractées et continuellement levées ; ils comptent désormais comme masse portée par le véhicule
-- Suppression de logs de debug inutiles lors des mises à jour d'interface et de configuration
-- Extension du graissage à toutes les machines RMS hors catégories routières
-- Retrait complet du système de travail, avec l'usure du traitement de récolte et le dysfonctionnement de la vis de déchargement
-- Refonte de l'usure moteur à froid : elle commence uniquement au seuil de forte charge du HUD, le régime n'étant qu'un facteur aggravant
-- Correction de valeurs manquantes ou erronées dans le panneau de debug du véhicule contrôlé sur serveur dédié
-- Intégration des témoins RMS dans une disposition étendue du compteur natif, avec les valeurs alignées sur leurs pictogrammes
-- Séparation des alertes thermiques moteur et transmission et attribution des pannes de transmission au témoin dédié ; les véhicules exclus conservent le HUD natif non modifié
-- Les témoins du tableau de bord ne disparaissent plus à haute vitesse et le témoin d'entretien inactif reste visible en gris
-- L'usure du turbocompresseur concerne désormais tout moteur de 56 kW (75 ch) ou plus, au lieu d'un seul modèle de tracteur
+- Traductions corrigées et améliorées
+- Ajout de la gestion de la transmission des tracteurs : modes 4x2, 4WD et AUTO avec blocages de différentiel
+- Tourner sur sol dur avec les différentiels bloqués endommage désormais la transmission
+- Ajout d'un frein de stationnement, avec engagement automatique possible
+- La transmission et le frein de stationnement laissent désormais la main à Enhanced Vehicle
+- Ajout d'un affichage HUD des masses tracteur, remorquée et totale
+- Correction des conteneurs ampliroll verrouillés comptés comme remorqués au lieu de portés
+- Suppression des messages de debug superflus
+- La lubrification s'applique désormais à toutes les machines hors route
+- Suppression du système de travail, de son usure de récolte et de sa panne de vis de déchargement
+- L'usure du moteur froid ne démarre désormais qu'à forte charge
+- Correction des valeurs erronées du HUD de debug sur serveur dédié
+- Les témoins du tableau de bord s'intègrent désormais au compteur étendu
+- Le moteur et la transmission ont désormais leurs propres alertes thermiques et témoins
+- Correction des témoins qui disparaissaient à haute vitesse
+- L'usure du turbocompresseur concerne désormais tout moteur de 75 ch ou plus
 - Ajout d'une panne de thermostat de transmission sur les boîtes CVT
-- Recalibrage des températures de boîte CVT sur les données réelles d'huile de transmission : le thermostat régule désormais à 85 °C au lieu de 75 °C, et l'usure par surchauffe démarre à 100 °C au lieu de 95 °C
-- Ajout du préchauffage diesel automatique selon la température, avec charge batterie, témoin dédié, didacticiel et panne de bougies en quatre stades
-- Les exclusions de véhicules reposent désormais sur les capacités réelles d'une machine au lieu de son nom de type ; toute exclusion automatique peut être annulée avec rms_setExcluded false, sauf sur les véhicules électriques
-- Les millésimes des véhicules sont désormais déterminés par le mod lui-même ; Vehicle Years n'est plus requis et peut être désinstallé s'il n'était installé que pour RMS
+- Les boîtes CVT montent désormais plus haut en température avant de surchauffer
+- Ajout du préchauffage diesel automatique par temps froid, avec sa panne de bougies
+- Les exclusions de véhicules suivent désormais ce qu'une machine sait faire, et non son nom de type
+- Vehicle Years n'est plus nécessaire, le mod détermine lui-même les millésimes
 - Ajout d'une fumée d'échappement pilotée par l'âge du véhicule, l'usure moteur, la charge et les pannes actives
-- Refonte des pannes hydrauliques autour des fonctions GIANTS qualifiées, avec conservation des pannes simulées de filtre et de refroidisseur d'huile
-- Refonte de la charge PDF selon l'enveloppe native d'activation, correction du double comptage, suppression des dommages instantanés d'engagement et prise en charge des entraînements de coupe]]></fr>
+- Les pannes hydrauliques ne touchent désormais que les machines réellement équipées
+- Correction de la charge PDF et prise en charge retrouvée des entraînements de coupe]]></fr>
         
     </description>
     <storeItems>

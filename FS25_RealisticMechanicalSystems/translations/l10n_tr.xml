@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Araç"/>
         <text name="rms_hud_mass_towed" text="Bağlı"/>
         <text name="rms_hud_mass_total" text="Toplam"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="Motor çalışmadı: yeniden denemeden önce kontağı kapatın"/>
         <text name="rms_tutorial_preheat_title" text="Dizel ön ısıtma"/>
         <text name="rms_tutorial_preheat_message" text="Soğuk bir dizel motorda, çalıştırma kumandasına bir kez basmak kontağı açar ve kızdırma döngüsünü otomatik olarak başlatır. Gösterge paneli lambaları kendi testini yapar, ardından motor hazır olana kadar ön ısıtma lambası yanar. Komutu tekrarlamayın: lamba söndüğünde marş motoru otomatik olarak devreye girer."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Kuyruk mili"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Kuyruk mili tahrik kaplini"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Kuyruk mili çıkış mili"/>

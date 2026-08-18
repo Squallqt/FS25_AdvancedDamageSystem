@@ -1,3 +1,7 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Field inspection dialog listing fluid, cooling, air and lubrication findings
 RMS_InspectionDialog = {}
 RMS_InspectionDialog.INSTANCE = nil
 
@@ -9,6 +13,7 @@ local WARN_COLOR = {1.0, 0.77, 0.24, 1.0}
 local CRITICAL_COLOR = {1.0, 0.38, 0.38, 1.0}
 local NOT_REQUIRED_COLOR = {0.72, 0.72, 0.72, 1.0}
 
+-- inspection target to the dialog section holding its row
 local TARGET_TO_SECTION = {
     engineOil = "technicalFluidsData",
     coolant = "technicalFluidsData",
@@ -20,6 +25,7 @@ local TARGET_TO_SECTION = {
     lubrication = "lubricationData"
 }
 
+-- severity rank of each status, 0 for fine up to 4 for critical, the highest wins on a row
 local STATUS_PRIORITY = {
     rms_inspection_ok = 0,
     rms_inspection_status_slightly_low = 1,
@@ -45,6 +51,9 @@ local STATUS_PRIORITY = {
     rms_inspection_status_not_required = 0
 }
 
+---Localizes a value when it is an rms_ key, returns it as text otherwise
+-- @param any value l10n key or plain value
+-- @return string text localized or converted text
 local function getLocalizedText(value)
     if value == nil then
         return ""
@@ -57,6 +66,9 @@ local function getLocalizedText(value)
     return tostring(value)
 end
 
+---Returns the row colour from its status severity
+-- @param table? row inspection row
+-- @return table color rgba channels
 local function getRowColor(row)
     if row ~= nil and row.statusKey == "rms_inspection_status_not_required" then
         return NOT_REQUIRED_COLOR
@@ -72,6 +84,10 @@ local function getRowColor(row)
     return OK_COLOR
 end
 
+---Sets the status of a row, keeping the one already there when it is more severe
+-- @param table? rows section rows
+-- @param string? titleKey l10n key identifying the row
+-- @param string? statusKey status l10n key
 local function setRowValue(rows, titleKey, statusKey)
     if rows == nil or titleKey == nil or statusKey == nil then
         return
@@ -92,6 +108,9 @@ local function setRowValue(rows, titleKey, statusKey)
     end
 end
 
+---Appends a localized line to the findings list, skipping empties and duplicates
+-- @param table? lines findings lines
+-- @param string? textKey l10n key of the line
 local function appendAdditionalLine(lines, textKey)
     if lines == nil or textKey == nil or textKey == "" then
         return
@@ -111,6 +130,9 @@ local function appendAdditionalLine(lines, textKey)
     table.insert(lines, text)
 end
 
+---Joins the findings into a bullet list, or returns the no symptom text
+-- @param table? lines findings lines
+-- @return string text findings block
 local function buildAdditionalText(lines)
     if lines == nil or #lines == 0 then
         return g_i18n:getText("rms_inspection_no_suspicious_symptoms")
@@ -124,6 +146,9 @@ local function buildAdditionalText(lines)
     return table.concat(formattedLines, "\n")
 end
 
+---Applies the inspection findings declared by the active breakdown stages
+-- @param table dialog dialog instance
+-- @param table additionalLines findings lines, modified in place
 local function applyBreakdownInspectionFindings(dialog, additionalLines)
     local vehicle = dialog.vehicle
     if vehicle == nil or vehicle.getActiveBreakdowns == nil or RMS_Breakdowns == nil then
@@ -151,8 +176,7 @@ local function applyBreakdownInspectionFindings(dialog, additionalLines)
 
             if findings ~= nil then
                 for _, finding in ipairs(findings) do
-                    -- `additional` can be used on its own without target/status, which
-                    -- allows breakdowns to contribute only to the 4th section.
+                    -- a finding without target and status only contributes a findings line
                     if finding.target ~= nil and finding.status ~= nil then
                         local titleKey = targetMap[finding.target]
                         local sectionKey = TARGET_TO_SECTION[finding.target]
@@ -168,6 +192,9 @@ local function applyBreakdownInspectionFindings(dialog, additionalLines)
     end
 end
 
+---Rates the radiator and air intake clogging above 0.15 into four severity steps
+-- @param table dialog dialog instance
+-- @param table additionalLines findings lines, modified in place
 local function applyCloggingInspectionFindings(dialog, additionalLines)
     local vehicle = dialog.vehicle
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
@@ -220,6 +247,9 @@ local function applyCloggingInspectionFindings(dialog, additionalLines)
     end
 end
 
+---Rates the lubrication level against the configured dryness thresholds
+-- @param table dialog dialog instance
+-- @param table additionalLines findings lines, modified in place
 local function applyLubricationInspectionFindings(dialog, additionalLines)
     local vehicle = dialog.vehicle
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
@@ -251,12 +281,17 @@ local function applyLubricationInspectionFindings(dialog, additionalLines)
     end
 end
 
+---Loads the dialog layout and stores the shared instance
 function RMS_InspectionDialog.register()
     local dialog = RMS_InspectionDialog.new()
     g_gui:loadGui(modDirectory .. "gui/RMS_InspectionDialog.xml", "RMS_InspectionDialog", dialog)
     RMS_InspectionDialog.INSTANCE = dialog
 end
 
+---Create instance of RMS_InspectionDialog
+-- @param table? target target
+-- @param table? customMt custom metatable
+-- @return table dialog instance of class RMS_InspectionDialog
 function RMS_InspectionDialog.new(target, customMt)
     local dialog = MessageDialog.new(target, customMt or RMS_InspectionDialog_mt)
     dialog.vehicle = nil
@@ -266,6 +301,8 @@ function RMS_InspectionDialog.new(target, customMt)
     return dialog
 end
 
+---Opens the dialog on a vehicle
+-- @param table vehicle vehicle
 function RMS_InspectionDialog.show(vehicle)
     if RMS_InspectionDialog.INSTANCE == nil then RMS_InspectionDialog.register() end
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then return end
@@ -276,6 +313,7 @@ function RMS_InspectionDialog.show(vehicle)
     g_gui:showDialog("RMS_InspectionDialog")
 end
 
+---Resets every section to fine, then applies the breakdown, clogging and lubrication findings
 function RMS_InspectionDialog:updateScreen()
     if self.vehicle == nil then return end
     
@@ -329,6 +367,10 @@ function RMS_InspectionDialog:updateScreen()
     self.lubricationList:reloadData()
 end
 
+---Returns the row table backing a list element
+-- @param table self dialog instance
+-- @param table list list element
+-- @return table? data section rows, nil for an unknown list
 local function getListData(self, list)
     if list == self.technicalFluidsList then
         return self.technicalFluidsData
@@ -341,11 +383,20 @@ local function getListData(self, list)
     return nil
 end
 
+---Returns the row count of the requested section
+-- @param table list list element
+-- @param integer section section index
+-- @return integer count number of rows
 function RMS_InspectionDialog:getNumberOfItemsInSection(list, section)
     local data = getListData(self, list)
     return data ~= nil and #data or 0
 end
 
+---Fills one inspection row, colouring the value by status severity
+-- @param table list list element
+-- @param integer section section index
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_InspectionDialog:populateCellForItemInSection(list, section, index, cell)
     local data = getListData(self, list)
     local row = data ~= nil and data[index] or nil
@@ -362,15 +413,18 @@ function RMS_InspectionDialog:populateCellForItemInSection(list, section, index,
     valueElement:setTextColor(unpack(getRowColor(row)))
 end
 
+---
 function RMS_InspectionDialog:onOpen()
     RMS_InspectionDialog:superClass().onOpen(self)
 end
 
+---Clears the inspected vehicle
 function RMS_InspectionDialog:onClose()
     self.vehicle = nil
     RMS_InspectionDialog:superClass().onClose(self)
 end
 
+---Closes the dialog
 function RMS_InspectionDialog:onClickBack()
     self:close()
 end

@@ -1,11 +1,17 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Drivetrain system: drive mode, differential lock, windup and park brake
 RMS_Drivetrain = RMS_Drivetrain or {}
 
+-- drive modes, in cycling order
 RMS_Drivetrain.MODE = {
     TWO_WD  = 0,
     FOUR_WD = 1,
     AUTO    = 2
 }
 
+-- l10n key of each drive mode
 RMS_Drivetrain.MODE_L10N = {
     [0] = "rms_drivetrain_mode_4x2",
     [1] = "rms_drivetrain_mode_4wd",
@@ -23,12 +29,16 @@ local DEBUG_RATIO_MAX = 99
 
 local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
 
+---Returns the drivetrain configuration section
+-- @return table config drivetrain configuration
 local function getConfig()
     return RMS_Config.DRIVETRAIN
 end
 
 local evConfigCache = { diff = nil, park = nil, nextReadTime = -math.huge }
 
+---Reads the differential and park brake switches of the other mod, re-reading every ten seconds
+-- @return table cache cached switch values
 local function readEnhancedVehicleSettings()
     local now = g_time or 0
     if evConfigCache.diff ~= nil and now < evConfigCache.nextReadTime then
@@ -54,6 +64,9 @@ local function readEnhancedVehicleSettings()
     return evConfigCache
 end
 
+---Tells whether the other drivetrain mod is loaded
+-- @param table? vehicle vehicle
+-- @return boolean isLoaded true when it is present
 local function getIsEnhancedVehicleLoaded(vehicle)
     if rawget(_G, "FS25_EnhancedVehicle") ~= nil then
         return true
@@ -64,6 +77,9 @@ local function getIsEnhancedVehicleLoaded(vehicle)
     return vehicle ~= nil and vehicle.vData ~= nil and vehicle.vData.is ~= nil
 end
 
+---Tells whether another mod already owns the differential control
+-- @param table? vehicle vehicle
+-- @return boolean isManaged true when RMS must stay out
 function RMS_Drivetrain.isExternallyManaged(vehicle)
     local ev = rawget(_G, "FS25_EnhancedVehicle")
     if ev ~= nil and ev.functionDiffIsEnabled ~= nil then
@@ -77,6 +93,9 @@ function RMS_Drivetrain.isExternallyManaged(vehicle)
     return false
 end
 
+---Tells whether another mod already owns the park brake
+-- @param table? vehicle vehicle
+-- @return boolean isManaged true when RMS must stay out
 function RMS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
     local ev = rawget(_G, "FS25_EnhancedVehicle")
     if ev ~= nil and ev.functionParkingBrakeIsEnabled ~= nil then
@@ -90,6 +109,9 @@ function RMS_Drivetrain.isParkBrakeExternallyManaged(vehicle)
     return false
 end
 
+---Returns the store categories of a vehicle
+-- @param table? vehicle vehicle
+-- @return table? categoryNames store category names
 local function getStoreCategoryNames(vehicle)
     if vehicle == nil or vehicle.configFileName == nil or g_storeManager == nil then
         return nil
@@ -111,6 +133,9 @@ local function getStoreCategoryNames(vehicle)
     return nil
 end
 
+---Tells whether the vehicle sits in one of the excluded road categories
+-- @param table? vehicle vehicle
+-- @return boolean isRoadVehicle true for an excluded category
 function RMS_Drivetrain.getIsRoadVehicleCategory(vehicle)
     local categoryNames = getStoreCategoryNames(vehicle)
     if categoryNames == nil then
@@ -128,6 +153,9 @@ function RMS_Drivetrain.getIsRoadVehicleCategory(vehicle)
     return false
 end
 
+---Tells whether a wheel steers, on its rotation range or its rotation speed
+-- @param table? wheel wheel
+-- @return boolean isSteerable true for a steering wheel
 function RMS_Drivetrain.getIsWheelSteerable(wheel)
     local physics = wheel ~= nil and wheel.physics or nil
     if physics == nil then return false end
@@ -139,12 +167,18 @@ function RMS_Drivetrain.getIsWheelSteerable(wheel)
     return math.abs(tonumber(physics.rotSpeed) or 0) > 0.001
 end
 
+---Returns the longitudinal position of a wheel
+-- @param table? wheel wheel
+-- @return float positionZ local z position
 local function getWheelLocalZ(wheel)
     local physics = wheel ~= nil and wheel.physics or nil
     if physics == nil then return 0 end
     return tonumber(physics.positionZ) or (physics.netInfo ~= nil and tonumber(physics.netInfo.z)) or 0
 end
 
+---Returns the axle speed of a wheel, 0 without a wheel shape
+-- @param table? wheel wheel
+-- @return float speed axle speed
 local function getWheelAxleSpeed(wheel)
     local physics = wheel ~= nil and wheel.physics or nil
     if wheel == nil or wheel.node == nil or physics == nil or not physics.wheelShapeCreated then
@@ -153,10 +187,11 @@ local function getWheelAxleSpeed(wheel)
     return tonumber(getWheelShapeAxleSpeed(wheel.node, physics.wheelShape)) or 0
 end
 
--- ==========================================================
---                 TOPOLOGY ANALYSIS
--- ==========================================================
-
+---Walks a differential subtree and collects the wheel indices it drives
+-- @param table differentials differential list
+-- @param integer diffIndex0 zero based differential index
+-- @param table wheelIndices collected wheel indices, filled in place
+-- @param table visited differentials already walked
 local function collectWheelIndices(differentials, diffIndex0, wheelIndices, visited)
     local runtimeIndex = (tonumber(diffIndex0) or -1) + 1
     if runtimeIndex < 1 or visited[runtimeIndex] then return end
@@ -176,6 +211,11 @@ local function collectWheelIndices(differentials, diffIndex0, wheelIndices, visi
     end
 end
 
+---Returns how steerable an axle is and where it sits along the vehicle
+-- @param table vehicle vehicle
+-- @param table wheelIndices wheel indices of the axle
+-- @return float steerableRatio share of steering wheels
+-- @return float averageZ mean longitudinal position
 local function getAxleScore(vehicle, wheelIndices)
     local steerableCount, zSum, count = 0, 0, 0
     for _, wheelIndex in ipairs(wheelIndices) do
@@ -194,6 +234,9 @@ local function getAxleScore(vehicle, wheelIndices)
     return steerableCount / count, zSum / count
 end
 
+---Tells whether the vehicle runs on two crawler tracks and nothing else
+-- @param table vehicle vehicle
+-- @return boolean isTwinTrack true for a twin track machine
 local function getIsTwinTrack(vehicle)
     local spec_crawlers = vehicle.spec_crawlers
     local crawlers = spec_crawlers ~= nil and spec_crawlers.crawlers or nil
@@ -221,6 +264,9 @@ local function getIsTwinTrack(vehicle)
     return true
 end
 
+---Analyses the differential graph and returns the center, primary axle and lockable differentials
+-- @param table vehicle vehicle
+-- @return table? layout drivetrain layout, nil without differentials
 function RMS_Drivetrain.buildLayout(vehicle)
     local spec_motorized = vehicle.spec_motorized
     local differentials = spec_motorized ~= nil and spec_motorized.differentials or nil
@@ -329,10 +375,8 @@ function RMS_Drivetrain.buildLayout(vehicle)
     return layout
 end
 
--- ==========================================================
---                SPEC INIT / STATE ACCESS
--- ==========================================================
-
+---Creates the drivetrain state on the vehicle spec
+-- @param table? vehicle vehicle
 function RMS_Drivetrain.initSpec(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     spec.drivetrain = {
@@ -369,11 +413,17 @@ function RMS_Drivetrain.initSpec(vehicle)
     }
 end
 
+---Returns the drivetrain state of a vehicle
+-- @param table? vehicle vehicle
+-- @return table? state drivetrain state
 function RMS_Drivetrain.getState(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     return spec ~= nil and spec.drivetrain or nil
 end
 
+---Tells whether the drivetrain system runs on this vehicle
+-- @param table? vehicle vehicle
+-- @return boolean isAvailable true when RMS drives it
 function RMS_Drivetrain.getIsAvailable(vehicle)
     local state = RMS_Drivetrain.getState(vehicle)
     return state ~= nil
@@ -382,11 +432,18 @@ function RMS_Drivetrain.getIsAvailable(vehicle)
         and getConfig().ENABLED
 end
 
+---Tells whether the vehicle carries a center differential
+-- @param table? vehicle vehicle
+-- @return boolean hasCenter true with a center differential
 function RMS_Drivetrain.getHasCenterDifferential(vehicle)
     local state = RMS_Drivetrain.getState(vehicle)
     return state ~= nil and state.hasCenterDiff == true
 end
 
+---Builds the layout on first use and caches it on the state
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @return boolean hasLayout true once a usable layout is cached
 local function ensureLayout(vehicle, state)
     if state.layoutAnalyzed then
         return state.layout ~= nil
@@ -412,10 +469,9 @@ local function ensureLayout(vehicle, state)
     return state.layout ~= nil
 end
 
--- ==========================================================
---              PHYSICS APPLICATION (SERVER)
--- ==========================================================
-
+---Tells whether all wheels are driven right now, single axle machines always being engaged
+-- @param table state drivetrain state
+-- @return boolean fourWheelDrive true while every axle is driven
 local function getEffectiveFourWheelDrive(state)
     if state.layout == nil or state.layout.centerIdx0 == nil then
         return true -- single-axle machines are always "engaged"
@@ -428,10 +484,19 @@ local function getEffectiveFourWheelDrive(state)
     return false
 end
 
+---Tells whether the engine locks the center differential itself
+-- @param table layout drivetrain layout
+-- @param boolean fourWheelDrive true while every axle is driven
+-- @return boolean nativeLock true when the engine handles the lock
 local function getIsNativeLock(layout, fourWheelDrive)
     return fourWheelDrive and layout.centerIdx0 ~= nil
 end
 
+---Returns the speed ratio of a differential for the current lock state
+-- @param table original original differential values
+-- @param boolean lockEngaged true while the lock is engaged
+-- @param boolean nativeLock true when the engine handles the lock
+-- @return float maxSpeedRatio target speed ratio
 local function getTargetSpeedRatio(original, lockEngaged, nativeLock)
     local C = getConfig()
 
@@ -445,6 +510,12 @@ local function getTargetSpeedRatio(original, lockEngaged, nativeLock)
     return original.maxSpeedRatio
 end
 
+---Builds the differential graph to install, resolving each output to a wheel shape or a child
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param boolean useFullGraph true to keep every axle, false to drive the primary one only
+-- @return table? plan differentials to install
+-- @return table? sourceToNative source index to installed index map
 local function buildDifferentialPlan(vehicle, state, useFullGraph)
     local layout = state.layout
     local lockEngaged = state.diffLockEngaged == true
@@ -453,6 +524,9 @@ local function buildDifferentialPlan(vehicle, state, useFullGraph)
     local sourceToNative = {}
     local visiting = {}
 
+    ---Adds a source differential to the plan, its children first, and returns its installed index
+    -- @param integer sourceIdx0 zero based source differential index
+    -- @return integer? nativeIdx0 index in the plan, nil when an output cannot be resolved
     local function addSourceDifferential(sourceIdx0)
         local nativeIdx0 = sourceToNative[sourceIdx0]
         if nativeIdx0 ~= nil then
@@ -468,6 +542,10 @@ local function buildDifferentialPlan(vehicle, state, useFullGraph)
         end
         visiting[sourceIdx0] = true
 
+        ---Resolves one differential output to a wheel shape or to a child differential index
+        -- @param integer outputIndex wheel index or differential index
+        -- @param boolean outputIsWheel true when the output is a wheel
+        -- @return integer? output resolved output, nil when unavailable
         local function resolveOutput(outputIndex, outputIsWheel)
             if outputIsWheel then
                 local wheel = vehicle.getWheelFromWheelIndex ~= nil and vehicle:getWheelFromWheelIndex(outputIndex) or nil
@@ -514,6 +592,11 @@ local function buildDifferentialPlan(vehicle, state, useFullGraph)
     return plan, sourceToNative
 end
 
+---Replaces the engine differential graph with the planned one
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param boolean useFullGraph true to keep every axle
+-- @return boolean installed true when the graph was replaced
 local function installDifferentialGraph(vehicle, state, useFullGraph)
     local spec_motorized = vehicle.spec_motorized
     if spec_motorized == nil or spec_motorized.motorizedNode == nil or not vehicle.isAddedToPhysics then
@@ -546,6 +629,9 @@ local function installDifferentialGraph(vehicle, state, useFullGraph)
     return true
 end
 
+---Puts the original differential graph back on the vehicle
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
 local function restoreOriginalDifferentialGraph(vehicle, state)
     if not state._graphManaged then
         return true
@@ -561,6 +647,9 @@ local function restoreOriginalDifferentialGraph(vehicle, state)
     return true
 end
 
+---Installs the differential graph matching the current drive mode
+-- @param table vehicle vehicle
+-- @param boolean? force true to reinstall even when nothing changed
 function RMS_Drivetrain.applyState(vehicle, force)
     if not vehicle.isServer then return end
 
@@ -590,6 +679,12 @@ function RMS_Drivetrain.applyState(vehicle, force)
     state._appliedLock = nil
 end
 
+---Shifts the torque ratio toward the slower output of a locked axle differential
+-- @param table original original differential values
+-- @param float speed1 peripheral speed of the first output
+-- @param float speed2 peripheral speed of the second output
+-- @param float gearRatio current gear ratio
+-- @return float torqueRatio torque ratio to apply
 local function getLockedTorqueRatio(original, speed1, speed2, gearRatio)
     local torqueRatio = original.torqueRatio
 
@@ -617,6 +712,14 @@ local function getLockedTorqueRatio(original, speed1, speed2, gearRatio)
     return math.clamp(torqueRatio, LOCKED_MIN_TORQUE_RATIO, LOCKED_MAX_TORQUE_RATIO)
 end
 
+---Returns the two output speeds of a differential, wheel speeds being low pass filtered
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param integer differentialIdx0 zero based differential index
+-- @param table wheelSpeeds wheel speeds computed so far
+-- @param integer depth recursion depth
+-- @return float speed1 speed of the first output
+-- @return float speed2 speed of the second output
 local function getDifferentialOutputSpeeds(vehicle, state, differentialIdx0, wheelSpeeds, depth)
     local layout = state.layout
     if depth > layout.differentialCount then
@@ -628,6 +731,10 @@ local function getDifferentialOutputSpeeds(vehicle, state, differentialIdx0, whe
         return 0, 0
     end
 
+    ---Returns the speed of one output, a wheel being filtered and a child being the mean of its own outputs
+    -- @param integer outputIndex wheel index or differential index
+    -- @param boolean outputIsWheel true when the output is a wheel
+    -- @return float speed peripheral speed
     local function getOutputSpeed(outputIndex, outputIsWheel)
         if outputIsWheel then
             local speed = wheelSpeeds[outputIndex]
@@ -658,6 +765,9 @@ local function getDifferentialOutputSpeeds(vehicle, state, differentialIdx0, whe
         getOutputSpeed(differential.diffIndex2, differential.diffIndex2IsWheel)
 end
 
+---Pushes the torque and speed ratios of every differential for the current lock state
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
 local function applyDifferentialLock(vehicle, state)
     local spec_motorized = vehicle.spec_motorized
     local activeIndices = state._activeDifferentialIndices
@@ -700,10 +810,12 @@ local function applyDifferentialLock(vehicle, state)
     state._appliedLock = lockEngaged
 end
 
--- ==========================================================
---                 COMMAND SETTERS (MP-SAFE)
--- ==========================================================
-
+---Sets the drive mode, the differential lock request and the park brake, and replicates them
+-- @param table vehicle vehicle
+-- @param integer? driveMode drive mode
+-- @param boolean? diffLockRequested true to ask for the lock
+-- @param boolean? parkBrake true to engage the park brake
+-- @param boolean? noEventSend no event send
 function RMS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested, parkBrake, noEventSend)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
@@ -736,12 +848,18 @@ function RMS_Drivetrain.setDrivetrainState(vehicle, driveMode, diffLockRequested
     end
 end
 
+---Sets the park brake
+-- @param table vehicle vehicle
+-- @param boolean engaged true to engage it
+-- @param boolean? noEventSend no event send
 function RMS_Drivetrain.setParkBrake(vehicle, engaged, noEventSend)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
     RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, state.diffLockRequested, engaged, noEventSend)
 end
 
+---Steps to the next drive mode, skipping the automatic one when it is disabled
+-- @param table vehicle vehicle
 function RMS_Drivetrain.cycleDriveMode(vehicle)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil or not state.hasCenterDiff then return end
@@ -758,22 +876,27 @@ function RMS_Drivetrain.cycleDriveMode(vehicle)
     RMS_Drivetrain.setDrivetrainState(vehicle, nextMode, state.diffLockRequested, state.parkBrake)
 end
 
+---Toggles the differential lock request
+-- @param table vehicle vehicle
 function RMS_Drivetrain.toggleDiffLock(vehicle)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil or not state.hasControl then return end
     RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, not state.diffLockRequested, state.parkBrake)
 end
 
+---Toggles the park brake
+-- @param table vehicle vehicle
 function RMS_Drivetrain.toggleParkBrake(vehicle)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
     RMS_Drivetrain.setParkBrake(vehicle, not state.parkBrake)
 end
 
--- ==========================================================
---                  SIMULATION UPDATE
--- ==========================================================
-
+---Engages all wheel drive on slip or on load at low speed, and releases it with hysteresis
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param table spec vehicle spec
+-- @param float dt time since last call in ms
 local function updateAutoMode(vehicle, state, spec, dt)
     if state.driveMode ~= RMS_Drivetrain.MODE.AUTO then return end
 
@@ -804,6 +927,10 @@ local function updateAutoMode(vehicle, state, spec, dt)
     end
 end
 
+---Engages the lock below the release speed and drops it above, or on an AI helper taking over
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param float dt time since last call in ms
 local function updateDiffLockState(vehicle, state, dt)
     local C = getConfig()
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
@@ -829,6 +956,9 @@ local function updateDiffLockState(vehicle, state, dt)
     end
 end
 
+---Tells whether the vehicle is turning, twin tracks reacting to the steering input instead
+-- @param table vehicle vehicle
+-- @return boolean isTurning true while turning
 function RMS_Drivetrain.getIsTurning(vehicle)
     local steerState = vehicle.spec_RealisticMechanicalSystems.chassisSteerState
     local steeringAngle = steerState.angleMagnitude
@@ -840,6 +970,11 @@ function RMS_Drivetrain.getIsTurning(vehicle)
         and steerState.inputMagnitude > TRACK_STEER_INPUT_EPSILON
 end
 
+---Accumulates drivetrain windup while turning with the lock or all wheel drive engaged
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param table spec vehicle spec
+-- @param float dt time since last call in ms
 local function updateWindupModel(vehicle, state, spec, dt)
     local C = getConfig()
     local fourWheelDrive = state.layout ~= nil and state.layout.centerIdx0 ~= nil and getEffectiveFourWheelDrive(state)
@@ -919,6 +1054,8 @@ local function updateWindupModel(vehicle, state, spec, dt)
 
 end
 
+---Marks the park brake notification as pending
+-- @param table state drivetrain state
 local function notifyParkBrakeChange(state)
     if state._lastNotifiedPark ~= state.parkBrake then
         if state._lastNotifiedPark ~= nil then
@@ -930,6 +1067,10 @@ local function notifyParkBrakeChange(state)
     end
 end
 
+---Shows the drive mode, lock and park brake messages to the driving player
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param float dt time since last call in ms
 local function updateLocalNotifications(vehicle, state, dt)
     if g_dedicatedServerInfo ~= nil then return end
     local isControlled = g_currentMission ~= nil
@@ -1006,6 +1147,10 @@ local function updateLocalNotifications(vehicle, state, dt)
     end
 end
 
+---Holds the vehicle still while the park brake is engaged, and releases it automatically
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param float dt time since last call in ms
 local function updateParkBrakeState(vehicle, state, dt)
     if not getConfig().PARKBRAKE_ENABLED or state.parkExternallyManaged then
         if state.parkBrake then
@@ -1034,7 +1179,10 @@ local function updateParkBrakeState(vehicle, state, dt)
     end
 end
 
---- Instantaneous wheel speed ratio per axle differential, with the speed ratio RMS currently enforces.
+---Samples the wheel speed ratio of each axle differential and the ratio currently enforced
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param table dbg drivetrain debug data
 local function updateDebugAxleRatios(vehicle, state, dbg)
     local layout = state.layout
     local activeIndices = state._activeDifferentialIndices
@@ -1081,6 +1229,10 @@ local function updateDebugAxleRatios(vehicle, state, dbg)
     end
 end
 
+---Fills the drivetrain debug data
+-- @param table vehicle vehicle
+-- @param table state drivetrain state
+-- @param table spec vehicle spec
 local function updateDebugData(vehicle, state, spec)
     if not RMS_Config.DEBUG or spec.debugData == nil or spec.debugData.drivetrain == nil then
         return
@@ -1117,6 +1269,9 @@ local function updateDebugData(vehicle, state, spec)
     dbg.wheelAxleSpeeds = wheelAxleSpeeds
 end
 
+---Runs the whole drivetrain update: automatic mode, lock, windup, park brake and notifications
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 function RMS_Drivetrain.updateDrivetrain(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local state = spec ~= nil and spec.drivetrain or nil
@@ -1193,16 +1348,18 @@ function RMS_Drivetrain.updateDrivetrain(vehicle, dt)
     updateDebugData(vehicle, state, spec)
 end
 
+---Returns the wear factor the accumulated windup contributes
+-- @param table vehicle vehicle
+-- @return float factor windup wear factor
 function RMS_Drivetrain.getWindupWearFactor(vehicle)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return 0 end
     return sanitizeNumber(state.windupWearFactor, 0, 0, 100)
 end
 
--- ==========================================================
---                MP STREAMS / SAVEGAME
--- ==========================================================
-
+---Writes the drive mode, the lock request and the park brake
+-- @param table vehicle vehicle
+-- @param integer streamId streamId
 function RMS_Drivetrain.writeStreamState(vehicle, streamId)
     local state = RMS_Drivetrain.getState(vehicle)
     streamWriteBool(streamId, state ~= nil and state.hasControl or false)
@@ -1218,6 +1375,9 @@ function RMS_Drivetrain.writeStreamState(vehicle, streamId)
     streamWriteUInt8(streamId, math.floor(sanitizeNumber(state ~= nil and state.windupStress or 0, 0, 0, 1) * 255 + 0.5))
 end
 
+---Reads the drive mode, the lock request and the park brake
+-- @param table vehicle vehicle
+-- @param integer streamId streamId
 function RMS_Drivetrain.readStreamState(vehicle, streamId)
     local hasControl = streamReadBool(streamId)
     local hasCenterDiff = streamReadBool(streamId)
@@ -1246,6 +1406,10 @@ function RMS_Drivetrain.readStreamState(vehicle, streamId)
     state.windupStress = windupStress
 end
 
+---Writes the drivetrain state to the savegame
+-- @param table vehicle vehicle
+-- @param XMLFile xmlFile XMLFile instance
+-- @param string key xml key
 function RMS_Drivetrain.saveToXMLFile(vehicle, xmlFile, key)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
@@ -1254,6 +1418,10 @@ function RMS_Drivetrain.saveToXMLFile(vehicle, xmlFile, key)
     xmlFile:setValue(key .. "#parkBrake", state.parkBrake == true)
 end
 
+---Reads the drivetrain state from the savegame
+-- @param table vehicle vehicle
+-- @param XMLFile xmlFile XMLFile instance
+-- @param string key xml key
 function RMS_Drivetrain.loadFromSavegame(vehicle, xmlFile, key)
     local state = RMS_Drivetrain.getState(vehicle)
     if state == nil then return end
@@ -1262,10 +1430,12 @@ function RMS_Drivetrain.loadFromSavegame(vehicle, xmlFile, key)
     state.parkBrake = xmlFile:getValue(key .. "#parkBrake", state.parkBrake) == true
 end
 
--- ==========================================================
---                  INPUT ACTION CALLBACKS
--- ==========================================================
-
+---Input action stepping to the next drive mode
+-- @param table vehicle vehicle
+-- @param string actionName input action name
+-- @param float inputValue input value
+-- @param any callbackState callback state
+-- @param boolean isAnalog true for an analog input
 function RMS_Drivetrain.actionToggleDriveMode(vehicle, actionName, inputValue, callbackState, isAnalog)
     if not RMS_Drivetrain.getIsAvailable(vehicle)
             or not RMS_Drivetrain.getHasCenterDifferential(vehicle) then
@@ -1274,16 +1444,31 @@ function RMS_Drivetrain.actionToggleDriveMode(vehicle, actionName, inputValue, c
     RMS_Drivetrain.cycleDriveMode(vehicle)
 end
 
+---Input action toggling the differential lock
+-- @param table vehicle vehicle
+-- @param string actionName input action name
+-- @param float inputValue input value
+-- @param any callbackState callback state
+-- @param boolean isAnalog true for an analog input
 function RMS_Drivetrain.actionToggleDiffLock(vehicle, actionName, inputValue, callbackState, isAnalog)
     if not RMS_Drivetrain.getIsAvailable(vehicle) then return end
     RMS_Drivetrain.toggleDiffLock(vehicle)
 end
 
+---Input action toggling the park brake
+-- @param table vehicle vehicle
+-- @param string actionName input action name
+-- @param float inputValue input value
+-- @param any callbackState callback state
+-- @param boolean isAnalog true for an analog input
 function RMS_Drivetrain.actionToggleParkBrake(vehicle, actionName, inputValue, callbackState, isAnalog)
     if not getConfig().PARKBRAKE_ENABLED then return end
     RMS_Drivetrain.toggleParkBrake(vehicle)
 end
 
+---Registers the drivetrain input actions
+-- @param table vehicle vehicle
+-- @param boolean isActiveForInputIgnoreSelection true if active for input
 function RMS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSelection)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local state = spec ~= nil and spec.drivetrain or nil
@@ -1326,6 +1511,9 @@ function RMS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
     end
 end
 
+---Tells whether the park brake is engaged
+-- @param table? vehicle vehicle
+-- @return boolean isEngaged true while it holds the vehicle
 function RMS_Drivetrain.getIsParkBrakeEngaged(vehicle)
     if not getConfig().PARKBRAKE_ENABLED then return false end
     local state = RMS_Drivetrain.getState(vehicle)

@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="차량"/>
         <text name="rms_hud_mass_towed" text="부착"/>
         <text name="rms_hud_mass_total" text="합계"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="엔진이 시동되지 않음: 다시 시도하기 전에 점화를 끄십시오"/>
         <text name="rms_tutorial_preheat_title" text="디젤 예열"/>
         <text name="rms_tutorial_preheat_message" text="차가운 디젤 엔진에서는 시동 조작을 한 번 누르면 점화가 켜지고 예열 플러그 사이클이 자동으로 시작됩니다. 계기판 경고등이 자체 점검을 수행한 뒤 엔진이 준비될 때까지 예열등이 켜져 있습니다. 조작을 반복하지 마십시오. 예열등이 꺼지면 스타터가 자동으로 작동합니다."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="동력 인출 장치"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="PTO 구동 커플링"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="PTO 출력축"/>

@@ -1,20 +1,13 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---Every tunable value of the mod, and the load and save of the settings file
 RMS_Config = {
-    -- Enables or disables extensive debug logging in the console.
-    -- When true, the mod will print detailed information about its calculations,
-    -- such as wear rates, breakdown checks, and temperature changes.
-    -- Set to false for normal gameplay to avoid performance impact and console spam.
+    -- extensive debug logging in the console
     DEBUG = false,
     TUTORIAL_MODE = true,
 
-    -- How often quick, interactive effects are updated, in milliseconds.
-    -- This controls things that need to be very responsive, like flickering lights,
-    -- engine stalls, or gear shift failures. A lower value provides a smoother
-    -- and more immediate experience for these effects.
-    --
-    -- WARNING: It is strongly recommended to keep this value low (e.g., under 200ms).
-    -- High values can cause visual glitches (like lights staying off for too long)
-    -- or make gameplay effects feel unresponsive and delayed.
+    -- update interval of the responsive effects, in ms
     ON_UPDATE_DELAY = 100, -- (100ms = 10 times per second)
     TUTORIAL_UPDATE_DELAY = 1000, -- (60 seconds)
 
@@ -26,16 +19,11 @@ RMS_Config = {
     ROOF_RAYCAST_START_OFFSET = 1,
     ROOF_STATIONARY_SPEED_LIMIT = 0.5,
     
-    -- How often the main simulation logic (wear, temperature, etc.) updates, in milliseconds.
-    -- This handles the slow-burning processes. A higher value is better for performance
-    -- as these calculations do not need to run every frame.
+    -- update interval of the wear and thermal simulation, in ms
     CORE_UPDATE_DELAY = 250,
     META_UPDATE_DELAY = 30000,
 
-    -- ====================================================================================
-    -- CORE SIMULATION PARAMETERS
-    -- This section controls the fundamental mechanics of wear, tear, and breakdowns.
-    -- ====================================================================================
+    -- wear, stress and breakdown probability
     CORE = {
         REFERENCE_SERVICE_WEAR = 0.1,
         REFERENCE_SYSTEMS_WEAR = 0.01,
@@ -113,7 +101,7 @@ RMS_Config = {
             HEAVY_TRAILER_TRUCK_MASS_RATIO_THRESHOLD = 6.0,
             HEAVY_TRAILER_TRUCK_MASS_RATIO_FULL_EFFECT = 3.0,
             HEAVY_TRAILER_MOTORLOAD_THRESHOLD = 0.7,
-            -- Fraction of the heavy trailer ratio threshold at which the tutorial tip fires.
+            -- share of the heavy trailer threshold firing the tutorial tip
             HEAVY_TRAILER_TUTORIAL_MARGIN = 0.8,
             COLD_TRANSMISSION_MULTIPLIER = 0.92,
             COLD_TRANSMISSION_THRESHOLD = 45,
@@ -208,9 +196,9 @@ RMS_Config = {
         ENABLE_WARNING_MESSAGES = true,
 
         AI_OVERLOAD_AND_OVERHEAT_CONTROL = true,
-        -- Allows a critical overload to stop AI workers and AutoDrive.
+        -- a critical overload stops the AI helper
         AI_DISABLE_ON_CRITICAL_OVERLOAD = true,
-        -- Applies critical-overload shutdown and overload/overheat speed control to contract vehicles.
+        -- contract vehicles are covered by the overload shutdown and speed control
         CONTRACT_VEHICLE_PROTECTION = false,
         AI_WORKER_PID = {
             MIN_SPEED = 3.0,
@@ -246,7 +234,7 @@ RMS_Config = {
         RELIABILITY_YEAR_FACTOR = 0.01,
         RELIABILITY_YEAR_FACTOR_THRESHOLD = 2000,
 
-        -- Engine power in kW at and above which a vehicle counts as turbocharged.
+        -- engine power counting as turbocharged, in kw
         TURBO_MIN_POWER_KW = 56,
 
         BASE_BREAKDOWN_PROGRESS_TIME = 1 * 3600000,
@@ -261,17 +249,14 @@ RMS_Config = {
         },
     },
 
-    -- ====================================================================================
-    -- WORKSHOP PARAMETERS
-    -- Controls workshop operating hours, which affects maintenance/repair completion times.
-    -- ====================================================================================
+    -- workshop opening hours and availability
     WORKSHOP = {
         DEALER_ALWAYS_AVAILABLE = false,
         MOBILE_ALWAYS_AVAILABLE = true,
         OWN_ALWAYS_AVAILABLE = true,
-        -- The hour of the day (0-23) when the workshop opens. Repairs will not progress before this time.
+        -- hour of the day the workshop opens
         OPEN_HOUR = 8,  -- (8 AM)
-        -- The hour of the day (0-23) when the workshop closes. Repairs will pause at this time.
+        -- hour of the day the workshop closes
         CLOSE_HOUR = 19, -- (7 PM)
         PRICE_MULTIPLIERS = {
             DEALER = 1.0,
@@ -307,10 +292,7 @@ RMS_Config = {
             },
         }
     },
-    -- ====================================================================================
-    -- MAINTENANCE & REPAIR PARAMETERS
-    -- Controls the time and cost of all service types.
-    -- ====================================================================================
+    -- service prices, durations and restore ratios
     MAINTENANCE = {
         PARK_VEHICLE = true,
         INSTANT_INSPECTION = false,
@@ -428,82 +410,72 @@ RMS_Config = {
         AGE_FACTOR_PRICE_FACTOR = 0.01,
         OWN_WORKSHOP_PRICE_MULTIPLIER = 0.8,
     },
-    -- ====================================================================================
-    -- THERMAL DYNAMICS PARAMETERS
-    -- Controls engine and transmission temperature simulation.
-    -- ====================================================================================
+    -- engine and transmission temperature model
     THERMAL = {
-        -- --- General Thermal Physics ---
+        -- shared thermal physics
 
-        -- A global multiplier for how quickly temperatures change (both heating and cooling).
-        -- Higher value means more volatile temperatures.
+        -- global multiplier of the temperature change rate
         TEMPERATURE_CHANGE_SPEED = 1.4,
 
-        -- The vehicle speed (kph) at which cooling from airflow starts to take effect.
+        -- speed at which airflow cooling starts, in km/h
         SPEED_COOLING_MIN_SPEED = 15,
-        -- The vehicle speed (kph) at which cooling from airflow reaches its maximum effect.
+        -- speed at which airflow cooling peaks, in km/h
         SPEED_COOLING_MAX_SPEED = 50,
-        -- The maximum cooling factor provided by airflow at max speed.
+        -- peak airflow cooling factor
         SPEED_COOLING_MAX_EFFECT = 0.3,
 
-        -- Controls how quickly the vehicle loses heat to the environment when stationary (convection).
+        -- convection cooling rate while stationary
         CONVECTION_FACTOR = 0.0005,
-        -- An exponent for convection and radiator. A value > 1 means the hotter the vehicle is compared to the
-        -- environment, the disproportionately faster it will cool.
+        -- exponent applied to the gap with ambient, above 1 a hotter vehicle cools disproportionately faster
         DELTATEMP_FACTOR_DEGREE = 1.25,
 
-        -- The maximum reduction in radiator effectiveness due to dirt.
-        -- 0.20 means a fully dirty vehicle's radiator is 20% less effective.
+        -- share of the radiator effectiveness a fully dirty vehicle loses
         MAX_DIRT_INFLUENCE = 0.20,
         
-        -- The time constant for the low-pass filter on the temperature gauge.
-        -- Higher value means the needle on the dashboard will move more slowly and smoothly,
-        -- filtering out rapid temperature fluctuations.
+        -- time constant of the temperature gauge filter
         TAU = 5000,
 
-        -- --- Engine-Specific Thermal ---
+        -- engine thermal values
 
-        -- The rate of heat generated by the engine at maximum load.
+        -- engine heat at full load
         ENGINE_MAX_HEAT = 1.05,
-        -- The rate of heat generated by the engine when idling (0% load).
+        -- engine heat at idle
         ENGINE_MIN_HEAT = 0.4,
-        -- The temperature (in Celsius) at which the engine's thermostat begins to open.
+        -- temperature the engine thermostat starts opening at, in degrees
         ENGINE_THERMOSTAT_MIN_TEMP = 80,
-        -- The base cooling rate from the radiator when the thermostat is fully closed.
+        -- radiator cooling with the thermostat closed
         ENGINE_RADIATOR_MIN_COOLING = 0.0005,
-        -- The maximum cooling rate from the radiator when the thermostat is fully open.
+        -- radiator cooling with the thermostat open
         ENGINE_RADIATOR_MAX_COOLING = 0.005,
 
-        -- --- Transmission-Specific Thermal (for CVT/hydrostatic) ---
+        -- transmission thermal values
 
-        -- The rate of heat generated by the transmission at maximum load/slip.
+        -- transmission heat at full load
         TRANS_MAX_HEAT = 1.05,
-        -- The rate of heat generated by the transmission at minimum load/slip.
+        -- transmission heat at minimum load
         TRANS_MIN_HEAT = 0.0,
         TRANS_TEMPERATURE_CHANGE_SPEED = 0.042,
         TRANS_TEMPERATURE_CHANGE_MULTIPLIER = 1.0,
         HYDRAULIC_OPERATING_HEAT = 0.15,
-        -- The temperature (in Celsius) at which the transmission's thermostat begins to open.
+        -- temperature the transmission thermostat starts opening at, in degrees
         TRANS_THERMOSTAT_MIN_TEMP = 75,
-        -- The base cooling rate from the transmission's radiator when its thermostat is closed.
+        -- transmission radiator cooling with the thermostat closed
         TRANS_RADIATOR_MIN_COOLING = 0.0005,
-        -- The maximum cooling rate from the transmission's radiator when its thermostat is open.
+        -- transmission radiator cooling with the thermostat open
         TRANS_RADIATOR_MAX_COOLING = 0.005,
 
-        -- --- PID Controller for Thermostat ---
-        -- These values control how intelligently the thermostat opens and closes to maintain a stable temperature.
-        -- Tweak these only if you are familiar with PID controllers.
+        -- thermostat PID controller
         TRANS_PID_TARGET_TEMP  = 85,
-        -- The ideal operating temperature (in Celsius) the system tries to maintain.
+        -- temperature the controller aims at, in degrees
         PID_TARGET_TEMP = 90,
-        -- Proportional gain: How strongly the thermostat reacts to the *current* temperature error.
+        -- proportional gain, reacting to the current error
         PID_KP_MAX = 0.4,
         PID_KP_MIN = 0.1,
-        -- Integral gain: Corrects for small, persistent errors over time to reach the target temperature.
+        -- integral gain, correcting a lasting error
         PID_KI = 0.02,
-        -- Derivative gain: Dampens the reaction to prevent overshooting the target temperature.
+        -- derivative gain, damping the reaction
         PID_KD = 1.8,
-        -- A safety limit to prevent the Integral term from growing too large ("integral windup").
+        -- cap on the integral term
         PID_MAX_INTEGRAL = 200,
 
         COOLING_SLOWDOWN_THRESHOLD = 90,
@@ -542,10 +514,7 @@ RMS_Config = {
         JUMPER_CABLES_MAX_CONNECTION_DISTANCE = 12.0,
     },
 
-    -- ====================================================================================
-    -- DRIVETRAIN (4WD / DIFFERENTIAL LOCK) PARAMETERS
-    -- Runtime management of the physics differentials declared by vehicle.xml.
-    -- ====================================================================================
+    -- drive mode, differential lock and park brake
     DRIVETRAIN = {
         ENABLED = true,
         ALLOW_AUTO_MODE = true,
@@ -583,45 +552,42 @@ RMS_Config = {
         PARKBRAKE_AUTO_MODE = true
     },
 
-    -- ====================================================================================
-    -- EXHAUST SMOKE PARAMETERS
-    -- Colour and opacity of the exhaust effect, driven by three smoke channels.
-    -- ====================================================================================
+    -- exhaust smoke colour and opacity
     EXHAUST = {
         ENABLED = true,
         INTENSITY = 1.0,
 
-        -- Smoke tints, mixed by channel intensity over the healthy base colour.
+        -- smoke tints mixed over the healthy base colour
         SOOT_TINT = {0.020, 0.020, 0.025},
         OIL_TINT = {0.050, 0.090, 0.350},
         UNBURNT_TINT = {0.980, 0.980, 0.980},
         HEALTHY_TINT = {0.550, 0.560, 0.580},
 
-        -- Exponent applied to the healthy weight, above 1 the tint takes over faster.
+        -- exponent applied to the healthy weight
         TINT_CONCENTRATION = 2.0,
 
-        -- Shader alpha at idle and at maximum rpm, from a healthy engine to fully saturated smoke.
+        -- shader alpha at idle and at maximum rpm
         HEALTHY_ALPHA_IDLE = 0.10,
         HEALTHY_ALPHA_FULL = 0.40,
         SATURATED_ALPHA_IDLE = 4.00,
         SATURATED_ALPHA_FULL = 10.00,
 
-        -- A healthy plume is reduced by the emission era and by the available fuel profile metadata.
+        -- factors reducing a healthy plume
         DEF_HEALTHY_ALPHA_FACTOR = 0.10,
         METHANE_HEALTHY_ALPHA_FACTOR = 0.05,
         METHANE_SOOT_FACTOR = 0.10,
 
-        -- Fault smoke is less dense at idle and reaches full density under load.
+        -- fault smoke density at idle against full load
         LOAD_DENSITY_IDLE_FACTOR = 0.65,
 
-        -- Channel smoothing time constants in milliseconds.
+        -- channel smoothing time constants, in ms
         RISE_TAU = 250,
         FALL_TAU = 1200,
 
-        -- Share of the nominal era factor kept by fault smoke on a recent machine.
+        -- share of the era factor kept by fault smoke
         ERA_BREAKDOWN_FLOOR = 0.60,
 
-        -- EU non-road emission eras. The factor applies to normal smoke.
+        -- emission eras, the factor applying to normal smoke
         ERA_FACTORS = {
             {2001, 1.00},
             {2006, 0.75},
@@ -630,7 +596,7 @@ RMS_Config = {
             {9999, 0.30}
         },
 
-        -- Stage V particulate control is inferred only where year and engine power support it.
+        -- year and power bands counting as Stage V
         STAGE_V = {
             OUTER_POWER_YEAR = 2019,
             MID_POWER_YEAR = 2020,
@@ -733,17 +699,8 @@ RMS_Config = {
         IDLE_CURRENT_A = 0.5,
     },
 
-    -- ====================================================================================
-    -- BRAND CHARACTERISTICS
-    -- This section defines unique characteristics for different vehicle brands,
-    -- affecting their reliability and repair costs. This allows for creating a more
-    -- diverse and realistic experience where brand choice matters.
-    --
-    -- Format: BRAND_NAME = { Reliability, Maintainability }
-    --
-    -- If a brand is not listed here, it will use the default values {1.0, 1.0}.
-    -- The BRAND_NAME must match the exact name used in the game's brand definitions.
-    -- ====================================================================================
+    -- per brand reliability and maintainability, {reliability, maintainability}
+    -- an unlisted brand uses 1.0 and 1.0
     BRANDS = {
 
             FENDT           = {1.25, 0.80}, 
@@ -851,6 +808,7 @@ RMS_Config = {
     }
 }
 
+---Clears every seen flag of the tutorial messages
 function RMS_Config.resetTutorialMessages()
     for messageId, _ in pairs(RMS_Config.TUTORIAL_MESSAGES) do
         RMS_Config.TUTORIAL_MESSAGES[messageId] = false
@@ -867,6 +825,11 @@ RMS_Config.TUTORIAL_PLAYER_STATES = {}
 RMS_Config.TUTORIAL_STATE_LOADED = false
 RMS_Config.TUTORIAL_LOCAL_USER_ID = nil
 
+---Builds a normalized tutorial state from its three parts
+-- @param boolean? tutorialMode true while the tips are shown
+-- @param boolean? welcomeMessageSeen true once the welcome dialog was answered
+-- @param table? messages seen flag of each message
+-- @return table state tutorial state
 function RMS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messages)
     local state = {
         tutorialMode = tutorialMode ~= false,
@@ -881,6 +844,8 @@ function RMS_Config.createTutorialState(tutorialMode, welcomeMessageSeen, messag
     return state
 end
 
+---Snapshots the current tutorial state
+-- @return table state tutorial state
 function RMS_Config.captureTutorialState()
     return RMS_Config.createTutorialState(
         RMS_Config.TUTORIAL_MODE,
@@ -889,6 +854,8 @@ function RMS_Config.captureTutorialState()
     )
 end
 
+---Writes a tutorial state into the configuration
+-- @param table? state tutorial state
 function RMS_Config.applyTutorialState(state)
     local normalized = RMS_Config.createTutorialState(
         state ~= nil and state.tutorialMode,
@@ -904,6 +871,7 @@ function RMS_Config.applyTutorialState(state)
     RMS_Config.TUTORIAL_STATE_LOADED = true
 end
 
+---Resets the tutorial state of the local player
 function RMS_Config.resetLocalTutorialState()
     RMS_Config.TUTORIAL_MODE = true
     RMS_Config.WELCOME_MESSAGE_SEEN = false
@@ -914,11 +882,15 @@ function RMS_Config.resetLocalTutorialState()
     RMS_Config.TUTORIAL_LOCAL_USER_ID = nil
 end
 
+---Clears the tutorial states of every player for a new session
 function RMS_Config.resetTutorialStateSession()
     RMS_Config.TUTORIAL_PLAYER_STATES = {}
     RMS_Config.resetLocalTutorialState()
 end
 
+---Returns the tutorial state stored for a player
+-- @param string? uniqueUserId unique user id
+-- @return table? state tutorial state
 function RMS_Config.getTutorialPlayerState(uniqueUserId)
     if uniqueUserId == nil or uniqueUserId == "" then return nil end
 
@@ -931,6 +903,9 @@ function RMS_Config.getTutorialPlayerState(uniqueUserId)
     return RMS_Config.createTutorialState(state.tutorialMode, state.welcomeMessageSeen, state.messages)
 end
 
+---Stores the tutorial state of a player
+-- @param string? uniqueUserId unique user id
+-- @param table? state tutorial state
 function RMS_Config.setTutorialPlayerState(uniqueUserId, state)
     if uniqueUserId == nil or uniqueUserId == "" or state == nil then return end
     RMS_Config.TUTORIAL_PLAYER_STATES[tostring(uniqueUserId)] = RMS_Config.createTutorialState(
@@ -940,6 +915,7 @@ function RMS_Config.setTutorialPlayerState(uniqueUserId, state)
     )
 end
 
+---Creates the tutorial state of the local player on first use
 function RMS_Config.ensureLocalTutorialState()
     if RMS_Config.TUTORIAL_STATE_LOADED then return true end
     if g_server == nil or g_localPlayer == nil or g_localPlayer.getUniqueUserId == nil then return false end
@@ -953,6 +929,7 @@ function RMS_Config.ensureLocalTutorialState()
     return true
 end
 
+---Replicates the tutorial state between the server and the client
 function RMS_Config.syncTutorialState()
     if not RMS_Config.TUTORIAL_STATE_LOADED and not RMS_Config.ensureLocalTutorialState() then return end
 
@@ -966,6 +943,8 @@ end
 
 RMS_Config.savegameFile = "realisticMechanicalSystems.xml"
 
+---Prints a debug line while debug mode is on
+-- @param any ... values to print
 local function log_dbg(...)
     if RMS_Config.DEBUG then
         local args = {...}
@@ -974,6 +953,9 @@ local function log_dbg(...)
     end
 end
 
+---Writes the tutorial state of every player to the settings file
+-- @param XMLFile xmlFile XMLFile instance
+-- @param string root xml root key
 local function saveTutorialPlayerStates(xmlFile, root)
     local userIds = {}
     for uniqueUserId, _ in pairs(RMS_Config.TUTORIAL_PLAYER_STATES) do
@@ -993,6 +975,9 @@ local function saveTutorialPlayerStates(xmlFile, root)
     end
 end
 
+---Reads the tutorial state of every player from the settings file
+-- @param XMLFile xmlFile XMLFile instance
+-- @param string root xml root key
 local function loadTutorialPlayerStates(xmlFile, root)
     RMS_Config.TUTORIAL_PLAYER_STATES = {}
     local index = 0
@@ -1015,9 +1000,7 @@ local function loadTutorialPlayerStates(xmlFile, root)
     end
 end
 
--- ============================================================
--- SAVE
--- ============================================================
+---Writes every adjustable setting to the savegame settings file
 function RMS_Config.saveToXMLFile()
     if g_currentMission == nil or not g_currentMission:getIsServer() then
         return false
@@ -1043,7 +1026,7 @@ function RMS_Config.saveToXMLFile()
 
     local root = "realisticMechanicalSystems"
 
-    -- CORE
+    -- core
     setXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR",      RMS_Config.CORE.BASE_SERVICE_WEAR)
     setXMLFloat(xmlFile, root .. ".BASE_SYSTEMS_WEAR",      RMS_Config.CORE.BASE_SYSTEMS_WEAR)
     setXMLFloat(xmlFile, root .. ".DOWNTIME_MULTIPLIER",    RMS_Config.CORE.DOWNTIME_MULTIPLIER)
@@ -1056,14 +1039,14 @@ function RMS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".AI_WORKER_TARGET_STRESS", RMS_Config.CORE.AI_WORKER_PID.TARGET_STRESS)
     setXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED",     RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED)
 
-    -- MAINTENANCE
+    -- maintenance
     setXMLBool (xmlFile, root .. ".INSTANT_INSPECTION",     RMS_Config.MAINTENANCE.INSTANT_INSPECTION)
     setXMLBool (xmlFile, root .. ".PARK_VEHICLE",           RMS_Config.MAINTENANCE.PARK_VEHICLE)
     setXMLBool (xmlFile, root .. ".WARRANTY_ENABLED",       RMS_Config.MAINTENANCE.WARRANTY_ENABLED)
     setXMLFloat(xmlFile, root .. ".PRICE_MULTIPLIER",       RMS_Config.MAINTENANCE.GLOBAL_SERVICE_PRICE_MULTIPLIER)
     setXMLFloat(xmlFile, root .. ".TIME_MULTIPLIER",        RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER)
 
-    -- WORKSHOP
+    -- workshop
     setXMLBool (xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE",       RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE)
     setXMLBool (xmlFile, root .. ".MOBILE_ALWAYS_AVAILABLE",       RMS_Config.WORKSHOP.MOBILE_ALWAYS_AVAILABLE)
     setXMLBool (xmlFile, root .. ".OWN_ALWAYS_AVAILABLE",          RMS_Config.WORKSHOP.OWN_ALWAYS_AVAILABLE)
@@ -1071,7 +1054,7 @@ function RMS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".OPEN_HOUR",              RMS_Config.WORKSHOP.OPEN_HOUR)
     setXMLFloat(xmlFile, root .. ".CLOSE_HOUR",             RMS_Config.WORKSHOP.CLOSE_HOUR)
 
-    -- THERMAL
+    -- thermal
     setXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT",        RMS_Config.THERMAL.ENGINE_MAX_HEAT)
     setXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT",         RMS_Config.THERMAL.TRANS_MAX_HEAT)
     setXMLFloat(xmlFile, root .. ".TEMPERATURE_CHANGE_SPEED", RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED)
@@ -1080,17 +1063,17 @@ function RMS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER",    RMS_Config.THERMAL.WARMING_BOOST_POWER)
     setXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER", RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER)
 
-    -- ELECTRICAL
+    -- electrical
     setXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR", RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR)
     setXMLFloat(xmlFile, root .. ".ALT_MAX_OUTPUT",         RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT)
     setXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A",         RMS_Config.ELECTRICAL.IDLE_CURRENT_A)
 
-    -- FIELD CARE
+    -- field care
     setXMLFloat(xmlFile, root .. ".CLOGGING_SPEED",         RMS_Config.FIELD_CARE.CLOGGING_SPEED)
     setXMLFloat(xmlFile, root .. ".VISUAL_INSPECTION_DURATION", RMS_Config.FIELD_CARE.VISUAL_INSPECTION_DURATION)
     setXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR", RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR)
 
-    -- DRIVETRAIN
+    -- drivetrain
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_ENABLED",           RMS_Config.DRIVETRAIN.ENABLED)
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_ALLOW_AUTO_MODE",   RMS_Config.DRIVETRAIN.ALLOW_AUTO_MODE)
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_WINDUP_DAMAGE",     RMS_Config.DRIVETRAIN.WINDUP_DAMAGE_ENABLED)
@@ -1098,11 +1081,11 @@ function RMS_Config.saveToXMLFile()
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_ENABLED", RMS_Config.DRIVETRAIN.PARKBRAKE_ENABLED)
     setXMLBool (xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO",    RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE)
 
-    -- EXHAUST
+    -- exhaust
     setXMLBool (xmlFile, root .. ".EXHAUST_SMOKE_ENABLED",   RMS_Config.EXHAUST.ENABLED)
     setXMLFloat(xmlFile, root .. ".EXHAUST_SMOKE_INTENSITY", RMS_Config.EXHAUST.INTENSITY)
 
-    -- DEBUG
+    -- debug
     setXMLBool (xmlFile, root .. ".DEBUG_MODE",             RMS_Config.DEBUG)
 
     if RMS_Config.TUTORIAL_STATE_LOADED and RMS_Config.TUTORIAL_LOCAL_USER_ID ~= nil then
@@ -1115,9 +1098,7 @@ function RMS_Config.saveToXMLFile()
     return true
 end
 
--- ============================================================
--- LOAD
--- ============================================================
+---Reads every adjustable setting from the savegame settings file
 function RMS_Config.loadFromXMLFile()
     if RMS_Config._loaded then
         return
@@ -1153,7 +1134,7 @@ function RMS_Config.loadFromXMLFile()
     local root = "realisticMechanicalSystems"
     local v
 
-    -- CORE
+    -- core
     v = getXMLFloat(xmlFile, root .. ".BASE_SERVICE_WEAR")
     if v ~= nil then RMS_Config.CORE.BASE_SERVICE_WEAR = v end
 
@@ -1177,7 +1158,6 @@ function RMS_Config.loadFromXMLFile()
 
     v = getXMLBool(xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_OVERLOAD")
     if v == nil then
-        -- Compatibility with the short-lived broader setting name.
         v = getXMLBool(xmlFile, root .. ".AI_DISABLE_ON_CRITICAL_FAILURE")
     end
     if v ~= nil then RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD = v end
@@ -1191,7 +1171,7 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".AI_WORKER_MIN_SPEED")
     if v ~= nil then RMS_Config.CORE.AI_WORKER_PID.MIN_SPEED = v end
 
-    -- MAINTENANCE
+    -- maintenance
     v = getXMLBool(xmlFile, root .. ".INSTANT_INSPECTION")
     if v ~= nil then RMS_Config.MAINTENANCE.INSTANT_INSPECTION = v end
 
@@ -1207,7 +1187,7 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".TIME_MULTIPLIER")
     if v ~= nil then RMS_Config.MAINTENANCE.GLOBAL_SERVICE_TIME_MULTIPLIER = v end
 
-    -- WORKSHOP
+    -- workshop
     v = getXMLBool(xmlFile, root .. ".DEALER_ALWAYS_AVAILABLE")
     if v ~= nil then
         RMS_Config.WORKSHOP.DEALER_ALWAYS_AVAILABLE = v
@@ -1231,7 +1211,7 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".CLOSE_HOUR")
     if v ~= nil then RMS_Config.WORKSHOP.CLOSE_HOUR = v end
 
-    -- THERMAL
+    -- thermal
     v = getXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT")
     if v ~= nil then RMS_Config.THERMAL.ENGINE_MAX_HEAT = v end
 
@@ -1253,7 +1233,7 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER")
     if v ~= nil then RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER = v end
 
-    -- ELECTRICAL
+    -- electrical
     v = getXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR")
     if v ~= nil then RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = v end
 
@@ -1263,7 +1243,7 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".IDLE_CURRENT_A")
     if v ~= nil then RMS_Config.ELECTRICAL.IDLE_CURRENT_A = v end
 
-    -- FIELD CARE
+    -- field care
     v = getXMLFloat(xmlFile, root .. ".CLOGGING_SPEED")
     if v ~= nil then RMS_Config.FIELD_CARE.CLOGGING_SPEED = v end
 
@@ -1273,7 +1253,7 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLFloat(xmlFile, root .. ".LUBRICATION_REDUCE_PER_OPERATING_HOUR")
     if v ~= nil then RMS_Config.FIELD_CARE.LUBRICATION_REDUCE_PER_OPERATING_HOUR = math.clamp(v, 0, 0.05) end
 
-    -- DRIVETRAIN
+    -- drivetrain
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_ENABLED")
     if v ~= nil then RMS_Config.DRIVETRAIN.ENABLED = v end
 
@@ -1292,14 +1272,14 @@ function RMS_Config.loadFromXMLFile()
     v = getXMLBool(xmlFile, root .. ".DRIVETRAIN_PARKBRAKE_AUTO")
     if v ~= nil then RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE = v end
 
-    -- EXHAUST
+    -- exhaust
     v = getXMLBool(xmlFile, root .. ".EXHAUST_SMOKE_ENABLED")
     if v ~= nil then RMS_Config.EXHAUST.ENABLED = v end
 
     v = getXMLFloat(xmlFile, root .. ".EXHAUST_SMOKE_INTENSITY")
     if v ~= nil then RMS_Config.EXHAUST.INTENSITY = math.clamp(v, 1, 3) end
 
-    -- DEBUG
+    -- debug
     v = getXMLBool(xmlFile, root .. ".DEBUG_MODE")
     if v ~= nil then RMS_Config.DEBUG = v end
 

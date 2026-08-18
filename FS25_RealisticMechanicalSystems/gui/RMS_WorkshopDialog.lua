@@ -1,3 +1,7 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Workshop dialog showing the vehicle condition, its breakdowns and the available services
 RMS_WorkshopDialog = {}
 RMS_WorkshopDialog.INSTANCE = nil
 
@@ -7,12 +11,17 @@ local modDirectory = g_currentModDirectory
 local log_dbg = RMS_Utils.createLogger("[RMS_WORKSHOP_DIALOG]")
 
 
+---Loads the dialog layout and stores the shared instance
 function RMS_WorkshopDialog.register()
     local dialog = RMS_WorkshopDialog.new()
     g_gui:loadGui(modDirectory .. "gui/RMS_WorkshopDialog.xml", "RMS_WorkshopDialog", dialog)
     RMS_WorkshopDialog.INSTANCE = dialog
 end
 
+---Create instance of RMS_WorkshopDialog
+-- @param table? target target
+-- @param table? customMt custom metatable
+-- @return table dialog instance of class RMS_WorkshopDialog
 function RMS_WorkshopDialog.new(target, customMt)
     local dialog = MessageDialog.new(target, customMt or RMS_WorkshopDialog_mt)
     dialog.vehicle = nil
@@ -22,8 +31,10 @@ function RMS_WorkshopDialog.new(target, customMt)
 end
 
 
+---Opens the dialog on a vehicle, taking the workshop type from the vanilla workshop screen
+-- @param table vehicle vehicle
 function RMS_WorkshopDialog.show(vehicle)
-    if RMS_WorkshopDialog.INSTANCE.updateScreen == nil then RMS_WorkshopDialog.register() end
+    if RMS_WorkshopDialog.INSTANCE == nil then RMS_WorkshopDialog.register() end
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         log_dbg("Tried to show RMS_WorkshopDialog without a valid vehicle.")
         return
@@ -43,6 +54,7 @@ function RMS_WorkshopDialog.show(vehicle)
     g_gui:showDialog("RMS_WorkshopDialog")
 end
 
+---Rebuilds the info panel, the breakdown table, the status line and the action buttons
 function RMS_WorkshopDialog:updateScreen()
     if self.vehicle == nil then return end
     local spec = self.vehicle.spec_RealisticMechanicalSystems
@@ -50,10 +62,7 @@ function RMS_WorkshopDialog:updateScreen()
     local STATUS = RealisticMechanicalSystems.STATUS
     self.lastObservedStatus = self.vehicle:getCurrentStatus()
 
-    -- ====================================================================
-    -- 1: Vehicle Info Panel
-    -- ====================================================================
-
+    -- vehicle info panel
     local balanceText = g_i18n:formatMoney(math.floor(g_currentMission:getMoney()), 2, true, false)
     self.balanceElement:setText(balanceText)
     RMS_Utils.updateMoneyBoxLayout(
@@ -103,10 +112,7 @@ function RMS_WorkshopDialog:updateScreen()
 
     self.relAndMainValue:setText(RMS_Utils.formatOperatingHours(self.vehicle:getHoursSinceLastMaintenance(), self.vehicle:getMaintenanceInterval()))
 
-    -- ====================================================================
-    -- 2: Breakdowns Table
-    -- ====================================================================
-
+    -- breakdown table, restricted to the breakdowns already discovered
     self.visibleBreakdowns = {}
     for id, breakdown in pairs(self.activeBreakdowns) do
         if breakdown.isVisible then
@@ -118,10 +124,7 @@ function RMS_WorkshopDialog:updateScreen()
     self.breakdownTable:setDelegate(self)
     self.breakdownTable:reloadData()
 
-    -- ====================================================================
-    -- 3: Status Text
-    -- ====================================================================
-    
+    -- status line, closed workshop and running service both disable the buttons
     local buttonsDisabled = false
     local statusText = ""
     local statusColor = {1, 1, 1, 1}
@@ -158,10 +161,7 @@ function RMS_WorkshopDialog:updateScreen()
     self.statusText:setText(statusText)
     self.statusText:setTextColor(statusColor[1], statusColor[2], statusColor[3], statusColor[4])
 
-    -- ====================================================================
-    -- 4: Action Buttons
-    -- ====================================================================
-
+    -- action buttons, an overhaul needs at least one enabled system below 0.5 condition
     local hasSystemEligibleForOverhaul = false
     if spec.systems ~= nil then
         for _, systemData in pairs(spec.systems) do
@@ -218,10 +218,7 @@ function RMS_WorkshopDialog:updateScreen()
     end
     self.overhaulButton:setText(string.format(buttonFormat, g_i18n:getText("rms_ws_action_overhaul"), g_i18n:formatMoney(overhaulPrice, 0, true, false)))
 
-    -- ====================================================================
-    -- 5: Table Visibility
-    -- ====================================================================
-    
+    -- table visibility, a running service replaces the list with the progress text
     local isListEmpty = #self.visibleBreakdowns == 0
 
     if self.vehicle:getCurrentStatus() == STATUS.READY then
@@ -233,9 +230,10 @@ function RMS_WorkshopDialog:updateScreen()
     else
         self:updateServiceProgressText()
     end
-    --self.statusText:setPosition(0, 0.015)
 end
 
+---Returns the progress of the running service as a whole percentage
+-- @return integer? percent progress percentage, nil when no duration is known
 function RMS_WorkshopDialog:getServiceProgressPercent()
     if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -253,6 +251,7 @@ function RMS_WorkshopDialog:getServiceProgressPercent()
     return math.floor(ratio * 100)
 end
 
+---Replaces the breakdown table with the service progress percentage
 function RMS_WorkshopDialog:updateServiceProgressText()
     if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil then
         return
@@ -276,11 +275,20 @@ function RMS_WorkshopDialog:updateServiceProgressText()
     self.emptyTableText:setTextColor(0.455, 0.565, 0.115, 1)
 end
 
+---Returns the number of visible breakdowns
+-- @param table list list element
+-- @param integer section section index
+-- @return integer count number of rows
 function RMS_WorkshopDialog:getNumberOfItemsInSection(list, section)
     return #self.visibleBreakdowns
 end
 
 
+---Fills one breakdown row, the stage colour rising from white to red, dimmed when not selected
+-- @param table list list element
+-- @param integer section section index
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_WorkshopDialog:populateCellForItemInSection(list, section, index, cell)
     local breakdownId = self.visibleBreakdowns[index]
     local data = self.activeBreakdowns[breakdownId]
@@ -341,6 +349,8 @@ function RMS_WorkshopDialog:populateCellForItemInSection(list, section, index, c
 end
 
 
+---Toggles the repair selection of the clicked breakdown
+-- @param table button clicked button
 function RMS_WorkshopDialog:onRowClick(button)
     if self.vehicle:getCurrentStatus() ~= RealisticMechanicalSystems.STATUS.READY then return end
     if button == nil or self.visibleBreakdowns[button.parent.indexInSection] == nil then return end
@@ -353,6 +363,7 @@ function RMS_WorkshopDialog:onRowClick(button)
     end
 end
 
+---Opens the maintenance log, or tells the player it holds nothing but the purchase entry
 function RMS_WorkshopDialog:onClickShowLog()
     local spec = self.vehicle.spec_RealisticMechanicalSystems
     if #spec.maintenanceLog > 1 then
@@ -362,6 +373,7 @@ function RMS_WorkshopDialog:onClickShowLog()
     end
 end
 
+---Opens the newest log entry carrying a report, or tells the player there is none
 function RMS_WorkshopDialog:onClickShowReport()
     local spec = self.vehicle.spec_RealisticMechanicalSystems
     for i = #spec.maintenanceLog, 1, -1 do
@@ -374,22 +386,27 @@ function RMS_WorkshopDialog:onClickShowReport()
     InfoDialog.show(g_i18n:getText("rms_ws_no_last_report_message"))
 end
 
+---Opens the inspection option dialog
 function RMS_WorkshopDialog:onClickInspection()
     RMS_MaintenanceTwoOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.INSPECTION)
 end
 
+---Opens the maintenance option dialog
 function RMS_WorkshopDialog:onClickService()
     RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.MAINTENANCE)
 end
 
+---Opens the repair option dialog
 function RMS_WorkshopDialog:onClickRepair()
     RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.REPAIR)
 end
 
+---Opens the overhaul option dialog
 function RMS_WorkshopDialog:onClickOverhaul()
     RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.OVERHAUL)
 end
 
+---Asks the player to confirm cancelling the running service
 function RMS_WorkshopDialog:onClickCancelService()
     if self.vehicle == nil then return end
     local spec = self.vehicle.spec_RealisticMechanicalSystems
@@ -403,13 +420,13 @@ function RMS_WorkshopDialog:onClickCancelService()
     end
 end
 
+---Cancels the service on confirmation, locally on the server, by request from a client
+-- @param boolean yes true when the player confirmed
 function RMS_WorkshopDialog:onCancelServiceConfirm(yes)
     if yes and self.vehicle ~= nil then
         if g_server ~= nil then
-            -- Server: execute locally
             self.vehicle:cancelService()
         else
-            -- Client: send request to server
             RMS_CancelServiceEvent.send(self.vehicle)
         end
         self:updateScreen()
@@ -417,19 +434,26 @@ function RMS_WorkshopDialog:onCancelServiceConfirm(yes)
 end
 
 
+---
+-- @param function superFunc super function
 function RMS_WorkshopDialog:onCreate(superFunc)
-    --
 end
 
+---Subscribes to the money, vehicle status and workshop status messages
+-- @param function superFunc super function
 function RMS_WorkshopDialog:onOpen(superFunc)
     self.isDialogOpen = true
 
+    ---Refreshes the screen when the displayed vehicle changed status
+    -- @param table vehicle vehicle carried by the message
     local function onVehicleChangeStatusEvent(vehicle)
         if self.vehicle.node == vehicle.node then
             self:updateScreen()
         end
     end
 
+    ---Refreshes the screen when the workshop opened or closed
+    -- @param table vehicle vehicle carried by the message
     local function onWorkshopChangeStatusEvent(vehicle)
         self:updateScreen()
     end
@@ -439,6 +463,8 @@ function RMS_WorkshopDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.RMS_WORKSHOP_CHANGE_STATUS, onWorkshopChangeStatusEvent, self)
 end
 
+---Clears the dialog state and flushes the pending money changes
+-- @param function superFunc super function
 function RMS_WorkshopDialog:onClose(superFunc)
     self.isDialogOpen = false
     self.lastObservedStatus = nil
@@ -449,6 +475,7 @@ function RMS_WorkshopDialog:onClose(superFunc)
 	g_currentMission:showMoneyChange(MoneyType.SHOP_VEHICLE_SELL)
 end
 
+---Closes the dialog
 function RMS_WorkshopDialog:onClickBack()
     self:close()
 end

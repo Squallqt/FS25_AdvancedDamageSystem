@@ -1,13 +1,14 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
-
+---Engine and transmission temperature model, with its thermostat
 RMS_Thermal = RMS_Thermal or {}
-
--- ==========================================================
---                     HELPERS
--- ==========================================================
 
 local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
 
+---Returns the extra cooling brought by driving speed, none below the configured minimum speed
+-- @param table vehicle vehicle
+-- @return float cooling additional cooling ratio
 local function getSpeedCooling(vehicle)
     local C = RMS_Config.THERMAL
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
@@ -18,10 +19,10 @@ local function getSpeedCooling(vehicle)
     return 0
 end
 
--- ==========================================================
---                     MAIN
--- ==========================================================
-
+---Runs the engine and transmission thermal models against the current weather temperature
+-- @param float dt time since last call in ms
+-- @param boolean updateEngine true to run the engine model
+-- @param boolean updateTransmission true to run the transmission model
 function RMS_Thermal:updateThermalSystems(dt, updateEngine, updateTransmission)
     local motor = self:getMotor()
     if not motor then return end
@@ -44,6 +45,7 @@ function RMS_Thermal:updateThermalSystems(dt, updateEngine, updateTransmission)
     spec.thermostatState = sanitizeNumber(spec.thermostatState, 0, 0, 1)
     spec.transmissionThermostatState = sanitizeNumber(spec.transmissionThermostatState, 0, 0, 1)
 
+    -- temperatures never fall below ambient, and reset to it while sleeping with the motor off
     if (spec.engineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.engineTemperature = eviromentTemp end
     if (spec.rawEngineTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.rawEngineTemperature = eviromentTemp end
     if (spec.transmissionTemperature or -99) < eviromentTemp or (g_sleepManager.isSleeping and not isMotorStarted) then spec.transmissionTemperature = eviromentTemp end
@@ -58,6 +60,8 @@ function RMS_Thermal:updateThermalSystems(dt, updateEngine, updateTransmission)
     end
 end
 
+---Eases the displayed temperatures toward the raw ones, snapping past a five degree gap
+-- @param float dt time since last call in ms
 function RMS_Thermal:getSmoothedTemperature(dt)
     local C = RMS_Config.THERMAL
     local spec = self.spec_RealisticMechanicalSystems
@@ -91,10 +95,12 @@ function RMS_Thermal:getSmoothedTemperature(dt)
     end
 end
 
--- ==========================================================
---                     ENGINE
--- ==========================================================
-
+---Returns the engine heat output, scaled by motor load and boosted while the engine is cold
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param float motorLoad motor load ratio
+-- @param boolean isMotorStarted true while the motor runs
+-- @return float heat heat output
 local function getEngineHeat(vehicle, spec, motorLoad, isMotorStarted)
     local C = RMS_Config.THERMAL
     if isMotorStarted == false then
@@ -108,6 +114,16 @@ local function getEngineHeat(vehicle, spec, motorLoad, isMotorStarted)
     return heat
 end
 
+---Returns the engine cooling from convection, the radiator and driving speed
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param float eviromentTemp ambient temperature
+-- @param float dirt radiator clogging ratio
+-- @param boolean isMotorStarted true while the motor runs
+-- @return float cooling total cooling
+-- @return float radiatorCooling radiator share
+-- @return float convectionCooling convection share
+-- @return float speedCooling speed share
 local function getEngineCooling(vehicle, spec, eviromentTemp, dirt, isMotorStarted)
     local C = RMS_Config.THERMAL
     local rawEngineTemperature = sanitizeNumber(spec.rawEngineTemperature, eviromentTemp, -80, 160)
@@ -123,6 +139,7 @@ local function getEngineCooling(vehicle, spec, eviromentTemp, dirt, isMotorStart
         end
     end
 
+    -- a worn fan clutch only costs cooling below the speed at which airflow takes over
     local brokenFanModifier = 1.0
     local fanClutchHealth = sanitizeNumber(spec.fanClutchHealth, 1.0, 0, 1)
     if fanClutchHealth < 1.0 then
@@ -140,6 +157,14 @@ local function getEngineCooling(vehicle, spec, eviromentTemp, dirt, isMotorStart
     return (radiatorCooling + convectionCooling) * (1 + speedCooling), radiatorCooling, convectionCooling, speedCooling
 end
 
+---Advances the raw engine temperature by heat minus cooling, then updates its thermostat
+-- @param float dt time since last call in ms
+-- @param table spec vehicle spec
+-- @param boolean isMotorStarted true while the motor runs
+-- @param float motorLoad motor load ratio
+-- @param float eviromentTemp ambient temperature
+-- @param float dirt radiator clogging ratio
+-- @return table dbg engine temperature debug data
 function RMS_Thermal:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoad, eviromentTemp, dirt)
     local C = RMS_Config.THERMAL
     local heat, cooling = 0, 0
@@ -177,10 +202,20 @@ function RMS_Thermal:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoa
     return dbg
 end
 
--- ==========================================================
---                     TRANSMISSION
--- ==========================================================
-
+---Returns the transmission heat from load, acceleration, CVT slip, wheel slip and hydraulic work
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param boolean isMotorStarted true while the motor runs
+-- @param float motorLoad motor load ratio
+-- @param float motorRpm motor rpm ratio
+-- @return float heat heat output
+-- @return float loadFactor load contribution
+-- @return float slipFactor cvt slip contribution
+-- @return float wheelSlipFactor wheel slip contribution
+-- @return float accFactor acceleration contribution
+-- @return boolean cvtSlipActive true when the cvt slip effect is present
+-- @return boolean cvtSlipLocked true when the cvt slip effect is actually slipping
+-- @return float hydraulicHeat hydraulic contribution
 local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, motorRpm)
     local C = RMS_Config.THERMAL
     local motor = vehicle:getMotor()
@@ -208,7 +243,7 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
         accFactor = math.clamp(5 * motorRpm * math.clamp(rotAcceleration / rotAccelerationLimit, 0.0, 1.0), 1.0, 2.0)
     end
 
-    -- slip effect from breakdown
+    -- cvt slip only heats while the ratio sits at its minimum below eighty percent of top speed
     if spec.activeEffects.CVT_SLIP_EFFECT ~= nil and spec.activeEffects.CVT_SLIP_EFFECT.value > 0 then
         cvtSlipActive = true
         local maxForwardSpeed = sanitizeNumber(motor:getMaximumForwardSpeed(), 1, 0.001, 1000)
@@ -223,7 +258,7 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
         end
     end
 
-    -- wheel slip
+    -- wheel slip only heats in a straight line
     local isTurning = RMS_Drivetrain.getIsTurning(vehicle)
     if not isTurning and spec.wheelSlipIntensity ~= nil and spec.wheelSlipIntensity > 0.05 then
         local wheelSlipIntensity = sanitizeNumber(spec.wheelSlipIntensity, 0, 0, 10)
@@ -242,6 +277,16 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
     return heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat
 end
 
+---Returns the transmission cooling from convection, its radiator and driving speed
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param float eviromentTemp ambient temperature
+-- @param float dirt radiator clogging ratio
+-- @param boolean isMotorStarted true while the motor runs
+-- @return float cooling total cooling
+-- @return float radiatorCooling radiator share
+-- @return float convectionCooling convection share
+-- @return float speedCooling speed share
 local function getTransmissionCooling(vehicle, spec, eviromentTemp, dirt, isMotorStarted)
     local C = RMS_Config.THERMAL
     local rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature, eviromentTemp, -80, 180)
@@ -263,6 +308,15 @@ local function getTransmissionCooling(vehicle, spec, eviromentTemp, dirt, isMoto
     return (radiatorCooling + convectionCooling) * (1 + speedCooling), radiatorCooling, convectionCooling, speedCooling
 end
 
+---Advances the raw transmission temperature by heat minus cooling, then updates its thermostat
+-- @param float dt time since last call in ms
+-- @param table spec vehicle spec
+-- @param boolean isMotorStarted true while the motor runs
+-- @param float motorLoad motor load ratio
+-- @param float motorRpm motor rpm ratio
+-- @param float eviromentTemp ambient temperature
+-- @param float dirt radiator clogging ratio
+-- @return table? dbg transmission temperature debug data
 function RMS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
     local C = RMS_Config.THERMAL
     local heat, cooling = 0, 0
@@ -319,10 +373,16 @@ function RMS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, mo
     return dbg
 end
 
--- ==========================================================
---                     TERMOSTAT
--- ==========================================================
-
+---Returns the new thermostat opening, a wax curve before the type year divider and a PID after it
+-- @param float dt time since last call in ms
+-- @param float currentTemp current temperature
+-- @param float targetTemp regulated temperature
+-- @param table? pidData PID state, carried between calls
+-- @param float thermostatHealth thermostat health ratio
+-- @param integer year vehicle production year
+-- @param float? stuckedPosition opening the thermostat is stuck at
+-- @param table? debugData debug data filled in place
+-- @return float state opening between 0 and 1
 function RMS_Thermal.getNewTermostatState(dt, currentTemp, targetTemp, pidData, thermostatHealth, year, stuckedPosition, debugData)
     if stuckedPosition ~= nil then
         return sanitizeNumber(stuckedPosition, 0, 0, 1)
@@ -365,6 +425,7 @@ function RMS_Thermal.getNewTermostatState(dt, currentTemp, targetTemp, pidData, 
         local newIntegral = (pidData.integral or 0) + errorTemp * dtSeconds
         local controlSignal = pid_kp * errorTemp + C.PID_KI * newIntegral + C.PID_KD * derivative
 
+        -- the integral only accumulates while the control signal stays inside its range
         if (controlSignal >= 0 and controlSignal <= maxOpening) or
            (controlSignal < 0 and errorTemp > 0) or
            (controlSignal > maxOpening and errorTemp < 0) then
@@ -386,6 +447,7 @@ function RMS_Thermal.getNewTermostatState(dt, currentTemp, targetTemp, pidData, 
     local waxSpeed = math.clamp(baseSpeed + yearFactor, C.MECHANIC_THERMOSTAT_MIN_WAX_SPEED, C.ELECTRONIC_THERMOSTAT_MAX_WAX_SPEED)
     waxSpeed = waxSpeed * math.max(0.2, thermostatHealth)
 
+    -- the opening moves at the wax speed, then snaps to the nearest stiction step
     local currentMechPos = pidData.mechPos or 0.0
     local delta = targetPos - currentMechPos
     local maxMove = waxSpeed * dtSeconds

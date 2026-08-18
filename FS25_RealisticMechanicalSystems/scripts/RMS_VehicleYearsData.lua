@@ -1,4 +1,7 @@
---- Generated table of vehicle production years, keyed by store item path.
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Generated table of vehicle production years, keyed by store item path
 RMS_VehicleYearsData = {
     ["$data/handtools/brandless/horsebrush/horsebrush.xml"] = 1911,
     ["$data/handtools/husqvarna/xp550/xp550.xml"] = 1959,

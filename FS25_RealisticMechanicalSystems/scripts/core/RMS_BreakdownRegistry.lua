@@ -1,7 +1,9 @@
--- ==========================================================
---                    REGISTRY VOCABULARY
--- ==========================================================
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---Declarative registry of every breakdown, its stages, its effects and its repair price
+
+-- dashboard indicator ids
 RMS_Breakdowns.DASHBOARD = {
     ENGINE = "engine",
     WARNING = "warning",
@@ -14,6 +16,7 @@ RMS_Breakdowns.DASHBOARD = {
     PREHEAT = "preheat"
 }
 
+-- indicator colours
 RMS_Breakdowns.COLORS = {
     DEFAULT = Dashboard.COLORS.GREY,
     COOL = { 0.0097, 0.4287, 0.6445, 1 },
@@ -36,6 +39,7 @@ local glowPlugFailureIndicator = {
     blinkWhileActive = true
 }
 
+-- which colour wins when several indicators share a slot
 RMS_Breakdowns.COLOR_PRIORITY = {
     [color.CRITICAL] = 3,
     [color.WARNING]  = 2,
@@ -43,15 +47,13 @@ RMS_Breakdowns.COLOR_PRIORITY = {
     [color.DEFAULT]  = 0
 }
 
--- ==========================================================
---                    BREAKDOWN REGISTRY
--- ==========================================================
 
 local getIsElectricVehicle = RMS_Utils.getIsElectricVehicle
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 
 local systems = RealisticMechanicalSystems.SYSTEMS
 
+-- l10n key of every replaceable part
 RMS_Breakdowns.PARTS = {
     VEHICLE = "rms_breakdowns_part_vehicle",
     CONSUMABLES = "rms_breakdowns_part_consumables",
@@ -94,6 +96,7 @@ RMS_Breakdowns.PARTS = {
 
 local parts = RMS_Breakdowns.PARTS
 
+-- repair price of each breakdown, as a share of the vehicle price
 local breakdownPriceMultipliers = {
     ECU_MALFUNCTION = 0.60,
     CORRODED_WIRING = 0.45,
@@ -132,6 +135,7 @@ local breakdownPriceMultipliers = {
     PTO_ENGAGEMENT_CONTROL_MALFUNCTION = 0.75,
 }
 
+-- how fast each breakdown moves to its next stage
 local breakdownProgressMultipliers = {
     ECU_MALFUNCTION = 1.00, -- 3.5 hours
     CORRODED_WIRING = 0.9,
@@ -170,6 +174,11 @@ local breakdownProgressMultipliers = {
     PTO_ENGAGEMENT_CONTROL_MALFUNCTION = 1.10,
 }
 
+---Returns the share the requested wear factors hold in the total wear of a system
+-- @param table? vehicle vehicle
+-- @param string systemName system name
+-- @param any ... factor aliases, as strings or as a list
+-- @return float percent share in percent, 0 when nothing matched
 local function getBreakdownFactorWeightPercent(vehicle, systemName, ...)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return 0
@@ -239,6 +248,14 @@ end
 local BREAKDOWN_SECONDARY_FACTOR_WEIGHT = 0.35
 local BREAKDOWN_FALLBACK_WEIGHT = 1.0
 
+---Weighs the primary and secondary wear factors into a breakdown probability, with a floor
+-- @param table? vehicle vehicle
+-- @param string systemName system name
+-- @param table primaryAliases factor aliases weighed in full
+-- @param table secondaryAliases factor aliases weighed down
+-- @param float? fallbackWeight weight returned when no factor matched
+-- @param float? secondaryWeight weight applied to the secondary factors
+-- @return float weight probability weight
 local function getBreakdownProbabilityWeightPercent(vehicle, systemName, primaryAliases, secondaryAliases, fallbackWeight, secondaryWeight)
     local resolvedFallbackWeight = math.max(tonumber(fallbackWeight) or BREAKDOWN_FALLBACK_WEIGHT, 0)
     local resolvedSecondaryWeight = math.max(tonumber(secondaryWeight) or BREAKDOWN_SECONDARY_FACTOR_WEIGHT, 0)
@@ -254,29 +271,44 @@ local function getBreakdownProbabilityWeightPercent(vehicle, systemName, primary
     return math.max(weightedPercent, resolvedFallbackWeight)
 end
 
+---Tells whether the vehicle has hydraulics at all
+-- @param table? vehicle vehicle
+-- @return boolean isApplicable true with a hydraulic circuit
 local function isHydraulicBreakdownApplicable(vehicle)
     return RMS_Utils.hasHydraulicCapability(vehicle)
 end
 
+---Tells whether the vehicle can lift with its hydraulics
+-- @param table? vehicle vehicle
+-- @return boolean isApplicable true with a lift capability
 local function isHydraulicLiftBreakdownApplicable(vehicle)
     return isHydraulicBreakdownApplicable(vehicle) and RMS_Utils.hasHydraulicLiftCapability(vehicle)
 end
 
+---Tells whether the vehicle carries hydraulic hoses
+-- @param table? vehicle vehicle
+-- @return boolean isApplicable true with hoses
 local function isHydraulicHoseBreakdownApplicable(vehicle)
     return isHydraulicBreakdownApplicable(vehicle) and RMS_Utils.hasHydraulicHoseCapability(vehicle)
 end
 
+---Tells whether the vehicle has a hydraulic function the player can drive
+-- @param table? vehicle vehicle
+-- @return boolean isApplicable true with a controllable target
 local function isHydraulicActuatorBreakdownApplicable(vehicle)
     return isHydraulicBreakdownApplicable(vehicle) and RMS_Utils.hasHydraulicControllableTargetCapability(vehicle)
 end
 
+---Tells whether the vehicle has a PTO output
+-- @param table? vehicle vehicle
+-- @return boolean isApplicable true with a PTO output
 local function isPtoBreakdownApplicable(vehicle)
     return RMS_Utils.hasPtoOutputCapability(vehicle)
 end
 
 RMS_Breakdowns.BreakdownRegistry = {
 
---------------------- NOT SELECTEBLE BREAKDOWNS (does not happen by chance, but is the result of various conditions) ---------------------
+-- breakdowns that never occur by chance, only as the result of a vehicle state
 
     GENERAL_WEAR = {
         isSelectable = false,
@@ -663,7 +695,7 @@ RMS_Breakdowns.BreakdownRegistry = {
     },
     
 
--------------------------------------------- SELECTABLE -----------------------------------------
+-- breakdowns the player can be dealt at random
 
     -- electrical
     ECU_MALFUNCTION = {
@@ -3294,6 +3326,7 @@ RMS_Breakdowns.BreakdownRegistry = {
     }
 }
 
+---Wraps every applicability test so a breakdown never applies to a disabled system
 local function wrapBreakdownApplicabilityByEnabledSystem()
     for _, entry in pairs(RMS_Breakdowns.BreakdownRegistry or {}) do
         if type(entry) == "table" and entry.system ~= nil and type(entry.isApplicable) == "function" then

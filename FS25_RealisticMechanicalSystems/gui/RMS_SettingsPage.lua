@@ -1,9 +1,16 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Settings page embedded in the in-game menu, editing every adjustable RMS_Config value
 RMS_SettingsPage = {}
 RMS_SettingsPage.name = g_currentModName
 RMS_SettingsPage.modDirectory = g_currentModDirectory
 
 RMS_SettingsPage.steps = {}
 
+---Formats a capacity in amp hours, trailing zeroes removed
+-- @param float val capacity
+-- @return string text formatted capacity
 local function formatAh(val)
     local text = string.format("%.2f", val)
     text = text:gsub("(%..-)0+$", "%1")
@@ -11,6 +18,10 @@ local function formatAh(val)
     return text .. " Ah"
 end
 
+---Compares two setting values, numbers within 0.0001 counting as equal
+-- @param any a first value
+-- @param any b second value
+-- @return boolean differ true when the values differ
 local function valuesDiffer(a, b)
     if type(a) == "number" or type(b) == "number" then
         return math.abs((tonumber(a) or 0) - (tonumber(b) or 0)) > 0.0001
@@ -19,6 +30,8 @@ local function valuesDiffer(a, b)
     return a ~= b
 end
 
+---Snapshots the live configuration into the flat table the page edits
+-- @return table config pending configuration
 local function buildPendingConfigFromRMSConfig()
     return {
         tutorialMode = RMS_Config.TUTORIAL_MODE,
@@ -77,6 +90,8 @@ local function buildPendingConfigFromRMSConfig()
     }
 end
 
+---Returns the pending configuration, snapshotting the live one on first use
+-- @return table config pending configuration
 local function getPendingConfig()
     if RMS_SettingsPage.pendingConfig == nil then
         RMS_SettingsPage.pendingConfig = buildPendingConfigFromRMSConfig()
@@ -85,10 +100,15 @@ local function getPendingConfig()
     return RMS_SettingsPage.pendingConfig
 end
 
+---Returns a GUI profile by name
+-- @param string defaultProfileName profile name
+-- @return table profile GUI profile
 local function getSettingsProfile(defaultProfileName)
     return g_gui:getProfile(defaultProfileName)
 end
 
+---Swaps the vanilla button background of a settings row for the mod one
+-- @param table? button button element
 local function applyButtonBackgroundProfile(button)
     if button == nil or button.elements == nil then
         return
@@ -102,6 +122,8 @@ local function applyButtonBackgroundProfile(button)
     end
 end
 
+---Swaps the vanilla multi text option background for the mod one
+-- @param table? option multi text option element
 local function applyMultiTextOptionBackgroundProfile(option)
     if option == nil or option.elements == nil then
         return
@@ -115,6 +137,11 @@ local function applyMultiTextOptionBackgroundProfile(option)
     end
 end
 
+---Adds a padlock to a settings row, shown while the option itself is disabled
+-- @param table? rowElement settings row element
+-- @param table? optionElement option element of the row
+-- @param string tooltip text shown next to the padlock
+-- @return table? lockButton padlock element, nil when the row is incomplete
 local function addDisabledLockToSettingsRow(rowElement, optionElement, tooltip)
     if rowElement == nil or optionElement == nil then
         return nil
@@ -148,6 +175,9 @@ local function addDisabledLockToSettingsRow(rowElement, optionElement, tooltip)
     return lockButton
 end
 
+---Paints a settings row with the alternating background and flips the parity for the next one
+-- @param table? page settings page
+-- @param table? rowElement settings row element
 local function applySettingsRowColor(page, rowElement)
     if page == nil or not page.rmsUseFleetMenuStyle or rowElement == nil or rowElement.setImageColor == nil then
         return
@@ -160,6 +190,8 @@ local function applySettingsRowColor(page, rowElement)
     page.rmsSettingsRowIsEven = not page.rmsSettingsRowIsEven
 end
 
+---Finds a vanilla settings row holding a button, used as a template for the mod rows
+-- @return table? template vanilla row element, nil when the settings page is unavailable
 local function getVanillaSettingsButtonTemplate()
     local settingsPage = g_inGameMenu ~= nil and g_inGameMenu.pageSettings or nil
     local scrollPanel = settingsPage ~= nil and settingsPage.gameSettingsLayout or nil
@@ -180,9 +212,12 @@ local function getVanillaSettingsButtonTemplate()
     return nil
 end
 
+---
 function RMS_SettingsPage:onClickSettingsLockedIcon()
 end
 
+---Scrolls the settings list so that the focused padlock stays visible
+-- @param table icon focused padlock element
 function RMS_SettingsPage:onFocusSettingsLockedIcon(icon)
     local page = RMS_SettingsPage.embeddedPage
     if page ~= nil and page.settingsLayout ~= nil and page.settingsLayout.scrollToMakeElementVisible ~= nil then
@@ -190,6 +225,8 @@ function RMS_SettingsPage:onFocusSettingsLockedIcon(icon)
     end
 end
 
+---Returns the embedded page only while the settings tab is the active one
+-- @return table? page settings page, nil on any other tab
 local function getCurrentSettingsPage()
     local embeddedPage = RMS_SettingsPage.embeddedPage
     if embeddedPage ~= nil
@@ -203,12 +240,16 @@ local function getCurrentSettingsPage()
     return nil
 end
 
+---Tells whether the mission runs in multiplayer
+-- @return boolean isMultiplayer true in multiplayer
 local function isCurrentMissionMultiplayer()
     return g_currentMission ~= nil
         and g_currentMission.missionDynamicInfo ~= nil
         and g_currentMission.missionDynamicInfo.isMultiplayer == true
 end
 
+---Tells whether the player may edit the settings, multiplayer requiring server or administrator rights
+-- @return boolean canChange true when the controls stay enabled
 local function canChangeRMSSettings()
     return g_currentMission ~= nil
         and g_currentMission.getIsClient ~= nil
@@ -216,6 +257,7 @@ local function canChangeRMSSettings()
         and (not isCurrentMissionMultiplayer() or g_currentMission:getIsServer() or g_currentMission.isMasterUser)
 end
 
+---Refreshes the settings controls when the settings tab is open
 local function refreshCurrentSettingsPage()
     local currentPage = getCurrentSettingsPage()
     if currentPage ~= nil then
@@ -223,6 +265,9 @@ local function refreshCurrentSettingsPage()
     end
 end
 
+---Applies on the server what a changed park vehicle or instant inspection setting implies on running services
+-- @param table? oldConfig configuration before the change
+-- @param table? newConfig configuration after the change
 function RMS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
     if g_currentMission == nil or not g_currentMission:getIsServer() then
         return
@@ -263,6 +308,9 @@ function RMS_SettingsPage.applyPendingConfigSideEffects(oldConfig, newConfig)
     end
 end
 
+---Writes the pending configuration into RMS_Config and replicates it over the network
+-- @param table? current configuration currently applied
+-- @param table? pending configuration edited on the page
 function RMS_SettingsPage.commitPendingConfig(current, pending)
     if pending == nil or current == nil then
         return
@@ -338,6 +386,7 @@ function RMS_SettingsPage.commitPendingConfig(current, pending)
 
     RMS_Config.DEBUG = pending.debugMode
 
+    -- a changed battery capacity factor rescales the charge of every tracked vehicle
     if batteryFactorChanged and RMS_Main ~= nil and RMS_Main.vehicles ~= nil then
         for _, vehicle in pairs(RMS_Main.vehicles) do
             if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
@@ -362,17 +411,22 @@ function RMS_SettingsPage.commitPendingConfig(current, pending)
     end
 end
 
+---Starts an editing session on a fresh snapshot of the live configuration
 function RMS_SettingsPage.beginSettingsSession()
     RMS_SettingsPage.pendingConfig = buildPendingConfigFromRMSConfig()
     RMS_SettingsPage.rmsHasPendingSettingsChange = false
 end
 
+---Builds every settings control on the page, once per page
+-- @param table? targetPage page hosting the controls
 function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
     local page = targetPage
     if page == nil or page.rmsInitSettingsMenuDone then
         return
     end
 
+    ---Deletes a settings element by id
+    -- @param string elementId element id
     local function deleteElementById(elementId)
         local root = page.settingsPage or page.settingsLayout or page
         local element = root ~= nil and root:getDescendantById(elementId) or nil
@@ -724,6 +778,8 @@ function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
     page.rmsInitSettingsMenuDone = true
 end
 
+---Takes over the settings tab of the fleet menu, building its controls on first activation
+-- @param table? page page hosting the settings tab
 function RMS_SettingsPage:activateEmbeddedSettingsPage(page)
     if page == nil then
         return
@@ -747,6 +803,8 @@ function RMS_SettingsPage:activateEmbeddedSettingsPage(page)
     self:updateRMSSettings(page)
 end
 
+---Registers the settings layout with the focus manager, restoring the previous gui afterwards
+-- @param table? page page hosting the settings tab
 function RMS_SettingsPage.registerEmbeddedFocus(page)
     if page == nil
         or page.rmsSettingsFocusLoaded
@@ -773,6 +831,8 @@ function RMS_SettingsPage.registerEmbeddedFocus(page)
     page.rmsSettingsFocusLoaded = true
 end
 
+---Shows the settings layout only once its controls have been built
+-- @param table? targetPage page hosting the settings tab
 function RMS_SettingsPage:updateRMSPageVisibility(targetPage)
     local page = targetPage
     if page == nil then
@@ -793,6 +853,7 @@ function RMS_SettingsPage:updateRMSPageVisibility(targetPage)
     end
 end
 
+---Commits the pending configuration on closing, only when a value actually changed
 function RMS_SettingsPage:onFrameClose()
     if not RMS_SettingsPage.rmsHasPendingSettingsChange then
         RMS_SettingsPage.pendingConfig = nil
@@ -825,6 +886,8 @@ function RMS_SettingsPage:onFrameClose()
 end
 
 
+---Writes the pending configuration back into every control of the page
+-- @param table? currentPage page hosting the settings tab
 function RMS_SettingsPage:updateRMSSettings(currentPage)
     if currentPage == nil or not currentPage.rmsInitSettingsMenuDone then return end
 
@@ -832,6 +895,10 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     local pending = RMS_SettingsPage.pendingConfig or buildPendingConfigFromRMSConfig()
     local tutorialOption = currentPage.rmsTutorialMode
 
+    ---Selects the step whose value is closest to the target
+    -- @param table element multi text option element
+    -- @param table valueList step values
+    -- @param any targetValue value to match
     local function setIndex(element, valueList, targetValue)
         local bestIndex = 1
         local bestDiff = math.huge
@@ -902,7 +969,7 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     currentPage.rmsWorkshopOpenHour:setDisabled(areAllWorkshopsAlwaysAvailable)
     currentPage.rmsWorkshopCloseHour:setDisabled(areAllWorkshopsAlwaysAvailable)
 
-    -- MP permission: only server host or dedicated-server admin can change settings.
+    -- every control is locked without the rights to change the settings
     local canChangeSettings = canChangeRMSSettings()
     local disableAll = not canChangeSettings
 
@@ -949,7 +1016,7 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     currentPage.rmsWarningMessages:setDisabled(disableAll)
     currentPage.rmsDebugMode:setDisabled(disableAll)
 
-    -- Workshop hour controls are disabled while every workshop type is available 24/7.
+    -- workshop hours are locked while every workshop type is always available
     if disableAll or areAllWorkshopsAlwaysAvailable then
         currentPage.rmsWorkshopOpenHour:setDisabled(true)
         currentPage.rmsWorkshopCloseHour:setDisabled(true)
@@ -957,25 +1024,33 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
 
 end
 
--- --- Callback Handlers --- --
+---Stores whether exhaust smoke is simulated
+-- @param integer state binary option state
 function RMS_SettingsPage:onExhaustSmokeEnabledChanged(state)
     getPendingConfig().exhaustSmokeEnabled = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the exhaust smoke intensity step
+-- @param integer state selected step index
 function RMS_SettingsPage:onExhaustSmokeIntensityChanged(state)
     getPendingConfig().exhaustSmokeIntensity = RMS_SettingsPage.steps.exhaustSmokeIntensity.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the base service wear step
+-- @param integer state selected step index
 function RMS_SettingsPage:onServiceWearChanged(state)
     getPendingConfig().baseServiceWear = RMS_SettingsPage.steps.serviceWear.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the tutorial tips are shown, reading the checkbox when it is reachable
+-- @param any state binary option state or boolean
+-- @param table? optionElement option element that fired the callback
 function RMS_SettingsPage:onTutorialModeChanged(state, optionElement)
     local pending = getPendingConfig()
     local newValue = false
@@ -997,6 +1072,7 @@ function RMS_SettingsPage:onTutorialModeChanged(state, optionElement)
     refreshCurrentSettingsPage()
 end
 
+---Asks the player to confirm, then clears the seen tutorial messages
 function RMS_SettingsPage:onResetTutorialTipsClicked()
     YesNoDialog.show(function(shouldReset)
         if shouldReset then
@@ -1006,84 +1082,110 @@ function RMS_SettingsPage:onResetTutorialTipsClicked()
     end, nil, g_i18n:getText("rms_tutorialResetConfirm_message"), g_i18n:getText("rms_tutorialResetConfirm_title"))
 end
 
+---Stores the base systems wear step
+-- @param integer state selected step index
 function RMS_SettingsPage:onConditionWearChanged(state)
     getPendingConfig().baseSystemsWear = RMS_SettingsPage.steps.conditionWear.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the downtime multiplier step
+-- @param integer state selected step index
 function RMS_SettingsPage:onDowntimeWearChanged(state)
     getPendingConfig().downtimeMultiplier = RMS_SettingsPage.steps.downtimeWear.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether general wear accumulates
+-- @param integer state binary option state
 function RMS_SettingsPage:onGeneralWearEnabledChanged(state)
     getPendingConfig().generalWearEnabled = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether inspections complete instantly
+-- @param integer state binary option state
 function RMS_SettingsPage:onInstantInspectionChanged(state)
     getPendingConfig().instantInspection = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether a vehicle under service is parked
+-- @param integer state binary option state
 function RMS_SettingsPage:onParkVehicleChanged(state)
     getPendingConfig().parkVehicle = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the warranty covers repairs
+-- @param integer state binary option state
 function RMS_SettingsPage:onWarrantyEnabledChanged(state)
     getPendingConfig().warrantyEnabled = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the service price multiplier, the step being a percentage
+-- @param integer state selected step index
 function RMS_SettingsPage:onMaintenancePriceChanged(state)
     getPendingConfig().globalPriceMultiplier = RMS_SettingsPage.steps.maintPrice.values[state] / 100
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the service duration multiplier, the step being a percentage
+-- @param integer state selected step index
 function RMS_SettingsPage:onMaintenanceDurationChanged(state)
     getPendingConfig().globalTimeMultiplier = RMS_SettingsPage.steps.maintDuration.values[state] / 100
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the dealer workshop is always open
+-- @param integer state binary option state
 function RMS_SettingsPage:onDealerWorkshopAvailableChanged(state)
     getPendingConfig().dealerAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the mobile workshop is always open
+-- @param integer state binary option state
 function RMS_SettingsPage:onMobileWorkshopAvailableChanged(state)
     getPendingConfig().mobileAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the own workshop is always open
+-- @param integer state binary option state
 function RMS_SettingsPage:onOwnWorkshopAvailableChanged(state)
     getPendingConfig().ownAlwaysAvailable = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the mobile workshop restricts services by maintainability
+-- @param integer state binary option state
 function RMS_SettingsPage:onMobileWorkshopRestrictionsChanged(state)
     getPendingConfig().mobileWorkshopRestrictionsEnabled = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the workshop opening hour, pushing the closing hour when they would cross
+-- @param integer state selected step index
 function RMS_SettingsPage:onWorkshopOpenHourChanged(state)
     local pending = getPendingConfig()
     local newOpen = RMS_SettingsPage.steps.hours.values[state]
     local currentClose = pending.closeHour
 
-    -- Keep open/close hours from overlapping.
+    -- opening and closing hours never cross
     if newOpen >= currentClose then
         currentClose = newOpen + 1
         if currentClose > 23 then
@@ -1098,12 +1200,14 @@ function RMS_SettingsPage:onWorkshopOpenHourChanged(state)
     refreshCurrentSettingsPage()
 end
 
+---Stores the workshop closing hour, pushing the opening hour when they would cross
+-- @param integer state selected step index
 function RMS_SettingsPage:onWorkshopCloseHourChanged(state)
     local pending = getPendingConfig()
     local newClose = RMS_SettingsPage.steps.hours.values[state]
     local currentOpen = pending.openHour
 
-    -- Keep open/close hours from overlapping.
+    -- opening and closing hours never cross
     if currentOpen >= newClose then
         currentOpen = newClose - 1
         if currentOpen < 0 then
@@ -1119,24 +1223,32 @@ function RMS_SettingsPage:onWorkshopCloseHourChanged(state)
 end
 
 
+---Stores the global system stress multiplier step
+-- @param integer state selected step index
 function RMS_SettingsPage:onSystemStressRateChanged(state)
     getPendingConfig().systemStressGlobalMultiplier = RMS_SettingsPage.steps.systemStressRate.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the usable battery capacity factor step
+-- @param integer state selected step index
 function RMS_SettingsPage:onBatteryCapacityChanged(state)
     getPendingConfig().batteryUsableCapacityFactor = RMS_SettingsPage.steps.batteryCapacity.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the maximum alternator output step
+-- @param integer state selected step index
 function RMS_SettingsPage:onAlternatorMaxOutputChanged(state)
     getPendingConfig().alternatorMaxOutput = RMS_SettingsPage.steps.alternatorMaxOutput.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the idle current draw step
+-- @param integer state selected step index
 function RMS_SettingsPage:onIdleCurrentChanged(state)
     getPendingConfig().idleCurrentA = RMS_SettingsPage.steps.idleCurrent.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
@@ -1144,6 +1256,8 @@ function RMS_SettingsPage:onIdleCurrentChanged(state)
 end
 
 
+---Stores the maximum engine and transmission temperatures from a single step
+-- @param integer state selected step index
 function RMS_SettingsPage:onThermalSensitivityChanged(state)
     local val = RMS_SettingsPage.steps.thermalSensitivity.values[state]
     local pending = getPendingConfig()
@@ -1153,126 +1267,168 @@ function RMS_SettingsPage:onThermalSensitivityChanged(state)
     refreshCurrentSettingsPage()
 end
 
+---Stores the temperature change speed step
+-- @param integer state selected step index
 function RMS_SettingsPage:onTemperatureChangeSpeedChanged(state)
     getPendingConfig().temperatureChangeSpeed = RMS_SettingsPage.steps.temperatureChangeSpeed.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the transmission temperature change multiplier step
+-- @param integer state selected step index
 function RMS_SettingsPage:onTransTemperatureChangeMultiplierChanged(state)
     getPendingConfig().transTemperatureChangeMultiplier = RMS_SettingsPage.steps.transTemperatureChangeMultiplier.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the maximum dirt influence step
+-- @param integer state selected step index
 function RMS_SettingsPage:onRadiatorDirtInfluenceChanged(state)
     getPendingConfig().maxDirtInfluence = RMS_SettingsPage.steps.radiatorDirtInfluence.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the warming boost power step
+-- @param integer state selected step index
 function RMS_SettingsPage:onWarmingBoostPowerChanged(state)
     getPendingConfig().warmingBoostPower = RMS_SettingsPage.steps.thermalPower.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the cooling slowdown power step
+-- @param integer state selected step index
 function RMS_SettingsPage:onCoolingSlowdownPowerChanged(state)
     getPendingConfig().coolingSlowdownPower = RMS_SettingsPage.steps.thermalPower.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the clogging speed step
+-- @param integer state selected step index
 function RMS_SettingsPage:onCloggingSpeedChanged(state)
     getPendingConfig().cloggingSpeed = RMS_SettingsPage.steps.cloggingSpeed.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the field inspection duration step
+-- @param integer state selected step index
 function RMS_SettingsPage:onFieldInspectionDurationChanged(state)
     getPendingConfig().fieldInspectionDuration = RMS_SettingsPage.steps.fieldInspectionDuration.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the lubrication loss per operating hour step
+-- @param integer state selected step index
 function RMS_SettingsPage:onLubricationReducePerOperatingHourChanged(state)
     getPendingConfig().lubricationReducePerOperatingHour = RMS_SettingsPage.steps.lubricationReducePerOperatingHour.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the AI worker throttles down on overload and overheat
+-- @param integer state binary option state
 function RMS_SettingsPage:onAiOverloadAndOverheatControlChanged(state)
     getPendingConfig().aiOverloadControl = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the AI worker stops on a critical overload
+-- @param integer state binary option state
 function RMS_SettingsPage:onAiDisableOnCriticalOverloadChanged(state)
     getPendingConfig().aiDisableOnCriticalOverload = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether contract vehicles are shielded from wear
+-- @param integer state binary option state
 function RMS_SettingsPage:onContractVehicleProtectionChanged(state)
     getPendingConfig().contractVehicleProtection = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the AI worker target stress step
+-- @param integer state selected step index
 function RMS_SettingsPage:onAiWorkerTargetStressChanged(state)
     getPendingConfig().aiWorkerTargetStress = RMS_SettingsPage.steps.aiWorkerTargetStress.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the AI worker minimum speed step
+-- @param integer state selected step index
 function RMS_SettingsPage:onAiWorkerMinSpeedChanged(state)
     getPendingConfig().aiWorkerMinSpeed = RMS_SettingsPage.steps.aiWorkerMinSpeed.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the drivetrain system is simulated
+-- @param integer state binary option state
 function RMS_SettingsPage:onDrivetrainEnabledChanged(state)
     getPendingConfig().drivetrainEnabled = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the drivetrain automatic mode is offered
+-- @param integer state binary option state
 function RMS_SettingsPage:onDrivetrainAllowAutoModeChanged(state)
     getPendingConfig().drivetrainAllowAutoMode = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether drivetrain windup causes damage
+-- @param integer state binary option state
 function RMS_SettingsPage:onDrivetrainWindupDamageChanged(state)
     getPendingConfig().drivetrainWindupDamage = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores the speed at which the differential lock releases itself
+-- @param integer state selected step index
 function RMS_SettingsPage:onDrivetrainDiffLockReleaseSpeedChanged(state)
     getPendingConfig().drivetrainDiffLockReleaseSpeed = RMS_SettingsPage.steps.diffLockReleaseSpeed.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the park brake is simulated
+-- @param integer state binary option state
 function RMS_SettingsPage:onDrivetrainParkBrakeEnabledChanged(state)
     getPendingConfig().drivetrainParkBrakeEnabled = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether the park brake engages itself
+-- @param integer state binary option state
 function RMS_SettingsPage:onDrivetrainParkBrakeAutoChanged(state)
     getPendingConfig().drivetrainParkBrakeAuto = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether warning messages are shown
+-- @param integer state binary option state
 function RMS_SettingsPage:onWarningMessagesChanged(state)
     getPendingConfig().enableWarningMessages = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
 
+---Stores whether debug logging is enabled
+-- @param integer state binary option state
 function RMS_SettingsPage:onDebugModeChanged(state)
     getPendingConfig().debugMode = (state == BinaryOptionElement.STATE_RIGHT)
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
@@ -1280,7 +1436,9 @@ function RMS_SettingsPage:onDebugModeChanged(state)
 end
 
 
--- --- UI Helper Methods --- --
+---Appends a section title to the settings layout
+-- @param table inGameMenuSettingsFrame frame hosting the settings layout
+-- @param string titleText section title
 function RMS_SettingsPage:addSectionHeader(inGameMenuSettingsFrame, titleText)
     local textElement = TextElement.new()
     local textElementProfile = getSettingsProfile("fs25_settingsSectionHeader")
@@ -1291,6 +1449,13 @@ function RMS_SettingsPage:addSectionHeader(inGameMenuSettingsFrame, titleText)
     textElement:onGuiSetupFinished()
 end
 
+---Appends a stepped option row to the settings layout
+-- @param table inGameMenuSettingsFrame frame hosting the settings layout
+-- @param string onClickCallback name of the callback fired on change
+-- @param table texts step labels
+-- @param string title row title
+-- @param string tooltip row tooltip
+-- @return table option multi text option element
 function RMS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCallback, texts, title, tooltip)
     local bitMap = BitmapElement.new()
     local bitMapProfile = getSettingsProfile("fs25_multiTextOptionContainer")
@@ -1332,6 +1497,12 @@ function RMS_SettingsPage:addMultiTextOption(inGameMenuSettingsFrame, onClickCal
     return multiTextOption
 end
 
+---Appends a yes or no option row to the settings layout
+-- @param table inGameMenuSettingsFrame frame hosting the settings layout
+-- @param string onClickCallback name of the callback fired on change
+-- @param string title row title
+-- @param string tooltip row tooltip
+-- @return table option binary option element
 function RMS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallback, title, tooltip)
     local bitMap = BitmapElement.new()
     local bitMapProfile = getSettingsProfile("fs25_multiTextOptionContainer")
@@ -1371,6 +1542,13 @@ function RMS_SettingsPage:addBinaryOption(inGameMenuSettingsFrame, onClickCallba
     return binaryOption
 end
 
+---Appends a button row to the settings layout, cloned from the vanilla settings template
+-- @param table inGameMenuSettingsFrame frame hosting the settings layout
+-- @param string onClickCallback name of the callback fired on click
+-- @param string title row title
+-- @param string text button text
+-- @param string tooltip row tooltip
+-- @return table? button button element
 function RMS_SettingsPage:addButtonOption(inGameMenuSettingsFrame, onClickCallback, title, text, tooltip)
     local template = getVanillaSettingsButtonTemplate()
     local bitMap
@@ -1450,10 +1628,16 @@ function RMS_SettingsPage:addButtonOption(inGameMenuSettingsFrame, onClickCallba
 end
 
 
--- --- Data Generation --- --
+---Builds the value and label lists of every stepped setting, once per session
 function RMS_SettingsPage:generateAllSteps()
     if self.steps.generated then return end
 
+    ---Builds a step list of evenly spaced values
+    -- @param float startVal first value
+    -- @param integer count number of steps
+    -- @param float stepSize gap between two steps
+    -- @param function? formatter builds the label of a value
+    -- @return table data values and texts
     local function createSteps(startVal, count, stepSize, formatter)
         local data = { values = {}, texts = {} }
         for i = 0, count - 1 do
@@ -1464,10 +1648,14 @@ function RMS_SettingsPage:generateAllSteps()
         return data
     end
 
-    -- Service Interval
+    -- service interval, labelled in hours, stored as wear per hour
     do
         local data = { values = {}, texts = {} }
 
+        ---Appends one hour range to the step list
+        -- @param float startHour first hour
+        -- @param float endHour last hour
+        -- @param float stepHour gap between two hours
         local function addHourRange(startHour, endHour, stepHour)
             local hours = startHour
             while hours <= endHour + 0.0001 do
@@ -1485,11 +1673,14 @@ function RMS_SettingsPage:generateAllSteps()
         self.steps.serviceWear = data
     end
 
-    -- Vehicle Lifespan:
-    -- 0.001 = 1000h, 0.030 = ~33h
+    -- vehicle lifespan, labelled in hours, stored as wear per hour
     do
         local data = { values = {}, texts = {} }
 
+        ---Appends one hour range to the step list
+        -- @param float startHour first hour
+        -- @param float endHour last hour
+        -- @param float stepHour gap between two hours
         local function addHourRange(startHour, endHour, stepHour)
             local hours = startHour
             while hours <= endHour + 0.0001 do
@@ -1671,6 +1862,7 @@ function RMS_SettingsPage:generateAllSteps()
 end
 
 
+---Clears the editing session state
 function RMS_SettingsPage.reset()
     RMS_SettingsPage.steps = {}
     RMS_SettingsPage.pendingConfig = nil

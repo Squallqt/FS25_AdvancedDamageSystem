@@ -1,3 +1,7 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Dialog presenting a stored inspection report of a vehicle
 RMS_ReportDialog = {}
 RMS_ReportDialog.INSTANCE = nil
 
@@ -7,7 +11,10 @@ local REPORT_TABLE_MIN_ROWS_MAIN = 10
 local REPORT_TABLE_MIN_ROWS_BOTTOM = 4
 local getSystemDisplayName
 local formatRecommendationText
+local joinRecommendationParts
+---Recommendation rules evaluated in order against the report entry and its metrics
 local RECOMMENDATION_RULES = {
+    -- service between 0.45 and 0.65
     {
         l10nKey = "rms_report_recommendation_service_due",
         check = function(vehicle, reportEntry, metrics)
@@ -18,6 +25,7 @@ local RECOMMENDATION_RULES = {
             return type(service) == "number" and service > 0.45 and service < 0.65
         end
     },
+    -- service below 0.45
     {
         l10nKey = "rms_report_recommendation_service_urgent",
         check = function(vehicle, reportEntry, metrics)
@@ -28,6 +36,7 @@ local RECOMMENDATION_RULES = {
             return type(service) == "number" and service < 0.45
         end
     },
+    -- at least one visible selectable active breakdown
     {
         l10nKey = "rms_report_recommendation_repair_active_breakdowns",
         check = function(vehicle, reportEntry, metrics)
@@ -37,6 +46,7 @@ local RECOMMENDATION_RULES = {
             return (metrics.visibleSelectableActiveBreakdownsCount or 0) > 0
         end
     },
+    -- poor condition parts that have not failed yet, listed by name
     {
         l10nKey = "rms_report_recommendation_defective_parts",
         check = function(vehicle, reportEntry, metrics)
@@ -54,6 +64,7 @@ local RECOMMENDATION_RULES = {
             return false
         end
     },
+    -- quick fix parts that have not failed yet, listed by name
     {
         l10nKey = "rms_report_recommendation_quick_fix",
         check = function(vehicle, reportEntry, metrics)
@@ -71,6 +82,7 @@ local RECOMMENDATION_RULES = {
             return false
         end
     },
+    -- overall condition below 0.4
     {
         l10nKey = "rms_report_recommendation_overhaul",
         check = function(vehicle, reportEntry, metrics)
@@ -81,6 +93,7 @@ local RECOMMENDATION_RULES = {
             return type(condition) == "number" and condition < 0.4
         end
     },
+    -- wear rate above 1.3 times nominal, complete inspection only
     {
         l10nKey = "rms_report_recommendation_operating_conditions",
         check = function(vehicle, reportEntry, metrics)
@@ -95,6 +108,7 @@ local RECOMMENDATION_RULES = {
             return (wearRate / nominalWearRate) > 1.3
         end
     },
+    -- poor quality consumables breakdown present, complete inspection only
     {
         l10nKey = "rms_report_recommendation_repeat_maintenance",
         check = function(vehicle, reportEntry, metrics)
@@ -104,6 +118,7 @@ local RECOMMENDATION_RULES = {
             return metrics.hasPoorQualityConsumablesBreakdown == true
         end
     },
+    -- worst enabled system below 0.4 while overall condition stays above 0.4
     {
         l10nKey = "rms_report_recommendation_system_overhaul",
         check = function(vehicle, reportEntry, metrics)
@@ -139,6 +154,7 @@ local RECOMMENDATION_RULES = {
             return false
         end
     },
+    -- enabled system at or above 0.4 whose stress over condition exceeds 0.8, complete inspection only
     {
         l10nKey = "rms_report_recommendation_system_preventive_maintenance",
         check = function(vehicle, reportEntry, metrics)
@@ -181,6 +197,10 @@ local RECOMMENDATION_RULES = {
 
 local log_dbg = RMS_Utils.createLogger("[RMS_REPORT_DIALOG]")
 
+---Returns the localized text of a key, or the fallback when the key is missing or unresolved
+-- @param string key l10n key
+-- @param string fallback text used when the key resolves to nothing
+-- @return string text localized text
 local function getTextOrFallback(key, fallback)
     local text = g_i18n:getText(key)
     if text == nil or text == "" or text == key then
@@ -189,6 +209,9 @@ local function getTextOrFallback(key, fallback)
     return text
 end
 
+---Returns the localized display name of a system, matching its key case insensitively
+-- @param string systemKey system key
+-- @return string name localized system name, the key itself when unknown
 function getSystemDisplayName(systemKey)
     local normalizedKey = string.lower(tostring(systemKey or ""))
 
@@ -201,6 +224,11 @@ function getSystemDisplayName(systemKey)
     return tostring(systemKey or "")
 end
 
+---Formats a recommendation template with its parameters, returning the raw template on failure
+-- @param string l10nKey l10n key of the template
+-- @param table? params format arguments
+-- @param string? fallback text used when the key resolves to nothing
+-- @return string text formatted recommendation
 function formatRecommendationText(l10nKey, params, fallback)
     local template = getTextOrFallback(l10nKey, fallback or l10nKey)
     if type(params) == "table" and #params > 0 then
@@ -213,6 +241,10 @@ function formatRecommendationText(l10nKey, params, fallback)
     return template
 end
 
+---Returns the numeric value of an active effect
+-- @param table activeEffects active effects indexed by effect id
+-- @param string effectId effect id
+-- @return float? value effect value, nil when the effect is absent
 local function getEffectValue(activeEffects, effectId)
     local effect = activeEffects[effectId]
     if type(effect) == "table" and type(effect.value) == "number" then
@@ -221,6 +253,10 @@ local function getEffectValue(activeEffects, effectId)
     return nil
 end
 
+---Returns the localized stress label for a stress over condition ratio
+-- @param float stress system stress
+-- @param float condition system condition
+-- @return string label absent, low, moderate, elevated or high
 local function getStressLabel(stress, condition)
     local safeCondition = math.max(tonumber(condition) or 0, 0.001)
     local normalizedStress = math.max(math.min((tonumber(stress) or 0.0) / safeCondition, 1.0), 0.0)
@@ -238,10 +274,17 @@ local function getStressLabel(stress, condition)
     end
 end
 
+---Clamps a value to the 0 to 1 range
+-- @param any value value to clamp
+-- @return float ratio clamped ratio
 local function clampUnitRatio(value)
     return math.max(math.min(tonumber(value) or 0, 1), 0)
 end
 
+---Returns the numeric value of an active effect, tolerating a nil effect table
+-- @param table? activeEffects active effects indexed by effect id
+-- @param string effectId effect id
+-- @return float? value effect value, nil when the effect is absent
 local function getTransmissionEffectValue(activeEffects, effectId)
     local effect = activeEffects ~= nil and activeEffects[effectId] or nil
     if type(effect) == "table" and type(effect.value) == "number" then
@@ -250,12 +293,20 @@ local function getTransmissionEffectValue(activeEffects, effectId)
     return nil
 end
 
+---Appends padding rows until the list reaches the requested row count
+-- @param table rows row list, modified in place
+-- @param integer minRows minimum number of rows
+-- @param function makePaddingRow builds one padding row
 local function padRowsToCount(rows, minRows, makePaddingRow)
     while #rows < minRows do
         table.insert(rows, makePaddingRow())
     end
 end
 
+---Appends a text to the list unless it is empty or already present
+-- @param table list text list, modified in place
+-- @param table seen texts already inserted
+-- @param string? value text to append
 local function appendUniqueText(list, seen, value)
     if value == nil or value == "" or seen[value] then
         return
@@ -265,7 +316,10 @@ local function appendUniqueText(list, seen, value)
     table.insert(list, value)
 end
 
-local function joinRecommendationParts(parts)
+---Sorts and joins part names into a comma separated list
+-- @param table parts part names
+-- @return string? text joined names, nil when the list is empty
+function joinRecommendationParts(parts)
     if type(parts) ~= "table" or #parts == 0 then
         return nil
     end
@@ -274,6 +328,11 @@ local function joinRecommendationParts(parts)
     return table.concat(parts, ", ")
 end
 
+---Evaluates every recommendation rule and returns the resulting bullet list
+-- @param table vehicle vehicle
+-- @param table reportEntry stored report entry
+-- @param table metrics metrics computed for the report
+-- @return table recommendations bullet lines, a single all clear line when no rule matched
 local function buildRecommendationsData(vehicle, reportEntry, metrics)
     local recommendations = {}
 
@@ -307,18 +366,26 @@ local function buildRecommendationsData(vehicle, reportEntry, metrics)
     return recommendations
 end
 
+---Loads the dialog layout and stores the shared instance
 function RMS_ReportDialog.register()
     local dialog = RMS_ReportDialog.new()
     g_gui:loadGui(modDirectory .. "gui/RMS_ReportDialog.xml", "RMS_ReportDialog", dialog)
     RMS_ReportDialog.INSTANCE = dialog
 end
 
+---Create instance of RMS_ReportDialog
+-- @param table? target target
+-- @param table? customMt custom metatable
+-- @return table dialog instance of class RMS_ReportDialog
 function RMS_ReportDialog.new(target, customMt)
     local dialog = MessageDialog.new(target, customMt or RMS_ReportDialog_mt)
     dialog.vehicle = nil
     return dialog
 end
 
+---Opens the dialog on a log entry that carries a report
+-- @param table vehicle vehicle
+-- @param table logEntry maintenance log entry
 function RMS_ReportDialog.show(vehicle, logEntry)
 
     if logEntry == nil or not RealisticMechanicalSystems.getIsLogEntryHasReport(logEntry) then
@@ -347,6 +414,7 @@ function RMS_ReportDialog.show(vehicle, logEntry)
     g_gui:showDialog("RMS_ReportDialog")
 end
 
+---Rebuilds every section of the report from the stored log entry
 function RMS_ReportDialog:updateScreen()
     if self.vehicle == nil then return end
     local spec = self.vehicle.spec_RealisticMechanicalSystems
@@ -368,9 +436,7 @@ function RMS_ReportDialog:updateScreen()
         balanceText
     )
 
--- ==========================================================
---                          HEADER  
--- ==========================================================
+    -- header
     -- title
     self.reportTitle:setText(g_i18n:getText("rms_report_header_title") .. " #" .. self.lastReport.id - 1)
 
@@ -398,10 +464,7 @@ function RMS_ReportDialog:updateScreen()
 
     self.inspectionLocationValue:setText(g_i18n:getText(self.lastReport.location) or "UNKNOWN")
 
--- ==========================================================
---                   OVERALL ASSESSMENT   
--- ==========================================================
-
+    -- overall assessment
     -- condition and service
     local condition = self.lastReport.conditionData.condition or 1.0
     local service = self.lastReport.conditionData.service or 1.0
@@ -409,7 +472,7 @@ function RMS_ReportDialog:updateScreen()
     table.insert(self.overallAssessmentData, {'rms_report_overall_assessment_condition', condition})
     table.insert(self.overallAssessmentData, {'rms_report_overall_assessment_service', serviceIntervalRemaining, service})
 
-    -- currentMTBF calculation
+    -- shortest mtbf, lowest and mean condition across enabled systems
     local systems = self.lastReport.conditionData.systems or {}
     local lowestCondition = 1.0
     local minMTBF = RMS_Config.CORE.BREAKDOWN_PROBABILITIES.MAX_MTBF
@@ -435,7 +498,7 @@ function RMS_ReportDialog:updateScreen()
     local critFailureRisk = RMS_Utils.getCriticalFailureChance(lowestCondition)
     table.insert(self.overallAssessmentData, {'rms_report_overall_assessment_crit_fail_risk', critFailureRisk})
     
-    -- wear rate
+    -- wear rate measured since the first entry or the last overhaul
     local reportReliability = math.max(tonumber(self.lastReport.conditionData.reliability or spec.reliability) or 1.0, 0.001)
     local nominalWearRate = RMS_Config.CORE.BASE_SYSTEMS_WEAR / reportReliability
     local wearRate = nominalWearRate
@@ -496,7 +559,7 @@ function RMS_ReportDialog:updateScreen()
 
     table.insert(self.overallAssessmentData, {'rms_report_overall_assessment_wear_rate',  wearRate})
 
-    -- nominalWearRate
+    -- nominal wear rate
     table.insert(self.overallAssessmentData, {'rms_report_overall_assessment_nominal_wear_rate', nominalWearRate})
 
     -- expected residual life
@@ -505,10 +568,7 @@ function RMS_ReportDialog:updateScreen()
 
     table.insert(self.overallAssessmentData, {'rms_report_overall_assessment_rul', rul})
 
--- ==========================================================
---                   SYSTEM CONDITION   
--- ==========================================================
-
+    -- system condition, in declared system order
     for _, systemL10nKey in ipairs(RealisticMechanicalSystems.SYSTEMS_ORDER) do
         local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, systemL10nKey)
         local systemData = systems[systemKey]
@@ -519,10 +579,7 @@ function RMS_ReportDialog:updateScreen()
         end
     end
 
--- ==========================================================
---                      VEHICLE SPECS
--- ==========================================================
-
+    -- vehicle specs
     local activeEffects = self.lastReport.conditionData.activeEffects or {}
     local nominalBatteryCapacityAh = RMS_Config.ELECTRICAL.BATTERY_NOMINAL_CAPACITY or 0
     local batterySoc = clampUnitRatio(self.lastReport.conditionData.batterySoc or 1)
@@ -532,11 +589,13 @@ function RMS_ReportDialog:updateScreen()
     local radiatorHealth = clampUnitRatio(1.0 + (getEffectValue(activeEffects, "RADIATOR_HEALTH_MODIFIER") or 0))
     local fanClutchHealth = clampUnitRatio(1.0 + (getEffectValue(activeEffects, "FAN_CLUTCH_MODIFIER") or 0))
 
+    ---Appends one spec row to the vehicle spec section
+    -- @param table data spec row
     local function addVehicleSpec(data)
         table.insert(self.vehicleSpecData, data)
     end
 
-    --- power
+    -- power
     local motor = self.vehicle:getMotor()
     local peakPowerHp = ((motor ~= nil and motor.peakMotorPower) or 0) * 1.36
     local currentPowerModifier = 1.0 + (getEffectValue(activeEffects, "ENGINE_TORQUE_MODIFIER") or 0)
@@ -551,7 +610,7 @@ function RMS_ReportDialog:updateScreen()
         stdVisible = true
     })
 
-    --- brakes
+    -- brakes
     local brakesPowerModifier = 1.0 + (getEffectValue(activeEffects, "BRAKE_FORCE_MODIFIER") or 0)
     addVehicleSpec({
         key = "rms_report_system_condition_brakes",
@@ -560,6 +619,10 @@ function RMS_ReportDialog:updateScreen()
         stdVisible = true
     })
 
+    ---Appends a textual transmission spec row
+    -- @param string titleKey l10n key of the row title
+    -- @param string textKey l10n key of the row text
+    -- @param float ratio ratio driving the row colour
     local function addTransmissionTextSpec(titleKey, textKey, ratio)
         addVehicleSpec({
             key = titleKey,
@@ -577,7 +640,7 @@ function RMS_ReportDialog:updateScreen()
         stdVisible = true
     })
 
-    --- transmission 
+    -- transmission, first matching effect wins and the rest are skipped
     local hasTransmissionIssues = false
 
     local transmissionSlipValue = getTransmissionEffectValue(activeEffects, "TRANSMISSION_SLIP_EFFECT")
@@ -723,10 +786,7 @@ function RMS_ReportDialog:updateScreen()
         stdVisible = false
     })
 
--- ==========================================================
---             BREAKDOWNS and RECCOMENDATIONS 
--- ==========================================================
-
+    -- breakdowns and recommendations
     local reportMetrics = {
         visibleSelectableBreakdownsCount = 0,
         visibleSelectableActiveBreakdownsCount = 0,
@@ -740,6 +800,7 @@ function RMS_ReportDialog:updateScreen()
     local inactivePoorPartsSeen = {}
     local inactiveQuickFixSeen = {}
 
+    -- breakdown ids listed in stable alphabetical order
     local reportActiveBreakdowns = (self.lastReport.conditionData and self.lastReport.conditionData.activeBreakdowns) or {}
     local breakdownIds = {}
     for breakdownId, _ in pairs(reportActiveBreakdowns) do
@@ -821,6 +882,10 @@ function RMS_ReportDialog:updateScreen()
     self.recommendationsTable:reloadData()
 end
 
+---Returns the row count of the requested report table
+-- @param table list list element
+-- @param integer section section index
+-- @return integer count number of rows, zero when the list is not a report table
 function RMS_ReportDialog:getNumberOfItemsInSection(list, section)
     if list == self.overallAssessmentTable then
         return #self.overallAssessmentData
@@ -833,8 +898,15 @@ function RMS_ReportDialog:getNumberOfItemsInSection(list, section)
     elseif list == self.recommendationsTable then
         return #self.recommendationsData
     end
+
+    return 0
 end
 
+---Fills one cell, dispatching on the report table it belongs to
+-- @param table list list element
+-- @param integer section section index
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_ReportDialog:populateCellForItemInSection(list, section, index, cell)
     if list == self.overallAssessmentTable then
         self:populateOverallAssessmentCell(index, cell)
@@ -849,6 +921,9 @@ function RMS_ReportDialog:populateCellForItemInSection(list, section, index, cel
     end
 end
 
+---Fills one overall assessment cell, colouring the value against its configured thresholds
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_ReportDialog:populateOverallAssessmentCell(index, cell)
     local data = self.overallAssessmentData[index]
     if not data then return end
@@ -890,6 +965,9 @@ function RMS_ReportDialog:populateOverallAssessmentCell(index, cell)
     local val = data[2]
     local rawVal = data[3] or val
 
+    ---Returns the row colour, grey when the value is hidden on a partial inspection
+    -- @param boolean smooth true for a gradient between thresholds
+    -- @return float r, float g, float b, float a colour channels
     local function getColor(smooth)
         if not cfg.stdVisible and not self.isCompleteInspection then
             return 0.5, 0.5, 0.5, 1.0
@@ -936,6 +1014,9 @@ function RMS_ReportDialog:populateOverallAssessmentCell(index, cell)
 
 end
 
+---Fills one system condition cell with the condition value and its stress label
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_ReportDialog:populateSystemConditionCell(index, cell)
     local data = self.systemConditionData[index]
     if not data then return end
@@ -962,10 +1043,16 @@ function RMS_ReportDialog:populateSystemConditionCell(index, cell)
     local riskValue = normalizedRisk * 100
     local stressLabel = getStressLabel(stress, condition)
 
+    ---Returns the condition colour
+    -- @param boolean smooth true for a gradient between thresholds
+    -- @return float r, float g, float b, float a colour channels
     local function getConditionColor(smooth)
         return RMS_Utils.getValueColor(val, 95, 80, 60, 40, smooth)
     end
 
+    ---Returns the risk colour, inverted so that a high risk reads as bad
+    -- @param boolean smooth true for a gradient between thresholds
+    -- @return float r, float g, float b, float a colour channels
     local function getRiskColor(smooth)
         return RMS_Utils.getValueColorInverted(riskValue, 20, 40, 60, 80, smooth)
     end
@@ -999,6 +1086,9 @@ function RMS_ReportDialog:populateSystemConditionCell(index, cell)
     end
 end
 
+---Fills one vehicle spec cell, formatting it as a ratio, a value pair or a text
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_ReportDialog:populateVehicleSpecCell(index, cell)
     local data = self.vehicleSpecData[index]
     if not data then return end
@@ -1027,6 +1117,9 @@ function RMS_ReportDialog:populateVehicleSpecCell(index, cell)
         stdVisible = data.stdVisible ~= false
     }
 
+    ---Returns the row colour, grey when the value is hidden on a partial inspection
+    -- @param boolean smooth true for a gradient between thresholds
+    -- @return float r, float g, float b, float a colour channels
     local function getColor(smooth)
         if not cfg.stdVisible and not self.isCompleteInspection then
             return 0.5, 0.5, 0.5, 1.0
@@ -1090,28 +1183,38 @@ function RMS_ReportDialog:populateVehicleSpecCell(index, cell)
     valueElement:setTextColor(getColor(self.isCompleteInspection))
 end
 
+---Fills one breakdown cell with its prebuilt line
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_ReportDialog:populateBreakdownsCell(index, cell)
     local data = self.breakdownsData[index]
     cell:getAttribute("reportBreakdownsRow"):setText(data or "")
 end
 
+---Fills one recommendation cell with its prebuilt line
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_ReportDialog:populateRecommendationsCell(index, cell)
     local data = self.recommendationsData[index]
     cell:getAttribute("reportRecRow"):setText(data or "")
 end
 
--- ====================================================================
--- CALLBACKS & EVENTS
--- ====================================================================
 
+---Closes the dialog
 function RMS_ReportDialog:onClickBack()
     self:close()
 end
 
+
+---
+-- @param function superFunc super function
 function RMS_ReportDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
 end
 
+
+---
+-- @param function superFunc super function
 function RMS_ReportDialog:onClose(superFunc)
     self.vehicle = nil
     g_messageCenter:unsubscribeAll(self)

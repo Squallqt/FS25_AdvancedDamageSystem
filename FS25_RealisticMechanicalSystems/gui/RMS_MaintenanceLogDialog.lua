@@ -1,13 +1,23 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Maintenance log dialog listing the service history of a vehicle and its ownership statistics
 RMS_MaintenanceLogDialog = {}
 RMS_MaintenanceLogDialog.INSTANCE = nil
 
 local RMS_MaintenanceLogDialog_mt = Class(RMS_MaintenanceLogDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
+---Tells whether a repaired breakdown is worth listing, general wear is not
+-- @param string? breakdownId breakdown id
+-- @return boolean isLoggable true when the breakdown is listed
 local function isLoggableRepairBreakdownId(breakdownId)
     return breakdownId ~= nil and breakdownId ~= "GENERAL_WEAR"
 end
 
+---Tells whether a log entry is shown, treating a missing flag as visible and accepting string flags
+-- @param table? entry maintenance log entry
+-- @return boolean isVisible true when the entry is listed
 local function isLogEntryVisible(entry)
     if entry == nil then
         return false
@@ -29,6 +39,9 @@ local function isLogEntryVisible(entry)
     return value ~= false
 end
 
+---Counts the breakdowns resolved by the completed repair and overhaul entries
+-- @param table logEntries maintenance log entries
+-- @return integer count number of resolved breakdowns
 local function getResolvedBreakdownsCount(logEntries)
     if type(logEntries) ~= "table" then
         return 0
@@ -59,12 +72,17 @@ local function getResolvedBreakdownsCount(logEntries)
     return total
 end
 
+---Loads the dialog layout and stores the shared instance
 function RMS_MaintenanceLogDialog.register()
     local dialog = RMS_MaintenanceLogDialog.new()
     g_gui:loadGui(modDirectory .. "gui/RMS_MaintenanceLogDialog.xml", "RMS_MaintenanceLogDialog", dialog)
     RMS_MaintenanceLogDialog.INSTANCE = dialog
 end
 
+---Create instance of RMS_MaintenanceLogDialog
+-- @param table? target target
+-- @param table? customMt custom metatable
+-- @return table dialog instance of class RMS_MaintenanceLogDialog
 function RMS_MaintenanceLogDialog.new(target, customMt)
     local dialog = MessageDialog.new(target, customMt or RMS_MaintenanceLogDialog_mt)
     dialog.vehicle = nil
@@ -73,6 +91,8 @@ function RMS_MaintenanceLogDialog.new(target, customMt)
     return dialog
 end
 
+---Returns the selected log entry, the list being displayed newest first
+-- @return table? entry selected maintenance log entry
 function RMS_MaintenanceLogDialog:getSelectedLogEntry()
     if self.logData == nil or self.selectedLogIndex == nil then
         return nil
@@ -82,6 +102,7 @@ function RMS_MaintenanceLogDialog:getSelectedLogEntry()
     return self.logData[entryIndex]
 end
 
+---Enables the report button only when the selected entry carries a report
 function RMS_MaintenanceLogDialog:updateShowReportButtonState()
     if self.showReportButton == nil then
         return
@@ -91,6 +112,7 @@ function RMS_MaintenanceLogDialog:updateShowReportButtonState()
     self.showReportButton.disabled = not (entry ~= nil and RealisticMechanicalSystems.getIsLogEntryHasReport(entry))
 end
 
+---Rebuilds the displayed list from the full log, keeping the visible entries
 function RMS_MaintenanceLogDialog:rebuildVisibleLogData()
     self.logData = {}
     if self.logDataAll == nil then
@@ -104,6 +126,8 @@ function RMS_MaintenanceLogDialog:rebuildVisibleLogData()
     end
 end
 
+---Opens the dialog on a vehicle with its newest entry selected
+-- @param table vehicle vehicle
 function RMS_MaintenanceLogDialog.show(vehicle)
     if RMS_MaintenanceLogDialog.INSTANCE == nil then RMS_MaintenanceLogDialog.register() end
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then return end
@@ -119,6 +143,7 @@ function RMS_MaintenanceLogDialog.show(vehicle)
     g_gui:showDialog("RMS_MaintenanceLogDialog")
 end
 
+---Rebuilds the log list and the ownership statistics header
 function RMS_MaintenanceLogDialog:updateScreen()
     if self.vehicle == nil then return end
 
@@ -153,6 +178,7 @@ function RMS_MaintenanceLogDialog:updateScreen()
 
     self.totalCostValue:setText(g_i18n:formatMoney(totalCost, 0, true, false))
 
+    -- ownership age in months, counted from the first log entry
     local currentYear = g_currentMission.environment.currentYear
     local currentMonth = g_currentMission.environment.currentPeriod
     
@@ -194,6 +220,8 @@ function RMS_MaintenanceLogDialog:updateScreen()
         end
         averageMaintenanceInterval = math.max(sumMaintenanceInterval / maintenanceCount, 0)
         self.averageMaintenanceIntervalValue:setText(string.format("%.1f", averageMaintenanceInterval) .. " " .. g_i18n:getText("rms_spec_hour_s"))
+    else
+        self.averageMaintenanceIntervalValue:setText("-")
     end
 
     self.logTable:setDataSource(self)
@@ -216,14 +244,19 @@ function RMS_MaintenanceLogDialog:updateScreen()
     self.emptylogText:setVisible(isEmpty)
 end
 
--- ====================================================================
--- LIST DELEGATE METHODS
--- ====================================================================
-
+---Returns the number of visible log entries
+-- @param table list list element
+-- @param integer section section index
+-- @return integer count number of rows
 function RMS_MaintenanceLogDialog:getNumberOfItemsInSection(list, section)
     return #self.logData
 end
 
+---Fills one log row with its date, hours, colour coded type, description and price
+-- @param table list list element
+-- @param integer section section index
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_MaintenanceLogDialog:populateCellForItemInSection(list, section, index, cell)
     local entryIndex = #self.logData - index + 1
     local entry = self.logData[entryIndex]
@@ -349,14 +382,13 @@ function RMS_MaintenanceLogDialog:populateCellForItemInSection(list, section, in
     cell:getAttribute("logPrice"):setTextColor(unpack(color))
 end
 
--- ====================================================================
--- CALLBACKS & EVENTS
--- ====================================================================
-
+---Closes the dialog
 function RMS_MaintenanceLogDialog:onClickBack()
     self:close()
 end
 
+---Selects a log row and refreshes the report button
+-- @param table row clicked row
 function RMS_MaintenanceLogDialog:onRowClick(row)
     if row == nil or row.indexInSection == nil then return end
 
@@ -367,6 +399,7 @@ function RMS_MaintenanceLogDialog:onRowClick(row)
     self:updateShowReportButtonState()
 end
 
+---Opens the report of the selected entry, or tells the player there is none
 function RMS_MaintenanceLogDialog:onClickShowReport()
     local entry = self:getSelectedLogEntry()
     if entry ~= nil and RealisticMechanicalSystems.getIsLogEntryHasReport(entry) then
@@ -377,10 +410,14 @@ function RMS_MaintenanceLogDialog:onClickShowReport()
     InfoDialog.show(g_i18n:getText("rms_ws_no_report_message"))
 end
 
+---
+-- @param function superFunc super function
 function RMS_MaintenanceLogDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
 end
 
+---
+-- @param function superFunc super function
 function RMS_MaintenanceLogDialog:onClose(superFunc)
     self.vehicle = nil
     self.logData = nil

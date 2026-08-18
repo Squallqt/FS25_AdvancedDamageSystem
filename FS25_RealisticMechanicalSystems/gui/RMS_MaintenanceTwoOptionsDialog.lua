@@ -1,15 +1,24 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Service dialog for inspection and overhaul, with a type option and a yes or no option
 RMS_MaintenanceTwoOptionsDialog = {}
 RMS_MaintenanceTwoOptionsDialog.INSTANCE = nil
 
 local RMS_MaintenanceTwoOptionsDialog_mt = Class(RMS_MaintenanceTwoOptionsDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
+---Loads the dialog layout and stores the shared instance
 function RMS_MaintenanceTwoOptionsDialog.register()
     local dialog = RMS_MaintenanceTwoOptionsDialog.new()
     g_gui:loadGui(modDirectory .. "gui/RMS_MaintenanceTwoOptionsDialog.xml", "RMS_MaintenanceTwoOptionsDialog", dialog)
     RMS_MaintenanceTwoOptionsDialog.INSTANCE = dialog
 end
 
+---Create instance of RMS_MaintenanceTwoOptionsDialog
+-- @param table? target target
+-- @param table? customMt custom metatable
+-- @return table dialog instance of class RMS_MaintenanceTwoOptionsDialog
 function RMS_MaintenanceTwoOptionsDialog.new(target, customMt)
     local dialog = MessageDialog.new(target, customMt or RMS_MaintenanceTwoOptionsDialog_mt)
     dialog.vehicle = nil
@@ -18,11 +27,17 @@ function RMS_MaintenanceTwoOptionsDialog.new(target, customMt)
     return dialog
 end
 
+---Returns the text with exactly one trailing colon
+-- @param string? text label text
+-- @return string text label ending with a colon
 local function ensureTrailingColon(text)
     local normalized = tostring(text or ""):gsub("%s*:%s*$", "")
     return normalized .. ":"
 end
 
+---Tells whether the mobile workshop accepts the selected procedure at the vehicle maintainability
+-- @param table dialog dialog instance
+-- @return boolean isAllowed true outside the mobile workshop or when restrictions are off
 local function getMobileWorkshopAvailability(dialog)
     local vehicle = dialog ~= nil and dialog.vehicle or nil
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
@@ -52,6 +67,9 @@ local function getMobileWorkshopAvailability(dialog)
     return currentMaintainability >= requiredMaintainability
 end
 
+---Tells whether the selected workshop is currently open
+-- @param table dialog dialog instance
+-- @return boolean isOpen true when the workshop accepts a service now
 local function getSelectedWorkshopAvailability(dialog)
     local vehicle = dialog ~= nil and dialog.vehicle or nil
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
@@ -64,6 +82,9 @@ local function getSelectedWorkshopAvailability(dialog)
     return true
 end
 
+---Returns the localized name of the selected procedure, option then service type
+-- @param table? dialog dialog instance
+-- @return string name procedure name
 local function getSelectedProcedureDisplayName(dialog)
     if dialog == nil then
         return ""
@@ -83,6 +104,9 @@ local function getSelectedProcedureDisplayName(dialog)
     return string.format("%s %s", optionOneText, typeText)
 end
 
+---Opens the dialog on a vehicle for an inspection or an overhaul
+-- @param table vehicle vehicle
+-- @param string maintenanceType service status constant
 function RMS_MaintenanceTwoOptionsDialog.show(vehicle, maintenanceType)
     if RMS_MaintenanceTwoOptionsDialog.INSTANCE == nil then RMS_MaintenanceTwoOptionsDialog.register() end
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or maintenanceType == nil then return end
@@ -110,6 +134,7 @@ function RMS_MaintenanceTwoOptionsDialog.show(vehicle, maintenanceType)
     g_gui:showDialog("RMS_MaintenanceTwoOptionsDialog")
 end
 
+---Rebuilds the options, the price, duration and finish time rows, and the disclaimers
 function RMS_MaintenanceTwoOptionsDialog:updateScreen()
     if self.vehicle == nil then return end
 
@@ -230,20 +255,22 @@ function RMS_MaintenanceTwoOptionsDialog:updateScreen()
     end
 end
 
--- ====================================================================
--- CALLBACKS & EVENTS
--- ====================================================================
-
+---Selects the service type option and refreshes the screen
+-- @param integer index selected option index
 function RMS_MaintenanceTwoOptionsDialog:onClickOptionOne(index)
     self.selectedOptionOne = self.optionOneValues[index] or self.selectedOptionOne
     self:updateScreen()
 end
 
+---Toggles the yes or no option and refreshes the screen
+-- @param integer state binary option state
+-- @param table binaryOptionElement binary option element
 function RMS_MaintenanceTwoOptionsDialog:onClickOptionThree(state, binaryOptionElement)
     self.selectedOptionThree = (state == BinaryOptionElement.STATE_RIGHT)
     self:updateScreen()
 end
 
+---Starts the service directly on the server, sends a request from a client, after a money check
 function RMS_MaintenanceTwoOptionsDialog:onClickStartService()
     if not getMobileWorkshopAvailability(self) or not getSelectedWorkshopAvailability(self) then
         return
@@ -261,7 +288,6 @@ function RMS_MaintenanceTwoOptionsDialog:onClickStartService()
     end
     
     if g_server ~= nil then
-        -- Server: execute locally and broadcast
         spec.serviceOptionOne = self.selectedOptionOne
         spec.serviceOptionTwo = self.selectedOptionTwo
         spec.serviceOptionThree = self.selectedOptionThree
@@ -269,17 +295,21 @@ function RMS_MaintenanceTwoOptionsDialog:onClickStartService()
         g_currentMission:addMoney(-1 * price, vehicle:getOwnerFarmId(), MoneyType.VEHICLE_RUNNING_COSTS, true, true)
         RMS_VehicleChangeStatusEvent.send(vehicle)
     else
-        -- Client: only send request to server
-        RMS_ServiceRequestEvent.send(vehicle, self.maintenanceType, workshopType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree, price)
+        RMS_ServiceRequestEvent.send(vehicle, self.maintenanceType, workshopType, self.selectedOptionOne, self.selectedOptionTwo, self.selectedOptionThree)
     end
     
     self:close()
 end
 
+---Closes the dialog
 function RMS_MaintenanceTwoOptionsDialog:onClickBack()
     self:close()
 end
 
+---Returns the number of service info rows
+-- @param table list list element
+-- @param integer section section index
+-- @return integer count number of rows
 function RMS_MaintenanceTwoOptionsDialog:getNumberOfItemsInSection(list, section)
     if list == self.serviceInfoTable then
         return #self.serviceInfoData
@@ -288,6 +318,11 @@ function RMS_MaintenanceTwoOptionsDialog:getNumberOfItemsInSection(list, section
     return 0
 end
 
+---Fills one service info row with its title and value
+-- @param table list list element
+-- @param integer section section index
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_MaintenanceTwoOptionsDialog:populateCellForItemInSection(list, section, index, cell)
     if list ~= self.serviceInfoTable then
         return
@@ -306,6 +341,8 @@ function RMS_MaintenanceTwoOptionsDialog:populateCellForItemInSection(list, sect
     valueElement:setTextColor(1, 1, 1, 1)
 end
 
+---
+-- @param function superFunc super function
 function RMS_MaintenanceTwoOptionsDialog:onOpen(superFunc)
     if self.optionThree ~= nil then
         self.optionThree.useYesNoTexts = true
@@ -319,6 +356,8 @@ function RMS_MaintenanceTwoOptionsDialog:onOpen(superFunc)
     g_messageCenter:subscribe(MessageType.MONEY_CHANGED, self.updateScreen, self)
 end
 
+---
+-- @param function superFunc super function
 function RMS_MaintenanceTwoOptionsDialog:onClose(superFunc)
     self.vehicle = nil
     g_messageCenter:unsubscribeAll(self)

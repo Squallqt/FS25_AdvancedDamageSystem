@@ -22,9 +22,6 @@
                 </BoxLayout>
             </GuiElement>
             
-            <!-- =============================================================== -->
-            <!-- REPORT INFO                                                    -->
-            <!-- =============================================================== -->
             <GuiElement profile="rms_logInfoContainer">
                <ThreePartBitmap profile="rms_containerFrame"/>
                     <Text profile="rms_headerBoldText" id="reportTitle" text="$l10n_rms_report_header_title" position="30px 60px" size="100% 40px"/>
@@ -51,13 +48,9 @@
 
             </GuiElement>
 
-            <!-- =============================================================== -->
-            <!-- VEHICLE STATS                                                   -->
-            <!-- =============================================================== -->
             <GuiElement profile="rms_reportStatsContainer">
                <ThreePartBitmap profile="rms_containerFrame"/>
                 
-                <!-- LEFT PART -->
                 <Bitmap profile="rms_tableList" id="tableHeaderBox" position="20px -15px" size="380px 50px">
                     <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_overall_assessment_title"/>
                     <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
@@ -70,7 +63,6 @@
                     </ListItem>
                 </SmoothList>
 
-                <!-- MIDDLE PART -->
                 <Bitmap profile="rms_tableList" id="tableHeaderBox" position="500px -15px" size="380px 50px">
                     <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_system_condition_title"/>
                     <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
@@ -84,7 +76,6 @@
                     </ListItem>
                 </SmoothList>
 
-                <!-- RIGHT PART -->
                 <Bitmap profile="rms_tableList" id="tableHeaderBox" position="980px -15px" size="380px 50px">
                     <Text profile="rms_tableHeaderLeft" position="10px 0px" size="380px 40.77px" text="$l10n_rms_report_vehicle_specs_title"/>
                     <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
@@ -99,10 +90,6 @@
                 
             </GuiElement>
 
-            <!-- =============================================================== -->`   
-            <!-- BREAKDOWNS AND RECOMMENDATIONS PANEL                            -->
-            <!-- =============================================================== -->
-            
             <GuiElement profile="rms_reportBreakdownsContainer">
                 <ThreePartBitmap profile="rms_containerFrame"/>
 
@@ -134,7 +121,6 @@
             </GuiElement>
         </GuiElement> 
 
-        <!-- Buttons -->
         <BoxLayout profile="fs25_dialogButtonBox">
             <Button profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" id="backButton"/>
         </BoxLayout>

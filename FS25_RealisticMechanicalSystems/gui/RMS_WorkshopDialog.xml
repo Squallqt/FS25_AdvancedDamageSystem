@@ -21,9 +21,6 @@
                 </BoxLayout>
             </GuiElement>
             
-            <!-- =============================================================== -->
-            <!-- VEHICLE INFO                                                    -->
-            <!-- =============================================================== -->
             <GuiElement profile="rms_vehicleInfoContainer">
                <ThreePartBitmap profile="rms_containerFrame"/>
                 <Bitmap profile="rms_vehicleImage" id="vehicleImage" />
@@ -62,10 +59,6 @@
                 <ThreePartBitmap profile="rms_textSeporator" position="155px 108px" />
             </GuiElement>
 
-
-            <!-- =============================================================== -->
-            <!-- BREAKDOWNS TABLE                                                -->
-            <!-- =============================================================== -->
             <GuiElement profile="rms_breakdownTableContainer">
                <ThreePartBitmap profile="rms_containerFrame"/>
                 
@@ -95,17 +88,12 @@
                 <Text profile="rms_textHeaderGrey" id="emptyTableText" text="$l10n_rms_ws_info_no_breakdowns" position="0px 210px" size="100% 50px"/>
             </GuiElement>
 
-            <!-- =============================================================== -->`   
-            <!-- STATUS PANEL                                                    -->
-            <!-- =============================================================== -->
-            
             <GuiElement profile="rms_statusBarContainer">
                     <ThreePartBitmap profile="rms_containerFrame"/>
                     <Text profile="emptyPanel" id="statusText" textSize="20px" text="$l10n_rms_ws_status_initial" textColor="1 1 1 1" textAlignment="center"/>
             </GuiElement>
         </GuiElement> 
 
-        <!-- Buttons -->
         <BoxLayout profile="fs25_dialogButtonBox">
             <Button profile="buttonCancel" text="$l10n_rms_ws_action_cancel_service" onClick="onClickCancelService" id="cancelServiceButton"/>
             <Button profile="buttonMenuPrev" text="$l10n_rms_ws_action_inspection" onClick="onClickInspection" id="inspectionButton"/>

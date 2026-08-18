@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Veicolo"/>
         <text name="rms_hud_mass_towed" text="Agganciato"/>
         <text name="rms_hud_mass_total" text="Totale"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="Il motore non si è avviato: spegni il quadro prima di riprovare"/>
         <text name="rms_tutorial_preheat_title" text="Preriscaldamento diesel"/>
         <text name="rms_tutorial_preheat_message" text="Con un motore diesel freddo, una pressione del comando di avviamento accende il quadro e avvia automaticamente il ciclo delle candelette. Le spie del cruscotto eseguono l'autotest, poi la spia di preriscaldamento resta accesa finché il motore non è pronto. Non ripetere il comando: il motorino di avviamento si inserisce automaticamente quando la spia si spegne."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Presa di forza"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Giunto di trasmissione della PDF"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Albero di uscita della PDF"/>

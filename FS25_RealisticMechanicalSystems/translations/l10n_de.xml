@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Fahrzeug"/>
         <text name="rms_hud_mass_towed" text="Angehängt"/>
         <text name="rms_hud_mass_total" text="Gesamt"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="Motor nicht gestartet: Zündung vor erneutem Versuch ausschalten"/>
         <text name="rms_tutorial_preheat_title" text="Diesel-Vorglühen"/>
         <text name="rms_tutorial_preheat_message" text="Bei kaltem Dieselmotor schaltet ein Druck auf die Starttaste die Zündung ein und startet automatisch den Vorglühzyklus. Die Kontrollleuchten führen ihren Selbsttest durch; danach bleibt die Vorglühleuchte an, bis der Motor startbereit ist. Die Taste nicht erneut drücken: Der Anlasser wird automatisch betätigt, sobald die Leuchte erlischt."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Zapfwelle"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Zapfwellen-Antriebskupplung"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Zapfwellenabtriebswelle"/>

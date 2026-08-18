@@ -1,38 +1,26 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Synchronises the air blower and grease gun hand tool actions between server and clients
 RMS_HandToolSyncEvent = {}
 local RMS_HandToolSyncEvent_mt = Class(RMS_HandToolSyncEvent, Event)
 
 InitEventClass(RMS_HandToolSyncEvent, "RMS_HandToolSyncEvent")
 
 
-local function getHandToolSpec(tool)
-    if tool == nil then
-        return nil
-    end
-
-    if g_currentModName ~= nil then
-        local spec = tool["spec_" .. g_currentModName .. ".rmsHandTools"]
-        if spec ~= nil then
-            return spec
-        end
-    end
-
-    for key, value in pairs(tool) do
-        if type(key) == "string"
-            and string.sub(key, 1, 5) == "spec_"
-            and string.sub(key, -13) == ".rmsHandTools" then
-            return value
-        end
-    end
-
-    return nil
-end
-
-
+---Create instance of Event class
+-- @return table self instance of class event
 function RMS_HandToolSyncEvent.emptyNew()
     return Event.new(RMS_HandToolSyncEvent_mt)
 end
 
 
+---Create new instance of event
+-- @param table tool hand tool
+-- @param string? state tool state
+-- @param table? targetVehicle vehicle the tool is aimed at
+-- @param float? targetDistance distance to the target vehicle
+-- @return table self instance of class event
 function RMS_HandToolSyncEvent.new(tool, state, targetVehicle, targetDistance)
     local self = RMS_HandToolSyncEvent.emptyNew()
     self.tool = tool
@@ -43,6 +31,9 @@ function RMS_HandToolSyncEvent.new(tool, state, targetVehicle, targetDistance)
 end
 
 
+---Called on server side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_HandToolSyncEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.tool)
     streamWriteString(streamId, self.state)
@@ -51,6 +42,9 @@ function RMS_HandToolSyncEvent:writeStream(streamId, connection)
 end
 
 
+---Called on client side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_HandToolSyncEvent:readStream(streamId, connection)
     self.tool = NetworkUtil.readNodeObject(streamId)
     self.state = streamReadString(streamId)
@@ -60,13 +54,15 @@ function RMS_HandToolSyncEvent:readStream(streamId, connection)
 end
 
 
+---Validates and rebroadcasts the tool action on the server, applies its effect on a client
+-- @param Connection connection connection
 function RMS_HandToolSyncEvent:run(connection)
     local tool = self.tool
     if tool == nil or not tool:getIsSynchronized() then
         return
     end
 
-    local spec = getHandToolSpec(tool)
+    local spec = rmsHandTools.getSpec(tool)
     if spec == nil then
         return
     end
@@ -99,9 +95,14 @@ function RMS_HandToolSyncEvent:run(connection)
 end
 
 
+---Applies and broadcasts the action on the server, sends it to the server from a client
+-- @param table tool hand tool
+-- @param string state tool state
+-- @param table? targetVehicle vehicle the tool is aimed at
+-- @param float? targetDistance distance to the target vehicle
 function RMS_HandToolSyncEvent.send(tool, state, targetVehicle, targetDistance)
     if g_server ~= nil then
-        local spec = getHandToolSpec(tool)
+        local spec = rmsHandTools.getSpec(tool)
         if spec.toolKind == "airBlower" then
             if tool:applyAirBlowerNetworkState(state, targetVehicle, targetDistance) then
                 g_server:broadcastEvent(RMS_HandToolSyncEvent.new(tool, state, targetVehicle, targetDistance), nil, nil, tool)

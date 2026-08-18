@@ -1,3 +1,7 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Telemetry recorder writing the live vehicle values to a csv file
 RMS_Telemetry = {}
 RMS_Telemetry.modDirectory = g_currentModDirectory
 
@@ -14,16 +18,18 @@ RMS_Telemetry.fileSequence = 0
 RMS_Telemetry.recordingScenario = nil
 RMS_Telemetry.sessionInfo = nil
 
--- =====================================================================================
---                              HELPER FUNCTIONS
--- =====================================================================================
 
 local log_dbg = RMS_Utils.createLogger("[RMS_TELEMETRY]")
 
+---Returns the directory the csv files are written to
+-- @return string path output directory
 local function getTelemetryOutputDirectory()
     return getUserProfileAppPath() .. "modSettings/FS25_RealisticMechanicalSystems/"
 end
 
+---Strips from a name every character a file name cannot hold
+-- @param any value name to clean
+-- @return string name usable file name
 local function sanitizeFileName(value)
     value = tostring(value or "unknown")
     value = value:gsub("[\\/:*?\"<>|]", "_")
@@ -39,12 +45,19 @@ local function sanitizeFileName(value)
     return value
 end
 
+---Escapes a value for a csv cell
+-- @param any value value to escape
+-- @return string text escaped value
 local function csvEscape(value)
     local text = value == nil and "" or tostring(value)
     text = text:gsub('"', '""')
     return '"' .. text .. '"'
 end
 
+---Flattens a nested table into dotted keys
+-- @param table target flat map filled in place
+-- @param string prefix key prefix
+-- @param any value value to flatten
 local function flattenTable(target, prefix, value)
     local valueType = type(value)
 
@@ -79,6 +92,9 @@ local function flattenTable(target, prefix, value)
     end
 end
 
+---Builds the header row and the data rows of the csv
+-- @param table samples recorded samples
+-- @return table rows csv rows
 local function buildCsvRows(samples)
     local rows = {}
     local headerSet = {}
@@ -102,6 +118,8 @@ local function buildCsvRows(samples)
     return headerOrder, rows
 end
 
+---Returns the vehicle the recording follows
+-- @return table? vehicle recorded vehicle
 local function getTelemetryTargetVehicle()
     local vehicle = g_localPlayer ~= nil and g_localPlayer.getCurrentVehicle ~= nil and g_localPlayer:getCurrentVehicle() or nil
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
@@ -112,6 +130,10 @@ local function getTelemetryTargetVehicle()
     return vehicle
 end
 
+---Collects the names of the attached implements
+-- @param table? rootVehicle vehicle at the head of the chain
+-- @param table names names collected so far
+-- @param table visited vehicles already walked
 local function collectAttachedImplementNames(rootVehicle, names, visited)
     names = names or {}
     visited = visited or {}
@@ -140,6 +162,9 @@ end
 local hasCVTTransmission = RMS_Utils.hasCVTTransmission
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 
+---Splits a console argument string on whitespace
+-- @param string? text console arguments
+-- @return table args argument tokens
 local function splitConsoleArgs(text)
     local args = {}
     for token in tostring(text or ""):gmatch("%S+") do
@@ -148,6 +173,8 @@ local function splitConsoleArgs(text)
     return args
 end
 
+---Builds the csv path from the scenario name, the vehicle and the date
+-- @return string path output file path
 function RMS_Telemetry:buildOutputFilePath()
     local baseDir = getTelemetryOutputDirectory()
     createFolder(baseDir)
@@ -177,10 +204,9 @@ function RMS_Telemetry:buildOutputFilePath()
     return filePath
 end
 
--- =====================================================================================
---                              FILE OUTPUT
--- =====================================================================================
 
+---Writes the recorded samples to the csv file
+-- @return boolean written true when the file was written
 function RMS_Telemetry:saveToFile()
     local filePath = self:buildOutputFilePath()
     local file = io.open(filePath, "w")
@@ -246,10 +272,8 @@ function RMS_Telemetry:saveToFile()
     return true
 end
 
--- =====================================================================================
---                              SERVICE FUNCTIONS
--- =====================================================================================
 
+---Clears the recorded samples and the session state
 function RMS_Telemetry:reset()
     self.isRecording = false
     self.elapsedMs = 0
@@ -262,6 +286,8 @@ function RMS_Telemetry:reset()
     self.sessionInfo = nil
 end
 
+---Returns the vehicle being recorded
+-- @return table? vehicle recorded vehicle
 function RMS_Telemetry:getRecordedVehicle()
     if self.vehicleId == nil or RMS_Main == nil or RMS_Main.vehicles == nil then
         return nil
@@ -270,10 +296,10 @@ function RMS_Telemetry:getRecordedVehicle()
     return RMS_Main.vehicles[self.vehicleId]
 end
 
--- =====================================================================================
---                              SESSION INFO
--- =====================================================================================
 
+---Collects the fixed information of the session: vehicle, implements and settings
+-- @param table? vehicle vehicle
+-- @return table info session information
 function RMS_Telemetry:collectSessionInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -307,10 +333,10 @@ function RMS_Telemetry:collectSessionInfo(vehicle)
     }
 end
 
--- =====================================================================================
---                              DATA COLLECTORS
--- =====================================================================================
 
+---Collects the transmission values of one sample
+-- @param table? vehicle vehicle
+-- @return table info transmission values
 function RMS_Telemetry:collectTransmissionSystemInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -345,6 +371,9 @@ function RMS_Telemetry:collectTransmissionSystemInfo(vehicle)
     }
 end
 
+---Collects the PTO values of one sample
+-- @param table? vehicle vehicle
+-- @return table info PTO values
 function RMS_Telemetry:collectPtoSystemInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -386,6 +415,9 @@ function RMS_Telemetry:collectPtoSystemInfo(vehicle)
     }
 end
 
+---Collects the CVT temperature values of one sample
+-- @param table? vehicle vehicle
+-- @return table info CVT temperature values
 function RMS_Telemetry:collectCVTTempInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or not hasCVTTransmission(vehicle) then
         return nil
@@ -419,6 +451,9 @@ function RMS_Telemetry:collectCVTTempInfo(vehicle)
     }
 end
 
+---Collects the drivetrain values of one sample
+-- @param table? vehicle vehicle
+-- @return table info drivetrain values
 function RMS_Telemetry:collectDrivetrainInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -494,6 +529,9 @@ function RMS_Telemetry:collectDrivetrainInfo(vehicle)
     }
 end
 
+---Collects the radiator and air intake clogging values of one sample
+-- @param table? vehicle vehicle
+-- @return table info clogging values
 function RMS_Telemetry:collectCloggingInfo(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -517,10 +555,10 @@ function RMS_Telemetry:collectCloggingInfo(vehicle)
     }
 end
 
--- =====================================================================================
---                              SCENARIOS
--- =====================================================================================
 
+---Collects one full sample of the recorded vehicle
+-- @param table? vehicle vehicle
+-- @return table sample recorded sample
 function RMS_Telemetry:collectSample(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return nil
@@ -549,10 +587,9 @@ function RMS_Telemetry:collectSample(vehicle)
     return sample
 end
 
--- =====================================================================================
---                              RECORDING CONTROL
--- =====================================================================================
 
+---Takes a sample each time the recording interval elapses
+-- @param float dt time since last call in ms
 function RMS_Telemetry:update(dt)
     if not self.isRecording then
         return
@@ -581,6 +618,8 @@ function RMS_Telemetry:update(dt)
     end
 end
 
+---Ends the recording and writes the file
+-- @param string? reason reason the recording ended
 function RMS_Telemetry:finishRecording(reason)
     if not self.isRecording then
         log_dbg("Telemetry: recording is not active.")
@@ -599,6 +638,10 @@ function RMS_Telemetry:finishRecording(reason)
     return self:saveToFile()
 end
 
+---Starts recording a scenario at a sampling interval
+-- @param string? scenarioName scenario name
+-- @param float? intervalMs sampling interval in ms
+-- @return boolean started true when the recording began
 function RMS_Telemetry:startRecording(scenarioName, intervalMs)
     local vehicle = getTelemetryTargetVehicle()
     if vehicle == nil then
@@ -644,10 +687,13 @@ function RMS_Telemetry:startRecording(scenarioName, intervalMs)
     return true
 end
 
+---Stops the recording
 function RMS_Telemetry:stopRecording()
     return self:finishRecording("manual")
 end
 
+---Console command starting a recording
+-- @param string? args console arguments
 function RMS_Telemetry:startConsole(args)
     local tokens = splitConsoleArgs(args)
     local scenarioName = tokens[1] or "default"
@@ -655,13 +701,11 @@ function RMS_Telemetry:startConsole(args)
     self:startRecording(scenarioName, intervalMs)
 end
 
+---Console command stopping the recording
 function RMS_Telemetry:stopConsole()
     self:stopRecording()
 end
 
--- =====================================================================================
---                              REGISTRATION
--- =====================================================================================
 
 addConsoleCommand("rms_telemetryStart", "Starts RMS telemetry recording for the current vehicle.", "startConsole", RMS_Telemetry)
 addConsoleCommand("rms_telemetryStop", "Stops RMS telemetry recording.", "stopConsole", RMS_Telemetry)

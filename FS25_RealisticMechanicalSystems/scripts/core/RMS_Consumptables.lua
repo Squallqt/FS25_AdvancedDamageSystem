@@ -1,9 +1,12 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Consumable upkeep of a vehicle: radiator and air intake clogging, lubrication, field inspection
 RMS_Consumptables = RMS_Consumptables or {}
 
--- ==========================================================
---                  HELPER FUNCTIONS
--- ==========================================================
-
+---Flags the field inspection sound dirty when the set of inspecting players becomes empty or not
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
 local function updateFieldInspectionSoundActive(vehicle, spec)
     local isActive = next(spec.fieldInspectionActivePlayers) ~= nil
     if spec.fieldInspectionSoundActive ~= isActive then
@@ -12,6 +15,9 @@ local function updateFieldInspectionSoundActive(vehicle, spec)
     end
 end
 
+---Registers a player as inspecting this vehicle until the configured duration elapses
+-- @param table player player
+-- @param boolean isActive true when the inspection starts
 function RMS_Consumptables:setFieldInspectionPlayerActive(player, isActive)
     if not self.isServer or player == nil then
         return
@@ -27,6 +33,7 @@ function RMS_Consumptables:setFieldInspectionPlayerActive(player, isActive)
     updateFieldInspectionSoundActive(self, spec)
 end
 
+---Drops the players whose inspection elapsed on the server, plays the sound on a client
 function RMS_Consumptables:updateFieldInspectionSound()
     local spec = self.spec_RealisticMechanicalSystems
 
@@ -44,10 +51,8 @@ function RMS_Consumptables:updateFieldInspectionSound()
     end
 end
 
--- ==========================================================
---          RADIATOR AND AIR INTAKE CLOGGING
--- ==========================================================
-
+---Accumulates radiator clogging from ground wetness, field work, dust and debris, capped at the dirt level
+-- @param float dt time since last call in ms
 function RMS_Consumptables:updateRadiatorClogging(dt)
     local C = RMS_Config.FIELD_CARE
     local spec = self.spec_RealisticMechanicalSystems
@@ -125,6 +130,8 @@ function RMS_Consumptables:updateRadiatorClogging(dt)
     end
 end
 
+---Accumulates air intake clogging on the same inputs as the radiator, with its own weighting
+-- @param float dt time since last call in ms
 function RMS_Consumptables:updateAirIntakeClogging(dt)
     local C = RMS_Config.FIELD_CARE
     local spec = self.spec_RealisticMechanicalSystems
@@ -202,6 +209,8 @@ function RMS_Consumptables:updateAirIntakeClogging(dt)
     end
 end
 
+---Clears radiator and air intake clogging at the configured cleaning speed
+-- @param float dt time since last call in ms
 function RMS_Consumptables:cleanRadiatorAndAirIntake(dt)
     local C = RMS_Config.FIELD_CARE
     local spec = self.spec_RealisticMechanicalSystems
@@ -225,10 +234,7 @@ function RMS_Consumptables:cleanRadiatorAndAirIntake(dt)
     end
 end
 
--- ==========================================================
---                  LUBRICATION
--- ==========================================================
-
+---Drops the lubrication level once per period, unless the vehicle was greased during it
 function RMS_Consumptables:onLubricationPeriodChanged()
     local C = RMS_Config.FIELD_CARE
     local spec = self.spec_RealisticMechanicalSystems
@@ -247,6 +253,9 @@ function RMS_Consumptables:onLubricationPeriodChanged()
     spec.lubricationUsedThisPeriod = false
 end
 
+---Consumes lubrication over the operating time, marking the period as used while the motor runs
+-- @param float operatingDt operating time since last call in ms
+-- @param integer motorState motor state
 function RMS_Consumptables:updateLubricationLevel(operatingDt, motorState)
     local C = RMS_Config.FIELD_CARE
     local spec = self.spec_RealisticMechanicalSystems
@@ -264,6 +273,7 @@ function RMS_Consumptables:updateLubricationLevel(operatingDt, motorState)
     )
 end
 
+---Restores one grease gun charge of lubrication, capped at full
 function RMS_Consumptables:lubricateVehicle()
     local C = RMS_Config.FIELD_CARE
     local spec = self.spec_RealisticMechanicalSystems
@@ -280,6 +290,8 @@ function RMS_Consumptables:lubricateVehicle()
     end
 end
 
+---Starts a field inspection, refused while the motor runs or a service is in progress
+-- @return boolean started true when the inspection began
 function RMS_Consumptables:startFieldVisualInspectionProcess()
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or spec.isExcludedVehicle then

@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Vozidlo"/>
         <text name="rms_hud_mass_towed" text="Připojeno"/>
         <text name="rms_hud_mass_total" text="Celkem"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="Motor nenastartoval: před dalším pokusem vypněte zapalování"/>
         <text name="rms_tutorial_preheat_title" text="Předehřev vznětového motoru"/>
         <text name="rms_tutorial_preheat_message" text="U studeného vznětového motoru jedno stisknutí ovladače startu zapne zapalování a automaticky zahájí žhavicí cyklus. Kontrolky na palubní desce provedou autotest a poté zůstane kontrolka předehřevu svítit, dokud není motor připraven. Povel neopakujte: startér se zapne automaticky po zhasnutí kontrolky."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Vývodový hřídel"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Spojka pohonu PTO"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Výstupní hřídel PTO"/>

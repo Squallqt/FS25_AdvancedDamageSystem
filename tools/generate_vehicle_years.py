@@ -53,7 +53,10 @@ def main() -> None:
 
     years = collect_years(root)
 
-    lines = ["--- Generated table of vehicle production years, keyed by store item path.",
+    lines = ["-- Copyright (C) 2026 Squallqt.",
+             "-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.",
+             "",
+             "---Generated table of vehicle production years, keyed by store item path",
              "RMS_VehicleYearsData = {"]
     lines += [f'    ["{key}"] = {years[key]},' for key in sorted(years)]
     lines += ["}", ""]

@@ -224,28 +224,28 @@ For testing and debugging. Most require you to be inside a vehicle that supports
 
 - Added exhaust smoke driven by vehicle age, engine wear, load and active faults
 - Fixed and improved translations
-- Added drivetrain management for tractors: 4x2 / 4WD / AUTO drive modes and differential locks, with key bindings, a HUD indicator, and settings
+- Added drivetrain management for tractors: 4x2, 4WD and AUTO modes with differential locks
 - Turning on hard ground with locked differentials now damages the transmission
-- Added a parking brake with HUD indicator and optional automatic engagement
-- Hands the drivetrain and parking brake over to Enhanced Vehicle when its matching functions are enabled
-- Added a HUD readout of tractor, towed, and combined mass
-- Fixed locked hook-lift containers being classified as towed and continuously lifted loads
-- Removed unnecessary debug log spam from routine UI and configuration updates
-- Extended lubrication to all non-road machines
-- Removed the work process system entirely, with the harvest processing wear and the unloading auger malfunction
-- Reworked cold-engine wear to start only at the dashboard's high-load threshold, with RPM as a secondary factor
-- Fixed the debug HUD showing missing or incorrect values on dedicated servers
-- Integrated dashboard indicators into an extended native speedometer layout
-- Separated engine and transmission thermal alerts and routed transmission breakdowns to their own indicator
-- Dashboard indicators no longer disappear at high speed, and the inactive service indicator stays visible in gray
-- Turbocharger wear now applies to every engine of `56 kW` (`75 hp`) or more
+- Added a parking brake that can engage automatically
+- Drivetrain and parking brake now step aside when Enhanced Vehicle handles them
+- Added a HUD readout of tractor, towed and combined mass
+- Fixed locked hook-lift containers counting as towed instead of carried
+- Removed debug log spam
+- Lubrication now applies to every non-road machine
+- Removed the work process system, its harvest wear and its unloading auger breakdown
+- Cold engine wear now starts only under high load
+- Fixed wrong values in the debug HUD on dedicated servers
+- Dashboard indicators now sit in an extended speedometer layout
+- Engine and transmission now have their own thermal alerts and indicators
+- Fixed dashboard indicators disappearing at high speed
+- Turbocharger wear now applies to every engine of 75 hp or more
 - Added a transmission thermostat breakdown on CVT gearboxes
-- Recalibrated CVT temperatures against real transmission oil data: regulation at `85C`, overheating wear from `100C`
-- Added automatic temperature-based diesel preheating, with battery load, a dashboard indicator, tutorial guidance, and a four-stage glow-plug breakdown
-- Vehicle exclusions now follow what a machine can do instead of its type name, and any automatic exclusion can be reverted with `rms_setExcluded false`, except on electric vehicles
-- Vehicle production years are now resolved by the mod itself; Vehicle Years is no longer required
-- Reworked hydraulic applicability, activity, progression, and effects around GIANTS-qualified functions; retained filter and oil-cooler failures through explicit simulation proxies
-- Reworked PTO load against GIANTS' native activation envelope, removed duplicate consumer counting and instant engagement damage, and restored cutter-drive support for harvesters
+- CVT gearboxes now run hotter before overheating
+- Added automatic diesel preheating in cold weather, with its own glow plug breakdown
+- Vehicle exclusions now follow what a machine can do instead of its type name
+- Vehicle Years is no longer required, the mod resolves production years itself
+- Hydraulic breakdowns now reach only the machines that really have hydraulics
+- Fixed PTO load and restored cutter drive support
 
 ## Support
 

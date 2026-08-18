@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Pojazd"/>
         <text name="rms_hud_mass_towed" text="Doczepione"/>
         <text name="rms_hud_mass_total" text="Razem"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="Silnik nie uruchomił się: wyłącz zapłon przed kolejną próbą"/>
         <text name="rms_tutorial_preheat_title" text="Podgrzewanie silnika Diesla"/>
         <text name="rms_tutorial_preheat_message" text="Przy zimnym silniku Diesla jedno naciśnięcie sterowania rozruchem włącza zapłon i automatycznie rozpoczyna cykl świec żarowych. Kontrolki deski rozdzielczej wykonują autotest, a następnie kontrolka podgrzewania pozostaje włączona do chwili gotowości silnika. Nie naciskaj ponownie: rozrusznik włączy się automatycznie po zgaśnięciu kontrolki."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Wał odbioru mocy"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Sprzęgło napędu WOM"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Wał wyjściowy WOM"/>

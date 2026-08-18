@@ -1,3 +1,8 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Savegame persistence of the vehicle spec, and the classification decided at load time
+
 local log_dbg = RMS_Utils.createLogger("[RMS_SPEC]")
 local getIsElectricVehicle = RMS_Utils.getIsElectricVehicle
 local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
@@ -5,10 +10,9 @@ local refreshExclusionState = RealisticMechanicalSystems.refreshExclusionState
 local getSyncOperatingTime = RealisticMechanicalSystems.getSyncOperatingTime
 local captureSystemsSync = RealisticMechanicalSystems.captureSystemsSync
 
--- ==========================================================
---                      HELPER FUNCTIONS
--- ==========================================================
-
+---Builds a zeroed wear statistics entry for every system
+-- @param table? systems system table
+-- @return table stats factor statistics
 local function createEmptyFactorStats(systems)
     local result = {}
     if type(systems) ~= "table" then
@@ -28,6 +32,9 @@ local function createEmptyFactorStats(systems)
     return result
 end
 
+---Flattens the factor statistics into system.stat keys for the savegame
+-- @param table? factorStats factor statistics
+-- @return table flat flattened numeric map
 local function flattenFactorStats(factorStats)
     local flat = {}
     if type(factorStats) ~= "table" then
@@ -48,6 +55,9 @@ local function flattenFactorStats(factorStats)
     return flat
 end
 
+---Rebuilds the factor statistics from the flattened savegame map
+-- @param table? spec vehicle spec
+-- @param table? flattenedMap flattened numeric map
 local function applyFlattenedFactorStats(spec, flattenedMap)
     if spec == nil then
         return
@@ -73,14 +83,23 @@ local function applyFlattenedFactorStats(spec, flattenedMap)
     end
 end
 
+---Tells whether the vehicle falls outside RMS, electric vehicles being the only case
+-- @param table? vehicle vehicle
+-- @return boolean isUnsupported true when RMS does not track the vehicle
 local function getIsUnsupportedVehicle(vehicle)
     return getIsElectricVehicle(vehicle)
 end
 
+---Tells whether the vehicle is an auxiliary machine, reading the vanilla tabbable flag
+-- @param table vehicle vehicle
+-- @return boolean isAuxiliary true when the vehicle cannot be tabbed to
 local function getIsAuxiliaryMachine(vehicle)
     return not vehicle.xmlFile:getValue("vehicle.enterable#isTabbable", true)
 end
 
+---Tells whether the vehicle needs greasing, cars, motorbikes and road vehicles being excluded
+-- @param table? vehicle vehicle
+-- @return boolean needsLubricate true when the vehicle takes grease
 local function getIsVehicleNeedLubricate(vehicle)
     if vehicle == nil then
         return false
@@ -94,6 +113,9 @@ local function getIsVehicleNeedLubricate(vehicle)
     return not RMS_Drivetrain.getIsRoadVehicleCategory(vehicle)
 end
 
+---Tells whether the vehicle sits in the trucks store category
+-- @param table? vehicle vehicle
+-- @return boolean isTruck true for a truck
 local function getIsTruck(vehicle)
     if vehicle == nil or g_storeManager == nil or vehicle.configFileName == nil then
         return false
@@ -104,6 +126,9 @@ local function getIsTruck(vehicle)
     return string.upper(categoryName) == "TRUCKS"
 end
 
+---Tells whether the vehicle needs blowing out, trucks, cars and motorbikes being excluded
+-- @param table vehicle vehicle
+-- @return boolean needsBlowOut true when the vehicle clogs up
 local function getIsVehicleNeedBlowOut(vehicle)
     local vtype = vehicle.type ~= nil and vehicle.type.name or ""
 
@@ -114,10 +139,11 @@ local function getIsVehicleNeedBlowOut(vehicle)
     return true
 end
 
--- ============================================================
---                       SAVE & LOAD
--- ============================================================
 
+---Called on saving
+-- @param XMLFile xmlFile XMLFile instance
+-- @param string key xml key
+-- @param table usedModNames used mod names
 function RealisticMechanicalSystems:saveToXMLFile(xmlFile, key, usedModNames)
     local spec = self.spec_RealisticMechanicalSystems
     if spec ~= nil and not spec.isExcludedByDefault then
@@ -235,6 +261,8 @@ function RealisticMechanicalSystems:saveToXMLFile(xmlFile, key, usedModNames)
     end
 end
 
+---
+-- @param table savegame savegame
 function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.isExcludedVehicle = false
     self.spec_RealisticMechanicalSystems.isExcludedByDefault = false
@@ -269,7 +297,7 @@ function RealisticMechanicalSystems:onLoad(savegame)
     self.spec_RealisticMechanicalSystems.factorStats = createEmptyFactorStats(self.spec_RealisticMechanicalSystems.systems)
     ensureFactorStats(self.spec_RealisticMechanicalSystems, self)
 
-    --- engine consumptables
+    -- engine consumables
     self.spec_RealisticMechanicalSystems.airIntakeClogging = 0.0
 
     self.spec_RealisticMechanicalSystems.extraConditionWear = 0
@@ -721,6 +749,8 @@ function RealisticMechanicalSystems:onLoad(savegame)
     end
 end
 
+---
+-- @param table savegame savegame
 function RealisticMechanicalSystems:onPostLoad(savegame)
     local spec = self.spec_RealisticMechanicalSystems
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
@@ -1065,7 +1095,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
                 if spec.isElectricVehicle then
                     systemData.enabled = false
                 end
-            -- disable transsmision for electric vehicles
+            -- disable transmission for electric vehicles
             elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.TRANSMISSION then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
@@ -1081,7 +1111,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
             elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.ELECTRICAL then
             -- chassis is applicable for all vehicles
             elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.CHASSIS  then
-            --- disable fuel system for electric vehicles
+            -- disable fuel system for electric vehicles
             elseif systemData.name == RealisticMechanicalSystems.SYSTEMS.FUEL then
                 if spec.isElectricVehicle then
                     systemData.enabled = false
@@ -1099,31 +1129,31 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     spec.isVehicleNeedBlowOut = getIsVehicleNeedBlowOut(self)
     resetIsMovingRecursive(self, {})
 
-    --- for deneral wear and tear calculations
+    -- for general wear and tear calculations
     spec._prevConditionLevel = self:getConditionLevel()
 
-    --- for dirty-flag comparison
-    --- [1] state
+    -- for dirty-flag comparison
+    -- [1] state
     spec._lastSyncState_currentState = spec.currentState
     spec._lastSyncState_plannedState = spec.plannedState
     spec._lastSyncState_maintenanceTimer = spec.maintenanceTimer
-    --- [2] service context
+    -- [2] service context
     spec._lastSyncServiceContext_optionOne = spec.serviceOptionOne
     spec._lastSyncServiceContext_optionTwo = spec.serviceOptionTwo
     spec._lastSyncServiceContext_optionThree = spec.serviceOptionThree
     spec._lastSyncServiceContext_workshopType = spec.workshopType
-    --- [3] telemetry
+    -- [3] telemetry
     spec._lastSyncTelemetry_operatingTime = getSyncOperatingTime(self)
     spec._lastSyncTelemetry_realOperatingTime = spec.realOperatingTime
     spec._lastSyncTelemetry_fuelUsageRaw = spec._fuelUsageRaw
     spec._lastSyncTelemetry_dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
     spec._lastSyncTelemetry_liftedMass = spec.liftedMass
-    --- [4] thermal
+    -- [4] thermal
     spec._lastSyncThermal_rawEngineTemperature = spec.rawEngineTemperature
     spec._lastSyncThermal_rawTransmissionTemperature = spec.rawTransmissionTemperature
     spec._lastSyncThermal_thermostatState = spec.thermostatState
     spec._lastSyncThermal_transmissionThermostatState = spec.transmissionThermostatState
-    --- [5] electrical
+    -- [5] electrical
     spec._lastSyncElectrical_batterySoc = spec.batterySoc
     spec._lastSyncElectrical_batteryChargeAh = spec.batteryChargeAh
     spec._lastSyncElectrical_batteryTerminalVoltage = spec.batteryTerminalVoltageV
@@ -1132,24 +1162,24 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     spec._lastSyncElectrical_preheatLampTestActive = spec.preheatLampTestActive
     spec._lastSyncElectrical_preheatWasRequired = spec.preheatWasRequired
     spec._lastSyncElectrical_preheatColdStartFaultSeverity = spec.preheatColdStartFaultSeverity
-    --- [6] fieldcare
+    -- [6] field care
     spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
     spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
     spec._lastSyncFieldcare_lubricationLevel = spec.lubricationLevel
     spec._lastSyncFieldcare_inspectionSoundActive = spec.fieldInspectionSoundActive
-    --- [7] wear
+    -- [7] wear
     spec._lastSyncWear_serviceLevel = spec.serviceLevel
     spec._lastSyncWear_conditionLevel = spec.conditionLevel
     spec._lastSyncWear_ptoEngagementSequence = spec.ptoEngagementSequence
     spec.ptoTutorialObservedSequence = spec.ptoEngagementSequence
     captureSystemsSync(spec)
-    --- [8] breakdowns
+    -- [8] breakdowns
     spec._lastSyncBreakdowns_serialized = RMS_Utils.serializeBreakdowns(spec.activeBreakdowns or {})
-    --- [9] service
+    -- [9] service
     spec._lastSyncServiceProgress_elapsed = spec.pendingProgressElapsedTime
     spec._lastSyncServiceProgress_step = spec.pendingProgressStepIndex
     spec._lastSyncServiceProgress_total = spec.pendingProgressTotalTime
-    --- [10] tutorial data
+    -- [10] tutorial data
     spec._lastSyncTutorial_idleTimer = spec.fuelState.idleTimer
     spec._lastSyncTutorial_fuelLevel = spec.fuelState.level
 
@@ -1158,6 +1188,7 @@ function RealisticMechanicalSystems:onPostLoad(savegame)
     self:recalculateAndApplyEffects()
 end
 
+---
 function RealisticMechanicalSystems:onDelete()
     local spec = self.spec_RealisticMechanicalSystems
 

@@ -1,18 +1,24 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Hand tool specialization: air blower, grease gun and jumper cables
 rmsHandTools = {}
 
 local specName = "spec_" .. g_currentModName .. ".rmsHandTools"
 
+---Returns the reach of the hand tool raycast
+-- @return float distance raycast distance in metres
 local function getRaycastDistance()
     local fieldCare = RMS_Config ~= nil and RMS_Config.FIELD_CARE or nil
     return (fieldCare ~= nil and fieldCare.RAYCAST_DISTANCE) or 1.5
 end
 
--- ==========================================================
---                          HELPERS
--- ==========================================================
 
 local log_dbg = RMS_Utils.createLogger("[RMS_HAND_TOOLS]")
 
+---Returns the hand tool spec of an object, creating it on first use
+-- @param table? object hand tool
+-- @return table? spec hand tool spec
 local function ensureSpec(object)
     local spec = object[specName]
     if spec == nil then
@@ -23,6 +29,35 @@ local function ensureSpec(object)
     return spec
 end
 
+---Returns the hand tool spec of an object without creating it
+-- @param table? tool hand tool
+-- @return table? spec hand tool spec, nil when the object carries none
+function rmsHandTools.getSpec(tool)
+    if tool == nil then
+        return nil
+    end
+
+    if g_currentModName ~= nil then
+        local spec = tool["spec_" .. g_currentModName .. ".rmsHandTools"]
+        if spec ~= nil then
+            return spec
+        end
+    end
+
+    for key, value in pairs(tool) do
+        if type(key) == "string"
+            and string.sub(key, 1, 5) == "spec_"
+            and string.sub(key, -13) == ".rmsHandTools" then
+            return value
+        end
+    end
+
+    return nil
+end
+
+---Returns which of the three tools this is, read from its xml
+-- @param table? handTool hand tool
+-- @return string? kind tool kind
 local function getToolKind(handTool)
     local configFileName = string.lower(handTool ~= nil and handTool.configFileName or "")
 
@@ -41,6 +76,10 @@ local function getToolKind(handTool)
     return "unknown"
 end
 
+---Resolves an i3d node declared under a mapping key
+-- @param table? object hand tool
+-- @param string mappingKey i3d mapping key
+-- @return entityId? node resolved node
 local function resolveMappedNode(object, mappingKey)
     if object == nil or object.components == nil or object.i3dMappings == nil then
         return nil
@@ -49,6 +88,11 @@ local function resolveMappedNode(object, mappingKey)
     return I3DUtil.indexToObject(object.components, mappingKey, object.i3dMappings)
 end
 
+---Raycasts forward from the tool and returns the vehicle it hits
+-- @param table? handTool hand tool
+-- @param float maxDistance reach of the raycast
+-- @return table? vehicle vehicle hit
+-- @return float distance distance to it
 local function getRaycastVehicle(handTool, maxDistance)
     local spec = ensureSpec(handTool)
     spec.raycastVehicle = nil
@@ -73,6 +117,9 @@ local function getRaycastVehicle(handTool, maxDistance)
     return spec.raycastVehicle
 end
 
+---Sets the text shown on the tool action
+-- @param table? handTool hand tool
+-- @param string text action text
 local function setActionText(handTool, text)
     local spec = ensureSpec(handTool)
     if spec.activateActionEventId ~= nil then
@@ -80,6 +127,9 @@ local function setActionText(handTool, text)
     end
 end
 
+---Returns the action text of the tool when it points at nothing
+-- @param table? handTool hand tool
+-- @return string text action text
 local function getDefaultActionText(handTool)
     local toolKind = getToolKind(handTool)
 
@@ -98,6 +148,9 @@ local function getDefaultActionText(handTool)
     return ""
 end
 
+---Starts or stops the working sound of the tool
+-- @param table? handTool hand tool
+-- @param boolean shouldPlay true to play it
 local function setToolSoundState(handTool, shouldPlay)
     local spec = ensureSpec(handTool)
     if spec == nil or spec.samples == nil then
@@ -116,6 +169,9 @@ local function setToolSoundState(handTool, shouldPlay)
     RMS_SoundManager.setSamplePlaying(sample, shouldPlay)
 end
 
+---Starts or stops the air resistance sound of the blower
+-- @param table? handTool hand tool
+-- @param boolean shouldPlay true to play it
 local function setAirResistanceSoundState(handTool, shouldPlay)
     local spec = ensureSpec(handTool)
     if spec == nil or spec.samples == nil then
@@ -134,6 +190,8 @@ local function setAirResistanceSoundState(handTool, shouldPlay)
     RMS_SoundManager.setSamplePlaying(sample, shouldPlay)
 end
 
+---Puts the dust emitter of the blower back at its rest position
+-- @param table? handTool hand tool
 local function resetDustEmitterPosition(handTool)
     local spec = ensureSpec(handTool)
     if spec.dustEmitterRootNode ~= nil and spec.dustEmitterRootNode ~= 0 then
@@ -146,6 +204,9 @@ local function resetDustEmitterPosition(handTool)
     end
 end
 
+---Moves the dust emitter of the blower to the distance being blown at
+-- @param table? handTool hand tool
+-- @param float distance distance to the target
 local function setDustEmitterDistance(handTool, distance)
     local spec = ensureSpec(handTool)
     if spec.dustEmitterRootNode == nil or spec.dustEmitterRootNode == 0 then
@@ -162,6 +223,12 @@ local function setDustEmitterDistance(handTool, distance)
     )
 end
 
+---Replicates the tool state, skipping an unchanged one unless forced
+-- @param table? handTool hand tool
+-- @param string state tool state
+-- @param boolean? force true to send an unchanged state
+-- @param table? targetVehicle vehicle the tool points at
+-- @param float? targetDistance distance to it
 local function sendHandToolState(handTool, state, force, targetVehicle, targetDistance)
     if g_server == nil and g_client == nil then
         return
@@ -196,6 +263,10 @@ local function sendHandToolState(handTool, state, force, targetVehicle, targetDi
     spec.lastSentNetworkState = state
 end
 
+---Broadcasts the jumper cable state from the server
+-- @param table? handTool hand tool
+-- @param string state cable state
+-- @param table? targetVehicle vehicle at the other end
 local function broadcastJumperCablesState(handTool, state, targetVehicle)
     local spec = ensureSpec(handTool)
 
@@ -208,6 +279,8 @@ local function broadcastJumperCablesState(handTool, state, targetVehicle)
     end
 end
 
+---Shows the cable clamps matching the current connection
+-- @param table? handTool hand tool
 local function updateJumperCablesVisibility(handTool)
     local spec = ensureSpec(handTool)
     if spec.toolKind ~= "jumperCables" then
@@ -223,6 +296,9 @@ local function updateJumperCablesVisibility(handTool)
     end
 end
 
+---Resolves a connected object to the vehicle carrying the battery
+-- @param table? vehicle vehicle or implement
+-- @return table? vehicle vehicle carrying the battery
 local function normalizeConnectedVehicle(vehicle)
     if vehicle == nil then
         return nil
@@ -235,6 +311,10 @@ local function normalizeConnectedVehicle(vehicle)
     return vehicle
 end
 
+---Tells whether two vehicles are already linked by jumper cables
+-- @param table? vehicleA first vehicle
+-- @param table? vehicleB second vehicle
+-- @return boolean areConnected true when the cables link them
 local function areVehiclesExternallyConnected(vehicleA, vehicleB)
     vehicleA = normalizeConnectedVehicle(vehicleA)
     vehicleB = normalizeConnectedVehicle(vehicleB)
@@ -262,14 +342,16 @@ local function areVehiclesExternallyConnected(vehicleA, vehicleB)
     return connectionA == vehicleB and connectionB == vehicleA
 end
 
--- ==========================================================
---                     REGISTRATION & INIT
--- ==========================================================
 
+---
+-- @param table specializations specializations of the hand tool type
+-- @return boolean hasPrerequisite true when the specialization applies
 function rmsHandTools.prerequisitesPresent(specializations)
     return true
 end
 
+---
+-- @param table handTool hand tool type
 function rmsHandTools.registerFunctions(handTool)
     SpecializationUtil.registerFunction(handTool, "handToolRaycastCallback", rmsHandTools.handToolRaycastCallback)
     SpecializationUtil.registerFunction(handTool, "applyAirBlowerNetworkState", rmsHandTools.applyAirBlowerNetworkState)
@@ -278,6 +360,8 @@ function rmsHandTools.registerFunctions(handTool)
     SpecializationUtil.registerFunction(handTool, "applyJumperCablesState", rmsHandTools.applyJumperCablesState)
 end
 
+---
+-- @param table handTool hand tool type
 function rmsHandTools.registerEventListeners(handTool)
     SpecializationUtil.registerEventListener(handTool, "onLoad", rmsHandTools)
     SpecializationUtil.registerEventListener(handTool, "onPostLoad", rmsHandTools)
@@ -290,10 +374,14 @@ function rmsHandTools.registerEventListeners(handTool)
     SpecializationUtil.registerEventListener(handTool, "onRegisterActionEvents", rmsHandTools)
 end
 
+---
+-- @param table savegame savegame
 function rmsHandTools:onLoad(savegame)
     ensureSpec(self)
 end
 
+---
+-- @param table savegame savegame
 function rmsHandTools:onPostLoad(savegame)
     local spec = ensureSpec(self)
     spec.toolKind = getToolKind(self)
@@ -380,6 +468,9 @@ function rmsHandTools:onPostLoad(savegame)
     end
 end
 
+---
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function rmsHandTools:onWriteStream(streamId, connection)
     local spec = ensureSpec(self)
     if spec.toolKind == "airBlower" and not connection:getIsServer() then
@@ -389,6 +480,9 @@ function rmsHandTools:onWriteStream(streamId, connection)
     end
 end
 
+---
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function rmsHandTools:onReadStream(streamId, connection)
     local spec = ensureSpec(self)
     if spec.toolKind == "airBlower" and connection:getIsServer() then
@@ -399,6 +493,7 @@ function rmsHandTools:onReadStream(streamId, connection)
     end
 end
 
+---
 function rmsHandTools:onDelete()
     local spec = ensureSpec(self)
 
@@ -437,10 +532,8 @@ function rmsHandTools:onDelete()
     end
 end
 
--- ==========================================================
---                        EVENTS
--- ==========================================================
 
+---Registers the tool actions and starts its idle sounds when the player picks it up
 function rmsHandTools:onHeldStart()
     if g_localPlayer == nil or self:getCarryingPlayer() ~= g_localPlayer then
         return
@@ -463,6 +556,7 @@ function rmsHandTools:onHeldStart()
 
 end
 
+---Stops the sounds and the effects when the player puts the tool away
 function rmsHandTools:onHeldEnd()
     local spec = ensureSpec(self)
 
@@ -485,6 +579,11 @@ function rmsHandTools:onHeldEnd()
 
 end
 
+---Applies the blower state, aiming its dust emitter and cleaning the target vehicle
+-- @param string state tool state
+-- @param table? targetVehicle vehicle being blown out
+-- @param float? targetDistance distance to it
+-- @return boolean changed true when the state changed
 function rmsHandTools:applyAirBlowerNetworkState(state, targetVehicle, targetDistance)
     local spec = ensureSpec(self)
     if spec.toolKind ~= "airBlower" then
@@ -510,6 +609,10 @@ function rmsHandTools:applyAirBlowerNetworkState(state, targetVehicle, targetDis
     return true
 end
 
+---Greases the target vehicle on the server when it needs it
+-- @param table? targetVehicle vehicle being greased
+-- @param Connection? connection connection of the requesting player
+-- @return boolean used true when grease was applied
 function rmsHandTools:tryUseGreaseGunServer(targetVehicle, connection)
     if not self.isServer then
         return false
@@ -549,6 +652,10 @@ function rmsHandTools:tryUseGreaseGunServer(targetVehicle, connection)
     return true
 end
 
+---Runs one jumper cable action on the server: clamp, unclamp or link the two batteries
+-- @param string state requested cable state
+-- @param table? targetVehicle vehicle aimed at
+-- @param Connection? connection connection of the requesting player
 function rmsHandTools:handleJumperCablesActionServer(state, targetVehicle, connection)
     if not self.isServer then
         return false
@@ -577,7 +684,7 @@ function rmsHandTools:handleJumperCablesActionServer(state, targetVehicle, conne
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         resultState = "jumperInvalid"
 
-    -- disconect
+    -- disconnect
     elseif vehicle == spec.connectedVehicleA or vehicle == spec.connectedVehicleB then
         if spec.connectedVehicleA ~= nil and spec.connectedVehicleA.clearExternalPowerConnection ~= nil then
             spec.connectedVehicleA:clearExternalPowerConnection(spec.connectedVehicleB)
@@ -636,6 +743,11 @@ function rmsHandTools:handleJumperCablesActionServer(state, targetVehicle, conne
     return resultState == "jumperSelected" or resultState == "jumperConnected" or resultState == "jumperDisconnected"
 end
 
+---Applies the cable state locally, moving the clamps and the sounds
+-- @param string state cable state
+-- @param table? targetVehicle vehicle aimed at
+-- @param table? connectedVehicleA vehicle on the first clamp
+-- @param table? connectedVehicleB vehicle on the second clamp
 function rmsHandTools:applyJumperCablesState(state, targetVehicle, connectedVehicleA, connectedVehicleB)
     local spec = ensureSpec(self)
     spec.connectedVehicleA = connectedVehicleA
@@ -678,10 +790,8 @@ function rmsHandTools:applyJumperCablesState(state, targetVehicle, connectedVehi
     end
 end
 
--- ==========================================================
---                        CALLBACKS
--- ==========================================================
 
+---
 function rmsHandTools:onRegisterActionEvents()
     local spec = ensureSpec(self)
     if not self:getIsActiveForInput(true) then
@@ -712,6 +822,9 @@ function rmsHandTools:onRegisterActionEvents()
     end
 end
 
+---Runs the tool action on the vehicle the player points at
+-- @param string actionName input action name
+-- @param float inputValue input value
 function rmsHandTools:onActionCallback(actionName, inputValue)
     local spec = ensureSpec(self)
     local isPressed = inputValue > 0
@@ -722,7 +835,7 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
 
     spec.activatePressed = isPressed
 
-    --- airBlower
+    -- airBlower
     if not isPressed then
         if spec.toolKind == "airBlower" then
             sendHandToolState(self, "stop")
@@ -742,7 +855,7 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
 
     local vehicle = getRaycastVehicle(self, getRaycastDistance())
 
-    --- greaseGun
+    -- greaseGun
     if vehicle ~= nil and spec.toolKind == "greaseGun" then
         local vehicleSpec = vehicle.spec_RealisticMechanicalSystems
         if vehicleSpec ~= nil and vehicleSpec.isVehicleNeedLubricate and (tonumber(vehicleSpec.lubricationLevel) or 0) < 1.0 then
@@ -758,7 +871,7 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
         end
     end
 
-    --- jumperCables
+    -- jumperCables
     if vehicle ~= nil and spec.toolKind == "jumperCables" then
         local vehicleSpec = vehicle.spec_RealisticMechanicalSystems
         if vehicleSpec ~= nil then
@@ -772,7 +885,7 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
         end
     end
 
-    --- airBlower
+    -- airBlower
     if vehicle ~= nil and spec.toolKind == "airBlower" then
         local vehicleSpec = vehicle.spec_RealisticMechanicalSystems
         local needsBlowOut = vehicleSpec ~= nil and vehicleSpec.isVehicleNeedBlowOut == true
@@ -796,6 +909,18 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
     end
 end
 
+---Raycast callback keeping the first vehicle hit
+-- @param entityId hitActorId actor hit
+-- @param float x hit x position
+-- @param float y hit y position
+-- @param float z hit z position
+-- @param float distance hit distance
+-- @param float nx hit normal x
+-- @param float ny hit normal y
+-- @param float nz hit normal z
+-- @param integer subShapeIndex sub shape index
+-- @param entityId hitShapeId shape hit
+-- @return boolean continueRaycast false to stop the raycast
 function rmsHandTools:handToolRaycastCallback(hitActorId, x, y, z, distance, nx, ny, nz, subShapeIndex, hitShapeId)
     local spec = ensureSpec(self)
     local vehicle = g_currentMission.nodeToObject[hitActorId] or g_currentMission:getNodeObject(hitActorId)
@@ -823,10 +948,9 @@ function rmsHandTools:handToolRaycastCallback(hitActorId, x, y, z, distance, nx,
     end
 end
 
--- ==========================================================
---                        UPDATE
--- ==========================================================
 
+---
+-- @param float dt time since last call in ms
 function rmsHandTools:onUpdate(dt)
     local spec = ensureSpec(self)
     local carryingPlayer = self:getCarryingPlayer()

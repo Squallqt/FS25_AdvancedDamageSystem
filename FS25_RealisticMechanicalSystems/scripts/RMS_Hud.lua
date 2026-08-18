@@ -1,3 +1,7 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---HUD of the mod: dashboard indicators, telemetry cards, notifications and the damage bar
 RMS_Hud = {}
 RMS_Hud.modDirectory = g_currentModDirectory
 RMS_Hud.debugViewMode = RMS_Hud.debugViewMode or "default"
@@ -8,6 +12,8 @@ RMS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED = 0.009
 RMS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED = 0.0035
 RMS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED = 0.0015
 
+---Create instance of RMS_Hud, loading its overlays and its sounds
+-- @return table self instance of class RMS_Hud
 function RMS_Hud:new()
 	local self = RMS_Hud:superClass().new(RMS_Hud_mt)
 	self.vehicle = nil
@@ -156,6 +162,7 @@ function RMS_Hud:new()
     return self
 end
 
+---Deletes the overlays of the HUD
 function RMS_Hud:delete()
     self:setNotificationInputActive(false)
     self.wheelSlipHud.icon:delete()
@@ -190,10 +197,14 @@ function RMS_Hud:delete()
     RMS_Hud:superClass().delete(self)
 end
 
+---Shows or hides the HUD
+-- @param boolean isVisible true to show it
 function RMS_Hud:setVisible(isVisible)
     self.activeVehicleDebugPanel.isVisible = isVisible
 end
 
+---Binds the HUD to a vehicle and resets its per vehicle state
+-- @param table? vehicle vehicle
 function RMS_Hud:setVehicle(vehicle)
     if self.vehicle ~= vehicle then
         self.indicatorRuntime = {}
@@ -208,6 +219,9 @@ function RMS_Hud:setVehicle(vehicle)
     self.vehicle = vehicle
 end
 
+---Returns the blink and sound state of an indicator, creating it on first use
+-- @param string indicatorId dashboard indicator id
+-- @return table state indicator runtime state
 function RMS_Hud:getIndicatorRuntimeState(indicatorId)
     if self.indicatorRuntime == nil then
         self.indicatorRuntime = {}
@@ -228,6 +242,8 @@ function RMS_Hud:getIndicatorRuntimeState(indicatorId)
     return self.indicatorRuntime[indicatorId]
 end
 
+---Starts the blink cycle of an indicator
+-- @param string indicatorId dashboard indicator id
 function RMS_Hud:startIndicatorBlink(indicatorId)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
     local vehicle = self.vehicle
@@ -243,6 +259,10 @@ function RMS_Hud:startIndicatorBlink(indicatorId)
     runtimeState.blinkStartTime = now
 end
 
+---Applies the blink colour of an indicator for this frame
+-- @param string indicatorId dashboard indicator id
+-- @param table targetColor colour the indicator lights in
+-- @param boolean blinkWhileActive true to keep blinking while it stays lit
 function RMS_Hud:applyIndicatorBlink(indicatorId, targetColor, blinkWhileActive)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
     local colors = RMS_Breakdowns ~= nil and RMS_Breakdowns.COLORS or nil
@@ -275,6 +295,10 @@ function RMS_Hud:applyIndicatorBlink(indicatorId, targetColor, blinkWhileActive)
     return targetColor
 end
 
+---Plays the warning or alarm sound once when an indicator lights up
+-- @param string indicatorId dashboard indicator id
+-- @param table runtimeState indicator runtime state
+-- @param integer severity indicator severity
 function RMS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, severity)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
@@ -321,6 +345,10 @@ function RMS_Hud:tryPlayIndicatorActivationSound(indicatorId, runtimeState, seve
     return true
 end
 
+---Lights or clears an indicator, starting its blink and its sound on the transition
+-- @param string indicatorId dashboard indicator id
+-- @param boolean shouldLight true when the indicator must be lit
+-- @param table targetColor colour the indicator lights in
 function RMS_Hud:syncIndicatorActivation(indicatorId, shouldLight, targetColor)
     local runtimeState = self:getIndicatorRuntimeState(indicatorId)
     local colors = RMS_Breakdowns ~= nil and RMS_Breakdowns.COLORS or nil
@@ -367,6 +395,9 @@ function RMS_Hud:syncIndicatorActivation(indicatorId, shouldLight, targetColor)
     end
 end
 
+---Returns the store category label of a vehicle
+-- @param table? vehicle vehicle
+-- @return string label category label
 function RMS_Hud:getVehicleTypeCategoryLabel(vehicle)
     local vehicleTypeName = "-"
     local categoryName = "-"
@@ -388,10 +419,8 @@ end
 local hasCVTTransmission = RMS_Utils.hasCVTTransmission
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 
--- =====================================================================================
---                              DRAW
--- =====================================================================================
 
+---Draws the whole HUD for the current frame
 function RMS_Hud:draw()
     if g_currentMission == nil then
         return
@@ -417,22 +446,30 @@ function RMS_Hud:draw()
     end
 end
 
--- =====================================================================================
---                              NOTIFICATION PANEL
--- =====================================================================================
 
+---Shows a notification on the shared HUD instance
+-- @param string text notification text
+-- @param float? durationMs display duration in ms, absent for a persistent one
+-- @param string? title notification title
+-- @param boolean? playSound true to play the notification sound
 function RMS_Hud.showNotification(text, durationMs, title, playSound)
     if RMS_Main ~= nil and RMS_Main.hud ~= nil then
         RMS_Main.hud:setNotification(text, durationMs, title, playSound)
     end
 end
 
+---Hides the notification of the shared HUD instance
 function RMS_Hud.hideNotification()
     if RMS_Main ~= nil and RMS_Main.hud ~= nil then
         RMS_Main.hud:clearNotification()
     end
 end
 
+---Stores the notification to draw and starts its timer
+-- @param string text notification text
+-- @param float? durationMs display duration in ms, absent for a persistent one
+-- @param string? title notification title
+-- @param boolean? playSound true to play the notification sound
 function RMS_Hud:setNotification(text, durationMs, title, playSound)
     local panel = self.notificationPanel
     local normalizedText = tostring(text or ""):gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
@@ -465,6 +502,7 @@ function RMS_Hud:setNotification(text, durationMs, title, playSound)
     end
 end
 
+---Clears the notification and its input binding
 function RMS_Hud:clearNotification()
     local panel = self.notificationPanel
     panel.title = nil
@@ -474,6 +512,8 @@ function RMS_Hud:clearNotification()
     panel.isPersistent = false
 end
 
+---Registers or drops the action closing a persistent notification
+-- @param boolean isActive true to register it
 function RMS_Hud:setNotificationInputActive(isActive)
     local inputBinding = g_inputBinding
     local contextName = isActive and inputBinding.currentContextName or nil
@@ -509,16 +549,20 @@ function RMS_Hud:setNotificationInputActive(isActive)
     end
 end
 
+---Closes the persistent notification on player input
 function RMS_Hud:onCloseNotificationInput()
     self:closePersistentNotification()
 end
 
+---Tells whether a notification the player can close is shown
+-- @return boolean hasClosable true when one is shown
 function RMS_Hud:hasClosableNotification()
     local panel = self.notificationPanel
 
     return panel ~= nil and panel.isVisible and panel.isPersistent
 end
 
+---Closes the persistent notification
 function RMS_Hud:closePersistentNotification()
     if not self:hasClosableNotification() then
         return false
@@ -529,6 +573,12 @@ function RMS_Hud:closePersistentNotification()
     return true
 end
 
+---Draws the divider line of the notification panel
+-- @param float x x position
+-- @param float y y position
+-- @param float width divider width
+-- @param float height divider height
+-- @param table color rgba channels
 function RMS_Hud:drawNotificationDivider(x, y, width, height, color)
     local snappedX, snappedY, snappedWidth, snappedHeight = self:snapScreenRect(x, y, width, height)
     drawFilledRect(
@@ -543,6 +593,10 @@ function RMS_Hud:drawNotificationDivider(x, y, width, height, color)
     )
 end
 
+---Returns the input glyph closing the notification
+-- @param float glyphWidth glyph width
+-- @param float glyphHeight glyph height
+-- @return table? glyph input glyph element
 function RMS_Hud:getNotificationCloseGlyph(glyphWidth, glyphHeight)
     if self.notificationCloseGlyph == nil then
         self.notificationCloseGlyph = InputGlyphElement.new(g_inputDisplayManager, glyphWidth, glyphHeight)
@@ -565,6 +619,12 @@ function RMS_Hud:getNotificationCloseGlyph(glyphWidth, glyphHeight)
     return self.notificationCloseGlyph
 end
 
+---Snaps a rectangle to whole pixels
+-- @param float x x position
+-- @param float y y position
+-- @param float width rectangle width
+-- @param float height rectangle height
+-- @return float x, float y, float width, float height snapped rectangle
 function RMS_Hud:snapScreenRect(x, y, width, height)
     local snappedX = math.floor(x * g_screenWidth + 0.5) / g_screenWidth
     local snappedY = math.floor(y * g_screenHeight + 0.5) / g_screenHeight
@@ -574,6 +634,12 @@ function RMS_Hud:snapScreenRect(x, y, width, height)
     return snappedX, snappedY, snappedWidth, snappedHeight
 end
 
+---Draws the rounded background of a panel
+-- @param float x x position
+-- @param float y y position
+-- @param float width panel width
+-- @param float height panel height
+-- @param table color rgba channels
 function RMS_Hud:drawPanelBackground(x, y, width, height, color)
     if width <= 0 or height <= 0 then
         return
@@ -594,6 +660,7 @@ function RMS_Hud:drawPanelBackground(x, y, width, height, color)
     )
 end
 
+---Draws the notification panel and its text
 function RMS_Hud:drawNotificationPanel()
     local panel = self.notificationPanel
     if panel == nil or not panel.isVisible or panel.text == nil then
@@ -698,10 +765,8 @@ function RMS_Hud:drawNotificationPanel()
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
 end
 
--- =====================================================================================
---                              DASHBOARD
--- =====================================================================================
 
+---Recomputes every HUD size and position for the current screen resolution
 function RMS_Hud:storeScaledValues()
 
     self.dashExtension.stretchWidth = self:scalePixelToScreenWidth(25)
@@ -796,6 +861,7 @@ function RMS_Hud:storeScaledValues()
     self.fuelConsumptionHud.iconGap = self:scalePixelToScreenWidth(6)
 end
 
+---Draws the dashboard indicators, the gauges and the vehicle condition
 function RMS_Hud:drawDashboard()
     if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil or self.vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle then
         return
@@ -811,6 +877,11 @@ function RMS_Hud:drawDashboard()
     local preheatState = spec.preheatState or RMS_Preheat.STATE.IDLE
     local isLampTestActive = RMS_Preheat.isLampTestActive(vehicle)
 
+    ---Returns the colour an indicator must light in, the highest priority breakdown winning
+    -- @param string hudIndicatorId dashboard indicator id
+    -- @param boolean mutateActiveState true to update the stored active state as well
+    -- @return table? color rgba channels, nil when the indicator stays off
+    -- @return boolean isRoutineIgnitionIndicator true for an indicator that lights on every ignition
     local function calculateIndicatorTargetColor(hudIndicatorId, mutateActiveState)
         local targetColor = colors.DEFAULT
         local isRoutineIgnitionIndicator = false
@@ -961,7 +1032,11 @@ function RMS_Hud:drawDashboard()
         setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_MIDDLE)
         setTextBold(true)
 
-        local function renderIndicatorValue(indicator, value, color)
+        ---Draws one gauge value in its colour
+    -- @param table indicator gauge element
+    -- @param any value value to draw
+    -- @param table color rgba channels
+    local function renderIndicatorValue(indicator, value, color)
             if value == nil or not indicator.icon.visible then
                 return
             end
@@ -1002,6 +1077,10 @@ function RMS_Hud:drawDashboard()
     setTextBold(false)
 end
 
+---Draws the wheel slip readout
+-- @param table spec vehicle spec
+-- @param float posX x position
+-- @param float posY y position
 function RMS_Hud:drawWheelSlipDisplay(spec, posX, posY)
     if self.wheelSlipHud == nil or self.wheelSlipHud.icon == nil then
         return
@@ -1026,6 +1105,11 @@ function RMS_Hud:drawWheelSlipDisplay(spec, posX, posY)
     setTextColor(1, 1, 1, 1)
 end
 
+---Draws the drive mode, the differential lock and the park brake
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param float posX x position
+-- @param float posY y position
 function RMS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
     if self.drivetrainHud == nil or RMS_Drivetrain == nil then
         return
@@ -1097,6 +1181,8 @@ function RMS_Hud:drawDrivetrainDisplay(vehicle, spec, posX, posY)
     end
 end
 
+---Draws the park brake indicator
+-- @param table vehicle vehicle
 function RMS_Hud:drawParkBrakeDisplay(vehicle)
     if self.parkBrakeHud == nil or self.parkBrakeHud.icon == nil then
         return
@@ -1128,10 +1214,8 @@ function RMS_Hud:drawParkBrakeDisplay(vehicle)
     icon:render()
 end
 
--- =====================================================================================
---                          TELEMETRY CARDS HUD
--- =====================================================================================
 
+---Draws the fuel consumption and load mass cards
 function RMS_Hud:drawTelemetryCards()
     local speedMeter = g_currentMission.hud.speedMeter
     if speedMeter == nil or speedMeter.speedBg == nil then
@@ -1143,6 +1227,8 @@ function RMS_Hud:drawTelemetryCards()
     self:drawFuelConsumption(cardRightX)
 end
 
+---Returns the fuel consumption per worked area
+-- @return float? rate consumption per hectare
 function RMS_Hud:getConsumptionAreaRate()
     local vehicle = self.vehicle
     if vehicle == nil then
@@ -1159,6 +1245,11 @@ function RMS_Hud:getConsumptionAreaRate()
     return speed, (speed * width) / 10
 end
 
+---Eases a telemetry value toward its target so the readout stays readable
+-- @param float currentValue value shown now
+-- @param float targetValue value to reach
+-- @param float interpolationSpeed easing speed
+-- @return float value eased value
 function RMS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolationSpeed)
     if currentValue == targetValue then
         return targetValue
@@ -1169,6 +1260,8 @@ function RMS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolat
     return limitFunc(currentValue + interpolationSpeed * direction * (tonumber(g_currentDt) or 0), targetValue)
 end
 
+---Draws the fuel consumption card
+-- @param float cardRightX right edge of the card
 function RMS_Hud:drawFuelConsumption(cardRightX)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil or vehicle.spec_motorized == nil then
@@ -1269,10 +1362,10 @@ function RMS_Hud:drawFuelConsumption(cardRightX)
     setTextVerticalAlignment(RenderText.VERTICAL_ALIGN_BOTTOM)
 end
 
--- =====================================================================================
---                              LOAD / MASS HUD
--- =====================================================================================
 
+---Returns the colour of a load severity
+-- @param integer severity load severity
+-- @return table color rgba channels
 function RMS_Hud:getLoadSeverityColor(severity)
     local colors = RMS_Breakdowns.COLORS
     local s = math.clamp(tonumber(severity) or 0, 0, 1)
@@ -1289,10 +1382,17 @@ function RMS_Hud:getLoadSeverityColor(severity)
     }
 end
 
+---Formats a mass in tons
+-- @param float massTons mass in tons
+-- @return string text formatted mass
 function RMS_Hud:formatMass(massTons)
     return string.format("%.1f t", math.max(tonumber(massTons) or 0, 0))
 end
 
+---Returns a mass that only changes past a threshold, so the readout stops flickering
+-- @param string cacheKey key the mass is cached under
+-- @param float massTons mass in tons
+-- @return float mass stable mass
 function RMS_Hud:getStableDisplayMass(cacheKey, massTons)
     local mass = math.max(tonumber(massTons) or 0, 0)
     local displayStep = 0.1
@@ -1307,6 +1407,8 @@ function RMS_Hud:getStableDisplayMass(cacheKey, massTons)
     return cachedMass
 end
 
+---Draws the load mass card
+-- @param float cardRightX right edge of the card
 function RMS_Hud:drawLoadMass(cardRightX)
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.getTotalMass == nil then
@@ -1432,13 +1534,10 @@ function RMS_Hud:drawLoadMass(cardRightX)
     return panelX - (self.telemetryCardGap or 0)
 end
 
--- =====================================================================================
---                             DAMAGE BAR CONTROL
--- =====================================================================================
 
 local INSPECTED_DAMAGE_CEILING = 0.9
 
--- Damage bar filling of each condition tier.
+-- damage bar filling of each condition tier
 local TIER_DAMAGE_AMOUNTS = {0.0, 0.25, 0.5, 0.75, INSPECTED_DAMAGE_CEILING}
 
 local originalSpeedMeterDisplayDraw = SpeedMeterDisplay.draw
@@ -1547,10 +1646,9 @@ SpeedMeterDisplay.draw = function(self, ...)
     return result
 end
 
--- =====================================================================================
---                         VEHICLE INFO PANEL
--- =====================================================================================
 
+---Adds the RMS lines to the vanilla vehicle info box
+-- @param table box info box
 function RMS_Hud:showInfoVehicle(box)
     if self.spec_RealisticMechanicalSystems ~= nil and not self.spec_RealisticMechanicalSystems.isExcludedVehicle then
         local spec = self.spec_RealisticMechanicalSystems
@@ -1570,8 +1668,5 @@ end
 
 Vehicle.showInfo = Utils.appendedFunction(Vehicle.showInfo, RMS_Hud.showInfoVehicle)
 
--- ==========================================================
---                       HUD MODULES
--- ==========================================================
 
 source(g_currentModDirectory .. "scripts/RMS_HudDebug.lua")

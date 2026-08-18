@@ -1,3 +1,8 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---On foot field inspection: hold the action while looking at a tracked vehicle
+
 local rmsInspectionVehicle = nil
 local rmsInspectionActionId = nil
 local rmsInspectionHoldVehicle = nil
@@ -10,12 +15,16 @@ local rmsInspectionProgressPercent = -1
 local rmsInspectionMaxDistance = 6.0
 
 
+---Clears the hold timer of the inspection action
 local function rmsResetInspectionHoldState()
     rmsInspectionHoldVehicle = nil
     rmsInspectionHoldTime = 0
     rmsInspectionHoldTriggered = false
 end
 
+---Returns the vehicle the player looks at, if RMS tracks it and the player may access it
+-- @param table player player
+-- @return table? vehicle vehicle that can be inspected
 local function rmsGetInspectionVehicleFromTargeter(player)
     local object = nil
 
@@ -43,6 +52,8 @@ local function rmsGetInspectionVehicleFromTargeter(player)
     return object
 end
 
+---Stops the running inspection and tells the player why
+-- @param string? reasonText message shown, none to just hide the notification
 local function rmsCancelActiveInspection(reasonText)
     local vehicle = rmsActiveInspectionVehicle
     if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil then
@@ -69,6 +80,7 @@ local function rmsCancelActiveInspection(reasonText)
     end
 end
 
+---Ends the inspection and opens the inspection dialog
 local function rmsCompleteActiveInspection()
     local vehicle = rmsActiveInspectionVehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
@@ -97,6 +109,9 @@ local function rmsCompleteActiveInspection()
     end
 end
 
+---Advances the inspection, cancelling it when the player looks away, moves off or gets busy
+-- @param table inputComponent player input component
+-- @param float dt time since last call in ms
 local function rmsUpdateActiveInspection(inputComponent, dt)
     local vehicle = rmsActiveInspectionVehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
@@ -152,6 +167,11 @@ local function rmsUpdateActiveInspection(inputComponent, dt)
     end
 end
 
+---Starts the inspection once the action has been held long enough
+-- @param string actionName input action name
+-- @param float inputValue input value
+-- @param any callbackState callback state
+-- @param boolean isAnalog true for an analog input
 local function rmsOnInputFieldInspection(actionName, inputValue, callbackState, isAnalog)
     if rmsActiveInspectionVehicle ~= nil then
         return
@@ -195,6 +215,10 @@ local function rmsOnInputFieldInspection(actionName, inputValue, callbackState, 
     end
 end
 
+---Offers the inspection action while the player looks at a tracked vehicle on foot
+-- @param table inputComponent player input component
+-- @param function superFunc super function
+-- @param float dt time since last call in ms
 local function rmsOnPlayerInputComponentUpdate(inputComponent, superFunc, dt)
     superFunc(inputComponent, dt)
 
@@ -235,6 +259,8 @@ local function rmsOnPlayerInputComponentUpdate(inputComponent, superFunc, dt)
     end
 end
 
+---Registers the field inspection action on the player
+-- @param table inputComponent player input component
 local function rmsOnPlayerInputComponentRegisterActionEvents(inputComponent)
     if not inputComponent.player.isOwner then
         return

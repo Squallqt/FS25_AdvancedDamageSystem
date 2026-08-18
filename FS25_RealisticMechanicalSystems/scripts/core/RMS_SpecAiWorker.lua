@@ -1,10 +1,17 @@
--- ==========================================================
---                        AI WORKER
--- ==========================================================
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---AI worker cruise control, throttling the helper down on engine load and temperature
+
+---Tells whether the vehicle or one of its implements is taking a soil sample
+-- @param table? vehicle vehicle
+-- @return boolean isSampling true while a soil sampler works
 local function getIsSoilSamplingActive(vehicle)
     local visited = {}
 
+    ---Walks the vehicle and its attached implements looking for an active soil sampler
+    -- @param table? object vehicle or implement
+    -- @return boolean isSampling true while a soil sampler works
     local function visit(object)
         if object == nil or visited[object] then
             return false
@@ -32,6 +39,8 @@ local function getIsSoilSamplingActive(vehicle)
     return visit(vehicle)
 end
 
+---Clears the AI worker PID state, restoring the maximum cruise speed unless asked otherwise
+-- @param boolean? restoreCruiseSpeed false to leave the cruise speed untouched
 function RealisticMechanicalSystems:resetAiWorkerCruiseControlState(restoreCruiseSpeed)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
@@ -69,6 +78,8 @@ function RealisticMechanicalSystems:resetAiWorkerCruiseControlState(restoreCruis
     end
 end
 
+---Returns the lowest speed limit among the lowered implements
+-- @return float speedLimit speed limit, math.huge when no lowered implement limits it
 function RealisticMechanicalSystems:getAiWorkerImplementSpeedLimit()
     local speedLimit = math.huge
 
@@ -87,6 +98,8 @@ function RealisticMechanicalSystems:getAiWorkerImplementSpeedLimit()
     return speedLimit
 end
 
+---Drives the AI cruise speed with a PID on a stress signal built from load and temperatures
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     if not self.isServer then return end
     local spec = self.spec_RealisticMechanicalSystems
@@ -132,6 +145,11 @@ function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     local dtMs = math.max(dt or RMS_Config.ON_UPDATE_DELAY, 1)
     local dtSeconds = math.max(dtMs / 1000, 0.05)
 
+    ---Maps a value onto a 0 to 1 range between two thresholds
+    -- @param float value value to map
+    -- @param float startValue value mapping to 0
+    -- @param float fullValue value mapping to 1
+    -- @return float ratio normalized value
     local function normalizeToUnit(value, startValue, fullValue)
         local denominator = math.max(fullValue - startValue, 0.0001)
         return math.clamp((value - startValue) / denominator, 0.0, 1.0)
@@ -166,6 +184,7 @@ function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     local maxReduction = math.max(config.MAX_REDUCTION or 16, 0)
     local maxIntegral = math.max(config.MAX_INTEGRAL or 3, 0.001)
 
+    -- the integral stops accumulating once the reduction sits against one of its bounds
     local integrate = true
     if (state.currentReduction <= 0 and error < 0) or (state.currentReduction >= maxReduction and error > 0) then
         integrate = false
@@ -180,6 +199,7 @@ function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     rateCommand = math.clamp(rateCommand, -recoveryRate, reductionRate)
     state.currentReduction = math.clamp(state.currentReduction + rateCommand * dtSeconds, 0, maxReduction)
 
+    -- an emergency temperature forces the full reduction and applies it without waiting
     local emergency = rawEngineTemperature >= (config.EMERGENCY_ENGINE_TEMP or 112) or rawTransmissionTemperature >= (config.EMERGENCY_TRANS_TEMP or 112)
     if emergency then
         state.currentReduction = maxReduction

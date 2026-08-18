@@ -1,3 +1,7 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Debug snapshot of a vehicle, built on the server and sent to the requesting client
 RMS_DebugSnapshot = {}
 
 RMS_DebugSnapshot.REQUEST_INTERVAL_MS = 500
@@ -29,6 +33,10 @@ local DEBUG_SECTIONS = {
     "aiWorker"
 }
 
+---Copies a value the snapshot can carry, walking tables and guarding against cycles
+-- @param any value value to copy
+-- @param table? visited tables already copied
+-- @return any copy copied value, nil for a type the snapshot cannot carry
 local function copyPlainValue(value, visited)
     local valueType = type(value)
     if valueType == "number" or valueType == "boolean" or valueType == "string" then
@@ -59,6 +67,9 @@ local function copyPlainValue(value, visited)
     return result
 end
 
+---Copies the debug sections listed for the snapshot
+-- @param table? debugData debug data of the vehicle
+-- @return table copy copied sections
 local function copyDebugData(debugData)
     local result = {}
 
@@ -72,6 +83,9 @@ local function copyDebugData(debugData)
     return result
 end
 
+---Copies the accumulated wear factor statistics
+-- @param table? factorStats factor statistics
+-- @return table copy copied statistics
 local function copyFactorStats(factorStats)
     local result = {}
 
@@ -95,6 +109,9 @@ local function copyFactorStats(factorStats)
     return result
 end
 
+---Writes one snapshot value, its type first so the reader knows what follows
+-- @param integer streamId streamId
+-- @param any value value to write
 local function writeSnapshotValue(streamId, value)
     local valueType = type(value)
 
@@ -140,6 +157,9 @@ local function writeSnapshotValue(streamId, value)
     end
 end
 
+---Reads one snapshot value, dispatching on the type written before it
+-- @param integer streamId streamId
+-- @return any value value read
 local function readSnapshotValue(streamId)
     local valueType = streamReadUIntN(streamId, 2)
 
@@ -161,6 +181,9 @@ local function readSnapshotValue(streamId)
     return value
 end
 
+---Builds the snapshot of a vehicle on the server
+-- @param table? vehicle vehicle
+-- @return table snapshot debug snapshot
 function RMS_DebugSnapshot.build(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -235,14 +258,23 @@ function RMS_DebugSnapshot.build(vehicle)
     }
 end
 
+---Writes a snapshot to the stream
+-- @param integer streamId streamId
+-- @param table? snapshot debug snapshot
 function RMS_DebugSnapshot.write(streamId, snapshot)
     writeSnapshotValue(streamId, snapshot or {})
 end
 
+---Reads a snapshot from the stream
+-- @param integer streamId streamId
+-- @return table snapshot debug snapshot
 function RMS_DebugSnapshot.read(streamId)
     return readSnapshotValue(streamId)
 end
 
+---Stores a received snapshot on the client vehicle with its arrival time
+-- @param table? vehicle vehicle
+-- @param table? snapshot debug snapshot
 function RMS_DebugSnapshot.apply(vehicle, snapshot)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or type(snapshot) ~= "table" then
@@ -253,6 +285,9 @@ function RMS_DebugSnapshot.apply(vehicle, snapshot)
     spec.rmsDebugSnapshotReceivedAt = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
 end
 
+---Returns the stored snapshot while it is younger than its maximum age
+-- @param table? vehicle vehicle
+-- @return table? snapshot debug snapshot
 function RMS_DebugSnapshot.get(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -268,6 +303,8 @@ function RMS_DebugSnapshot.get(vehicle)
     return spec.rmsDebugSnapshot
 end
 
+---Asks the server for a fresh snapshot, at most once per request interval
+-- @param table? vehicle vehicle
 function RMS_DebugSnapshot.request(vehicle)
     if vehicle == nil or vehicle.isServer or g_client == nil or not RMS_Config.DEBUG then
         return

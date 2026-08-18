@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <sounds>
+    <!-- Engine start -->
     <starterCranking file="sounds/starterCranking.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
         <volume indoor="2.0" outdoor="2.1" />
         <pitch indoor="1.0" outdoor="1.0" />
@@ -14,6 +15,7 @@
         <lowpassCutoffFrequency indoor="700" outdoor="20000.0" />
         <lowpassResonance indoor="1.0" outdoor="1.0"/>
     </starterCrankingEnd>
+    <!-- Warnings -->
     <alarm file="sounds/alarm.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
         <volume indoor="1.0" outdoor="1.0" />
         <pitch indoor="1.0" outdoor="1.0" />
@@ -28,7 +30,8 @@
         <lowpassCutoffFrequency indoor="20000.0" outdoor="20000.0" />
         <lowpassResonance indoor="1.0" outdoor="1.0"/>
     </warning>
-	<transmissionShiftFailed1 file="sounds/transmissionShiftFailed_1.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
+    <!-- Transmission faults -->
+    <transmissionShiftFailed1 file="sounds/transmissionShiftFailed_1.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
         <volume indoor="2.0" outdoor="2.1" />
         <pitch indoor="1.0" outdoor="1.0" />
         <lowpassGain indoor="0.5" outdoor="1.0" />
@@ -77,6 +80,7 @@
         <lowpassCutoffFrequency indoor="700" outdoor="20000.0" />
         <lowpassResonance indoor="1.0" outdoor="1.0"/>
     </gearDisengage1>
+    <!-- Mechanical noises -->
     <engineKnocking file="sounds/engineKnocking.ogg" linkNode="0" innerRadius="7.0" outerRadius="60.0" >
         <volume indoor="0.8" outdoor="1.0" />
         <pitch indoor="1.0" outdoor="1.0" />
@@ -133,6 +137,7 @@
         <lowpassCutoffFrequency indoor="700" outdoor="20000.0" />
         <lowpassResonance indoor="1.0" outdoor="1.0"/>
     </wheelSeizureGrind>
+    <!-- Hand tools -->
     <airBlowerTool file="sounds/airBlower.ogg" linkNode="raycastNode" innerRadius="1.5" outerRadius="12.0" >
         <volume indoor="1.0" outdoor="1.0" />
         <pitch indoor="1.0" outdoor="1.0" />
@@ -175,6 +180,7 @@
         <lowpassCutoffFrequency indoor="20000.0" outdoor="20000.0" />
         <lowpassResonance indoor="1.0" outdoor="1.0"/>
     </jumperCablesSparksTool>
+    <!-- Field inspection -->
     <inspection file="sounds/inspection.ogg" linkNode="0" innerRadius="4.0" outerRadius="20.0" >
         <volume indoor="1.2" outdoor="1.3" />
         <pitch indoor="1.0" outdoor="1.0" />

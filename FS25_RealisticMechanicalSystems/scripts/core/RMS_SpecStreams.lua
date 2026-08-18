@@ -1,9 +1,21 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Network serialisation of the vehicle spec, on join and on the dirty flag update stream
+
 local getSyncOperatingTime = RealisticMechanicalSystems.getSyncOperatingTime
 
+---Writes the PTO engagement counter
+-- @param table spec vehicle spec
+-- @param integer streamId streamId
 local function writePtoWearState(spec, streamId)
     streamWriteInt32(streamId, math.floor(RealisticMechanicalSystems.sanitizeNumber(spec.ptoEngagementSequence, 0, 0)))
 end
 
+---Reads the PTO engagement counter, seeding the tutorial reference on the first read
+-- @param table spec vehicle spec
+-- @param integer streamId streamId
+-- @param boolean? initializeTutorial true to seed the tutorial observed sequence
 local function readPtoWearState(spec, streamId, initializeTutorial)
     spec.ptoEngagementSequence = math.floor(RealisticMechanicalSystems.sanitizeNumber(streamReadInt32(streamId), 0, 0))
     if initializeTutorial then
@@ -11,10 +23,9 @@ local function readPtoWearState(spec, streamId, initializeTutorial)
     end
 end
 
--- ============================================================
---                         NETWORK STREAMS
--- ============================================================
-
+---Called on server side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RealisticMechanicalSystems:onWriteStream(streamId, connection)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
@@ -99,6 +110,9 @@ function RealisticMechanicalSystems:onWriteStream(streamId, connection)
 
 end
 
+---Called on client side on join, the groups being read in the order onWriteStream wrote them
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RealisticMechanicalSystems:onReadStream(streamId, connection)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
@@ -217,6 +231,10 @@ function RealisticMechanicalSystems:onReadStream(streamId, connection)
     self:recalculateAndApplyIndicators()
 end
 
+---Called on server side on update, writing only the sync groups flagged dirty
+-- @param integer streamId streamId
+-- @param Connection connection connection
+-- @param integer dirtyMask dirty mask
 function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, dirtyMask)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
@@ -325,6 +343,10 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
     end
 end
 
+---Called on client side on update, reading the sync groups the server flagged dirty
+-- @param integer streamId streamId
+-- @param integer timestamp timestamp
+-- @param Connection connection connection
 function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, connection)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end

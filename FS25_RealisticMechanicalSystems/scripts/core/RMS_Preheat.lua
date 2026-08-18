@@ -1,5 +1,10 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Diesel preheating sequence: lamp test, glow plug heating, automatic crank
 RMS_Preheat = RMS_Preheat or {}
 
+-- preheat sequence states
 RMS_Preheat.STATE = {
     IDLE = 0,
     IGNITION = 1,
@@ -8,6 +13,7 @@ RMS_Preheat.STATE = {
     FAILED = 4
 }
 
+-- readable name of each state, used by the debug output
 RMS_Preheat.STATE_NAME = {
     [RMS_Preheat.STATE.IDLE] = "IDLE",
     [RMS_Preheat.STATE.IGNITION] = "IGNITION",
@@ -16,6 +22,9 @@ RMS_Preheat.STATE_NAME = {
     [RMS_Preheat.STATE.FAILED] = "FAILED"
 }
 
+---Returns the engine temperature, falling back to ambient when it is unset
+-- @param table? vehicle vehicle
+-- @return float temperature engine temperature in degrees
 function RMS_Preheat.getEngineTemperatureC(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     local engineTemperature = spec ~= nil and tonumber(spec.rawEngineTemperature or spec.engineTemperature) or nil
@@ -28,6 +37,9 @@ function RMS_Preheat.getEngineTemperatureC(vehicle)
     return RealisticMechanicalSystems.sanitizeNumber(engineTemperature, environmentTemperature, -80, 160)
 end
 
+---Writes the preheat state on the vehicle spec
+-- @param table? vehicle vehicle
+-- @param integer state preheat state
 local function setState(vehicle, state)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -37,12 +49,17 @@ local function setState(vehicle, state)
     spec.preheatState = state
 end
 
+---Returns the severity of the glow plug failure effect, 0 when absent
+-- @param table? vehicle vehicle
+-- @return integer severity severity between 0 and 4
 function RMS_Preheat.getGlowPlugFailureSeverity(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects.GLOW_PLUG_FAILURE or nil
     return math.floor(RealisticMechanicalSystems.sanitizeNumber(effect ~= nil and effect.value or 0, 0, 0, 4))
 end
 
+---Resets every preheat field of the vehicle spec to its initial value
+-- @param table? vehicle vehicle
 function RMS_Preheat.initSpec(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -62,10 +79,16 @@ function RMS_Preheat.initSpec(vehicle)
     spec._lastPreheatUxState = RMS_Preheat.STATE.IDLE
 end
 
+---Returns the readable name of a preheat state
+-- @param integer state preheat state
+-- @return string name state name
 function RMS_Preheat.getStateName(state)
     return RMS_Preheat.STATE_NAME[state] or "UNKNOWN"
 end
 
+---Tells whether the vehicle burns diesel, reading the spec flag or the motorized consumers
+-- @param table? vehicle vehicle
+-- @return boolean isDiesel true for a diesel vehicle
 function RMS_Preheat.isDieselVehicle(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec ~= nil and spec.isDieselVehicle ~= nil then
@@ -81,6 +104,9 @@ function RMS_Preheat.isDieselVehicle(vehicle)
         and motorizedSpec.consumersByFillType[FillType.DIESEL] ~= nil
 end
 
+---Interpolates the preheat duration on the configured temperature curve
+-- @param table? vehicle vehicle
+-- @return integer duration preheat duration in ms, 0 above the activation temperature
 function RMS_Preheat.getRequiredDurationMs(vehicle)
     if not RMS_Preheat.isDieselVehicle(vehicle) then
         return 0
@@ -114,26 +140,40 @@ function RMS_Preheat.getRequiredDurationMs(vehicle)
     return 0
 end
 
+---Tells whether the glow plugs are currently heating
+-- @param table? vehicle vehicle
+-- @return boolean isHeating true while preheating
 function RMS_Preheat.isHeating(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     return spec ~= nil and spec.preheatState == RMS_Preheat.STATE.PREHEATING
 end
 
+---Tells whether the dashboard lamp test is running
+-- @param table? vehicle vehicle
+-- @return boolean isActive true during the lamp test
 function RMS_Preheat.isLampTestActive(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     return spec ~= nil and spec.preheatLampTestActive == true
 end
 
+---Tells whether the starter is cranking on its own after preheating
+-- @param table? vehicle vehicle
+-- @return boolean isActive true while the automatic crank runs
 function RMS_Preheat.isAutomaticCrankActive(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     return spec ~= nil and spec.preheatAutomaticCrank == true
 end
 
+---Tells whether the preheat sequence ended in failure
+-- @param table? vehicle vehicle
+-- @return boolean isFailed true after a failed sequence
 function RMS_Preheat.isFailed(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     return spec ~= nil and spec.preheatState == RMS_Preheat.STATE.FAILED
 end
 
+---Clears the automatic crank flag once the engine caught
+-- @param table? vehicle vehicle
 function RMS_Preheat.onCrankPassed(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -143,6 +183,9 @@ function RMS_Preheat.onCrankPassed(vehicle)
     spec.preheatAutomaticCrank = false
 end
 
+---Tells whether a hard start applies, preheating having been required with failing glow plugs
+-- @param table? vehicle vehicle
+-- @return boolean shouldApply true when the hard start effect applies
 function RMS_Preheat.shouldApplyGlowPlugHardStart(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or spec.preheatState ~= RMS_Preheat.STATE.READY then
@@ -152,6 +195,9 @@ function RMS_Preheat.shouldApplyGlowPlugHardStart(vehicle)
     return spec.preheatWasRequired == true and RMS_Preheat.getGlowPlugFailureSeverity(vehicle) > 0
 end
 
+---Starts the preheat sequence, switching the motor to ignition and choosing lamp test or preheating
+-- @param table? vehicle vehicle
+-- @return boolean accepted true when the sequence runs or already runs
 function RMS_Preheat.requestStart(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or spec.isExcludedVehicle or not RMS_Preheat.isDieselVehicle(vehicle) then
@@ -204,6 +250,9 @@ function RMS_Preheat.requestStart(vehicle)
     return true
 end
 
+---Clears the preheat state, optionally keeping the recorded cold start fault
+-- @param table? vehicle vehicle
+-- @param boolean preserveColdStartFault true to keep the cold start fault severity
 function RMS_Preheat.reset(vehicle, preserveColdStartFault)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -224,6 +273,9 @@ function RMS_Preheat.reset(vehicle, preserveColdStartFault)
     end
 end
 
+---Tells whether the motor must stay blocked, starting the sequence when the ignition key asks for it
+-- @param table? vehicle vehicle
+-- @return boolean shouldBlock true while the motor may not run
 function RMS_Preheat.shouldBlockMotorRun(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or spec.isExcludedVehicle or not RMS_Preheat.isDieselVehicle(vehicle) then
@@ -258,6 +310,10 @@ function RMS_Preheat.shouldBlockMotorRun(vehicle)
     return false
 end
 
+---Defers a server side start until the preheat sequence reaches the ready state
+-- @param table vehicle vehicle
+-- @param boolean passed true once the start already went through
+-- @return boolean deferred true when the start was deferred
 function RMS_Preheat.shouldDeferStart(vehicle, passed)
     if not vehicle.isServer or passed or not RMS_Preheat.isDieselVehicle(vehicle) then
         return false
@@ -272,6 +328,8 @@ function RMS_Preheat.shouldDeferStart(vehicle, passed)
     return true
 end
 
+---Shows the preheat and failure warnings on the client, once per state change
+-- @param table? vehicle vehicle
 function RMS_Preheat.updateClientUx(vehicle)
     if not vehicle.isClient then
         return
@@ -304,6 +362,9 @@ function RMS_Preheat.updateClientUx(vehicle)
     end
 end
 
+---Advances the preheat sequence on the server and triggers the automatic crank
+-- @param table? vehicle vehicle
+-- @param float dt time since last call in ms
 function RMS_Preheat.update(vehicle, dt)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then

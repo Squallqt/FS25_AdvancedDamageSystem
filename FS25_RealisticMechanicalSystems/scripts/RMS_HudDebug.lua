@@ -1,10 +1,14 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Debug HUD pages, showing the live simulation values of the active vehicle
+
 local hasCVTTransmission = RMS_Utils.hasCVTTransmission
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 
--- =====================================================================================
---                              DEBUG HUD ACTIVE
--- =====================================================================================
 
+---Draws the prebuilt debug lines of the active vehicle
+-- @param table cache prebuilt debug lines
 function RMS_Hud:renderActiveVehicleDebugCache(cache)
     if cache == nil then
         return
@@ -50,6 +54,7 @@ function RMS_Hud:renderActiveVehicleDebugCache(cache)
     setTextColor(1, 1, 1, 1)
 end
 
+---Builds and draws the debug panel of the active vehicle
 function RMS_Hud:drawActiveVehicleHUD()
     local vehicle = self.vehicle
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
@@ -88,6 +93,10 @@ function RMS_Hud:drawActiveVehicleHUD()
     local factorStatsSource = vehicle.isServer and (spec.factorStats or {}) or (debugSnapshot.factorStats or {})
     local debugState = not vehicle.isServer and (debugSnapshot.state or {}) or {}
 
+    ---Returns a debug value, the stored one when the live one is unavailable
+    -- @param string key debug value key
+    -- @param any liveValue value read from the vehicle
+    -- @return any value value to display
     local function getDebugStateValue(key, liveValue)
         if vehicle.isServer then
             return liveValue
@@ -130,6 +139,13 @@ function RMS_Hud:drawActiveVehicleHUD()
 
     local queuedCommands = {}
 
+    ---Queues one text to draw at a position
+    -- @param float x x position
+    -- @param float y y position
+    -- @param float size text size
+    -- @param string text text to draw
+    -- @param table? color rgba channels
+    -- @param boolean? isBold true for bold text
     local function queueText(x, y, size, text, color, isBold)
         table.insert(queuedCommands, {
             x = x,
@@ -141,6 +157,11 @@ function RMS_Hud:drawActiveVehicleHUD()
         })
     end
 
+    ---Appends one line to a debug section
+    -- @param table target section lines
+    -- @param string text line text
+    -- @param table? color rgba channels
+    -- @param float? sizeScale text size scale
     local function addLine(target, text, color, sizeScale)
         table.insert(target, {
             text = text,
@@ -149,6 +170,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         })
     end
 
+    ---Returns the colour of a temperature
+    -- @param float? temp temperature in degrees
+    -- @return table color rgba channels
     local function getTempColor(temp)
         if temp > 105 then
             return {1, 0.6, 0.6, 1}
@@ -159,6 +183,12 @@ function RMS_Hud:drawActiveVehicleHUD()
         return {0.6, 0.8, 1, 1}
     end
 
+    ---Packs several entries onto as few lines as the limit allows
+    -- @param table entries entries to pack
+    -- @param integer maxPerLine entries allowed on one line
+    -- @param table? color rgba channels
+    -- @param float? sizeScale text size scale
+    -- @return table lines packed lines
     local function packEntries(entries, maxPerLine, color, sizeScale)
         local lines = {}
         if #entries == 0 then
@@ -178,6 +208,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         return lines
     end
 
+    ---Renders a list as a comma separated string
+    -- @param table? list values to render
+    -- @return string text rendered list
     local function listToString(list)
         if list == nil or #list == 0 then
             return "-"
@@ -186,6 +219,12 @@ function RMS_Hud:drawActiveVehicleHUD()
         return table.concat(list, ",")
     end
 
+    ---Builds the display entries of a pending stress transition, from its start to its target
+    -- @param table? startMap value at the start of the service
+    -- @param table? targetMap value at the end of the service
+    -- @param function currentValueGetter returns the value of a system now
+    -- @param function formatter formats one value
+    -- @return table entries display entries
     local function buildPendingSystemTransitionEntries(startMap, targetMap, currentValueGetter, formatter)
         local entries = {}
         startMap = startMap or {}
@@ -209,6 +248,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         return entries
     end
 
+    ---Localizes a debug value when it is an l10n key
+    -- @param any value value to localize
+    -- @return string text displayable text
     local function localizeDebugValue(value)
         if value == nil then
             return "-"
@@ -237,6 +279,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         return key
     end
 
+    ---Returns the colour of a condition factor
+    -- @param float? value factor value
+    -- @return table color rgba channels
     local function getConditionFactorColor(value)
         local v = math.max(value or 0, 0)
         local green = {0.72, 1.0, 0.72, 1}
@@ -262,6 +307,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         }
     end
 
+    ---Returns the readable name of a breakdown source
+    -- @param integer? source breakdown source
+    -- @return string label source name
     local function getBreakdownSourceLabel(source)
         if source == RealisticMechanicalSystems.BREAKDOWN_SOURCES.POOR_PARTS then
             return "PARTS"
@@ -336,10 +384,16 @@ function RMS_Hud:drawActiveVehicleHUD()
 
     local bcw = RMS_Config.CORE.BASE_SYSTEMS_WEAR
 
+    ---Formats a ratio as a percentage
+    -- @param float? value ratio
+    -- @return string text formatted percentage
     local function asPercent(value)
         return (value or 0) * 100
     end
 
+    ---Formats an applied multiplier
+    -- @param float? value multiplier
+    -- @return string text formatted multiplier
     local function formatAppliedMultiplier(value)
         local formatted = string.format("%.2f", tonumber(value) or 0)
         formatted = formatted:gsub("(%..-)0+$", "%1")
@@ -347,6 +401,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         return "x" .. formatted
     end
 
+    ---Returns the condition of a system
+    -- @param string systemKey system key
+    -- @return float condition system condition
     local function getSystemCondition(systemKey)
         local systemData = spec.systems and spec.systems[systemKey]
         if type(systemData) == "table" then
@@ -355,6 +412,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         return systemData or 0
     end
 
+    ---Returns the stress of a system
+    -- @param string systemKey system key
+    -- @return float stress system stress
     local function getSystemStress(systemKey)
         local systemData = spec.systems and spec.systems[systemKey]
         if type(systemData) == "table" then
@@ -363,6 +423,9 @@ function RMS_Hud:drawActiveVehicleHUD()
         return 0
     end
 
+    ---Tells whether a system is enabled on this vehicle
+    -- @param string systemKey system key
+    -- @return boolean isEnabled true when the system is tracked
     local function isSystemEnabled(systemKey)
         local systemData = spec.systems and spec.systems[systemKey]
         if type(systemData) == "table" then
@@ -575,6 +638,10 @@ function RMS_Hud:drawActiveVehicleHUD()
         end
     end
 
+    ---Returns one accumulated wear statistic of a system
+    -- @param string systemKey system key
+    -- @param string statKey statistic key
+    -- @return float value accumulated value
     local function getAccumulatedStat(systemKey, statKey)
         local stats = factorStats[string.lower(tostring(systemKey))]
         if type(stats) ~= "table" then
@@ -583,6 +650,14 @@ function RMS_Hud:drawActiveVehicleHUD()
         return tonumber(stats[statKey]) or 0
     end
 
+    ---Formats one wear factor line with its share and its accumulated total
+    -- @param string systemKey system key
+    -- @param string shortName factor name shown
+    -- @param float? factorValue current factor value
+    -- @param string statKey statistic key
+    -- @param string? extraInfo text appended to the line
+    -- @param float? systemStressMultiplier stress multiplier of the system
+    -- @return string text formatted line
     local function formatFactorLine(systemKey, shortName, factorValue, statKey, extraInfo, systemStressMultiplier)
         local currentPct = asPercent((factorValue or 0) * bcw)
         local conditionSum = getAccumulatedStat(systemKey, statKey)
@@ -597,6 +672,12 @@ function RMS_Hud:drawActiveVehicleHUD()
 
     local avgTireGroundFrictionCoeff = tonumber(getDebugStateValue("avgTireGroundFrictionCoeff", spec.avgTireGroundFrictionCoeff)) or 0
 
+    ---Builds every debug line of one system
+    -- @param string systemKey system key
+    -- @param table dbg debug data of the system
+    -- @param float maxFactor largest factor value, used to scale the display
+    -- @param table factorEntries factors to show
+    -- @return table lines debug lines
     local function buildSystemLines(systemKey, dbg, maxFactor, factorEntries)
         local lines = {}
         local systemStressMultiplier = tonumber(RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey]) or 1
@@ -1161,6 +1242,9 @@ function RMS_Hud:drawActiveVehicleHUD()
     queueText(textStartX, currentY, activeHeaderSize, headerText, {1, 1, 1, 1}, true)
     currentY = currentY - activeHeaderSize - activeLineHeight
 
+    ---Draws one debug section and returns the height it took
+    -- @param table section section lines
+    -- @return float height height drawn
     local function drawSection(section)
         local sectionLines = section.lines or {}
         local showTitle = section.showTitle ~= false
@@ -1250,7 +1334,22 @@ function RMS_Hud:drawActiveVehicleHUD()
     self:renderActiveVehicleDebugCache(cache)
 end
 
+---Draws the accumulated wear factor statistics, per system and per factor
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param table debugData debug data of the vehicle
+-- @param table factorStatsRaw raw factor statistics
+-- @param table panel panel geometry
+-- @param float activeHeaderSize header text size
+-- @param float activeNormalSize body text size
+-- @param float activeLineHeight line height
+-- @param float sectionGap gap between two sections
 function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStatsRaw, panel, activeHeaderSize, activeNormalSize, activeLineHeight, sectionGap)
+    ---Appends one line to a debug section
+    -- @param table target section lines
+    -- @param string text line text
+    -- @param table? color rgba channels
+    -- @param float? sizeScale text size scale
     local function addLine(target, text, color, sizeScale)
         table.insert(target, {
             text = text,
@@ -1259,6 +1358,12 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
         })
     end
 
+    ---Packs several entries onto as few lines as the limit allows
+    -- @param table entries entries to pack
+    -- @param integer maxPerLine entries allowed on one line
+    -- @param table? color rgba channels
+    -- @param float? sizeScale text size scale
+    -- @return table lines packed lines
     local function packEntries(entries, maxPerLine, color, sizeScale)
         local lines = {}
         if #entries == 0 then
@@ -1278,10 +1383,16 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
         return lines
     end
 
+    ---Formats a ratio as a percentage
+    -- @param float? value ratio
+    -- @return string text formatted percentage
     local function toPct(value)
         return (tonumber(value) or 0) * 100
     end
 
+    ---Returns the localized title of a system
+    -- @param string systemKey system key
+    -- @return string title system title
     local function getSystemTitle(systemKey)
         local names = {
             engine = "Engine",
@@ -1302,6 +1413,10 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
         aliasToDebugKey[tostring(alias)] = tostring(debugKey)
     end
 
+    ---Builds the extra text shown next to a wear factor
+    -- @param string debugKey factor debug key
+    -- @param table dbg debug data of the system
+    -- @return string? text extra information
     local function buildFactorExtraInfo(debugKey, dbg)
         if type(dbg) ~= "table" then
             return nil
@@ -1546,6 +1661,9 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
     setTextBold(false)
     currentY = currentY - activeHeaderSize - activeLineHeight
 
+    ---Draws one debug section and returns the height it took
+    -- @param table section section lines
+    -- @return float height height drawn
     local function drawSection(section)
         local sectionLines = section.lines or {}
         if #sectionLines == 0 then

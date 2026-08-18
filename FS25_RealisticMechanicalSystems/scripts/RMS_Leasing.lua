@@ -1,5 +1,13 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Charges applied when a leased vehicle is returned: overdue maintenance, repairs and washing
 RMS_Leasing = {}
 
+---Converts a value to a number, falling back when it cannot
+-- @param any value value to convert
+-- @param float? fallback value used when the conversion fails
+-- @return float number converted number
 local function getNumber(value, fallback)
     local numericValue = tonumber(value)
     if numericValue == nil then
@@ -9,25 +17,36 @@ local function getNumber(value, fallback)
     return numericValue
 end
 
+---Tells whether the extended leasing mod is loaded
+-- @return boolean hasMod true when it is present
 function RMS_Leasing.hasExtendedLeasing()
     return g_modIsLoaded ~= nil and g_modIsLoaded["FS25_ExtendedLeasing"] == true
 end
 
+---Wraps the vanilla vehicle sale so a leased RMS vehicle goes through the mod dialog
+-- @param table _mission current mission
 function RMS_Leasing.preLoad(_mission)
     SellVehicleEvent.run = Utils.overwrittenFunction(SellVehicleEvent.run, RMS_Leasing.onSellVehicleEventRun)
     ShopController.sell = Utils.overwrittenFunction(ShopController.sell, RMS_Leasing.onShopControllerSell)
 end
 
+---Hooks the mod into the mission load
 function RMS_Leasing.init()
     Mission00.load = Utils.prependedFunction(Mission00.load, RMS_Leasing.preLoad)
 end
 
+---Tells whether RMS tracks the vehicle
+-- @param table? vehicle vehicle
+-- @return boolean isTracked true when RMS tracks it
 function RMS_Leasing.isRMSVehicle(vehicle)
     return vehicle ~= nil
         and vehicle.spec_RealisticMechanicalSystems ~= nil
         and not vehicle.spec_RealisticMechanicalSystems.isExcludedVehicle
 end
 
+---Tells whether the vehicle is leased
+-- @param table? vehicle vehicle
+-- @return boolean isLeased true for a leased vehicle
 function RMS_Leasing.isLeasedVehicle(vehicle)
     if vehicle == nil then
         return false
@@ -37,10 +56,16 @@ function RMS_Leasing.isLeasedVehicle(vehicle)
     return vehicle.propertyState == leasedState
 end
 
+---Tells whether the vehicle is both leased and tracked by RMS
+-- @param table? vehicle vehicle
+-- @return boolean isSupported true when the charges apply
 function RMS_Leasing.isSupportedVehicle(vehicle)
     return RMS_Leasing.isRMSVehicle(vehicle) and RMS_Leasing.isLeasedVehicle(vehicle)
 end
 
+---Computes the return charges, the extended leasing mod taking the washing over
+-- @param table? vehicle vehicle
+-- @return table breakdown raw amounts, displayed amounts, charged amounts and rows
 function RMS_Leasing.getReturnBreakdown(vehicle)
     local emptyResult = {
         vehicle = vehicle,
@@ -135,6 +160,11 @@ function RMS_Leasing.getReturnBreakdown(vehicle)
     return emptyResult
 end
 
+---Routes the sale of a leased RMS vehicle through the mod dialog
+-- @param table self shop controller
+-- @param function overwrittenFunc overwritten function
+-- @param table storeItem store item
+-- @param table concreteItem vehicle being sold
 function RMS_Leasing.onShopControllerSell(self, overwrittenFunc, storeItem, concreteItem)
     local vehicle = concreteItem
     local isConcreteVehicle = vehicle ~= nil and vehicle ~= ShopDisplayItem.NO_CONCRETE_ITEM
@@ -151,6 +181,9 @@ function RMS_Leasing.onShopControllerSell(self, overwrittenFunc, storeItem, conc
     RMS_SellItemDialog.show(vehicle, storeItem, RMS_Leasing.onShopControllerSellDialogCallback, self)
 end
 
+---Forwards the player answer to the shop controller
+-- @param table? self shop controller
+-- @param boolean yes true when the player confirmed
 function RMS_Leasing.onShopControllerSellDialogCallback(self, yes)
     if self == nil then
         return
@@ -159,6 +192,10 @@ function RMS_Leasing.onShopControllerSellDialogCallback(self, yes)
     self:onSellCallback(yes)
 end
 
+---Debits the return charges on the server once the vehicle is sold
+-- @param table self sell vehicle event
+-- @param function overwrittenFunc overwritten function
+-- @param Connection connection connection
 function RMS_Leasing.onSellVehicleEventRun(self, overwrittenFunc, connection)
     local vehicle = self.vehicle
     local ownerFarmId = vehicle ~= nil and vehicle:getOwnerFarmId() or FarmManager.SPECTATOR_FARM_ID

@@ -1,15 +1,15 @@
-RMS_Electrical = RMS_Electrical or {}
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
--- ==========================================================
---                     HELPERS
--- ==========================================================
+---Electrical system: battery charge and temperature, alternator, system voltage and jump starting
+RMS_Electrical = RMS_Electrical or {}
 
 local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
 
--- ==========================================================
---                     MAIN
--- ==========================================================
-
+---Returns the capacity and internal resistance factors of the battery at a temperature
+-- @param float tempC battery temperature in degrees
+-- @return float capacityFactor usable capacity factor
+-- @return float resistanceFactor internal resistance factor
 local function getBatteryTempFactors(tempC)
     local cap = 1.0
     if tempC < 25 then
@@ -26,6 +26,10 @@ end
 
 local getBatteryChargeAcceptance
 
+---Interpolates the alternator output factor on its rpm curve
+-- @param table? curveData curve points
+-- @param float rpmNorm normalized motor rpm
+-- @return float? factor output factor, nil without a usable curve
 local function evaluateAlternatorRpmCurve(curveData, rpmNorm)
     rpmNorm = math.clamp(rpmNorm or 0, 0, 1)
     if type(curveData) ~= "table" then
@@ -71,6 +75,12 @@ local function evaluateAlternatorRpmCurve(curveData, rpmNorm)
     return points[#points].y
 end
 
+---Returns the current the alternator can deliver, on its rpm curve and its health
+-- @param table vehicle vehicle
+-- @param boolean isMotorStarted true while the motor runs
+-- @param float iLoads current drawn by the consumers in amps
+-- @param table? batteryState battery context
+-- @return float amps available alternator current
 local function calculateAlternatorOutput(vehicle, isMotorStarted, iLoads, batteryState)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -142,6 +152,11 @@ local function calculateAlternatorOutput(vehicle, isMotorStarted, iLoads, batter
     return iAltAvail
 end
 
+---Sums the current drawn by the electrical consumers of the vehicle
+-- @param table vehicle vehicle
+-- @param boolean isMotorStarted true while the motor runs
+-- @param float envTemp ambient temperature in degrees
+-- @return float amps total load current
 local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -224,11 +239,17 @@ local function calculateCurrentLoadAmps(vehicle, isMotorStarted, envTemp)
     return iLoads
 end
 
+---Smoothstep of a value clamped to the 0 to 1 range
+-- @param float x input value
+-- @return float value smoothed value
 local function smoothstep(x)
     x = math.clamp(x, 0, 1)
     return x * x * (3 - 2 * x)
 end
 
+---Returns the open circuit voltage of the battery at a state of charge
+-- @param float? soc state of charge between 0 and 1
+-- @return float voltage open circuit voltage
 local function getBatteryOpenCircuitVoltage(soc)
     local C = RMS_Config.ELECTRICAL or {}
     local vEmpty = C.OCV_EMPTY_V
@@ -240,6 +261,17 @@ local function getBatteryOpenCircuitVoltage(soc)
     return vEmpty + (vFull - vEmpty) * shapedSoc
 end
 
+---Returns the terminal voltage, dropping under discharge and rising under charge
+-- @param float? ocvV open circuit voltage
+-- @param float? iAltAvail available alternator current
+-- @param float? iLoads consumer current
+-- @param boolean isCranking true while the starter turns
+-- @param float? rIntOhm internal resistance
+-- @return float vTerm terminal voltage
+-- @return float loadDropV drop caused by the discharge
+-- @return float chargeRiseV rise caused by the charge
+-- @return float iDischarge discharge current
+-- @return float iCharge charge current
 local function getBatteryTerminalVoltage(ocvV, iAltAvail, iLoads, isCranking, rIntOhm)
     local C = RMS_Config.ELECTRICAL or {}
 
@@ -271,6 +303,19 @@ local function getBatteryTerminalVoltage(ocvV, iAltAvail, iLoads, isCranking, rI
     return vTerm, loadDropV, chargeRiseV, iDischarge, iCharge
 end
 
+---Returns the system voltage, regulated by the alternator and propped up by the battery on a deficit
+-- @param boolean isMotorStarted true while the motor runs
+-- @param float? batteryTerminalV battery terminal voltage
+-- @param float? iAltAvail available alternator current
+-- @param float? iLoads consumer current
+-- @param float? alternatorHealth alternator health ratio
+-- @return float systemV system voltage
+-- @return float regulatedV voltage the regulator aims at
+-- @return float deficitA current the alternator cannot cover
+-- @return float sagV voltage lost to that deficit
+-- @return float regulationHealth health of the regulation
+-- @return float healthDeficitMult multiplier a worn alternator adds to the sag
+-- @return float chargeHeadroomV extra voltage allowed by a current surplus
 local function getSystemVoltage(isMotorStarted, batteryTerminalV, iAltAvail, iLoads, alternatorHealth)
     local C = RMS_Config.ELECTRICAL
 
@@ -317,6 +362,14 @@ local function getSystemVoltage(isMotorStarted, batteryTerminalV, iAltAvail, iLo
     return rawSystemV, regulatedV, deficitA, sagV, regulationHealth, healthDeficitMult, chargeHeadroomV
 end
 
+---Returns how much charge the battery accepts, tapering with temperature, state of charge and health
+-- @param float? tempC battery temperature in degrees
+-- @param float? soc state of charge between 0 and 1
+-- @param float? health battery health ratio
+-- @return float acceptance acceptance factor
+-- @return float tempK temperature contribution
+-- @return float socK state of charge contribution
+-- @return float healthK health contribution
 getBatteryChargeAcceptance = function(tempC, soc, health)
     local C = RMS_Config.ELECTRICAL or {}
 
@@ -355,6 +408,13 @@ getBatteryChargeAcceptance = function(tempC, soc, health)
     return math.clamp(tempK * socK * healthK, 0.02, 1.0), tempK, socK, healthK
 end
 
+---Advances the battery temperature toward ambient and engine heat, plus its own losses
+-- @param table vehicle vehicle
+-- @param float dtS time since last call in seconds
+-- @param float ambientC ambient temperature in degrees
+-- @param float engineC engine temperature in degrees
+-- @param float iBatteryA current through the battery
+-- @param float rintF internal resistance factor
 function RMS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engineC, iBatteryA, rintF)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -421,6 +481,8 @@ function RMS_Electrical.updateBatteryTemperatureC(vehicle, dtS, ambientC, engine
     end
 end
 
+---Returns the ambient temperature of the current weather
+-- @return float temperature ambient temperature in degrees
 function RMS_Electrical.getEnvironmentTemperatureC()
     local defaultTemperature = RMS_Config.ELECTRICAL.AMBIENT_DEFAULT_C or 15
     local weather = g_currentMission ~= nil
@@ -433,6 +495,10 @@ function RMS_Electrical.getEnvironmentTemperatureC()
     return sanitizeNumber(weather ~= nil and weather.temperature or nil, defaultTemperature, -80, 80)
 end
 
+---Collects the battery figures of a vehicle into one context table
+-- @param table vehicle vehicle
+-- @param float dtS time since last call in seconds
+-- @return table? ctx battery context
 local function buildBatteryContext(vehicle, dtS)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -506,6 +572,11 @@ local function buildBatteryContext(vehicle, dtS)
     }
 end
 
+---Orders two batteries into consumer and donor, on motor state then voltage, charge and node id
+-- @param table? ctxA first battery context
+-- @param table? ctxB second battery context
+-- @return table? consumerCtx battery receiving power
+-- @return table? donorCtx battery giving power
 local function orderExternalPowerContexts(ctxA, ctxB)
     if ctxA == nil or ctxB == nil then
         return ctxA, ctxB
@@ -560,6 +631,10 @@ local function orderExternalPowerContexts(ctxA, ctxB)
     return ctxB, ctxA
 end
 
+---Merges two batteries into the single equivalent one the cables create
+-- @param table? consumerCtx battery context of the vehicle receiving power
+-- @param table? donorCtx battery context of the vehicle giving power
+-- @return table? ctx composite battery context
 local function buildCompositeBatteryContext(consumerCtx, donorCtx)
     if consumerCtx == nil or donorCtx == nil then
         return nil
@@ -616,6 +691,11 @@ local function buildCompositeBatteryContext(consumerCtx, donorCtx)
     }
 end
 
+---Returns the current flowing through the cables, from the voltage gap over the path resistance
+-- @param table? consumerCtx battery context of the vehicle receiving power
+-- @param table? donorCtx battery context of the vehicle giving power
+-- @param table? compositeCtx composite battery context
+-- @return float amps balance current, capped at the cable limit
 local function calculateBatteryBalanceCurrent(consumerCtx, donorCtx, compositeCtx)
     if consumerCtx == nil or donorCtx == nil or compositeCtx == nil then
         return 0
@@ -639,6 +719,13 @@ local function calculateBatteryBalanceCurrent(consumerCtx, donorCtx, compositeCt
     return balanceCurrentA
 end
 
+---Moves charge from the donor to the consumer for one step of the balance current
+-- @param table? consumerCtx battery context of the vehicle receiving power
+-- @param table? donorCtx battery context of the vehicle giving power
+-- @param float balanceCurrentA balance current
+-- @param float dtS time since last call in seconds
+-- @return table? consumerCtx updated consumer context
+-- @return table? donorCtx updated donor context
 local function applyBatteryBalanceCurrent(consumerCtx, donorCtx, balanceCurrentA, dtS)
     if consumerCtx == nil or donorCtx == nil then
         return consumerCtx, donorCtx
@@ -682,6 +769,9 @@ local function applyBatteryBalanceCurrent(consumerCtx, donorCtx, balanceCurrentA
     return consumerCtx, donorCtx
 end
 
+---Creates the battery debug table on the spec
+-- @param table spec vehicle spec
+-- @return table dbg battery debug data
 local function ensureBatteryDebugData(spec)
     if spec.debugData == nil then
         spec.debugData = {}
@@ -692,6 +782,8 @@ local function ensureBatteryDebugData(spec)
     return spec.debugData.battery
 end
 
+---Clears the external power debug values
+-- @param table spec vehicle spec
 local function resetExternalPowerDebug(spec)
     local dbg = ensureBatteryDebugData(spec)
     dbg.isValidConnection = false
@@ -711,6 +803,9 @@ local function resetExternalPowerDebug(spec)
     dbg.externalAltAfterA = 0
 end
 
+---Normalizes an external power connection to its vehicle and its context
+-- @param any connection external power connection
+-- @return table? connection normalized connection
 local function normalizeExternalPowerConnection(connection)
     if connection == nil then
         return nil
@@ -723,6 +818,10 @@ local function normalizeExternalPowerConnection(connection)
     return connection
 end
 
+---Writes a battery context back onto the vehicle spec and flags the electrical group dirty
+-- @param table vehicle vehicle
+-- @param table? ctx battery context
+-- @param float dt time since last call in ms
 local function commitBatteryContext(vehicle, ctx, dt)
     if vehicle == nil or ctx == nil or ctx.spec == nil then
         return
@@ -789,6 +888,10 @@ local function commitBatteryContext(vehicle, ctx, dt)
     if ctx.altChargeHeadroomV ~= nil then dbg.altChargeHeadroomV = ctx.altChargeHeadroomV end
 end
 
+---Solves one jump start pair, balancing the two batteries and committing both contexts
+-- @param table? consumerCtx battery context of the vehicle receiving power
+-- @param table? donorCtx battery context of the vehicle giving power
+-- @param float dtS time since last call in seconds
 local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
     if consumerCtx == nil or donorCtx == nil then
         return consumerCtx, donorCtx, nil
@@ -957,6 +1060,8 @@ local function solveExternalPowerConnection(consumerCtx, donorCtx, dtS)
     return consumerCtx, donorCtx, finalCompositeCtx
 end
 
+---Recomputes the stored charge from the state of charge after a capacity change
+-- @param table? vehicle vehicle
 function RMS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
     if vehicle == nil or vehicle.spec_RealisticMechanicalSystems == nil then
         return
@@ -984,6 +1089,8 @@ function RMS_Electrical.rescaleBatteryChargeFromSoc(vehicle)
     spec.batteryChargeAh = math.clamp(soc * effectiveCapacityAh, 0, effectiveCapacityAh)
 end
 
+---Seeds the terminal and system voltages from the state of charge
+-- @param table? vehicle vehicle
 function RMS_Electrical.initVoltagesFromSoc(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local ocvV = sanitizeNumber(getBatteryOpenCircuitVoltage(spec.batterySoc), 12.7, 0, 30)
@@ -995,6 +1102,7 @@ function RMS_Electrical.initVoltagesFromSoc(vehicle)
     spec.systemVoltageV = ocvV
 end
 
+---Adds or removes the dead battery effect from the current state of charge
 function RMS_Electrical:syncDeadBatteryEffect()
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
@@ -1028,6 +1136,8 @@ function RMS_Electrical:syncDeadBatteryEffect()
     end
 end
 
+---Adds or removes the voltage sag effect from the current system voltage
+-- @param float dt time since last call in ms
 function RMS_Electrical:syncVoltageSagEffect(dt)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or not self.isServer then return end
@@ -1070,6 +1180,8 @@ function RMS_Electrical:syncVoltageSagEffect(dt)
     end
 end
 
+---Runs one step of the electrical model: loads, alternator, voltages, charge and temperature
+-- @param float dt time since last call in ms
 function RMS_Electrical:updateBatteryChargingModel(dt)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -1083,7 +1195,7 @@ function RMS_Electrical:updateBatteryChargingModel(dt)
 
     ensureBatteryDebugData(spec)
 
-    --- check for external connection
+    -- check for external connection
     local solveStamp = (g_currentMission ~= nil and g_currentMission.time) or g_time or 0
     if spec._externalPowerSolveStamp == solveStamp then
         return
@@ -1238,6 +1350,10 @@ function RMS_Electrical:updateBatteryChargingModel(dt)
     dbg.termIsCranking = isCranking and 1 or 0
 end
 
+---Tells whether two vehicles may be linked by jumper cables
+-- @param table? vehicleA first vehicle
+-- @param table? vehicleB second vehicle
+-- @return boolean isValid true when the pair is allowed
 function RMS_Electrical.isValidPowerPair(vehicleA, vehicleB)
     if vehicleA == nil or vehicleB == nil or vehicleA == vehicleB then
         return false, ''
@@ -1289,6 +1405,8 @@ function RMS_Electrical.isValidPowerPair(vehicleA, vehicleB)
     return true
 end
 
+---Records the jumper cable link toward another vehicle
+-- @param table externalConnection vehicle at the other end
 function RMS_Electrical:establishExternalPowerConnection(externalConnection)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or not self.isServer then
@@ -1318,6 +1436,8 @@ function RMS_Electrical:establishExternalPowerConnection(externalConnection)
     end
 end
 
+---Drops the jumper cable link toward another vehicle
+-- @param table? otherVehicle vehicle at the other end
 function RMS_Electrical:clearExternalPowerConnection(otherVehicle)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil or not self.isServer then

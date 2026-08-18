@@ -1,13 +1,33 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Exhaust smoke model, tinting the vanilla exhaust effects from soot, oil and unburnt fuel
 RMS_Exhaust = RMS_Exhaust or {}
 
+---Clamps a value between two bounds
+-- @param float value value to clamp
+-- @param float minimum lower bound
+-- @param float maximum upper bound
+-- @return float value clamped value
 local function clamp(value, minimum, maximum)
     return math.max(minimum, math.min(value, maximum))
 end
 
+---Interpolates linearly between two values
+-- @param float startValue value at alpha 0
+-- @param float endValue value at alpha 1
+-- @param float alpha interpolation factor
+-- @return float value interpolated value
 local function lerp(startValue, endValue, alpha)
     return startValue + (endValue - startValue) * alpha
 end
 
+---Converts a value to a number, rejecting nan and infinity, then clamps it
+-- @param any value value to convert
+-- @param float defaultValue value used when the conversion fails
+-- @param float? minimum lower bound
+-- @param float? maximum upper bound
+-- @return float number converted number
 local function getNumber(value, defaultValue, minimum, maximum)
     local number = tonumber(value)
     if number == nil or number ~= number or number == math.huge or number == -math.huge then
@@ -23,6 +43,11 @@ local function getNumber(value, defaultValue, minimum, maximum)
     return number
 end
 
+---Maps a value onto a 0 to 1 ramp between two thresholds
+-- @param float value value to map
+-- @param float from value mapping to 0
+-- @param float to value mapping to 1
+-- @return float ratio position on the ramp
 local function getRamp(value, from, to)
     if to <= from then
         return value >= to and 1 or 0
@@ -31,6 +56,9 @@ local function getRamp(value, from, to)
     return clamp((value - from) / (to - from), 0, 1)
 end
 
+---Returns the emission factor of the production year, read from the configured era table
+-- @param integer? year vehicle production year
+-- @return float factor era emission factor
 function RMS_Exhaust.getEraFactor(year)
     local factors = RMS_Config.EXHAUST.ERA_FACTORS
     local resolvedYear = getNumber(year, RMS_VehicleYears ~= nil and RMS_VehicleYears.DEFAULT_YEAR or 2000)
@@ -43,6 +71,10 @@ function RMS_Exhaust.getEraFactor(year)
     return factors[#factors][2]
 end
 
+---Tells whether the engine falls under Stage V, on its power band and production year
+-- @param integer? year vehicle production year
+-- @param float? peakPowerKw peak engine power in kw
+-- @return boolean isStageV true for a Stage V engine
 function RMS_Exhaust.getIsStageV(year, peakPowerKw)
     local config = RMS_Config.EXHAUST.STAGE_V
     local resolvedYear = getNumber(year, RMS_VehicleYears ~= nil and RMS_VehicleYears.DEFAULT_YEAR or 2000)
@@ -58,6 +90,9 @@ function RMS_Exhaust.getIsStageV(year, peakPowerKw)
     return resolvedYear >= config.OUTER_POWER_YEAR
 end
 
+---Builds wet stacking up while a diesel engine idles, and burns it off under load once warm
+-- @param table input current level, engine state, load, idle timer and temperature
+-- @return float level wet stacking level between 0 and 1
 function RMS_Exhaust.calculateWetStackingLevel(input)
     local currentLevel = getNumber(input.currentLevel, 0, 0, 1)
     if input.isDiesel ~= true then
@@ -104,6 +139,9 @@ function RMS_Exhaust.calculateWetStackingLevel(input)
     return clamp(currentLevel - cleanup, 0, 1)
 end
 
+---Returns the target soot, oil and unburnt fractions and the resulting tint factors
+-- @param table input engine, wear, breakdown and fuel inputs
+-- @return table targets emission targets and colour factors
 function RMS_Exhaust.calculateTargets(input)
     local config = RMS_Config.EXHAUST
     local sootConfig = config.SOOT
@@ -178,11 +216,20 @@ function RMS_Exhaust.calculateTargets(input)
     }
 end
 
+---Returns the intensity of an active effect, 0 when absent
+-- @param table spec vehicle spec
+-- @param string effectId effect id
+-- @return float intensity intensity between 0 and 1
 local function getEffectIntensity(spec, effectId)
     local effect = spec.activeEffects ~= nil and spec.activeEffects[effectId] or nil
     return clamp(effect ~= nil and getNumber(effect.value, 0) or 0, 0, 1)
 end
 
+---Eases a value toward its target, rising and falling on their own time constants
+-- @param float current current value
+-- @param float target target value
+-- @param float dt time since last call in ms
+-- @return float value smoothed value
 local function getSmoothed(current, target, dt)
     local tau = target > current and RMS_Config.EXHAUST.RISE_TAU or RMS_Config.EXHAUST.FALL_TAU
     local alpha = math.min(dt / (tau + dt), 1)
@@ -190,6 +237,9 @@ local function getSmoothed(current, target, dt)
     return current + alpha * (target - current)
 end
 
+---Returns the current motor rpm as a fraction of its maximum
+-- @param table vehicle vehicle
+-- @return float scale rpm ratio, 0 without a motor
 local function getRpmScale(vehicle)
     local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     if motor == nil then
@@ -204,12 +254,18 @@ local function getRpmScale(vehicle)
     return (vehicle:getMotorRpmReal() or 0) / maxRpm
 end
 
+---Tells whether smoke is drawn, the motor being started or running
+-- @param table vehicle vehicle
+-- @return boolean isRendered true while smoke is drawn
 local function getIsSmokeRendered(vehicle)
     local motorState = vehicle.getMotorState ~= nil and vehicle:getMotorState() or MotorState.OFF
 
     return motorState == MotorState.STARTING or motorState == MotorState.ON
 end
 
+---Reads the DEF and methane consumers of the vehicle once and caches the result
+-- @param table vehicle vehicle
+-- @param table state exhaust smoke state
 local function resolveEmissionProfile(vehicle, state)
     if state.profileResolved then
         return
@@ -226,11 +282,16 @@ local function resolveEmissionProfile(vehicle, state)
     state.profileResolved = true
 end
 
+---Returns the peak engine power
+-- @param table vehicle vehicle
+-- @return float power peak power in kw, 0 without a motor
 local function getPeakPowerKw(vehicle)
     local motor = vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     return motor ~= nil and getNumber(motor.peakMotorPower, 0, 0) or 0
 end
 
+---Puts the engine rpm colours back on the exhaust effects
+-- @param table effects exhaust effects
 local function restoreEffects(effects)
     for _, effect in pairs(effects) do
         if effect.rmsBaseMinRpmColor ~= nil then
@@ -242,6 +303,9 @@ local function restoreEffects(effects)
     end
 end
 
+---Writes the computed smoke colour on the exhaust effects, backing up the engine colours once
+-- @param table effects exhaust effects
+-- @param table state exhaust smoke state
 local function writeEffects(effects, state)
     for _, effect in pairs(effects) do
         if effect.rmsBaseMinRpmColor == nil then
@@ -262,6 +326,8 @@ local function writeEffects(effects, state)
     end
 end
 
+---Resets the smoke state to a clean engine
+-- @param table state exhaust smoke state
 local function resetState(state)
     local config = RMS_Config.EXHAUST
 
@@ -279,6 +345,8 @@ local function resetState(state)
     state.isActive = false
 end
 
+---Creates the exhaust smoke state on the vehicle spec
+-- @param table? vehicle vehicle
 function RMS_Exhaust.initSpec(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil then
@@ -294,6 +362,8 @@ function RMS_Exhaust.initSpec(vehicle)
     resetState(state)
 end
 
+---Restores the engine exhaust colours and clears the smoke state
+-- @param table? vehicle vehicle
 function RMS_Exhaust.reset(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     local state = spec ~= nil and spec.exhaustSmoke or nil
@@ -310,6 +380,9 @@ function RMS_Exhaust.reset(vehicle)
     resetState(state)
 end
 
+---Advances the smoke model and writes the resulting colour on the exhaust effects
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 function RMS_Exhaust.update(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local state = spec.exhaustSmoke
@@ -379,6 +452,8 @@ function RMS_Exhaust.update(vehicle, dt)
     writeEffects(effects, state)
 end
 
+---Pushes the smoke colour and scale to the effect shaders, interpolated on the motor rpm
+-- @param table vehicle vehicle
 function RMS_Exhaust.applyShader(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local state = spec.exhaustSmoke

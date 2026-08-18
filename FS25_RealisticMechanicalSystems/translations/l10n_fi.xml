@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Ajoneuvo"/>
         <text name="rms_hud_mass_towed" text="Kytketty"/>
         <text name="rms_hud_mass_total" text="Yhteensä"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="Moottori ei käynnistynyt: katkaise virta ennen uutta yritystä"/>
         <text name="rms_tutorial_preheat_title" text="Dieselin hehkutus"/>
         <text name="rms_tutorial_preheat_message" text="Kun dieselmoottori on kylmä, käynnistysohjaimen yksi painallus kytkee virran ja aloittaa hehkutuksen automaattisesti. Kojelaudan merkkivalot suorittavat itsetestin, minkä jälkeen hehkutuksen merkkivalo palaa, kunnes moottori on valmis. Älä paina uudelleen: käynnistin kytkeytyy automaattisesti merkkivalon sammuttua."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Voimanotto"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Voimanoton käyttökytkentä"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Voimanoton ulostuloakseli"/>

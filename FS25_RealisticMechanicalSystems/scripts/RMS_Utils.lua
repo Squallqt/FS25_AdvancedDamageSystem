@@ -1,5 +1,12 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Shared helper library: vehicle capability tests, serialization, formatting and colours
 RMS_Utils = {}
 
+---Returns the container locked on a hook lift
+-- @param table? vehicle vehicle
+-- @return table? container locked container
 function RMS_Utils.getLockedHookLiftContainer(vehicle)
     local hookLift = vehicle ~= nil and vehicle.spec_hookLiftTrailer or nil
     local attachedContainer = hookLift ~= nil and hookLift.attachedContainer or nil
@@ -12,6 +19,10 @@ function RMS_Utils.getLockedHookLiftContainer(vehicle)
     return container
 end
 
+---Converts a mean time between events into a per frame probability
+-- @param float dt time since last call in ms
+-- @param float meanTimeInMinutes mean time between events in minutes
+-- @return float chance probability for this frame
 function RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     if meanTimeInMinutes <= 0 then
         return 1.0
@@ -20,6 +31,9 @@ function RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes)
     return dt / meanTimeInMs
 end
 
+---Tells whether the vehicle drives a PTO output
+-- @param table? vehicle vehicle
+-- @return boolean hasCapability true with a PTO output
 function RMS_Utils.hasPtoOutputCapability(vehicle)
     local ptoSpec = vehicle ~= nil and vehicle.spec_powerTakeOffs or nil
     if ptoSpec == nil or type(ptoSpec.outputPowerTakeOffs) ~= "table" then
@@ -29,6 +43,9 @@ function RMS_Utils.hasPtoOutputCapability(vehicle)
     return next(ptoSpec.outputPowerTakeOffs) ~= nil
 end
 
+---Tells whether an attacher joint lifts hydraulically
+-- @param table? jointDesc attacher joint description
+-- @return boolean isLift true for a lifting joint
 function RMS_Utils.getIsHydraulicLiftJoint(jointDesc)
     if type(jointDesc) ~= "table" then
         return false
@@ -41,6 +58,9 @@ function RMS_Utils.getIsHydraulicLiftJoint(jointDesc)
     return jointDesc.allowsLowering == true and not isTrailerJoint
 end
 
+---Tells whether the vehicle can lift an implement hydraulically
+-- @param table? vehicle vehicle
+-- @return boolean hasCapability true with a lifting joint
 function RMS_Utils.hasHydraulicLiftCapability(vehicle)
     local attacherJointsSpec = vehicle ~= nil and vehicle.spec_attacherJoints or nil
     if attacherJointsSpec ~= nil then
@@ -54,6 +74,9 @@ function RMS_Utils.hasHydraulicLiftCapability(vehicle)
     return false
 end
 
+---Tells whether the vehicle carries a hydraulic actuator
+-- @param table? vehicle vehicle
+-- @return boolean hasCapability true with an actuator
 function RMS_Utils.hasHydraulicActuatorCapability(vehicle)
     if vehicle == nil then
         return false
@@ -82,16 +105,26 @@ function RMS_Utils.hasHydraulicActuatorCapability(vehicle)
     return vehicle.spec_attacherJointControl ~= nil or vehicle.spec_hydraulicHammer ~= nil
 end
 
+---Tells whether a connection hose entry carries hydraulics
+-- @param table? entry connection hose entry
+-- @return boolean isHydraulic true for a hydraulic hose
 local function getIsHydraulicConnectionEntry(entry)
     return type(entry) == "table"
         and type(entry.type) == "string"
         and string.sub(string.upper(entry.type), 1, 9) == "HYDRAULIC"
 end
 
+---Tells whether a moving tool is driven hydraulically
+-- @param table? tool moving tool
+-- @return boolean isHydraulic true for a hydraulic tool
 function RMS_Utils.getIsHydraulicMovingTool(tool)
     return type(tool) == "table" and tool.playSound == true
 end
 
+---Tells whether the vehicle or an attached implement carries hydraulic hoses
+-- @param table? vehicle vehicle
+-- @param table? visited vehicles already walked
+-- @return boolean hasCapability true with hoses
 function RMS_Utils.hasHydraulicHoseCapability(vehicle, visited)
     visited = visited or {}
     if vehicle == nil or visited[vehicle] then
@@ -143,9 +176,15 @@ function RMS_Utils.hasHydraulicHoseCapability(vehicle, visited)
     return false
 end
 
+---Tells whether the vehicle has a hydraulic circuit at all
+-- @param table? vehicle vehicle
+-- @return boolean hasCapability true with hydraulics
 function RMS_Utils.hasHydraulicCapability(vehicle)
     local visited = {}
 
+    ---Tells whether this vehicle or one of its implements carries the capability
+    -- @param table? vehicleObj vehicle or implement
+    -- @return boolean hasCapability true when found
     local function hasCapability(vehicleObj)
         if vehicleObj == nil or visited[vehicleObj] then
             return false
@@ -169,9 +208,15 @@ function RMS_Utils.hasHydraulicCapability(vehicle)
     return hasCapability(vehicle) or RMS_Utils.hasHydraulicHoseCapability(vehicle)
 end
 
+---Tells whether the player can drive a hydraulic function of the vehicle
+-- @param table? vehicle vehicle
+-- @return boolean hasCapability true with a controllable target
 function RMS_Utils.hasHydraulicControllableTargetCapability(vehicle)
     local visited = {}
 
+    ---Tells whether this vehicle or one of its implements offers a controllable target
+    -- @param table? vehicleObj vehicle or implement
+    -- @return boolean hasTarget true when found
     local function hasTarget(vehicleObj)
         if vehicleObj == nil or visited[vehicleObj] then
             return false
@@ -205,6 +250,12 @@ function RMS_Utils.hasHydraulicControllableTargetCapability(vehicle)
     return hasTarget(vehicle)
 end
 
+---Compares the PTO torque with the capacity the engine natively offers
+-- @param table? vehicle vehicle
+-- @param float totalTorque torque drawn by the implements
+-- @return float utilization share of the capacity used
+-- @return float motorSideTorque torque seen on the motor side
+-- @return float nativeCapacityTorque torque the engine can pass
 function RMS_Utils.getPtoNativeCapacityData(vehicle, totalTorque)
     local motor = vehicle ~= nil and vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     local ptoMotorRpmRatio = motor ~= nil and motor.getPtoMotorRpmRatio ~= nil
@@ -218,6 +269,10 @@ function RMS_Utils.getPtoNativeCapacityData(vehicle, totalTorque)
     return utilization, motorSideTorque, nativeCapacityTorque
 end
 
+---Returns the wear factor of a PTO utilization
+-- @param float utilization share of the PTO capacity used
+-- @param table config PTO factor configuration
+-- @return float factor load factor
 function RMS_Utils.calculatePtoLoadFactor(utilization, config)
     local load = math.max(tonumber(utilization) or 0, 0)
     local threshold = tonumber(config.LOAD_FACTOR_THRESHOLD) or 0
@@ -231,6 +286,10 @@ function RMS_Utils.calculatePtoLoadFactor(utilization, config)
     return math.min(factor, multiplier)
 end
 
+---Counts the PTO links that became active since the previous frame
+-- @param table? activeLinks links active now
+-- @param table? previousActiveLinks links active on the previous frame
+-- @return integer count number of new engagements
 function RMS_Utils.getPtoEngagementTransitionCount(activeLinks, previousActiveLinks)
     local count = 0
     for consumer, _ in pairs(activeLinks or {}) do
@@ -241,6 +300,9 @@ function RMS_Utils.getPtoEngagementTransitionCount(activeLinks, previousActiveLi
     return count
 end
 
+---Walks the implement chain and sums the torque, rpm and power drawn from the PTO
+-- @param table? vehicle vehicle
+-- @return table data PTO torque, rpm, power, active state and links
 function RMS_Utils.getConnectedPtoData(vehicle)
     local data = {
         isActive = false,
@@ -252,6 +314,8 @@ function RMS_Utils.getConnectedPtoData(vehicle)
     }
     local visited = {}
 
+    ---Walks the implement chain summing what it draws from the PTO
+    -- @param table? vehicleObj vehicle or implement
     local function walk(vehicleObj)
         if vehicleObj == nil or visited[vehicleObj] then
             return
@@ -297,6 +361,10 @@ function RMS_Utils.getConnectedPtoData(vehicle)
     return data
 end
 
+---Turns every implement driven by the PTO on or off
+-- @param table? vehicle vehicle
+-- @param boolean isTurnedOn true to turn them on
+-- @return boolean changed true when at least one implement changed
 function RMS_Utils.setConnectedPtoConsumersTurnedOn(vehicle, isTurnedOn)
     local changed = false
     local ptoData = RMS_Utils.getConnectedPtoData(vehicle)
@@ -313,6 +381,12 @@ function RMS_Utils.setConnectedPtoConsumersTurnedOn(vehicle, isTurnedOn)
     return changed
 end
 
+---Returns the squared distance past a threshold, 0 on the safe side of it
+-- @param float level value to rate
+-- @param float threshold value the effect starts at
+-- @param boolean lessIsWorse true when falling below the threshold is the bad direction
+-- @param float? customMax value reaching the full effect
+-- @return float multiplier effect multiplier
 function RMS_Utils.calculateQuadraticMultiplier(level, threshold, lessIsWorse, customMax)
     if (lessIsWorse and level >= threshold) or (not lessIsWorse and level <= threshold) then
         return 0.0
@@ -336,6 +410,10 @@ function RMS_Utils.calculateQuadraticMultiplier(level, threshold, lessIsWorse, c
     end
 end
 
+---Returns the mean time between failures of a system, from its condition and its stress
+-- @param float? systemCondition system condition
+-- @param any? systemStress system stress, or a probability configuration table
+-- @return float mtbf mean time between failures in minutes, math.huge below the stress threshold
 function RMS_Utils.getEstimatedMTBF(systemCondition, systemStress)
     local probabilityData = RMS_Config.CORE.BREAKDOWN_PROBABILITIES
     if type(systemStress) == "table" then
@@ -366,11 +444,18 @@ function RMS_Utils.getEstimatedMTBF(systemCondition, systemStress)
     return mtbfInMinutes
 end
 
+---Returns the odds a breakdown appears straight at its final stage
+-- @param float condition system condition
+-- @return float chance critical failure chance
 function RMS_Utils.getCriticalFailureChance(condition)
     local probability = RMS_Config.CORE.BREAKDOWN_PROBABILITIES
     return math.clamp((1 - condition) ^ probability.CRITICAL_DEGREE, probability.CRITICAL_MIN, probability.CRITICAL_MAX)
 end
 
+---Splits a decimal hour count into whole hours and minutes
+-- @param float? totalHours hours to split
+-- @return integer hours whole hours
+-- @return integer minutes remaining minutes
 function RMS_Utils.convertHoursToHoursAndMinutes(totalHours)
     if totalHours == nil then
         return 0, 0
@@ -381,6 +466,13 @@ function RMS_Utils.convertHoursToHoursAndMinutes(totalHours)
     return hours, minutes
 end
 
+---Resizes the money box around its label and its value
+-- @param table? labelElement label element
+-- @param table? valueElement value element
+-- @param table? boxElement box element
+-- @param table? bgElement background element
+-- @param string labelText label text
+-- @param string valueText value text
 function RMS_Utils.updateMoneyBoxLayout(labelElement, valueElement, boxElement, bgElement, labelText, valueText)
     if labelElement == nil or valueElement == nil or boxElement == nil or bgElement == nil then
         return
@@ -419,6 +511,9 @@ function RMS_Utils.updateMoneyBoxLayout(labelElement, valueElement, boxElement, 
     end
 end
 
+---Renders a table as a readable string
+-- @param any tbl table to render
+-- @return string text rendered table
 function RMS_Utils.tableToString(tbl)
     if not tbl or next(tbl) == nil then
         return "{}" 
@@ -437,6 +532,10 @@ function RMS_Utils.tableToString(tbl)
     return "{ " .. table.concat(parts, ", ") .. " }"
 end
 
+---Returns the key holding a value in a table
+-- @param table? tbl table to search
+-- @param any value value to find
+-- @return any? key matching key
 function RMS_Utils.getKeyByValue(tbl, value)
     for key, val in pairs(tbl) do
         if val == value then
@@ -446,6 +545,9 @@ function RMS_Utils.getKeyByValue(tbl, value)
     return nil
 end
 
+---Returns the unique user id behind a connection
+-- @param Connection? connection connection
+-- @return string? userId unique user id
 function RMS_Utils.getUniqueUserIdByConnection(connection)
     local user = g_currentMission.userManager:getUserByConnection(connection)
     if user == nil then
@@ -454,10 +556,9 @@ function RMS_Utils.getUniqueUserIdByConnection(connection)
     return user:getUniqueUserId()
 end
 
--- ==========================================================
---                          SERIALIZATION   
--- ==========================================================
-
+---Serializes the active breakdowns into one string
+-- @param table? breakdownsTable active breakdowns
+-- @return string serialized serialized breakdowns
 function RMS_Utils.serializeBreakdowns(breakdownsTable)
     local parts = {}
     for id, breakdown in pairs(breakdownsTable) do
@@ -474,6 +575,9 @@ function RMS_Utils.serializeBreakdowns(breakdownsTable)
     return table.concat(parts, ";")
 end
 
+---Serializes a date into one string
+-- @param table? dateTable date holding day, month and year
+-- @return string serialized serialized date
 function RMS_Utils.serializeDate(dateTable)
     if dateTable == nil or dateTable.day == nil then
         return ""
@@ -481,6 +585,9 @@ function RMS_Utils.serializeDate(dateTable)
     return string.format("%d,%d,%d", dateTable.day, dateTable.month, dateTable.year)
 end
 
+---Escapes the delimiters of a string so it survives serialization
+-- @param any value value to escape
+-- @return string text escaped value
 function RMS_Utils.encodeDelimitedString(value)
     if value == nil then
         return ""
@@ -491,6 +598,9 @@ function RMS_Utils.encodeDelimitedString(value)
     end))
 end
 
+---Restores the delimiters escaped by the encoder
+-- @param any value escaped value
+-- @return string text restored value
 function RMS_Utils.decodeDelimitedString(value)
     if value == nil or value == "" then
         return ""
@@ -501,6 +611,9 @@ function RMS_Utils.decodeDelimitedString(value)
     end))
 end
 
+---Rebuilds a date from its serialized form
+-- @param string? dateString serialized date
+-- @return table? date date holding day, month and year
 function RMS_Utils.deserializeDate(dateString)
     if dateString == nil or dateString == "" then
         return {}
@@ -517,6 +630,9 @@ function RMS_Utils.deserializeDate(dateString)
     return {}
 end
 
+---Rebuilds the active breakdowns from their serialized form
+-- @param string? breakdownString serialized breakdowns
+-- @return table breakdowns active breakdowns
 function RMS_Utils.deserializeBreakdowns(breakdownString)
     local breakdowns = {}
     if breakdownString == nil or breakdownString == "" then
@@ -542,12 +658,11 @@ function RMS_Utils.deserializeBreakdowns(breakdownString)
     return breakdowns
 end
 
--- ==========================================================
---                   STRING FORMATTING
--- ==========================================================
 
--- service --------------------------------------------------
-
+---Formats a finish hour, adding the days crossed before it
+-- @param float? finishTime hour of the day
+-- @param integer? daysToAdd whole days crossed
+-- @return string text formatted finish time
 function RMS_Utils.formatFinishTime(finishTime, daysToAdd)
    if finishTime == nil then
         return ""
@@ -568,6 +683,9 @@ function RMS_Utils.formatFinishTime(finishTime, daysToAdd)
     return string.format("%s%02d:%02d", daysText, finishTimeHours, finishTimeMinutes)
 end
 
+---Formats a duration in hours and minutes
+-- @param float? duration duration in ms
+-- @return string text formatted duration
 function RMS_Utils.formatDuration(duration)
     if duration == nil then
         return ""
@@ -594,13 +712,14 @@ function RMS_Utils.formatDuration(duration)
     return string.format("%s%s", daysText, durationText)
 end
 
--- condition and service levels -----------------------------
 
 RMS_Utils.CONDITION_LEVELS = {0.8, 0.6, 0.4, 0.2}
 
 local CONDITION_STATE_NAMES = {"EXCELLENT", "GOOD", "NORMAL", "BAD", "TERRIBLE"}
 
--- Returns the condition tier, 1 for the best and 5 for the worst.
+---Returns the tier a condition falls in, 1 being the best
+-- @param float? condition condition level
+-- @return integer tier condition tier
 function RMS_Utils.getConditionTier(condition)
     local levels = RMS_Utils.CONDITION_LEVELS
     for tier = 1, #levels do
@@ -611,6 +730,10 @@ function RMS_Utils.getConditionTier(condition)
     return #levels + 1
 end
 
+---Formats a condition, as a percentage after a complete inspection and as a label otherwise
+-- @param float? condition condition level
+-- @param boolean? isCompleteInspection true after a complete inspection
+-- @return string text formatted condition
 function RMS_Utils.formatCondition(condition, isCompleteInspection)
     local STATES = RealisticMechanicalSystems.STATES
     if isCompleteInspection == nil then
@@ -622,15 +745,22 @@ function RMS_Utils.formatCondition(condition, isCompleteInspection)
     return g_i18n:getText(STATES[CONDITION_STATE_NAMES[RMS_Utils.getConditionTier(condition)]])
 end
 
+---Returns the share of the service interval still to run
+-- @param float? service service level
+-- @return float ratio remaining share
 function RMS_Utils.getServiceIntervalRemainingRatio(service)
     local threshold = math.clamp(tonumber(RMS_Config.CORE.SERVICE_EXPIRED_THRESHOLD) or 0.5, 0.0, 0.9999)
     local activeRange = math.max(1.0 - threshold, 0.0001)
     return math.clamp(((tonumber(service) or 0.0) - threshold) / activeRange, 0.0, 1.0)
 end
 
+---Formats a service level, as a percentage after a complete inspection and as a label otherwise
+-- @param float? service service level
+-- @param boolean? isCompleteInspection true after a complete inspection
+-- @return string text formatted service level
 function RMS_Utils.formatService(service, isCompleteInspection)
     local STATES = RealisticMechanicalSystems.STATES
-    -- No report in the log.
+    -- no report in the log
     if isCompleteInspection == nil then
         return g_i18n:getText(STATES.UNKNOWN)
     end
@@ -651,8 +781,10 @@ function RMS_Utils.formatService(service, isCompleteInspection)
     end
 end
 
--- time -----------------------------------------------------
 
+---Formats how long ago a date was, in months
+-- @param table? pastDate date holding year and month
+-- @return string text localized elapsed time
 function RMS_Utils.formatTimeAgo(pastDate) -- expects a table with year and month fields, returns a localized string like "5 months ago" or "This month"
     if type(pastDate) ~= "table" or not pastDate.year or not pastDate.month then
         return g_i18n:getText('rms_spec_never')
@@ -679,16 +811,26 @@ function RMS_Utils.formatTimeAgo(pastDate) -- expects a table with year and mont
     end
 end
 
--- operating hours ---------------------------------------------------
 
+---Formats the hours run against the interval they belong to
+-- @param float? currentHours hours run
+-- @param float? intervalHours length of the interval
+-- @return string text formatted hours
 function RMS_Utils.formatOperatingHours(currentHours, intervalHours)
     return string.format("%.1f / %.1f %s", currentHours, intervalHours, g_i18n:getText('rms_spec_op_hours_short'))
 end
 
--- others ---------------------------------------------------------------
 
+---Returns the label of a value against four descending thresholds
+-- @param float value value to rate
+-- @param float ideal best threshold
+-- @param float high second threshold
+-- @param float mid third threshold
+-- @param float low worst threshold
+-- @param any ... labels from best to worst
+-- @return string label matching label
 function RMS_Utils.getValueLabel(value, ideal, high, mid, low, ...)
--- getValueLabel(63, 90, 75, 50, 25, "Excellent", "Good", "Average", "Poor", "Critical")
+-- example: getValueLabel(63, 90, 75, 50, 25, "Excellent", "Good", "Average", "Poor", "Critical")
     local labels = {...}
     if value >= ideal then
         return labels[1]
@@ -703,8 +845,16 @@ function RMS_Utils.getValueLabel(value, ideal, high, mid, low, ...)
     end
 end
 
+---Returns the label of a value against four ascending thresholds
+-- @param float value value to rate
+-- @param float ideal best threshold
+-- @param float low second threshold
+-- @param float mid third threshold
+-- @param float high worst threshold
+-- @param any ... labels from best to worst
+-- @return string label matching label
 function RMS_Utils.getValueLabelInverted(value, ideal, low, mid, high, ...)
--- getValueLabelInverted(63, 10, 25, 50, 75, "Excellent", "Good", "Average", "Poor", "Critical")
+-- example: getValueLabelInverted(63, 10, 25, 50, 75, "Excellent", "Good", "Average", "Poor", "Critical")
     local labels = {...}
     if value <= ideal then
         return labels[1]
@@ -719,8 +869,10 @@ function RMS_Utils.getValueLabelInverted(value, ideal, low, mid, high, ...)
     end
 end
 
--- reliabolity and maintenability ------------------------------------
 
+---Formats a reliability value as its localized label
+-- @param float? value reliability value
+-- @return string text localized label
 function RMS_Utils.formatReliability(value)
     if value < 1.0 then return g_i18n:getText('rms_spec_state_budget')
     elseif value < 1.1 then return g_i18n:getText('rms_spec_state_standard')
@@ -729,16 +881,15 @@ function RMS_Utils.formatReliability(value)
 end
 
 
+---Formats a maintainability value as its localized label
+-- @param float? value maintainability value
+-- @return string text localized label
 function RMS_Utils.formatMaintainability(value)
     if value < 1.0 then return g_i18n:getText('rms_spec_state_low')
     elseif value < 1.1 then return g_i18n:getText('rms_spec_state_average')
     elseif value < 1.2 then return g_i18n:getText('rms_spec_state_high')
     else return g_i18n:getText('rms_spec_state_workhorse') end        
 end
-
--- ==========================================================
---                   COLORS FORMATTING
--- ==========================================================
 
 local COLOR_IDEAL  = {0.12, 0.88, 0.0, 1.0}  -- super green
 local COLOR_GREEN  = {0.3, 0.7, 0.0, 1.0}    -- green
@@ -749,6 +900,11 @@ local COLOR_UNKNOWN = {0.5, 0.5, 0.5, 1.0}   -- grey
 
 local SERVICE_COLOR_LEVELS = {0.9, 0.5, 0.2, 0.001}
 
+---Interpolates between two colours
+-- @param table a colour at t 0
+-- @param table b colour at t 1
+-- @param float t interpolation factor
+-- @return float r, float g, float b, float a colour channels
 local function lerpColor(a, b, t)
     return {
         a[1] + (b[1] - a[1]) * t,
@@ -758,6 +914,14 @@ local function lerpColor(a, b, t)
     }
 end
 
+---Returns the colour of a value against four descending thresholds
+-- @param float value value to rate
+-- @param float ideal best threshold
+-- @param float high second threshold
+-- @param float mid third threshold
+-- @param float low worst threshold
+-- @param boolean? smooth true to blend between the tiers
+-- @return float r, float g, float b, float a colour channels
 function RMS_Utils.getValueColor(value, ideal, high, mid, low, smooth)
     local c
 
@@ -794,6 +958,10 @@ function RMS_Utils.getValueColor(value, ideal, high, mid, low, smooth)
     return c[1], c[2], c[3], c[4]
 end
 
+---Returns the colour of a condition, grey while the inspection is incomplete
+-- @param float? condition condition level
+-- @param boolean? isCompleteInspection true after a complete inspection
+-- @return float r, float g, float b, float a colour channels
 function RMS_Utils.getConditionColor(condition, isCompleteInspection)
     if isCompleteInspection == nil then
         return unpack(COLOR_UNKNOWN)
@@ -803,6 +971,10 @@ function RMS_Utils.getConditionColor(condition, isCompleteInspection)
     return RMS_Utils.getValueColor(condition, ideal, high, mid, low, false)
 end
 
+---Returns the colour of a service level, grey while the inspection is incomplete
+-- @param float? service service level
+-- @param boolean? isCompleteInspection true after a complete inspection
+-- @return float r, float g, float b, float a colour channels
 function RMS_Utils.getServiceColor(service, isCompleteInspection)
     if isCompleteInspection == nil then
         return unpack(COLOR_UNKNOWN)
@@ -812,6 +984,14 @@ function RMS_Utils.getServiceColor(service, isCompleteInspection)
     return RMS_Utils.getValueColor(RMS_Utils.getServiceIntervalRemainingRatio(service), ideal, high, mid, low, isCompleteInspection)
 end
 
+---Returns the colour of a value against four ascending thresholds
+-- @param float value value to rate
+-- @param float ideal best threshold
+-- @param float low second threshold
+-- @param float mid third threshold
+-- @param float high worst threshold
+-- @param boolean? smooth true to blend between the tiers
+-- @return float r, float g, float b, float a colour channels
 function RMS_Utils.getValueColorInverted(value, ideal, low, mid, high, smooth)
     local c
 
@@ -848,12 +1028,12 @@ function RMS_Utils.getValueColorInverted(value, ideal, low, mid, high, smooth)
     return c[1], c[2], c[3], c[4]
 end
 
--- ==========================================================
---                  GENERIC HELPERS
--- ==========================================================
-
 local SAVEGAME_OPTIONAL_FLOAT_SENTINEL = -1
 
+---Converts a value to a boolean, accepting the strings and numbers a savegame may hold
+-- @param any value value to convert
+-- @param boolean? defaultValue value used when nothing is recognised
+-- @return boolean value converted value
 function RMS_Utils.normalizeBoolValue(value, defaultValue)
     if value == nil then
         return defaultValue == true
@@ -880,6 +1060,10 @@ function RMS_Utils.normalizeBoolValue(value, defaultValue)
     return value and true or false
 end
 
+---Converts a value to a number, falling back when it cannot
+-- @param any value value to convert
+-- @param float? defaultValue value used when the conversion fails
+-- @return float value converted value
 function RMS_Utils.normalizeNumberValue(value, defaultValue)
     if value == nil then
         return defaultValue
@@ -893,6 +1077,9 @@ function RMS_Utils.normalizeNumberValue(value, defaultValue)
     return num
 end
 
+---Encodes a float that may be absent
+-- @param float? value value to encode
+-- @return string text encoded value
 function RMS_Utils.encodeOptionalFloat(value)
     if value == nil then
         return SAVEGAME_OPTIONAL_FLOAT_SENTINEL
@@ -906,6 +1093,9 @@ function RMS_Utils.encodeOptionalFloat(value)
     return num
 end
 
+---Decodes a float that may be absent
+-- @param string? value encoded value
+-- @return float? value decoded value
 function RMS_Utils.decodeOptionalFloat(value)
     local num = tonumber(value)
     if num == nil or num < 0 then
@@ -915,6 +1105,9 @@ function RMS_Utils.decodeOptionalFloat(value)
     return num
 end
 
+---Splits a comma separated string into a list
+-- @param string? csvString comma separated values
+-- @return table values value list
 function RMS_Utils.parseCsvList(csvString)
     local result = {}
     if csvString == nil or csvString == "" then
@@ -931,6 +1124,9 @@ function RMS_Utils.parseCsvList(csvString)
     return result
 end
 
+---Serializes the active effects into one string
+-- @param table? effects active effects
+-- @return string serialized serialized effects
 function RMS_Utils.serializeEffectSnapshot(effects)
     local entries = {}
     if effects == nil then
@@ -959,6 +1155,9 @@ function RMS_Utils.serializeEffectSnapshot(effects)
     return table.concat(entries, ";")
 end
 
+---Rebuilds the active effects from their serialized form
+-- @param string? serialized serialized effects
+-- @return table effects active effects
 function RMS_Utils.deserializeEffectSnapshot(serialized)
     local result = {}
     if serialized == nil or serialized == "" then
@@ -990,6 +1189,10 @@ function RMS_Utils.deserializeEffectSnapshot(serialized)
     return result
 end
 
+---Returns the system name behind a system key
+-- @param table systems system name table
+-- @param string systemKey system key
+-- @return string? name system name
 function RMS_Utils.getSystemNameByKey(systems, systemKey)
     if systems == nil then
         return tostring(systemKey)
@@ -1005,6 +1208,9 @@ function RMS_Utils.getSystemNameByKey(systems, systemKey)
     return tostring(systemKey)
 end
 
+---Serializes the condition and stress of every system
+-- @param table? systems system table
+-- @return string serialized serialized systems
 function RMS_Utils.serializeSystemsState(systems)
     local entries = {}
     if systems == nil then
@@ -1031,6 +1237,9 @@ function RMS_Utils.serializeSystemsState(systems)
     return table.concat(entries, ";")
 end
 
+---Rebuilds the system conditions and stresses from their serialized form
+-- @param string? serialized serialized systems
+-- @return table systems system table
 function RMS_Utils.deserializeSystemsState(serialized)
     local result = {}
     if serialized == nil or serialized == "" then
@@ -1066,6 +1275,9 @@ function RMS_Utils.deserializeSystemsState(serialized)
     return result
 end
 
+---Copies the condition and stress of every system for a later comparison
+-- @param table? systems system table
+-- @return table snapshot system snapshot
 function RMS_Utils.createSystemsSnapshot(systems)
     local snapshot = {}
     if systems == nil then
@@ -1091,6 +1303,9 @@ function RMS_Utils.createSystemsSnapshot(systems)
     return snapshot
 end
 
+---Serializes a map of numbers into one string
+-- @param table? valueMap numeric map
+-- @return string serialized serialized map
 function RMS_Utils.serializeNumericMap(valueMap)
     local entries = {}
     if valueMap == nil then
@@ -1108,6 +1323,9 @@ function RMS_Utils.serializeNumericMap(valueMap)
     return table.concat(entries, ";")
 end
 
+---Rebuilds a map of numbers from its serialized form
+-- @param string? serialized serialized map
+-- @return table valueMap numeric map
 function RMS_Utils.deserializeNumericMap(serialized)
     local result = {}
     if serialized == nil or serialized == "" then
@@ -1133,6 +1351,10 @@ function RMS_Utils.deserializeNumericMap(serialized)
     return result
 end
 
+---Returns the system key behind a system name
+-- @param table systems system name table
+-- @param string systemName system name
+-- @return string? key system key
 function RMS_Utils.getSystemKey(systems, systemName)
     if systems == nil then
         return ""
@@ -1140,6 +1362,11 @@ function RMS_Utils.getSystemKey(systems, systemName)
     return string.lower(RMS_Utils.getKeyByValue(systems, systemName) or "")
 end
 
+---Returns the weight a system carries on this vehicle, disabled systems weighing nothing
+-- @param table? vehicle vehicle
+-- @param string systemName system name
+-- @param table? systems system table
+-- @return float weight system weight
 function RMS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or type(spec.systems) ~= "table" or type(systemName) ~= "string" then
@@ -1151,6 +1378,9 @@ function RMS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
         return 0
     end
 
+    ---Returns the configured weight of a system key
+    -- @param string systemKey system key
+    -- @return float weight configured weight
     local function getConfiguredWeight(systemKey)
         if systemKey == nil then
             return 0
@@ -1171,6 +1401,9 @@ function RMS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
         return 0
     end
 
+    ---Resolves a system name to its key, matching case insensitively
+    -- @param any name system name
+    -- @return string? systemKey resolved system key
     local function resolveSystemKey(name)
         if spec.systems[name] ~= nil then
             return name
@@ -1232,6 +1465,9 @@ function RMS_Utils.getEffectiveSystemWeight(vehicle, systemName, systems)
     return targetWeight / totalEnabledWeight
 end
 
+---Copies a table one level deep
+-- @param any original table to copy
+-- @return any copy copied table
 function RMS_Utils.shallowCopy(original)
     local result = {}
     if type(original) ~= "table" then
@@ -1243,6 +1479,10 @@ function RMS_Utils.shallowCopy(original)
     return result
 end
 
+---Copies a table and everything it holds, guarding against cycles
+-- @param any original table to copy
+-- @param table? seen tables already copied
+-- @return any copy copied table
 function RMS_Utils.deepCopy(original, seen)
     if type(original) ~= "table" then
         return original
@@ -1264,10 +1504,9 @@ function RMS_Utils.deepCopy(original, seen)
     return result
 end
 
--- ==========================================================
---           MAINTENANCE LOG STREAM SERIALIZATION
--- ==========================================================
-
+---Serializes one maintenance log entry into a string
+-- @param table? entry maintenance log entry
+-- @return string serialized serialized entry
 function RMS_Utils.serializeMaintenanceLogEntry(entry)
     if entry == nil then return "" end
     local cd = entry.conditionData or {}
@@ -1311,6 +1550,9 @@ function RMS_Utils.serializeMaintenanceLogEntry(entry)
     return table.concat(parts, "|")
 end
 
+---Rebuilds a maintenance log entry from its serialized form
+-- @param string? serialized serialized entry
+-- @return table? entry maintenance log entry
 function RMS_Utils.deserializeMaintenanceLogEntry(serialized)
     if serialized == nil or serialized == "" then return nil end
     local parts = {}
@@ -1354,10 +1596,9 @@ function RMS_Utils.deserializeMaintenanceLogEntry(serialized)
     return result
 end
 
--- ==========================================================
---                  SHARED VEHICLE HELPERS
--- ==========================================================
-
+---Tells whether the CVT addon mod drives the transmission of this vehicle
+-- @param table? vehicle vehicle
+-- @return boolean hasAddon true when the addon is active on it
 function RMS_Utils.hasCVTAddon(vehicle)
     local spec_CVTaddon = vehicle ~= nil and vehicle.spec_CVTaddon or nil
     local cvtAddonConfig = spec_CVTaddon ~= nil and (tonumber(spec_CVTaddon.CVTconfig) or 0) or 0
@@ -1367,11 +1608,17 @@ function RMS_Utils.hasCVTAddon(vehicle)
         and cvtAddonConfig ~= 8
 end
 
+---Tells whether the vehicle runs a continuously variable transmission
+-- @param table? vehicle vehicle
+-- @return boolean hasCVT true for a CVT
 function RMS_Utils.hasCVTTransmission(vehicle)
     local motor = vehicle ~= nil and vehicle.getMotor ~= nil and vehicle:getMotor() or nil
     return motor ~= nil and motor.minForwardGearRatio ~= nil
 end
 
+---Tells whether the vehicle runs on electricity
+-- @param table? vehicle vehicle
+-- @return boolean isElectric true for an electric vehicle
 function RMS_Utils.getIsElectricVehicle(vehicle)
     local hasElectricConsumer = false
     local hasCombustionConsumer = false
@@ -1390,7 +1637,9 @@ function RMS_Utils.getIsElectricVehicle(vehicle)
     return hasElectricConsumer and not hasCombustionConsumer
 end
 
--- Returns the heavy trailer power to mass ratio threshold and full effect ratio of the vehicle class.
+---Returns the power to trailer mass thresholds, trucks having their own
+-- @param boolean isTruck true for a truck
+-- @return table levels ratio thresholds
 function RMS_Utils.getHeavyTrailerRatioLevels(isTruck)
     local C = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
     if isTruck then
@@ -1399,6 +1648,9 @@ function RMS_Utils.getHeavyTrailerRatioLevels(isTruck)
     return C.HEAVY_TRAILER_MASS_RATIO_THRESHOLD, C.HEAVY_TRAILER_MASS_RATIO_FULL_EFFECT
 end
 
+---Builds a logger printing only while debug mode is on
+-- @param string prefix prefix put in front of each line
+-- @return function logger logging function
 function RMS_Utils.createLogger(prefix)
     return function(...)
         if RMS_Config ~= nil and RMS_Config.DEBUG then
@@ -1411,6 +1663,10 @@ function RMS_Utils.createLogger(prefix)
     end
 end
 
+---Resolves a system name typed in the console to the key used by the spec
+-- @param table? spec vehicle spec
+-- @param any rawSystem system name
+-- @return string? systemKey resolved system key
 function RMS_Utils.resolveConsoleSystemKey(spec, rawSystem)
     if rawSystem == nil or rawSystem == "" then
         return nil

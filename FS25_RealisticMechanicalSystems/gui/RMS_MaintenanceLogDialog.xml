@@ -9,7 +9,6 @@
         <ThreePartBitmap profile="fs25_dialogBgBottom"/>
         
         <GuiElement profile="fs25_dialogContentContainer">
-            <!-- HEADER -->
             <GuiElement profile="fs25_menuHeaderPanel" absoluteSizeOffset="0px 0px">
                 <Bitmap profile="fs25_menuHeaderIconBg">
                     <Bitmap profile="fs25_menuHeaderIcon" imageSliceId="gui.icon_vehicleDealer_machines" />
@@ -22,9 +21,6 @@
                 </BoxLayout>
             </GuiElement>
             
-            <!-- =============================================================== -->
-            <!-- VEHICLE INFO                                                    -->
-            <!-- =============================================================== -->
             <GuiElement profile="rms_logInfoContainer">
                <ThreePartBitmap profile="rms_containerFrame"/>
                     <Text profile="rms_headerBoldText" id="vehicleNameValue" text="John Deere 1900" position="30px 60px" size="100% 40px"/>
@@ -51,13 +47,9 @@
 
             </GuiElement>
 
-            <!-- =============================================================== -->
-            <!-- log TABLE (EXPANDED)                                        -->
-            <!-- =============================================================== -->
             <GuiElement profile="rms_logTableContainer">
                <ThreePartBitmap profile="rms_containerFrame"/>
                 
-                <!-- HEADER -->
                 <Bitmap profile="rms_tableList" id="tableHeaderBox" position="50px -30px" size="1290px 50px">
                     <Text profile="rms_tableHeaderLeft" position="20px 0px" size="100px 40.77px" text="$l10n_rms_log_date"/>
                     <Text profile="rms_tableHeaderLeft" position="120px 0px" size="160px 40.77px" text="$l10n_rms_log_hours"/>
@@ -85,7 +77,6 @@
             </GuiElement>
         </GuiElement> 
 
-        <!-- Buttons -->
         <BoxLayout profile="fs25_dialogButtonBox">
             <Button profile="buttonActivate" text="$l10n_rms_log_button_show_report" onClick="onClickShowReport" id="showReportButton"/>
             <Button profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" id="backButton"/>

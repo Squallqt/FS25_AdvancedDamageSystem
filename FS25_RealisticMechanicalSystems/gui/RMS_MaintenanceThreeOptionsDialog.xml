@@ -10,20 +10,16 @@
         <GuiElement profile="fs25_dialogContentContainer">
             <Animation profile="fs25_dialogLoading" id="iconLoadingElement" />
 
-            <!-- Title -->
             <Text profile="fs25_dialogTitle" id="dialogTitleElement" position="0px -30px" text="Maintenance Options"/>
 
-            <!-- Option One -->
             <Text profile="fs25_dialogText" id="optionOneText" position="0px -90px" text="Select the extent of maintenance:"/>
             <MultiTextOption profile="rms_multiTextOption" id="optionOne" position="0px -120px" focusInit="onOpen" onClick="onClickOptionOne" texts="1|2|3|4" />
                 
-            <!-- Option Two -->
             <Text profile="fs25_dialogText" id="optionTwoText" position="0px -170px" text="Choose consumables:"/>
             <MultiTextOption profile="rms_multiTextOption" id="optionTwo" position="0px -200px" onClick="onClickOptionTwo" texts="1|2|3|4" />
 
             <Text profile="rms_disclaimerText" position="40px -245px" size="500px 30px" id="choosenPartsText" text="* Chosen parts for repair: Clutch, ECU."/>
 
-            <!-- Price, duration, finish time -->
             <SmoothList profile="rms_dialogInfoTable" id="serviceInfoTable" position="0px -275px" size="400px 78px">
                 <ListItem profile="rms_dialogInfoRow" name="serviceInfoRowTemplate" size="400px 26px">
                     <Text profile="rms_dialogInfoTitle" position="20px 0px" size="160px 26px" name="serviceInfoTitle" textLayoutMode="scrolling" />
@@ -31,11 +27,9 @@
                 </ListItem>
             </SmoothList>
 
-            <!-- Disclaimers -->
             <Text profile="rms_disclaimerText" position="40px -380px" size="500px 30px" id="optionOneDisclaimer" text="*Extended maintenance is more expensive and takes longer, but includes additional procedures that significantly extend the service interval until the next maintenance."/>
             <Text profile="rms_disclaimerText" position="40px -435px" size="500px 30px" id="optionTwoDisclaimer" text="**Premium parts have no risk of defects, but their cost is higher."/>
         
-            <!-- Option Three -->
             <Text profile="fs25_dialogText" id="optionThreeText" position="0px -480px" text="Repair any faults found"/>
             <Text profile="rms_disclaimerText" position="40px -550px" size="500px 30px" id="optionThreeDisclaimer" text="* Automatically start standard repair with OEM parts if faults are detected."/>
             <BinaryOption profile="fs25_binaryOption" id="optionThree" onClick="onClickOptionThree" size="300px 30px" position="0px 55px"/>

@@ -1,10 +1,14 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Breakdown occurrence and lifecycle on a vehicle, and the effects they apply
+
 local log_dbg = RMS_Utils.createLogger("[RMS_SPEC]")
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 
--- ==========================================================
---                      HELPER FUNCTIONS
--- ==========================================================
-
+---Tells whether a player sits in the vehicle or in one of its attached implements
+-- @param table? rootVehicle vehicle at the head of the chain
+-- @return boolean hasPlayer true when a player is inside
 local function hasEnteredPlayerInVehicleChain(rootVehicle)
     if rootVehicle == nil then
         return false
@@ -25,10 +29,10 @@ local function hasEnteredPlayerInVehicleChain(rootVehicle)
     return false
 end
 
--- ==========================================================
---                       BREAKDOWNS
--- ==========================================================
 
+---Builds the general wear breakdown definition from the current condition of every system
+-- @param table vehicle vehicle
+-- @return table breakdown generated breakdown definition
 local function buildGeneralWearBreakdown(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if not spec then
@@ -51,10 +55,10 @@ local function buildGeneralWearBreakdown(vehicle)
         
         if systemData.enabled and systemCondition <= RMS_Config.CORE.GENERAL_WEAR_EARLY_STAGE_THRESHOLD  then
             
-            --- ENGINE
+            -- ENGINE
             if systemName == systems.ENGINE then
 
-                --- early stage
+                -- early stage
                 effect = {
                     id = "ENGINE_TORQUE_MODIFIER",
                     value = function()
@@ -67,7 +71,7 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 
-                --- oil smoke from engine wear
+                -- oil smoke from engine wear
                 effect = {
                     id = "EXHAUST_OIL",
                     value = function()
@@ -80,7 +84,7 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 
-            --- TRANSMISSION
+            -- TRANSMISSION
             elseif systemName == systems.TRANSMISSION then
                 local motor = vehicle:getMotor()
                 if not motor then return false end
@@ -89,7 +93,7 @@ local function buildGeneralWearBreakdown(vehicle)
                 local isPowerShift = motor.gearType == VehicleMotor.TRANSMISSION_TYPE.POWERSHIFT
                 local isCvt = motor.minForwardGearRatio ~= nil
 
-                --- early stage
+                -- early stage
                 if isManual and hasCVTAddon(vehicle) then
                     effect = {
                         id = "TRANSMISSION_SLIP_EFFECT", 
@@ -131,7 +135,7 @@ local function buildGeneralWearBreakdown(vehicle)
                     if effect ~= nil then table.insert(effects, effect) end
                 end
 
-            --- HYDRAULIC
+            -- HYDRAULIC
             elseif systemName == systems.HYDRAULICS then
                 effect = {
                     id = "HYDRAULIC_SPEED_MODIFIER", 
@@ -145,10 +149,10 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
             
-            --- FUEL
+            -- FUEL
             elseif systemName == systems.FUEL then
 
-                --- ealry stage
+                -- early stage
                 effect = {
                     id = "FUEL_CONSUMPTION_MODIFIER", 
                     value = function ()
@@ -161,10 +165,10 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 
-            --- CHASSIS
+            -- CHASSIS
             elseif systemName == systems.CHASSIS then
                 
-                --- early stage
+                -- early stage
                 effect = {
                     id = "BRAKE_FORCE_MODIFIER", 
                     value = function ()
@@ -178,7 +182,7 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 
-                --- late stage
+                -- late stage
                 effect = {
                     id = "STEERING_SENSITIVITY_MODIFIER", 
                     value = function ()
@@ -191,10 +195,10 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if isLateStage and effect ~= nil then table.insert(effects, effect) end
 
-            --- COOLING
+            -- COOLING
             elseif systemName == systems.COOLING then
                 
-                --- early stage
+                -- early stage
                 effect = {
                     id = "RADIATOR_HEALTH_MODIFIER", 
                     value = function ()
@@ -207,10 +211,10 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 
-            --- ELECTRICAL
+            -- ELECTRICAL
             elseif systemName == systems.ELECTRICAL then
 
-                --- early stage
+                -- early stage
                 effect = {
                     id = "ALTERNATOR_HEALTH_MODIFIER", 
                     value = function ()
@@ -235,7 +239,7 @@ local function buildGeneralWearBreakdown(vehicle)
                 }
                 if effect ~= nil then table.insert(effects, effect) end
 
-                --- late stage
+                -- late stage
                 effect = {
                         id = "ENGINE_HARD_START_MODIFIER",
                         value = function ()
@@ -256,6 +260,10 @@ local function buildGeneralWearBreakdown(vehicle)
     return generalWearBreakdown
 end
 
+---Returns a breakdown definition, the vehicle dynamic one taking precedence over the registry
+-- @param table vehicle vehicle
+-- @param string breakdownId breakdown id
+-- @return table? definition breakdown definition
 local function getBreakdownDefinition(vehicle, breakdownId)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec ~= nil and spec.dynamicBreakdowns ~= nil and spec.dynamicBreakdowns[breakdownId] ~= nil then
@@ -264,6 +272,8 @@ local function getBreakdownDefinition(vehicle, breakdownId)
     return RMS_Breakdowns.BreakdownRegistry[breakdownId]
 end
 
+---Rolls a breakdown per system once its stress over condition ratio passes the threshold
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:tryTriggerBreakdown(dt)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or dt == 0 then
@@ -377,6 +387,8 @@ function RealisticMechanicalSystems:tryTriggerBreakdown(dt)
     end
 end
 
+---Draws a breakdown among the applicable ones, weighted by their probability
+-- @return string? breakdownId drawn breakdown id, nil when none applies
 function RealisticMechanicalSystems:getRandomBreakdown()
     if not self.spec_RealisticMechanicalSystems then
         return nil
@@ -423,6 +435,9 @@ function RealisticMechanicalSystems:getRandomBreakdown()
     return nil
 end
 
+---Draws a breakdown of one system among the applicable ones, weighted by their probability
+-- @param string systemName system name
+-- @return string? breakdownId drawn breakdown id, nil when none applies
 function RealisticMechanicalSystems:getRandomBreakdownBySystem(systemName)
     if not self.spec_RealisticMechanicalSystems then
         return nil
@@ -537,6 +552,9 @@ function RealisticMechanicalSystems:getRandomBreakdownBySystem(systemName)
     return nil
 end
 
+---Adds a breakdown at a stage, rolling its detection and reapplying the effects
+-- @param string breakdownId breakdown id
+-- @param any stageOrOptions stage index or an option table
 function RealisticMechanicalSystems:addBreakdown(breakdownId, stageOrOptions)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end
@@ -608,6 +626,9 @@ function RealisticMechanicalSystems:addBreakdown(breakdownId, stageOrOptions)
     RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
 end
 
+---Suspends a breakdown for a delay and marks it as quick fixed
+-- @param string breakdownId breakdown id
+-- @param float? resumeTimer delay before it resumes in ms
 function RealisticMechanicalSystems:suspendBreakdown(breakdownId, resumeTimer)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns then
@@ -628,6 +649,8 @@ function RealisticMechanicalSystems:suspendBreakdown(breakdownId, resumeTimer)
     RealisticMechanicalSystems.raiseRMSDirty(self, RealisticMechanicalSystems.SYNC_GROUP.BREAKDOWNS)
 end
 
+---Removes the listed breakdowns, all of them when called without an argument
+-- @param any ... breakdown ids
 function RealisticMechanicalSystems:removeBreakdown(...)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
@@ -657,6 +680,9 @@ function RealisticMechanicalSystems:removeBreakdown(...)
     end
 end
 
+---Tells whether a breakdown is active, or any selectable one when called without an id
+-- @param string? breakdownId breakdown id
+-- @return boolean hasBreakdown true when the breakdown is active
 function RealisticMechanicalSystems:hasBreakdown(breakdownId)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
@@ -677,6 +703,9 @@ function RealisticMechanicalSystems:hasBreakdown(breakdownId)
     return spec.activeBreakdowns[breakdownId] ~= nil
 end
 
+---Tells whether an effect is active, or any one when called without an id
+-- @param string? effectId effect id
+-- @return boolean hasEffect true when the effect is active
 function RealisticMechanicalSystems:hasEffect(effectId)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeEffects or next(spec.activeEffects) == nil then
@@ -690,6 +719,9 @@ function RealisticMechanicalSystems:hasEffect(effectId)
     return spec.activeEffects[effectId] ~= nil
 end
 
+---Tells whether a system carries an active breakdown
+-- @param string system system name
+-- @return boolean hasBreakdown true when the system has one
 function RealisticMechanicalSystems:hasSystemBreakdowns(system)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
@@ -718,6 +750,9 @@ function RealisticMechanicalSystems:hasSystemBreakdowns(system)
     return false
 end
 
+---Moves a breakdown to a stage, or one stage back when asked to reverse
+-- @param string breakdownId breakdown id
+-- @param any targetStageOrReverse target stage index, or true to step back
 function RealisticMechanicalSystems:changeBreakdownStage(breakdownId, targetStageOrReverse)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil or spec.activeBreakdowns[breakdownId] == nil then
@@ -751,6 +786,8 @@ function RealisticMechanicalSystems:changeBreakdownStage(breakdownId, targetStag
     end
 end
 
+---Counts down the suspended breakdowns and advances the progressing ones to their next stage
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:processBreakdowns(dt)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.activeBreakdowns or next(spec.activeBreakdowns) == nil then
@@ -820,6 +857,7 @@ function RealisticMechanicalSystems:processBreakdowns(dt)
     end
 end
 
+---Adds, removes or refreshes the general wear breakdown from the condition of the systems
 function RealisticMechanicalSystems:processGeneralWearBreakdown()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not self.isServer then
@@ -860,6 +898,7 @@ function RealisticMechanicalSystems:processGeneralWearBreakdown()
     end
 end
 
+---Rebuilds the active effect set from the active breakdowns and applies the difference
 function RealisticMechanicalSystems:recalculateAndApplyEffects()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end
@@ -1023,6 +1062,7 @@ function RealisticMechanicalSystems:recalculateAndApplyEffects()
     self:recalculateAndApplyIndicators()
 end
 
+---Rebuilds the dashboard indicator set from the active breakdowns, the highest priority colour winning
 function RealisticMechanicalSystems:recalculateAndApplyIndicators()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end

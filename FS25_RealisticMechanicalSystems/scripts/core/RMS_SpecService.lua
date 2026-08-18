@@ -1,10 +1,16 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Workshop services on a vehicle: inspection, maintenance, repair and overhaul, with their prices and durations
+
 local log_dbg = RMS_Utils.createLogger("[RMS_SPEC]")
 local getSafeMissionTimeScale = RealisticMechanicalSystems.getSafeMissionTimeScale
 
--- ==========================================================
---                       MAINTENANCE
--- ==========================================================
-
+---Tells whether a visible breakdown was picked for this repair type, quick fix needing it active
+-- @param string breakdownId breakdown id
+-- @param table breakdown active breakdown entry
+-- @param string optionOne repair type
+-- @return boolean isSelected true when the repair covers it
 local function isBreakdownSelectedForPlayerRepair(breakdownId, breakdown, optionOne)
     local breakdownDef = RMS_Breakdowns.BreakdownRegistry[breakdownId]
     if breakdownDef == nil or breakdownDef.isSelectable ~= true then
@@ -16,6 +22,9 @@ local function isBreakdownSelectedForPlayerRepair(breakdownId, breakdown, option
     return isSelectedForStandartRepair or isSelectedForQuickFix
 end
 
+---Tells whether a breakdown can be picked by the player
+-- @param string breakdownId breakdown id
+-- @return boolean isSelectable true when the player can pick it
 local function getIsSelectableBreakdown(breakdownId)
     local breakdownDef = RMS_Breakdowns.BreakdownRegistry[breakdownId]
     if breakdownDef == nil or breakdownDef.isSelectable ~= true then
@@ -24,6 +33,8 @@ local function getIsSelectableBreakdown(breakdownId)
     return true
 end
 
+---Clears every pending service field of the spec
+-- @param table spec vehicle spec
 local function resetPendingServiceProgress(spec)
     spec.pendingSelectedBreakdowns = {}
     spec.pendingServicePrice = nil
@@ -45,6 +56,11 @@ local function resetPendingServiceProgress(spec)
     spec.pendingRepairSystemStressStartRatio = {}
 end
 
+---Interpolates the stress of the listed systems between their start and target values
+-- @param table? spec vehicle spec
+-- @param table? startMap stress at the start of the service
+-- @param table? targetMap stress at the end of the service
+-- @param float ratio service progress ratio
 local function applyPendingSystemStressInterpolation(spec, startMap, targetMap, ratio)
     if spec == nil or spec.systems == nil then
         return
@@ -64,14 +80,24 @@ local function applyPendingSystemStressInterpolation(spec, startMap, targetMap, 
     end
 end
 
+---Interpolates the stress of the systems covered by a preventive maintenance
+-- @param table? spec vehicle spec
+-- @param float ratio service progress ratio
 local function applyPendingPreventiveStressInterpolation(spec, ratio)
     applyPendingSystemStressInterpolation(spec, spec.pendingPreventiveSystemStressStart, spec.pendingPreventiveSystemStressTarget, ratio)
 end
 
+---Interpolates the stress of the systems covered by an overhaul
+-- @param table? spec vehicle spec
+-- @param float ratio service progress ratio
 local function applyPendingOverhaulStressInterpolation(spec, ratio)
     applyPendingSystemStressInterpolation(spec, spec.pendingOverhaulSystemStressStart, spec.pendingOverhaulSystemStressTarget, ratio)
 end
 
+---Records the stress a repair will remove from a system, drawn once with a random spread
+-- @param table? spec vehicle spec
+-- @param string? systemKey system key
+-- @param string optionOne repair type
 local function markRepairStressReduction(spec, systemKey, optionOne)
     if spec == nil or spec.systems == nil or systemKey == nil or systemKey == "" then
         return
@@ -96,6 +122,9 @@ local function markRepairStressReduction(spec, systemKey, optionOne)
     end
 end
 
+---Interpolates the repair stress reduction, each system starting from the ratio it was booked at
+-- @param table? spec vehicle spec
+-- @param float ratio service progress ratio
 local function applyPendingRepairStressInterpolation(spec, ratio)
     if spec == nil or spec.systems == nil then
         return
@@ -122,6 +151,10 @@ local function applyPendingRepairStressInterpolation(spec, ratio)
     end
 end
 
+---Picks the configured number of systems with the shortest mtbf and returns their stress targets
+-- @param table? vehicle vehicle
+-- @return table startMap stress at the start of the service
+-- @return table targetMap stress at the end of the service
 local function collectPreventiveMaintenanceStressTargets(vehicle)
     local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
     if spec == nil or type(spec.systems) ~= "table" then
@@ -177,6 +210,12 @@ local function collectPreventiveMaintenanceStressTargets(vehicle)
     return startMap, targetMap
 end
 
+---Starts a service, building its step queues, its duration and its price
+-- @param string type service status constant
+-- @param string? workshopType workshop the service runs at
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
 function RealisticMechanicalSystems:initService(type, workshopType, optionOne, optionTwo, optionThree)
     local spec = self.spec_RealisticMechanicalSystems
     local states = RealisticMechanicalSystems.STATUS
@@ -218,7 +257,7 @@ function RealisticMechanicalSystems:initService(type, workshopType, optionOne, o
     spec.serviceOptionThree = optionThree
     resetPendingServiceProgress(spec)
 
-    -- INSPECTION
+    -- inspection
     if type == states.INSPECTION or type == states.MAINTENANCE then
         if type == states.INSPECTION then
             if C.INSTANT_INSPECTION and optionOne == RealisticMechanicalSystems.INSPECTION_TYPES.VISUAL then
@@ -241,7 +280,7 @@ function RealisticMechanicalSystems:initService(type, workshopType, optionOne, o
         end
     end
 
-    -- MAINTENANCE
+    -- maintenance
     if type == states.MAINTENANCE then
         local key = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.MAINTENANCE_TYPES, optionOne)
         totalTimeMs = C.MAINTENANCE_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.MAINTENANCE_TIME_MULTIPLIERS[key]
@@ -258,7 +297,7 @@ function RealisticMechanicalSystems:initService(type, workshopType, optionOne, o
             self:removeBreakdown("MAINTENANCE_WITH_POOR_QUALITY_CONSUMABLES")
         end
 
-    -- REPAIR
+    -- repair
     elseif type == states.REPAIR then
         local key = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.REPAIR_TYPES, optionOne)
         local idsToRepair = {}
@@ -272,7 +311,7 @@ function RealisticMechanicalSystems:initService(type, workshopType, optionOne, o
         totalTimeMs = C.REPAIR_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.REPAIR_TIME_MULTIPLIERS[key] * #idsToRepair
         repairPrice = self:getServicePrice(type, optionOne, optionTwo, optionThree)
 
-    -- OVERHAUL
+    -- overhaul
     elseif type == states.OVERHAUL then
         local key = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.OVERHAUL_TYPES, optionOne)
         totalTimeMs = C.OVERHAUL_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.OVERHAUL_TIME_MULTIPLIERS[key]
@@ -347,6 +386,13 @@ function RealisticMechanicalSystems:initService(type, workshopType, optionOne, o
         + RealisticMechanicalSystems.SYNC_GROUP.SERVICE_CONTEXT)
 end
 
+---Repairs one breakdown, suspending it on a quick fix and possibly fitting a defective part
+-- @param table vehicle vehicle
+-- @param table spec vehicle spec
+-- @param string? breakdownId breakdown id
+-- @param string optionOne repair type
+-- @param string optionTwo part type
+-- @param string optionTwoKey part type key
 local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, optionTwo, optionTwoKey)
     if breakdownId == nil or vehicle:getActiveBreakdowns()[breakdownId] == nil then
         return
@@ -391,6 +437,8 @@ local function processPendingRepairStep(vehicle, spec, breakdownId, optionOne, o
     end
 end
 
+---Advances the running service, consuming its step queue and interpolating the stress changes
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:processService(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local states = RealisticMechanicalSystems.STATUS
@@ -502,6 +550,7 @@ function RealisticMechanicalSystems:processService(dt)
     end
 end
 
+---Applies the final service result, writes the log entry and returns the vehicle to ready
 function RealisticMechanicalSystems:completeService()
     local spec = self.spec_RealisticMechanicalSystems
     local states = RealisticMechanicalSystems.STATUS
@@ -640,6 +689,8 @@ function RealisticMechanicalSystems:completeService()
         spec.lubricationUsedThisPeriod = true
     end
 
+    ---Clears the paint wear of every wearable node of the vehicle
+    -- @param table? vehicle vehicle
     local function resetVehicleRepaintWear(vehicle)
         if vehicle == nil or vehicle.spec_wearable == nil then
             return
@@ -776,6 +827,7 @@ function RealisticMechanicalSystems:completeService()
     end
 end
 
+---Aborts the running service, logging it as not completed
 function RealisticMechanicalSystems:cancelService()
     local spec = self.spec_RealisticMechanicalSystems
     local states = RealisticMechanicalSystems.STATUS
@@ -831,6 +883,13 @@ function RealisticMechanicalSystems:cancelService()
     RMS_VehicleChangeStatusEvent.send(self, cancelText)
 end
 
+---Appends a log entry holding the service options, its price and a snapshot of the condition
+-- @param string maintenanceType service status constant
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
+-- @param float price service price
+-- @param boolean isCompleted false when the service was cancelled
 function RealisticMechanicalSystems:addEntryToMaintenanceLog(maintenanceType, optionOne, optionTwo, optionThree, price, isCompleted)
     local spec = self.spec_RealisticMechanicalSystems
     if not spec then return end
@@ -881,10 +940,10 @@ function RealisticMechanicalSystems:addEntryToMaintenanceLog(maintenanceType, op
     table.insert(spec.maintenanceLog, entry)
 end
 
--- ==========================================================
---                     MAINTENANCE LOG
--- ==========================================================
 
+---Tells whether a log entry carries an inspection report
+-- @param table? entry maintenance log entry
+-- @return boolean hasReport true when a report is attached
 function RealisticMechanicalSystems.getIsLogEntryHasReport(entry)
     local isCompleted = RMS_Utils.normalizeBoolValue(entry.isCompleted, true)
 
@@ -894,10 +953,16 @@ function RealisticMechanicalSystems.getIsLogEntryHasReport(entry)
     and isCompleted)
 end
 
+---Tells whether a log entry holds a complete inspection report
+-- @param table? entry maintenance log entry
+-- @return boolean isComplete true for a complete inspection
 function RealisticMechanicalSystems.getIsCompleteReport(entry)
     return entry.optionOne == RealisticMechanicalSystems.INSPECTION_TYPES.COMPLETE or entry.type == RealisticMechanicalSystems.STATUS.OVERHAUL
 end
 
+---Returns the condition recorded by the newest inspection
+-- @return float? condition recorded condition
+-- @return boolean isComplete true when the inspection was complete
 function RealisticMechanicalSystems:getLastInspectedCondition()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
@@ -913,6 +978,9 @@ function RealisticMechanicalSystems:getLastInspectedCondition()
     return 1.0
 end
 
+---Returns the service level recorded by the newest inspection
+-- @return float? service recorded service level
+-- @return boolean isComplete true when the inspection was complete
 function RealisticMechanicalSystems:getLastInspectedService()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
@@ -928,6 +996,8 @@ function RealisticMechanicalSystems:getLastInspectedService()
     return 1.0
 end
 
+---Returns the date of the newest inspection
+-- @return table? date inspection date
 function RealisticMechanicalSystems:getLastInspectionDate()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
@@ -942,6 +1012,8 @@ function RealisticMechanicalSystems:getLastInspectionDate()
     end
 end
 
+---Returns the date of the newest maintenance
+-- @return table? date maintenance date
 function RealisticMechanicalSystems:getLastMaintenanceDate()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
@@ -956,6 +1028,8 @@ function RealisticMechanicalSystems:getLastMaintenanceDate()
     end
 end
 
+---Returns the operating hours a maintenance interval lasts, from the type of the newest maintenance
+-- @return float interval interval in operating hours
 function RealisticMechanicalSystems:getMaintenanceInterval()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec then return 0 end
@@ -981,6 +1055,8 @@ function RealisticMechanicalSystems:getMaintenanceInterval()
     return interval
 end
 
+---Returns the operating hours run since the newest maintenance or full overhaul
+-- @return float hours operating hours
 function RealisticMechanicalSystems:getHoursSinceLastMaintenance()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec then return 0 end
@@ -1009,6 +1085,10 @@ function RealisticMechanicalSystems:getHoursSinceLastMaintenance()
     return 0
 end
 
+---Returns the options of the newest service
+-- @return string? optionOne first service option
+-- @return string? optionTwo second service option
+-- @return boolean? optionThree third service option
 function RealisticMechanicalSystems:getLastServiceOptions()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
@@ -1019,6 +1099,8 @@ function RealisticMechanicalSystems:getLastServiceOptions()
     end
 end
 
+---Counts the completed overhauls in the maintenance log
+-- @return integer count number of overhauls
 function RealisticMechanicalSystems:getOverhaulPerformedCount()
     local spec = self.spec_RealisticMechanicalSystems
     if not spec or not spec.maintenanceLog or #spec.maintenanceLog == 0 then
@@ -1034,10 +1116,11 @@ function RealisticMechanicalSystems:getOverhaulPerformedCount()
     return count
 end
 
--- ==========================================================
---                    PRICES & DURATIONS
--- ==========================================================
 
+---Tells whether the warranty pays for a repair, on ownership, vehicle age and hours, and the chosen options
+-- @param string repairType repair type
+-- @param string partType part type
+-- @return boolean isCovered true when the warranty pays
 function RealisticMechanicalSystems:isWarrantyRepairCovered(repairType, partType)
     local C = RMS_Config.MAINTENANCE
     if C == nil or not C.WARRANTY_ENABLED then
@@ -1065,6 +1148,14 @@ function RealisticMechanicalSystems:isWarrantyRepairCovered(repairType, partType
     return true
 end
 
+---Returns the price of a service, the warranty bringing it to zero when it applies
+-- @param string? maintenanceType service status constant
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
+-- @param string? workshopTypeOverride workshop type replacing the stored one
+-- @param boolean? allBreakdowns true to price every breakdown, not only the selected ones
+-- @return float price service price
 function RealisticMechanicalSystems:getServicePrice(maintenanceType, optionOne, optionTwo, optionThree, workshopTypeOverride, allBreakdowns)
     local price = self:getPrice()
     local spec = self.spec_RealisticMechanicalSystems
@@ -1143,6 +1234,11 @@ function RealisticMechanicalSystems:getServicePrice(maintenanceType, optionOne, 
     return 0
 end
 
+---Returns the price of repairing one breakdown at a stage with a part type
+-- @param string breakdownId breakdown id
+-- @param integer breakdownStage breakdown stage
+-- @param string partType part type
+-- @return float price repair price
 function RealisticMechanicalSystems:getBreakdownRepairPrice(breakdownId, breakdownStage, partType)
     local C = RMS_Config.MAINTENANCE
     local spec = self.spec_RealisticMechanicalSystems
@@ -1166,6 +1262,13 @@ function RealisticMechanicalSystems:getBreakdownRepairPrice(breakdownId, breakdo
     return price * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * (vehiclePrice / 100) * ageFactor * ownWorkshopDiscount / spec.maintainability
 end
 
+---Returns the duration of a service in real time
+-- @param string? maintenanceType service status constant
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
+-- @param string? workshopTypeOverride workshop type replacing the stored one
+-- @return float duration service duration in ms
 function RealisticMechanicalSystems:getServiceDuration(maintenanceType, optionOne, optionTwo, optionThree, workshopTypeOverride)
     local spec = self.spec_RealisticMechanicalSystems
     local C = RMS_Config.MAINTENANCE
@@ -1276,6 +1379,14 @@ function RealisticMechanicalSystems:getServiceDuration(maintenanceType, optionOn
     return totalElapsedHours
 end
 
+---Returns the in game time a service would finish at
+-- @param string? maintenanceType service status constant
+-- @param string? optionOne first service option
+-- @param string? optionTwo second service option
+-- @param boolean? optionThree third service option
+-- @param string? workshopTypeOverride workshop type replacing the stored one
+-- @return float finishTime hour of the day the service ends
+-- @return integer daysToAdd whole days crossed before it ends
 function RealisticMechanicalSystems:getServiceFinishTime(maintenanceType, optionOne, optionTwo, optionThree, workshopTypeOverride)
     local spec = self.spec_RealisticMechanicalSystems
 

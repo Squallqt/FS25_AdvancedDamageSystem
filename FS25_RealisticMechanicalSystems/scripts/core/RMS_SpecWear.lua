@@ -1,12 +1,17 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Per system wear and stress accumulation of a vehicle
+
 local hasCVTTransmission = RMS_Utils.hasCVTTransmission
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
 local getColdEngineStress = RealisticMechanicalSystems.getColdEngineStress
 
--- =========================================================
---                   CORE WEAR FUNCTIONS
--- =========================================================
-
+---Resolves a system name to the key actually present in the spec, matching case insensitively
+-- @param table? spec vehicle spec
+-- @param string systemName system name
+-- @return string key resolved system key
 local function resolveSystemKey(spec, systemName)
     if spec == nil or spec.systems == nil or type(systemName) ~= "string" then
         return systemName
@@ -35,6 +40,10 @@ local function resolveSystemKey(spec, systemName)
     return systemName
 end
 
+---Returns the system entry, creating it and clamping its condition and stress
+-- @param table spec vehicle spec
+-- @param string systemName system name
+-- @return table systemData system condition and stress
 local function ensureSystemData(spec, systemName)
     if spec.systems == nil then
         spec.systems = {}
@@ -57,6 +66,10 @@ local function ensureSystemData(spec, systemName)
     return systemData
 end
 
+---Returns the extra wear caused by a service level below its expiry threshold
+-- @param float? serviceLevel remaining service level
+-- @param float? serviceMultiplier system sensitivity to an expired service
+-- @return float factor additional wear, 0 above the threshold
 local function getExpiredServiceFactor(serviceLevel, serviceMultiplier)
     if serviceLevel == nil then
         return 0.0
@@ -75,6 +88,8 @@ local function getExpiredServiceFactor(serviceLevel, serviceMultiplier)
     return 0.0
 end
 
+---Consumes the service level, faster under load and slower while parked, under a roof most of all
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateServiceLevel(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local wearRate = RMS_Config.CORE.BASE_SERVICE_WEAR
@@ -107,6 +122,7 @@ function RealisticMechanicalSystems:updateServiceLevel(dt)
     end
 end
 
+---Recomputes the overall condition as the weighted mean of the enabled systems
 function RealisticMechanicalSystems:updateConditionLevel()
     local spec = self.spec_RealisticMechanicalSystems
     local weightedCondition = 0
@@ -132,6 +148,11 @@ function RealisticMechanicalSystems:updateConditionLevel()
     spec.conditionLevel = math.clamp(condition, 0.001, 1.0)
 end
 
+---Applies one wear step to a system, lowering its condition and raising its stress above the base rate
+-- @param float dt time since last call in ms
+-- @param string systemName system name
+-- @param float? wearRate wear rate, the reliability based rate when omitted
+-- @param table? debugFactors per factor contributions recorded for the statistics
 function RealisticMechanicalSystems:updateSystemConditionAndStress(dt, systemName, wearRate, debugFactors)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -198,6 +219,10 @@ function RealisticMechanicalSystems:updateSystemConditionAndStress(dt, systemNam
     end
 end
 
+---Removes a fixed amount of condition from a system at once
+-- @param string system system name
+-- @param float damageAmount condition removed
+-- @param string? factorName factor credited in the statistics
 function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmount, factorName)
     local spec = self.spec_RealisticMechanicalSystems
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, system)
@@ -227,6 +252,8 @@ function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmo
 end
 
 -- systems
+---Wears the engine on motor load, lugging, air intake clogging, cold and hot running, and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateEngineSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
@@ -267,7 +294,7 @@ function RealisticMechanicalSystems:updateEngineSystem(dt)
             wearRate = wearRate + luggingFactor
         end
 
-        -- airintake cloagging factor
+        -- air intake clogging factor
         if spec.airIntakeClogging > C.AIR_INTAKE_CLOGGING_THRESHOLD then
             airIntakeCloggingFactor = RMS_Utils.calculateQuadraticMultiplier(spec.airIntakeClogging, C.AIR_INTAKE_CLOGGING_THRESHOLD, false)
             airIntakeCloggingFactor = airIntakeCloggingFactor * (C.AIR_INTAKE_CLOGGING_MULTIPLIER or 0)
@@ -318,6 +345,8 @@ function RealisticMechanicalSystems:updateEngineSystem(dt)
     })
 end
 
+---Wears the transmission on pull overload, trailer mass, lugging, wheel slip, drivetrain windup, oil temperature and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateTransmissionSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
@@ -429,7 +458,7 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
             local aiMultiplier = self:getIsAIActive() and 0.5 or 1.0
             luggingFactor = luggingFactor * C.LUGGING_MULTIPLIER * aiMultiplier
             wearRate = wearRate + luggingFactor
-            --- tutorial timer
+            -- tutorial timer
             spec.luggingTutorialTimer = math.min((spec.luggingTutorialTimer or 0) + dt, 5000)
         else
              spec.luggingTutorialTimer = math.max((spec.luggingTutorialTimer or 0) - dt, 0)
@@ -452,7 +481,7 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
             wheelSlipFactor = RMS_Utils.calculateQuadraticMultiplier(spec.wheelSlipIntensity, C.WHEEL_SLIP_THRESHOLD, false)
             wheelSlipFactor = math.max(wheelSlipFactor * (C.WHEEL_SLIP_MULTIPLIER or 0) * (groundFrictionCoef ^ 2) * motorLoad, 0)
             wearRate = wearRate + wheelSlipFactor
-            --- tutorial timer
+            -- tutorial timer
             spec.wheelSlipTutorialTimer = math.min((spec.wheelSlipTutorialTimer or 0) + dt, 3000)
         else
              spec.wheelSlipTutorialTimer = math.max((spec.wheelSlipTutorialTimer or 0) - dt, 0)
@@ -522,6 +551,8 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
     })
 end
 
+---Wears the hydraulics on lift load, operating time, oil temperature and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.hydraulics.name)
@@ -569,6 +600,8 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     })
 end
 
+---Wears the PTO on its load, on each engagement and on an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updatePtoSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local systemData = spec.systems.pto
@@ -611,6 +644,8 @@ function RealisticMechanicalSystems:updatePtoSystem(dt)
     spec.ptoEngagementPulseCount = 0
 end
 
+---Wears the cooling system on sustained high cooling, overheating, cold shock and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateCoolingSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
@@ -685,6 +720,8 @@ function RealisticMechanicalSystems:updateCoolingSystem(dt)
     })
 end
 
+---Wears the electrical system on cranking, weather exposure, lights, overheating, vibration and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateElectricalSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.electrical.name)
@@ -794,6 +831,8 @@ function RealisticMechanicalSystems:updateElectricalSystem(dt)
     })
 end
 
+---Wears the chassis on vibration, steering load, braking mass, lubrication and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateChassisSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.chassis.name)
@@ -928,6 +967,8 @@ function RealisticMechanicalSystems:updateChassisSystem(dt)
     })
 end
 
+---Wears the fuel system on low fuel starvation, cold fuel, idle deposits, high pressure and an expired service
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateFuelSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local systemKey = RMS_Utils.getSystemKey(RealisticMechanicalSystems.SYSTEMS, spec.systems.fuel.name)

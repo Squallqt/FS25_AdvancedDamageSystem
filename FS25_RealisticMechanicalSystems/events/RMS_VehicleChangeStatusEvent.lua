@@ -1,9 +1,7 @@
--- RMS_VehicleChangeStatusEvent
--- Server-to-client broadcast. Notifies clients of RMS state changes
--- (service completion, cancellation, status transition).
--- Carries an optional HUD notification string; bulk state data is
--- synchronised via the update-stream dirty-flag pipeline.
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---Signals a status change of a vehicle and carries an optional notification text
 RMS_VehicleChangeStatusEvent = {}
 local RMS_VehicleChangeStatusEvent_mt = Class(RMS_VehicleChangeStatusEvent, Event)
 MessageType.RMS_VEHICLE_CHANGE_STATUS = nextMessageTypeId()
@@ -11,11 +9,17 @@ MessageType.RMS_VEHICLE_CHANGE_STATUS = nextMessageTypeId()
 InitEventClass(RMS_VehicleChangeStatusEvent, "RMS_VehicleChangeStatusEvent")
 
 
+---Create instance of Event class
+-- @return table self instance of class event
 function RMS_VehicleChangeStatusEvent.emptyNew()
     return Event.new(RMS_VehicleChangeStatusEvent_mt)
 end
 
 
+---Create new instance of event
+-- @param table vehicle vehicle
+-- @param string? notificationText text shown as a side notification
+-- @return table self instance of class event
 function RMS_VehicleChangeStatusEvent.new(vehicle, notificationText)
     local self = RMS_VehicleChangeStatusEvent.emptyNew()
     self.vehicle = vehicle
@@ -24,12 +28,18 @@ function RMS_VehicleChangeStatusEvent.new(vehicle, notificationText)
 end
 
 
+---Called on server side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_VehicleChangeStatusEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteString(streamId, self.notificationText or "")
 end
 
 
+---Called on client side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_VehicleChangeStatusEvent:readStream(streamId, connection)
     self.vehicle = NetworkUtil.readNodeObject(streamId)
     self.notificationText = streamReadString(streamId)
@@ -37,12 +47,14 @@ function RMS_VehicleChangeStatusEvent:readStream(streamId, connection)
 end
 
 
+---Reapplies effects and indicators, notifies the owning farm, and relays the event on the server
+-- @param Connection connection connection
 function RMS_VehicleChangeStatusEvent:run(connection)
     if self.vehicle ~= nil and self.vehicle:getIsSynchronized() then
         self.vehicle:recalculateAndApplyEffects()
         self.vehicle:recalculateAndApplyIndicators()
 
-        -- Client-side: show HUD notification + play completion sound
+        -- notification and sound for the owning farm only
         if connection:getIsServer() and self.notificationText ~= nil and self.notificationText ~= "" then
             if g_currentMission:getFarmId() == self.vehicle.ownerFarmId and g_currentMission ~= nil and g_currentMission.hud ~= nil then
                 g_currentMission.hud:addSideNotification({1, 1, 1, 1}, self.notificationText)
@@ -55,7 +67,7 @@ function RMS_VehicleChangeStatusEvent:run(connection)
         g_messageCenter:publish(MessageType.RMS_VEHICLE_CHANGE_STATUS, self.vehicle)
     end
 
-    -- Server relay: re-broadcast if received from a client (with ownership check)
+    -- relay to the other clients, only for the farm owning the vehicle
     if not connection:getIsServer() then
         if self.vehicle ~= nil and self.vehicle:getIsSynchronized() then
             local userId = g_currentMission.userManager:getUserIdByConnection(connection)
@@ -68,7 +80,9 @@ function RMS_VehicleChangeStatusEvent:run(connection)
 end
 
 
--- Server convenience: broadcast status change to all clients.
+---Broadcast the status change from the server to the clients of the vehicle
+-- @param table vehicle vehicle
+-- @param string? notificationText text shown as a side notification
 function RMS_VehicleChangeStatusEvent.send(vehicle, notificationText)
     if g_server ~= nil then
         g_server:broadcastEvent(RMS_VehicleChangeStatusEvent.new(vehicle, notificationText or ""), nil, nil, vehicle)

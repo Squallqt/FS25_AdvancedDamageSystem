@@ -1,7 +1,10 @@
--- ==========================================================
---                      VEHICLE STATE
--- ==========================================================
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
+---Live vehicle state snapshot feeding the wear, thermal and breakdown models
+
+---Sums the draft demand of the attached implements currently working
+-- @param table vehicle vehicle
 local function updateActiveDraftStats(vehicle)  -- calculates the current active draft demand from attached implements
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -15,6 +18,8 @@ local function updateActiveDraftStats(vehicle)  -- calculates the current active
     }
     local visited = {}
 
+    ---Walks the implement chain summing the draft demand of the working implements
+    -- @param table? rootVehicle vehicle or implement
     local function collectDraftStats(rootVehicle)
         if rootVehicle == nil or visited[rootVehicle] then
             return
@@ -62,6 +67,10 @@ local function updateActiveDraftStats(vehicle)  -- calculates the current active
     spec.activeDraftEffectiveForceCap = result.effectiveForceCap
 end
 
+---Keeps the rolling average of the dynamic motor load over its sampling window
+-- @param table spec vehicle spec
+-- @param float dynamicMotorLoad current dynamic motor load
+-- @param float dt time since last call in ms
 local function updateAvgDynamicMotorLoadWindow(spec, dynamicMotorLoad, dt)
     if spec == nil then
         return 0
@@ -118,6 +127,10 @@ local function updateAvgDynamicMotorLoadWindow(spec, dynamicMotorLoad, dt)
     return avgValue
 end
 
+---Keeps the rolling average of the driving speed over its sampling window
+-- @param table spec vehicle spec
+-- @param float speed current speed
+-- @param float dt time since last call in ms
 local function updateAvgSpeedWindow(spec, speed, dt)
     if spec == nil then
         return 0
@@ -174,6 +187,9 @@ local function updateAvgSpeedWindow(spec, speed, dt)
     return avgValue
 end
 
+---Raises the reported motor load with driveline vibration while field work is active
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with driveline vibration under active field work
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -222,6 +238,10 @@ local function updateDynamicMotorLoad(vehicle, dt) -- adjusts motor load with dr
     updateAvgSpeedWindow(spec, vehicle:getLastSpeed(), dt)
 end
 
+---Keeps the rolling average of the absolute differential acceleration of the motor
+-- @param table spec vehicle spec
+-- @param table motor vehicle motor
+-- @param float dt time since last call in ms
 local function updateAvgAbsDiffAccWindow(spec, motor, dt) -- Tracks the rolling average absolute differential acceleration over the last 500 ms
     if spec == nil or motor == nil then
         if spec ~= nil then
@@ -267,6 +287,8 @@ local function updateAvgAbsDiffAccWindow(spec, motor, dt) -- Tracks the rolling 
     spec.avgAbsDiffAcc = avg
 end
 
+---Flags the vehicle as cranking, from the motor state or from a hard start or failure effect
+-- @param table vehicle vehicle
 local function updateStarterState(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -285,7 +307,8 @@ local function updateStarterState(vehicle)
     spec.isCranking = isCranking
 end
 
---- transmission
+---Measures wheel slip from the driven wheel speeds, ignored while braking
+-- @param table vehicle vehicle
 local function updateWheelSlip(vehicle)
     local spec_wheels = vehicle.spec_wheels
     local spec = vehicle.spec_RealisticMechanicalSystems
@@ -310,6 +333,8 @@ local function updateWheelSlip(vehicle)
     local drivetrainState = RMS_Drivetrain ~= nil and RMS_Drivetrain.getState(vehicle) or nil
     local wheelSpeedSum = 0
     local drivenWheelCount = 0
+    ---Adds the ground speed of one wheel to the running sum, grounded wheels only
+    -- @param integer wheelIndex wheel index
     local function addWheelSpeed(wheelIndex)
         local wheel = spec_wheels.wheels[tonumber(wheelIndex)]
         local physicsWheel = wheel ~= nil and wheel.physics or nil
@@ -391,6 +416,8 @@ local function updateWheelSlip(vehicle)
         - math.max(longitudinalSlipIntensity, previousSlip, olderSlip)
 end
 
+---Averages the tire ground friction and the surface hardness over the wheels touching ground
+-- @param table vehicle vehicle
 local function updateWheelGroundState(vehicle)
     local spec_wheels = vehicle.spec_wheels
     local spec = vehicle.spec_RealisticMechanicalSystems
@@ -435,10 +462,13 @@ local function updateWheelGroundState(vehicle)
     spec.avgGroundSurfaceFactor = groundedWheelCount > 0 and surfaceFactorSum / groundedWheelCount or 0
 end
 
---- hydraulic
 local HYDRAULIC_LIFT_RATIO_DEADBAND = 0.05
 local HYDRAULIC_LIFT_RATIO_INTERPOLATION_RATE = 1 / 1000
 
+---Counts the wheels touching ground and sums their tire load
+-- @param table vehicle vehicle
+-- @return integer supportWheelCount number of wheels on the ground
+-- @return float supportWheelLoad summed tire load
 local function getWheelSupportState(vehicle)
     local supportWheelCount = 0
     local supportWheelLoad = 0
@@ -455,6 +485,9 @@ local function getWheelSupportState(vehicle)
     return supportWheelCount, supportWheelLoad
 end
 
+---Tells whether an attacher joint type is one of the trailer types
+-- @param integer jointTypeId attacher joint type id
+-- @return boolean isTrailer true for a trailer joint
 local function isTrailerJointType(jointTypeId)
     return jointTypeId == AttacherJoints.JOINTTYPE_TRAILER
         or jointTypeId == AttacherJoints.JOINTTYPE_TRAILERLOW
@@ -462,6 +495,12 @@ local function isTrailerJointType(jointTypeId)
         or jointTypeId == AttacherJoints.JOINTTYPE_SEMITRAILERCAR
 end
 
+---Tells whether an attacher joint is moving, comparing its move alpha with the cached one
+-- @param table vehicle vehicle
+-- @param string moveKey key identifying the movement
+-- @param table? jointDesc attacher joint description
+-- @param table nextMoveAlphaCache cache filled with the current move alpha
+-- @return boolean isMoving true while the joint moves
 local function getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -477,6 +516,11 @@ local function getMoveState(vehicle, moveKey, jointDesc, nextMoveAlphaCache)
     return isMovingRaw or (prevMoveAlpha ~= nil and math.abs(moveAlpha - prevMoveAlpha) > 0.0001)
 end
 
+---Reads the three hydraulic motion sources: cylindered parts, joint control and hammer
+-- @param table vehicle vehicle
+-- @return boolean isCylinderedMoving true while a cylindered part moves
+-- @return boolean isAttacherJointControlMoving true while a joint control moves
+-- @return boolean isHydraulicHammerActive true while the hammer runs
 local function getHydraulicMotionFlags(vehicle)
     local isCylinderedMoving = false
     local isAttacherJointControlMoving = false
@@ -500,6 +544,10 @@ local function getHydraulicMotionFlags(vehicle)
     return isCylinderedMoving, isAttacherJointControlMoving, isHydraulicHammerActive
 end
 
+---Walks the implement chain to update the lifted mass and the lifted, lowered, operating and hydraulic flags
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
+-- @return float liftedMass mass currently lifted
 local function updateImplementChainState(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -522,6 +570,13 @@ local function updateImplementChainState(vehicle, dt)
     local visited = {}
     local maxCutterArea = 0
 
+    ---Walks one branch of the implement chain, accumulating its mass and its motion flags
+    -- @param table? vehicleObj vehicle or implement
+    -- @param table? parentObj object carrying it
+    -- @param table? jointDesc attacher joint description
+    -- @param integer? jointDescIndex attacher joint index
+    -- @param boolean isHead true for the vehicle at the head of the chain
+    -- @param table? liftBranch accumulator of the lift branch the object hangs from, nil at the head
     local function collectImplementState(vehicleObj, parentObj, jointDesc, jointDescIndex, isHead, liftBranch)
         if vehicleObj == nil or visited[vehicleObj] then
             return
@@ -607,7 +662,7 @@ local function updateImplementChainState(vehicle, dt)
         end
     end
 
-    collectImplementState(vehicle, nil, nil, nil, true)
+    collectImplementState(vehicle, nil, nil, nil, true, nil)
     
     for _, impl in ipairs(implements) do
         if impl.isLowered then
@@ -671,8 +726,10 @@ local function updateImplementChainState(vehicle, dt)
     spec.hasDebris = maxCutterArea > 0 and isOnField and lastSpeed >= 0.5 and isTurnedOn
 end
 
---- chassis
 
+---Measures chassis vibration from the suspension travel of the grounded wheels, scaled by speed
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 local function updateChassisVibState(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -751,6 +808,9 @@ local function updateChassisVibState(vehicle, dt)
     vibState.smoothed = vibState.smoothed + (vibSignal - vibState.smoothed) * alpha
 end
 
+---Measures the steering position and its rate of change, used for the low speed steering load
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 local function updateChassisSteeringState(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -823,6 +883,8 @@ local function updateChassisSteeringState(vehicle, dt)
     steerState.isMoving = steerRateFactor > 0
 end
 
+---Reads the brake pedal, the towed mass and the power to mass ratios, detecting braking by axis too
+-- @param table vehicle vehicle
 local function updateChassisBrakingState(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -880,6 +942,9 @@ local function updateChassisBrakingState(vehicle)
     brakeState.isBrakingByAxis = isBrakingByAxis
 end
 
+---Tracks the fuel level, the consumption and the wet stacking deposits
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 local function updateFuelState(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil then
@@ -888,6 +953,8 @@ local function updateFuelState(vehicle, dt)
 
     local fuelState = spec.fuelState
 
+    ---Returns the fill level of the fuel the vehicle actually burns, diesel, methane or charge
+    -- @return float level fill level ratio
     local function resolveFuelLevel()
         local fuelFillUnit = nil
         if vehicle.getConsumerFillUnitIndex ~= nil and FillType ~= nil and FillType.DIESEL ~= nil then
@@ -923,6 +990,8 @@ local function updateFuelState(vehicle, dt)
         return 0
     end
 
+    ---Returns the current fuel usage as a ratio of the maximum usage
+    -- @return float ratio fuel usage ratio
     local function resolveFuelUsageRatio()
         local motorizedSpec = vehicle.spec_motorized
         if motorizedSpec == nil then
@@ -1032,6 +1101,9 @@ local function updateFuelState(vehicle, dt)
     end
 end
 
+---Reads the connected PTO torque, rpm, power and utilization, and counts new engagements
+-- @param table vehicle vehicle
+-- @param float dt time since last call in ms
 local function updatePtoState(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local systemData = spec.systems.pto
@@ -1067,7 +1139,8 @@ local function updatePtoState(vehicle, dt)
     spec.ptoPreviousActiveLinks = ptoData.activeLinks
 end
 
---- update state
+---Refreshes the vehicle state on the server, each group on its own configured interval
+-- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateVehicleStateSnapshot(dt)
     local spec = self.spec_RealisticMechanicalSystems
     if not self.isServer or spec == nil or spec.isExcludedVehicle then return end
@@ -1082,42 +1155,42 @@ function RealisticMechanicalSystems:updateVehicleStateSnapshot(dt)
     spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo + dt
     spec.updateVehicleStateTimerThree = spec.updateVehicleStateTimerThree + dt
 
-    --- GROUP 1 ---
+    -- GROUP 1
     if spec.updateVehicleStateTimerOne >= delayOne then
         spec.updateVehicleStateTimerOne = spec.updateVehicleStateTimerOne % delayOne
-        --- avgAbsDiffAcc for dynamic motorLoad calculations
+        -- avgAbsDiffAcc for dynamic motorLoad calculations
         updateAvgAbsDiffAccWindow(spec, self:getMotor(), delayOne)
-        --- dynamic motorLoad
+        -- dynamic motorLoad
         updateDynamicMotorLoad(self, delayOne)
     end
 
-    --- GROUP 2 ---
+    -- GROUP 2
     if spec.updateVehicleStateTimerTwo >= delayTwo then
         spec.updateVehicleStateTimerTwo = spec.updateVehicleStateTimerTwo % delayTwo
-        --- isCranking
+        -- isCranking
         updateStarterState(self)
-        --- wheel slip
+        -- wheel slip
         updateWheelSlip(self)
-        --- chassis vibration
+        -- chassis vibration
         updateChassisVibState(self, delayTwo)
-        --- low speed steering
+        -- low speed steering
         updateChassisSteeringState(self, delayTwo)
-        --- braking under mass
+        -- braking under mass
         updateChassisBrakingState(self)
     end
     
-    --- GROUP 3 ---
+    -- GROUP 3
     if spec.updateVehicleStateTimerThree >= delayThree then
         spec.updateVehicleStateTimerThree = spec.updateVehicleStateTimerThree % delayThree
-        --- max friction force
+        -- max friction force
         updateActiveDraftStats(self)
-        --- wheel ground state
+        -- wheel ground state
         updateWheelGroundState(self)
-        --- implement chain state
+        -- implement chain state
         updateImplementChainState(self, delayThree)
-        --- fuel state
+        -- fuel state
         updateFuelState(self, delayThree)
-        --- is vehicle under roof
+        -- is vehicle under roof
         spec.isUnderRoof = self:isUnderRoof()
     end
 end

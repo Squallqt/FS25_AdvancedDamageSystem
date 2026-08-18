@@ -1,20 +1,33 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Confirmation dialog listing the cost breakdown of returning a leased vehicle
 RMS_SellItemDialog = {}
 RMS_SellItemDialog.INSTANCE = nil
 
 local RMS_SellItemDialog_mt = Class(RMS_SellItemDialog, MessageDialog)
 local modDirectory = g_currentModDirectory
 
+---Returns the text with exactly one trailing colon
+-- @param string? text label text
+-- @return string text label ending with a colon
 local function ensureTrailingColon(text)
     local normalized = tostring(text or ""):gsub("%s*:%s*$", "")
     return normalized .. ":"
 end
 
+---Formats an amount as money with an explicit sign, and no sign at zero
+-- @param any value amount
+-- @return string text formatted amount
 local function formatSignedMoney(value)
     local amount = tonumber(value) or 0
     local sign = amount > 0 and "+" or amount < 0 and "-" or ""
     return string.format("%s%s", sign, g_i18n:formatMoney(math.abs(amount), 0, true, false))
 end
 
+---Colours a text element green for a credit, red for a debit, dimmed at zero
+-- @param table? element text element
+-- @param any value amount
 local function applyMoneyColor(element, value)
     if element == nil then
         return
@@ -30,12 +43,17 @@ local function applyMoneyColor(element, value)
     end
 end
 
+---Loads the dialog layout and stores the shared instance
 function RMS_SellItemDialog.register()
     local dialog = RMS_SellItemDialog.new()
     g_gui:loadGui(modDirectory .. "gui/RMS_SellItemDialog.xml", "RMS_SellItemDialog", dialog)
     RMS_SellItemDialog.INSTANCE = dialog
 end
 
+---Create instance of RMS_SellItemDialog
+-- @param table? target target
+-- @param table? customMt custom metatable
+-- @return table dialog instance of class RMS_SellItemDialog
 function RMS_SellItemDialog.new(target, customMt)
     local dialog = MessageDialog.new(target, customMt or RMS_SellItemDialog_mt)
     dialog.vehicle = nil
@@ -46,6 +64,12 @@ function RMS_SellItemDialog.new(target, customMt)
     return dialog
 end
 
+---Opens the dialog on a vehicle, falling back to the store item of its config file
+-- @param table vehicle vehicle
+-- @param table? storeItem store item
+-- @param function? callback called with the player answer
+-- @param table? target callback target
+-- @param table? args extra callback arguments
 function RMS_SellItemDialog.show(vehicle, storeItem, callback, target, args)
     if RMS_SellItemDialog.INSTANCE == nil then
         RMS_SellItemDialog.register()
@@ -66,6 +90,7 @@ function RMS_SellItemDialog.show(vehicle, storeItem, callback, target, args)
     g_gui:showDialog("RMS_SellItemDialog")
 end
 
+---Fills the vehicle image, name and the return cost rows
 function RMS_SellItemDialog:updateScreen()
     if self.vehicle == nil then
         return
@@ -132,6 +157,10 @@ function RMS_SellItemDialog:updateScreen()
     end
 end
 
+---Returns the number of cost rows
+-- @param table list list element
+-- @param integer section section index
+-- @return integer count number of rows
 function RMS_SellItemDialog:getNumberOfItemsInSection(list, section)
     if list == self.costList then
         return #self.costRows
@@ -140,6 +169,11 @@ function RMS_SellItemDialog:getNumberOfItemsInSection(list, section)
     return 0
 end
 
+---Fills one cost row with its label and its coloured amount
+-- @param table list list element
+-- @param integer section section index
+-- @param integer index row index
+-- @param table cell cell element
 function RMS_SellItemDialog:populateCellForItemInSection(list, section, index, cell)
     if list ~= self.costList then
         return
@@ -163,6 +197,8 @@ function RMS_SellItemDialog:populateCellForItemInSection(list, section, index, c
     end
 end
 
+---Fires the stored callback with the player answer
+-- @param boolean value true when the return is confirmed
 function RMS_SellItemDialog:sendCallback(value)
     if self.callback ~= nil then
         if self.callbackArgs ~= nil then
@@ -173,20 +209,24 @@ function RMS_SellItemDialog:sendCallback(value)
     end
 end
 
+---Confirms the return and closes the dialog
 function RMS_SellItemDialog:onClickYes()
     self:sendCallback(true)
     self:close()
 end
 
+---Declines the return and closes the dialog
 function RMS_SellItemDialog:onClickNo()
     self:sendCallback(false)
     self:close()
 end
 
+---
 function RMS_SellItemDialog:onOpen()
     RMS_SellItemDialog:superClass().onOpen(self)
 end
 
+---Clears the dialog state
 function RMS_SellItemDialog:onClose()
     self.vehicle = nil
     self.storeItem = nil

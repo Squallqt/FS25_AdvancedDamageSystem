@@ -1,14 +1,28 @@
+-- Copyright (C) 2026 Squallqt.
+-- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
+
+---Synchronises the transient state and the sounds of a single breakdown effect
 RMS_EffectSyncEvent = {}
 local RMS_EffectSyncEvent_mt = Class(RMS_EffectSyncEvent, Event)
 
 InitEventClass(RMS_EffectSyncEvent, "RMS_EffectSyncEvent")
 
 
+---Create instance of Event class
+-- @return table self instance of class event
 function RMS_EffectSyncEvent.emptyNew()
     return Event.new(RMS_EffectSyncEvent_mt)
 end
 
 
+---Create new instance of event
+-- @param table vehicle vehicle
+-- @param string? effectId effect id
+-- @param string? status effect status
+-- @param float? timer effect timer
+-- @param integer? extraInt effect specific integer payload
+-- @param float? extraFloat effect specific float payload
+-- @return table self instance of class event
 function RMS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat)
     local self = RMS_EffectSyncEvent.emptyNew()
     self.vehicle    = vehicle
@@ -21,6 +35,9 @@ function RMS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, ext
 end
 
 
+---Called on server side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_EffectSyncEvent:writeStream(streamId, connection)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
     streamWriteString(streamId,  self.effectId)
@@ -31,6 +48,9 @@ function RMS_EffectSyncEvent:writeStream(streamId, connection)
 end
 
 
+---Called on client side on join
+-- @param integer streamId streamId
+-- @param Connection connection connection
 function RMS_EffectSyncEvent:readStream(streamId, connection)
     self.vehicle    = NetworkUtil.readNodeObject(streamId)
     self.effectId   = streamReadString(streamId)
@@ -42,6 +62,8 @@ function RMS_EffectSyncEvent:readStream(streamId, connection)
 end
 
 
+---Applies the received effect state, dispatching on the effect id
+-- @param Connection connection connection
 function RMS_EffectSyncEvent:run(connection)
     local isFromClient = connection ~= nil and not connection:getIsServer()
 
@@ -159,6 +181,13 @@ function RMS_EffectSyncEvent:run(connection)
 end
 
 
+---Broadcast the effect state from the server, send it to the server for the three engine start effects only
+-- @param table vehicle vehicle
+-- @param string effectId effect id
+-- @param string? status effect status
+-- @param float? timer effect timer
+-- @param integer? extraInt effect specific integer payload
+-- @param float? extraFloat effect specific float payload
 function RMS_EffectSyncEvent.send(vehicle, effectId, status, timer, extraInt, extraFloat)
     if g_server ~= nil then
         g_server:broadcastEvent(RMS_EffectSyncEvent.new(vehicle, effectId, status, timer, extraInt, extraFloat), nil, nil, vehicle)

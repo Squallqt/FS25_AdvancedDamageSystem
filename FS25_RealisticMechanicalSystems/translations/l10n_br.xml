@@ -1,5 +1,6 @@
 <l10n>
     <texts>
+        <!-- HUD -->
         <text name="rms_hud_mass_tractor" text="Veículo"/>
         <text name="rms_hud_mass_towed" text="Atrelado"/>
         <text name="rms_hud_mass_total" text="Total"/>
@@ -794,6 +795,7 @@
         <text name="rms_preheat_start_failed_message" text="O motor não ligou: desligue a ignição antes de tentar novamente"/>
         <text name="rms_tutorial_preheat_title" text="Pré-aquecimento diesel"/>
         <text name="rms_tutorial_preheat_message" text="Com o motor diesel frio, um toque no comando de partida liga a ignição e inicia automaticamente o ciclo das velas. As luzes do painel executam o autoteste e, depois, a luz de pré-aquecimento permanece acesa até o motor estar pronto. Não repita o comando: o motor de partida é acionado automaticamente quando a luz se apaga."/>
+        <!-- Power take off -->
         <text name="rms_spec_system_pto" text="Tomada de potência"/>
         <text name="rms_breakdowns_part_pto_drive_coupling" text="Acoplamento de acionamento da TDP"/>
         <text name="rms_breakdowns_part_pto_drive_output" text="Eixo de saída da TDP"/>
