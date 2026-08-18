@@ -810,6 +810,36 @@ local function applyDifferentialLock(vehicle, state)
     state._appliedLock = lockEngaged
 end
 
+---Reapplies the managed differential graph after the engine rebuilds vehicle physics
+-- @param table vehicle vehicle
+-- @param function superFunc overwritten function
+-- @return boolean success true when the vehicle was added to physics
+function RMS_Drivetrain.addToPhysics(vehicle, superFunc)
+    local success = superFunc(vehicle)
+    if not success then
+        return false
+    end
+
+    local spec = vehicle.spec_RealisticMechanicalSystems
+    local state = spec ~= nil and spec.drivetrain or nil
+    if state == nil then
+        return true
+    end
+
+    state._wasAddedToPhysics = vehicle.isAddedToPhysics == true
+
+    if vehicle.isServer
+        and not spec.isExcludedVehicle
+        and getConfig().ENABLED
+        and not RMS_Drivetrain.isExternallyManaged(vehicle)
+        and ensureLayout(vehicle, state) then
+        RMS_Drivetrain.applyState(vehicle, true)
+        applyDifferentialLock(vehicle, state)
+    end
+
+    return true
+end
+
 ---Sets the drive mode, the differential lock request and the park brake, and replicates them
 -- @param table vehicle vehicle
 -- @param integer? driveMode drive mode
@@ -927,18 +957,13 @@ local function updateAutoMode(vehicle, state, spec, dt)
     end
 end
 
----Engages the lock below the release speed and drops it above, or on an AI helper taking over
+---Engages the lock below the release speed and drops it above
 -- @param table vehicle vehicle
 -- @param table state drivetrain state
 -- @param float dt time since last call in ms
 local function updateDiffLockState(vehicle, state, dt)
     local C = getConfig()
     local speed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
-
-    if state.diffLockRequested and vehicle.getIsAIActive ~= nil and vehicle:getIsAIActive() then
-        RMS_Drivetrain.setDrivetrainState(vehicle, state.driveMode, false, state.parkBrake, false)
-        return
-    end
 
     if state.diffLockRequested then
         if state.diffLockEngaged then
@@ -1477,7 +1502,9 @@ function RMS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
     spec.drivetrainActionEvents = spec.drivetrainActionEvents or {}
     vehicle:clearActionEventsTable(spec.drivetrainActionEvents)
 
-    if not isActiveForInputIgnoreSelection then return end
+    local isActiveForInputWithAI = vehicle.getIsActiveForInput ~= nil
+        and vehicle:getIsActiveForInput(false, true)
+    if not isActiveForInputIgnoreSelection and not isActiveForInputWithAI then return end
     if spec.isExcludedVehicle then return end
 
     if getConfig().ENABLED and not state.externallyManaged then
@@ -1500,7 +1527,9 @@ function RMS_Drivetrain.registerActionEvents(vehicle, isActiveForInputIgnoreSele
         end
     end
 
-    if getConfig().PARKBRAKE_ENABLED and not state.parkExternallyManaged then
+    if isActiveForInputIgnoreSelection
+        and getConfig().PARKBRAKE_ENABLED
+        and not state.parkExternallyManaged then
         local _, parkEventId = vehicle:addActionEvent(spec.drivetrainActionEvents, InputAction.RMS_TOGGLE_PARKBRAKE, vehicle,
             RMS_Drivetrain.actionToggleParkBrake, false, true, false, true, nil)
         if parkEventId ~= nil then
