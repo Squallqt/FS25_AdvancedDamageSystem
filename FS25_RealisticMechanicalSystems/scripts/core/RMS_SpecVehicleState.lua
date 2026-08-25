@@ -808,7 +808,7 @@ local function updateChassisVibState(vehicle, dt)
     vibState.smoothed = vibState.smoothed + (vibSignal - vibState.smoothed) * alpha
 end
 
----Measures the steering position and its rate of change, used for the low speed steering load
+---Measures the steered angle, the load the steered axle carries and whether the steering is moving
 -- @param table vehicle vehicle
 -- @param float dt time since last call in ms
 local function updateChassisSteeringState(vehicle, dt)
@@ -833,29 +833,36 @@ local function updateChassisSteeringState(vehicle, dt)
 
     local prevSteeringPosition = tonumber(steerState.prevPosition)
     local steerDeltaRate = 0
-    local steerRateFactor = 0
     if prevSteeringPosition ~= nil then
         local dtSeconds = math.max((tonumber(dt) or 0) / 1000, 0.001)
-        local steerDelta = math.abs(steeringPosition - prevSteeringPosition)
-        steerDeltaRate = steerDelta / dtSeconds
-
-        local rateDeadzone = math.max(tonumber(C.STEER_LOAD_RATE_DEADZONE) or 0.02, 0)
-        local fullRate = math.max(tonumber(C.STEER_LOAD_RATE_FULL) or 0.60, rateDeadzone + 0.0001)
-        local normalizedRate = math.clamp((steerDeltaRate - rateDeadzone) / math.max(fullRate - rateDeadzone, 0.0001), 0, 1)
-        steerRateFactor = normalizedRate * normalizedRate
+        steerDeltaRate = math.abs(steeringPosition - prevSteeringPosition) / dtSeconds
     end
     steerState.prevPosition = steeringPosition
     steerState.position = steeringPosition
     steerState.deltaRate = steerDeltaRate
-    steerState.rateFactor = steerRateFactor
 
     local steeringMagnitude = 0
+    local steerAngleRatio = 0
     local steerGroundContact = 0
+    local steeredTireLoad = 0
+    local steeredRestLoad = 0
     if vehicle.spec_wheels ~= nil and vehicle.spec_wheels.wheels ~= nil then
         for _, wheel in ipairs(vehicle.spec_wheels.wheels) do
             local physics = wheel.physics
             if physics ~= nil and RMS_Drivetrain.getIsWheelSteerable(wheel) then
-                steeringMagnitude = math.max(steeringMagnitude, math.abs(tonumber(physics.steeringAngle) or 0))
+                local steeringAngle = math.abs(tonumber(physics.steeringAngle) or 0)
+                steeringMagnitude = math.max(steeringMagnitude, steeringAngle)
+
+                -- ratio taken against each wheel own steering limits
+                local angleLimit = math.max(math.abs(tonumber(physics.rotMax) or 0), math.abs(tonumber(physics.rotMin) or 0))
+                if angleLimit > 0.0001 then
+                    steerAngleRatio = math.max(steerAngleRatio, math.clamp(steeringAngle / angleLimit, 0.0, 1.0))
+                end
+
+                if physics.getTireLoad ~= nil then
+                    steeredTireLoad = steeredTireLoad + math.max(tonumber(physics:getTireLoad()) or 0, 0)
+                    steeredRestLoad = steeredRestLoad + math.max(tonumber(physics.restLoad) or 0, 0)
+                end
             end
 
             local hasGroundContact = false
@@ -873,14 +880,22 @@ local function updateChassisSteeringState(vehicle, dt)
 
     local articulatedAxis = vehicle.spec_articulatedAxis
     if articulatedAxis ~= nil and articulatedAxis.componentJoint ~= nil then
-        steeringMagnitude = math.max(steeringMagnitude, math.abs(tonumber(articulatedAxis.curRot) or 0))
+        local articulatedRot = math.abs(tonumber(articulatedAxis.curRot) or 0)
+        steeringMagnitude = math.max(steeringMagnitude, articulatedRot)
+
+        local articulatedLimit = math.max(math.abs(tonumber(articulatedAxis.rotMax) or 0), math.abs(tonumber(articulatedAxis.rotMin) or 0))
+        if articulatedLimit > 0.0001 then
+            steerAngleRatio = math.max(steerAngleRatio, math.clamp(articulatedRot / articulatedLimit, 0.0, 1.0))
+        end
     end
 
     steerState.angleMagnitude = steeringMagnitude
+    steerState.angleRatio = steerAngleRatio
+    steerState.axleLoadRatio = steeredRestLoad > 0.0001 and math.clamp(steeredTireLoad / steeredRestLoad, 0.0, C.STEER_LOAD_AXLE_RATIO_MAX or 3.0) or 1.0
     steerState.inputMagnitude = steeringInputMagnitude
     steerState.groundContact = steerGroundContact
     steerState.isLowSpeedActive = steerSpeedThreshold > 0 and speed <= steerSpeedThreshold
-    steerState.isMoving = steerRateFactor > 0
+    steerState.isMoving = steerDeltaRate > (tonumber(C.STEER_LOAD_RATE_DEADZONE) or 0.02)
 end
 
 ---Reads the brake pedal, the towed mass and the power to mass ratios, detecting braking by axis too

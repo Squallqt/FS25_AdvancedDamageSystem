@@ -78,6 +78,7 @@ local modName = g_currentModName
 
 source(g_currentModDirectory .. "scripts/RMS_Config.lua")
 source(g_currentModDirectory .. "scripts/RMS_Utils.lua")
+source(g_currentModDirectory .. "scripts/RMS_ProgressRing.lua")
 source(g_currentModDirectory .. "scripts/RMS_VehicleYearsData.lua")
 source(g_currentModDirectory .. "scripts/RMS_VehicleYears.lua")
 source(g_currentModDirectory .. "scripts/RMS_DebugSnapshot.lua")
@@ -101,6 +102,7 @@ source(g_currentModDirectory .. "events/RMS_WorkshopChangeStatusEvent.lua")
 source(g_currentModDirectory .. "events/RMS_ServiceRequestEvent.lua")
 source(g_currentModDirectory .. "events/RMS_CancelServiceEvent.lua")
 source(g_currentModDirectory .. "events/RMS_SettingsSyncEvent.lua")
+source(g_currentModDirectory .. "events/RMS_ReinitializeVehiclesEvent.lua")
 source(g_currentModDirectory .. "events/RMS_TutorialStateEvent.lua")
 source(g_currentModDirectory .. "events/RMS_EffectSyncEvent.lua")
 source(g_currentModDirectory .. "events/RMS_LogEntrySyncEvent.lua")
@@ -167,6 +169,14 @@ end
 
 ---Attaches the RMS specialization to every managed vehicle type
 function RMS_Main.registerSpecializationToVehicles()
+	if g_modIsLoaded ~= nil and g_modIsLoaded["FS25_AdvancedDamageSystem"] then
+		if not RMS_Main.conflictLogged then
+			Logging.warning("RMS: Advanced Damage System is loaded, RMS stays out. Keep only one of the two.")
+			RMS_Main.conflictLogged = true
+		end
+		return
+	end
+
 	local specName = "RealisticMechanicalSystems"
 	local specObject = g_specializationManager:getSpecializationObjectByName(specName)
 
@@ -215,6 +225,8 @@ function RMS_Main:onStartMission()
     RMS_MaintenanceTwoOptionsDialog.register()
     RMS_MaintenanceThreeOptionsDialog.register()
     RMS_WelcomeDialog.register()
+
+    RMS_ProgressRing.register()
 
     local mission = g_currentMission
     RMS_Main.hud = RMS_Hud:new()
@@ -304,8 +316,10 @@ local function getMaintainability(storeItem, vehicle)
 end
 
 -- adds spec while browsing
+if g_modIsLoaded == nil or not g_modIsLoaded["FS25_AdvancedDamageSystem"] then
     g_storeManager:addSpecType("reliability", "shopListAttributeIconReliability", nil, getReliability, StoreSpecies.VEHICLE)
-g_storeManager:addSpecType("maintainability", "shopListAttributeIconMaintainability", nil, getMaintainability, StoreSpecies.VEHICLE)
+    g_storeManager:addSpecType("maintainability", "shopListAttributeIconMaintainability", nil, getMaintainability, StoreSpecies.VEHICLE)
+end
 
 ---Inserts a page into the shop menu
 -- @param table frame shop frame
@@ -556,8 +570,6 @@ function RMS_Main:update(dt)
         local currentStatus = dialog.vehicle:getCurrentStatus()
         if dialog.lastObservedStatus ~= currentStatus then
             dialog:updateScreen()
-        elseif currentStatus ~= RealisticMechanicalSystems.STATUS.READY then
-            dialog:updateServiceProgressText()
         end
     end
 
@@ -575,6 +587,12 @@ function RMS_Main:update(dt)
         self.previousKey = nil
         updateOpenWorkshopDialog()
         return
+    end
+
+    for _, vehicle in pairs(self.vehicles) do
+        if vehicle ~= nil and vehicle.raiseActive ~= nil and vehicle.getMotorState ~= nil and vehicle:getMotorState() == MotorState.ON then
+            vehicle:raiseActive()
+        end
     end
 
     self.updateAlphaTimer = self.updateAlphaTimer + dt

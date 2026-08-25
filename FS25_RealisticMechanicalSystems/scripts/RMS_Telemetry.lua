@@ -366,7 +366,7 @@ function RMS_Telemetry:collectTransmissionSystemInfo(vehicle)
         wheelSlipFactor = transmissionDbg.wheelSlipFactor or 0,
         wheelSlipIntensity = spec.wheelSlipIntensity,
         avgTireGroundFrictionCoeff = spec.avgTireGroundFrictionCoeff,
-        coldTransFactor = transmissionDbg.coldTransFactor or 0,
+        coldTransAbuse = transmissionDbg.coldTransAbuse or 0,
         hotTransFactor = transmissionDbg.hotTransFactor or 0
     }
 end
@@ -431,22 +431,20 @@ function RMS_Telemetry:collectCVTTempInfo(vehicle)
         temperatureC = spec.transmissionTemperature,
         rawTemperatureC = spec.rawTransmissionTemperature,
         thermostatState = spec.transmissionThermostatState,
-        kp = transmissionTempDbg.kp or 0,
-        stiction = transmissionTempDbg.stiction or 0,
-        waxSpeed = transmissionTempDbg.waxSpeed or 0,
         totalHeat = transmissionTempDbg.totalHeat or 0,
         totalCooling = transmissionTempDbg.totalCooling or 0,
-        radiatorCooling = transmissionTempDbg.radiatorCooling or 0,
+        coolerCooling = transmissionTempDbg.coolerCooling or 0,
         speedCooling = transmissionTempDbg.speedCooling or 0,
         convectionCooling = transmissionTempDbg.convectionCooling or 0,
         loadFactor = transmissionTempDbg.loadFactor or 0,
-        slipFactor = transmissionTempDbg.slipFactor or 0,
+        hydrostaticFactor = transmissionTempDbg.hydrostaticFactor or 0,
         accFactor = transmissionTempDbg.accFactor or 0,
-        pullFactor = transmissionTempDbg.pullFactor or 0,
         wheelSlipFactor = transmissionTempDbg.wheelSlipFactor or 0,
         cvtSlipActive = transmissionTempDbg.cvtSlipActive or 0,
         cvtSlipLocked = transmissionTempDbg.cvtSlipLocked or 0,
         extraTransmissionHeat = transmissionTempDbg.extraTransmissionHeat or 0,
+        idleHeat = transmissionTempDbg.idleHeat or 0,
+        ptoHeat = transmissionTempDbg.ptoHeat or 0,
         hydraulicHeat = transmissionTempDbg.hydraulicHeat or 0
     }
 end
@@ -540,18 +538,18 @@ function RMS_Telemetry:collectCloggingInfo(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     local debugData = type(spec.debugData) == "table" and spec.debugData or {}
     local radiatorDbg = type(debugData.radiator) == "table" and debugData.radiator or {}
-    local airIntakeDbg = type(debugData.airIntake) == "table" and debugData.airIntake or {}
+    local airFilterDbg = type(debugData.airFilter) == "table" and debugData.airFilter or {}
 
     return {
         dirtLevel = vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0,
         radiatorClogging = spec.radiatorClogging,
         radiatorMultiplier = radiatorDbg.totalMultiplier or 0,
-        airIntakeClogging = spec.airIntakeClogging,
-        airIntakeMultiplier = airIntakeDbg.totalMultiplier or 0,
-        isOnField = radiatorDbg.isOnField == true or airIntakeDbg.isOnField == true,
-        hasDust = radiatorDbg.hasDust == true or airIntakeDbg.hasDust == true,
-        hasDebris = radiatorDbg.hasDebris == true or airIntakeDbg.hasDebris == true,
-        wetnessFactor = airIntakeDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1
+        airFilterClogging = spec.airFilterClogging,
+        airFilterMultiplier = airFilterDbg.totalMultiplier or 0,
+        isOnField = radiatorDbg.isOnField == true or airFilterDbg.isOnField == true,
+        hasDust = radiatorDbg.hasDust == true or airFilterDbg.hasDust == true,
+        hasDebris = radiatorDbg.hasDebris == true or airFilterDbg.hasDebris == true,
+        wetnessFactor = airFilterDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1
     }
 end
 

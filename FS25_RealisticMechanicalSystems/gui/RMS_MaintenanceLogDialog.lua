@@ -187,7 +187,8 @@ function RMS_MaintenanceLogDialog:updateScreen()
     local age = math.max(1, (currentMonth + (currentYear - 1) * 12) - (pMonth + (pYear - 1) * 12))
     
     local costPerMonth = totalCost / age
-    local avgBreakdownInterval = totalBreakdowns > 0 and math.max(((self.vehicle:getFormattedOperatingTime() - (purchaseHours or 0)) / totalBreakdowns), 0) or 0
+    local currentLoggedHours = (tonumber(spec.realOperatingTime) or 0) / (60 * 60 * 1000)
+    local avgBreakdownInterval = totalBreakdowns > 0 and math.max(((currentLoggedHours - (purchaseHours or 0)) / totalBreakdowns), 0) or 0
     local averageMaintenanceInterval = 0
 
     self.costPerMonthValue:setText(g_i18n:formatMoney(costPerMonth, 0, true, false) .. " / " .. g_i18n:getText("rms_ws_age_unit"))
@@ -299,6 +300,9 @@ function RMS_MaintenanceLogDialog:populateCellForItemInSection(list, section, in
     elseif entry.type == S.OVERHAUL then
         typeText = g_i18n:getText("rms_ws_action_overhaul")
         color = {1.0, 0.5, 0.0, 1}
+    elseif entry.type == S.REFILL then
+        typeText = g_i18n:getText("rms_ws_action_refill")
+        color = HUD.COLOR.ACTIVE
     end
     
     cell:getAttribute("logType"):setText(typeText)

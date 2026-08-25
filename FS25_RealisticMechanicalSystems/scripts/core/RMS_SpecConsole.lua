@@ -5,7 +5,6 @@
 
 local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
 local getVehicleOperatingHours = RealisticMechanicalSystems.getVehicleOperatingHours
-local getSyncOperatingTime = RealisticMechanicalSystems.getSyncOperatingTime
 local initializeVehicleConditionFromVanillaPrice = RealisticMechanicalSystems.initializeVehicleConditionFromVanillaPrice
 
 RealisticMechanicalSystems.ConsoleCommands = {}
@@ -222,16 +221,16 @@ local function syncConsoleCloggingState(vehicle, spec, parent, key)
         return false
     end
 
-    if key ~= "radiatorClogging" and key ~= "airIntakeClogging" then
+    if key ~= "radiatorClogging" and key ~= "airFilterClogging" then
         return false
     end
 
     spec.radiatorClogging = math.clamp(tonumber(spec.radiatorClogging) or 0, 0.0, 1.0)
-    spec.airIntakeClogging = math.clamp(tonumber(spec.airIntakeClogging) or 0, 0.0, 1.0)
+    spec.airFilterClogging = math.clamp(tonumber(spec.airFilterClogging) or 0, 0.0, 1.0)
 
     if vehicle.spec_washable ~= nil and vehicle.setDirtAmount ~= nil and vehicle.getDirtAmount ~= nil then
         local currentDirtAmount = math.clamp(tonumber(vehicle:getDirtAmount()) or 0, 0.0, 1.0)
-        local requiredDirtAmount = math.max(spec.radiatorClogging or 0, spec.airIntakeClogging or 0)
+        local requiredDirtAmount = math.max(spec.radiatorClogging or 0, spec.airFilterClogging or 0)
         if requiredDirtAmount > currentDirtAmount + 0.0001 then
             vehicle:setDirtAmount(requiredDirtAmount)
         end
@@ -389,11 +388,11 @@ function RealisticMechanicalSystems.ConsoleCommands:setSpecVar(rawArgs, rawValue
     print(string.format("RMS: spec_RealisticMechanicalSystems.%s changed on '%s': %s -> %s", path, vehicle:getFullName(), tostring(oldValue), tostring(value)))
     if syncedCloggingState then
         print(string.format(
-            "RMS: clogging state synced on '%s' (dirt=%.2f, radiator=%.2f, airIntake=%.2f).",
+            "RMS: clogging state synced on '%s' (dirt=%.2f, radiator=%.2f, airFilter=%.2f).",
             vehicle:getFullName(),
             vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0,
             tonumber(spec.radiatorClogging) or 0,
-            tonumber(spec.airIntakeClogging) or 0
+            tonumber(spec.airFilterClogging) or 0
         ))
     end
 end
@@ -1545,53 +1544,6 @@ function RealisticMechanicalSystems.ConsoleCommands:setHorsePower(rawArgs)
     ))
 end
 
----Sets the operating time, usage rms_setOperatingTime [hours]
--- @param string? rawArgs console arguments
-function RealisticMechanicalSystems.ConsoleCommands:setOperatingTime(rawArgs)
-    if not g_currentMission:getIsServer() then
-        local vehicle = self:getTargetVehicle()
-        if vehicle then RMS_ConsoleCommandEvent.sendToServer("setOperatingTime", rawArgs, nil, vehicle) end
-        return
-    end
-
-    local vehicle = self:getTargetVehicle()
-    if not vehicle then
-        return
-    end
-
-    local args = parseArguments(rawArgs)
-    if not args or not args[1] then
-        print("RMS Error: Usage: rms_setOperatingTime <hours>")
-        print("Example: rms_setOperatingTime 22.1")
-        return
-    end
-
-    local hours = tonumber(args[1])
-    if hours == nil or hours < 0 then
-        print("RMS Error: Operating time must be a number >= 0.")
-        return
-    end
-
-    local operatingTimeMs = hours * 60 * 60 * 1000
-    local previousOperatingTimeMs = getSyncOperatingTime(vehicle)
-    local spec = vehicle.spec_RealisticMechanicalSystems
-
-    spec._allowRMSOperatingTimeWrite = true
-    vehicle:setOperatingTime(operatingTimeMs, false)
-    spec._allowRMSOperatingTimeWrite = false
-    spec.realOperatingTime = operatingTimeMs
-
-    RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.TELEMETRY)
-
-    print(string.format(
-        "RMS: Operating time for '%s' changed: %.2f h -> %.2f h (%.0f ms).",
-        vehicle:getFullName(),
-        previousOperatingTimeMs / (60 * 60 * 1000),
-        operatingTimeMs / (60 * 60 * 1000),
-        operatingTimeMs
-    ))
-end
-
 ---Sets the maximum force of the attached plow, usage rms_setPlowMaxForce [kN]
 -- @param string? rawArgs console arguments
 function RealisticMechanicalSystems.ConsoleCommands:setPlowMaxForce(rawArgs)
@@ -1815,7 +1767,6 @@ addConsoleCommand("rms_getDebugVehicleInfo", "Vehicle debug info", "getDebugVehi
 addConsoleCommand("rms_setDirtAmount", "Sets vehicle dirt amount. Usage: rms_setDirtAmount [0.0-1.0]", "setDirtAmount", RealisticMechanicalSystems.ConsoleCommands)
 addConsoleCommand("rms_setFuelLevel", "Sets vehicle fuel level. Usage: rms_setFuelLevel [0.0-1.0 or 0..100]", "setFuelLevel", RealisticMechanicalSystems.ConsoleCommands)
 addConsoleCommand("rms_setHorsePower", "Sets horsepower on current vehicle. Usage: rms_setHorsePower [hp]", "setHorsePower", RealisticMechanicalSystems.ConsoleCommands)
-addConsoleCommand("rms_setOperatingTime", "Sets operating time on current vehicle. Usage: rms_setOperatingTime [hours]", "setOperatingTime", RealisticMechanicalSystems.ConsoleCommands)
 addConsoleCommand("rms_setPlowMaxForce", "Sets maxForce on selected/attached plow. Usage: rms_setPlowMaxForce [kN]", "setPlowMaxForce", RealisticMechanicalSystems.ConsoleCommands)
 addConsoleCommand("rms_resetFactorStats", "Resets accumulated factor stats for current vehicle.", "resetFactorStats", RealisticMechanicalSystems.ConsoleCommands)
 addConsoleCommand("rms_toggleHudDebugView", "Switch debug HUD view. Usage: rms_toggleHudDebugView [default|stats|toggle]", "toggleHudDebugView", RealisticMechanicalSystems.ConsoleCommands)

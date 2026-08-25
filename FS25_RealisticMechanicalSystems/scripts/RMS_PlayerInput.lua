@@ -11,7 +11,6 @@ local rmsInspectionHoldThreshold = 600
 local rmsInspectionHoldTriggered = false
 
 local rmsActiveInspectionVehicle = nil
-local rmsInspectionProgressPercent = -1
 local rmsInspectionMaxDistance = 6.0
 
 
@@ -71,12 +70,10 @@ local function rmsCancelActiveInspection(reasonText)
     end
 
     rmsActiveInspectionVehicle = nil
-    rmsInspectionProgressPercent = -1
+    RMS_Hud.showInspectionProgress(nil)
 
     if reasonText ~= nil and reasonText ~= "" then
-        RMS_Hud.showNotification(reasonText, 1500)
-    else
-        RMS_Hud.hideNotification()
+        RMS_Hud.showInspectionMessage(reasonText, 1500)
     end
 end
 
@@ -101,8 +98,7 @@ local function rmsCompleteActiveInspection()
     end
 
     rmsActiveInspectionVehicle = nil
-    rmsInspectionProgressPercent = -1
-    RMS_Hud.hideNotification()
+    RMS_Hud.showInspectionProgress(nil)
 
     if RMS_InspectionDialog ~= nil then
         RMS_InspectionDialog.show(vehicle)
@@ -156,11 +152,7 @@ local function rmsUpdateActiveInspection(inputComponent, dt)
 
     inspection.elapsedTime = math.min(inspection.elapsedTime + dt, inspection.duration)
 
-    local percent = math.floor((inspection.elapsedTime / math.max(inspection.duration, 1)) * 100)
-    if percent ~= rmsInspectionProgressPercent then
-        rmsInspectionProgressPercent = percent
-        RMS_Hud.showNotification(string.format(g_i18n:getText("rms_field_inspection_progress"), percent), 250)
-    end
+    RMS_Hud.showInspectionProgress(inspection.elapsedTime / math.max(inspection.duration, 1))
 
     if inspection.elapsedTime >= inspection.duration then
         rmsCompleteActiveInspection()
@@ -207,7 +199,6 @@ local function rmsOnInputFieldInspection(actionName, inputValue, callbackState, 
 
             if started then
                 rmsActiveInspectionVehicle = rmsInspectionHoldVehicle
-                rmsInspectionProgressPercent = -1
             end
         end
 
@@ -290,5 +281,16 @@ local function rmsOnPlayerInputComponentRegisterActionEvents(inputComponent)
     g_inputBinding:endActionEventsModification()
 end
 
+---Hides the hand crosshair while an inspection runs
+-- @param table superFunc overwritten function
+local function rmsOnHandToolHandsDraw(self, superFunc, ...)
+    if rmsActiveInspectionVehicle ~= nil then
+        return
+    end
+
+    return superFunc(self, ...)
+end
+
 PlayerInputComponent.update = Utils.overwrittenFunction(PlayerInputComponent.update, rmsOnPlayerInputComponentUpdate)
+HandToolHands.onDraw = Utils.overwrittenFunction(HandToolHands.onDraw, rmsOnHandToolHandsDraw)
 PlayerInputComponent.registerActionEvents = Utils.appendedFunction(PlayerInputComponent.registerActionEvents, rmsOnPlayerInputComponentRegisterActionEvents)

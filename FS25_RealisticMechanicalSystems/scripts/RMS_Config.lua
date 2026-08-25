@@ -79,8 +79,8 @@ RMS_Config = {
             COLD_MOTOR_MULTIPLIER = 60.0,
             OVERHEAT_MOTOR_MULTIPLIER = 100.0, 
             OVERHEAT_MOTOR_THRESHOLD = 95,
-            AIR_INTAKE_CLOGGING_MULTIPLIER = 0.8,
-            AIR_INTAKE_CLOGGING_THRESHOLD = 0.5
+            AIR_FILTER_CLOGGING_MULTIPLIER = 0.8,
+            AIR_FILTER_CLOGGING_THRESHOLD = 0.5
         },
 
         TRANSMISSION_FACTOR_DATA = {
@@ -103,14 +103,17 @@ RMS_Config = {
             HEAVY_TRAILER_MOTORLOAD_THRESHOLD = 0.7,
             -- share of the heavy trailer threshold firing the tutorial tip
             HEAVY_TRAILER_TUTORIAL_MARGIN = 0.8,
-            COLD_TRANSMISSION_MULTIPLIER = 0.92,
             COLD_TRANSMISSION_THRESHOLD = 45,
+            COLD_TRANSMISSION_LOAD_THRESHOLD = 0.60,
+            COLD_TRANSMISSION_ABUSE_DURATION = 10000,
+            COLD_TRANSMISSION_DAMAGE = 0.01,
             OVERHEAT_TRANSMISSION_MAX_MULTIPLIER = 100.0,
             OVERHEAT_TRANSMISSION_THRESHOLD = 100,
         },
 
         HYDRAULICS_FACTOR_DATA = {
             SERVICE_EXPIRED_MULTIPLIER = 3.0,
+            PUMP_WEAR_RATE = 0.5,
             COLD_OIL_MULTIPLIER = 0.95,
             COLD_OIL_THRESHOLD = 30,
             HOT_OIL_MULTIPLIER = 100.0,
@@ -128,7 +131,8 @@ RMS_Config = {
             COOLING_IDLING_MULTIPLIER = 0.5,
             SERVICE_EXPIRED_MULTIPLIER = 4.0,
             HIGH_COOLING_FACTOR_MULTIPLIER = 1.5,
-            HIGH_COOLING_FACTOR_THRESHOLD = 0.85,
+            HIGH_COOLING_FACTOR_THRESHOLD = 0.95,
+            HIGH_COOLING_TEMP_MARGIN = 3,
             OVERHEAT_FACTOR_MULTIPLIER = 50.0,
             OVERHEAT_FACTOR_THRESHOLD = 95,
             COLD_SHOCK_FACTOR_MULTIPLIER = 30.0,
@@ -158,10 +162,10 @@ RMS_Config = {
             VIB_FACTOR_MAX_SIGNAL = 0.36,
             VIB_FACTOR_MULTIPLIER = 36.0,
             VIB_FIELD_MULTIPLIER = 2.0,
-            STEER_LOAD_FACTOR_MULTIPLIER = 6.0,
+            STEER_LOAD_FACTOR_MULTIPLIER = 2.0,
             STEER_LOAD_SPEED_THRESHOLD = 4.0,
             STEER_LOAD_RATE_DEADZONE = 0.02,
-            STEER_LOAD_RATE_FULL = 0.60,
+            STEER_LOAD_AXLE_RATIO_MAX = 3.0,
             BRAKE_MASS_FACTOR_MULTIPLIER = 36.0,
             BRAKE_MASS_RATIO_THRESHOLD = 10.0,
             BRAKE_MASS_RATIO_FULL_EFFECT = 5.0,
@@ -214,7 +218,7 @@ RMS_Config = {
             WEIGHT_LOAD = 0.50,
             WEIGHT_ENGINE_TEMP = 0.25,
             WEIGHT_TRANS_TEMP = 0.25,
-            FILTER_TAU = 0.7,
+            FILTER_TAU = 3.0,
             KP = 4.5,
             KI = 0.8,
             KD = 0.45,
@@ -303,6 +307,8 @@ RMS_Config = {
         GLOBAL_SERVICE_PRICE_MULTIPLIER = 1.0,
         GLOBAL_SERVICE_TIME_MULTIPLIER = 1.0,
 
+        REFILL_TIME = 0.25 * 3600000,
+        REFILL_PRICE_MULTIPLIER = 0.15,
         INSPECTION_TIME = 1 * 3600000,
         INSPECTION_TIME_MULTIPLIERS = {
             STANDARD = 1.0,
@@ -407,14 +413,12 @@ RMS_Config = {
             COMPLETE = {min = 400, max = 1600},
         },
         OVERHAUL_MAX_PRICE_RATIO = 1.0,
-        AGE_FACTOR_PRICE_FACTOR = 0.01,
-        OWN_WORKSHOP_PRICE_MULTIPLIER = 0.8,
     },
     -- engine and transmission temperature model
     THERMAL = {
         -- shared thermal physics
 
-        -- global multiplier of the temperature change rate
+        -- user multiplier of the engine temperature change rate
         TEMPERATURE_CHANGE_SPEED = 1.4,
 
         -- speed at which airflow cooling starts, in km/h
@@ -430,7 +434,7 @@ RMS_Config = {
         DELTATEMP_FACTOR_DEGREE = 1.25,
 
         -- share of the radiator effectiveness a fully dirty vehicle loses
-        MAX_DIRT_INFLUENCE = 0.20,
+        MAX_DIRT_INFLUENCE = 1.0,
         
         -- time constant of the temperature gauge filter
         TAU = 5000,
@@ -441,6 +445,8 @@ RMS_Config = {
         ENGINE_MAX_HEAT = 1.05,
         -- engine heat at idle
         ENGINE_MIN_HEAT = 0.4,
+        -- base engine temperature change rate before the user multiplier
+        ENGINE_TEMPERATURE_CHANGE_SPEED = 0.35,
         -- temperature the engine thermostat starts opening at, in degrees
         ENGINE_THERMOSTAT_MIN_TEMP = 80,
         -- radiator cooling with the thermostat closed
@@ -452,21 +458,34 @@ RMS_Config = {
 
         -- transmission heat at full load
         TRANS_MAX_HEAT = 1.05,
-        -- transmission heat at minimum load
-        TRANS_MIN_HEAT = 0.0,
-        TRANS_TEMPERATURE_CHANGE_SPEED = 0.042,
+        -- oil circulation and churning heat at low idle
+        TRANS_IDLE_HEAT = 0.06,
+        -- pump loss heat, produced whenever the motor turns
+        TRANS_PUMP_HEAT = 0.03,
+        -- share of the pto load that heats the shared oil
+        TRANS_PTO_HEAT_SHARE = 0.15,
+        -- extra load heat at a standstill, where the hydrostatic path carries the power
+        TRANS_HYDROSTATIC_MAX_BOOST = 0.8,
+        -- speed above which the mechanical path carries the power, in km/h
+        TRANS_HYDROSTATIC_MAX_SPEED = 10,
+        -- base transmission temperature change rate before the user multiplier
+        TRANS_TEMPERATURE_CHANGE_SPEED = 0.14,
         TRANS_TEMPERATURE_CHANGE_MULTIPLIER = 1.0,
         HYDRAULIC_OPERATING_HEAT = 0.15,
-        -- temperature the transmission thermostat starts opening at, in degrees
-        TRANS_THERMOSTAT_MIN_TEMP = 75,
-        -- transmission radiator cooling with the thermostat closed
-        TRANS_RADIATOR_MIN_COOLING = 0.0005,
-        -- transmission radiator cooling with the thermostat open
-        TRANS_RADIATOR_MAX_COOLING = 0.005,
+        -- temperature the thermostat starts letting oil into the cooler, in degrees
+        TRANS_THERMOSTAT_MIN_TEMP = 45,
+        -- temperature the cooler runs at full flow, in degrees
+        TRANS_THERMOSTAT_MAX_TEMP = 70,
+        -- degrees a fully worn thermostat waits before it opens
+        TRANS_THERMOSTAT_HEALTH_LAG = 30,
+        -- oil cooler capacity at full flow
+        TRANS_COOLER_MAX_COOLING = 0.0035,
+        -- temperature the fan reaches its maximum at, in degrees
+        TRANS_FAN_MAX_TEMP = 95,
+        -- extra cooler capacity brought by the fan at its maximum
+        TRANS_FAN_MAX_BOOST = 0.4,
 
-        -- thermostat PID controller
-        TRANS_PID_TARGET_TEMP  = 85,
-        -- temperature the controller aims at, in degrees
+        -- temperature the engine thermostat controller aims at, in degrees
         PID_TARGET_TEMP = 90,
         -- proportional gain, reacting to the current error
         PID_KP_MAX = 0.4,
@@ -478,30 +497,30 @@ RMS_Config = {
         -- cap on the integral term
         PID_MAX_INTEGRAL = 200,
 
-        COOLING_SLOWDOWN_THRESHOLD = 90,
         COOLING_SLOWDOWN_POWER = 12,
-        WARMING_BOOST_THRESHOLD = 50,
-        WARMING_BOOST_POWER = 2.0,
 
         THERMOSTAT_TYPE_YEAR_DIVIDER = 2000,
         MECHANIC_THERMOSTAT_MIN_YEAR = 1950,
         ELECTRONIC_THERMOSTAT_MAX_YEAR = 2025,
 
         MECHANIC_THERMOSTAT_MIN_WAX_SPEED = 0.025,
-        MECHANIC_THERMOSTAT_MAX_WAX_SPEED = 0.05,
-        MECHANIC_THERMOSTAT_MIN_STICTION = 0.02,
         MECHANIC_THERMOSTAT_MAX_STICTION = 0.1,
+        MECHANIC_THERMOSTAT_WAX_YEAR_SLOPE = 0.0005,
 
         ELECTRONIC_THERMOSTAT_MIN_WAX_SPEED = 0.05,
         ELECTRONIC_THERMOSTAT_MAX_WAX_SPEED = 0.10,
         ELECTRONIC_THERMOSTAT_MIN_STICTION = 0.01,
-        ELECTRONIC_THERMOSTAT_MAX_STICTION = 0.05
+        ELECTRONIC_THERMOSTAT_MAX_STICTION = 0.05,
+        ELECTRONIC_THERMOSTAT_WAX_YEAR_SLOPE = 0.0016,
+
+        STICTION_YEAR_SLOPE = 0.0016
     },
 
     FIELD_CARE = {
         CLOGGING_SPEED = 1.0,
         CLEANING_SPEED = 0.05,
-        AIR_INTAKE_BREAKDOWN_THRESHOLD = 0.5,
+        AIR_FILTER_BREAKDOWN_THRESHOLD = 0.5,
+        AIR_FILTER_BLOWOUT_RESIDUE_SHARE = 0.25,
         VISUAL_INSPECTION_DURATION = 6000,
         LUBRICATION_REDUCE_PER_OPERATING_HOUR = 0.02,
         LUBRICATION_RESTORE_PER_USE = 0.1,
@@ -510,8 +529,29 @@ RMS_Config = {
         LUBRICATION_CRITICALLY_DRY_THRESHOLD = 0.15,
         LUBRICATION_WARNING_THRESHOLD = 0.80,
         LUBRICATION_REDUCE_PER_PERIOD = 0.1,
-        RAYCAST_DISTANCE = 2.0,
+        RAYCAST_DISTANCE = 5.0,
         JUMPER_CABLES_MAX_CONNECTION_DISTANCE = 12.0,
+    },
+
+    -- engine oil, coolant, transmission oil and hydraulic fluid levels
+    FLUIDS = {
+        -- engine oil burnt over one service interval by a healthy engine
+        ENGINE_OIL_CONSUMPTION_PER_INTERVAL = 0.10,
+        -- extra consumption of a fully worn engine
+        ENGINE_OIL_WEAR_CONSUMPTION = 6.0,
+        -- share of the consumption that follows the motor load
+        ENGINE_OIL_LOAD_SHARE = 1.5,
+
+        -- minimum mark of the gauge, the level the check asks for a top up at
+        LEVEL_MIN_MARK = 0.85,
+        -- levels the inspection reports under the mark
+        LEVEL_LOW = 0.70,
+        LEVEL_VERY_LOW = 0.50,
+        LEVEL_CRITICALLY_LOW = 0.30,
+        -- cooling capacity left with an empty circuit
+        MIN_COOLING_FACTOR = 0.15,
+        -- wear multiplier of a system running dry
+        LOW_LEVEL_WEAR_MULTIPLIER = 4.0,
     },
 
     -- drive mode, differential lock and park brake
@@ -614,8 +654,8 @@ RMS_Config = {
             WET_STACKING_MAX = 0.35,
             TRANSIENT_LOAD_RATE = 1.2,
             TRANSIENT_MAX = 0.50,
-            AIR_INTAKE_KNEE = 0.50,
-            AIR_INTAKE_MAX = 0.30,
+            AIR_FILTER_KNEE = 0.50,
+            AIR_FILTER_MAX = 0.30,
             SERVICE_THRESHOLD = 0.50,
             SERVICE_MAX = 0.10,
             BREAKDOWN_MAX = 1.00
@@ -662,7 +702,6 @@ RMS_Config = {
         BATTERY_HEALTH_RINT_MAX_MULT = 3.0,
         OCV_EMPTY_V = 11.7,
         OCV_FULL_V = 12.7,
-        BATTERY_LOAD_DROP_MIN_V = 12.2,
         BATTERY_CRANK_CURRENT_A = 250,
         GLOW_CIRCUIT_PROXY_LOAD_A = 50,
         BATTERY_CHARGE_RISE_PER_20A_V = 0.18,
@@ -774,7 +813,7 @@ RMS_Config = {
     TUTORIAL_MESSAGES = {
         SERVICE_DUE_SOON = false,
         SERVICE_INTERVAL_EXPIRED = false,
-        RAD_OR_INTAKE_CLOGGED = false,
+        RAD_OR_FILTER_CLOGGED = false,
         NEEDS_LUBRICATION = false,
         NEEDS_REPAIR = false,
         NEEDS_OVERHAUL = false,
@@ -805,6 +844,11 @@ RMS_Config = {
         ENGINE_OVERLOAD = false,
         LUGGING = false,
         PTO_ENGAGEMENT = false,
+        FLUID_LEVEL = false,
+        EXHAUST_SMOKE = false,
+        DRIVETRAIN_MODES = false,
+        PARK_BRAKE = false,
+        TRANSMISSION_OVERHEAT = false,
     }
 }
 
@@ -942,6 +986,8 @@ function RMS_Config.syncTutorialState()
 end
 
 RMS_Config.savegameFile = "realisticMechanicalSystems.xml"
+RMS_Config.legacySavegameFile = "advancedDamageSystem.xml"
+RMS_Config.sharedSettingsDirectory = "modSettings/FS25_RealisticMechanicalSystems/"
 
 ---Prints a debug line while debug mode is on
 -- @param any ... values to print
@@ -1000,24 +1046,11 @@ local function loadTutorialPlayerStates(xmlFile, root)
     end
 end
 
----Writes every adjustable setting to the savegame settings file
-function RMS_Config.saveToXMLFile()
-    if g_currentMission == nil or not g_currentMission:getIsServer() then
-        return false
-    end
-
-    if g_currentMission.missionInfo == nil then
-        log_dbg("SAVE ABORT - missionInfo is nil")
-        return false
-    end
-
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
-    end
-
-    local xmlFileName = savegameFolderPath .. "/" .. RMS_Config.savegameFile
-
+---Writes every adjustable setting to a settings file
+-- @param string xmlFileName settings file path
+-- @param boolean includeTutorialStates true to write the tutorial progress as well
+-- @return boolean written true once the file is written
+local function writeConfigFile(xmlFileName, includeTutorialStates)
     local xmlFile = createXMLFile("realisticMechanicalSystems", xmlFileName, "realisticMechanicalSystems")
     if xmlFile == nil or xmlFile == 0 then
         log_dbg("SAVE ERROR - createXMLFile returned", tostring(xmlFile))
@@ -1055,13 +1088,9 @@ function RMS_Config.saveToXMLFile()
     setXMLFloat(xmlFile, root .. ".CLOSE_HOUR",             RMS_Config.WORKSHOP.CLOSE_HOUR)
 
     -- thermal
-    setXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT",        RMS_Config.THERMAL.ENGINE_MAX_HEAT)
-    setXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT",         RMS_Config.THERMAL.TRANS_MAX_HEAT)
     setXMLFloat(xmlFile, root .. ".TEMPERATURE_CHANGE_SPEED", RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED)
     setXMLFloat(xmlFile, root .. ".TRANS_TEMPERATURE_CHANGE_MULTIPLIER", RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER)
     setXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE",     RMS_Config.THERMAL.MAX_DIRT_INFLUENCE)
-    setXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER",    RMS_Config.THERMAL.WARMING_BOOST_POWER)
-    setXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER", RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER)
 
     -- electrical
     setXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR", RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR)
@@ -1088,14 +1117,47 @@ function RMS_Config.saveToXMLFile()
     -- debug
     setXMLBool (xmlFile, root .. ".DEBUG_MODE",             RMS_Config.DEBUG)
 
-    if RMS_Config.TUTORIAL_STATE_LOADED and RMS_Config.TUTORIAL_LOCAL_USER_ID ~= nil then
-        RMS_Config.setTutorialPlayerState(RMS_Config.TUTORIAL_LOCAL_USER_ID, RMS_Config.captureTutorialState())
+    if includeTutorialStates then
+        if RMS_Config.TUTORIAL_STATE_LOADED and RMS_Config.TUTORIAL_LOCAL_USER_ID ~= nil then
+            RMS_Config.setTutorialPlayerState(RMS_Config.TUTORIAL_LOCAL_USER_ID, RMS_Config.captureTutorialState())
+        end
+        saveTutorialPlayerStates(xmlFile, root)
     end
-    saveTutorialPlayerStates(xmlFile, root)
 
     saveXMLFile(xmlFile)
     delete(xmlFile)
     return true
+end
+
+---Returns the path of the settings file shared by the new savegames
+-- @return string path shared settings file path
+function RMS_Config.getSharedSettingsFilePath()
+    return getUserProfileAppPath() .. RMS_Config.sharedSettingsDirectory .. RMS_Config.savegameFile
+end
+
+---Writes every adjustable setting to the savegame file, then to the shared one
+-- @return boolean written true once both files are written
+function RMS_Config.saveToXMLFile()
+    if g_currentMission == nil or not g_currentMission:getIsServer() then
+        return false
+    end
+
+    if g_currentMission.missionInfo == nil then
+        log_dbg("SAVE ABORT - missionInfo is nil")
+        return false
+    end
+
+    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory
+    if savegameFolderPath == nil then
+        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
+    end
+
+    local savegameWritten = writeConfigFile(savegameFolderPath .. "/" .. RMS_Config.savegameFile, true)
+
+    createFolder(getUserProfileAppPath() .. RMS_Config.sharedSettingsDirectory)
+    local sharedWritten = writeConfigFile(RMS_Config.getSharedSettingsFilePath(), false)
+
+    return savegameWritten and sharedWritten
 end
 
 ---Reads every adjustable setting from the savegame settings file
@@ -1121,6 +1183,16 @@ function RMS_Config.loadFromXMLFile()
 
     local xmlFileName = savegameFolderPath .. "/" .. RMS_Config.savegameFile
 
+    local isLegacyFile = false
+    if not fileExists(xmlFileName) then
+        xmlFileName = savegameFolderPath .. "/" .. RMS_Config.legacySavegameFile
+        isLegacyFile = fileExists(xmlFileName)
+    end
+
+    if not fileExists(xmlFileName) then
+        xmlFileName = RMS_Config.getSharedSettingsFilePath()
+    end
+
     if not fileExists(xmlFileName) then
         return
     end
@@ -1131,7 +1203,7 @@ function RMS_Config.loadFromXMLFile()
         return
     end
 
-    local root = "realisticMechanicalSystems"
+    local root = isLegacyFile and "advancedDamageSystem" or "realisticMechanicalSystems"
     local v
 
     -- core
@@ -1212,12 +1284,6 @@ function RMS_Config.loadFromXMLFile()
     if v ~= nil then RMS_Config.WORKSHOP.CLOSE_HOUR = v end
 
     -- thermal
-    v = getXMLFloat(xmlFile, root .. ".ENGINE_MAX_HEAT")
-    if v ~= nil then RMS_Config.THERMAL.ENGINE_MAX_HEAT = v end
-
-    v = getXMLFloat(xmlFile, root .. ".TRANS_MAX_HEAT")
-    if v ~= nil then RMS_Config.THERMAL.TRANS_MAX_HEAT = v end
-
     v = getXMLFloat(xmlFile, root .. ".TEMPERATURE_CHANGE_SPEED")
     if v ~= nil then RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = math.clamp(v, 0.5, 2.0) end
 
@@ -1225,13 +1291,7 @@ function RMS_Config.loadFromXMLFile()
     if v ~= nil then RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER = math.clamp(v, 0.5, 2.0) end
 
     v = getXMLFloat(xmlFile, root .. ".MAX_DIRT_INFLUENCE")
-    if v ~= nil then RMS_Config.THERMAL.MAX_DIRT_INFLUENCE = v end
-
-    v = getXMLFloat(xmlFile, root .. ".WARMING_BOOST_POWER")
-    if v ~= nil then RMS_Config.THERMAL.WARMING_BOOST_POWER = v end
-
-    v = getXMLFloat(xmlFile, root .. ".COOLING_SLOWDOWN_POWER")
-    if v ~= nil then RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER = v end
+    if v ~= nil then RMS_Config.THERMAL.MAX_DIRT_INFLUENCE = math.clamp(v, 0.0, 1.0) end
 
     -- electrical
     v = getXMLFloat(xmlFile, root .. ".BATTERY_USABLE_CAPACITY_FACTOR")

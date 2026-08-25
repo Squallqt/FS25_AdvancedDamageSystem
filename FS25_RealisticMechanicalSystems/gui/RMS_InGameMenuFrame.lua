@@ -966,7 +966,8 @@ function RMS_InGameMenuFrame:reloadRows()
         [RealisticMechanicalSystems.STATUS.INSPECTION] = true,
         [RealisticMechanicalSystems.STATUS.MAINTENANCE] = true,
         [RealisticMechanicalSystems.STATUS.REPAIR] = true,
-        [RealisticMechanicalSystems.STATUS.OVERHAUL] = true
+        [RealisticMechanicalSystems.STATUS.OVERHAUL] = true,
+        [RealisticMechanicalSystems.STATUS.REFILL] = true
     }
 
     self:updateBalanceDisplay()

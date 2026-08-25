@@ -8,9 +8,34 @@ RMS_Hud.debugViewMode = RMS_Hud.debugViewMode or "default"
 local RMS_Hud_mt = Class(RMS_Hud, HUDDisplay)
 
 RMS_Hud.COLOR_GAME_GREEN = HUD.COLOR.ACTIVE
-RMS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED = 0.009
-RMS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED = 0.0035
-RMS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED = 0.0015
+RMS_Hud.INSPECTION_RING_SIZE = 138
+RMS_Hud.CONSUMPTION_REFRESH_INTERVAL = 500
+RMS_Hud.CONSUMPTION_PER_HOUR_BUCKETS = 2
+RMS_Hud.CONSUMPTION_PER_AREA_BUCKETS = 10
+RMS_Hud.MOTOR_LOAD_BUCKETS = 2
+
+---Formats a number, dropping its decimals when it rounds to zero
+-- @param float value value to format
+-- @param string numberFormat format applied to a non zero value
+-- @return string text formatted value
+local function formatValue(value, numberFormat)
+    local amount = tonumber(value) or 0
+    local text = string.format(numberFormat, amount)
+
+    if text == string.format(numberFormat, 0) then
+        return "0"
+    end
+
+    return text
+end
+
+---Formats a consumption readout, one decimal below a hundred
+-- @param float value consumption value
+-- @return string text formatted value
+local function formatConsumptionValue(value)
+    local amount = math.max(tonumber(value) or 0, 0)
+    return formatValue(amount, amount < 100 and "%.1f" or "%.0f")
+end
 
 ---Create instance of RMS_Hud, loading its overlays and its sounds
 -- @return table self instance of class RMS_Hud
@@ -18,8 +43,15 @@ function RMS_Hud:new()
 	local self = RMS_Hud:superClass().new(RMS_Hud_mt)
 	self.vehicle = nil
     self.telemetryDisplayValues = {
-        consumptionPerArea = 0,
         motorLoad = 0
+    }
+    self.motorLoadAverage = { buckets = {}, current = { value = 0, time = 0 }, timer = 0 }
+    self.consumption = {
+        buckets = {},
+        current = { fuel = 0, time = 0, litres = 0, hectares = 0 },
+        timer = 0,
+        perHour = 0,
+        perArea = nil
     }
 
     g_overlayManager:addTextureConfigFile(RMS_Hud.modDirectory .. "hud/rms_dashboardHud.xml", "rms_DashboardHud")
@@ -130,6 +162,12 @@ function RMS_Hud:new()
         closeGlyphTextSpacing = 6
     }
 
+    self.inspectionProgress = {
+        ratio = nil,
+        messageText = nil,
+        messageEndTime = 0
+    }
+
     self.notificationCloseGlyph = nil
     self.notificationCloseGlyphInputMode = nil
     self.notificationInputContextName = nil
@@ -212,8 +250,9 @@ function RMS_Hud:setVehicle(vehicle)
         self.activeVehicleDebugCache.vehicle = nil
         self.activeVehicleDebugCache.panel = nil
         self.activeVehicleDebugCache.commands = nil
-        self.telemetryDisplayValues.consumptionPerArea = 0
         self.telemetryDisplayValues.motorLoad = 0
+        self.motorLoadAverage = { buckets = {}, current = { value = 0, time = 0 }, timer = 0 }
+        self:resetConsumptionAverages()
     end
 
     self.vehicle = vehicle
@@ -435,6 +474,7 @@ function RMS_Hud:draw()
     end
 
     self:drawNotificationPanel()
+    self:drawInspectionProgress()
 
     if RMS_Config.DEBUG and g_currentMission.isMasterUser and self.vehicle ~= nil and self.activeVehicleDebugPanel.isVisible then
         self:drawActiveVehicleHUD()
@@ -458,10 +498,20 @@ function RMS_Hud.showNotification(text, durationMs, title, playSound)
     end
 end
 
----Hides the notification of the shared HUD instance
-function RMS_Hud.hideNotification()
+---Sets the inspection progress on the shared HUD instance
+-- @param float? ratio progress between 0 and 1
+function RMS_Hud.showInspectionProgress(ratio)
     if RMS_Main ~= nil and RMS_Main.hud ~= nil then
-        RMS_Main.hud:clearNotification()
+        RMS_Main.hud:setInspectionProgress(ratio)
+    end
+end
+
+---Shows a message where the inspection ring stood on the shared HUD instance
+-- @param string text message shown
+-- @param float durationMs time the message stays on screen
+function RMS_Hud.showInspectionMessage(text, durationMs)
+    if RMS_Main ~= nil and RMS_Main.hud ~= nil then
+        RMS_Main.hud:setInspectionMessage(text, durationMs)
     end
 end
 
@@ -658,6 +708,58 @@ function RMS_Hud:drawPanelBackground(x, y, width, height, color)
         panelColor[3],
         panelColor[4] or 1
     )
+end
+
+---Stores the progress the inspection ring draws, absent to hide it
+-- @param float? ratio progress between 0 and 1
+function RMS_Hud:setInspectionProgress(ratio)
+    local progress = self.inspectionProgress
+    progress.ratio = ratio ~= nil and math.clamp(ratio, 0, 1) or nil
+
+    if progress.ratio ~= nil then
+        progress.messageText = nil
+    end
+end
+
+---Stores the message shown where the inspection ring stood
+-- @param string text message shown
+-- @param float durationMs time the message stays on screen
+function RMS_Hud:setInspectionMessage(text, durationMs)
+    local progress = self.inspectionProgress
+    progress.messageText = text
+    progress.messageEndTime = g_time + durationMs
+end
+
+---Draws the inspection progress as a ring filling up around its percentage
+function RMS_Hud:drawInspectionProgress()
+    local progress = self.inspectionProgress
+    local ratio = progress.ratio
+    local centerX, centerY = 0.5, 0.46
+
+    if ratio == nil then
+        if progress.messageText ~= nil and g_time < progress.messageEndTime then
+            local messageSize = self:scalePixelToScreenHeight(20)
+
+            setTextAlignment(RenderText.ALIGN_CENTER)
+            setTextColor(1, 1, 1, 0.55)
+            renderText(centerX, centerY, messageSize, progress.messageText)
+            setTextAlignment(RenderText.ALIGN_LEFT)
+            setTextColor(1, 1, 1, 1)
+        end
+
+        return
+    end
+
+    local ringWidth, ringHeight = self:scalePixelValuesToScreenVector(RMS_Hud.INSPECTION_RING_SIZE, RMS_Hud.INSPECTION_RING_SIZE)
+    RMS_ProgressRing.render(centerX, centerY, ringWidth, ringHeight, ratio)
+
+    local labelSize = self:scalePixelToScreenHeight(17)
+    setTextAlignment(RenderText.ALIGN_CENTER)
+    setTextColor(1, 1, 1, 0.55)
+    renderText(centerX, centerY + ringHeight * 0.5 + labelSize * 0.6, labelSize, g_i18n:getText("rms_field_inspection_progress"))
+
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextColor(1, 1, 1, 1)
 end
 
 ---Draws the notification panel and its text
@@ -917,19 +1019,18 @@ function RMS_Hud:drawDashboard()
             end
 
             local isEngineNotHeated = spec.engineTemperature < RMS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD
-            local isTransmissionNotHeated =
-                (hasCVTTransmission(vehicle) and not hasCVTAddon(vehicle) and spec.transmissionTemperature < RMS_Config.CORE.TRANSMISSION_FACTOR_DATA.COLD_TRANSMISSION_THRESHOLD) or
-                (hasCVTAddon(vehicle) and spec.transmissionTemperature < 55)
 
             if hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and isEngineNotHeated then targetColor = colors.COOL
             elseif hudIndicatorId == self.indicators.coolant.name and targetColor == colors.DEFAULT and spec.engineTemperature > 99 and spec.engineTemperature < 110 then targetColor = colors.WARNING
             elseif hudIndicatorId == self.indicators.coolant.name and spec.engineTemperature > 110 then targetColor = colors.CRITICAL end
-            if hudIndicatorId == self.indicators.transmission.name and targetColor == colors.DEFAULT and isTransmissionNotHeated then targetColor = colors.COOL
-            elseif hudIndicatorId == self.indicators.transmission.name and targetColor == colors.DEFAULT and spec.transmissionTemperature > 99 and spec.transmissionTemperature < 110 then targetColor = colors.WARNING
+            if hudIndicatorId == self.indicators.transmission.name and targetColor == colors.DEFAULT and spec.transmissionTemperature > 99 and spec.transmissionTemperature < 110 then targetColor = colors.WARNING
             elseif hudIndicatorId == self.indicators.transmission.name and spec.transmissionTemperature > 110 then targetColor = colors.CRITICAL end
 
             if hudIndicatorId == self.indicators.service.name and isServiceOverdue then targetColor = colors.WARNING end
-            if hudIndicatorId == self.indicators.oil.name and spec.serviceLevel < 0.2 then targetColor = colors.WARNING end
+            if hudIndicatorId == self.indicators.oil.name
+                    and (tonumber(spec.engineOilLevel) or 1) < RMS_Config.FLUIDS.LEVEL_MIN_MARK then
+                targetColor = colors.CRITICAL
+            end
 
             if isLampTestActive then
                 targetColor = colors.WARNING
@@ -990,12 +1091,7 @@ function RMS_Hud:drawDashboard()
     local engineTemp, transTemp, systemVoltageV = spec.engineTemperature, spec.transmissionTemperature, spec.systemVoltageV
     local motorLoad = 0
     if vehicle:getIsMotorStarted() then
-        local targetMotorLoad = math.clamp(tonumber(spec.dynamicMotorLoad) or 0, 0, 1)
-        local currentMotorLoad = math.clamp(tonumber(self.telemetryDisplayValues.motorLoad) or 0, 0, 1)
-        local interpolationSpeed = targetMotorLoad < 0.8
-            and RMS_Hud.MOTOR_LOAD_DISPLAY_INTERPOLATION_SPEED
-            or RMS_Hud.MOTOR_LOAD_HIGH_DISPLAY_INTERPOLATION_SPEED
-        motorLoad = self:interpolateTelemetryValue(currentMotorLoad, targetMotorLoad, interpolationSpeed)
+        motorLoad = self:updateMotorLoadAverage(math.clamp(tonumber(spec.dynamicMotorLoad) or 0, 0, 1))
     end
     self.telemetryDisplayValues.motorLoad = motorLoad
 
@@ -1014,7 +1110,7 @@ function RMS_Hud:drawDashboard()
         transTempText = string.format("%.0f%s", transTemp, tempSign)
     end
 
-    local batteryVoltageText = string.format("%.1f%s", systemVoltageV, voltageSing)
+    local batteryVoltageText = formatValue(systemVoltageV, "%.1f") .. voltageSing
     local motorText = string.format("%.0f%%", math.max(motorLoad * 100, 0))
 
     local batteryVoltageTextColor = {1, 1, 1, 1}
@@ -1227,6 +1323,27 @@ function RMS_Hud:drawTelemetryCards()
     self:drawFuelConsumption(cardRightX)
 end
 
+---Returns the widest steering assist work area of the whole combination
+-- @param table vehicle controlled vehicle
+-- @return float width working width in metres
+local function getSteeringAssistWidth(vehicle)
+    local width = 0
+    local root = vehicle.rootVehicle or vehicle
+
+    for _, child in pairs(root.childVehicles or {}) do
+        local workAreaSpec = child.spec_workArea
+        if workAreaSpec ~= nil and workAreaSpec.workAreas ~= nil then
+            for _, workArea in pairs(workAreaSpec.workAreas) do
+                if g_workAreaTypeManager:getWorkAreaTypeIsSteeringAssistArea(workArea.type) then
+                    width = math.max(width, tonumber(workArea.workWidth) or 0)
+                end
+            end
+        end
+    end
+
+    return width
+end
+
 ---Returns the fuel consumption per worked area
 -- @return float? rate consumption per hectare
 function RMS_Hud:getConsumptionAreaRate()
@@ -1237,6 +1354,12 @@ function RMS_Hud:getConsumptionAreaRate()
 
     local speed = vehicle.getLastSpeed ~= nil and (tonumber(vehicle:getLastSpeed()) or 0) or 0
     local width = vehicle.getAttacherToolWorkingWidth ~= nil and (tonumber(vehicle:getAttacherToolWorkingWidth()) or 0) or 0
+
+    -- steering assist width fallback
+    if width <= 0 then
+        width = getSteeringAssistWidth(vehicle)
+    end
+
     local guidanceSpec = vehicle.spec_globalPositioningSystem
     if guidanceSpec ~= nil and guidanceSpec.guidanceData ~= nil and guidanceSpec.guidanceData.width ~= nil then
         width = tonumber(guidanceSpec.guidanceData.width) or width
@@ -1245,19 +1368,85 @@ function RMS_Hud:getConsumptionAreaRate()
     return speed, (speed * width) / 10
 end
 
----Eases a telemetry value toward its target so the readout stays readable
--- @param float currentValue value shown now
--- @param float targetValue value to reach
--- @param float interpolationSpeed easing speed
--- @return float value eased value
-function RMS_Hud:interpolateTelemetryValue(currentValue, targetValue, interpolationSpeed)
-    if currentValue == targetValue then
-        return targetValue
+---Clears the consumption samples and their averages
+function RMS_Hud:resetConsumptionAverages()
+    local state = self.consumption
+    state.buckets = {}
+    state.current = { fuel = 0, time = 0, litres = 0, hectares = 0 }
+    state.timer = 0
+    state.perHour = 0
+    state.perArea = nil
+end
+
+---Samples the consumption and refreshes both averages once a second
+-- @param float consumptionPerHour consumption in units per hour
+-- @param float areaRate worked area rate in hectares per hour
+function RMS_Hud:updateConsumptionAverages(consumptionPerHour, areaRate)
+    local state = self.consumption
+    local dt = tonumber(g_currentDt) or 0
+    local current = state.current
+
+    current.fuel = current.fuel + consumptionPerHour * dt
+    current.time = current.time + dt
+
+    if areaRate > 0 then
+        current.litres = current.litres + consumptionPerHour * dt / (60 * 60 * 1000)
+        current.hectares = current.hectares + areaRate * dt / (60 * 60 * 1000)
     end
 
-    local direction = math.sign(targetValue - currentValue)
-    local limitFunc = direction < 0 and math.max or math.min
-    return limitFunc(currentValue + interpolationSpeed * direction * (tonumber(g_currentDt) or 0), targetValue)
+    state.timer = state.timer + dt
+    if state.timer < RMS_Hud.CONSUMPTION_REFRESH_INTERVAL then
+        return
+    end
+    state.timer = 0
+
+    table.insert(state.buckets, 1, current)
+    while #state.buckets > RMS_Hud.CONSUMPTION_PER_AREA_BUCKETS do
+        table.remove(state.buckets)
+    end
+    state.current = { fuel = 0, time = 0, litres = 0, hectares = 0 }
+
+    local fuelSum, timeSum, litresSum, hectaresSum = 0, 0, 0, 0
+    for index, bucket in ipairs(state.buckets) do
+        if index <= RMS_Hud.CONSUMPTION_PER_HOUR_BUCKETS then
+            fuelSum = fuelSum + bucket.fuel
+            timeSum = timeSum + bucket.time
+        end
+        litresSum = litresSum + bucket.litres
+        hectaresSum = hectaresSum + bucket.hectares
+    end
+
+    state.perHour = timeSum > 0 and fuelSum / timeSum or 0
+    state.perArea = hectaresSum > 0.0001 and litresSum / hectaresSum or nil
+end
+
+---Samples the engine load and refreshes its average once a second
+-- @param float motorLoad current engine load between 0 and 1
+-- @return float average averaged engine load
+function RMS_Hud:updateMotorLoadAverage(motorLoad)
+    local state = self.motorLoadAverage
+    local dt = tonumber(g_currentDt) or 0
+
+    state.current.value = state.current.value + motorLoad * dt
+    state.current.time = state.current.time + dt
+    state.timer = state.timer + dt
+
+    if state.timer >= RMS_Hud.CONSUMPTION_REFRESH_INTERVAL then
+        state.timer = 0
+        table.insert(state.buckets, 1, state.current)
+        while #state.buckets > RMS_Hud.MOTOR_LOAD_BUCKETS do
+            table.remove(state.buckets)
+        end
+        state.current = { value = 0, time = 0 }
+    end
+
+    local valueSum, timeSum = 0, 0
+    for _, bucket in ipairs(state.buckets) do
+        valueSum = valueSum + bucket.value
+        timeSum = timeSum + bucket.time
+    end
+
+    return timeSum > 0 and valueSum / timeSum or motorLoad
 end
 
 ---Draws the fuel consumption card
@@ -1280,23 +1469,14 @@ function RMS_Hud:drawFuelConsumption(cardRightX)
     end
 
     local speed, areaRate = self:getConsumptionAreaRate()
-    local consumptionPerArea = 0
-    if speed > 0.9 and areaRate > 0 then
-        consumptionPerArea = consumptionPerHour / areaRate
-    end
-    consumptionPerArea = self:interpolateTelemetryValue(
-        self.telemetryDisplayValues.consumptionPerArea,
-        consumptionPerArea,
-        RMS_Hud.CONSUMPTION_PER_AREA_INTERPOLATION_SPEED
-    )
-    self.telemetryDisplayValues.consumptionPerArea = consumptionPerArea
+    self:updateConsumptionAverages(consumptionPerHour, speed > 0.9 and areaRate or 0)
 
     local isElectric = fuelType == FillType.ELECTRICCHARGE
     local isMethane = fuelType == FillType.METHANE
     local perHourUnit = isElectric and "kW" or (isMethane and "kg/h" or "L/h")
     local perAreaUnit = isElectric and "kWh/ha" or (isMethane and "kg/ha" or "L/ha")
-    local perHourStr = string.format("%.1f", consumptionPerHour)
-    local perAreaStr = string.format("%.1f", consumptionPerArea)
+    local perHourStr = formatConsumptionValue(self.consumption.perHour)
+    local perAreaStr = self.consumption.perArea ~= nil and formatConsumptionValue(self.consumption.perArea) or "-"
 
     local speedMeter = g_currentMission.hud.speedMeter
     local size = self.loadMassText.size or 0.01
@@ -1386,7 +1566,7 @@ end
 -- @param float massTons mass in tons
 -- @return string text formatted mass
 function RMS_Hud:formatMass(massTons)
-    return string.format("%.1f t", math.max(tonumber(massTons) or 0, 0))
+    return formatValue(math.max(tonumber(massTons) or 0, 0), "%.1f") .. " t"
 end
 
 ---Returns a mass that only changes past a threshold, so the readout stops flickering
@@ -1653,10 +1833,13 @@ function RMS_Hud:showInfoVehicle(box)
     if self.spec_RealisticMechanicalSystems ~= nil and not self.spec_RealisticMechanicalSystems.isExcludedVehicle then
         local spec = self.spec_RealisticMechanicalSystems
         
+        local remaining = self:getMaintenanceInterval() - self:getHoursSinceLastMaintenance()
+        local hoursText = string.format("%.0f %s", math.abs(remaining), g_i18n:getText("rms_spec_op_hours_short"))
+        local serviceText = remaining >= 0 and hoursText
+            or string.format(g_i18n:getText("rms_ws_value_service_overdue"), hoursText)
+
         box:addLine(g_i18n:getText('rms_ws_label_condition'), RMS_Utils.formatCondition(self:getLastInspectedCondition()))
-        box:addLine(g_i18n:getText("rms_ws_label_last_inspection"), RMS_Utils.formatTimeAgo(self:getLastInspectionDate()))
-        box:addLine(g_i18n:getText("rms_ws_label_last_maintenance"), RMS_Utils.formatTimeAgo(self:getLastMaintenanceDate()))
-        box:addLine(g_i18n:getText("rms_ws_label_service_interval"), RMS_Utils.formatOperatingHours(self:getHoursSinceLastMaintenance(), self:getMaintenanceInterval()))
+        box:addLine(g_i18n:getText("rms_ws_label_next_service"), serviceText)
 
         
         if spec.currentState ~= RealisticMechanicalSystems.STATUS.READY and spec.currentState ~= RealisticMechanicalSystems.STATUS.BROKEN then

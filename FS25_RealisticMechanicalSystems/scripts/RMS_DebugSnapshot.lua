@@ -16,7 +16,7 @@ RMS_DebugSnapshot.lastRequestTime = -math.huge
 
 local DEBUG_SECTIONS = {
     "service",
-    "airIntake",
+    "airFilter",
     "drivetrain",
     "engine",
     "transmission",

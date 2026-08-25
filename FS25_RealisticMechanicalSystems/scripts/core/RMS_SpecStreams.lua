@@ -76,8 +76,13 @@ function RealisticMechanicalSystems:onWriteStream(streamId, connection)
 
     -- [Group 6] Field care
     streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.radiatorClogging, 0, 0))
-    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.airIntakeClogging, 0, 0))
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.airFilterClogging, 0, 0))
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.airFilterResidue, 0, 0))
     streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.engineOilLevel, 1.0, 0.0, 1.0))
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.coolantLevel, 1.0, 0.0, 1.0))
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.transmissionOilLevel, 1.0, 0.0, 1.0))
+    streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.hydraulicFluidLevel, 1.0, 0.0, 1.0))
     streamWriteBool(streamId, spec.fieldInspectionSoundActive)
 
     -- [Group 7] Wear
@@ -168,9 +173,6 @@ function RealisticMechanicalSystems:onReadStream(streamId, connection)
         spec.engTermPID.mechPos = spec.thermostatState
     end
     spec.transmissionThermostatState = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
-    if spec.transTermPID ~= nil then
-        spec.transTermPID.mechPos = spec.transmissionThermostatState
-    end
 
     -- [Group 5] Electrical
     spec.batterySoc = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0, 1)
@@ -186,8 +188,13 @@ function RealisticMechanicalSystems:onReadStream(streamId, connection)
 
     -- [Group 6] Field care
     spec.radiatorClogging = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
-    spec.airIntakeClogging = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+    spec.airFilterClogging = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+    spec.airFilterResidue = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
     spec.lubricationLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+    spec.engineOilLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+    spec.coolantLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+    spec.transmissionOilLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+    spec.hydraulicFluidLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
     spec.fieldInspectionSoundActive = streamReadBool(streamId)
 
     -- [Group 7] Wear
@@ -292,8 +299,13 @@ function RealisticMechanicalSystems:onWriteUpdateStream(streamId, connection, di
         -- [6] Field care
         if streamWriteBool(streamId, bit32.band(pending, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE) ~= 0) then
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.radiatorClogging, 0, 0))
-            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.airIntakeClogging, 0, 0))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.airFilterClogging, 0, 0))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.airFilterResidue, 0, 0))
             streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.lubricationLevel, 1.0, 0.0, 1.0))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.engineOilLevel, 1.0, 0.0, 1.0))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.coolantLevel, 1.0, 0.0, 1.0))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.transmissionOilLevel, 1.0, 0.0, 1.0))
+            streamWriteFloat32(streamId, RealisticMechanicalSystems.sanitizeNumber(spec.hydraulicFluidLevel, 1.0, 0.0, 1.0))
             streamWriteBool(streamId, spec.fieldInspectionSoundActive)
         end
 
@@ -399,9 +411,6 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
                 spec.engTermPID.mechPos = spec.thermostatState
             end
             spec.transmissionThermostatState = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0, 1)
-            if spec.transTermPID ~= nil then
-                spec.transTermPID.mechPos = spec.transmissionThermostatState
-            end
         end
 
         -- [5] Electrical
@@ -421,8 +430,13 @@ function RealisticMechanicalSystems:onReadUpdateStream(streamId, timestamp, conn
         -- [6] Field care
         if streamReadBool(streamId) then
             spec.radiatorClogging = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
-            spec.airIntakeClogging = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            spec.airFilterClogging = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
+            spec.airFilterResidue = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 0, 0)
             spec.lubricationLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+            spec.engineOilLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+            spec.coolantLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+            spec.transmissionOilLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
+            spec.hydraulicFluidLevel = RealisticMechanicalSystems.sanitizeNumber(streamReadFloat32(streamId), 1.0, 0.0, 1.0)
             spec.fieldInspectionSoundActive = streamReadBool(streamId)
         end
 

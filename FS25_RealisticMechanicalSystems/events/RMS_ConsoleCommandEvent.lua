@@ -23,7 +23,6 @@ RMS_ConsoleCommandEvent.ALLOWED_COMMANDS = {
     setDirtAmount = true,
     setFuelLevel = true,
     setHorsePower = true,
-    setOperatingTime = true,
     setPlowMaxForce = true,
     resetFactorStats = true,
     reinitializeVehicle = true,

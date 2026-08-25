@@ -1,7 +1,7 @@
 -- Copyright (C) 2026 Squallqt.
 -- Licensed under the GNU General Public License v3.0 or later. See LICENSE.
 
----Engine and transmission temperature model, with its thermostat
+---Engine and transmission temperature model, with the engine and transmission thermostats
 RMS_Thermal = RMS_Thermal or {}
 
 local sanitizeNumber = RealisticMechanicalSystems.sanitizeNumber
@@ -95,7 +95,7 @@ function RMS_Thermal:getSmoothedTemperature(dt)
     end
 end
 
----Returns the engine heat output, scaled by motor load and boosted while the engine is cold
+---Returns the engine heat output, scaled by motor load
 -- @param table vehicle vehicle
 -- @param table spec vehicle spec
 -- @param float motorLoad motor load ratio
@@ -108,10 +108,7 @@ local function getEngineHeat(vehicle, spec, motorLoad, isMotorStarted)
     end
 
     local engineMaxHeat = C.ENGINE_MAX_HEAT + sanitizeNumber(spec.extraEngineHeat, 0, -C.ENGINE_MAX_HEAT, 1000)
-    local rawEngineTemperature = sanitizeNumber(spec.rawEngineTemperature, 20, -80, 160)
-    local warmBoost = rawEngineTemperature < RMS_Config.CORE.ENGINE_FACTOR_DATA.COLD_MOTOR_TEMP_THRESHOLD and C.WARMING_BOOST_POWER or 1.0
-    local heat = (C.ENGINE_MIN_HEAT + math.clamp(motorLoad, 0.1, 1.0) * (engineMaxHeat - C.ENGINE_MIN_HEAT)) * warmBoost
-    return heat
+    return C.ENGINE_MIN_HEAT + math.clamp(motorLoad, 0.1, 1.0) * (engineMaxHeat - C.ENGINE_MIN_HEAT)
 end
 
 ---Returns the engine cooling from convection, the radiator and driving speed
@@ -152,7 +149,8 @@ local function getEngineCooling(vehicle, spec, eviromentTemp, dirt, isMotorStart
 
     local radiatorHealth = sanitizeNumber(spec.radiatorHealth, 1.0, 0, 1)
     local thermostatState = sanitizeNumber(spec.thermostatState, 0, 0, 1)
-    local dirtRadiatorMaxCooling = (C.ENGINE_RADIATOR_MAX_COOLING * radiatorHealth) * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 3)) * brokenFanModifier
+    local coolantFactor = RMS_Utils.getFluidCapacityFactor(spec.coolantLevel, RMS_Config.FLUIDS.MIN_COOLING_FACTOR)
+    local dirtRadiatorMaxCooling = (C.ENGINE_RADIATOR_MAX_COOLING * radiatorHealth * coolantFactor) * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 2)) * brokenFanModifier
     local radiatorCooling = math.max(dirtRadiatorMaxCooling * thermostatState, C.ENGINE_RADIATOR_MIN_COOLING) * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
     return (radiatorCooling + convectionCooling) * (1 + speedCooling), radiatorCooling, convectionCooling, speedCooling
 end
@@ -175,7 +173,7 @@ function RMS_Thermal:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoa
     cooling, radiatorCooling, convectionCooling, speedCooling = getEngineCooling(self, spec, eviromentTemp, dirt, isMotorStarted)
 
     local safeDt = sanitizeNumber(dt, 0, 0)
-    spec.rawEngineTemperature = sanitizeNumber(spec.rawEngineTemperature + (heat - cooling) * (safeDt / 1000) * C.TEMPERATURE_CHANGE_SPEED, eviromentTemp, -80, 160)
+    spec.rawEngineTemperature = sanitizeNumber(spec.rawEngineTemperature + (heat - cooling) * (safeDt / 1000) * C.ENGINE_TEMPERATURE_CHANGE_SPEED * C.TEMPERATURE_CHANGE_SPEED, eviromentTemp, -80, 160)
     spec.rawEngineTemperature = math.max(spec.rawEngineTemperature, eviromentTemp)
 
     local dbg = spec.debugData.engineTemp
@@ -202,37 +200,49 @@ function RMS_Thermal:updateEngineThermalModel(dt, spec, isMotorStarted, motorLoa
     return dbg
 end
 
----Returns the transmission heat from load, acceleration, CVT slip, wheel slip and hydraulic work
+---Returns the transmission heat from oil circulation, the pump, the pto, load, the hydrostatic ratio, wheel slip and hydraulic work
 -- @param table vehicle vehicle
 -- @param table spec vehicle spec
 -- @param boolean isMotorStarted true while the motor runs
 -- @param float motorLoad motor load ratio
 -- @param float motorRpm motor rpm ratio
 -- @return float heat heat output
--- @return float loadFactor load contribution
--- @return float slipFactor cvt slip contribution
+-- @return float loadFactor share of the motor load that passes through the gearbox
+-- @return float hydrostaticFactor hydrostatic contribution
 -- @return float wheelSlipFactor wheel slip contribution
 -- @return float accFactor acceleration contribution
 -- @return boolean cvtSlipActive true when the cvt slip effect is present
 -- @return boolean cvtSlipLocked true when the cvt slip effect is actually slipping
+-- @return float idleHeat circulation and pump contribution
+-- @return float ptoHeat pto contribution
 -- @return float hydraulicHeat hydraulic contribution
 local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, motorRpm)
     local C = RMS_Config.THERMAL
     local motor = vehicle:getMotor()
 
-    local externalTorque = sanitizeNumber(motor.motorExternalTorque, 0, -1000000, 1000000)
-    local peakMotorTorque = sanitizeNumber(motor.peakMotorTorque, 1, 0.001, 1000000)
-    local loadFactor = math.clamp(motorLoad - externalTorque / peakMotorTorque, C.TRANS_MIN_HEAT, 1.1)
-    local slipFactor = 1.0
+    -- load and rpm terms, against the torque available at the current rpm
+    local availableTorque = sanitizeNumber(motor:getMotorAvailableTorque(), 0, 0, 1000000)
+    local externalTorque = sanitizeNumber(motor:getMotorExternalTorque(), 0, 0, 1000000)
+    local ptoShare = availableTorque > 0.001 and math.clamp(externalTorque / availableTorque, 0.0, 1.0) or 0
+    local loadFactor = math.clamp(motorLoad - ptoShare, 0.0, 1.1)
+    local hydrostaticFactor = 1.0
     local wheelSlipFactor = 1.0
     local accFactor = 1.0
     local cvtSlipActive = false
     local cvtSlipLocked = false
+    local idleHeat = 0
+    local ptoHeat = 0
     local hydraulicHeat = 0
 
     if isMotorStarted == false then
-        return 0, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat
+        return 0, loadFactor, hydrostaticFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, idleHeat, ptoHeat, hydraulicHeat
     end
+
+    idleHeat = (C.TRANS_IDLE_HEAT + C.TRANS_PUMP_HEAT) * (1 + math.clamp(motorRpm, 0.0, 1.0))
+
+    local currentSpeed = sanitizeNumber(vehicle:getLastSpeed(), 0, 0, 1000)
+    local maxForwardSpeed = sanitizeNumber(motor:getMaximumForwardSpeed(), 1, 0.001, 1000)
+    local speedRatio = math.clamp(currentSpeed / (maxForwardSpeed * 3.6), 0.0, 1.0)
 
     local accelerationAxis = vehicle.getAccelerationAxis ~= nil and sanitizeNumber(vehicle:getAccelerationAxis(), 0, -1, 1) or 0
     local cruiseControlAxis = vehicle.getCruiseControlAxis ~= nil and sanitizeNumber(vehicle:getCruiseControlAxis(), 0, -1, 1) or 0
@@ -243,18 +253,21 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
         accFactor = math.clamp(5 * motorRpm * math.clamp(rotAcceleration / rotAccelerationLimit, 0.0, 1.0), 1.0, 2.0)
     end
 
+    -- extra load heat below the hydrostatic speed, variable transmissions pulling only
+    if (accelerationAxis > 0 or cruiseControlAxis > 0) and (RMS_Utils.hasCVTTransmission(vehicle) or RMS_Utils.hasCVTAddon(vehicle)) then
+        local hydrostaticShare = math.clamp(1 - currentSpeed / math.max(C.TRANS_HYDROSTATIC_MAX_SPEED, 0.001), 0.0, 1.0)
+        hydrostaticFactor = 1 + C.TRANS_HYDROSTATIC_MAX_BOOST * (hydrostaticShare ^ 2)
+    end
+
     -- cvt slip only heats while the ratio sits at its minimum below eighty percent of top speed
     if spec.activeEffects.CVT_SLIP_EFFECT ~= nil and spec.activeEffects.CVT_SLIP_EFFECT.value > 0 then
         cvtSlipActive = true
-        local maxForwardSpeed = sanitizeNumber(motor:getMaximumForwardSpeed(), 1, 0.001, 1000)
-        local curSpeed = math.min(sanitizeNumber(motor.vehicle:getLastSpeed(), 0, 0, 1000) / (maxForwardSpeed * 3.6), 1.0)
-        local minGearRatio, maxGearRatio = motor:getMinMaxGearRatio()
-        minGearRatio = sanitizeNumber(minGearRatio, 1, 0.001, 1000000)
+        local minGearRatio = sanitizeNumber(motor:getMinMaxGearRatio(), 1, 0.001, 1000000)
         local gearRatio = sanitizeNumber(motor.gearRatio, minGearRatio, 0.01, 1000000)
-        local isSliping = (1 - minGearRatio / gearRatio <= 0.02) and curSpeed < 0.8
+        local isSliping = (1 - minGearRatio / gearRatio <= 0.02) and speedRatio < 0.8
         if isSliping then
             cvtSlipLocked = true
-            slipFactor = slipFactor * 2.0
+            hydrostaticFactor = hydrostaticFactor * 2.0
         end
     end
 
@@ -272,19 +285,38 @@ local function getTransmissionHeat(vehicle, spec, isMotorStarted, motorLoad, mot
     end
 
     local maxHeat = C.TRANS_MAX_HEAT + sanitizeNumber(spec.extraTransmissionHeat, 0, -C.TRANS_MAX_HEAT, 1000)
-    local heat = C.TRANS_MIN_HEAT + (maxHeat - C.TRANS_MIN_HEAT) * loadFactor * slipFactor * accFactor * wheelSlipFactor + hydraulicHeat
+    local loadHeatRange = math.max(maxHeat - idleHeat, 0)
+    ptoHeat = loadHeatRange * ptoShare * C.TRANS_PTO_HEAT_SHARE
+    local heat = idleHeat + loadHeatRange * loadFactor * hydrostaticFactor * accFactor * wheelSlipFactor + ptoHeat + hydraulicHeat
 
-    return heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat
+    return heat, loadFactor, hydrostaticFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, idleHeat, ptoHeat, hydraulicHeat
 end
 
----Returns the transmission cooling from convection, its radiator and driving speed
+---Returns the transmission thermostat opening the oil temperature calls for
+-- @param table spec vehicle spec
+-- @param float temperature oil temperature
+-- @return float state opening between 0 and 1
+local function getTransmissionThermostatState(spec, temperature)
+    local C = RMS_Config.THERMAL
+    if spec.transmissionThermostatStuckedPosition ~= nil then
+        return sanitizeNumber(spec.transmissionThermostatStuckedPosition, 0, 0, 1)
+    end
+
+    -- thermostat opening temperature, raised by wear
+    local health = math.clamp(sanitizeNumber(spec.transmissionThermostatHealth, 1.0, 0, 1), 0.0, 1.0)
+    local openTemp = C.TRANS_THERMOSTAT_MIN_TEMP + (1 - health) * C.TRANS_THERMOSTAT_HEALTH_LAG
+    local range = math.max(C.TRANS_THERMOSTAT_MAX_TEMP - C.TRANS_THERMOSTAT_MIN_TEMP, 0.001)
+    return math.clamp((sanitizeNumber(temperature, 20, -80, 180) - openTemp) / range, 0.0, 1.0)
+end
+
+---Returns the transmission cooling from convection, its oil cooler and driving speed
 -- @param table vehicle vehicle
 -- @param table spec vehicle spec
 -- @param float eviromentTemp ambient temperature
 -- @param float dirt radiator clogging ratio
 -- @param boolean isMotorStarted true while the motor runs
 -- @return float cooling total cooling
--- @return float radiatorCooling radiator share
+-- @return float coolerCooling oil cooler share
 -- @return float convectionCooling convection share
 -- @return float speedCooling speed share
 local function getTransmissionCooling(vehicle, spec, eviromentTemp, dirt, isMotorStarted)
@@ -294,18 +326,22 @@ local function getTransmissionCooling(vehicle, spec, eviromentTemp, dirt, isMoto
     local convectionCooling = C.CONVECTION_FACTOR * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
     local speedCooling = getSpeedCooling(vehicle)
 
+    -- motor stopped, convection only
     if isMotorStarted == false then
-        if (spec.rawTransmissionTemperature or -99) < C.TRANS_PID_TARGET_TEMP then
+        if rawTransmissionTemperature < C.TRANS_THERMOSTAT_MAX_TEMP then
             return convectionCooling / C.COOLING_SLOWDOWN_POWER, 0, convectionCooling, speedCooling
         else
             return convectionCooling, 0, convectionCooling, speedCooling
         end
     end
 
-    local transmissionThermostatState = sanitizeNumber(spec.transmissionThermostatState, 0, 0, 1)
-    local dirtRadiatorMaxCooling = C.TRANS_RADIATOR_MAX_COOLING * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 3))
-    local radiatorCooling = math.max(dirtRadiatorMaxCooling * transmissionThermostatState, C.TRANS_RADIATOR_MIN_COOLING) * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
-    return (radiatorCooling + convectionCooling) * (1 + speedCooling), radiatorCooling, convectionCooling, speedCooling
+    local thermostatState = sanitizeNumber(spec.transmissionThermostatState, 0, 0, 1)
+    local fanRange = math.max(C.TRANS_FAN_MAX_TEMP - C.TRANS_THERMOSTAT_MAX_TEMP, 0.001)
+    local fanBoost = 1 + C.TRANS_FAN_MAX_BOOST * math.clamp((rawTransmissionTemperature - C.TRANS_THERMOSTAT_MAX_TEMP) / fanRange, 0.0, 1.0)
+    local oilFactor = RMS_Utils.getFluidCapacityFactor(spec.transmissionOilLevel, RMS_Config.FLUIDS.MIN_COOLING_FACTOR)
+    local dirtCoolerMaxCooling = C.TRANS_COOLER_MAX_COOLING * oilFactor * (1 - C.MAX_DIRT_INFLUENCE * (dirt ^ 2))
+    local coolerCooling = dirtCoolerMaxCooling * thermostatState * fanBoost * (deltaTemp ^ C.DELTATEMP_FACTOR_DEGREE)
+    return (coolerCooling + convectionCooling) * (1 + speedCooling), coolerCooling, convectionCooling, speedCooling
 end
 
 ---Advances the raw transmission temperature by heat minus cooling, then updates its thermostat
@@ -320,53 +356,49 @@ end
 function RMS_Thermal:updateTransmissionThermalModel(dt, spec, isMotorStarted, motorLoad, motorRpm, eviromentTemp, dirt)
     local C = RMS_Config.THERMAL
     local heat, cooling = 0, 0
-    local radiatorCooling, convectionCooling = 0, 0
+    local coolerCooling, convectionCooling = 0, 0
     local speedCooling = 0
     local loadFactor = 0
-    local slipFactor = 1.0
+    local hydrostaticFactor = 1.0
     local wheelSlipFactor = 1.0
     local accFactor = 1.0
     local cvtSlipActive = false
     local cvtSlipLocked = false
+    local idleHeat = 0
+    local ptoHeat = 0
     local hydraulicHeat = 0
 
     local dbg = spec.debugData.transmissionTemp
 
-    heat, loadFactor, slipFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, hydraulicHeat = getTransmissionHeat(self, spec, isMotorStarted, motorLoad, motorRpm)
-    cooling, radiatorCooling, convectionCooling, speedCooling = getTransmissionCooling(self, spec, eviromentTemp, dirt, isMotorStarted)
+    heat, loadFactor, hydrostaticFactor, wheelSlipFactor, accFactor, cvtSlipActive, cvtSlipLocked, idleHeat, ptoHeat, hydraulicHeat = getTransmissionHeat(self, spec, isMotorStarted, motorLoad, motorRpm)
+    cooling, coolerCooling, convectionCooling, speedCooling = getTransmissionCooling(self, spec, eviromentTemp, dirt, isMotorStarted)
 
     local safeDt = sanitizeNumber(dt, 0, 0)
     spec.rawTransmissionTemperature = sanitizeNumber(spec.rawTransmissionTemperature + (heat - cooling) * (safeDt / 1000) * C.TRANS_TEMPERATURE_CHANGE_SPEED * C.TRANS_TEMPERATURE_CHANGE_MULTIPLIER, eviromentTemp, -80, 180)
     spec.rawTransmissionTemperature = math.max(spec.rawTransmissionTemperature, eviromentTemp)
 
     local rawTransmissionTemp = sanitizeNumber(spec.rawTransmissionTemperature or spec.transmissionTemperature, eviromentTemp, -80, 180)
-    if isMotorStarted and rawTransmissionTemp > C.TRANS_THERMOSTAT_MIN_TEMP then
-        spec.transmissionThermostatState = RMS_Thermal.getNewTermostatState(dt, rawTransmissionTemp, C.TRANS_PID_TARGET_TEMP, spec.transTermPID, spec.transmissionThermostatHealth, spec.year, spec.transmissionThermostatStuckedPosition, dbg)
+    if isMotorStarted then
+        spec.transmissionThermostatState = getTransmissionThermostatState(spec, rawTransmissionTemp)
     else
         spec.transmissionThermostatState = 0.0
-        spec.transTermPID.integral = 0
-        spec.transTermPID.lastError = 0
-
-        if dbg then
-            dbg.kp = 0
-            dbg.stiction = 0
-            dbg.waxSpeed = 0
-        end
     end
 
     if dbg then
         dbg.totalHeat = heat
         dbg.totalCooling = cooling
-        dbg.radiatorCooling = radiatorCooling
+        dbg.coolerCooling = coolerCooling
         dbg.speedCooling = speedCooling
         dbg.convectionCooling = convectionCooling
         dbg.loadFactor = loadFactor
-        dbg.slipFactor = slipFactor
+        dbg.hydrostaticFactor = hydrostaticFactor
         dbg.wheelSlipFactor = wheelSlipFactor
         dbg.accFactor = accFactor
         dbg.cvtSlipActive = cvtSlipActive and 1 or 0
         dbg.cvtSlipLocked = cvtSlipLocked and 1 or 0
         dbg.extraTransmissionHeat = spec.extraTransmissionHeat or 0
+        dbg.idleHeat = idleHeat
+        dbg.ptoHeat = ptoHeat
         dbg.hydraulicHeat = hydraulicHeat
     end
 
@@ -442,7 +474,9 @@ function RMS_Thermal.getNewTermostatState(dt, currentTemp, targetTemp, pidData, 
     targetPos = math.clamp(targetPos, 0.0, maxOpening)
 
     local baseSpeed = isMechanical and C.MECHANIC_THERMOSTAT_MIN_WAX_SPEED or C.ELECTRONIC_THERMOSTAT_MIN_WAX_SPEED
-    local yearFactor = isMechanical and (year - 1950) * 0.0005 or (year - 2000) * 0.0016
+    local yearFactor = isMechanical
+        and (year - C.MECHANIC_THERMOSTAT_MIN_YEAR) * C.MECHANIC_THERMOSTAT_WAX_YEAR_SLOPE
+        or (year - C.THERMOSTAT_TYPE_YEAR_DIVIDER) * C.ELECTRONIC_THERMOSTAT_WAX_YEAR_SLOPE
 
     local waxSpeed = math.clamp(baseSpeed + yearFactor, C.MECHANIC_THERMOSTAT_MIN_WAX_SPEED, C.ELECTRONIC_THERMOSTAT_MAX_WAX_SPEED)
     waxSpeed = waxSpeed * math.max(0.2, thermostatHealth)
@@ -459,8 +493,10 @@ function RMS_Thermal.getNewTermostatState(dt, currentTemp, targetTemp, pidData, 
     local newPos = math.clamp(currentMechPos + delta, 0.0, maxOpening)
     pidData.mechPos = newPos
 
-    local baseStiction = isMechanical and (0.1 - (year - 1950) * 0.0016) or (0.05 - (year - 2000) * 0.0016)
-    local stiction = math.clamp(baseStiction, 0.01, 0.1)
+    local baseStiction = isMechanical
+        and (C.MECHANIC_THERMOSTAT_MAX_STICTION - (year - C.MECHANIC_THERMOSTAT_MIN_YEAR) * C.STICTION_YEAR_SLOPE)
+        or (C.ELECTRONIC_THERMOSTAT_MAX_STICTION - (year - C.THERMOSTAT_TYPE_YEAR_DIVIDER) * C.STICTION_YEAR_SLOPE)
+    local stiction = math.clamp(baseStiction, C.ELECTRONIC_THERMOSTAT_MIN_STICTION, C.MECHANIC_THERMOSTAT_MAX_STICTION)
 
     stiction = stiction * (2 - math.max(0.5, thermostatHealth))
 

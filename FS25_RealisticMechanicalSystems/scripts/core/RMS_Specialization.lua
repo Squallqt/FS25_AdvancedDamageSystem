@@ -9,6 +9,7 @@ RealisticMechanicalSystems = {
         INSPECTION = 'rms_spec_state_inspection',
         MAINTENANCE = 'rms_spec_state_maintenance',
         REPAIR = 'rms_spec_state_repair',
+        REFILL = 'rms_spec_state_refill',
         OVERHAUL = 'rms_spec_state_overhaul',
         BROKEN = 'rms_spec_state_broken'
     },
@@ -146,6 +147,53 @@ function RealisticMechanicalSystems.isFiniteNumber(value)
     return type(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge
 end
 
+---Renamed Advanced Damage System breakdown identifiers, by their RMS name
+RealisticMechanicalSystems.LEGACY_BREAKDOWN_IDS = {
+    AIRINTAKE_CLOGGING = "AIRFILTER_CLOGGING"
+}
+
+---Converts an Advanced Damage System breakdown identifier into its RMS counterpart
+-- @param string? breakdownId breakdown identifier read from the savegame
+-- @return string? breakdownId converted identifier
+function RealisticMechanicalSystems.fromLegacyBreakdownId(breakdownId)
+    return RealisticMechanicalSystems.LEGACY_BREAKDOWN_IDS[breakdownId] or breakdownId
+end
+
+---Converts an Advanced Damage System constant read from a savegame into its RMS counterpart
+-- @param any value value read from the savegame
+-- @return any value converted value
+function RealisticMechanicalSystems.fromLegacyConstant(value)
+    if type(value) ~= "string" then
+        return value
+    end
+
+    return (value:gsub("^ads_", "rms_"))
+end
+
+---Returns the vehicle savegame key, falling back on the Advanced Damage System one
+-- @param table savegame savegame
+-- @return string key savegame key
+function RealisticMechanicalSystems.getSavegameKey(savegame)
+    local key = savegame.key .. ".RealisticMechanicalSystems"
+    if savegame.xmlFile:hasProperty(key) then
+        return key
+    end
+
+    local legacyKey = savegame.key .. ".AdvancedDamageSystem"
+    if savegame.xmlFile:hasProperty(legacyKey) then
+        return legacyKey
+    end
+
+    return key
+end
+
+---Tells whether a vehicle is lent by a contract
+-- @param table? vehicle vehicle
+-- @return boolean isMissionVehicle true for a contract vehicle
+function RealisticMechanicalSystems.isMissionVehicle(vehicle)
+    return vehicle ~= nil and vehicle.propertyState == VehiclePropertyState.MISSION
+end
+
 ---Converts a value to a finite number within bounds, falling back when it cannot
 -- @param any value value to convert
 -- @param float fallback value used when the conversion fails
@@ -193,8 +241,9 @@ RealisticMechanicalSystems.FACTOR_STATS_ALIASES = {
     expiredServiceFactor = "sf",
     -- engine
     motorLoadFactor = "mlf",
-    airIntakeCloggingFactor = "aicf",
+    airFilterCloggingFactor = "aicf",
     coldMotorFactor = "cmf",
+    lowFluidFactor = "flf",
     hotMotorFactor = "hmf",
     -- transmission
     pullOverloadFactor = "pof",
@@ -694,13 +743,23 @@ local function markFieldcareDirty(vehicle, spec)
     end
 
     if syncFloatChanged(spec._lastSyncFieldcare_radiatorClogging, spec.radiatorClogging, 0.005) or
-       syncFloatChanged(spec._lastSyncFieldcare_airIntakeClogging, spec.airIntakeClogging, 0.005) or
+       syncFloatChanged(spec._lastSyncFieldcare_airFilterClogging, spec.airFilterClogging, 0.005) or
+       syncFloatChanged(spec._lastSyncFieldcare_airFilterResidue, spec.airFilterResidue, 0.005) or
        syncFloatChanged(spec._lastSyncFieldcare_lubricationLevel, spec.lubricationLevel, 0.005) or
+       syncFloatChanged(spec._lastSyncFieldcare_engineOilLevel, spec.engineOilLevel, 0.005) or
+       syncFloatChanged(spec._lastSyncFieldcare_coolantLevel, spec.coolantLevel, 0.005) or
+       syncFloatChanged(spec._lastSyncFieldcare_transmissionOilLevel, spec.transmissionOilLevel, 0.005) or
+       syncFloatChanged(spec._lastSyncFieldcare_hydraulicFluidLevel, spec.hydraulicFluidLevel, 0.005) or
        spec._lastSyncFieldcare_inspectionSoundActive ~= spec.fieldInspectionSoundActive then
             RealisticMechanicalSystems.raiseRMSDirty(vehicle, RealisticMechanicalSystems.SYNC_GROUP.FIELDCARE)
             spec._lastSyncFieldcare_radiatorClogging = spec.radiatorClogging
-            spec._lastSyncFieldcare_airIntakeClogging = spec.airIntakeClogging
+            spec._lastSyncFieldcare_airFilterClogging = spec.airFilterClogging
+            spec._lastSyncFieldcare_airFilterResidue = spec.airFilterResidue
             spec._lastSyncFieldcare_lubricationLevel = spec.lubricationLevel
+            spec._lastSyncFieldcare_engineOilLevel = spec.engineOilLevel
+            spec._lastSyncFieldcare_coolantLevel = spec.coolantLevel
+            spec._lastSyncFieldcare_transmissionOilLevel = spec.transmissionOilLevel
+            spec._lastSyncFieldcare_hydraulicFluidLevel = spec.hydraulicFluidLevel
             spec._lastSyncFieldcare_inspectionSoundActive = spec.fieldInspectionSoundActive
             return true
     end
@@ -991,84 +1050,92 @@ function RealisticMechanicalSystems.initSpecialization()
 
     schema:setXMLSpecializationType("RealisticMechanicalSystems")
 
-    local baseKey = "vehicles.vehicle(?).RealisticMechanicalSystems"
-    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#userExclusion", "User decision overriding the automatic exclusion, absent when the user has no opinion")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#service", "Service Level")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#condition", "Condition Level")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#breakdowns", "Active Breakdowns")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#state", "Current State")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#plannedState", "Planned State")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#maintenanceTimer", "Maintenance Timer")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#realOperatingTime", "Real Operating Time")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#engineTemperature", "Engine Temperature")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionTemperature", "Transmission Temperature")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#batterySoc", "Battery State Of Charge")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#batteryChargeAh", "Battery Absolute Charge")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#batteryTempC", "Battery Temperature")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#radiatorClogging", "Radiator clogging level")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airIntakeClogging", "Air intake clogging level")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#wetStackingLevel", "Wet stacking deposit level")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lubricationLevel", "Lubrication level")
-    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#lubricationUsedThisPeriod", "Whether the vehicle was used during the current period")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#thermostatState", "Engine Thermostat Position")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionThermostatState", "Transmission Thermostat Position")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#serviceOptionOne", "Current Service Option One")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#serviceOptionTwo", "Current Service Option Two")
-    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#serviceOptionThree", "Current Service Option Three")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#workshopType", "Workshop Type")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingSelectedBreakdowns", "Pending Selected Breakdowns")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingServicePrice", "Pending Service Price")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingInspectionQueue", "Pending Inspection Queue")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairQueue", "Pending Repair Queue")
-    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#pendingProgressStepIndex", "Pending Progress Step Index")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingProgressTotalTime", "Pending Progress Total Time")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingProgressElapsedTime", "Pending Progress Elapsed Time")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingMaintenanceServiceStart", "Pending Maintenance Service Start")
-    schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingMaintenanceServiceTarget", "Pending Maintenance Service Target")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingPreventiveSystemStressStart", "Pending preventive per-system stress start values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingPreventiveSystemStressTarget", "Pending preventive per-system stress target values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#systemsState", "Systems state snapshot")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#factorStats", "Per-system accumulated factor stats")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemStart", "Pending overhaul per-system start values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemTarget", "Pending overhaul per-system target values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemStressStart", "Pending overhaul per-system stress start values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemStressTarget", "Pending overhaul per-system stress target values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressStart", "Pending repair per-system stress start values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressTarget", "Pending repair per-system stress target values")
-    schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressStartRatio", "Pending repair per-system stress start ratios")
-    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#driveMode", "Drivetrain mode (0=4x2, 1=4WD, 2=AUTO)")
-    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#diffLockRequested", "Differential lock requested")
-    schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#parkBrake", "Parking brake engaged")
-    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementCount", "PTO engagement count")
-    schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementSequence", "PTO engagement cycle sequence")
+    for _, baseKey in ipairs({ "vehicles.vehicle(?).RealisticMechanicalSystems", "vehicles.vehicle(?).AdvancedDamageSystem" }) do
+        schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#userExclusion", "User decision overriding the automatic exclusion, absent when the user has no opinion")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#service", "Service Level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#condition", "Condition Level")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#breakdowns", "Active Breakdowns")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#state", "Current State")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#plannedState", "Planned State")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#maintenanceTimer", "Maintenance Timer")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#realOperatingTime", "Real Operating Time")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#engineTemperature", "Engine Temperature")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionTemperature", "Transmission Temperature")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#coldTransAbuseTimer", "Cold transmission abuse timer")
+        schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#coldTransAbuseDone", "Whether cold transmission damage was already applied during this cold period")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#batterySoc", "Battery State Of Charge")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#batteryTempC", "Battery Temperature")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#radiatorClogging", "Radiator clogging level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airFilterClogging", "Air filter clogging level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airIntakeClogging", "Legacy air intake clogging level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#airFilterResidue", "Air filter clogging a blow out cannot remove")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#engineOilLevel", "Engine oil level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#coolantLevel", "Coolant level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionOilLevel", "Transmission oil level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#hydraulicFluidLevel", "Hydraulic fluid level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#wetStackingLevel", "Wet stacking deposit level")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#lubricationLevel", "Lubrication level")
+        schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#lubricationUsedThisPeriod", "Whether the vehicle was used during the current period")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#thermostatState", "Engine Thermostat Position")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#transmissionThermostatState", "Transmission Thermostat Position")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#serviceOptionOne", "Current Service Option One")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#serviceOptionTwo", "Current Service Option Two")
+        schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#serviceOptionThree", "Current Service Option Three")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#workshopType", "Workshop Type")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingSelectedBreakdowns", "Pending Selected Breakdowns")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingServicePrice", "Pending Service Price")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingInspectionQueue", "Pending Inspection Queue")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairQueue", "Pending Repair Queue")
+        schemaSavegame:register(XMLValueType.INT,    baseKey .. "#pendingProgressStepIndex", "Pending Progress Step Index")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingProgressTotalTime", "Pending Progress Total Time")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingProgressElapsedTime", "Pending Progress Elapsed Time")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingMaintenanceServiceStart", "Pending Maintenance Service Start")
+        schemaSavegame:register(XMLValueType.FLOAT,  baseKey .. "#pendingMaintenanceServiceTarget", "Pending Maintenance Service Target")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingPreventiveSystemStressStart", "Pending preventive per-system stress start values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingPreventiveSystemStressTarget", "Pending preventive per-system stress target values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#systemsState", "Systems state snapshot")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#factorStats", "Per-system accumulated factor stats")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemStart", "Pending overhaul per-system start values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemTarget", "Pending overhaul per-system target values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemStressStart", "Pending overhaul per-system stress start values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingOverhaulSystemStressTarget", "Pending overhaul per-system stress target values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressStart", "Pending repair per-system stress start values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressTarget", "Pending repair per-system stress target values")
+        schemaSavegame:register(XMLValueType.STRING, baseKey .. "#pendingRepairSystemStressStartRatio", "Pending repair per-system stress start ratios")
+        schemaSavegame:register(XMLValueType.INT,    baseKey .. "#driveMode", "Drivetrain mode (0=4x2, 1=4WD, 2=AUTO)")
+        schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#diffLockRequested", "Differential lock requested")
+        schemaSavegame:register(XMLValueType.BOOL,   baseKey .. "#parkBrake", "Parking brake engaged")
+        schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementCount", "PTO engagement count")
+        schemaSavegame:register(XMLValueType.INT,    baseKey .. "#ptoEngagementSequence", "PTO engagement cycle sequence")
 
-    local logKey = baseKey .. ".maintenanceLog.entry(?)"
-    schemaSavegame:register(XMLValueType.INT,    logKey .. "#id", "Entry ID")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#type", "Maintenance Type")
-    schemaSavegame:register(XMLValueType.FLOAT,  logKey .. "#price", "Price")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#date", "Date")
+        local logKey = baseKey .. ".maintenanceLog.entry(?)"
+        schemaSavegame:register(XMLValueType.INT,    logKey .. "#id", "Entry ID")
+        schemaSavegame:register(XMLValueType.STRING, logKey .. "#type", "Maintenance Type")
+        schemaSavegame:register(XMLValueType.FLOAT,  logKey .. "#price", "Price")
+        schemaSavegame:register(XMLValueType.STRING, logKey .. "#date", "Date")
     
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#location", "Workshop Location")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#optionOne", "Option One")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#optionTwo", "Option Two")
-    schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#optionThree", "Option Three")
-    schemaSavegame:register(XMLValueType.STRING, logKey .. "#isVisible", "is Visible in Log")
-    schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#isCompleted", "Is Completed")
-    local condKey = logKey .. ".conditionData"
-    schemaSavegame:register(XMLValueType.INT,    condKey .. "#year", "Vehicle Year")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#operatingHours", "Operating Hours")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#age", "Vehicle Age")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#condition", "Condition Level")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#service", "Service Level")
-    schemaSavegame:register(XMLValueType.STRING, condKey .. "#activeBreakdowns", "Active Breakdowns")
-    schemaSavegame:register(XMLValueType.STRING, condKey .. "#selectedBreakdowns", "Selected Breakdowns")
-    schemaSavegame:register(XMLValueType.STRING, condKey .. "#activeEffects", "Active Effects")
-    schemaSavegame:register(XMLValueType.STRING, condKey .. "#activeIndicators", "Active Indicators")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#reliability", "Reliability")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#maintainability", "Maintainability")
-    schemaSavegame:register(XMLValueType.STRING, condKey .. "#systems", "Per-system snapshot")
-    schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#batterySoc", "Battery State Of Charge")
-    
+        schemaSavegame:register(XMLValueType.STRING, logKey .. "#location", "Workshop Location")
+        schemaSavegame:register(XMLValueType.STRING, logKey .. "#optionOne", "Option One")
+        schemaSavegame:register(XMLValueType.STRING, logKey .. "#optionTwo", "Option Two")
+        schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#optionThree", "Option Three")
+        schemaSavegame:register(XMLValueType.STRING, logKey .. "#isVisible", "is Visible in Log")
+        schemaSavegame:register(XMLValueType.BOOL,   logKey .. "#isCompleted", "Is Completed")
+        local condKey = logKey .. ".conditionData"
+        schemaSavegame:register(XMLValueType.INT,    condKey .. "#year", "Vehicle Year")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#operatingHours", "Operating Hours")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#age", "Vehicle Age")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#condition", "Condition Level")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#service", "Service Level")
+        schemaSavegame:register(XMLValueType.STRING, condKey .. "#activeBreakdowns", "Active Breakdowns")
+        schemaSavegame:register(XMLValueType.STRING, condKey .. "#selectedBreakdowns", "Selected Breakdowns")
+        schemaSavegame:register(XMLValueType.STRING, condKey .. "#activeEffects", "Active Effects")
+        schemaSavegame:register(XMLValueType.STRING, condKey .. "#activeIndicators", "Active Indicators")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#reliability", "Reliability")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#maintainability", "Maintainability")
+        schemaSavegame:register(XMLValueType.STRING, condKey .. "#systems", "Per-system snapshot")
+        schemaSavegame:register(XMLValueType.FLOAT,  condKey .. "#batterySoc", "Battery State Of Charge")
+    end
+
     schema:setXMLSpecializationType()
 end
 
@@ -1102,7 +1169,6 @@ function RealisticMechanicalSystems.registerOverwrittenFunctions(vehicleType)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateConsumers", RMS_Breakdowns.updateConsumersOverwrite)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSellPrice", RealisticMechanicalSystems.getSellPrice)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "updateMotorTemperature", RealisticMechanicalSystems.updateMotorTemperature)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "setOperatingTime", RealisticMechanicalSystems.setOperatingTime)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "addToPhysics", RMS_Drivetrain.addToPhysics)
 
     
@@ -1175,9 +1241,13 @@ function RealisticMechanicalSystems.registerFunctions(vehicleType)
     SpecializationUtil.registerFunction(vehicleType, "updateDrivetrain", RMS_Drivetrain.updateDrivetrain)
 
     SpecializationUtil.registerFunction(vehicleType, "updateRadiatorClogging", RMS_Consumptables.updateRadiatorClogging)
-    SpecializationUtil.registerFunction(vehicleType, "updateAirIntakeClogging", RMS_Consumptables.updateAirIntakeClogging)
-    SpecializationUtil.registerFunction(vehicleType, "cleanRadiatorAndAirIntake", RMS_Consumptables.cleanRadiatorAndAirIntake)
+    SpecializationUtil.registerFunction(vehicleType, "updateAirFilterClogging", RMS_Consumptables.updateAirFilterClogging)
+    SpecializationUtil.registerFunction(vehicleType, "cleanRadiatorAndAirFilter", RMS_Consumptables.cleanRadiatorAndAirFilter)
     SpecializationUtil.registerFunction(vehicleType, "updateLubricationLevel", RMS_Consumptables.updateLubricationLevel)
+    SpecializationUtil.registerFunction(vehicleType, "updateFluidLevels", RMS_Consumptables.updateFluidLevels)
+    SpecializationUtil.registerFunction(vehicleType, "refillVehicleFluids", RMS_Consumptables.refillVehicleFluids)
+    SpecializationUtil.registerFunction(vehicleType, "topUpRepairedLeaks", RMS_Consumptables.topUpRepairedLeaks)
+    SpecializationUtil.registerFunction(vehicleType, "getMissingFluidShare", RMS_Consumptables.getMissingFluidShare)
     SpecializationUtil.registerFunction(vehicleType, "lubricateVehicle", RMS_Consumptables.lubricateVehicle)
     SpecializationUtil.registerFunction(vehicleType, "startFieldVisualInspectionProcess", RMS_Consumptables.startFieldVisualInspectionProcess)
     SpecializationUtil.registerFunction(vehicleType, "setFieldInspectionPlayerActive", RMS_Consumptables.setFieldInspectionPlayerActive)
@@ -1364,6 +1434,23 @@ local function getConditionLevelFromSellPrice(vehicle)
     return targetCondition
 end
 
+---Returns the wear scale of the selected vehicle lifespan against the reference one
+-- @return float wearScale wear scale
+local function getUsedVehicleWearScale()
+    local referenceWear = math.max(tonumber(RMS_Config.CORE.REFERENCE_SYSTEMS_WEAR) or 0.01, 0.000001)
+    local configuredWear = math.max(tonumber(RMS_Config.CORE.BASE_SYSTEMS_WEAR) or referenceWear, 0)
+    return configuredWear / referenceWear
+end
+
+---Converts a reference condition into the condition the selected lifespan gives
+-- @param float referenceCondition condition read from the resale price
+-- @param float wearScale wear scale
+-- @return float condition scaled condition
+local function scaleUsedVehicleCondition(referenceCondition, wearScale)
+    local referenceWear = 1 - math.clamp(tonumber(referenceCondition) or 1, 0, 1)
+    return math.clamp(1 - referenceWear * wearScale, 0.2, 1.0)
+end
+
 ---Seeds the condition, service level and systems of a vehicle from its vanilla resale price
 -- @param table vehicle vehicle
 -- @param boolean? resetBreakdowns true to clear the breakdowns as well
@@ -1375,11 +1462,14 @@ local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdow
 
     spec.serviceLevel = 1 - vehicle:getDamageAmount()
 
-    local targetCondition = getConditionLevelFromSellPrice(vehicle)
+    local referenceCondition = getConditionLevelFromSellPrice(vehicle)
+    local wearScale = getUsedVehicleWearScale()
+    local targetCondition = scaleUsedVehicleCondition(referenceCondition, wearScale)
+
     for _, systemData in pairs(spec.systems or {}) do
         if type(systemData) == "table" then
             local random = math.random() * 0.2 + 0.9
-            systemData.condition = math.clamp(targetCondition * random, 0.2, 1.0)
+            systemData.condition = scaleUsedVehicleCondition(math.clamp(referenceCondition * random, 0.2, 1.0), wearScale)
             systemData.stress = 0
         end
     end
@@ -1404,6 +1494,44 @@ local function initializeVehicleConditionFromVanillaPrice(vehicle, resetBreakdow
     return true, targetCondition
 end
 RealisticMechanicalSystems.initializeVehicleConditionFromVanillaPrice = initializeVehicleConditionFromVanillaPrice
+
+---Recomputes the state of every registered vehicle from its resale price, sparing those under service
+-- @return integer recalculated number of vehicles recomputed
+-- @return integer busy number of vehicles left untouched
+function RealisticMechanicalSystems.reinitializeAllVehicles()
+    if g_currentMission == nil or not g_currentMission:getIsServer() or RMS_Main == nil or RMS_Main.vehicles == nil then
+        return 0, 0
+    end
+
+    local recalculated = 0
+    local busy = 0
+
+    for _, vehicle in pairs(RMS_Main.vehicles) do
+        local spec = vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems or nil
+        if spec ~= nil and not spec.isExcludedVehicle then
+            if vehicle:isUnderService() or (tonumber(spec.maintenanceTimer) or 0) > 0 then
+                busy = busy + 1
+            elseif initializeVehicleConditionFromVanillaPrice(vehicle, true) then
+                vehicle:addEntryToMaintenanceLog(
+                    RealisticMechanicalSystems.STATUS.INSPECTION,
+                    RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD,
+                    "NONE",
+                    false,
+                    0
+                )
+
+                local lastEntry = spec.maintenanceLog[#spec.maintenanceLog]
+                if lastEntry ~= nil and RMS_LogEntrySyncEvent ~= nil then
+                    RMS_LogEntrySyncEvent.sendToClients(vehicle, lastEntry)
+                end
+
+                recalculated = recalculated + 1
+            end
+        end
+    end
+
+    return recalculated, busy
+end
 
 ---Registers a vehicle with the mod, classifying it and creating its spec fields
 -- @param table vehicle vehicle
@@ -1431,11 +1559,12 @@ local function registerVehicle(vehicle)
                     local isUsedVehicle = vehicle:getFormattedOperatingTime() > 0.01 and spec.conditionLevel == spec.baseConditionLevel
                     if isUsedVehicle then
                         -- Used vehicle logic
-                        initializeVehicleConditionFromVanillaPrice(vehicle, true)
+                        initializeVehicleConditionFromVanillaPrice(vehicle, not RealisticMechanicalSystems.isMissionVehicle(vehicle))
                     end
 
-                    -- initial report for a new vehicle only, a used one stays uninspected
-                    if not isUsedVehicle and (spec.maintenanceLog == nil or #spec.maintenanceLog == 0) then
+                    -- initial report for a new vehicle and for a contract one
+                    local needsInitialReport = not isUsedVehicle or RealisticMechanicalSystems.isMissionVehicle(vehicle)
+                    if needsInitialReport and (spec.maintenanceLog == nil or #spec.maintenanceLog == 0) then
                         vehicle:addEntryToMaintenanceLog(RealisticMechanicalSystems.STATUS.INSPECTION, RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD, "NONE", false, 0)
                     end
             end
@@ -1534,18 +1663,18 @@ end
 
 ---Adds or removes the air intake clogging effect from the current clogging level
 -- @param table vehicle vehicle
-local function syncAirIntakeCloggingEffect(vehicle)
+local function syncAirFilterCloggingEffect(vehicle)
     local spec = vehicle.spec_RealisticMechanicalSystems
     if spec == nil or not vehicle.isServer then return end
 
-    local breakdownId = 'AIRINTAKE_CLOGGING'
+    local breakdownId = 'AIRFILTER_CLOGGING'
     local shouldBeStage = 0
-    local threshold = RMS_Config.FIELD_CARE.AIR_INTAKE_BREAKDOWN_THRESHOLD 
+    local threshold = RMS_Config.FIELD_CARE.AIR_FILTER_BREAKDOWN_THRESHOLD 
 
-    if spec.airIntakeClogging > threshold then
-        if spec.airIntakeClogging > (threshold + (threshold / 3 * 2)) then
+    if spec.airFilterClogging > threshold then
+        if spec.airFilterClogging > (threshold + (threshold / 3 * 2)) then
             shouldBeStage = 3
-        elseif spec.airIntakeClogging > (threshold + (threshold / 3)) then
+        elseif spec.airFilterClogging > (threshold + (threshold / 3)) then
             shouldBeStage = 2
         else
             shouldBeStage = 1
@@ -1579,7 +1708,7 @@ local function syncDisableAiWorkers(vehicle)
                 local isCriticalOverload = effectData.extraData.criticalOverload == true
                 local shouldDisableAi = not isCriticalOverload
                     or (RMS_Config.CORE.AI_DISABLE_ON_CRITICAL_OVERLOAD
-                        and (vehicle.propertyState ~= 4 or RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION))
+                        and (not RealisticMechanicalSystems.isMissionVehicle(vehicle) or RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION))
 
                 if shouldDisableAi then
                     local autoDriveActive = vehicle.ad ~= nil
@@ -1842,7 +1971,7 @@ end
 -- @param float dt time since last call in ms
 local function syncOverloadWarning(vehicle, dt)
     local spec = vehicle.spec_RealisticMechanicalSystems
-    if spec == nil or not vehicle.isServer then return end
+    if spec == nil or not vehicle.isServer or RealisticMechanicalSystems.isMissionVehicle(vehicle) then return end
     local period = 60000
     local wearScale = RMS_Config.CORE.BASE_SYSTEMS_WEAR / RMS_Config.CORE.REFERENCE_SYSTEMS_WEAR
     local avgStressWarningThreshold = RMS_Config.CORE.AVG_STRESS_WARNING_THRESHOLD * RMS_Config.CORE.SYSTEM_STRESS_GLOBAL_MULTIPLIER * wearScale
@@ -2033,7 +2162,7 @@ function RealisticMechanicalSystems:onUpdate(dt, ...)
     self:syncVoltageSagEffect(updateDt)
 
     -- Checking for airintake clogging
-    syncAirIntakeCloggingEffect(self)
+    syncAirFilterCloggingEffect(self)
     
     -- Overheat protection for vehicles from 2000 on, engine failure from overheating before 2000
     syncOverheatProtection(self, updateDt)
@@ -2095,7 +2224,6 @@ function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
     local spec = self.spec_RealisticMechanicalSystems
     if spec.isExcludedVehicle then return end
 
-    -- OP Time update for RMS vehicles
     local motorState = self.getMotorState ~= nil and self:getMotorState() or nil
     local currentOperatingTime = self.getOperatingTime ~= nil and self:getOperatingTime() or self.operatingTime or 0
     local operatingDt = 0
@@ -2107,14 +2235,10 @@ function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
     if motorState == MotorState.ON then
         operatingDt = dt or 0
         if g_modIsLoaded ~= nil and g_modIsLoaded["FS25_ingameTimeOperatingHours"] then
-            local timeScale = getSafeMissionTimeScale()
-            operatingDt = dt * timeScale
+            operatingDt = operatingDt * getSafeMissionTimeScale()
         end
 
         spec.realOperatingTime = (spec.realOperatingTime or 0) + dt
-        spec._allowRMSOperatingTimeWrite = true
-        self:setOperatingTime(currentOperatingTime + operatingDt, false)
-        spec._allowRMSOperatingTimeWrite = false
     end
 
     self:updateThermalSystems(dt, true, false)
@@ -2123,9 +2247,14 @@ function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
     if self:isUnderService() then
         self:processService(dt)
     else
-        if self:getIsOperating() and self.propertyState ~= 4 then
-            self:updateRadiatorClogging(dt)
-            self:updateAirIntakeClogging(dt)
+        local isOperating = self:getIsOperating()
+        local isMissionVehicle = RealisticMechanicalSystems.isMissionVehicle(self)
+        if not isMissionVehicle then
+            self:updateRadiatorClogging(dt, isOperating)
+        end
+
+        if isOperating and not isMissionVehicle then
+            self:updateAirFilterClogging(dt)
             self:processBreakdowns(dt)
             self:tryTriggerBreakdown(dt)
         end
@@ -2145,8 +2274,12 @@ function RealisticMechanicalSystems:rmsUpdate(dt, isWorkshopOpen)
         self:updateConditionLevel()
         -- general wear
         self:processGeneralWearBreakdown()
-        -- lubrication level
-        self:updateLubricationLevel(operatingDt, motorState)
+        if not isMissionVehicle then
+            -- lubrication level
+            self:updateLubricationLevel(operatingDt, motorState)
+            -- fluid levels
+            self:updateFluidLevels(operatingDt)
+        end
         -- Overload warnings / rolling avg stress
         syncOverloadWarning(self, dt)
     end
@@ -2176,20 +2309,6 @@ function RealisticMechanicalSystems.updateDamageAmount(wearable, superFunc, dt)
 	else
 		return superFunc(wearable, dt)
 	end
-end
-
----Keeps the RMS operating time in step with the vanilla one
--- @param table self vehicle
--- @param function superFunc super function
--- @param float operatingTime operating time in ms
--- @param boolean isLoading true while loading the savegame
-function RealisticMechanicalSystems.setOperatingTime(self, superFunc, operatingTime, isLoading)
-    local spec = self.spec_RealisticMechanicalSystems
-    if spec ~= nil and not spec.isExcludedVehicle and not isLoading and not spec._allowRMSOperatingTimeWrite then
-        return
-    end
-
-    superFunc(self, operatingTime, isLoading)
 end
 
 ---Lowers the vanilla sell price by the RMS condition

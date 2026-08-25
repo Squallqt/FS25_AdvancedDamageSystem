@@ -2,7 +2,7 @@
 
 In-depth vehicle wear, failure, diagnostics, maintenance, and repair system for Farming Simulator 25.
 
-[![Version](https://img.shields.io/badge/version-0.9.3.0%20%5BWIP%5D-blue.svg)](#)
+[![Version](https://img.shields.io/badge/version-0.10.0.0-blue.svg)](#)
 [![FS25](https://img.shields.io/badge/FS25-compatible-green.svg)](https://farming-simulator.com/)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-success.svg)
 ![Languages](https://img.shields.io/badge/languages-15-blue.svg)
@@ -19,7 +19,7 @@ Singleplayer, multiplayer, and dedicated server.
 Three rules are enough to play without constant breakdowns:
 
 1. **Follow the service interval.** Around `5 operating hours` on average by default. Check it in the workshop, in the vehicle info panel, or in the fleet menu (`P` key), then run `Maintenance`.
-2. **Prepare your machines daily.** Hold `R` near a vehicle for a pre-shift inspection, clean it with the `Air Blower`, and grease what needs greasing with the `Grease Gun`.
+2. **Prepare your machines daily.** Hold `R` near a vehicle for a pre-shift check, clean it with the `Air Blower`, and grease what needs greasing with the `Grease Gun`.
 3. **Do not abuse your equipment.** If it would damage a real machine, it damages this one: overloading, overheating, cold-engine work, wheel slip in mud, oversized implements, speed over rough ground.
 
 ## Core Mechanics
@@ -38,16 +38,16 @@ Normal wear depends on system activity. Hydraulics and PTO wear only while activ
 
 | System | Wear factors |
 | --- | --- |
-| **Engine** | Load above `85%`; air intake clogged past `50%`; cold running below `50C` at high RPM load; overheating above `95C` under load |
-| **Transmission** | Sustained pull above `85%` load, with an accumulation window scaling from `30` to `90` seconds; lugging (high load, low RPM); wheel slip above `5%` under `20 km/h`; heavy trailer below `10 hp/t` (`6 hp/t` for trucks); on CVT, cold oil below `45C` and overheating above `100C` |
-| **Hydraulics** | Qualified hydraulic movement; cold oil proxy below `30C`; hot oil proxy above `90C` |
-| **Cooling** | Thermostat effort above `85%`; engine above `95C`; cold shock below `50C` at high RPM load |
+| **Engine** | Load above `85%`; air filter clogged past `50%`; cold running below `50C` at high RPM load; overheating above `95C` under load; oil level under `50%` |
+| **Transmission** | Sustained pull above `85%` load, with an accumulation window scaling from `30` to `90` seconds; lugging (high load, low RPM); wheel slip above `5%` under `20 km/h`; heavy trailer below `10 hp/t` (`6 hp/t` for trucks); a load held on oil below `45C`; on CVT, overheating above `100C`; oil level under `50%` |
+| **Hydraulics** | Pump running whenever the engine runs; lifted implement mass on the linkage; vibration while carrying an implement over rough ground; qualified hydraulic movement; cold oil proxy below `30C`; hot oil proxy above `90C`; fluid level under `50%` |
+| **Cooling** | Thermostat past `95%` open while the engine is more than `3C` over its target; engine above `95C`; cold shock below `50C` at high RPM load |
 | **Electrical** | Lights on; rain, snow, or hail on an outdoor vehicle; starter cranking; engine above `95C`; vibration over rough ground at speed |
-| **Chassis** | Poor lubrication on machines that require greasing; vibration over rough ground at speed; steering load under `4 km/h`; braking above `2 km/h` while towing |
+| **Chassis** | Poor lubrication on machines that require greasing; vibration over rough ground at speed; steering under `4 km/h`, scaled by the steered angle and by the load the steered axle really carries; braking above `2 km/h` while towing |
 | **Fuel** | Fuel below `20%` under load; fuel colder than `20C` above `50%` load; idling past `60` seconds; fuel consumption above `80%` of the configured maximum |
 | **PTO** | Active drive; continuous native PTO utilization above `55%`, reaching its full overload factor at `90%`; unique engagement cycles are recorded for fault selection without instant engagement damage |
 
-Cold-engine and cold-shock factors do not apply to AI workers.
+AI workers wear a machine exactly like a player. They are protected by behaviour instead: the helper slows down on overload or overheating, never stalls, and is never blocked by a hard start.
 
 ## Breakdowns
 
@@ -63,7 +63,7 @@ The exhaust plume is a real diagnostic channel, not decoration. Its colour comes
 
 | Colour | What it means | Usual causes |
 | --- | --- | --- |
-| Black | Too much fuel for the available air | Overload, clogged air intake, worn turbocharger, failing injectors, ECU fault |
+| Black | Too much fuel for the available air | Overload, clogged air filter, worn turbocharger, failing injectors, ECU fault |
 | Blue | The engine is burning its own oil | Worn engine at low Condition, leaking turbocharger seals, valve train wear |
 | White | Fuel leaving the engine unburnt | Cold engine, failed glow plugs, failing injection or a starving fuel system |
 
@@ -90,7 +90,8 @@ Leaving a diesel idling also leaves its mark. Past a long idle under `30%` load,
 | CVT Chain Wear | CVT | Movement no longer reliable |
 | CVT Control Valve Malfunction | CVT | Severely restricted emergency mode |
 | CVT Addon Malfunction | Vehicles using CVT Addon | Complete CVT failure, vehicle cannot move |
-| Transmission Thermostat Malfunction | CVT | Oil never reaches correct temperature |
+| Transmission Thermostat Malfunction | CVT | Thermostat stuck at one opening, the oil either overheats or never warms up |
+| Transmission Oil Leak | All non-electric | Too little oil left to run the transmission safely |
 | Hydraulic Pump Malfunction | Vehicles with qualified hydraulic functions | Hydraulic system inoperable |
 | Hydraulic Cylinder Internal Leak | Vehicles with a qualified hydraulic lift | Raised loads drop rapidly |
 | Hydraulic Hose External Leak | Vehicles with declared hydraulic connections | Hydraulic performance strongly reduced |
@@ -121,15 +122,18 @@ Four procedures, each with options that change duration, cost, and quality. All 
 - **Inspection**: `Visual` is quick but can miss things, `Standard` detects faults and reports condition, `Complete Defectoscopy` finds hidden faults and defective parts and gives exact values.
 - **Maintenance**: replaces oils, filters, and fluids, and restores Service. `Minimal` is cheap and partial, `Standard` follows manufacturer spec, `Extended` restores above normal, `Preventive` also strips Stress from the worst systems. The cost is **fixed**, so servicing at `90%` costs the same as at `10%`.
 - **Repair**: `Quick Fix` suppresses the symptoms without fixing the fault, which returns. `Standard` replaces the failed part and cuts Stress. `Advanced` replaces everything around it and zeroes Stress.
+- **Top up**: fills whatever fluid the machine is missing, for the price of the fluids alone. Quick, and the button disappears once everything is full.
 - **Overhaul**: restores Condition on one system or all of them, clears breakdowns, and includes maintenance unless partial. `Partial`, `Standard`, and `Full` differ in scope and price. Paintwork can be renewed for a fee. It never restores a flat `100%`: the result depends on maintainability, on how many overhauls the machine already had, and on chance.
 
 Maintenance and repair let you pick part quality between `Used`, `Aftermarket`, `OEM`, and `Premium`. Cheaper parts are more often defective: on maintenance they shorten the interval and accelerate wear, on repair they bring the same fault back. Complete Defectoscopy detects them.
 
 ## Pre-Shift Care
 
-- **Inspection**: hold `R` near a vehicle to check fluid levels, radiator and air intake fouling, and reveal faults a real visual check would catch. Takes seconds, works anywhere.
-- **Air Blower**: clears dust from the cooling pack and air intake. A clean radiator will not overheat and a clean intake lets the engine breathe under load.
+- **Pre-shift check**: hold `R` near a vehicle for a go or no go verdict, the machine and its next service, the four fluid levels, radiator and air filter fouling, and reveal faults a real visual check would catch. Takes seconds, works anywhere.
+- **Fluids**: engine oil, coolant, transmission oil and hydraulic fluid each have a level, read against the minimum mark of their gauge. Engine oil is burnt off with the work done, faster under load and much faster as the engine wears, so a healthy engine always reaches its next service above the mark whatever interval you set while a tired one asks to be topped up; the other three only drop through a leak. Under the mark the machine only asks for a top up and still works normally; it is under `50%` that a machine short of coolant or transmission oil runs hot, and one short of engine oil or hydraulic fluid wears faster. The workshop `Top up` service fills what is missing for the price of the fluids, maintenance and overhaul replace everything, and a repair puts back what the fault it fixed had let out.
+- **Air Blower**: clears dust from the cooling pack and the air filter. A clean radiator will not overheat. Blowing an air filter out only recovers part of it, since what is embedded in the media stays until maintenance replaces it, and washing the machine never touches it.
 - **Grease Gun**: restores lubrication on machines that need it, harvesters above all. Lubrication drops `10%` per period only if the machine was neither operated, greased, nor serviced during it; inspection alone does not count.
+- **Aiming a hand tool**: point it directly at the machine within `5 m`.
 
 ## Reliability and Maintainability
 
@@ -146,10 +150,12 @@ Two settings cover the exhaust: `Exhaust Smoke` turns the model on or off, and `
 
 Engine temperature is computed from load, ambient temperature, dirt on the radiator, airflow from speed, and thermostat state, and it feeds directly into wear and failure risk.
 
-- **Thermostat behaviour follows production year.** Older machines have inert mechanical thermostats with real stiction; modern ones use fast PID control that adapts quickly to load.
+- **Engine thermostat behaviour follows production year.** Older machines have inert mechanical thermostats with real stiction; modern ones use fast PID control that adapts quickly to load.
 - **Overheat protection is staged from `2000` onwards**: power is progressively limited, then the engine can shut down. Older vehicles have no such protection and can suffer a hard failure instead.
-- **Warm-up is mandatory.** Cold operation under load is heavily penalised.
-- **CVT machines run a separate transmission model** driven by transmission load, slip, and acceleration dynamics. Slow high-stress work and jerky driving can cook a CVT while the engine still reads normal.
+- **Warm-up is mandatory.** Pulling hard before the oil is warm damages the transmission; normal work never does, however long the warm-up takes.
+- **Transmission oil is not held at a target temperature.** Like the real machines, its thermostat only decides whether the oil goes through the oil cooler or around it: around it while the oil is cold, through it as the oil warms. The temperature then floats with the job instead of holding one value.
+- **A low fluid level costs cooling.** The minimum mark only asks for a top up, nothing changes there. Under `50%` the coolant carries less heat away and the transmission cooler loses capacity with the oil, down to `15%` on an empty circuit.
+- **CVT machines run a separate transmission model** driven by the pump, the power take-off, transmission load, the hydrostatic ratio, wheel slip and acceleration. Slow high-stress work and jerky driving can cook a CVT while the engine still reads normal.
 
 ## Electrical System
 
@@ -165,6 +171,8 @@ If a battery is too flat to start, jumper cables link both vehicles into a share
 2. Activate the mod in mod selection.
 3. Access RMS from the fleet menu (`P` key), the in-game settings, and workshop interactions.
 
+> **Important:** Do not run RMS and Advanced Damage System together. RMS steps aside when it finds ADS and leaves it in charge, so nothing runs twice. Removing ADS is enough: RMS then picks up the condition, the service history and the settings of your fleet from the savegame.
+
 ## Usage
 
 ### Running a service
@@ -178,7 +186,7 @@ If a battery is too flat to start, jumper cables link both vehicles into a share
 
 1. Watch the dashboard indicators, which light from stage 2 on modern vehicles.
 2. Listen for knocking, whistling, and grinding, and read the exhaust: black means the engine is choking on fuel it cannot burn, blue means it is burning oil, white means fuel is leaving the engine unburnt. Stage 1 is otherwise silent.
-3. Run a pre-shift inspection when something feels off, then a workshop inspection if it does not clear.
+3. Run a pre-shift check when something feels off, then a workshop inspection if it does not clear.
 4. Repair early. A stage 1 fault costs a fraction of a critical one.
 
 ## Console Commands
@@ -207,7 +215,6 @@ For testing and debugging. Most require you to be inside a vehicle that supports
 | `rms_getDebugVehicleInfo [1]` | Prints vehicle debug info, with specializations when given `1` |
 | `rms_setDirtAmount <0.0-1.0>` | Sets the dirt level |
 | `rms_setFuelLevel <value>` | Sets fuel, as `0.0-1.0` or `0-100` percent |
-| `rms_setOperatingTime <hours>` | Sets operating hours |
 | `rms_setHorsePower <hp>` | Sets engine power, rescaling the torque curve |
 | `rms_setPlowMaxForce <kN>` | Sets max force on the selected or attached plow |
 | `rms_resetFactorStats` | Resets accumulated factor statistics |
@@ -220,32 +227,49 @@ For testing and debugging. Most require you to be inside a vehicle that supports
 
 ## Changelog
 
-### v0.9.3.0 [WIP]
+### v0.10.0.0
 
 - Added exhaust smoke driven by vehicle age, engine wear, load and active faults
-- Fixed and improved translations
+- Added an air filter that clogs with dusty work and is replaced by workshop maintenance
+- Improved the air blower: it no longer restores an air filter fully, and washing no longer cleans one
+- Improved the hand tools: they now reach further
+- Added engine oil, coolant, transmission oil and hydraulic fluid levels, read by the pre-shift check
+- Added a transmission oil leak breakdown
+- Added a Top up service at the workshop, priced on what the machine is actually missing
+- Added tutorial tips for fluid levels, exhaust smoke, drivetrain modes, the parking brake and transmission overheating
+- Improved the pre-shift check: a go or no go verdict, the machine and its next service on top, gauges on the four fluid levels
+- Simplified the vehicle info box on foot: condition and next service only
 - Added drivetrain management for tractors: 4x2, 4WD and AUTO modes with differential locks
-- Turning on hard ground with locked differentials now damages the transmission
 - Added a parking brake that can engage automatically
-- Drivetrain and parking brake now step aside when Enhanced Vehicle handles them
 - Added a HUD readout of tractor, towed and combined mass
-- Fixed locked hook-lift containers counting as towed instead of carried
-- Removed debug log spam
-- Lubrication now applies to every non-road machine
-- Removed the work process system, its harvest wear and its unloading auger breakdown
-- Cold engine wear now starts only under high load
-- Fixed wrong values in the debug HUD on dedicated servers
-- Dashboard indicators now sit in an extended speedometer layout
-- Engine and transmission now have their own thermal alerts and indicators
-- Fixed dashboard indicators disappearing at high speed
-- Turbocharger wear now applies to every engine of 75 hp or more
-- Added a transmission thermostat breakdown on CVT gearboxes
-- CVT gearboxes now run hotter before overheating
+- Added dashboard indicators inside the extended speedometer layout
+- Added separate thermal alerts and indicators for engine and transmission
 - Added automatic diesel preheating in cold weather, with its own glow plug breakdown
-- Vehicle exclusions now follow what a machine can do instead of its type name
-- Vehicle Years is no longer required, the mod resolves production years itself
-- Hydraulic breakdowns now reach only the machines that really have hydraulics
-- Fixed PTO load and restored cutter drive support
+- Added a transmission thermostat breakdown on CVT gearboxes
+- Added transmission damage when turning on hard ground with locked differentials
+- Added transmission damage when a load is held on oil below 45 C
+- Added transmission oil heating from the pump, the power take-off and low speed heavy work
+- Added hydraulic wear from the running pump, the lifted implement mass and vibration
+- Improved the transmission oil temperature: it now floats with the load instead of holding a target
+- Improved radiator fouling: cooling capacity now drops with the clogging level
+- Improved steering wear: it now scales with the steered angle and the load on the steered axle
+- Improved compatibility: drivetrain and parking brake step aside when Enhanced Vehicle handles them
+- Improved the translations of the fifteen supported languages
+- Rebalanced cooling wear: it now requires the engine above its target temperature
+- Rebalanced AI workers: they now wear a machine like a player
+- Rebalanced cold engine wear: it now starts only under high load
+- Rebalanced turbocharger wear: it now applies to every engine of 75 hp or more
+- Rebalanced lubrication: it now applies to every non-road machine
+- Rebalanced vehicle exclusions: the mod now follows every machine that has an engine to look after
+- Rebalanced hydraulic breakdowns: they now reach only the machines that really have hydraulics
+- Removed the thermal sensitivity, warm-up boost and cooling slowdown settings
+- Removed the work process system, its harvest wear and its unloading auger breakdown
+- Removed the Vehicle Years requirement, the mod resolves production years itself
+- Improved contract vehicles: they now show their hours and no longer wear down
+- Improved idling: an engine left running with nobody aboard now burns its fuel
+- Improved used vehicles: their condition now follows the selected vehicle lifespan
+- Added a settings profile that hands your current settings to every new savegame
+- Added a fleet reset that realigns every vehicle on the selected vehicle lifespan
 
 ## Support
 

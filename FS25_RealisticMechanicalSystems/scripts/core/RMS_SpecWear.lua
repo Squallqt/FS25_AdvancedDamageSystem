@@ -7,6 +7,7 @@ local hasCVTTransmission = RMS_Utils.hasCVTTransmission
 local hasCVTAddon = RMS_Utils.hasCVTAddon
 local ensureFactorStats = RealisticMechanicalSystems.ensureFactorStats
 local getColdEngineStress = RealisticMechanicalSystems.getColdEngineStress
+local isMissionVehicle = RealisticMechanicalSystems.isMissionVehicle
 
 ---Resolves a system name to the key actually present in the spec, matching case insensitively
 -- @param table? spec vehicle spec
@@ -92,6 +93,10 @@ end
 -- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateServiceLevel(dt)
     local spec = self.spec_RealisticMechanicalSystems
+    if isMissionVehicle(self) then
+        return
+    end
+
     local wearRate = RMS_Config.CORE.BASE_SERVICE_WEAR
 
     if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
@@ -176,7 +181,10 @@ function RealisticMechanicalSystems:updateSystemConditionAndStress(dt, systemNam
     local newCondition = (systemData.condition or 1.0) - conditionToRemove
     systemData.condition = math.clamp(newCondition, 0.001, 1.0)
 
-    local stressToAdd = math.max(wearRate - baseWearRate, 0) * dtMultiplier * systemStressMultiplier * globalStressMultiplier
+    local stressToAdd = 0
+    if not isMissionVehicle(self) then
+        stressToAdd = math.max(wearRate - baseWearRate, 0) * dtMultiplier * systemStressMultiplier * globalStressMultiplier
+    end
     systemData.stress = math.max((systemData.stress or 0) + stressToAdd, 0)
 
     local factorStats = ensureFactorStats(spec, self)
@@ -234,7 +242,10 @@ function RealisticMechanicalSystems:applyInstantDamageToSystem(system, damageAmo
 
     local dmg = math.max(tonumber(damageAmount) or 0, 0)
     spec.systems[systemKey].condition = math.clamp((spec.systems[systemKey].condition or 1.0) - dmg, 0.001, 1.0)
-    local stressToAdd = dmg * (RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey] or 1)
+    local stressToAdd = 0
+    if not isMissionVehicle(self) then
+        stressToAdd = dmg * (RMS_Config.CORE.SYSTEM_STRESS_ACCUMULATION_MULTIPLIERS[systemKey] or 1)
+    end
     local stressCap = math.max(spec.systems[systemKey].condition or 0, RMS_Config.CORE.CONDITION_EFFECTIVE_FLOOR or 0)
     spec.systems[systemKey].stress = math.clamp((spec.systems[systemKey].stress or 0) + stressToAdd, 0, stressCap)
 
@@ -258,7 +269,7 @@ function RealisticMechanicalSystems:updateEngineSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
     local spec_motorized = self.spec_motorized
     local C = RMS_Config.CORE.ENGINE_FACTOR_DATA
-    local motorLoadFactor, luggingFactor, expiredServiceFactor, coldMotorFactor, hotMotorFactor, airIntakeCloggingFactor = 0, 0, 0, 0, 0, 0
+    local motorLoadFactor, luggingFactor, expiredServiceFactor, coldMotorFactor, hotMotorFactor, airFilterCloggingFactor = 0, 0, 0, 0, 0, 0
     local baseWearRate = 1.0
     local wearRate = baseWearRate
     local rpmLoad = 0
@@ -289,16 +300,15 @@ function RealisticMechanicalSystems:updateEngineSystem(dt)
             local minDiff = math.clamp(C.LUGGING_MOTORLOAD_THRESHOLD - C.LUGGING_RPM_THRESHOLD, 0, maxDiff)
             local currentDiff = math.clamp(dynamicMotorLoad - rpmLoad, 0.0, 1.0)
             luggingFactor = RMS_Utils.calculateQuadraticMultiplier(currentDiff, minDiff, false, maxDiff)
-            local aiMultiplier = self:getIsAIActive() and 0.5 or 1.0
-            luggingFactor = luggingFactor * (C.LUGGING_MULTIPLIER or 0) * aiMultiplier
+            luggingFactor = luggingFactor * (C.LUGGING_MULTIPLIER or 0)
             wearRate = wearRate + luggingFactor
         end
 
         -- air intake clogging factor
-        if spec.airIntakeClogging > C.AIR_INTAKE_CLOGGING_THRESHOLD then
-            airIntakeCloggingFactor = RMS_Utils.calculateQuadraticMultiplier(spec.airIntakeClogging, C.AIR_INTAKE_CLOGGING_THRESHOLD, false)
-            airIntakeCloggingFactor = airIntakeCloggingFactor * (C.AIR_INTAKE_CLOGGING_MULTIPLIER or 0)
-            wearRate = wearRate + airIntakeCloggingFactor
+        if spec.airFilterClogging > C.AIR_FILTER_CLOGGING_THRESHOLD then
+            airFilterCloggingFactor = RMS_Utils.calculateQuadraticMultiplier(spec.airFilterClogging, C.AIR_FILTER_CLOGGING_THRESHOLD, false)
+            airFilterCloggingFactor = airFilterCloggingFactor * (C.AIR_FILTER_CLOGGING_MULTIPLIER or 0)
+            wearRate = wearRate + airFilterCloggingFactor
         end
 
         -- cold engine factor
@@ -331,15 +341,23 @@ function RealisticMechanicalSystems:updateEngineSystem(dt)
         end
     end
 
+    -- engine oil shortage factor
+    local lowFluidFactor = 0
+    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+        lowFluidFactor = RMS_Utils.getFluidShortage(spec.engineOilLevel) * RMS_Config.FLUIDS.LOW_LEVEL_WEAR_MULTIPLIER
+        wearRate = wearRate + lowFluidFactor
+    end
+
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
         motorLoadFactor = motorLoadFactor,
+        lowFluidFactor = lowFluidFactor,
         luggingFactor = luggingFactor,
         dynamicMotorLoad = spec.dynamicMotorLoad,
-        airIntakeCloggingFactor = airIntakeCloggingFactor,
+        airFilterCloggingFactor = airFilterCloggingFactor,
         expiredServiceFactor = expiredServiceFactor,
         coldMotorFactor = coldMotorFactor,
         hotMotorFactor = hotMotorFactor,
-        airIntakeClogging = spec.airIntakeClogging,
+        airFilterClogging = spec.airFilterClogging,
         engineTemperature = spec.engineTemperature,
         rpmLoad = rpmLoad
     })
@@ -355,7 +373,10 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
     local systemData = spec.systems.transmission
     systemData.pullOverloadTimer = tonumber(systemData.pullOverloadTimer) or 0
     local vehicleHaveCVT = hasCVTTransmission(self)
-    local expiredServiceFactor, pullOverloadFactor, luggingFactor, heavyTrailerFactor, wheelSlipFactor,  coldTransFactor, hotTransFactor = 0, 0, 0, 0, 0, 0, 0
+    local isMotorStarted = self.getIsMotorStarted ~= nil and self:getIsMotorStarted()
+    local dynamicMotorLoad = tonumber(spec.dynamicMotorLoad) or 0
+    local transTemp = spec.transmissionTemperature or -99
+    local expiredServiceFactor, pullOverloadFactor, luggingFactor, heavyTrailerFactor, wheelSlipFactor,  coldTransAbuse, hotTransFactor = 0, 0, 0, 0, 0, 0, 0
     local drivetrainWindupFactor = 0
     local wearRate = 1.0
     local brakeState = spec.chassisBrakeState
@@ -371,7 +392,25 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
         return
     end
 
-    if hasCVTAddon(self) and self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+    if isMotorStarted and not spec.isElectricVehicle then
+        -- cold transmission abuse, once per cold period
+        if transTemp >= C.COLD_TRANSMISSION_THRESHOLD then
+            spec.coldTransAbuseDone = false
+        end
+        if self.isServer and not spec.coldTransAbuseDone and transTemp < C.COLD_TRANSMISSION_THRESHOLD and dynamicMotorLoad >= C.COLD_TRANSMISSION_LOAD_THRESHOLD then
+            spec.coldTransAbuseTimer = math.min((spec.coldTransAbuseTimer or 0) + dt, C.COLD_TRANSMISSION_ABUSE_DURATION)
+            if spec.coldTransAbuseTimer >= C.COLD_TRANSMISSION_ABUSE_DURATION then
+                spec.coldTransAbuseTimer = 0
+                spec.coldTransAbuseDone = true
+                self:applyInstantDamageToSystem(systemData.name, C.COLD_TRANSMISSION_DAMAGE, "coldTransFactor")
+            end
+        else
+            spec.coldTransAbuseTimer = 0
+        end
+        coldTransAbuse = (spec.coldTransAbuseTimer or 0) / math.max(C.COLD_TRANSMISSION_ABUSE_DURATION, 1)
+    end
+
+    if hasCVTAddon(self) and isMotorStarted then
         local spec_CVTaddon = self.spec_CVTaddon
 
         local currentCVTdamage = math.clamp(tonumber(spec_CVTaddon.CVTdamage) or 0, 0, 100)
@@ -391,14 +430,21 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
         local newCondition = math.clamp(currentCondition - conditionToRemove, 0.001, 1.0)
 
         local currentStress = systemData.stress or 0
-        local newStress = math.clamp(currentStress + normalizedDelta, 0, newCondition)
+        local newStress = currentStress
+        if not isMissionVehicle(self) then
+            newStress = math.clamp(currentStress + normalizedDelta, 0, newCondition)
+        end
         local previousStress = math.clamp(tonumber(systemData.stress) or 0, 0, math.max(currentCondition, 0.001))
 
         systemData.condition = newCondition
         systemData.stress = newStress
 
-        spec_CVTaddon.CVTdamage = newStress / math.max(newCondition, 0.001) * 100
-        spec._prevCVTdamage = spec_CVTaddon.CVTdamage
+        if isMissionVehicle(self) then
+            spec._prevCVTdamage = currentCVTdamage
+        else
+            spec_CVTaddon.CVTdamage = newStress / math.max(newCondition, 0.001) * 100
+            spec._prevCVTdamage = spec_CVTaddon.CVTdamage
+        end
         spec._prevStress = newStress
 
         local factorStats = ensureFactorStats(spec, self)
@@ -414,9 +460,8 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
             wearRate = wearRate * C.TRANSMISSION_IDLING_MULTIPLIER
         end
 
-    elseif self.getIsMotorStarted ~= nil and self:getIsMotorStarted() and not spec.isElectricVehicle then
+    elseif isMotorStarted and not spec.isElectricVehicle then
         local motorLoad = self:getMotorLoadPercentage()
-        local dynamicMotorLoad = spec.dynamicMotorLoad
         local lastRpm = spec_motorized.motor:getLastModulatedMotorRpm()
         local maxRpm = spec_motorized.motor.maxRpm
         local rpmLoad = lastRpm / maxRpm
@@ -455,8 +500,7 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
             local minDiff = math.clamp(C.LUGGING_MOTORLOAD_THRESHOLD - C.LUGGING_RPM_THRESHOLD, 0, maxDiff)
             local currentDiff = math.clamp(dynamicMotorLoad - rpmLoad, 0.0, 1.0)
             luggingFactor = RMS_Utils.calculateQuadraticMultiplier(currentDiff, minDiff, false, maxDiff)
-            local aiMultiplier = self:getIsAIActive() and 0.5 or 1.0
-            luggingFactor = luggingFactor * C.LUGGING_MULTIPLIER * aiMultiplier
+            luggingFactor = luggingFactor * C.LUGGING_MULTIPLIER
             wearRate = wearRate + luggingFactor
             -- tutorial timer
             spec.luggingTutorialTimer = math.min((spec.luggingTutorialTimer or 0) + dt, 5000)
@@ -494,17 +538,8 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
         end
 
         if vehicleHaveCVT then
-            -- cold CVT factor
-            if (spec.transmissionTemperature or -99) < C.COLD_TRANSMISSION_THRESHOLD and rpmLoad > 0.75 and not spec.isElectricVehicle and not self:getIsAIActive() then
-                coldTransFactor = RMS_Utils.calculateQuadraticMultiplier(spec.transmissionTemperature, C.COLD_TRANSMISSION_THRESHOLD, true)
-                local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.5, false)
-                coldTransFactor = coldTransFactor * C.COLD_TRANSMISSION_MULTIPLIER * motorLoadInf
-                coldTransFactor = math.min(coldTransFactor, C.COLD_TRANSMISSION_MULTIPLIER or coldTransFactor)
-                wearRate = wearRate + coldTransFactor
-
             -- overheating CVT factor
-            elseif (spec.transmissionTemperature or -99) > C.OVERHEAT_TRANSMISSION_THRESHOLD and motorLoad > 0.3 and not spec.isElectricVehicle then
-                local transTemp = spec.transmissionTemperature
+            if transTemp > C.OVERHEAT_TRANSMISSION_THRESHOLD and motorLoad > 0.3 and not spec.isElectricVehicle then
                 hotTransFactor = RMS_Utils.calculateQuadraticMultiplier(transTemp, C.OVERHEAT_TRANSMISSION_THRESHOLD, false, 120)
                 local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.5, false)
                 hotTransFactor = hotTransFactor * C.OVERHEAT_TRANSMISSION_MAX_MULTIPLIER * motorLoadInf
@@ -522,7 +557,7 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
         expiredServiceFactor = getExpiredServiceFactor(spec.serviceLevel, C.SERVICE_EXPIRED_MULTIPLIER or RMS_Config.CORE.ENGINE_FACTOR_DATA.SERVICE_EXPIRED_MULTIPLIER)
         wearRate = wearRate + expiredServiceFactor
     else
-        if hasCVTAddon(self) then
+        if hasCVTAddon(self) and not isMissionVehicle(self) then
             local spec_CVTaddon = self.spec_CVTaddon
             spec_CVTaddon.CVTdamage = systemData.stress / math.max(systemData.condition, 0.001) * 100
         end
@@ -534,9 +569,17 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
         end
     end
 
+    -- transmission oil shortage factor
+    local lowFluidFactor = 0
+    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+        lowFluidFactor = RMS_Utils.getFluidShortage(spec.transmissionOilLevel) * RMS_Config.FLUIDS.LOW_LEVEL_WEAR_MULTIPLIER
+        wearRate = wearRate + lowFluidFactor
+    end
+
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
         expiredServiceFactor = expiredServiceFactor,
         pullOverloadFactor = pullOverloadFactor,
+        lowFluidFactor = lowFluidFactor,
         pullOverloadTimer = systemData.pullOverloadTimer,
         pullOverloadTimerMin = systemData.pullOverloadTimerMin,
         pullOverloadTimerMax = systemData.pullOverloadTimerMax,
@@ -546,12 +589,12 @@ function RealisticMechanicalSystems:updateTransmissionSystem(dt)
         luggingFactor = luggingFactor,
         wheelSlipFactor = wheelSlipFactor,
         drivetrainWindupFactor = drivetrainWindupFactor,
-        coldTransFactor = coldTransFactor,
+        coldTransAbuse = coldTransAbuse,
         hotTransFactor = hotTransFactor
     })
 end
 
----Wears the hydraulics on lift load, operating time, oil temperature and an expired service
+---Wears the hydraulics on pump operation, lift load, vibration, cylinder work, oil temperature and an expired service
 -- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
@@ -559,20 +602,40 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     local systemData = spec.systems.hydraulics
     local expiredServiceFactor = 0
     local C = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
-    local heavyLiftFactor, operatingFactor, coldOilFactor, hotOilFactor = 0, 0, 0, 0
+    local heavyLiftFactor, operatingFactor, coldOilFactor, hotOilFactor, vibFactor = 0, 0, 0, 0, 0
     local wearRate = 0
     local vehicleMass = self.getTotalMass ~= nil and (self:getTotalMass(true) or 0) or 0
     local heavyLiftMassRatio = vehicleMass > 0 and math.max(spec.liftedMass or 0, 0) / vehicleMass or 0
     heavyLiftFactor = math.clamp(heavyLiftMassRatio, 0, 1)
+    local vibState = spec.chassisVibState or {}
+    local vibSignal = tonumber(vibState.smoothed) or 0
+    local vibFieldMultiplier = tonumber(vibState.fieldMultiplier) or 1
+    local vibConfig = RMS_Config.CORE.CHASSIS_FACTOR_DATA
 
     if not systemData.enabled then
         return
     end
 
     local motorStarted = self.getIsMotorStarted ~= nil and self:getIsMotorStarted()
+    if motorStarted then
+        wearRate = C.PUMP_WEAR_RATE + heavyLiftFactor
+    end
+
+    if motorStarted and spec.isImplementLifted and self:getLastSpeed() > 0.003 then
+        local vibThreshold = tonumber(vibConfig.VIB_FACTOR_THRESHOLD) or 0.08
+        if vibSignal > vibThreshold then
+            local vibMaxSignal = tonumber(vibConfig.VIB_FACTOR_MAX_SIGNAL) or 0.36
+            local vibMaxForCurve = math.max(vibMaxSignal, vibThreshold + 0.001)
+            local vibMultiplier = (tonumber(vibConfig.VIB_FACTOR_MULTIPLIER) or 36.0) * vibFieldMultiplier
+            vibFactor = RMS_Utils.calculateQuadraticMultiplier(vibSignal, vibThreshold, false, vibMaxForCurve)
+            vibFactor = math.min(vibFactor * vibMultiplier, vibMultiplier)
+            wearRate = wearRate + vibFactor
+        end
+    end
+
     if motorStarted and spec.isHydraulicActive then
-        wearRate = 1
-        operatingFactor = 1
+        operatingFactor = math.max(1 - C.PUMP_WEAR_RATE, 0)
+        wearRate = wearRate + operatingFactor
         local oilTemperature = tonumber(spec.transmissionTemperature) or 20
         if oilTemperature < C.COLD_OIL_THRESHOLD then
             coldOilFactor = RMS_Utils.calculateQuadraticMultiplier(oilTemperature, C.COLD_OIL_THRESHOLD, true)
@@ -589,10 +652,21 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
         wearRate = wearRate + expiredServiceFactor
     end
 
+    -- hydraulic fluid shortage factor
+    local lowFluidFactor = 0
+    if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+        lowFluidFactor = RMS_Utils.getFluidShortage(spec.hydraulicFluidLevel) * RMS_Config.FLUIDS.LOW_LEVEL_WEAR_MULTIPLIER
+        wearRate = wearRate + lowFluidFactor
+    end
+
     self:updateSystemConditionAndStress(dt, systemKey, wearRate, {
         expiredServiceFactor = expiredServiceFactor,
         heavyLiftFactor = heavyLiftFactor,
+        lowFluidFactor = lowFluidFactor,
         heavyLiftMassRatio = heavyLiftMassRatio,
+        vibFactor = vibFactor,
+        vibSignal = vibSignal,
+        vibFieldMultiplier = vibFieldMultiplier,
         operatingFactor = operatingFactor,
         coldOilFactor = coldOilFactor,
         hotOilFactor = hotOilFactor,
@@ -600,7 +674,7 @@ function RealisticMechanicalSystems:updateHydraulicsSystem(dt)
     })
 end
 
----Wears the PTO on its load, on each engagement and on an expired service
+---Wears the PTO while active from its load and an expired service, recording engagement cycles for fault selection
 -- @param float dt time since last call in ms
 function RealisticMechanicalSystems:updatePtoSystem(dt)
     local spec = self.spec_RealisticMechanicalSystems
@@ -666,8 +740,8 @@ function RealisticMechanicalSystems:updateCoolingSystem(dt)
         local maxRpm = spec_motorized.motor.maxRpm
         rpmLoad = lastRpm / maxRpm
 
-        -- high cooling
-        if spec.thermostatState > 0.0 then
+        -- high cooling, only once the circuit is saturated and losing the target
+        if spec.engineTemperature > RMS_Config.THERMAL.PID_TARGET_TEMP + C.HIGH_COOLING_TEMP_MARGIN then
             if spec.thermostatState > C.HIGH_COOLING_FACTOR_THRESHOLD then
                 highCoolingFactor = RMS_Utils.calculateQuadraticMultiplier(spec.thermostatState, C.HIGH_COOLING_FACTOR_THRESHOLD, false)
                 highCoolingFactor = highCoolingFactor * (C.HIGH_COOLING_FACTOR_MULTIPLIER or 0)
@@ -685,7 +759,7 @@ function RealisticMechanicalSystems:updateCoolingSystem(dt)
         end
 
         -- cold shock
-        if (spec.engineTemperature or -99) < C.COLD_SHOCK_FACTOR_THRESHOLD and rpmLoad > 0.75 and not self:getIsAIActive() then
+        if (spec.engineTemperature or -99) < C.COLD_SHOCK_FACTOR_THRESHOLD and rpmLoad > 0.75 then
             coldShockFactor = RMS_Utils.calculateQuadraticMultiplier(spec.engineTemperature, C.COLD_SHOCK_FACTOR_THRESHOLD, true)
             local motorLoadInf = RMS_Utils.calculateQuadraticMultiplier(rpmLoad, 0.75, false)
             coldShockFactor = coldShockFactor * (C.COLD_SHOCK_FACTOR_MULTIPLIER or 0) * motorLoadInf
@@ -851,8 +925,9 @@ function RealisticMechanicalSystems:updateChassisSystem(dt)
     local steerGroundFrictionCoeff = math.max(tonumber(spec.avgTireGroundFrictionCoeff) or 0, 0)
     local steerGroundFrictionFactor = steerGroundFrictionCoeff ^ 2
     local steerGroundContact = steerState.groundContact
-    local steerRateFactor = steerState.rateFactor
     local steerDeltaRate = steerState.deltaRate
+    local steerAngleRatio = math.clamp(tonumber(steerState.angleRatio) or 0, 0, 1)
+    local steerAxleLoadRatio = math.max(tonumber(steerState.axleLoadRatio) or 1, 0)
     local steerMoving = steerState.isMoving == true
     local brakeMassFactor = 0
     local isTruck = spec.isTruck == true
@@ -923,7 +998,7 @@ function RealisticMechanicalSystems:updateChassisSystem(dt)
         if steerSpeedThreshold > 0 and steerState.isLowSpeedActive and steerGroundContact > 0 and steerMoving then
             steerLowSpeedFactor = RMS_Utils.calculateQuadraticMultiplier(math.clamp(speed, 0, steerSpeedThreshold), steerSpeedThreshold, true)
             if steerLowSpeedFactor > 0 then
-                steerLoadFactor = steerLowSpeedFactor * steerRateFactor * (tonumber(C.STEER_LOAD_FACTOR_MULTIPLIER) or 5.0) * steerGroundFrictionFactor
+                steerLoadFactor = steerLowSpeedFactor * steerAngleRatio * steerAxleLoadRatio * (tonumber(C.STEER_LOAD_FACTOR_MULTIPLIER) or 5.0) * steerGroundFrictionFactor
                 wearRate = wearRate + steerLoadFactor
             end
         end
@@ -956,8 +1031,9 @@ function RealisticMechanicalSystems:updateChassisSystem(dt)
         steerLowSpeedFactor = steerLowSpeedFactor,
         steerGroundFrictionCoeff = steerGroundFrictionCoeff,
         steerGroundFrictionFactor = steerGroundFrictionFactor,
-        steerRateFactor = steerRateFactor,
         steerDeltaRate = steerDeltaRate,
+        steerAngleRatio = steerAngleRatio,
+        steerAxleLoadRatio = steerAxleLoadRatio,
         steerGroundContact = steerGroundContact,
         steerMoving = steerMoving,
         brakeMassFactor = brakeMassFactor,

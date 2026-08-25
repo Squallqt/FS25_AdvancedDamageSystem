@@ -6,6 +6,9 @@ RMS_WorkshopDialog = {}
 RMS_WorkshopDialog.INSTANCE = nil
 
 local RMS_WorkshopDialog_mt = Class(RMS_WorkshopDialog, MessageDialog)
+
+-- share of the table height the progress ring takes
+RMS_WorkshopDialog.PROGRESS_RING_TABLE_SHARE = 0.625
 local modDirectory = g_currentModDirectory
 
 local log_dbg = RMS_Utils.createLogger("[RMS_WORKSHOP_DIALOG]")
@@ -149,7 +152,7 @@ function RMS_WorkshopDialog:updateScreen()
         local finishTimeText = RMS_Utils.formatFinishTime(self.vehicle:getServiceFinishTime(nil, nil, nil, nil))
         local localizedStatus = g_i18n:getText(spec.currentState)
         statusText = string.format(g_i18n:getText("rms_ws_status_in_progress_format"), localizedStatus, finishTimeText)
-        if spec.currentState ~= STATUS.REPAIR then
+        if spec.currentState ~= STATUS.REPAIR and spec.currentState ~= STATUS.REFILL then
             local inspectingText = g_i18n:getText("rms_ws_inspecting_status")
             self.serviceValue:setText(inspectingText)
             self.serviceValue:setTextColor(0.5, 0.5, 0.5, 1.0)
@@ -191,11 +194,13 @@ function RMS_WorkshopDialog:updateScreen()
     self.maintenanceButton:setVisible(not isUnderService)
     self.repairButton:setVisible(not isUnderService)
     self.overhaulButton:setVisible(not isUnderService)
+    self.refillButton:setVisible(not isUnderService and (self.vehicle.getMissingFluidShare == nil or self.vehicle:getMissingFluidShare() > 0.001))
 
     local inspectionPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.INSPECTION, RealisticMechanicalSystems.INSPECTION_TYPES.STANDARD, "NONE", false, self.workshopType)
     local maintenancePrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.MAINTENANCE, RealisticMechanicalSystems.MAINTENANCE_TYPES.STANDARD, RealisticMechanicalSystems.PART_TYPES.OEM, false, self.workshopType)
     local repairPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.REPAIR, RealisticMechanicalSystems.REPAIR_TYPES.MEDIUM, RealisticMechanicalSystems.PART_TYPES.OEM, false, self.workshopType)
     local overhaulPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.OVERHAUL, RealisticMechanicalSystems.OVERHAUL_TYPES.STANDARD, "NONE", false, self.workshopType)
+    local refillPrice = self.vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.REFILL, nil, nil, nil, self.workshopType)
 
     local selectedRepairCount = 0
     for _, breakdown in pairs(self.activeBreakdowns) do
@@ -217,6 +222,7 @@ function RMS_WorkshopDialog:updateScreen()
         self.repairButton:setText(string.format(buttonFormat, g_i18n:getText("rms_ws_action_repair"), g_i18n:formatMoney(repairPrice, 0, true, false)))
     end
     self.overhaulButton:setText(string.format(buttonFormat, g_i18n:getText("rms_ws_action_overhaul"), g_i18n:formatMoney(overhaulPrice, 0, true, false)))
+    self.refillButton:setText(string.format(buttonFormat, g_i18n:getText("rms_ws_action_refill"), g_i18n:formatMoney(refillPrice, 0, true, false)))
 
     -- table visibility, a running service replaces the list with the progress text
     local isListEmpty = #self.visibleBreakdowns == 0
@@ -228,7 +234,7 @@ function RMS_WorkshopDialog:updateScreen()
         self.emptyTableText:setText(g_i18n:getText("rms_ws_info_no_breakdowns"))
         self.emptyTableText:setTextColor(0.5, 0.5, 0.5, 1)
     else
-        self:updateServiceProgressText()
+        self:hideTableDuringService()
     end
 end
 
@@ -251,8 +257,8 @@ function RMS_WorkshopDialog:getServiceProgressPercent()
     return math.floor(ratio * 100)
 end
 
----Replaces the breakdown table with the service progress percentage
-function RMS_WorkshopDialog:updateServiceProgressText()
+---Clears the breakdown table while a service is running
+function RMS_WorkshopDialog:hideTableDuringService()
     if self.vehicle == nil or self.vehicle.spec_RealisticMechanicalSystems == nil then
         return
     end
@@ -261,18 +267,25 @@ function RMS_WorkshopDialog:updateServiceProgressText()
         return
     end
 
-    local progressPercent = self:getServiceProgressPercent()
-
-    local progressText = ""
-    if progressPercent ~= nil then
-        progressText = string.format("%d%%", progressPercent)
-    end
-
-    self.emptyTableText:setVisible(true)
+    self.emptyTableText:setVisible(false)
     self.breakdownTable:setVisible(false)
     self.tableSlider:setVisible(false)
-    self.emptyTableText:setText(progressText)
-    self.emptyTableText:setTextColor(0.455, 0.565, 0.115, 1)
+end
+
+---Draws the ring of the running service centered on the breakdown table
+function RMS_WorkshopDialog:onDrawServiceProgress()
+    local progressPercent = self:getServiceProgressPercent()
+    if progressPercent == nil then
+        return
+    end
+
+    local area = self.breakdownTable
+    local ringHeight = area.absSize[2] * RMS_WorkshopDialog.PROGRESS_RING_TABLE_SHARE
+    local ringWidth = ringHeight * (g_screenHeight / g_screenWidth)
+    local centerX = area.absPosition[1] + area.absSize[1] * 0.5
+    local centerY = area.absPosition[2] + area.absSize[2] * 0.5
+
+    RMS_ProgressRing.render(centerX, centerY, ringWidth, ringHeight, progressPercent / 100)
 end
 
 ---Returns the number of visible breakdowns
@@ -404,6 +417,31 @@ end
 ---Opens the overhaul option dialog
 function RMS_WorkshopDialog:onClickOverhaul()
     RMS_MaintenanceThreeOptionsDialog.show(self.vehicle, RealisticMechanicalSystems.STATUS.OVERHAUL)
+end
+
+---Starts a fluid top up on the vehicle
+function RMS_WorkshopDialog:onClickRefill()
+    local vehicle = self.vehicle
+    if vehicle == nil then
+        return
+    end
+
+    local workshopType = self.workshopType
+    local price = vehicle:getServicePrice(RealisticMechanicalSystems.STATUS.REFILL, nil, nil, nil, workshopType)
+    if g_currentMission:getMoney() < price then
+        InfoDialog.show(g_i18n:getText("shop_messageNotEnoughMoneyToBuy"))
+        return
+    end
+
+    if g_server ~= nil then
+        vehicle:initService(RealisticMechanicalSystems.STATUS.REFILL, workshopType, nil, nil, nil)
+        g_currentMission:addMoney(-1 * price, vehicle:getOwnerFarmId(), MoneyType.VEHICLE_RUNNING_COSTS, true, true)
+        RMS_VehicleChangeStatusEvent.send(vehicle)
+    else
+        RMS_ServiceRequestEvent.send(vehicle, RealisticMechanicalSystems.STATUS.REFILL, workshopType, nil, nil, nil)
+    end
+
+    self:close()
 end
 
 ---Asks the player to confirm cancelling the running service

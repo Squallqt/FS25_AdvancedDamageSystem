@@ -73,6 +73,7 @@ RMS_Breakdowns.PARTS = {
     CVT_HYDRAULIC_CONTROL_VALVE = "rms_breakdowns_part_cvt_hydraulic_control_valve",
     CVT = "rms_breakdowns_part_cvt",
     TRANSMISSION_THERMOSTAT = "rms_breakdowns_part_transmission_thermostat",
+    TRANSMISSION_SEAL = "rms_breakdowns_part_transmission_seal",
     HYDRAULIC_PUMP = "rms_breakdowns_part_hydraulic_pump",
     HYDRAULIC_CYLINDER = "rms_breakdowns_part_hydraulic_cylinder",
     HYDRAULIC_HOSE = "rms_breakdowns_part_hydraulic_hose",
@@ -113,6 +114,7 @@ local breakdownPriceMultipliers = {
     CVT_HYDRAULIC_CONTROL_VALVE_MALFUNCTION = 2.80,
     CVT_ADDON_MALFUNCTION = 3.0,
     TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.20,
+    TRANSMISSION_OIL_LEAK = 0.90,
     HYDRAULIC_PUMP_MALFUNCTION = 0.90,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 1.0,
     HYDRAULIC_HOSE_EXTERNAL_LEAK = 0.45,
@@ -152,6 +154,7 @@ local breakdownProgressMultipliers = {
     CVT_HYDRAULIC_CONTROL_VALVE_MALFUNCTION = 1.1,
     CVT_ADDON_MALFUNCTION = 1.4,
     TRANSMISSION_THERMOSTAT_MALFUNCTION = 1.3,
+    TRANSMISSION_OIL_LEAK = 0.8,
     HYDRAULIC_PUMP_MALFUNCTION = 1.1,
     HYDRAULIC_CYLINDER_INTERNAL_LEAK = 0.6,
     HYDRAULIC_HOSE_EXTERNAL_LEAK = 0.8,
@@ -432,7 +435,7 @@ RMS_Breakdowns.BreakdownRegistry = {
         }
     },
 
-    AIRINTAKE_CLOGGING = {
+    AIRFILTER_CLOGGING = {
         system = systems.ENGINE,
         part = parts.VEHICLE,
         isSelectable = false,
@@ -1809,6 +1812,84 @@ RMS_Breakdowns.BreakdownRegistry = {
         }
     },
 
+    TRANSMISSION_OIL_LEAK = {
+        isSelectable = true,
+        system = systems.TRANSMISSION,
+        part = parts.TRANSMISSION_SEAL,
+        isApplicable = function(vehicle)
+            return not getIsElectricVehicle(vehicle)
+        end,
+        probability = function(vehicle)
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.TRANSMISSION, {"hotf", "ctf"}, {"pof", "lf"})
+        end,
+        isCanProgress = function(vehicle)
+            return vehicle:getIsMotorStarted()
+        end,
+        stages = {
+            {
+                severity = "rms_breakdowns_severity_minor",
+                description = "rms_breakdowns_transmission_oil_leak_stage1_description",
+                detectionChance = 1.0,
+                progressMultiplier = 2.0 * breakdownProgressMultipliers.TRANSMISSION_OIL_LEAK,
+                repairPrice = 1.0 * breakdownPriceMultipliers.TRANSMISSION_OIL_LEAK,
+                effects = {
+                    { id = "TRANSMISSION_OIL_LEAK_RATE", value = 0.02, aggregation = "max" }
+                },
+                inspection = {
+                    { additional = "rms_inspection_hint_transmission_oil_leak_stage1" }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_moderate",
+                description = "rms_breakdowns_transmission_oil_leak_stage2_description",
+                detectionChance = 1.0,
+                progressMultiplier = 1.0 * breakdownProgressMultipliers.TRANSMISSION_OIL_LEAK,
+                repairPrice = 2.0 * breakdownPriceMultipliers.TRANSMISSION_OIL_LEAK,
+                effects = {
+                    { id = "TRANSMISSION_OIL_LEAK_RATE", value = 0.08, aggregation = "max" }
+                },
+                inspection = {
+                    { additional = "rms_inspection_hint_transmission_oil_leak_stage2" }
+                },
+                indicators = {
+                    { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_major",
+                description = "rms_breakdowns_transmission_oil_leak_stage3_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0.5 * breakdownProgressMultipliers.TRANSMISSION_OIL_LEAK,
+                repairPrice = 4.0 * breakdownPriceMultipliers.TRANSMISSION_OIL_LEAK,
+                effects = {
+                    { id = "TRANSMISSION_OIL_LEAK_RATE", value = 0.25, aggregation = "max" }
+                },
+                inspection = {
+                    { additional = "rms_inspection_hint_transmission_oil_leak_stage3" }
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            },
+            {
+                severity = "rms_breakdowns_severity_critical",
+                description = "rms_breakdowns_transmission_oil_leak_stage4_description",
+                detectionChance = 1.0,
+                progressMultiplier = 0,
+                repairPrice = 8.0 * breakdownPriceMultipliers.TRANSMISSION_OIL_LEAK,
+                effects = {
+                    { id = "TRANSMISSION_OIL_LEAK_RATE", value = 0.80, aggregation = "max" }
+                },
+                inspection = {
+                    { additional = "rms_inspection_hint_transmission_oil_leak_stage4" }
+                },
+                indicators = {
+                    { id = db.TRANSMISSION, color = color.CRITICAL, switchOn = true, switchOff = false }
+                }
+            }
+        }
+    },
+
     CVT_ADDON_MALFUNCTION = {
         isSelectable = true,
         system = systems.TRANSMISSION,
@@ -1883,7 +1964,7 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_PUMP,
         isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"of", "cof", "hof", "sf"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"cof", "hof", "sf"}, {})
         end,
         isCanProgress = function(vehicle)
             return vehicle:getIsMotorStarted() and vehicle.spec_RealisticMechanicalSystems.isHydraulicActive
@@ -1947,7 +2028,7 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_CYLINDER,
         isApplicable = isHydraulicLiftBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "of", "vf"}, {})
         end,
         isCanProgress = function(vehicle)
             local spec = vehicle.spec_RealisticMechanicalSystems
@@ -2024,7 +2105,7 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_HOSE,
         isApplicable = isHydraulicHoseBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"of", "sf"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"hlf", "vf"}, {})
         end,
         isCanProgress = function(vehicle)
             local spec = vehicle.spec_RealisticMechanicalSystems
@@ -2038,10 +2119,11 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 repairPrice = 1.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.05, aggregation = "min" }
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.05, aggregation = "min" },
+                    { id = "HYDRAULIC_FLUID_LEAK_RATE", value = 0.02, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_slight_moisture", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage1" }
+                    { additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage1" }
                 }
             },
             {
@@ -2051,10 +2133,11 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 repairPrice = 2.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.10, aggregation = "min" }
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.10, aggregation = "min" },
+                    { id = "HYDRAULIC_FLUID_LEAK_RATE", value = 0.08, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_seepage", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage2" }
+                    { additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2067,10 +2150,11 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 repairPrice = 4.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.20, aggregation = "min" }
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.20, aggregation = "min" },
+                    { id = "HYDRAULIC_FLUID_LEAK_RATE", value = 0.25, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_active_leak", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage3" }
+                    { additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2083,10 +2167,11 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.HYDRAULIC_HOSE_EXTERNAL_LEAK,
                 effects = {
-                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.35, aggregation = "min" }
+                    { id = "HYDRAULIC_SPEED_MODIFIER", value = -0.35, aggregation = "min" },
+                    { id = "HYDRAULIC_FLUID_LEAK_RATE", value = 0.8, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "hydraulicFluid", status = "rms_inspection_status_severe_leak", additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage4" }
+                    { additional = "rms_inspection_hint_hydraulic_hose_external_leak_stage4" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2101,7 +2186,7 @@ RMS_Breakdowns.BreakdownRegistry = {
         part = parts.HYDRAULIC_FILTER,
         isApplicable = isHydraulicBreakdownApplicable,
         probability = function(vehicle)
-            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "of"}, {})
+            return getBreakdownProbabilityWeightPercent(vehicle, systems.HYDRAULICS, {"sf", "cof"}, {})
         end,
         isCanProgress = function(vehicle)
             return vehicle:getIsMotorStarted() and vehicle.spec_RealisticMechanicalSystems.isHydraulicActive
@@ -2370,10 +2455,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 repairPrice = 1.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
-                    { id = "PTO_BEARING_NOISE_EFFECT", value = 0.35, aggregation = "max" }
+                    { id = "PTO_BEARING_NOISE_EFFECT", value = 0.70, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage1" }
+                    { additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage1" }
                 }
             },
             {
@@ -2383,10 +2468,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 repairPrice = 2.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
-                    { id = "PTO_BEARING_NOISE_EFFECT", value = 0.60, aggregation = "max" }
+                    { id = "PTO_BEARING_NOISE_EFFECT", value = 1.20, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage2" }
+                    { additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2399,11 +2484,11 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 repairPrice = 4.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
-                    { id = "PTO_BEARING_NOISE_EFFECT", value = 0.85, aggregation = "max" },
+                    { id = "PTO_BEARING_NOISE_EFFECT", value = 1.70, aggregation = "max" },
                     { id = "PTO_AUTO_DISENGAGE_CHANCE", value = 30, aggregation = "min", extraData = {status = "IDLE"} }
                 },
                 inspection = {
-                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage3" }
+                    { additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2416,11 +2501,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.PTO_DRIVE_OUTPUT_BEARING_WEAR,
                 effects = {
-                    { id = "PTO_BEARING_NOISE_EFFECT", value = 1.0, aggregation = "max" },
                     { id = "PTO_FAILURE", value = 1.0, aggregation = "boolean_or", extraData = {message = "rms_breakdowns_pto_drive_output_bearing_wear_stage4_message", disableAi = true} }
                 },
                 inspection = {
-                    { target = "ptoDriveOutput", additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage4" }
+                    { additional = "rms_inspection_hint_pto_drive_output_bearing_wear_stage4" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2434,13 +2518,14 @@ RMS_Breakdowns.BreakdownRegistry = {
         system = systems.PTO,
         part = parts.PTO_DRIVE_COUPLING,
         isApplicable = function(vehicle)
-            return isPtoBreakdownApplicable(vehicle)
+            local spec = vehicle.spec_RealisticMechanicalSystems
+            return isPtoBreakdownApplicable(vehicle) and spec ~= nil and (tonumber(spec.year) or 0) >= 1990
         end,
         probability = function(vehicle)
             return getBreakdownProbabilityWeightPercent(vehicle, systems.PTO, {"pef", "sf"}, {})
         end,
         isCanProgress = function(vehicle)
-            return vehicle.spec_RealisticMechanicalSystems.isPtoActive
+            return vehicle:getIsMotorStarted()
         end,
         stages = {
             {
@@ -2453,7 +2538,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 0.10, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage1" }
+                    { additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage1" }
                 }
             },
             {
@@ -2466,7 +2551,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 0.30, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage2" }
+                    { additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage2" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2482,7 +2567,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 0.60, aggregation = "max" }
                 },
                 inspection = {
-                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage3" }
+                    { additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage3" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2498,7 +2583,7 @@ RMS_Breakdowns.BreakdownRegistry = {
                     { id = "PTO_ENGAGEMENT_BLOCKED_CHANCE", value = 1.0, aggregation = "max", extraData = {message = "rms_breakdowns_pto_engagement_control_malfunction_stage4_message", disableAi = true} }
                 },
                 inspection = {
-                    { target = "ptoEngagementControl", additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage4" }
+                    { additional = "rms_inspection_hint_pto_engagement_control_malfunction_stage4" }
                 },
                 indicators = {
                     { id = db.WARNING, color = color.CRITICAL, switchOn = true, switchOff = false }
@@ -2909,10 +2994,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 2.0 * breakdownProgressMultipliers.COOLANT_LEAK,
                 repairPrice = 1.0 * breakdownPriceMultipliers.COOLANT_LEAK,
                 effects = {
-                    { id = "RADIATOR_HEALTH_MODIFIER", value = -0.1, aggregation = "min"}
+                    { id = "COOLANT_LEAK_RATE", value = 0.02, aggregation = "max"}
                 },
                 inspection = {
-                    { target = "coolant", status = "rms_inspection_status_slightly_low", additional = "rms_inspection_hint_coolant_leak_stage1" },
+                    { additional = "rms_inspection_hint_coolant_leak_stage1" },
                 }
             },
             {
@@ -2922,10 +3007,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 1.0 * breakdownProgressMultipliers.COOLANT_LEAK,
                 repairPrice = 2.0 * breakdownPriceMultipliers.COOLANT_LEAK,
                 effects = {
-                    { id = "RADIATOR_HEALTH_MODIFIER", value = -0.2, aggregation = "min"}
+                    { id = "COOLANT_LEAK_RATE", value = 0.08, aggregation = "max"}
                 },
                 inspection = {
-                    { target = "coolant", status = "rms_inspection_status_low", additional = "rms_inspection_hint_coolant_leak_stage2" },
+                    { additional = "rms_inspection_hint_coolant_leak_stage2" },
                 },
                 indicators = {
 
@@ -2938,10 +3023,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0.5 * breakdownProgressMultipliers.COOLANT_LEAK,
                 repairPrice = 4.0 * breakdownPriceMultipliers.COOLANT_LEAK,
                 effects = {
-                    { id = "RADIATOR_HEALTH_MODIFIER", value = -0.4, aggregation = "min"}
+                    { id = "COOLANT_LEAK_RATE", value = 0.25, aggregation = "max"}
                 },
                 inspection = {
-                    { target = "coolant", status = "rms_inspection_status_very_low", additional = "rms_inspection_hint_coolant_leak_stage3" },
+                    { additional = "rms_inspection_hint_coolant_leak_stage3" },
                 },
                 indicators = {
                     { id = db.COOLANT, color = color.WARNING, switchOn = true, switchOff = false }
@@ -2954,10 +3039,10 @@ RMS_Breakdowns.BreakdownRegistry = {
                 progressMultiplier = 0,
                 repairPrice = 8.0 * breakdownPriceMultipliers.COOLANT_LEAK,
                 effects = {
-                    { id = "RADIATOR_HEALTH_MODIFIER", value = -0.6, aggregation = "min"}
+                    { id = "COOLANT_LEAK_RATE", value = 0.8, aggregation = "max"}
                 },
                 inspection = {
-                    { target = "coolant", status = "rms_inspection_status_critically_low", additional = "rms_inspection_hint_coolant_leak_stage4" },
+                    { additional = "rms_inspection_hint_coolant_leak_stage4" },
                 },
                 indicators = {
                     { id = db.COOLANT, color = color.CRITICAL, switchOn = true, switchOff = false },

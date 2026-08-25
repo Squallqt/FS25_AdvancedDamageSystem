@@ -42,13 +42,9 @@ function RMS_SettingsSyncEvent.new()
     self.mobileWorkshopRestrictionsEnabled = RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED
     self.openHour                  = RMS_Config.WORKSHOP.OPEN_HOUR
     self.closeHour                 = RMS_Config.WORKSHOP.CLOSE_HOUR
-    self.engineMaxHeat             = RMS_Config.THERMAL.ENGINE_MAX_HEAT
-    self.transMaxHeat              = RMS_Config.THERMAL.TRANS_MAX_HEAT
     self.temperatureChangeSpeed    = RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED
     self.transTemperatureChangeMultiplier = RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER
     self.maxDirtInfluence          = RMS_Config.THERMAL.MAX_DIRT_INFLUENCE
-    self.warmingBoostPower         = RMS_Config.THERMAL.WARMING_BOOST_POWER
-    self.coolingSlowdownPower      = RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER
     self.batteryUsableCapacityFactor = RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR
     self.alternatorMaxOutput       = RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT
     self.idleCurrentA              = RMS_Config.ELECTRICAL.IDLE_CURRENT_A
@@ -95,13 +91,9 @@ function RMS_SettingsSyncEvent:writeStream(streamId, connection)
     streamWriteBool(streamId,    self.mobileWorkshopRestrictionsEnabled or false)
     streamWriteFloat32(streamId, self.openHour               or 8)
     streamWriteFloat32(streamId, self.closeHour              or 19)
-    streamWriteFloat32(streamId, self.engineMaxHeat          or 1.05)
-    streamWriteFloat32(streamId, self.transMaxHeat           or 1.05)
     streamWriteFloat32(streamId, self.temperatureChangeSpeed or 1.4)
     streamWriteFloat32(streamId, self.transTemperatureChangeMultiplier or 1.0)
-    streamWriteFloat32(streamId, self.maxDirtInfluence       or 0.2)
-    streamWriteFloat32(streamId, self.warmingBoostPower      or 1.0)
-    streamWriteFloat32(streamId, self.coolingSlowdownPower   or 1.0)
+    streamWriteFloat32(streamId, self.maxDirtInfluence       or 1.0)
     streamWriteFloat32(streamId, self.batteryUsableCapacityFactor or 0.1)
     streamWriteFloat32(streamId, self.alternatorMaxOutput    or 100)
     streamWriteFloat32(streamId, self.idleCurrentA           or 0.5)
@@ -146,13 +138,9 @@ function RMS_SettingsSyncEvent:readStream(streamId, connection)
     self.mobileWorkshopRestrictionsEnabled = streamReadBool(streamId)
     self.openHour                  = streamReadFloat32(streamId)
     self.closeHour                 = streamReadFloat32(streamId)
-    self.engineMaxHeat             = streamReadFloat32(streamId)
-    self.transMaxHeat              = streamReadFloat32(streamId)
     self.temperatureChangeSpeed    = streamReadFloat32(streamId)
     self.transTemperatureChangeMultiplier = streamReadFloat32(streamId)
     self.maxDirtInfluence          = streamReadFloat32(streamId)
-    self.warmingBoostPower         = streamReadFloat32(streamId)
-    self.coolingSlowdownPower      = streamReadFloat32(streamId)
     self.batteryUsableCapacityFactor = streamReadFloat32(streamId)
     self.alternatorMaxOutput       = streamReadFloat32(streamId)
     self.idleCurrentA              = streamReadFloat32(streamId)
@@ -204,13 +192,9 @@ local function applyConfig(event)
     RMS_Config.WORKSHOP.MOBILE_WORKSHOP_RESTRICTIONS_ENABLED = event.mobileWorkshopRestrictionsEnabled
     RMS_Config.WORKSHOP.OPEN_HOUR                           = event.openHour
     RMS_Config.WORKSHOP.CLOSE_HOUR                          = event.closeHour
-    RMS_Config.THERMAL.ENGINE_MAX_HEAT                      = event.engineMaxHeat
-    RMS_Config.THERMAL.TRANS_MAX_HEAT                       = event.transMaxHeat
     RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED             = math.clamp(event.temperatureChangeSpeed, 0.5, 2.0)
     RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER  = math.clamp(event.transTemperatureChangeMultiplier, 0.5, 2.0)
-    RMS_Config.THERMAL.MAX_DIRT_INFLUENCE                   = event.maxDirtInfluence
-    RMS_Config.THERMAL.WARMING_BOOST_POWER                  = event.warmingBoostPower
-    RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER               = event.coolingSlowdownPower
+    RMS_Config.THERMAL.MAX_DIRT_INFLUENCE                   = math.clamp(event.maxDirtInfluence, 0.0, 1.0)
     RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR    = event.batteryUsableCapacityFactor
     RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT                    = event.alternatorMaxOutput
     RMS_Config.ELECTRICAL.IDLE_CURRENT_A                    = event.idleCurrentA

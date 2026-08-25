@@ -84,7 +84,7 @@
                 <ThreePartBitmap profile="fs25_listSliderBox" position="-50px 0px" size="12px 300px" with="anchorTopRight">
                     <Slider profile="fs25_listSlider"  dataElementId="breakdownTable" id="tableSlider" />
                 </ThreePartBitmap>
-                <Animation profile="fs25_dialogLoading" id="maintanceInProgressSpinner" size="200px 200px" position="0px 0px"/>
+                <GuiElement profile="emptyPanel" id="maintanceInProgressSpinner" onDraw="onDrawServiceProgress"/>
                 <Text profile="rms_textHeaderGrey" id="emptyTableText" text="$l10n_rms_ws_info_no_breakdowns" position="0px 210px" size="100% 50px"/>
             </GuiElement>
 
@@ -100,6 +100,7 @@
             <Button profile="buttonMenuNext" text="$l10n_rms_ws_action_maintenance" onClick="onClickService" id="maintenanceButton"/>
             <Button profile="buttonOK" text="$l10n_button_repair" onClick="onClickRepair" id="repairButton"/>
             <Button profile="buttonExtra1" text="$l10n_rms_ws_action_overhaul" onClick="onClickOverhaul" id="overhaulButton"/>
+            <Button profile="buttonActivate" text="$l10n_rms_ws_action_refill" onClick="onClickRefill" id="refillButton"/>
             <Button profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" id="backButton"/>
         </BoxLayout>
         

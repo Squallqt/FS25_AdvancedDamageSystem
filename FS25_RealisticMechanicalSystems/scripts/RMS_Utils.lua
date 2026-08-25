@@ -327,27 +327,35 @@ function RMS_Utils.getConnectedPtoData(vehicle)
         end
 
         local outputs = vehicleObj:getOutputPowerTakeOffs()
-        for _, output in pairs(outputs) do
+        for _, output in pairs(outputs or {}) do
             local consumer = output.connectedVehicle
             if output.connectedInput ~= nil and consumer ~= nil then
                 if data.connectedVehicles[consumer] ~= true then
                     data.connectedVehicles[consumer] = true
 
-                    local isActive = consumer:getIsPowerTakeOffActive()
+                    local isEngaged = consumer.getIsPowerTakeOffActive ~= nil and consumer:getIsPowerTakeOffActive() or false
                     local torque = 0
                     if consumer.getConsumedPtoTorque ~= nil then
                         local consumedTorque = consumer:getConsumedPtoTorque(nil, true)
                         torque = tonumber(consumedTorque) or 0
                     end
-                    local rpm = consumer.getPtoRpm ~= nil and (tonumber(consumer:getPtoRpm()) or 0) or 0
+                    local measuredRpm = consumer.getPtoRpm ~= nil and (tonumber(consumer:getPtoRpm()) or 0) or 0
+                    local configuredRpm = consumer.spec_powerConsumer ~= nil
+                        and (tonumber(consumer.spec_powerConsumer.ptoRpm) or 0) or 0
+                    local rpm = measuredRpm
+                    if isEngaged and rpm <= 0 then
+                        rpm = configuredRpm
+                    end
                     local power = torque * rpm * math.pi / 30
 
                     data.torque = data.torque + torque
                     data.rpm = math.max(data.rpm, rpm)
                     data.power = data.power + power
 
-                    if isActive then
+                    if isEngaged or measuredRpm > 0 or torque > 0 then
                         data.isActive = true
+                    end
+                    if isEngaged then
                         data.activeLinks[consumer] = true
                     end
                 end
@@ -379,6 +387,27 @@ function RMS_Utils.setConnectedPtoConsumersTurnedOn(vehicle, isTurnedOn)
     end
 
     return changed
+end
+
+---Returns how far a fluid level sits below the level a shortage starts biting at
+-- @param float? level fluid level
+-- @return float shortage 0 above that level, up to 1 on an empty circuit
+function RMS_Utils.getFluidShortage(level)
+    local start = RMS_Config.FLUIDS.LEVEL_MIN_MARK
+    if start <= 0 then
+        return 0
+    end
+
+    return math.clamp((start - math.clamp(tonumber(level) or 1, 0, 1)) / start, 0, 1)
+end
+
+---Returns the capacity a fluid level still provides
+-- @param float? level fluid level
+-- @param float minFactor capacity left on an empty circuit
+-- @return float factor capacity factor between minFactor and 1
+function RMS_Utils.getFluidCapacityFactor(level, minFactor)
+    local floor = tonumber(minFactor) or 0
+    return 1 - RMS_Utils.getFluidShortage(level) * (1 - floor)
 end
 
 ---Returns the squared distance past a threshold, 0 on the safe side of it
@@ -1060,22 +1089,6 @@ function RMS_Utils.normalizeBoolValue(value, defaultValue)
     return value and true or false
 end
 
----Converts a value to a number, falling back when it cannot
--- @param any value value to convert
--- @param float? defaultValue value used when the conversion fails
--- @return float value converted value
-function RMS_Utils.normalizeNumberValue(value, defaultValue)
-    if value == nil then
-        return defaultValue
-    end
-
-    local num = tonumber(value)
-    if num == nil then
-        return defaultValue
-    end
-
-    return num
-end
 
 ---Encodes a float that may be absent
 -- @param float? value value to encode

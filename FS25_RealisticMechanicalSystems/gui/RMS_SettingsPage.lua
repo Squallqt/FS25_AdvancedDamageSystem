@@ -63,13 +63,9 @@ local function buildPendingConfigFromRMSConfig()
         openHour = RMS_Config.WORKSHOP.OPEN_HOUR,
         closeHour = RMS_Config.WORKSHOP.CLOSE_HOUR,
 
-        engineMaxHeat = RMS_Config.THERMAL.ENGINE_MAX_HEAT,
-        transMaxHeat = RMS_Config.THERMAL.TRANS_MAX_HEAT,
         temperatureChangeSpeed = RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED,
         transTemperatureChangeMultiplier = RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER,
         maxDirtInfluence = RMS_Config.THERMAL.MAX_DIRT_INFLUENCE,
-        warmingBoostPower = RMS_Config.THERMAL.WARMING_BOOST_POWER,
-        coolingSlowdownPower = RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER,
 
         batteryUsableCapacityFactor = RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR,
         alternatorMaxOutput = RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT,
@@ -361,13 +357,9 @@ function RMS_SettingsPage.commitPendingConfig(current, pending)
     RMS_Config.WORKSHOP.OPEN_HOUR = pending.openHour
     RMS_Config.WORKSHOP.CLOSE_HOUR = pending.closeHour
 
-    RMS_Config.THERMAL.ENGINE_MAX_HEAT = pending.engineMaxHeat
-    RMS_Config.THERMAL.TRANS_MAX_HEAT = pending.transMaxHeat
     RMS_Config.THERMAL.TEMPERATURE_CHANGE_SPEED = pending.temperatureChangeSpeed
     RMS_Config.THERMAL.TRANS_TEMPERATURE_CHANGE_MULTIPLIER = pending.transTemperatureChangeMultiplier
     RMS_Config.THERMAL.MAX_DIRT_INFLUENCE = pending.maxDirtInfluence
-    RMS_Config.THERMAL.WARMING_BOOST_POWER = pending.warmingBoostPower
-    RMS_Config.THERMAL.COOLING_SLOWDOWN_POWER = pending.coolingSlowdownPower
 
     RMS_Config.ELECTRICAL.BATTERY_USABLE_CAPACITY_FACTOR = pending.batteryUsableCapacityFactor
     RMS_Config.ELECTRICAL.ALT_MAX_OUTPUT = pending.alternatorMaxOutput
@@ -403,6 +395,10 @@ function RMS_SettingsPage.commitPendingConfig(current, pending)
     end
 
     if g_currentMission ~= nil then
+        if g_currentMission:getIsServer() then
+            RMS_Config.saveToXMLFile()
+        end
+
         if g_currentMission:getIsServer() and g_server ~= nil then
             g_server:broadcastEvent(RMS_SettingsSyncEvent.new())
         elseif g_client ~= nil then
@@ -478,6 +474,13 @@ function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
         RMS_SettingsPage.steps.conditionWear.texts,
         g_i18n:getText("rms_vehicleLifespan_label"),
         g_i18n:getText("rms_vehicleLifespan_tooltip")
+    )
+    page.rmsReinitializeVehicles = RMS_SettingsPage:addButtonOption(
+        page,
+        "onReinitializeVehiclesClicked",
+        g_i18n:getText("rms_reinitializeVehicles_label"),
+        g_i18n:getText("rms_reinitializeVehicles_text"),
+        g_i18n:getText("rms_reinitializeVehicles_tooltip")
     )
     page.rmsSystemStressRate = RMS_SettingsPage:addMultiTextOption(
         page, "onSystemStressRateChanged",
@@ -606,12 +609,6 @@ function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
 
     RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("rms_settings_section_thermal_model"))
 
-    page.rmsThermalSensitivity = RMS_SettingsPage:addMultiTextOption(
-        page, "onThermalSensitivityChanged",
-        RMS_SettingsPage.steps.thermalSensitivity.texts,
-        g_i18n:getText("rms_thermalSensitivity_label"),
-        g_i18n:getText("rms_thermalSensitivity_tooltip")
-    )
     page.rmsTemperatureChangeSpeed = RMS_SettingsPage:addMultiTextOption(
         page,
         "onTemperatureChangeSpeedChanged",
@@ -632,20 +629,6 @@ function RMS_SettingsPage:initializeSettingsPageControls(targetPage)
         RMS_SettingsPage.steps.radiatorDirtInfluence.texts,
         g_i18n:getText("rms_radiatorDirtInfluence_label"),
         g_i18n:getText("rms_radiatorDirtInfluence_tooltip")
-    )
-    page.rmsWarmingBoostPower = RMS_SettingsPage:addMultiTextOption(
-        page,
-        "onWarmingBoostPowerChanged",
-        RMS_SettingsPage.steps.thermalPower.texts,
-        g_i18n:getText("rms_warmingBoostPower_label"),
-        g_i18n:getText("rms_warmingBoostPower_tooltip")
-    )
-    page.rmsCoolingSlowdownPower = RMS_SettingsPage:addMultiTextOption(
-        page,
-        "onCoolingSlowdownPowerChanged",
-        RMS_SettingsPage.steps.thermalPower.texts,
-        g_i18n:getText("rms_coolingSlowdownPower_label"),
-        g_i18n:getText("rms_coolingSlowdownPower_tooltip")
     )
 
     RMS_SettingsPage:addSectionHeader(page, g_i18n:getText("rms_settings_section_battery_alternator"))
@@ -923,12 +906,9 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     setIndex(currentPage.rmsDowntimeWear, steps.downtimeWear.values, pending.downtimeMultiplier)
     setIndex(currentPage.rmsMaintenancePrice, steps.maintPrice.values, pending.globalPriceMultiplier * 100)
     setIndex(currentPage.rmsMaintenanceDuration, steps.maintDuration.values, pending.globalTimeMultiplier * 100)
-    setIndex(currentPage.rmsThermalSensitivity, steps.thermalSensitivity.values, pending.engineMaxHeat)
     setIndex(currentPage.rmsTemperatureChangeSpeed, steps.temperatureChangeSpeed.values, pending.temperatureChangeSpeed)
     setIndex(currentPage.rmsTransTemperatureChangeMultiplier, steps.transTemperatureChangeMultiplier.values, pending.transTemperatureChangeMultiplier)
     setIndex(currentPage.rmsRadiatorDirtInfluence, steps.radiatorDirtInfluence.values, pending.maxDirtInfluence)
-    setIndex(currentPage.rmsWarmingBoostPower, steps.thermalPower.values, pending.warmingBoostPower)
-    setIndex(currentPage.rmsCoolingSlowdownPower, steps.thermalPower.values, pending.coolingSlowdownPower)
     setIndex(currentPage.rmsCloggingSpeed, steps.cloggingSpeed.values, pending.cloggingSpeed)
     setIndex(currentPage.rmsFieldInspectionDuration, steps.fieldInspectionDuration.values, pending.fieldInspectionDuration)
     setIndex(currentPage.rmsLubricationReducePerOperatingHour, steps.lubricationReducePerOperatingHour.values, pending.lubricationReducePerOperatingHour)
@@ -975,6 +955,7 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
 
     currentPage.rmsServiceWear:setDisabled(disableAll)
     currentPage.rmsConditionWear:setDisabled(disableAll)
+    currentPage.rmsReinitializeVehicles:setDisabled(disableAll)
     currentPage.rmsDowntimeWear:setDisabled(disableAll)
     currentPage.rmsGeneralWearEnabled:setDisabled(disableAll)
     currentPage.rmsExhaustSmokeEnabled:setDisabled(disableAll)
@@ -999,12 +980,9 @@ function RMS_SettingsPage:updateRMSSettings(currentPage)
     currentPage.rmsDrivetrainDiffLockReleaseSpeed:setDisabled(disableAll or not pending.drivetrainEnabled)
     currentPage.rmsDrivetrainParkBrakeEnabled:setDisabled(disableAll)
     currentPage.rmsDrivetrainParkBrakeAuto:setDisabled(disableAll or not pending.drivetrainParkBrakeEnabled)
-    currentPage.rmsThermalSensitivity:setDisabled(disableAll)
     currentPage.rmsTemperatureChangeSpeed:setDisabled(disableAll)
     currentPage.rmsTransTemperatureChangeMultiplier:setDisabled(disableAll)
     currentPage.rmsRadiatorDirtInfluence:setDisabled(disableAll)
-    currentPage.rmsWarmingBoostPower:setDisabled(disableAll)
-    currentPage.rmsCoolingSlowdownPower:setDisabled(disableAll)
     currentPage.rmsCloggingSpeed:setDisabled(disableAll)
     currentPage.rmsFieldInspectionDuration:setDisabled(disableAll)
     currentPage.rmsLubricationReducePerOperatingHour:setDisabled(disableAll)
@@ -1070,6 +1048,35 @@ function RMS_SettingsPage:onTutorialModeChanged(state, optionElement)
     pending.tutorialMode = newValue
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
+end
+
+---Shows how many vehicles the recomputation reached
+-- @param integer recalculated number of vehicles recomputed
+-- @param integer busy number of vehicles left untouched
+function RMS_SettingsPage.showReinitializeVehiclesResult(recalculated, busy)
+    InfoDialog.show(string.format(
+        g_i18n:getText("rms_reinitializeVehicles_result"),
+        tonumber(recalculated) or 0,
+        tonumber(busy) or 0
+    ))
+end
+
+---Recomputes the whole fleet after a confirmation, the pending settings applied first
+function RMS_SettingsPage:onReinitializeVehiclesClicked()
+    YesNoDialog.show(function(shouldReinitialize)
+        if not shouldReinitialize then
+            return
+        end
+
+        RMS_SettingsPage:onFrameClose()
+        RMS_SettingsPage.beginSettingsSession()
+
+        if g_currentMission:getIsServer() then
+            RMS_SettingsPage.showReinitializeVehiclesResult(RealisticMechanicalSystems.reinitializeAllVehicles())
+        else
+            RMS_ReinitializeVehiclesEvent.sendToServer()
+        end
+    end, nil, g_i18n:getText("rms_reinitializeVehiclesConfirm_message"), g_i18n:getText("rms_reinitializeVehiclesConfirm_title"))
 end
 
 ---Asks the player to confirm, then clears the seen tutorial messages
@@ -1256,17 +1263,6 @@ function RMS_SettingsPage:onIdleCurrentChanged(state)
 end
 
 
----Stores the maximum engine and transmission temperatures from a single step
--- @param integer state selected step index
-function RMS_SettingsPage:onThermalSensitivityChanged(state)
-    local val = RMS_SettingsPage.steps.thermalSensitivity.values[state]
-    local pending = getPendingConfig()
-    pending.engineMaxHeat = val
-    pending.transMaxHeat = val
-    RMS_SettingsPage.rmsHasPendingSettingsChange = true
-    refreshCurrentSettingsPage()
-end
-
 ---Stores the temperature change speed step
 -- @param integer state selected step index
 function RMS_SettingsPage:onTemperatureChangeSpeedChanged(state)
@@ -1287,22 +1283,6 @@ end
 -- @param integer state selected step index
 function RMS_SettingsPage:onRadiatorDirtInfluenceChanged(state)
     getPendingConfig().maxDirtInfluence = RMS_SettingsPage.steps.radiatorDirtInfluence.values[state]
-    RMS_SettingsPage.rmsHasPendingSettingsChange = true
-    refreshCurrentSettingsPage()
-end
-
----Stores the warming boost power step
--- @param integer state selected step index
-function RMS_SettingsPage:onWarmingBoostPowerChanged(state)
-    getPendingConfig().warmingBoostPower = RMS_SettingsPage.steps.thermalPower.values[state]
-    RMS_SettingsPage.rmsHasPendingSettingsChange = true
-    refreshCurrentSettingsPage()
-end
-
----Stores the cooling slowdown power step
--- @param integer state selected step index
-function RMS_SettingsPage:onCoolingSlowdownPowerChanged(state)
-    getPendingConfig().coolingSlowdownPower = RMS_SettingsPage.steps.thermalPower.values[state]
     RMS_SettingsPage.rmsHasPendingSettingsChange = true
     refreshCurrentSettingsPage()
 end
@@ -1773,17 +1753,6 @@ function RMS_SettingsPage:generateAllSteps()
         return string.format("%02d:00", v)
     end)
 
-    -- Thermal Sensitivity:
-    self.steps.thermalSensitivity = {
-        values = {0.9, 1.0, 1.05, 1.1},
-        texts  = {
-            g_i18n:getText("rms_thermal_none"),
-            g_i18n:getText("rms_thermal_mild"),
-            g_i18n:getText("rms_thermal_default"),
-            g_i18n:getText("rms_thermal_aggressive"),
-        }
-    }
-
     -- Engine thermal model speed: 0.5x to 2.0x.
     self.steps.temperatureChangeSpeed = createSteps(0.5, 16, 0.1, function(v)
         return string.format("%.1fx", v)
@@ -1792,24 +1761,14 @@ function RMS_SettingsPage:generateAllSteps()
         return string.format("%.1fx", v)
     end)
 
-    -- Radiator Dirt Influence: Off, then 10% to 50%.
+    -- Radiator Dirt Influence: Off, then 25% to 100%.
     do
         local data = { values = {0.0}, texts = {g_i18n:getText("rms_option_off")} }
-        for percent = 10, 50, 10 do
+        for percent = 25, 100, 25 do
             table.insert(data.values, percent / 100)
             table.insert(data.texts, string.format("%d%%", percent))
         end
         self.steps.radiatorDirtInfluence = data
-    end
-
-    -- Thermal artificial scaling: Off, then 2x to 20x.
-    do
-        local data = { values = {1.0}, texts = {g_i18n:getText("rms_option_off")} }
-        for multiplier = 2, 20 do
-            table.insert(data.values, multiplier)
-            table.insert(data.texts, string.format("%dx", multiplier))
-        end
-        self.steps.thermalPower = data
     end
 
     -- Exhaust Smoke Intensity: 100% to 300%.

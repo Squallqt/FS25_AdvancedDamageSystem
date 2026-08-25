@@ -159,12 +159,12 @@ function RMS_Exhaust.calculateTargets(input)
     local loadRate = (load - lastLoad) / math.max(dt / 1000, 0.001)
     sootContinuous = sootContinuous + clamp(loadRate / sootConfig.TRANSIENT_LOAD_RATE, 0, 1) * sootConfig.TRANSIENT_MAX
 
-    local clogging = getNumber(input.airIntakeClogging, 0, 0, 1)
+    local clogging = getNumber(input.airFilterClogging, 0, 0, 1)
     local cloggingCurve = clogging * clogging
-    if clogging > sootConfig.AIR_INTAKE_KNEE then
-        cloggingCurve = cloggingCurve + (clogging - sootConfig.AIR_INTAKE_KNEE)
+    if clogging > sootConfig.AIR_FILTER_KNEE then
+        cloggingCurve = cloggingCurve + (clogging - sootConfig.AIR_FILTER_KNEE)
     end
-    sootContinuous = sootContinuous + math.min(cloggingCurve, 1) * sootConfig.AIR_INTAKE_MAX
+    sootContinuous = sootContinuous + math.min(cloggingCurve, 1) * sootConfig.AIR_FILTER_MAX
 
     local serviceLoss = 1 - getNumber(input.serviceLevel, 1, 0, 1)
     sootContinuous = sootContinuous + getRamp(serviceLoss, sootConfig.SERVICE_THRESHOLD, 1) * sootConfig.SERVICE_MAX
@@ -411,7 +411,7 @@ function RMS_Exhaust.update(vehicle, dt)
         load = load,
         lastLoad = state.lastLoad,
         dt = dt,
-        airIntakeClogging = spec.airIntakeClogging,
+        airFilterClogging = spec.airFilterClogging,
         serviceLevel = spec.serviceLevel,
         engineTemperature = spec.rawEngineTemperature or spec.engineTemperature,
         isStarting = motorState == MotorState.STARTING,

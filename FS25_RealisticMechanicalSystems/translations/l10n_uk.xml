@@ -4,9 +4,35 @@
         <text name="rms_hud_mass_tractor" text="Транспортний засіб"/>
         <text name="rms_hud_mass_towed" text="Причеплене"/>
         <text name="rms_hud_mass_total" text="Разом"/>
+        <text name="rms_drivetrain_mode_4x2" text="4x2 (передній міст відключено)"/>
+        <text name="rms_drivetrain_mode_4wd" text="4WD (передній міст підключено)"/>
+        <text name="rms_drivetrain_mode_auto" text="4WD АВТО"/>
+        <text name="rms_drivetrain_notify_mode" text="Режим приводу: %s"/>
+        <text name="rms_drivetrain_notify_lock_on" text="Блокування диференціала увімкнено"/>
+        <text name="rms_drivetrain_notify_lock_off" text="Блокування диференціала вимкнено"/>
+        <text name="rms_drivetrain_notify_park_on" text="Стоянкове гальмо затягнуто"/>
+        <text name="rms_drivetrain_notify_park_off" text="Стоянкове гальмо відпущено"/>
+        <text name="rms_drivetrain_warning_4wd_windup" text="Трансмісія під навантаженням! Перед поворотом на твердому покритті вимкніть 4WD."/>
+        <text name="rms_drivetrain_warning_difflock_windup" text="Блокування диференціала під навантаженням! Вимкніть його або зменште кут повороту."/>
+        <text name="rms_drivetrain_warning_parkbrake" text="Затягнуто стоянкове гальмо!"/>
+        <text name="rms_preheat_ignition_message" text="Запалювання ввімкнено: триває передпусковий підігрів"/>
+        <text name="rms_preheat_system_failure_message" text="Відмова системи розжарювання: холодний запуск неможливий"/>
+        <text name="rms_preheat_start_failed_message" text="Двигун не запустився: вимкніть запалювання перед новою спробою"/>
+        <!-- Inputs -->
+        <text name="input_RMS_FIELD_INSPECTION" text="Огляд техніки"/>
+        <text name="input_RMS_CLOSE_NOTIFICATION" text="OK"/>
+        <text name="input_RMS_TOGGLE_4WD" text="Режим приводу (4x2 / 4WD / АВТО)"/>
+        <text name="input_RMS_TOGGLE_DIFFLOCK" text="Блокування диференціала"/>
+        <text name="input_RMS_TOGGLE_PARKBRAKE" text="Стоянкове гальмо"/>
         <!-- Settings -->
         <text name="rms_settings_title" text="НАЛАШТУВАННЯ RMS"/>
         <text name="rms_settings_admin_required" text="Налаштування RMS потребують прав адміністратора в багатокористувацькій грі."/>
+        <text name="rms_settings_section_service_wear" text="Обслуговування та зношування"/>
+        <text name="rms_settings_section_thermal_model" text="Теплова модель"/>
+        <text name="rms_settings_section_battery_alternator" text="Акумулятор та генератор"/>
+        <text name="rms_settings_section_preshift_maintenance" text="Передзмінне обслуговування"/>
+        <text name="rms_settings_section_other" text="Інше"/>
+        <text name="rms_settings_section_drivetrain" text="Трансмісія та стоянкове гальмо"/>
         <text name="rms_maintenancePrice_label" text="Множник ціни обслуговування"/>
         <text name="rms_maintenancePrice_tooltip" text="Регулює вартість усіх послуг майстерні, включаючи огляди, ремонт та капітальний ремонт. Вище значення робить усі види технічного обслуговування дорожчими."/>
         <text name="rms_maintenanceDuration_label" text="Множник тривалості обслуговування"/>
@@ -16,21 +42,17 @@
         <text name="rms_workshopCloseHour_label" text="Час закриття майстерні"/>
         <text name="rms_workshopCloseHour_tooltip" text="Година дня, коли закривається майстерня. Ремонт буде призупинено після цього часу."/>
         <text name="rms_cloggingSpeed_label" text="Швидкість засмічення"/>
-        <text name="rms_cloggingSpeed_tooltip" text="Регулює швидкість засмічення радіатора та повітрозабірника під час роботи в пилу, соломі та рослинних залишках. Вищі значення прискорюють засмічення. При 100% швидкість засмічення становить приблизно третину сервісного інтервалу."/>
+        <text name="rms_cloggingSpeed_tooltip" text="Регулює швидкість засмічення радіатора та повітряного фільтра під час роботи в пилу, соломі та рослинних залишках. Вищі значення прискорюють засмічення."/>
         <text name="rms_fieldInspectionDuration_label" text="Тривалість огляду"/>
         <text name="rms_fieldInspectionDuration_tooltip" text="Встановлює час проведення передзмінного огляду в реальних секундах."/>
         <text name="rms_lubricationReducePerOperatingHour_label" text="Швидкість витрати мастила"/>
         <text name="rms_lubricationReducePerOperatingHour_tooltip" text="Встановлює витрату мастила за одну годину роботи."/>
-        <text name="rms_ws_header_title" text="Майстерня"/>
-        <text name="rms_settings_section_service_wear" text="Обслуговування та зношування"/>
-        <text name="rms_settings_section_thermal_model" text="Теплова модель"/>
-        <text name="rms_settings_section_battery_alternator" text="Акумулятор та генератор"/>
-        <text name="rms_settings_section_preshift_maintenance" text="Передзмінне обслуговування"/>
-        <text name="rms_settings_section_other" text="Інше"/>
         <text name="rms_dealerWorkshopAvailable_label" text="Майстерня дилера 24/7"/>
         <text name="rms_dealerWorkshopAvailable_tooltip" text="Робить майстерню дилера доступною в будь-який час доби."/>
         <text name="rms_mobileWorkshopAvailable_label" text="Мобільна майстерня 24/7"/>
         <text name="rms_mobileWorkshopAvailable_tooltip" text="Робить мобільну майстерню доступною в будь-який час доби."/>
+        <text name="rms_mobileWorkshopRestrictions_label" text="Обмеження мобільної майстерні"/>
+        <text name="rms_mobileWorkshopRestrictions_tooltip" text="Якщо увімкнено, доступність процедур у мобільній майстерні залежить від ремонтопридатності техніки."/>
         <text name="rms_ownWorkshopAvailable_label" text="Власна майстерня 24/7"/>
         <text name="rms_ownWorkshopAvailable_tooltip" text="Робить вашу власну майстерню доступною в будь-який час доби."/>
         <text name="rms_instantInspection_label" text="Миттєвий огляд"/>
@@ -57,108 +79,124 @@
         <text name="rms_debugMode_tooltip" text="Вмикає або вимикає панель налагодження та розширене логування в консолі."/>
         <text name="rms_warningMessages_label" text="Попереджувальні повідомлення"/>
         <text name="rms_warningMessages_tooltip" text="Вмикає або вимикає ігрові попереджувальні повідомлення, такі як сповіщення про холодний двигун та перегрів."/>
-        <text name="rms_mobileWorkshopRestrictions_label" text="Обмеження мобільної майстерні"/>
         <text name="rms_serviceInterval_label" text="Сервісний інтервал"/>
+        <text name="rms_serviceInterval_tooltip" text="Встановлює базовий сервісний інтервал у годинах, після якого потрібне обслуговування. Фактичний інтервал варіюється залежно від марки техніки, віку та якості попереднього обслуговування."/>
         <text name="rms_vehicleLifespan_label" text="Термін служби техніки"/>
+        <text name="rms_vehicleLifespan_tooltip" text="Встановлює базовий термін служби техніки в годинах, після якого її стан досягне 0%. Чим ближче стан до нуля, тим менш надійною стає техніка."/>
+        <text name="rms_reinitializeVehicles_label" text="Скинути парк"/>
+        <text name="rms_reinitializeVehicles_text" text="Скинути"/>
+        <text name="rms_reinitializeVehicles_tooltip" text="Приводить стан парку до вибраного терміну служби. Поточні поломки видаляються."/>
+        <text name="rms_reinitializeVehiclesConfirm_title" text="Скинути парк"/>
+        <text name="rms_reinitializeVehiclesConfirm_message" text="Привести парк до вибраного терміну служби? Поточні поломки буде видалено."/>
+        <text name="rms_reinitializeVehicles_result" text="Скинуто машин: %d. Не змінено: %d."/>
         <text name="rms_downtimeWear_label" text="Пасивний знос"/>
+        <text name="rms_downtimeWear_tooltip" text="Встановлює швидкість пасивного зносу під час простою як відсоток від базової швидкості зносу. Наприклад, 5% при терміні служби 100 годин означає, що кожна система втрачає близько 1% стану після приблизно 20 годин простою. Примітка: пасивний знос вимкнено, якщо техніка зберігається під накриттям."/>
         <text name="rms_generalWearEnabled_label" text="Віковий знос"/>
+        <text name="rms_generalWearEnabled_tooltip" text="Вмикає знос, пов'язаний з віком. У міру зношування техніка отримує невеликі штрафи до основних характеристик (потужність двигуна, швидкість гідравліки тощо). Ефект стає помітним після другої третини терміну служби."/>
         <text name="rms_exhaustSmokeEnabled_label" text="Вихлопний дим"/>
-        <text name="rms_exhaustSmokeEnabled_tooltip" text="Задає вихлопний дим за реальним станом двигуна: чорний при перевантаженні, тривалому холостому ході з малим навантаженням, забитому повітрозабірнику чи зношеній паливній апаратурі, синій коли втомлений мотор палить оливу, білий коли пальне виходить незгорілим. Стара техніка димить помітно сильніше за сучасну, яка майже не димить, доки немає серйозної несправності."/>
+        <text name="rms_exhaustSmokeEnabled_tooltip" text="Задає вихлопний дим за реальним станом двигуна: чорний при перевантаженні, тривалому холостому ході з малим навантаженням, забитому повітряному фільтрі чи зношеній паливній апаратурі, синій коли втомлений мотор палить оливу, білий коли пальне виходить незгорілим. Стара техніка димить помітно сильніше за сучасну, яка майже не димить, доки немає серйозної несправності."/>
         <text name="rms_exhaustSmokeIntensity_label" text="Інтенсивність диму"/>
         <text name="rms_exhaustSmokeIntensity_tooltip" text="Змінює помітність диму, не торкаючись його причин. Високі значення дозволяють розпізнавати симптоми здалеку."/>
         <text name="rms_systemStressRate_label" text="Рівень стресу систем"/>
+        <text name="rms_systemStressRate_tooltip" text="Контролює швидкість накопичення стресу в системах від перевантаження, перегріву, пробуксовки тощо. Стрес безпосередньо впливає на ймовірність поломки."/>
         <text name="rms_batteryCapacity_label" text="Ємність акумулятора"/>
-        <text name="rms_thermalSensitivity_label" text="Теплова чутливість"/>
+        <text name="rms_batteryCapacity_tooltip" text="Регулює максимальну корисну ємність акумулятора. Значення близько 150 Аг є більш реалістичними."/>
         <text name="rms_option_off" text="Вимк."/>
         <text name="rms_option_none" text="Немає"/>
-        <text name="rms_serviceInterval_tooltip" text="Встановлює базовий сервісний інтервал у годинах, після якого потрібне обслуговування. Фактичний інтервал варіюється залежно від марки техніки, віку та якості попереднього обслуговування."/>
-        <text name="rms_vehicleLifespan_tooltip" text="Встановлює базовий термін служби техніки в годинах, після якого її стан досягне 0%. Чим ближче стан до нуля, тим менш надійною стає техніка."/>
-        <text name="rms_downtimeWear_tooltip" text="Встановлює швидкість пасивного зносу під час простою як відсоток від базової швидкості зносу. Наприклад, 5% при терміні служби 100 годин означає, що кожна система втрачає близько 1% стану після приблизно 20 годин простою. Примітка: пасивний знос вимкнено, якщо техніка зберігається під накриттям."/>
-        <text name="rms_generalWearEnabled_tooltip" text="Вмикає знос, пов'язаний з віком. У міру зношування техніка отримує невеликі штрафи до основних характеристик (потужність двигуна, швидкість гідравліки тощо). Ефект стає помітним після другої третини терміну служби."/>
-        <text name="rms_mobileWorkshopRestrictions_tooltip" text="Якщо увімкнено, доступність процедур у мобільній майстерні залежить від ремонтопридатності техніки."/>
-        <text name="rms_systemStressRate_tooltip" text="Контролює швидкість накопичення стресу в системах від перевантаження, перегріву, пробуксовки тощо. Стрес безпосередньо впливає на ймовірність поломки."/>
-        <text name="rms_batteryCapacity_tooltip" text="Регулює максимальну корисну ємність акумулятора. Значення близько 150 Аг є більш реалістичними."/>
         <text name="rms_alternatorMaxOutput_label" text="Макс. вихід генератора"/>
         <text name="rms_alternatorMaxOutput_tooltip" text="Встановлює максимальний струм генератора. Вищі значення дозволяють швидше заряджати акумулятор."/>
         <text name="rms_idleCurrent_label" text="Струм у режимі очікування"/>
         <text name="rms_idleCurrent_tooltip" text="Встановлює розряд акумулятора при вимкненому двигуні. Наприклад, при 0.5 А акумулятор на 15 Аг повністю розрядиться приблизно за 30 реальних годин."/>
-        <text name="rms_thermalSensitivity_tooltip" text="Регулює поведінку теплової моделі. Вищі параметри роблять двигун і трансмісію більш чутливими до навантаження та температури навколишнього середовища."/>
         <text name="rms_temperatureChangeSpeed_label" text="Швидкість теплової моделі двигуна"/>
         <text name="rms_temperatureChangeSpeed_tooltip" text="Масштабує швидкість зміни температури двигуна. Менші значення уповільнюють нагрівання та охолодження, а більші прискорюють їх. Значення за замовчуванням 1.4x."/>
         <text name="rms_transTemperatureChangeMultiplier_label" text="Швидкість теплової моделі спільної трансмісійної та гідравлічної оливи"/>
         <text name="rms_transTemperatureChangeMultiplier_tooltip" text="Окремо масштабує швидкість зміни температури спільної оливи трансмісії та гідравліки. Менші значення уповільнюють нагрівання та охолодження, а більші прискорюють їх. Значення за замовчуванням 1.0x."/>
         <text name="rms_radiatorDirtInfluence_label" text="Вплив бруду на радіатор"/>
         <text name="rms_radiatorDirtInfluence_tooltip" text="Зменшує охолоджуючу здатність радіатора на цей відсоток при максимальному забрудненні."/>
-        <text name="rms_warmingBoostPower_label" text="Прискорення прогріву"/>
-        <text name="rms_warmingBoostPower_tooltip" text="Штучно прискорює прогрів двигуна. Вимкніть для стандартної поведінки."/>
-        <text name="rms_coolingSlowdownPower_label" text="Сповільнення охолодження"/>
-        <text name="rms_coolingSlowdownPower_tooltip" text="Штучно сповільнює охолодження після вимкнення техніки."/>
-        <text name="rms_thermal_none" text="Пасивна"/>
-        <text name="rms_thermal_mild" text="М'яка"/>
-        <text name="rms_thermal_default" text="Стандартна"/>
-        <text name="rms_thermal_aggressive" text="Агресивна"/>
+        <text name="rms_tutorialMode_label" text="Режим навчання"/>
+        <text name="rms_tutorialMode_tooltip" text="Показує підказки під час гри."/>
+        <text name="rms_tutorialResetTips_label" text="Скинути підказки"/>
+        <text name="rms_tutorialResetTips_text" text="Скинути підказки"/>
+        <text name="rms_tutorialResetTips_tooltip" text="Скинути історію підказок і показати їх знову."/>
+        <text name="rms_tutorialResetConfirm_title" text="Скинути підказки навчання?"/>
+        <text name="rms_tutorialResetConfirm_message" text="Скинути історію підказок і показати їх всі знову?"/>
+        <text name="rms_drivetrainEnabled_label" text="Керування 4WD / блокуванням диференціала"/>
+        <text name="rms_drivetrainEnabled_tooltip" text="Вмикає ручне керування підключним переднім мостом і блокуваннями диференціалів на тракторах. Якщо активне керування диференціалами Enhanced Vehicle, RMS повністю відступає, і Enhanced Vehicle керує трансмісією самостійно."/>
+        <text name="rms_drivetrainAllowAutoMode_label" text="Дозволити режим АВТО"/>
+        <text name="rms_drivetrainAllowAutoMode_tooltip" text="Додає положення АВТО: передній міст підключається автоматично при пробуксовці або на робочій швидкості під навантаженням і відключається на дорозі. Машини, залишені в АВТО, повертаються до 4WD після вимкнення цієї опції."/>
+        <text name="rms_drivetrainWindupDamage_label" text="Пошкодження трансмісії під навантаженням"/>
+        <text name="rms_drivetrainWindupDamage_tooltip" text="Повороти на поверхні з добрим зчепленням із заблокованими диференціалами створюють навантаження на трансмісію та поступово пошкоджують її. Вимкніть для м'якшого ґеймплею."/>
+        <text name="rms_drivetrainDiffLockReleaseSpeed_label" text="Швидкість розблокування диференціала"/>
+        <text name="rms_drivetrainDiffLockReleaseSpeed_tooltip" text="Блокування диференціалів автоматично вимикаються вище цієї швидкості та знову вмикаються нижче неї, доки запитані."/>
+        <text name="rms_drivetrainParkBrakeEnabled_label" text="Стоянкове гальмо"/>
+        <text name="rms_drivetrainParkBrakeEnabled_tooltip" text="Додає всім машинам RMS стоянкове гальмо з власною клавішею. Затягнуте гальмо утримує машину та ігнорує газ."/>
+        <text name="rms_drivetrainParkBrakeAuto_label" text="Автоматичне стоянкове гальмо"/>
+        <text name="rms_drivetrainParkBrakeAuto_tooltip" text="Автоматично затягує стоянкове гальмо, коли оператор залишає нерухому машину."/>
         <!-- Workshop -->
+        <text name="rms_ws_header_title" text="Майстерня"/>
         <text name="rms_ws_label_value" text="Вартість"/>
         <text name="rms_ws_label_age" text="Вік"/>
         <text name="rms_ws_label_operating_hours" text="Мотогодини"/>
         <text name="rms_ws_label_service" text="Сервіс"/>
+        <text name="rms_ws_label_service_interval" text="Сервісний інтервал"/>
+        <text name="rms_ws_label_next_service" text="Наступне обслуговування"/>
+        <text name="rms_ws_value_service_overdue" text="прострочено на %s"/>
         <text name="rms_ws_label_condition" text="Стан"/>
         <text name="rms_ws_label_maintainability" text="Ремонтопридатність"/>
         <text name="rms_ws_label_maintenance_log" text="Журнал обслуговування"/>
         <text name="rms_ws_label_last_report" text="Останній звіт"/>
-        <text name="rms_ws_label_service_interval" text="Сервісний інтервал"/>
         <text name="rms_ws_label_last_maintenance" text="Останнє обслуговування"/>
-        <text name="rms_ws_label_last_inspection" text="Останній огляд"/>
         <text name="rms_ws_table_header_part" text="Деталь"/>
+        <text name="rms_ws_table_header_price" text="Ціна"/>
         <text name="rms_ws_table_header_description" text="Опис"/>
         <text name="rms_ws_table_header_stage" text="Стадія"/>
-        <text name="rms_ws_table_header_price" text="Ціна"/>
         <text name="rms_ws_table_header_repair_select" text="Ремонт"/>
+        <text name="rms_ws_task_inspection" text="Огляд"/>
+        <text name="rms_ws_task_maintenance" text="Обслуговування"/>
+        <text name="rms_ws_task_overhaul" text="Кап. ремонт"/>
         <text name="rms_ws_info_no_breakdowns" text="Поломок немає або вони ще не виявлені."/>
+        <text name="rms_ws_inspecting_status" text="Огляд..."/>
         <text name="rms_ws_status_initial" text="Завантаження статусу..."/>
+        <text name="rms_ws_status_in_progress_format" text="%s триває до %s..."/>
+        <text name="rms_ws_status_open" text="Майстерня відкрита"/>
+        <text name="rms_ws_status_closed" text="Майстерня закрита"/>
         <text name="rms_ws_action_inspection" text="Огляд"/>
         <text name="rms_ws_action_maintenance" text="Обслуговування"/>
         <text name="rms_ws_action_repair" text="Ремонт"/>
         <text name="rms_ws_action_overhaul" text="Кап. ремонт"/>
+        <text name="rms_ws_action_refill" text="Долив"/>
         <text name="rms_ws_action_cancel_service" text="Скасувати процедуру"/>
         <text name="rms_ws_button_show" text="Показати"/>
+        <text name="rms_ws_button_price_format" text="%s (%s)"/>
         <text name="rms_ws_age_unit" text="міс."/>
         <text name="rms_ws_hours_unit" text="год"/>
         <text name="rms_ws_option_yes" text="Так"/>
         <text name="rms_ws_option_no" text="Ні"/>
-        <text name="rms_ws_status_open" text="Майстерня відкрита"/>
-        <text name="rms_ws_status_closed" text="Майстерня закрита"/>
-        <text name="rms_ws_inspecting_status" text="Огляд..."/>
-        <text name="rms_ws_status_in_progress_format" text="%s триває до %s..."/>
-        <text name="rms_ws_task_inspection" text="Огляд"/>
-        <text name="rms_ws_task_maintenance" text="Обслуговування"/>
-        <text name="rms_ws_task_overhaul" text="Кап. ремонт"/>
-        <text name="rms_ws_button_price_format" text="%s (%s)"/>
         <text name="rms_ws_no_last_report_message" text="Звітів ще немає"/>
-        <text name="rms_ws_no_report_message" text="Звіт відсутній"/>
         <text name="rms_ws_no_log_empty_message" text="Журнал поки порожній"/>
+        <text name="rms_ws_no_report_message" text="Звіт відсутній"/>
         <text name="rms_ws_cancel_confirm_title" text="Скасувати %s?"/>
         <text name="rms_ws_cancel_confirm_text" text="Поточний прогрес буде збережено як є. Гроші не повертаються."/>
         <!-- Maintenance Log -->
         <text name="rms_log_header_title" text="Журнал обслуговування"/>
+        <text name="rms_log_hours" text="Мотогодини"/>
         <text name="rms_log_title" text="Журнал технічного обслуговування"/>
         <text name="rms_log_total_cost_title" text="Загальні витрати"/>
-        <text name="rms_log_cost_per_month_title" text="Вартість на місяць"/>
-        <text name="rms_log_ownership_months_title" text="Тривалість володіння"/>
         <text name="rms_log_total_breakdowns_count_title" text="Всього поломок"/>
+        <text name="rms_log_type" text="Тип робіт"/>
+        <text name="rms_log_cost_per_month_title" text="Вартість на місяць"/>
+        <text name="rms_log_cancelled_desc" text="Процедуру скасовано"/>
+        <text name="rms_log_ownership_months_title" text="Тривалість володіння"/>
+        <text name="rms_log_overhaul_desc_with_painting" text="Транспортний засіб було перефарбовано"/>
         <text name="rms_log_average_breakdowns_interval_title" text="Сер. інтервал поломок"/>
         <text name="rms_log_average_maintenance_interval_title" text="Сер. інтервал обслуговування"/>
         <text name="rms_log_performed" text="Виконано %s"/>
+        <text name="rms_log_price" text="Вартість"/>
         <text name="rms_log_inspection_desc_no_breakdowns" text="Несправностей не виявлено"/>
         <text name="rms_log_inspection_desc_with_breakdowns" text="Виявлені несправності: %s"/>
-        <text name="rms_log_overhaul_desc_with_painting" text="Транспортний засіб було перефарбовано"/>
         <text name="rms_log_repair_desc_generic" text="Ремонт"/>
-        <text name="rms_log_cancelled_desc" text="Процедуру скасовано"/>
         <text name="rms_log_date" text="Дата"/>
-        <text name="rms_log_hours" text="Мотогодини"/>
-        <text name="rms_log_type" text="Тип робіт"/>
         <text name="rms_log_description" text="Опис"/>
-        <text name="rms_log_price" text="Вартість"/>
         <text name="rms_log_button_show_report" text="Показати звіт"/>
         <text name="rms_log_empty" text="Журнал порожній"/>
         <!-- Breakdowns -->
@@ -169,102 +207,85 @@
         <text name="rms_breakdowns_severity_moderate" text="Середня"/>
         <text name="rms_breakdowns_severity_major" text="Серйозна"/>
         <text name="rms_breakdowns_severity_critical" text="Критична"/>
+        <text name="rms_breakdowns_steering_linkage_wear_stage1_description" text="Знос рульової тяги. Присутнє невелике відведення керма вбік, реакція на поворот погіршилася."/>
+        <text name="rms_breakdowns_steering_linkage_wear_stage2_description" text="Середній знос рульової тяги. Відведення керма помітне, реакція на рульове управління значно гірша."/>
+        <text name="rms_breakdowns_steering_linkage_wear_stage3_description" text="Сильний знос рульової тяги. Порушена курсова стійкість, реакція на поворот керма вкрай слабка."/>
+        <text name="rms_breakdowns_steering_linkage_wear_stage4_description" text="Критична відмова рульової тяги. Контроль над напрямком руху майже втрачено, безпечне керування неможливе."/>
+        <text name="rms_breakdowns_steering_linkage_wear_stage4_message" text="Відмова рульової тяги"/>
         <text name="rms_breakdowns_general_wear_stage1_description" text="Накопичений стрес за роки важкої роботи. Незначний, незворотний знос основних компонентів злегка знижує загальну продуктивність."/>
+        <text name="rms_breakdowns_gear_disengage_message" text="Передачу вибито"/>
+        <text name="rms_breakdowns_glow_plug_failure_stage1_description" text="Початкове зношення свічок розжарювання. Холодний запуск стає повільнішим, запуск прогрітого двигуна не змінюється."/>
+        <text name="rms_breakdowns_glow_plug_failure_stage2_description" text="Кілька свічок розжарювання ослаблені або несправні. Холодний запуск ускладнений, а двигун може працювати нерівно до прогрівання."/>
+        <text name="rms_breakdowns_glow_plug_failure_stage3_description" text="Серйозна несправність свічок розжарювання. Холодний запуск дуже ненадійний, а нерівна робота зберігається під час прогрівання."/>
+        <text name="rms_breakdowns_glow_plug_failure_stage4_description" text="Повна відмова системи передпускового підігріву. Коли підігрів потрібний, двигун не досягає температури запуску й не запускається."/>
         <text name="rms_breakdowns_part_vehicle" text="Транспортний засіб"/>
-        <text name="rms_breakdowns_part_consumables" text="Витратні матеріали"/>
-        <text name="rms_breakdowns_part_engine" text="Двигун"/>
-        <text name="rms_breakdowns_part_battery" text="Акумулятор"/>
-        <text name="rms_breakdowns_part_ecu" text="ЕБУ (Блок управління)"/>
-        <text name="rms_breakdowns_part_wiring" text="Проводка та роз'єми"/>
-        <text name="rms_breakdowns_part_alternator_regulator" text="Регулятор генератора"/>
-        <text name="rms_breakdowns_part_turbocharger" text="Турбокомпресор"/>
-        <text name="rms_breakdowns_part_oil_pump" text="Масляний насос"/>
         <text name="rms_breakdowns_part_valve_train" text="ГРМ (Клапанний механізм)"/>
+        <text name="rms_breakdowns_part_consumables" text="Витратні матеріали"/>
+        <text name="rms_breakdowns_part_cooling_system" text="Система охолодження"/>
         <text name="rms_breakdowns_part_clutch" text="Зчеплення"/>
-        <text name="rms_breakdowns_part_synchronizer" text="Синхронізатор"/>
-        <text name="rms_breakdowns_part_powershift_hydraulic_pump" text="Гідронасос Powershift"/>
         <text name="rms_breakdowns_part_cvt_chain" text="Ланцюг варіатора (CVT)"/>
         <text name="rms_breakdowns_part_cvt_hydraulic_control_valve" text="Гідроклапан управління варіатором"/>
         <text name="rms_breakdowns_part_cvt" text="Варіатор (CVT)"/>
+        <text name="rms_breakdowns_part_engine" text="Двигун"/>
+        <text name="rms_breakdowns_part_ecu" text="ЕБУ (Блок управління)"/>
+        <text name="rms_breakdowns_part_battery" text="Акумулятор"/>
+        <text name="rms_breakdowns_part_brake_system" text="Гальмівна система"/>
+        <text name="rms_breakdowns_part_wiring" text="Проводка та роз'єми"/>
+        <text name="rms_breakdowns_part_wheel_bearing" text="Підшипник колеса"/>
+        <text name="rms_breakdowns_part_alternator_regulator" text="Регулятор генератора"/>
+        <text name="rms_breakdowns_part_turbocharger" text="Турбокомпресор"/>
         <text name="rms_breakdowns_part_transmission_thermostat" text="Термостат трансмісії"/>
+        <text name="rms_breakdowns_part_transmission_seal" text="Сальник коробки передач"/>
+        <text name="rms_breakdowns_part_track_tensioner" text="Натягувач гусениці"/>
+        <text name="rms_breakdowns_part_thermostat" text="Термостат"/>
+        <text name="rms_breakdowns_part_oil_pump" text="Масляний насос"/>
+        <text name="rms_breakdowns_part_synchronizer" text="Синхронізатор"/>
+        <text name="rms_breakdowns_part_steering_linkage" text="Рульова тяга"/>
+        <text name="rms_breakdowns_part_powershift_hydraulic_pump" text="Гідронасос Powershift"/>
+        <text name="rms_breakdowns_part_pto_drive_coupling" text="Муфта приводу ВВП"/>
+        <text name="rms_breakdowns_part_pto_drive_output" text="Вихідний вал ВВП"/>
         <text name="rms_breakdowns_part_hydraulic_pump" text="Гідравлічний насос"/>
         <text name="rms_breakdowns_part_hydraulic_cylinder" text="Гідроциліндр"/>
         <text name="rms_breakdowns_part_hydraulic_hose" text="Гідравлічний шланг"/>
         <text name="rms_breakdowns_part_hydraulic_filter" text="Гідравлічний фільтр"/>
         <text name="rms_breakdowns_part_hydraulic_oil_cooler" text="Охолоджувач гідравлічної оливи"/>
         <text name="rms_breakdowns_part_hydraulic_spool_valve" text="Гідравлічний розподільник"/>
-        <text name="rms_breakdowns_part_brake_system" text="Гальмівна система"/>
-        <text name="rms_breakdowns_part_wheel_bearing" text="Підшипник колеса"/>
-        <text name="rms_breakdowns_part_steering_linkage" text="Рульова тяга"/>
-        <text name="rms_breakdowns_part_track_tensioner" text="Натягувач гусениці"/>
-        <text name="rms_breakdowns_part_thermostat" text="Термостат"/>
-        <text name="rms_breakdowns_part_cooling_system" text="Система охолодження"/>
         <text name="rms_breakdowns_part_fan_clutch" text="Муфта вентилятора"/>
         <text name="rms_breakdowns_part_fuel_pump" text="Паливний насос"/>
         <text name="rms_breakdowns_part_fuel_injectors" text="Паливні форсунки"/>
         <text name="rms_breakdowns_part_fuel_filter" text="Паливний фільтр"/>
         <text name="rms_breakdowns_part_fuel_line" text="Паливопровід"/>
+        <text name="rms_breakdowns_part_glow_plugs" text="Свічки розжарювання"/>
+        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage1_description" text="Низький тиск гідравліки в Powershift. Невелика затримка та жорсткість при ввімкненні передач."/>
+        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage2_description" text="Зношені ущільнювачі гідронасоса. Помітна затримка та ривки при перемиканні."/>
+        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage3_description" text="Вихід з ладу гідронасоса. Сильна затримка та жорсткі удари при перемиканні."/>
+        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage4_description" text="Гідронасос Powershift відмовив. Трансмісія застрягла на нейтралі."/>
+        <text name="rms_breakdowns_pto_auto_disengage_message" text="ВВП вимкнувся"/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Початкове зношення муфти ВВП. ВВП може іноді вимикатися."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Помірне зношення муфти ВВП. Вимкнення трапляються частіше."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Сильне зношення муфти ВВП. ВВП неодноразово вимикається."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Критична відмова муфти ВВП. Вал відбору потужності більше не передає потужність."/>
+        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Відмова муфти ВВП"/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Початкове зношення вихідного підшипника ВВП спричиняє слабкий робочий шум."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Помірне зношення вихідного підшипника ВВП спричиняє виразно чутний шум."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Сильне зношення вихідного підшипника ВВП спричиняє гучний шум і періодичні вимкнення."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Критична відмова вихідного підшипника ВВП. Робота ВВП більше неможлива."/>
+        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Відмова вихідного підшипника ВВП"/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Керування ввімкненням ВВП працює нестабільно й може відхилити команду."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Керування ввімкненням ВВП часто не може ввімкнути вал відбору потужності."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Керування ввімкненням ВВП серйозно несправний і відхиляє більшість спроб увімкнення."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Керування ввімкненням ВВП повністю відмовив. Вал відбору потужності неможливо ввімкнути."/>
+        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Відмова клапана увімкнення ВВП"/>
+        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Увімкнення ВВП відхилено"/>
         <text name="rms_breakdowns_quick_fix_stage" text="Підлатано"/>
         <text name="rms_breakdowns_defected_parts_stage" text="Дефект"/>
         <text name="rms_breakdowns_defected_parts_detected_description" text="Вузол працює нормально, але діагностика виявила дефектну деталь. Через критично низький запас міцності рекомендована профілактична заміна, щоб уникнути раптової поломки."/>
+        <text name="rms_breakdowns_dead_battery_message" text="Заряд акумулятора вичерпано"/>
         <text name="rms_breakdowns_temporarily_repaired_description" text="Вузол працює нормально, але тримається виключно на швидкому ремонті зношених елементів. Щоб уникнути неминучої поломки під навантаженням, рекомендується якомога швидше провести повну заміну деталей."/>
-        <text name="rms_breakdowns_overheat_protection_stage1_description" text="Режим захисту двигуна"/>
-        <text name="rms_breakdowns_overheat_protection_stage1_message" text="Аварійний режим двигуна! Потужність обмежена!"/>
-        <text name="rms_breakdowns_overheat_protection_stage2_description" text="Режим захисту двигуна"/>
-        <text name="rms_breakdowns_overheat_protection_stage2_message" text="Аварійний режим двигуна! Потужність обмежена!"/>
-        <text name="rms_breakdowns_overheat_protection_stage3_description" text="Режим захисту двигуна"/>
-        <text name="rms_breakdowns_overheat_protection_stage3_message" text="Аварійний режим двигуна! Потужність обмежена!"/>
-        <text name="rms_breakdowns_overheat_protection_stage4_description" text="Режим захисту двигуна"/>
-        <text name="rms_breakdowns_overheat_protection_stage4_message" text="Двигун вимкнено для захисту від перегріву"/>
-        <text name="rms_breakdowns_engine_jam_stage1_description" text="Двигун повністю вийшов з ладу"/>
-        <text name="rms_breakdowns_engine_jam_stage1_message" text="Двигун заклинив"/>
-        <text name="rms_breakdowns_ecu_malfunction_stage1_description" text="Помилки ЕБУ. Злегка знижена потужність двигуна."/>
-        <text name="rms_breakdowns_ecu_malfunction_stage2_description" text="Несправність ЕБУ. Помітна втрата потужності та підвищена витрата палива."/>
-        <text name="rms_breakdowns_ecu_malfunction_stage3_description" text="Критична несправність ЕБУ. Значна втрата потужності, висока витрата палива та ризик зупинки двигуна."/>
-        <text name="rms_breakdowns_ecu_malfunction_stage4_description" text="Повна відмова ЕБУ. Двигун некерований і не заводиться."/>
-        <text name="rms_breakdowns_ecu_malfunction_stage4_message" text="Двигун несправний"/>
-        <text name="rms_breakdowns_corroded_wiring_stage1_description" text="Корозія проводки та електричних роз'ємів. Підвищений опір контактів викликає епізодичне мерехтіння світла, нестабільну напругу та утруднений запуск двигуна."/>
-        <text name="rms_breakdowns_corroded_wiring_stage2_description" text="Середня корозія проводки та роз'ємів. Втрати контакту викликають часте мерехтіння світла, нестабільну напругу, важкий запуск і можливі зупинки двигуна."/>
-        <text name="rms_breakdowns_corroded_wiring_stage3_description" text="Сильна корозія проводки та роз'ємів. Живлення критичних ланцюгів нестабільне, освітлення може повністю відмовити, крутний момент двигуна знижений, запуск ненадійний."/>
-        <text name="rms_breakdowns_corroded_wiring_stage4_description" text="Відмова ланцюга управління стартером через сильну корозію. Освітлення не працює, запуск двигуна неможливий."/>
-        <text name="rms_breakdowns_corroded_wiring_stage4_message" text="Відмова ланцюга стартера"/>
-        <text name="rms_breakdowns_battery_sulfation_stage1_description" text="Сульфатація акумулятора. Ефективна ємність знижена, що призводить до меншого резерву енергії під навантаженням."/>
-        <text name="rms_breakdowns_battery_sulfation_stage2_description" text="Середня сульфатація акумулятора. Ефективна ємність значно знижена, запуск двигуна утруднений."/>
-        <text name="rms_breakdowns_battery_sulfation_stage3_description" text="Сильна сульфатація акумулятора. Корисна ємність критично низька, робота стартера нестабільна."/>
-        <text name="rms_breakdowns_battery_sulfation_stage4_description" text="Критична сульфатація акумулятора. Ефективна ємність майже відсутня, потужності стартера недостатньо для надійного запуску."/>
-        <text name="rms_breakdowns_alternator_regulator_failure_stage1_description" text="Несправність регулятора генератора. Потужність зарядки знижена, що погіршує ефективність зарядки акумулятора."/>
-        <text name="rms_breakdowns_alternator_regulator_failure_stage2_description" text="Середня несправність регулятора. Зарядка нестабільна, що призводить до поганої зарядки АКБ та втрат напруги в системі."/>
-        <text name="rms_breakdowns_alternator_regulator_failure_stage3_description" text="Сильна несправність регулятора. Зарядка критично знижена, напруга нестабільна, електрична система працює з великими втратами."/>
-        <text name="rms_breakdowns_alternator_regulator_failure_stage4_description" text="Повна відмова регулятора генератора. Зарядка акумулятора відсутня, система працює лише на залишках резерву АКБ."/>
         <text name="rms_breakdowns_turbocharger_wear_stage1_description" text="Знос підшипників турбіни. Чутне слабке свистіння, невелика втрата потужності на високих обертах."/>
         <text name="rms_breakdowns_turbocharger_wear_stage2_description" text="Витік ущільнювачів турбіни. Помітна втрата потужності, підвищена витрата палива."/>
         <text name="rms_breakdowns_turbocharger_wear_stage3_description" text="Пошкодження лопатей турбіни. Сильна втрата потужності та ризик зупинки двигуна під великим навантаженням."/>
         <text name="rms_breakdowns_turbocharger_wear_stage4_description" text="Катастрофічна відмова турбіни. Двигун втратив більшу частину потужності, існує загроза серйозних внутрішніх пошкоджень."/>
-        <text name="rms_breakdowns_oil_pump_malfunction_stage1_description" text="Несправність масляного насоса. Тиск масла знижений, крутний момент двигуна трохи впав, температура підвищена, можливий механічний стукіт."/>
-        <text name="rms_breakdowns_oil_pump_malfunction_stage2_description" text="Середня несправність масляного насоса. Тиск масла недостатній, помітна втрата моменту, температура зросла, чітко чутно стукіт."/>
-        <text name="rms_breakdowns_oil_pump_malfunction_stage3_description" text="Сильна несправність масляного насоса. Тиск масла критично низький, можливий перегрів двигуна, сильний гуркіт та зупинки двигуна."/>
-        <text name="rms_breakdowns_oil_pump_malfunction_stage4_description" text="Критична відмова масляного насоса. Циркуляція масла недостатня для безпечної роботи, подальша експлуатація неможлива."/>
-        <text name="rms_breakdowns_oil_pump_malfunction_stage4_message" text="Відсутній тиск масла"/>
-        <text name="rms_breakdowns_valve_train_malfunction_stage1_description" text="Несправність клапанного механізму. Крутний момент трохи знижений, витрата палива зросла, присутній аномальний шум ГРМ."/>
-        <text name="rms_breakdowns_valve_train_malfunction_stage2_description" text="Середня несправність ГРМ. Помітне зниження потужності, шум клапанів виражений, можливі перебої в роботі під навантаженням."/>
-        <text name="rms_breakdowns_valve_train_malfunction_stage3_description" text="Сильна несправність ГРМ. Крутний момент сильно знижений, витрата палива значно зросла, шум ГРМ дуже сильний, можливі зупинки двигуна."/>
-        <text name="rms_breakdowns_valve_train_malfunction_stage4_description" text="Критична відмова ГРМ. Правильна робота клапанів не забезпечується, запуск або подальша робота двигуна неможливі."/>
-        <text name="rms_breakdowns_valve_train_malfunction_stage4_message" text="Відмова механізму ГРМ"/>
-        <text name="rms_breakdowns_fuel_pump_malfunction_stage1_description" text="Початковий знос паливного насоса. Злегка знижена потужність двигуна та підвищена витрата палива."/>
-        <text name="rms_breakdowns_fuel_pump_malfunction_stage2_description" text="Падіння тиску палива. Помітна втрата потужності, висока витрата палива, епізодичні зупинки двигуна."/>
-        <text name="rms_breakdowns_fuel_pump_malfunction_stage3_description" text="Критичний тиск палива. Сильна втрата потужності, дуже висока витрата, часті зупинки двигуна."/>
-        <text name="rms_breakdowns_fuel_pump_malfunction_stage4_description" text="Повна відмова паливного насоса. Паливо не подається до двигуна."/>
-        <text name="rms_breakdowns_fuel_pump_malfunction_stage4_message" text="Запуск двигуна неможливий"/>
-        <text name="rms_breakdowns_fuel_injector_malfunction_stage1_description" text="Одна або кілька форсунок мають злегка засмічені сопла. Двигун може працювати нерівномірно, з незначною втратою потужності."/>
-        <text name="rms_breakdowns_fuel_injector_malfunction_stage2_description" text="Погане розпилення палива. Пропуски запалювання під навантаженням, що призводить до помітної втрати потужності та «провалів»."/>
-        <text name="rms_breakdowns_fuel_injector_malfunction_stage3_description" text="Форсунка заклинює. Двигун працює дуже погано, значна втрата потужності та ненадійний запуск."/>
-        <text name="rms_breakdowns_fuel_injector_malfunction_stage4_description" text="Форсунка повністю вийшла з ладу. Двигун не працюватиме правильно або не заведеться зовсім."/>
-        <text name="rms_breakdowns_fuel_injector_malfunction_stage4_message" text="Запуск двигуна неможливий"/>
-        <text name="rms_breakdowns_brake_malfunction_stage1_description" text="Зношені гальмівні колодки. Невелике зниження ефективності гальмування."/>
-        <text name="rms_breakdowns_brake_malfunction_stage2_description" text="Витік гальмівної рідини або зношені диски. Гальмівний шлях помітно збільшився."/>
-        <text name="rms_breakdowns_brake_malfunction_stage3_description" text="Сильна втрата тиску в гальмівній системі. Гальма дуже слабкі та ненадійні."/>
-        <text name="rms_breakdowns_brake_malfunction_stage4_description" text="Повна відмова гальмівної системи. Подальша експлуатація вкрай небезпечна."/>
-        <text name="rms_breakdowns_brake_malfunction_stage4_message" text="Відмова гальм"/>
         <text name="rms_breakdowns_transmission_slip_stage1_description" text="Зношені диски зчеплення. Епізодична втрата потужності через пробуксовування трансмісії під навантаженням."/>
         <text name="rms_breakdowns_transmission_slip_stage2_description" text="Значний знос зчеплення. Помітне пробуксовування трансмісії, особливо під час прискорення."/>
         <text name="rms_breakdowns_transmission_slip_stage3_description" text="Сильно зношене зчеплення. Через сильне буксування передача потужності на колеса утруднена."/>
@@ -275,42 +296,126 @@
         <text name="rms_breakdowns_transmission_synchronizer_malfunction_stage3_description" text="Зламані зуби синхронізатора. Висока ймовірність вибивання передачі під навантаженням."/>
         <text name="rms_breakdowns_transmission_synchronizer_malfunction_stage4_description" text="Синхронізатори повністю вийшли з ладу. Перемикання передач неможливе."/>
         <text name="rms_breakdowns_transmission_synchronizer_malfunction_stage4_message" text="Відмова трансмісії"/>
-        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage1_description" text="Низький тиск гідравліки в Powershift. Невелика затримка та жорсткість при ввімкненні передач."/>
-        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage2_description" text="Зношені ущільнювачі гідронасоса. Помітна затримка та ривки при перемиканні."/>
-        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage3_description" text="Вихід з ладу гідронасоса. Сильна затримка та жорсткі удари при перемиканні."/>
-        <text name="rms_breakdowns_powershift_hydraulic_pump_malfunction_stage4_description" text="Гідронасос Powershift відмовив. Трансмісія застрягла на нейтралі."/>
+        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Термостат трансмісії починає виходити з ладу. Він відкриває масляний радіатор надто пізно, і мастило коробки працює трохи гарячіше."/>
+        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Слабкий відгук термостата трансмісії. Масляний радіатор відкривається надто пізно, мастило коробки тримається помітно вище за нормальну температуру і зношується швидше."/>
+        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Термостат трансмісії майже не відкриває масляний радіатор. Мастило коробки близьке до перегріву, щойно зростає навантаження."/>
+        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Повна відмова термостата трансмісії. Він застиг в одному положенні, тому мастило коробки або перегрівається, або зовсім не прогрівається, залежно від того, де він заклинив."/>
+        <text name="rms_breakdowns_transmission_oil_leak_stage1_description" text="Незначний витік трансмісійної оливи. Рівень оливи повільно знижується під час роботи."/>
+        <text name="rms_breakdowns_transmission_oil_leak_stage2_description" text="Помірний витік трансмісійної оливи. Рівень помітно знижується, коробка передач гріється сильніше."/>
+        <text name="rms_breakdowns_transmission_oil_leak_stage3_description" text="Сильний витік трансмісійної оливи. Рівень швидко знижується, коробка передач перегрівається під навантаженням."/>
+        <text name="rms_breakdowns_transmission_oil_leak_stage4_description" text="Критичний витік трансмісійної оливи. Залишку оливи недостатньо для безпечної роботи коробки передач."/>
+        <text name="rms_breakdowns_track_tensioner_malfunction_stage1_description" text="Несправність натягувача гусениці. Присутні відведення вбік, вібрація та невелике зниження швидкості."/>
+        <text name="rms_breakdowns_track_tensioner_malfunction_stage2_description" text="Середня несправність натягувача. Помітна нестабільність руху, опір коченню зріс, швидкість знижена."/>
+        <text name="rms_breakdowns_track_tensioner_malfunction_stage3_description" text="Сильна несправність натягувача. Виражена вібрація та шум, сильне навантаження на трансмісію, швидкість суттєво обмежена."/>
+        <text name="rms_breakdowns_track_tensioner_malfunction_stage4_description" text="Критична відмова натягувача гусениці. Стабільний рух гусениці неможливий, сталося заклинювання ходової частини."/>
+        <text name="rms_breakdowns_track_tensioner_malfunction_stage4_message" text="Відмова натягувача гусениці"/>
+        <text name="rms_breakdowns_thermostat_malfunction_stage1_description" text="Термостат двигуна починає виходити з ладу. Двигун довше прогрівається або працює на дещо підвищеній температурі."/>
+        <text name="rms_breakdowns_thermostat_malfunction_stage2_description" text="Погана реакція термостата. Регулювання температури нестабільне, що прискорює знос."/>
+        <text name="rms_breakdowns_thermostat_malfunction_stage3_description" text="Термостат заклинив у закритому стані. Двигун буде постійно перегріватися під навантаженням."/>
+        <text name="rms_breakdowns_thermostat_malfunction_stage4_description" text="Повна відмова термостата. Охолоджуюча рідина не може циркулювати правильно, що призводить до негайного перегріву."/>
+        <text name="rms_breakdowns_overheat_protection_stage1_description" text="Режим захисту двигуна"/>
+        <text name="rms_breakdowns_overheat_protection_stage1_message" text="Аварійний режим двигуна! Потужність обмежена!"/>
+        <text name="rms_breakdowns_overheat_protection_stage2_description" text="Режим захисту двигуна"/>
+        <text name="rms_breakdowns_overheat_protection_stage2_message" text="Аварійний режим двигуна! Потужність обмежена!"/>
+        <text name="rms_breakdowns_overheat_protection_stage3_description" text="Режим захисту двигуна"/>
+        <text name="rms_breakdowns_overheat_protection_stage3_message" text="Аварійний режим двигуна! Потужність обмежена!"/>
+        <text name="rms_breakdowns_overheat_protection_stage4_description" text="Режим захисту двигуна"/>
+        <text name="rms_breakdowns_overheat_protection_stage4_message" text="Двигун вимкнено для захисту від перегріву"/>
+        <text name="rms_breakdowns_overload_breakdown_stage2_message" text="Критичне перевантаження! Негайно зменште навантаження на машину."/>
+        <text name="rms_breakdowns_oil_pump_malfunction_stage1_description" text="Несправність масляного насоса. Тиск масла знижений, крутний момент двигуна трохи впав, температура підвищена, можливий механічний стукіт."/>
+        <text name="rms_breakdowns_oil_pump_malfunction_stage2_description" text="Середня несправність масляного насоса. Тиск масла недостатній, помітна втрата моменту, температура зросла, чітко чутно стукіт."/>
+        <text name="rms_breakdowns_oil_pump_malfunction_stage3_description" text="Сильна несправність масляного насоса. Тиск масла критично низький, можливий перегрів двигуна, сильний гуркіт та зупинки двигуна."/>
+        <text name="rms_breakdowns_oil_pump_malfunction_stage4_description" text="Критична відмова масляного насоса. Циркуляція масла недостатня для безпечної роботи, подальша експлуатація неможлива."/>
+        <text name="rms_breakdowns_oil_pump_malfunction_stage4_message" text="Відсутній тиск масла"/>
+        <text name="rms_breakdowns_engine_jam_stage1_description" text="Двигун повністю вийшов з ладу"/>
+        <text name="rms_breakdowns_engine_jam_stage1_message" text="Двигун заклинив"/>
+        <text name="rms_breakdowns_engine_stalled_message" text="Двигун заглох"/>
+        <text name="rms_breakdowns_ecu_malfunction_stage1_description" text="Помилки ЕБУ. Злегка знижена потужність двигуна."/>
+        <text name="rms_breakdowns_ecu_malfunction_stage2_description" text="Несправність ЕБУ. Помітна втрата потужності та підвищена витрата палива."/>
+        <text name="rms_breakdowns_ecu_malfunction_stage3_description" text="Критична несправність ЕБУ. Значна втрата потужності, висока витрата палива та ризик зупинки двигуна."/>
+        <text name="rms_breakdowns_ecu_malfunction_stage4_description" text="Повна відмова ЕБУ. Двигун некерований і не заводиться."/>
+        <text name="rms_breakdowns_ecu_malfunction_stage4_message" text="Двигун несправний"/>
+        <text name="rms_breakdowns_corroded_wiring_stage1_description" text="Корозія проводки та електричних роз'ємів. Підвищений опір контактів викликає епізодичне мерехтіння світла, нестабільну напругу та утруднений запуск двигуна."/>
+        <text name="rms_breakdowns_corroded_wiring_stage2_description" text="Середня корозія проводки та роз'ємів. Втрати контакту викликають часте мерехтіння світла, нестабільну напругу, важкий запуск і можливі зупинки двигуна."/>
+        <text name="rms_breakdowns_corroded_wiring_stage3_description" text="Сильна корозія проводки та роз'ємів. Живлення критичних ланцюгів нестабільне, освітлення може повністю відмовити, крутний момент двигуна знижений, запуск ненадійний."/>
+        <text name="rms_breakdowns_corroded_wiring_stage4_description" text="Відмова ланцюга управління стартером через сильну корозію. Освітлення не працює, запуск двигуна неможливий."/>
+        <text name="rms_breakdowns_corroded_wiring_stage4_message" text="Відмова ланцюга стартера"/>
+        <text name="rms_breakdowns_coolant_leak_stage1_description" text="Витік охолоджуючої рідини. Ефективність системи охолодження злегка знижена."/>
+        <text name="rms_breakdowns_coolant_leak_stage2_description" text="Середній витік антифризу. Температура двигуна під навантаженням зростає швидше."/>
+        <text name="rms_breakdowns_coolant_leak_stage3_description" text="Сильний витік антифризу. Ефективність охолодження значно впала, перегрів під навантаженням дуже ймовірний."/>
+        <text name="rms_breakdowns_coolant_leak_stage4_description" text="Критичний витік охолоджуючої рідини. Безпечна температура двигуна не може бути забезпечена."/>
         <text name="rms_breakdowns_cvt_chain_wear_stage1_description" text="Знос ланцюга варіатора. Присутнє проковзування ланцюга, підвищене виділення тепла трансмісією."/>
         <text name="rms_breakdowns_cvt_chain_wear_stage2_description" text="Середній знос ланцюга варіатора. Проковзування помітне, витрата палива зросла, робоча температура трансмісії підвищена."/>
         <text name="rms_breakdowns_cvt_chain_wear_stage3_description" text="Сильний знос ланцюга варіатора. Проковзування виражене, витрата палива значно зросла, ймовірний перегрів трансмісії."/>
         <text name="rms_breakdowns_cvt_chain_wear_stage4_description" text="Критичний знос ланцюга варіатора. Передача моменту через варіатор більше не надійна, рух техніки не забезпечується."/>
         <text name="rms_breakdowns_cvt_chain_wear_stage4_message" text="Критичне буксування варіатора"/>
-        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage1_description" text="Несправність гідроклапана управління варіатором. Епізодичні падіння тиску, крутний момент злегка знижений, діапазон передавальних чисел обмежений."/>
-        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage2_description" text="Середня несправність гідроклапана варіатора. Часта нестабільність тиску, температура трансмісії підвищена, діапазон передач обмежений."/>
-        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage3_description" text="Сильна несправність гідроклапана варіатора. Виражені падіння тиску, крутний момент сильно знижений, ймовірний перегрів трансмісії."/>
-        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage4_description" text="Критична відмова гідроклапана варіатора. Контроль тиску нестабільний, діапазон передач суворо обмежений, робота в аварійному режимі."/>
         <text name="rms_breakdowns_cvt_addon_malfunction_stage1_description" text="Виявлено перші ознаки несправності трансмісії варіатора. Потрібен огляд та ремонт."/>
         <text name="rms_breakdowns_cvt_addon_malfunction_stage2_description" text="Несправність варіатора посилюється. Подальша експлуатація може призвести до переходу в аварійний режим."/>
         <text name="rms_breakdowns_cvt_addon_malfunction_stage3_description" text="Критичне пошкодження варіатора. Трансмісія в аварійному режимі, максимальна швидкість обмежена."/>
         <text name="rms_breakdowns_cvt_addon_malfunction_stage4_description" text="Повна відмова варіатора. Подальша експлуатація неможлива до ремонту трансмісії."/>
         <text name="rms_breakdowns_cvt_addon_malfunction_stage4_message" text="Відмова трансмісії варіатора"/>
+        <text name="rms_breakdowns_battery_sulfation_stage1_description" text="Сульфатація акумулятора. Ефективна ємність знижена, що призводить до меншого резерву енергії під навантаженням."/>
+        <text name="rms_breakdowns_battery_sulfation_stage2_description" text="Середня сульфатація акумулятора. Ефективна ємність значно знижена, запуск двигуна утруднений."/>
+        <text name="rms_breakdowns_battery_sulfation_stage3_description" text="Сильна сульфатація акумулятора. Корисна ємність критично низька, робота стартера нестабільна."/>
+        <text name="rms_breakdowns_battery_sulfation_stage4_description" text="Критична сульфатація акумулятора. Ефективна ємність майже відсутня, потужності стартера недостатньо для надійного запуску."/>
+        <text name="rms_breakdowns_brake_malfunction_stage1_description" text="Зношені гальмівні колодки. Невелике зниження ефективності гальмування."/>
+        <text name="rms_breakdowns_brake_malfunction_stage2_description" text="Витік гальмівної рідини або зношені диски. Гальмівний шлях помітно збільшився."/>
+        <text name="rms_breakdowns_brake_malfunction_stage3_description" text="Сильна втрата тиску в гальмівній системі. Гальма дуже слабкі та ненадійні."/>
+        <text name="rms_breakdowns_brake_malfunction_stage4_description" text="Повна відмова гальмівної системи. Подальша експлуатація вкрай небезпечна."/>
+        <text name="rms_breakdowns_brake_malfunction_stage4_message" text="Відмова гальм"/>
+        <text name="rms_breakdowns_bearing_wear_stage1_description" text="Знос підшипника ступиці. Присутні шум та вібрація, максимальна швидкість злегка обмежена."/>
+        <text name="rms_breakdowns_bearing_wear_stage2_description" text="Середній знос підшипника ступиці. Шум та вібрація виражені, навантаження на трансмісію зросло."/>
+        <text name="rms_breakdowns_bearing_wear_stage3_description" text="Сильний знос підшипника ступиці. Сильна вібрація, значне обмеження швидкості, можливий скрегіт заклинювання."/>
+        <text name="rms_breakdowns_bearing_wear_stage4_description" text="Критична відмова підшипника ступиці. Підшипник заклинив, обертання колеса заблоковано."/>
+        <text name="rms_breakdowns_bearing_wear_stage4_message" text="Підшипник колеса заклинив"/>
+        <text name="rms_breakdowns_alternator_regulator_failure_stage1_description" text="Несправність регулятора генератора. Потужність зарядки знижена, що погіршує ефективність зарядки акумулятора."/>
+        <text name="rms_breakdowns_alternator_regulator_failure_stage2_description" text="Середня несправність регулятора. Зарядка нестабільна, що призводить до поганої зарядки АКБ та втрат напруги в системі."/>
+        <text name="rms_breakdowns_alternator_regulator_failure_stage3_description" text="Сильна несправність регулятора. Зарядка критично знижена, напруга нестабільна, електрична система працює з великими втратами."/>
+        <text name="rms_breakdowns_alternator_regulator_failure_stage4_description" text="Повна відмова регулятора генератора. Зарядка акумулятора відсутня, система працює лише на залишках резерву АКБ."/>
+        <text name="rms_breakdowns_valve_train_malfunction_stage1_description" text="Несправність клапанного механізму. Крутний момент трохи знижений, витрата палива зросла, присутній аномальний шум ГРМ."/>
+        <text name="rms_breakdowns_valve_train_malfunction_stage2_description" text="Середня несправність ГРМ. Помітне зниження потужності, шум клапанів виражений, можливі перебої в роботі під навантаженням."/>
+        <text name="rms_breakdowns_valve_train_malfunction_stage3_description" text="Сильна несправність ГРМ. Крутний момент сильно знижений, витрата палива значно зросла, шум ГРМ дуже сильний, можливі зупинки двигуна."/>
+        <text name="rms_breakdowns_valve_train_malfunction_stage4_description" text="Критична відмова ГРМ. Правильна робота клапанів не забезпечується, запуск або подальша робота двигуна неможливі."/>
+        <text name="rms_breakdowns_valve_train_malfunction_stage4_message" text="Відмова механізму ГРМ"/>
+        <text name="rms_breakdowns_voltage_sag_message" text="Недостатня напруга в системі"/>
+        <text name="rms_breakdowns_fuel_pump_malfunction_stage1_description" text="Початковий знос паливного насоса. Злегка знижена потужність двигуна та підвищена витрата палива."/>
+        <text name="rms_breakdowns_fuel_pump_malfunction_stage2_description" text="Падіння тиску палива. Помітна втрата потужності, висока витрата палива, епізодичні зупинки двигуна."/>
+        <text name="rms_breakdowns_fuel_pump_malfunction_stage3_description" text="Критичний тиск палива. Сильна втрата потужності, дуже висока витрата, часті зупинки двигуна."/>
+        <text name="rms_breakdowns_fuel_pump_malfunction_stage4_description" text="Повна відмова паливного насоса. Паливо не подається до двигуна."/>
+        <text name="rms_breakdowns_fuel_pump_malfunction_stage4_message" text="Запуск двигуна неможливий"/>
+        <text name="rms_breakdowns_fuel_injector_malfunction_stage1_description" text="Одна або кілька форсунок мають злегка засмічені сопла. Двигун може працювати нерівномірно, з незначною втратою потужності."/>
+        <text name="rms_breakdowns_fuel_injector_malfunction_stage2_description" text="Погане розпилення палива. Пропуски запалювання під навантаженням, що призводить до помітної втрати потужності та «провалів»."/>
+        <text name="rms_breakdowns_fuel_injector_malfunction_stage3_description" text="Форсунка заклинює. Двигун працює дуже погано, значна втрата потужності та ненадійний запуск."/>
+        <text name="rms_breakdowns_fuel_injector_malfunction_stage4_description" text="Форсунка повністю вийшла з ладу. Двигун не працюватиме правильно або не заведеться зовсім."/>
+        <text name="rms_breakdowns_fuel_injector_malfunction_stage4_message" text="Запуск двигуна неможливий"/>
+        <text name="rms_breakdowns_fuel_filter_clogging_stage1_description" text="Засмічення паливного фільтра. Потік палива обмежений, що викликає легкі перебої під навантаженням та невелике падіння моменту."/>
+        <text name="rms_breakdowns_fuel_filter_clogging_stage2_description" text="Середнє засмічення фільтра. Перебої в роботі часті, потужність двигуна знижена, можливі зупинки."/>
+        <text name="rms_breakdowns_fuel_filter_clogging_stage3_description" text="Сильне засмічення паливного фільтра. Потік палива критично обмежений, крутний момент сильно впав, зупинки двигуна дуже ймовірні."/>
+        <text name="rms_breakdowns_fuel_filter_clogging_stage4_description" text="Критичне засмічення фільтра. Пропускна здатність недостатня для роботи, запуск двигуна неможливий."/>
+        <text name="rms_breakdowns_fuel_filter_clogging_stage4_message" text="Паливний фільтр забитий"/>
+        <text name="rms_breakdowns_fuel_line_air_leak_stage1_description" text="Підсмоктування повітря в паливній магістралі. Подача палива стає нестабільною, запуск двигуна ускладнюється."/>
+        <text name="rms_breakdowns_fuel_line_air_leak_stage2_description" text="Середнє підсмоктування повітря. Нестабільна робота, важкий запуск, можливі раптові зупинки двигуна."/>
+        <text name="rms_breakdowns_fuel_line_air_leak_stage3_description" text="Сильне підсмоктування повітря. Безперервність подачі палива порушена, запуск вкрай ненадійний, двигун часто глохне."/>
+        <text name="rms_breakdowns_fuel_line_air_leak_stage4_description" text="Критичне підсмоктування повітря. Подача палива неможлива, запуск або подальша робота двигуна виключені."/>
+        <text name="rms_breakdowns_fuel_line_air_leak_stage4_message" text="Повітря в паливній системі"/>
+        <text name="rms_breakdowns_fan_clutch_failure_stage1_description" text="Несправність муфти вентилятора. Ефективність обдування злегка знижена, присутній аномальний шум муфти."/>
+        <text name="rms_breakdowns_fan_clutch_failure_stage2_description" text="Середня несправність муфти вентилятора. Ефективність охолодження знижена, шум муфти чітко чутно."/>
+        <text name="rms_breakdowns_fan_clutch_failure_stage3_description" text="Сильна несправність муфти вентилятора. Обдування значно погіршилося, шум муфти дуже сильний."/>
+        <text name="rms_breakdowns_fan_clutch_failure_stage4_description" text="Критична відмова муфти вентилятора. Ефективність охолодження критично низька, потік повітря через радіатор не забезпечується."/>
+        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage1_description" text="Несправність гідроклапана управління варіатором. Епізодичні падіння тиску, крутний момент злегка знижений, діапазон передавальних чисел обмежений."/>
+        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage2_description" text="Середня несправність гідроклапана варіатора. Часта нестабільність тиску, температура трансмісії підвищена, діапазон передач обмежений."/>
+        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage3_description" text="Сильна несправність гідроклапана варіатора. Виражені падіння тиску, крутний момент сильно знижений, ймовірний перегрів трансмісії."/>
+        <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage4_description" text="Критична відмова гідроклапана варіатора. Контроль тиску нестабільний, діапазон передач суворо обмежений, робота в аварійному режимі."/>
         <text name="rms_breakdowns_hydraulic_control_valve_malfunction_stage4_message" text="Відмова гідроуправління варіатора"/>
-        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage1_description" text="Термостат мастила трансмісії починає виходити з ладу. Коробка довше виходить на робочу температуру, а регулювання стає млявим."/>
-        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage2_description" text="Слабкий відгук термостата трансмісії. Регулювання температури мастила нестабільне, знос зростає."/>
-        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage3_description" text="Термостат трансмісії майже не рухається. Температура мастила сильно коливається, під навантаженням ймовірний перегрів."/>
-        <text name="rms_breakdowns_transmission_thermostat_malfunction_stage4_description" text="Повна відмова термостата трансмісії. Клапан заклинив в одному положенні, мастило коробки більше не досягає потрібної температури."/>
-        <text name="rms_breakdowns_thermostat_malfunction_stage1_description" text="Термостат двигуна починає виходити з ладу. Двигун довше прогрівається або працює на дещо підвищеній температурі."/>
-        <text name="rms_breakdowns_thermostat_malfunction_stage2_description" text="Погана реакція термостата. Регулювання температури нестабільне, що прискорює знос."/>
-        <text name="rms_breakdowns_thermostat_malfunction_stage3_description" text="Термостат заклинив у закритому стані. Двигун буде постійно перегріватися під навантаженням."/>
-        <text name="rms_breakdowns_thermostat_malfunction_stage4_description" text="Повна відмова термостата. Охолоджуюча рідина не може циркулювати правильно, що призводить до негайного перегріву."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Невеликий внутрішній витік у гідроциліндрі. Підняте обладнання повільно опускається під навантаженням."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Помірний внутрішній витік у гідроциліндрі. Мимовільне опускання помітне й прискорюється зі збільшенням вантажу."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Сильний внутрішній витік у гідроциліндрі. Важке обладнання більше не може надійно утримувати положення."/>
+        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Критичний внутрішній витік у гідроциліндрі. Будь-який піднятий вантаж швидко опускається сам."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage1_description" text="Невеликий внутрішній витік насоса. Гідравлічне обладнання працює трохи повільніше."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage2_description" text="Зношені ущільнювачі насоса. Помітне уповільнення роботи гідравліки."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage3_description" text="Пошкоджений гідронасос. Робота обладнання вкрай повільна та слабка."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_description" text="Відмова гідронасоса. Гідравлічна система не працює."/>
         <text name="rms_breakdowns_hydraulic_pump_malfunction_stage4_message" text="Відмова гідравліки"/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage1_description" text="Невеликий внутрішній витік у гідроциліндрі. Підняте обладнання повільно опускається під навантаженням."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage2_description" text="Помірний внутрішній витік у гідроциліндрі. Мимовільне опускання помітне й прискорюється зі збільшенням вантажу."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage3_description" text="Сильний внутрішній витік у гідроциліндрі. Важке обладнання більше не може надійно утримувати положення."/>
-        <text name="rms_breakdowns_hydraulic_cylinder_internal_leak_stage4_description" text="Критичний внутрішній витік у гідроциліндрі. Будь-який піднятий вантаж швидко опускається сам."/>
         <text name="rms_breakdowns_hydraulic_hose_external_leak_stage1_description" text="На гідравлічному шлангу з'явився невеликий зовнішній витік. Виходить трохи оливи, а реакція гідравліки дещо слабшає."/>
         <text name="rms_breakdowns_hydraulic_hose_external_leak_stage2_description" text="Гідравлічний шланг помітно підтікає. Втрата оливи триває, а гідравлічні функції реагують повільніше."/>
         <text name="rms_breakdowns_hydraulic_hose_external_leak_stage3_description" text="Гідравлічний шланг активно протікає. Втрата оливи очевидна, а гідравлічні функції помітно ослаблені."/>
@@ -327,101 +432,75 @@
         <text name="rms_breakdowns_hydraulic_spool_valve_stage2_description" text="Гідравлічний розподільник періодично заїдає. Одна гідравлічна функція сповільнюється й сильніше втрачає силу зі збільшенням навантаження."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage3_description" text="Гідравлічний розподільник сильно зношений. Одна гідравлічна функція рухається ривками й насилу працює під великим навантаженням."/>
         <text name="rms_breakdowns_hydraulic_spool_valve_stage4_description" text="Гідравлічний розподільник критично пошкоджений. Одна гідравлічна функція постійно зупиняється й ледве переміщує важкий вантаж."/>
-        <text name="rms_breakdowns_bearing_wear_stage1_description" text="Знос підшипника ступиці. Присутні шум та вібрація, максимальна швидкість злегка обмежена."/>
-        <text name="rms_breakdowns_bearing_wear_stage2_description" text="Середній знос підшипника ступиці. Шум та вібрація виражені, навантаження на трансмісію зросло."/>
-        <text name="rms_breakdowns_bearing_wear_stage3_description" text="Сильний знос підшипника ступиці. Сильна вібрація, значне обмеження швидкості, можливий скрегіт заклинювання."/>
-        <text name="rms_breakdowns_bearing_wear_stage4_description" text="Критична відмова підшипника ступиці. Підшипник заклинив, обертання колеса заблоковано."/>
-        <text name="rms_breakdowns_bearing_wear_stage4_message" text="Підшипник колеса заклинив"/>
-        <text name="rms_breakdowns_steering_linkage_wear_stage1_description" text="Знос рульової тяги. Присутнє невелике відведення керма вбік, реакція на поворот погіршилася."/>
-        <text name="rms_breakdowns_steering_linkage_wear_stage2_description" text="Середній знос рульової тяги. Відведення керма помітне, реакція на рульове управління значно гірша."/>
-        <text name="rms_breakdowns_steering_linkage_wear_stage3_description" text="Сильний знос рульової тяги. Порушена курсова стійкість, реакція на поворот керма вкрай слабка."/>
-        <text name="rms_breakdowns_steering_linkage_wear_stage4_description" text="Критична відмова рульової тяги. Контроль над напрямком руху майже втрачено, безпечне керування неможливе."/>
-        <text name="rms_breakdowns_steering_linkage_wear_stage4_message" text="Відмова рульової тяги"/>
-        <text name="rms_breakdowns_track_tensioner_malfunction_stage1_description" text="Несправність натягувача гусениці. Присутні відведення вбік, вібрація та невелике зниження швидкості."/>
-        <text name="rms_breakdowns_track_tensioner_malfunction_stage2_description" text="Середня несправність натягувача. Помітна нестабільність руху, опір коченню зріс, швидкість знижена."/>
-        <text name="rms_breakdowns_track_tensioner_malfunction_stage3_description" text="Сильна несправність натягувача. Виражена вібрація та шум, сильне навантаження на трансмісію, швидкість суттєво обмежена."/>
-        <text name="rms_breakdowns_track_tensioner_malfunction_stage4_description" text="Критична відмова натягувача гусениці. Стабільний рух гусениці неможливий, сталося заклинювання ходової частини."/>
-        <text name="rms_breakdowns_track_tensioner_malfunction_stage4_message" text="Відмова натягувача гусениці"/>
-        <text name="rms_breakdowns_coolant_leak_stage1_description" text="Витік охолоджуючої рідини. Ефективність системи охолодження злегка знижена."/>
-        <text name="rms_breakdowns_coolant_leak_stage2_description" text="Середній витік антифризу. Температура двигуна під навантаженням зростає швидше."/>
-        <text name="rms_breakdowns_coolant_leak_stage3_description" text="Сильний витік антифризу. Ефективність охолодження значно впала, перегрів під навантаженням дуже ймовірний."/>
-        <text name="rms_breakdowns_coolant_leak_stage4_description" text="Критичний витік охолоджуючої рідини. Безпечна температура двигуна не може бути забезпечена."/>
-        <text name="rms_breakdowns_fan_clutch_failure_stage1_description" text="Несправність муфти вентилятора. Ефективність обдування злегка знижена, присутній аномальний шум муфти."/>
-        <text name="rms_breakdowns_fan_clutch_failure_stage2_description" text="Середня несправність муфти вентилятора. Ефективність охолодження знижена, шум муфти чітко чутно."/>
-        <text name="rms_breakdowns_fan_clutch_failure_stage3_description" text="Сильна несправність муфти вентилятора. Обдування значно погіршилося, шум муфти дуже сильний."/>
-        <text name="rms_breakdowns_fan_clutch_failure_stage4_description" text="Критична відмова муфти вентилятора. Ефективність охолодження критично низька, потік повітря через радіатор не забезпечується."/>
-        <text name="rms_breakdowns_fuel_filter_clogging_stage1_description" text="Засмічення паливного фільтра. Потік палива обмежений, що викликає легкі перебої під навантаженням та невелике падіння моменту."/>
-        <text name="rms_breakdowns_fuel_filter_clogging_stage2_description" text="Середнє засмічення фільтра. Перебої в роботі часті, потужність двигуна знижена, можливі зупинки."/>
-        <text name="rms_breakdowns_fuel_filter_clogging_stage3_description" text="Сильне засмічення паливного фільтра. Потік палива критично обмежений, крутний момент сильно впав, зупинки двигуна дуже ймовірні."/>
-        <text name="rms_breakdowns_fuel_filter_clogging_stage4_description" text="Критичне засмічення фільтра. Пропускна здатність недостатня для роботи, запуск двигуна неможливий."/>
-        <text name="rms_breakdowns_fuel_filter_clogging_stage4_message" text="Паливний фільтр забитий"/>
-        <text name="rms_breakdowns_fuel_line_air_leak_stage1_description" text="Підсмоктування повітря в паливній магістралі. Подача палива стає нестабільною, запуск двигуна ускладнюється."/>
-        <text name="rms_breakdowns_fuel_line_air_leak_stage2_description" text="Середнє підсмоктування повітря. Нестабільна робота, важкий запуск, можливі раптові зупинки двигуна."/>
-        <text name="rms_breakdowns_fuel_line_air_leak_stage3_description" text="Сильне підсмоктування повітря. Безперервність подачі палива порушена, запуск вкрай ненадійний, двигун часто глохне."/>
-        <text name="rms_breakdowns_fuel_line_air_leak_stage4_description" text="Критичне підсмоктування повітря. Подача палива неможлива, запуск або подальша робота двигуна виключені."/>
-        <text name="rms_breakdowns_fuel_line_air_leak_stage4_message" text="Повітря в паливній системі"/>
-        <text name="rms_breakdowns_dead_battery_message" text="Заряд акумулятора вичерпано"/>
-        <text name="rms_breakdowns_voltage_sag_message" text="Недостатня напруга в системі"/>
-        <text name="rms_breakdowns_engine_stalled_message" text="Двигун заглох"/>
-        <text name="rms_breakdowns_pto_auto_disengage_message" text="ВВП вимкнувся"/>
-        <text name="rms_breakdowns_gear_disengage_message" text="Передачу вибито"/>
         <text name="rms_breakdown_at_progress_message" text="триває"/>
         <!-- Vehicle Specifications -->
         <text name="rms_spec_cold_engine_message" text="Двигун холодний! Зменште навантаження!"/>
         <text name="rms_spec_overheat_engine_message" text="Увага! Перегрів двигуна."/>
         <text name="rms_spec_overheat_transmission_message" text="Увага! Перегрів трансмісії."/>
-        <text name="rms_spec_this_month" text="Цього місяця"/>
-        <text name="rms_spec_never" text="Ніколи"/>
+        <text name="rms_spec_overhaul_partial" text="Частковий"/>
+        <text name="rms_spec_overhaul_standard" text="Стандартний"/>
+        <text name="rms_spec_overhaul_full" text="Повний"/>
         <text name="rms_spec_op_hours_short" text="м/год"/>
+        <text name="rms_spec_this_month" text="Цього місяця"/>
         <text name="rms_spec_tomorrow_at" text="завтра о "/>
+        <text name="rms_spec_never" text="Ніколи"/>
+        <text name="rms_spec_next_planned_service_notification" text="Планова процедура розпочата: %s"/>
+        <text name="rms_spec_next_planned_service_not_enough_money_notification" text="Планову процедуру %s скасовано через брак коштів"/>
         <text name="rms_spec_day_after_tomorrow_at" text="післязавтра о "/>
-        <text name="rms_spec_in_days_at" text="через {days} дн. о "/>
         <text name="rms_spec_day_s" text="дн."/>
-        <text name="rms_spec_hour_s" text="год."/>
-        <text name="rms_spec_minute_s" text="хв."/>
         <text name="rms_spec_duration_format_hours" text="%d %s"/>
         <text name="rms_spec_duration_format_minutes" text="%d %s"/>
         <text name="rms_spec_duration_format_combined" text="%s і %s"/>
-        <text name="rms_spec_months_ago_unit" text="міс. тому"/>
-        <text name="rms_spec_months_ago_format" text="%s %s"/>
-        <text name="rms_spec_last_maintenance_until_format" text="%s до %s"/>
-        <text name="rms_spec_maintenance_complete_notification" text="завершено"/>
-        <text name="rms_spec_maintenance_cancelled_notification" text="скасовано"/>
+        <text name="rms_spec_in_days_at" text="через {days} дн. о "/>
         <text name="rms_spec_inspection_issues_detected_notification" text="Виявлено проблем: %s"/>
         <text name="rms_spec_inspection_no_issues_detected_notification" text="Проблем не виявлено"/>
-        <text name="rms_spec_next_planned_service_notification" text="Планова процедура розпочата: %s"/>
-        <text name="rms_spec_next_planned_service_not_enough_money_notification" text="Планову процедуру %s скасовано через брак коштів"/>
+        <text name="rms_spec_inspection_visual" text="Візуальний"/>
+        <text name="rms_spec_inspection_standard" text="Стандартний"/>
+        <text name="rms_spec_inspection_complete" text="Повна дефектоскопія"/>
+        <text name="rms_spec_hour_s" text="год."/>
+        <text name="rms_spec_minute_s" text="хв."/>
+        <text name="rms_spec_months_ago_unit" text="міс. тому"/>
+        <text name="rms_spec_months_ago_format" text="%s %s"/>
+        <text name="rms_spec_maintenance_complete_notification" text="завершено"/>
+        <text name="rms_spec_maintenance_cancelled_notification" text="скасовано"/>
+        <text name="rms_spec_maintenance_minimal" text="Мінімальне"/>
+        <text name="rms_spec_maintenance_standard" text="Стандартне"/>
+        <text name="rms_spec_maintenance_extended" text="Розширене"/>
+        <text name="rms_spec_maintenance_preventive" text="Профілактичне"/>
+        <text name="rms_spec_last_maintenance_until_format" text="%s до %s"/>
         <text name="rms_spec_workshop_dealer" text="Дилер"/>
         <text name="rms_spec_workshop_own" text="Власна"/>
         <text name="rms_spec_workshop_mobile" text="Мобільна"/>
         <text name="rms_spec_system_engine" text="Двигун"/>
+        <text name="rms_spec_system_electrical" text="Електросистема"/>
         <text name="rms_spec_system_transmission" text="Трансмісія"/>
         <text name="rms_spec_system_hydraulics" text="Гідравліка"/>
         <text name="rms_spec_system_cooling" text="Система охолодження"/>
-        <text name="rms_spec_system_electrical" text="Електросистема"/>
         <text name="rms_spec_system_chassis" text="Ходова частина"/>
         <text name="rms_spec_system_fuel" text="Паливна система"/>
+        <text name="rms_spec_system_pto" text="Вал відбору потужності"/>
         <text name="rms_spec_state_ready" text="Готово"/>
+        <text name="rms_spec_state_repair" text="Ремонт"/>
+        <text name="rms_spec_state_refill" text="Долив рідин"/>
+        <text name="rms_spec_state_recommended" text="Рекомендовано"/>
+        <text name="rms_spec_state_required" text="Необхідно"/>
         <text name="rms_spec_state_inspection" text="Огляд"/>
         <text name="rms_spec_state_maintenance" text="Обслуговування"/>
-        <text name="rms_spec_state_repair" text="Ремонт"/>
         <text name="rms_spec_state_overhaul" text="Кап. ремонт"/>
+        <text name="rms_spec_state_overdue" text="Прострочено"/>
+        <text name="rms_spec_state_optimal" text="Оптимальний"/>
         <text name="rms_spec_state_broken" text="Поломка"/>
+        <text name="rms_spec_state_bad" text="Поганий"/>
+        <text name="rms_spec_state_budget" text="Бюджетний"/>
         <text name="rms_spec_state_excellent" text="Відмінний"/>
         <text name="rms_spec_state_good" text="Гарний"/>
         <text name="rms_spec_state_normal" text="Нормальний"/>
-        <text name="rms_spec_state_bad" text="Поганий"/>
         <text name="rms_spec_state_terrible" text="Жахливий"/>
         <text name="rms_spec_state_unknown" text="Невідомо"/>
-        <text name="rms_spec_state_optimal" text="Оптимальний"/>
-        <text name="rms_spec_state_recommended" text="Рекомендовано"/>
-        <text name="rms_spec_state_required" text="Необхідно"/>
-        <text name="rms_spec_state_overdue" text="Прострочено"/>
         <text name="rms_spec_state_legendary" text="Легендарний"/>
+        <text name="rms_spec_state_low" text="Низький"/>
         <text name="rms_spec_state_premium" text="Преміум"/>
         <text name="rms_spec_state_standard" text="Стандартний"/>
-        <text name="rms_spec_state_budget" text="Бюджетний"/>
-        <text name="rms_spec_state_low" text="Низький"/>
         <text name="rms_spec_state_average" text="Середній"/>
         <text name="rms_spec_state_high" text="Високий"/>
         <text name="rms_spec_state_workhorse" text="Робоча конячка"/>
@@ -429,33 +508,36 @@
         <text name="rms_spec_part_types_aftermarket" text="Аналоги"/>
         <text name="rms_spec_part_types_oem" text="Оригінальні (OEM)"/>
         <text name="rms_spec_part_types_premium" text="Преміальні"/>
-        <text name="rms_spec_inspection_visual" text="Візуальний"/>
-        <text name="rms_spec_inspection_standard" text="Стандартний"/>
-        <text name="rms_spec_inspection_complete" text="Повна дефектоскопія"/>
-        <text name="rms_spec_maintenance_minimal" text="Мінімальне"/>
-        <text name="rms_spec_maintenance_standard" text="Стандартне"/>
-        <text name="rms_spec_maintenance_extended" text="Розширене"/>
-        <text name="rms_spec_maintenance_preventive" text="Профілактичне"/>
-        <text name="rms_spec_overhaul_partial" text="Частковий"/>
-        <text name="rms_spec_overhaul_standard" text="Стандартний"/>
-        <text name="rms_spec_overhaul_full" text="Повний"/>
         <text name="rms_spec_repair_type_fix" text="Швидка латка"/>
         <text name="rms_spec_repair_type_replacement" text="Стандартний"/>
         <text name="rms_spec_repair_type_advanced" text="Поглиблений"/>
         <!-- Service Options -->
         <text name="rms_option_menu_option_one_title_inspection" text="Оберіть тип огляду"/>
         <text name="rms_option_menu_option_one_title_maintenance" text="Оберіть рівень обслуговування"/>
-        <text name="rms_option_menu_option_two_title_maintenance" text="Оберіть якість витратних матеріалів"/>
         <text name="rms_option_menu_option_one_title_repair" text="Оберіть тип ремонту"/>
-        <text name="rms_option_menu_option_two_title_repair" text="Оберіть якість запчастин"/>
         <text name="rms_option_menu_option_one_title_overhaul" text="Оберіть обсяг робіт"/>
+        <text name="rms_option_menu_option_two_title_maintenance" text="Оберіть якість витратних матеріалів"/>
+        <text name="rms_option_menu_option_two_title_repair" text="Оберіть якість запчастин"/>
         <text name="rms_option_menu_option_two_title_overhaul" text="Оберіть систему"/>
+        <text name="rms_option_menu_option_three_disclaimer_repair_after_detection" text="* Автоматично почати стандартний ремонт із запчастинами OEM у разі виявлення поломок."/>
+        <text name="rms_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Автоматично почати стандартне ТО з витратними матеріалами OEM після ремонту."/>
+        <text name="rms_option_menu_option_three_disclaimer_overhaul_repaint" text="* Перефарбувати транспортний засіб під час капітального ремонту."/>
+        <text name="rms_option_menu_overhaul_partial_description" text="* Відновлює обрану систему до гарного робочого стану. Швидше та дешевше, ніж капітальний ремонт усього засобу."/>
+        <text name="rms_option_menu_overhaul_standard_description" text="* Комплексна робота над усіма основними вузлами. Відновлює загальний стан до гарного рівня."/>
+        <text name="rms_option_menu_overhaul_full_description" text="* Повне заводське відновлення. Висока вартість і тривалість, проте відновлює стан до відмінного рівня."/>
         <text name="rms_option_menu_price_text" text="Ціна: "/>
+        <text name="rms_option_menu_part_used_description" text="* Вживані деталі з розборок. Дуже дешево, але вкрай ризиковано (~50% шанс дефекту)."/>
+        <text name="rms_option_menu_part_aftermarket_description" text="* Бюджетні копії-аналоги. Знижена вартість, але з помірним ризиком дефектів (33%)."/>
+        <text name="rms_option_menu_part_oem_description" text="* Оригінальні деталі від виробника. Стандартна надійність (10% ризику) за повну ціну."/>
+        <text name="rms_option_menu_part_premium_description" text="* Посилені компоненти. Дорого, але з суворим контролем якості (0% ризику дефектів)."/>
+        <text name="rms_option_menu_perform_repair" text="Ремонтувати виявлені несправності"/>
+        <text name="rms_option_menu_perform_renew_paint" text="Оновити лакофарбове покриття"/>
+        <text name="rms_option_menu_perform_maintenance" text="Провести ТО після ремонту"/>
         <text name="rms_option_menu_warranty_repair_text" text="Гарантійний ремонт"/>
         <text name="rms_option_menu_duration_text" text="Тривалість: "/>
+        <text name="rms_option_menu_duration_instant" text="Миттєво"/>
         <text name="rms_option_menu_finish_time_text" text="Час завершення: "/>
         <text name="rms_option_menu_start_text" text="Почати"/>
-        <text name="rms_option_menu_duration_instant" text="Миттєво"/>
         <text name="rms_option_menu_inspection_visual_description" text="* Швидкий зовнішній огляд. Низька ціна та миттєвий результат. Виявляє очевидні поломки, проте є ризик пропустити приховані дефекти. Не надає точних даних про техстан."/>
         <text name="rms_option_menu_inspection_standard_description" text="* Планова діагностична процедура. Виявляє всі активні несправності та формує загальний звіт про стан транспортного засобу."/>
         <text name="rms_option_menu_inspection_complete_description" text="* Глибока діагностика. Гарантує виявлення всіх поломок, включно з потенційними, та надає вичерпний звіт із точним відсотком зносу всіх вузлів."/>
@@ -466,148 +548,139 @@
         <text name="rms_option_menu_repair_type_fix_description" text="* Тимчасовий ремонт для термінової роботи. Швидко та дешево відновлює функціональність, проте причина поломки не усувається і вона знову з'явиться з часом."/>
         <text name="rms_option_menu_repair_type_replacement_description" text="* Стандартна заміна несправного компонента. Повністю усуває поточну поломку та відновлює вузол до нормального робочого стану."/>
         <text name="rms_option_menu_repair_type_advanced_description" text="* Поглиблений ремонт із заміною несправного вузла та обслуговуванням суміжних деталей. Значно знижує ризик повторних поломок у цій системі."/>
-        <text name="rms_option_menu_overhaul_partial_description" text="* Відновлює обрану систему до гарного робочого стану. Швидше та дешевше, ніж капітальний ремонт усього засобу."/>
-        <text name="rms_option_menu_overhaul_standard_description" text="* Комплексна робота над усіма основними вузлами. Відновлює загальний стан до гарного рівня."/>
-        <text name="rms_option_menu_overhaul_full_description" text="* Повне заводське відновлення. Висока вартість і тривалість, проте відновлює стан до відмінного рівня."/>
-        <text name="rms_option_menu_part_used_description" text="* Вживані деталі з розборок. Дуже дешево, але вкрай ризиковано (~50% шанс дефекту)."/>
-        <text name="rms_option_menu_part_aftermarket_description" text="* Бюджетні копії-аналоги. Знижена вартість, але з помірним ризиком дефектів (33%)."/>
-        <text name="rms_option_menu_part_oem_description" text="* Оригінальні деталі від виробника. Стандартна надійність (10% ризику) за повну ціну."/>
-        <text name="rms_option_menu_part_premium_description" text="* Посилені компоненти. Дорого, але з суворим контролем якості (0% ризику дефектів)."/>
-        <text name="rms_option_menu_perform_repair" text="Ремонтувати виявлені несправності"/>
-        <text name="rms_option_menu_perform_maintenance" text="Провести ТО після ремонту"/>
-        <text name="rms_option_menu_perform_renew_paint" text="Оновити лакофарбове покриття"/>
-        <text name="rms_option_menu_option_three_disclaimer_repair_after_detection" text="* Автоматично почати стандартний ремонт із запчастинами OEM у разі виявлення поломок."/>
-        <text name="rms_option_menu_option_three_disclaimer_maintenance_after_repair" text="* Автоматично почати стандартне ТО з витратними матеріалами OEM після ремонту."/>
-        <text name="rms_option_menu_option_three_disclaimer_overhaul_repaint" text="* Перефарбувати транспортний засіб під час капітального ремонту."/>
         <text name="rms_option_menu_chosen_parts_text" text="* Обрано для ремонту:"/>
         <!-- Inspection Report -->
         <text name="rms_report_header_title" text="Звіт про огляд"/>
         <text name="rms_report_vehicle_name_title" text="Назва техніки"/>
-        <text name="rms_report_date_title" text="Дата"/>
         <text name="rms_report_vehicle_age_title" text="Вік"/>
         <text name="rms_report_vehicle_operating_hours_title" text="Мотогодини"/>
-        <text name="rms_report_inspection_type_title" text="Тип огляду"/>
-        <text name="rms_report_inspection_location_title" text="Місце проведення"/>
-        <text name="rms_report_overall_assessment_title" text="Загальна оцінка стану"/>
         <text name="rms_report_vehicle_specs_title" text="Характеристики техніки"/>
-        <text name="rms_report_detected_breakdowns_title" text="Виявлені поломки"/>
-        <text name="rms_report_recommendations_title" text="Висновки та рекомендації"/>
-        <text name="rms_report_state_optimal" text="Оптимально"/>
-        <text name="rms_report_state_normal" text="Нормально"/>
-        <text name="rms_report_state_degraded" text="Погіршено"/>
-        <text name="rms_report_state_impaired" text="Порушено"/>
-        <text name="rms_report_state_critical" text="Критично"/>
-        <text name="rms_report_state_not_available" text="Н/Д"/>
-        <text name="rms_report_overall_assessment_condition" text="Рівень стану"/>
-        <text name="rms_report_overall_assessment_service" text="Рівень сервісу"/>
-        <text name="rms_report_overall_assessment_mtbf" text="MTBF (год)"/>
-        <text name="rms_report_overall_assessment_crit_fail_risk" text="Ризик крит. відмови"/>
-        <text name="rms_report_overall_assessment_rul" text="Залишковий ресурс (год)"/>
-        <text name="rms_report_overall_assessment_wear_rate" text="Швидкість зносу (%/год)"/>
-        <text name="rms_report_overall_assessment_nominal_wear_rate" text="Номінальний знос (%/год)"/>
-        <text name="rms_report_system_condition_title" text="Стан системи | Ризик відмови"/>
-        <text name="rms_report_system_condition_power" text="Поточна потужність"/>
-        <text name="rms_report_system_condition_brakes" text="Ефективність гальм"/>
-        <text name="rms_report_system_condition_transmission" text="Трансмісія"/>
-        <text name="rms_report_system_condition_cooling" text="Ефективність охолодження"/>
-        <text name="rms_report_system_condition_consumption" text="Витрата палива"/>
-        <text name="rms_report_system_condition_hydraulic" text="Ефективність гідравліки"/>
-        <text name="rms_report_transmission_slipping" text="Пробуксовування"/>
-        <text name="rms_report_transmission_shifting_impaired" text="Збій перемикання"/>
-        <text name="rms_report_transmission_gear_rejection" text="Вибивання передачі"/>
-        <text name="rms_report_transmission_shift_delay" text="Затримка перемикання"/>
-        <text name="rms_report_transmission_cvt_slipping" text="Буксування ременя/ланцюга"/>
-        <text name="rms_report_transmission_cvt_ratio_limited" text="Діапазон обмежено"/>
-        <text name="rms_report_transmission_cvt_pressure_instability" text="Нестабільність тиску"/>
-        <text name="rms_report_transmission_thermostat_degraded" text="Несправний термостат"/>
-        <text name="rms_report_transmission_failed" text="Відмова"/>
         <text name="rms_report_vehicle_spec_max_alternator_current" text="Макс. струм генератора"/>
         <text name="rms_report_vehicle_spec_battery_charge" text="Заряд акумулятора"/>
         <text name="rms_report_vehicle_spec_battery_capacity" text="Ємність акумулятора"/>
+        <text name="rms_report_date_title" text="Дата"/>
+        <text name="rms_report_detected_breakdowns_title" text="Виявлені поломки"/>
+        <text name="rms_report_inspection_type_title" text="Тип огляду"/>
+        <text name="rms_report_inspection_location_title" text="Місце проведення"/>
+        <text name="rms_report_overall_assessment_title" text="Загальна оцінка стану"/>
+        <text name="rms_report_overall_assessment_condition" text="Рівень стану"/>
+        <text name="rms_report_overall_assessment_crit_fail_risk" text="Ризик крит. відмови"/>
+        <text name="rms_report_overall_assessment_service" text="Рівень сервісу"/>
+        <text name="rms_report_overall_assessment_mtbf" text="MTBF (год)"/>
+        <text name="rms_report_overall_assessment_rul" text="Залишковий ресурс (год)"/>
+        <text name="rms_report_overall_assessment_wear_rate" text="Швидкість зносу (%/год)"/>
+        <text name="rms_report_overall_assessment_nominal_wear_rate" text="Номінальний знос (%/год)"/>
+        <text name="rms_report_recommendations_title" text="Висновки та рекомендації"/>
+        <text name="rms_report_recommendation_repair_active_breakdowns" text="Виявлено активні несправності. Рекомендується стандартний ремонт усіх виявлених дефектів."/>
+        <text name="rms_report_recommendation_repeat_maintenance" text="Виявлено дефектні витратні матеріали. Повторіть ТО для заміни несправних компонентів."/>
+        <text name="rms_report_recommendation_defective_parts" text="Виявлено дефектні запчастини: %s. Рекомендується профілактична заміна для уникнення раптової відмови."/>
+        <text name="rms_report_recommendation_quick_fix" text="Виявлено тимчасовий ремонт (латку): %s. Рекомендується провести стандартну заміну за першої можливості."/>
+        <text name="rms_report_recommendation_service_due" text="Досягнуто порогу сервісного інтервалу. Проведіть технічне обслуговування."/>
+        <text name="rms_report_recommendation_service_urgent" text="Сервісний інтервал порушено. Терміново проведіть технічне обслуговування!"/>
+        <text name="rms_report_recommendation_system_overhaul" text="Виявлено критичну деградацію в системі: %s. Проведіть частковий капітальний ремонт цієї системи."/>
+        <text name="rms_report_recommendation_system_preventive_maintenance" text="Виявлено підвищений ризик поломки в системі: %s. Проведіть профілактичне обслуговування для зниження ризику."/>
+        <text name="rms_report_recommendation_overhaul" text="Виявлено деградацію основних вузлів. Проведіть капітальний ремонт."/>
+        <text name="rms_report_recommendation_operating_conditions" text="Виявлено ознаки інтенсивного перевантаження. Покращте умови експлуатації."/>
+        <text name="rms_report_recommendation_all_ok" text="Критичних рекомендацій немає. Техніка перебуває у придатному для роботи стані."/>
+        <text name="rms_report_state_optimal" text="Оптимально"/>
+        <text name="rms_report_state_normal" text="Нормально"/>
+        <text name="rms_report_state_not_available" text="Н/Д"/>
+        <text name="rms_report_state_degraded" text="Погіршено"/>
+        <text name="rms_report_state_impaired" text="Порушено"/>
+        <text name="rms_report_state_critical" text="Критично"/>
         <text name="rms_report_stress_absent" text="Відсутній"/>
         <text name="rms_report_stress_low" text="Низький"/>
         <text name="rms_report_stress_moderate" text="Середній"/>
         <text name="rms_report_stress_elevated" text="Підвищений"/>
         <text name="rms_report_stress_high" text="Високий"/>
-        <text name="rms_report_recommendation_repair_active_breakdowns" text="Виявлено активні несправності. Рекомендується стандартний ремонт усіх виявлених дефектів."/>
-        <text name="rms_report_recommendation_defective_parts" text="Виявлено дефектні запчастини: %s. Рекомендується профілактична заміна для уникнення раптової відмови."/>
-        <text name="rms_report_recommendation_quick_fix" text="Виявлено тимчасовий ремонт (латку): %s. Рекомендується провести стандартну заміну за першої можливості."/>
-        <text name="rms_report_recommendation_service_due" text="Досягнуто порогу сервісного інтервалу. Проведіть технічне обслуговування."/>
-        <text name="rms_report_recommendation_service_urgent" text="Сервісний інтервал порушено. Терміново проведіть технічне обслуговування!"/>
-        <text name="rms_report_recommendation_overhaul" text="Виявлено деградацію основних вузлів. Проведіть капітальний ремонт."/>
-        <text name="rms_report_recommendation_system_overhaul" text="Виявлено критичну деградацію в системі: %s. Проведіть частковий капітальний ремонт цієї системи."/>
-        <text name="rms_report_recommendation_system_preventive_maintenance" text="Виявлено підвищений ризик поломки в системі: %s. Проведіть профілактичне обслуговування для зниження ризику."/>
-        <text name="rms_report_recommendation_operating_conditions" text="Виявлено ознаки інтенсивного перевантаження. Покращте умови експлуатації."/>
-        <text name="rms_report_recommendation_repeat_maintenance" text="Виявлено дефектні витратні матеріали. Повторіть ТО для заміни несправних компонентів."/>
-        <text name="rms_report_recommendation_all_ok" text="Критичних рекомендацій немає. Техніка перебуває у придатному для роботи стані."/>
+        <text name="rms_report_system_condition_title" text="Стан системи | Ризик відмови"/>
+        <text name="rms_report_system_condition_transmission" text="Трансмісія"/>
+        <text name="rms_report_system_condition_power" text="Поточна потужність"/>
+        <text name="rms_report_system_condition_brakes" text="Ефективність гальм"/>
+        <text name="rms_report_system_condition_cooling" text="Ефективність охолодження"/>
+        <text name="rms_report_system_condition_consumption" text="Витрата палива"/>
+        <text name="rms_report_system_condition_hydraulic" text="Ефективність гідравліки"/>
+        <text name="rms_report_transmission_slipping" text="Пробуксовування"/>
+        <text name="rms_report_transmission_shifting_impaired" text="Збій перемикання"/>
+        <text name="rms_report_transmission_shift_delay" text="Затримка перемикання"/>
+        <text name="rms_report_transmission_gear_rejection" text="Вибивання передачі"/>
+        <text name="rms_report_transmission_cvt_slipping" text="Буксування ременя/ланцюга"/>
+        <text name="rms_report_transmission_cvt_ratio_limited" text="Діапазон обмежено"/>
+        <text name="rms_report_transmission_cvt_pressure_instability" text="Нестабільність тиску"/>
+        <text name="rms_report_transmission_thermostat_degraded" text="Несправний термостат"/>
+        <text name="rms_report_transmission_failed" text="Відмова"/>
         <!-- Tools and Inspection -->
         <text name="rms_grease_gun_name" text="Шприц для змащування"/>
+        <text name="rms_grease_gun_no_vehicle" text="У зоні доступу немає техніки для змащування"/>
         <text name="rms_grease_gun_function" text="Використовується для проведення процедур змащування"/>
         <text name="rms_grease_gun_action" text="Змастити"/>
-        <text name="rms_grease_gun_no_vehicle" text="У зоні доступу немає техніки для змащування"/>
-        <text name="rms_grease_gun_lubrication_not_require" text="%s не потребує змащування"/>
         <text name="rms_grease_gun_already_lubricated" text="%s вже змащено"/>
+        <text name="rms_grease_gun_lubrication_not_require" text="%s не потребує змащування"/>
         <text name="rms_air_blower_name" text="Повітродувка"/>
-        <text name="rms_air_blower_function" text="Використовується для чищення радіаторів та повітрозабірників"/>
-        <text name="rms_air_blower_action" text="Очистити радіатор та повітрозабірник"/>
         <text name="rms_air_blower_no_vehicle" text="У зоні доступу немає техніки для очищення"/>
+        <text name="rms_air_blower_function" text="Використовується для чищення радіаторів та повітряних фільтрів"/>
+        <text name="rms_air_blower_action" text="Очистити радіатор та повітряний фільтр"/>
+        <text name="rms_air_blower_already_clean" text="%s: радіатор та повітряний фільтр вже чисті"/>
         <text name="rms_air_blower_cleaning_not_require" text="%s не потребує очищення"/>
-        <text name="rms_air_blower_already_clean" text="%s: радіатор та повітрозабірник вже чисті"/>
         <text name="rms_jumper_cables_name" text="Пускові дроти"/>
         <text name="rms_jumper_cables_function" text="Використовуються для з'єднання акумуляторів та запуску двигуна від іншого засобу"/>
         <text name="rms_jumper_cables_action" text="Під'єднати/від'єднати дроти"/>
+        <text name="rms_jumper_cables_auto_disconnected" text="Дроти від'єднано, оскільки одна з машин почала рух"/>
         <text name="rms_jumper_cables_connected" text="Пускові дроти під'єднано до %s"/>
         <text name="rms_jumper_cables_impossible_to_connect" text="Техніка не підходить для під'єднання пускових дротів"/>
+        <text name="rms_jumper_cables_is_too_far" text="%s занадто далеко від %s"/>
         <text name="rms_jumper_cables_both_already_connected" text="Пускові дроти вже з'єднують %s та %s"/>
         <text name="rms_jumper_cables_disconnected" text="Пускові дроти від'єднано від %s"/>
-        <text name="rms_jumper_cables_auto_disconnected" text="Дроти від'єднано, оскільки одна з машин почала рух"/>
-        <text name="rms_jumper_cables_is_too_far" text="%s занадто далеко від %s"/>
-        <text name="input_RMS_FIELD_INSPECTION" text="Огляд техніки"/>
-        <text name="input_RMS_CLOSE_NOTIFICATION" text="OK"/>
         <text name="rms_field_inspection_hold_to_start" text="Утримуйте для початку огляду"/>
-        <text name="rms_field_inspection_progress" text="Виконується візуальний огляд... %d%%"/>
+        <text name="rms_field_inspection_progress" text="Виконується огляд"/>
         <text name="rms_field_inspection_cancelled" text="Огляд скасовано"/>
         <text name="rms_field_inspection_engine_must_be_stopped" text="Зупиніть двигун перед оглядом"/>
-        <text name="rms_inspection_dialog_title" text="Передзмінний візуальний огляд"/>
-        <text name="rms_inspection_section_fluids" text="1. Технічні рідини"/>
-        <text name="rms_inspection_section_cooling_air" text="2. Система охолодження та впуску"/>
-        <text name="rms_inspection_section_lubrication" text="3. Точки змащування"/>
-        <text name="rms_inspection_section_additional" text="4. Додаткові замітки"/>
+        <text name="rms_inspection_dialog_title" text="Передзмінний огляд"/>
+        <text name="rms_inspection_section_fluids" text="Технічні рідини"/>
+        <text name="rms_inspection_section_cooling_air" text="Система охолодження та повітряний фільтр"/>
+        <text name="rms_inspection_section_lubrication" text="Точки змащування"/>
+        <text name="rms_inspection_section_additional" text="Додаткові замітки"/>
+        <text name="rms_inspection_verdict_ok_title" text="Готова до роботи"/>
+        <text name="rms_inspection_verdict_ok_message" text="Зауважень немає, машина може виїжджати."/>
+        <text name="rms_inspection_verdict_watch_title" text="Під наглядом"/>
+        <text name="rms_inspection_verdict_watch_message" text="Один пункт потребує уваги. Машина може працювати, займись цим сьогодні."/>
+        <text name="rms_inspection_verdict_stop_title" text="Не використовувати"/>
+        <text name="rms_inspection_verdict_stop_message" text="Один пункт критичний. Не працюй на цій машині, поки це не усунуто."/>
+        <text name="rms_inspection_service_due_in" text="наступне обслуговування через %s"/>
+        <text name="rms_inspection_service_overdue" text="обслуговування прострочено на %s"/>
+        <text name="rms_inspection_status_slightly_low" text="Трохи низький"/>
+        <text name="rms_inspection_status_slightly_darkened" text="Злегка потемніла"/>
+        <text name="rms_inspection_status_slightly_dirty" text="Злегка брудний"/>
+        <text name="rms_inspection_status_slightly_dry" text="Трохи сухі"/>
+        <text name="rms_inspection_status_slight_moisture" text="Легка вологість"/>
+        <text name="rms_inspection_status_seepage" text="Просочування"/>
+        <text name="rms_inspection_status_severe_leak" text="Сильний витік"/>
+        <text name="rms_inspection_status_low" text="Низький"/>
+        <text name="rms_inspection_status_very_low" text="Дуже низький"/>
+        <text name="rms_inspection_status_very_dry" text="Дуже сухі"/>
+        <text name="rms_inspection_status_critically_low" text="Критично низький"/>
+        <text name="rms_inspection_status_critically_clogged" text="Критично засмічений"/>
+        <text name="rms_inspection_status_critically_dry" text="Критично сухі"/>
+        <text name="rms_inspection_status_critical_condition" text="Критичний стан"/>
+        <text name="rms_inspection_status_contaminated" text="Забруднена"/>
+        <text name="rms_inspection_status_darkened" text="Потемніла"/>
+        <text name="rms_inspection_status_dirty" text="Брудний"/>
+        <text name="rms_inspection_status_dry" text="Сухі"/>
+        <text name="rms_inspection_status_active_leak" text="Активний витік"/>
+        <text name="rms_inspection_status_heavily_clogged" text="Сильно засмічений"/>
+        <text name="rms_inspection_status_not_required" text="Не потрібно"/>
         <text name="rms_inspection_engine_oil" text="Моторне масло"/>
         <text name="rms_inspection_coolant" text="Антифриз"/>
         <text name="rms_inspection_hydraulic_fluid" text="Гідравлічне масло"/>
-        <text name="rms_inspection_transmission_oil" text="Трансмісійне масло"/>
-        <text name="rms_inspection_radiator" text="Радіатор"/>
-        <text name="rms_inspection_air_duct" text="Повітропровід"/>
-        <text name="rms_inspection_air_filter" text="Повітряний фільтр"/>
-        <text name="rms_inspection_lubrication_level" text="Рівень змазки"/>
-        <text name="rms_inspection_no_suspicious_symptoms" text="Підозрілих симптомів не виявлено"/>
-        <text name="rms_inspection_ok" text="OK"/>
-        <text name="rms_inspection_status_slightly_low" text="Трохи низький"/>
-        <text name="rms_inspection_status_low" text="Низький"/>
-        <text name="rms_inspection_status_very_low" text="Дуже низький"/>
-        <text name="rms_inspection_status_critically_low" text="Критично низький"/>
-        <text name="rms_inspection_status_slightly_darkened" text="Злегка потемніла"/>
-        <text name="rms_inspection_status_darkened" text="Потемніла"/>
-        <text name="rms_inspection_status_contaminated" text="Забруднена"/>
-        <text name="rms_inspection_status_critical_condition" text="Критичний стан"/>
-        <text name="rms_inspection_status_slight_moisture" text="Легка вологість"/>
-        <text name="rms_inspection_status_seepage" text="Просочування"/>
-        <text name="rms_inspection_status_active_leak" text="Активний витік"/>
-        <text name="rms_inspection_status_severe_leak" text="Сильний витік"/>
-        <text name="rms_inspection_status_slightly_dirty" text="Злегка брудний"/>
-        <text name="rms_inspection_status_dirty" text="Брудний"/>
-        <text name="rms_inspection_status_heavily_clogged" text="Сильно засмічений"/>
-        <text name="rms_inspection_status_critically_clogged" text="Критично засмічений"/>
-        <text name="rms_inspection_status_slightly_dry" text="Трохи сухі"/>
-        <text name="rms_inspection_status_dry" text="Сухі"/>
-        <text name="rms_inspection_status_very_dry" text="Дуже сухі"/>
-        <text name="rms_inspection_status_critically_dry" text="Критично сухі"/>
-        <text name="rms_inspection_status_not_required" text="Не потрібно"/>
         <text name="rms_inspection_hint_coolant_leak_stage1" text="Помітні незначні сліди антифризу біля з'єднань системи охолодження."/>
         <text name="rms_inspection_hint_coolant_leak_stage2" text="Видимі залишки антифризу, рівень рідини нижче норми."/>
         <text name="rms_inspection_hint_coolant_leak_stage3" text="Помітна втрата антифризу в районі системи охолодження."/>
         <text name="rms_inspection_hint_coolant_leak_stage4" text="Рівень антифризу критично низький, видимі сильні патьоки."/>
+        <text name="rms_inspection_hint_corroded_wiring_stage2" text="На деяких електричних з'єднаннях помітні легкі сліди окислення."/>
+        <text name="rms_inspection_hint_corroded_wiring_stage3" text="Виражене окислення та забруднення на проводці та роз'ємах."/>
+        <text name="rms_inspection_hint_corroded_wiring_stage4" text="Сильна корозія проводки та роз'ємів, помітні пошкодження ізоляції."/>
+        <text name="rms_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage3" text="Олійні сліди та потемнілі з'єднання навколо блоку гідроуправління варіатора."/>
+        <text name="rms_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage4" text="Сильні олійні патьоки та значне забруднення з'єднань блоку управління варіатора."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage1" text="Моторне масло виглядає злегка потемнілою."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage2" text="Моторне масло темніша, ніж зазвичай."/>
         <text name="rms_inspection_hint_oil_pump_malfunction_stage3" text="Моторне масло виглядає забрудненою."/>
@@ -624,197 +697,32 @@
         <text name="rms_inspection_hint_radiator_clogging_stage2" text="Радіатор помітно брудний."/>
         <text name="rms_inspection_hint_radiator_clogging_stage3" text="Радіатор сильно забитий брудом та рослинними залишками."/>
         <text name="rms_inspection_hint_radiator_clogging_stage4" text="Радіатор критично забитий брудом та рослинними залишками."/>
-        <text name="rms_inspection_hint_air_intake_clogging_stage1" text="На повітрозабірнику помітні легкі забруднення."/>
-        <text name="rms_inspection_hint_air_intake_clogging_stage2" text="Повітрозабірник помітно брудний."/>
-        <text name="rms_inspection_hint_air_intake_clogging_stage3" text="Повітрозабірник сильно забитий пилом та сміттям."/>
-        <text name="rms_inspection_hint_air_intake_clogging_stage4" text="Повітрозабірник критично забитий пилом та сміттям."/>
+        <text name="rms_inspection_hint_air_filter_clogging_stage1" text="На повітряному фільтрі помітні легкі забруднення."/>
+        <text name="rms_inspection_hint_air_filter_clogging_stage2" text="Повітряний фільтр помітно брудний."/>
+        <text name="rms_inspection_hint_air_filter_clogging_stage3" text="Повітряний фільтр сильно забитий пилом та сміттям."/>
+        <text name="rms_inspection_hint_air_filter_clogging_stage4" text="Повітряний фільтр критично забитий пилом та сміттям."/>
+        <text name="rms_inspection_hint_alternator_regulator_failure_stage3" text="Помітні ознаки перегріву та потемніння навколо генератора та деяких з'єднань."/>
+        <text name="rms_inspection_hint_alternator_regulator_failure_stage4" text="Виражені ознаки перегріву та потемнілі роз'єми генератора та його проводки."/>
         <text name="rms_inspection_hint_lubrication_stage1" text="Точки змащування виглядають злегка сухими."/>
         <text name="rms_inspection_hint_lubrication_stage2" text="Точки змащування виглядають сухими, мастила недостатньо."/>
         <text name="rms_inspection_hint_lubrication_stage3" text="Точки змащування дуже сухі, видимих залишків мастила майже немає."/>
         <text name="rms_inspection_hint_lubrication_stage4" text="Точки змащування критично сухі, мастило повністю відсутнє."/>
-        <text name="rms_inspection_hint_corroded_wiring_stage2" text="На деяких електричних з'єднаннях помітні легкі сліди окислення."/>
-        <text name="rms_inspection_hint_corroded_wiring_stage3" text="Виражене окислення та забруднення на проводці та роз'ємах."/>
-        <text name="rms_inspection_hint_corroded_wiring_stage4" text="Сильна корозія проводки та роз'ємів, помітні пошкодження ізоляції."/>
+        <text name="rms_inspection_hint_transmission_oil_leak_stage1" text="На корпусі коробки передач помітні слабкі сліди оливи."/>
+        <text name="rms_inspection_hint_transmission_oil_leak_stage2" text="Під коробкою передач видно краплі оливи."/>
+        <text name="rms_inspection_hint_transmission_oil_leak_stage3" text="Навколо коробки передач помітна значна втрата оливи."/>
+        <text name="rms_inspection_hint_transmission_oil_leak_stage4" text="Олива витікає з корпусу коробки передач і збирається під машиною."/>
+        <text name="rms_inspection_hint_track_tensioner_malfunction_stage2" text="Натяг гусениці виглядає злегка нерівномірним."/>
+        <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Гусениця виглядає ослабленою, помітний нерівномірний натяг."/>
+        <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Гусениця помітно провисає, натяг серйозно порушено."/>
+        <text name="rms_inspection_hint_turbocharger_malfunction_stage3" text="Олійні сліди та потемнілі з'єднання в районі турбокомпресора."/>
+        <text name="rms_inspection_hint_turbocharger_malfunction_stage4" text="Сильні олійні патьоки, потемнілі з'єднання та сліди кіптяви навколо турбіни."/>
+        <text name="rms_inspection_hint_fluid_level_low" text="Рівень однієї з рідин опустився нижче позначки."/>
         <text name="rms_inspection_hint_battery_sulfation_stage1" text="На клемах акумулятора помітний слабкий білуватий наліт."/>
         <text name="rms_inspection_hint_battery_sulfation_stage2" text="На клемах акумулятора видно білуватий наліт."/>
         <text name="rms_inspection_hint_battery_sulfation_stage3" text="Виражене окислення та відкладення на клемах та корпусі акумулятора."/>
         <text name="rms_inspection_hint_battery_sulfation_stage4" text="Акумулятор і клеми вкриті густим нальотом, корпус виглядає брудним та зношеним."/>
-        <text name="rms_inspection_hint_alternator_regulator_failure_stage3" text="Помітні ознаки перегріву та потемніння навколо генератора та деяких з'єднань."/>
-        <text name="rms_inspection_hint_alternator_regulator_failure_stage4" text="Виражені ознаки перегріву та потемнілі роз'єми генератора та його проводки."/>
-        <text name="rms_inspection_hint_turbocharger_malfunction_stage3" text="Олійні сліди та потемнілі з'єднання в районі турбокомпресора."/>
-        <text name="rms_inspection_hint_turbocharger_malfunction_stage4" text="Сильні олійні патьоки, потемнілі з'єднання та сліди кіптяви навколо турбіни."/>
         <text name="rms_inspection_hint_powershift_hydraulic_pump_malfunction_stage3" text="Олійні сліди та забруднення навколо гідравлічних з'єднань трансмісії."/>
         <text name="rms_inspection_hint_powershift_hydraulic_pump_malfunction_stage4" text="Сильні олійні патьоки та сильне забруднення гідравлічних ліній трансмісії."/>
-        <text name="rms_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage3" text="Олійні сліди та потемнілі з'єднання навколо блоку гідроуправління варіатора."/>
-        <text name="rms_inspection_hint_cvt_hydraulic_control_valve_malfunction_stage4" text="Сильні олійні патьоки та значне забруднення з'єднань блоку управління варіатора."/>
-        <text name="rms_inspection_hint_track_tensioner_malfunction_stage2" text="Натяг гусениці виглядає злегка нерівномірним."/>
-        <text name="rms_inspection_hint_track_tensioner_malfunction_stage3" text="Гусениця виглядає ослабленою, помітний нерівномірний натяг."/>
-        <text name="rms_inspection_hint_track_tensioner_malfunction_stage4" text="Гусениця помітно провисає, натяг серйозно порушено."/>
-        <!-- In-Game Menu -->
-        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
-        <text name="rms_ingame_menu_section_active" text="Техніка RMS"/>
-        <text name="rms_ingame_menu_section_service" text="На обслуговуванні"/>
-        <text name="rms_ingame_menu_header_vehicle" text="Транспорт"/>
-        <text name="rms_ingame_menu_header_type" text="Тип"/>
-        <text name="rms_ingame_menu_header_age" text="Вік"/>
-        <text name="rms_ingame_menu_header_working_hours" text="Години"/>
-        <text name="rms_ingame_menu_header_condition" text="Стан"/>
-        <text name="rms_ingame_menu_header_interval" text="Інтервал"/>
-        <text name="rms_ingame_menu_header_last_inspection" text="Огляд"/>
-        <text name="rms_ingame_menu_header_last_maintenance" text="Сервіс"/>
-        <text name="rms_ingame_menu_header_cost" text="Утримання"/>
-        <text name="rms_ingame_menu_header_leasing_price" text="Лізинг"/>
-        <text name="rms_ingame_menu_header_price" text="Вартість"/>
-        <text name="rms_ingame_menu_header_procedure" text="Процедура"/>
-        <text name="rms_ingame_menu_header_time_left" text="Залишилось часу"/>
-        <text name="rms_ingame_menu_header_finish_time" text="Час завершення"/>
-        <text name="rms_ingame_menu_header_service_cost" text="Ціна"/>
-        <text name="rms_ingame_menu_section_other" text="Інша техніка"/>
-        <text name="rms_ingame_menu_empty_other" text="Техніки без підтримки RMS не знайдено"/>
-        <text name="rms_ingame_menu_empty_active" text="Техніки RMS не знайдено"/>
-        <text name="rms_ingame_menu_empty_service" text="Зараз немає техніки на обслуговуванні"/>
-        <text name="rms_sell_dialog_overdue_maintenance_penalty" text="Прострочене ТО"/>
-        <text name="rms_sell_dialog_repair_penalty" text="Ремонт"/>
-        <text name="rms_sell_dialog_washing_penalty" text="Мийка"/>
-        <text name="rms_mobile_workshop_low_maintainability" text="УВАГА: %s недоступний для %s у мобільній майстерні через низьку ремонтопридатність."/>
-        <text name="rms_breakdowns_overload_breakdown_stage2_message" text="Критичне перевантаження! Негайно зменште навантаження на машину."/>
-        <!-- Tutorial -->
-        <text name="rms_tutorialMode_label" text="Режим навчання"/>
-        <text name="rms_tutorialMode_tooltip" text="Показує підказки під час гри."/>
-        <text name="rms_tutorialResetTips_label" text="Скинути підказки"/>
-        <text name="rms_tutorialResetTips_text" text="Скинути підказки"/>
-        <text name="rms_tutorialResetTips_tooltip" text="Скинути історію підказок і показати їх знову."/>
-        <text name="rms_tutorialResetConfirm_title" text="Скинути підказки навчання?"/>
-        <text name="rms_tutorialResetConfirm_message" text="Скинути історію підказок і показати їх всі знову?"/>
-        <text name="rms_tutorial_welcome_dialog_title" text="Ласкаво просимо до Realistic Mechanical Systems"/>
-        <text name="rms_tutorial_welcome_disable_button" text="Вимкнути підказки"/>
-        <text name="rms_tutorial_welcome_enable_button" text="Увімкнути підказки"/>
-        <text name="rms_tutorial_welcome_message" text="Цей мод повністю переробляє системи пошкоджень та обслуговування техніки в грі. Змін багато, тому час від часу з’являтимуться підказки. Вони допоможуть швидше розібратися в механіках, уникнути помилок та вберегти вашу техніку від поломок.&#10;&#10;Якщо бажаєте, ви можете вимкнути їх прямо зараз. Ви завжди зможете увімкнути їх пізніше в налаштуваннях моду в розділі Realistic Mechanical Systems."/>
-        <text name="rms_tutorial_service_due_soon_title" text="Періодичне ТО"/>
-        <text name="rms_tutorial_service_due_soon_message" text="%s скоро потребуватиме технічного обслуговування.&#10;&#10;В RMS техніка вимагає регулярного сервісу. Якщо його затримати, ризик поломок значно зростає.&#10;&#10;Відвідайте найближчу майстерню та оберіть «Обслуговування». Сервісний інтервал можна налаштувати в меню моду."/>
-        <text name="rms_tutorial_service_interval_expired_title" text="Термін ТО вичерпано"/>
-        <text name="rms_tutorial_service_interval_expired_message" text="%s перевищив сервісний інтервал і потребує ТО.&#10;&#10;Якомога швидше вирушайте до майстерні та проведіть процедуру «Обслуговування». Подальша робота на техніці з простроченим інтервалом значно збільшує ризик множинних відмов."/>
-        <text name="rms_tutorial_rad_or_intake_clogged_title" text="Засмічення радіатора та впуску"/>
-        <text name="rms_tutorial_rad_or_intake_clogged_message" text="Схоже, радіатор та повітрозабірники вашої техніки сильно забиті.&#10;&#10;Брудний радіатор не може ефективно відводити тепло, а засмічений впуск обмежує потік повітря до двигуна. Це знижує потужність та підвищує витрату палива.&#10;&#10;Ви можете очистити їх на мийці або за допомогою повітродувки з магазину.&#10;&#10;Перевірити стан радіатора можна через огляд: утримуйте клавішу R, дивлячись на техніку."/>
-        <text name="rms_tutorial_needs_lubrication_title" text="Необхідне змащування"/>
-        <text name="rms_tutorial_needs_lubrication_message" text="Ваш %s потребує регулярного змащування.&#10;&#10;В RMS рівень мастила знижується з напрацюванням мотогодин. Після тривалого простою техніку також потрібно змастити перед поверненням до експлуатації. Недостатнє змащування прискорює знос ходової частини.&#10;&#10;Придбайте шприц для змащування в магазині та змастіть машину, коли огляд покаже таку потребу.&#10;&#10;Перевірити рівень мастила можна через огляд: утримуйте клавішу R, дивлячись на техніку."/>
-        <text name="rms_tutorial_needs_repair_title" text="Несправність техніки"/>
-        <text name="rms_tutorial_needs_repair_message" text="Схоже, з вашим %s щось не так. Можливо, один із вузлів вийшов з ладу.&#10;&#10;Обов'язково завітайте до майстерні та проведіть огляд. Не зволікайте: несправність може прогресувати, а вартість ремонту — зростати.&#10;&#10;Якщо огляд підтвердить поломку, усуньте її за допомогою процедури ремонту в майстерні."/>
-        <text name="rms_tutorial_needs_overhaul_title" text="Капітальний ремонт"/>
-        <text name="rms_tutorial_needs_overhaul_message" text="Схоже, ваш %s вже не молодий. Час подумати про заміну або капітальний ремонт. Це довгий і витратний процес, але це найкращий спосіб дати друге життя улюбленій техніці! П.С. Ви можете змінити термін служби в налаштуваннях — його збільшення сповільнить знос техніки."/>
-        <text name="rms_tutorial_age_degradation_title" text="Вікова деградація"/>
-        <text name="rms_tutorial_age_degradation_message" text="Чи знаєте ви, що в RMS техніка з часом втрачає частину своїх характеристик?&#10;&#10;Приблизно після третини терміну служби починається вікова деградація, що поступово знижує потужність, ефективність гальм та інших систем. Чим старіша машина, тим сильніший цей ефект.&#10;&#10;Ви можете вимкнути вікову деградацію в налаштуваннях моду."/>
-        <text name="rms_tutorial_needs_preventive_title" text="Загроза поломки"/>
-        <text name="rms_tutorial_needs_preventive_message" text="Схоже, одна із систем %s ось-ось відмовить. Гарна новина — ви можете цьому запобігти! У майстерні тепер доступна послуга: Профілактичне обслуговування. Вона включає повну діагностику та превентивний ремонт компонентів, що починають виходити з ладу."/>
-        <text name="rms_tutorial_poor_consumables_title" text="Неякісні витратні матеріали"/>
-        <text name="rms_tutorial_poor_consumables_message" text="Маленький секрет: ваш %s став жертвою неякісних розхідників під час ТО. Таке трапляється, якщо ви самі не обрали дешеві аналоги.&#10;&#10;Зараз сервісний інтервал скорочений, а знос деталей трохи підвищений. Повторне якісне ТО виправить проблему. Виявити це можна оглядом: базовий огляд попередить про короткий інтервал, а повна діагностика вкаже на самі неякісні розхідники."/>
-        <text name="rms_tutorial_poor_parts_title" text="Неякісні запчастини"/>
-        <text name="rms_tutorial_poor_parts_message" text="Маленький секрет: ваш %s отримав неякісну деталь під час ремонту. Ця поломка, ймовірно, скоро повернеться.&#10;&#10;Ви можете дочекатися, поки це станеться, або провести повну діагностику вже зараз — вона точно виявить неякісну деталь."/>
-        <text name="rms_tutorial_idle_and_downtime_title" text="Простій та зберігання"/>
-        <text name="rms_tutorial_idle_and_downtime_message" text="До речі, знос значно нижчий, коли машина заведена, але не працює активно. Коли двигун вимкнений, знос стає мізерним, а якщо техніка стоїть під навісом — він зникає зовсім."/>
-        <text name="rms_tutorial_hot_weather_title" text="Спекотна погода"/>
-        <text name="rms_tutorial_hot_weather_message" text="Сьогодні справді спекотно. У таку погоду потрібно особливо пильно стежити за чистотою радіатора та не перевантажувати двигун — інакше перегрів буде лише питанням часу.&#10;&#10;Пам’ятайте: перевірити стан радіатора можна візуально (клавіша R), а очистити його — повітродувкою."/>
-        <text name="rms_tutorial_wet_weather_title" text="Ну і погода!"/>
-        <text name="rms_tutorial_wet_weather_message" text="Яка погода сьогодні... Волога шкодить проводці та електрообладнанню, тому знос електросистеми в таких умовах трохи вищий."/>
-        <text name="rms_tutorial_low_fuel_title" text="Мало палива"/>
-        <text name="rms_tutorial_low_fuel_message" text="Схоже, у вас закінчується паливо. На перший погляд це не проблема, але чим менше палива в баку, тим важче працювати паливному насосу. Його навантаження зростає, що точно не сприяє довговічності."/>
-        <text name="rms_tutorial_idle_deposit_title" text="Тривалий холостий хід"/>
-        <text name="rms_tutorial_idle_deposit_message" text="Схоже, машина занадто довго працює на холостих обертах. Це не лише марно витрачене паливо: з часом це сприяє утворенню відкладень у паливній системі та шкодить «здоров'ю» двигуна.&#10;&#10;Якщо техніка зараз не потрібна, краще вимкнути двигун."/>
-        <text name="rms_tutorial_engine_overheat_title" text="Перегрів двигуна"/>
-        <text name="rms_tutorial_engine_overheat_message" text="Двигун починає перегріватися. Це може статися через велике навантаження, забитий радіатор, спеку або несправність системи охолодження.&#10;&#10;Будьте пильні: перегрів — один із найруйнівніших факторів. Він шкодить не лише двигуну: система охолодження працює на межі, а висока температура під капотом прискорює деградацію проводки та електроніки."/>
-        <text name="rms_tutorial_cvt_overheat_title" text="Перегрів варіатора (CVT)"/>
-        <text name="rms_tutorial_cvt_overheat_message" text="Варіатор починає перегріватися. Причини: надмірне навантаження на трансмісію, забитий радіатор сильна спека або несправність системи охолодження трансмісії. Наприклад, ви тягнете занадто важкий плуг або перевантажений причіп.&#10;&#10;Будьте уважні: перегрів — це найгірше, що може статися з трансмісією типу CVT."/>
-        <text name="rms_tutorial_heavy_trailer_title" text="Важкий причіп"/>
-        <text name="rms_tutorial_heavy_trailer_message" text="Схоже, буксируване навантаження може бути завеликим для цієї техніки. Ви можете продовжувати рух, але трансмісія та привід зазнаватимуть підвищеного навантаження.&#10;&#10;RMS використовує два правила: трактору потрібно щонайменше 10 к.с. на тонну буксируваної маси, а вантажівці — щонайменше 6 к.с. на тонну повної маси автопоїзда. Нижче відповідного значення за високого навантаження двигуна знос трансмісії збільшується."/>
-        <text name="rms_tutorial_chassis_vibration_title" text="Навантаження на підвіску"/>
-        <text name="rms_tutorial_chassis_vibration_message" text="Гей, легше на поворотах! Швидка їзда бездоріжжям швидко виведе з ладу підвіску вашого %s. Крім того, вібрації шкодять іншим системам — особливо гідравліці та електриці. Їдьте плавніше."/>
-        <text name="rms_tutorial_steering_title" text="Поворот коліс на місці"/>
-        <text name="rms_tutorial_steering_message" text="Краще не крутити кермо, стоючи на місці. Це створює велике навантаження на рульовий механізм, гідропідсилювач та вузли передньої осі, що прискорює їх знос.&#10;&#10;Просто почніть рух хоча б на мінімальній швидкості, і колеса повертатимуться значно легше."/>
-        <text name="rms_tutorial_cranking_title" text="Часті запуски"/>
-        <text name="rms_tutorial_cranking_message" text="Схоже, ви занадто часто запускаєте двигун. Кожен запуск — це сильний удар струму по електросистемі, що прискорює знос проводки, стартера та акумулятора.&#10;&#10;Намагайтеся не глушити двигун кожну хвилину, ніби на машині стоїть система старт-стоп."/>
-        <text name="rms_tutorial_hard_start_title" text="Важкий запуск"/>
-        <text name="rms_tutorial_hard_start_message" text="Двигун %s запускається важко. Причиною може бути розряджений акумулятор, мороз, механічні несправності або знос стартера. Щоб завести двигун, утримуйте кнопку запалювання. Примітка: під час запуску електросистема зазнає величезних навантажень!"/>
-        <text name="rms_tutorial_critical_failure_title" text="Критична відмова"/>
-        <text name="rms_tutorial_critical_failure_message" text="Що ж, це невдача. Ваш %s повністю виведений з ладу і не може рухатися самостійно. Ви можете скористатися мобільною майстернею для швидкого ремонту, щоб машина доїхала до бази своїм ходом.&#10;&#10;В іншому випадку доведеться шукати спосіб евакуації."/>
-        <text name="rms_tutorial_cold_engine_title" text="Прогрійте машину"/>
-        <text name="rms_tutorial_cold_engine_message" text="Перед високим навантаженням прогрівайте двигун поступово. Використовуйте помірну подачу пального та середні оберти, доки двигун не досягне робочої температури."/>
-        <text name="rms_tutorial_cold_oil_title" text="Холодна трансмісійна олива"/>
-        <text name="rms_tutorial_cold_oil_message" text="Трансмісійна та гідравлічна олива прогріваються значно повільніше за двигун. Не виконуйте важку роботу, доки олива холодна; прогрівайте її поступово спокійною їздою та легким використанням гідравліки."/>
-        <text name="rms_tutorial_overload_indicator_title" text="Попередження про перевантаження"/>
-        <text name="rms_tutorial_overload_indicator_message" text="%s працює під великим навантаженням. Про це сигналізує індикатор, що спалахнув на панелі.&#10;&#10;Машині може бракувати потужності для поточного завдання. Спробуйте зменшити навантаження: обмежте швидкість круїз-контролем або скиньте газ замість роботи «в підлогу»."/>
-        <text name="rms_tutorial_engine_overload_title" text="Перевантаження двигуна"/>
-        <text name="rms_tutorial_engine_overload_message" text="Двигун працює з надмірним зусиллям. Можливо, поточне завдання занадто важке для цієї машини, і варто використати потужнішу техніку. Або ж просто сповільніться.&#10;&#10;У будь-якому разі пам'ятайте: знос при такому навантаженні зростає в рази."/>
-        <text name="rms_tutorial_lugging_title" text="Робота «внатяжку»"/>
-        <text name="rms_tutorial_lugging_message" text="Двигун, а особливо трансмісія, дуже не люблять роботу на низьких обертах під великим навантаженням. Можливо, ви підчепили занадто важке знаряддя або обрали занадто високу передачу (якщо КПП ручна)."/>
-        <text name="rms_tutorial_wheel_slip_title" text="Пробуксовування"/>
-        <text name="rms_tutorial_wheel_slip_message" text="Схоже, ваші колеса сильно буксують. Можливо, ви застрягли і вам зараз не до порад, але пам’ятайте: пробуксовування — один із найгірших факторів для трансмісії, що наближає наступний візит до сервісу."/>
-        <text name="rms_tutorial_battery_low_title" text="Слабкий акумулятор"/>
-        <text name="rms_tutorial_battery_low_message" text="Ой, схоже, акумулятор скоро сяде. Це трапляється після тривалого простою, через сильний мороз або несправності в електромережі.&#10;&#10;При низькому заряді запуск буде важким або неможливим. Якщо не зможете завестися — скористайтеся пусковими дротами від іншої техніки."/>
-        <!-- Drivetrain -->
-        <text name="input_RMS_TOGGLE_4WD" text="Режим приводу (4x2 / 4WD / АВТО)"/>
-        <text name="input_RMS_TOGGLE_DIFFLOCK" text="Блокування диференціала"/>
-        <text name="input_RMS_TOGGLE_PARKBRAKE" text="Стоянкове гальмо"/>
-        <text name="rms_settings_section_drivetrain" text="Трансмісія та стоянкове гальмо"/>
-        <text name="rms_drivetrainEnabled_label" text="Керування 4WD / блокуванням диференціала"/>
-        <text name="rms_drivetrainEnabled_tooltip" text="Вмикає ручне керування підключним переднім мостом і блокуваннями диференціалів на тракторах. Якщо активне керування диференціалами Enhanced Vehicle, RMS повністю відступає, і Enhanced Vehicle керує трансмісією самостійно."/>
-        <text name="rms_drivetrainAllowAutoMode_label" text="Дозволити режим АВТО"/>
-        <text name="rms_drivetrainAllowAutoMode_tooltip" text="Додає положення АВТО: передній міст підключається автоматично при пробуксовці або на робочій швидкості під навантаженням і відключається на дорозі. Машини, залишені в АВТО, повертаються до 4WD після вимкнення цієї опції."/>
-        <text name="rms_drivetrainWindupDamage_label" text="Пошкодження трансмісії під навантаженням"/>
-        <text name="rms_drivetrainWindupDamage_tooltip" text="Повороти на поверхні з добрим зчепленням із заблокованими диференціалами створюють навантаження на трансмісію та поступово пошкоджують її. Вимкніть для м'якшого ґеймплею."/>
-        <text name="rms_drivetrainDiffLockReleaseSpeed_label" text="Швидкість розблокування диференціала"/>
-        <text name="rms_drivetrainDiffLockReleaseSpeed_tooltip" text="Блокування диференціалів автоматично вимикаються вище цієї швидкості та знову вмикаються нижче неї, доки запитані."/>
-        <text name="rms_drivetrainParkBrakeEnabled_label" text="Стоянкове гальмо"/>
-        <text name="rms_drivetrainParkBrakeEnabled_tooltip" text="Додає всім машинам RMS стоянкове гальмо з власною клавішею. Затягнуте гальмо утримує машину та ігнорує газ."/>
-        <text name="rms_drivetrainParkBrakeAuto_label" text="Автоматичне стоянкове гальмо"/>
-        <text name="rms_drivetrainParkBrakeAuto_tooltip" text="Автоматично затягує стоянкове гальмо, коли оператор залишає нерухому машину."/>
-        <text name="rms_drivetrain_mode_4x2" text="4x2 (передній міст відключено)"/>
-        <text name="rms_drivetrain_mode_4wd" text="4WD (передній міст підключено)"/>
-        <text name="rms_drivetrain_mode_auto" text="4WD АВТО"/>
-        <text name="rms_drivetrain_notify_mode" text="Режим приводу: %s"/>
-        <text name="rms_drivetrain_notify_lock_on" text="Блокування диференціала увімкнено"/>
-        <text name="rms_drivetrain_notify_lock_off" text="Блокування диференціала вимкнено"/>
-        <text name="rms_drivetrain_notify_park_on" text="Стоянкове гальмо затягнуто"/>
-        <text name="rms_drivetrain_notify_park_off" text="Стоянкове гальмо відпущено"/>
-        <text name="rms_drivetrain_warning_4wd_windup" text="Трансмісія під навантаженням! Перед поворотом на твердому покритті вимкніть 4WD."/>
-        <text name="rms_drivetrain_warning_difflock_windup" text="Блокування диференціала під навантаженням! Вимкніть його або зменште кут повороту."/>
-        <text name="rms_drivetrain_warning_parkbrake" text="Затягнуто стоянкове гальмо!"/>
-        <text name="rms_tutorial_drivetrain_windup_title" text="Навантаження на трансмісію"/>
-        <text name="rms_tutorial_drivetrain_windup_message" text="Ви повертаєте на поверхні з добрим зчепленням з увімкненим блокуванням диференціала. У повороті внутрішні та зовнішні колеса проходять різні відстані, але блокування диференціала змушує їх обертатися з однаковою швидкістю: трансмісія зазнає навантаження, а зношення коробки передач прискорюється. Вимикайте блокування перед поворотами."/>
-        <!-- Diesel preheating -->
-        <text name="rms_breakdowns_part_glow_plugs" text="Свічки розжарювання"/>
-        <text name="rms_breakdowns_glow_plug_failure_stage1_description" text="Початкове зношення свічок розжарювання. Холодний запуск стає повільнішим, запуск прогрітого двигуна не змінюється."/>
-        <text name="rms_breakdowns_glow_plug_failure_stage2_description" text="Кілька свічок розжарювання ослаблені або несправні. Холодний запуск ускладнений, а двигун може працювати нерівно до прогрівання."/>
-        <text name="rms_breakdowns_glow_plug_failure_stage3_description" text="Серйозна несправність свічок розжарювання. Холодний запуск дуже ненадійний, а нерівна робота зберігається під час прогрівання."/>
-        <text name="rms_breakdowns_glow_plug_failure_stage4_description" text="Повна відмова системи передпускового підігріву. Коли підігрів потрібний, двигун не досягає температури запуску й не запускається."/>
-        <text name="rms_inspection_hint_glow_plug_failure_stage1" text="Опір свічок розжарювання починає відрізнятися між циліндрами."/>
-        <text name="rms_inspection_hint_glow_plug_failure_stage2" text="Одна або кілька свічок мають ненормальний опір або споживання струму."/>
-        <text name="rms_inspection_hint_glow_plug_failure_stage3" text="У колі кількох свічок є обрив або вони більше не досягають робочої температури."/>
-        <text name="rms_inspection_hint_glow_plug_failure_stage4" text="Коло розжарювання не може забезпечити тепло, необхідне для холодного запуску."/>
-        <text name="rms_preheat_ignition_message" text="Запалювання ввімкнено: триває передпусковий підігрів"/>
-        <text name="rms_preheat_system_failure_message" text="Відмова системи розжарювання: холодний запуск неможливий"/>
-        <text name="rms_preheat_start_failed_message" text="Двигун не запустився: вимкніть запалювання перед новою спробою"/>
-        <text name="rms_tutorial_preheat_title" text="Передпусковий підігрів дизеля"/>
-        <text name="rms_tutorial_preheat_message" text="За холодного дизельного двигуна одне натискання команди запуску вмикає запалювання й автоматично запускає цикл розжарювання. Контрольні лампи панелі виконують самоперевірку, після чого лампа передпускового підігріву світиться до готовності двигуна. Не повторюйте команду: стартер увімкнеться автоматично після згасання лампи."/>
-        <!-- Power take off -->
-        <text name="rms_spec_system_pto" text="Вал відбору потужності"/>
-        <text name="rms_breakdowns_part_pto_drive_coupling" text="Муфта приводу ВВП"/>
-        <text name="rms_breakdowns_part_pto_drive_output" text="Вихідний вал ВВП"/>
-        <text name="rms_breakdowns_pto_drive_coupling_wear_stage1_description" text="Початкове зношення муфти ВВП. ВВП може іноді вимикатися."/>
-        <text name="rms_breakdowns_pto_drive_coupling_wear_stage2_description" text="Помірне зношення муфти ВВП. Вимкнення трапляються частіше."/>
-        <text name="rms_breakdowns_pto_drive_coupling_wear_stage3_description" text="Сильне зношення муфти ВВП. ВВП неодноразово вимикається."/>
-        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_description" text="Критична відмова муфти ВВП. Вал відбору потужності більше не передає потужність."/>
-        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage1_description" text="Початкове зношення вихідного підшипника ВВП спричиняє слабкий робочий шум."/>
-        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage2_description" text="Помірне зношення вихідного підшипника ВВП спричиняє виразно чутний шум."/>
-        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage3_description" text="Сильне зношення вихідного підшипника ВВП спричиняє гучний шум і періодичні вимкнення."/>
-        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_description" text="Критична відмова вихідного підшипника ВВП. Робота ВВП більше неможлива."/>
-        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage1_description" text="Керування ввімкненням ВВП працює нестабільно й може відхилити команду."/>
-        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage2_description" text="Керування ввімкненням ВВП часто не може ввімкнути вал відбору потужності."/>
-        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage3_description" text="Керування ввімкненням ВВП серйозно несправний і відхиляє більшість спроб увімкнення."/>
-        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_description" text="Керування ввімкненням ВВП повністю відмовив. Вал відбору потужності неможливо ввімкнути."/>
-        <text name="rms_breakdowns_pto_drive_coupling_wear_stage4_message" text="Відмова муфти ВВП"/>
-        <text name="rms_breakdowns_pto_drive_output_bearing_wear_stage4_message" text="Відмова вихідного підшипника ВВП"/>
-        <text name="rms_breakdowns_pto_engagement_control_malfunction_stage4_message" text="Відмова клапана увімкнення ВВП"/>
-        <text name="rms_breakdowns_pto_engagement_blocked_message" text="Увімкнення ВВП відхилено"/>
         <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage1" text="На вихідному валу ВВП відчуваються невеликий люфт і шорсткість."/>
         <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage2" text="На вихідному валу ВВП помітні люфт і шум підшипника."/>
         <text name="rms_inspection_hint_pto_drive_output_bearing_wear_stage3" text="Вихідний підшипник ВВП має великий люфт і працює дуже нерівно."/>
@@ -823,7 +731,124 @@
         <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage2" text="Керування ввімкненням ВВП часто пропускає команди."/>
         <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage3" text="Керування ввімкненням ВВП спрацьовує лише зрідка."/>
         <text name="rms_inspection_hint_pto_engagement_control_malfunction_stage4" text="Керування ввімкненням ВВП більше не реагує."/>
+        <text name="rms_inspection_hint_glow_plug_failure_stage1" text="Опір свічок розжарювання починає відрізнятися між циліндрами."/>
+        <text name="rms_inspection_hint_glow_plug_failure_stage2" text="Одна або кілька свічок мають ненормальний опір або споживання струму."/>
+        <text name="rms_inspection_hint_glow_plug_failure_stage3" text="У колі кількох свічок є обрив або вони більше не досягають робочої температури."/>
+        <text name="rms_inspection_hint_glow_plug_failure_stage4" text="Коло розжарювання не може забезпечити тепло, необхідне для холодного запуску."/>
+        <text name="rms_inspection_transmission_oil" text="Трансмісійне масло"/>
+        <text name="rms_inspection_radiator" text="Радіатор"/>
+        <text name="rms_inspection_air_filter" text="Повітряний фільтр"/>
+        <text name="rms_inspection_lubrication_level" text="Рівень змазки"/>
+        <text name="rms_inspection_no_suspicious_symptoms" text="Підозрілих симптомів не виявлено"/>
+        <text name="rms_inspection_ok" text="OK"/>
+        <!-- In-Game Menu -->
+        <text name="rms_ingame_menu_title" text="Realistic Mechanical Systems"/>
+        <text name="rms_ingame_menu_section_active" text="Техніка RMS"/>
+        <text name="rms_ingame_menu_section_service" text="На обслуговуванні"/>
+        <text name="rms_ingame_menu_section_other" text="Інша техніка"/>
+        <text name="rms_ingame_menu_header_vehicle" text="Транспорт"/>
+        <text name="rms_ingame_menu_header_type" text="Тип"/>
+        <text name="rms_ingame_menu_header_time_left" text="Залишилось часу"/>
+        <text name="rms_ingame_menu_header_age" text="Вік"/>
+        <text name="rms_ingame_menu_header_working_hours" text="Години"/>
+        <text name="rms_ingame_menu_header_condition" text="Стан"/>
+        <text name="rms_ingame_menu_header_cost" text="Утримання"/>
+        <text name="rms_ingame_menu_header_interval" text="Інтервал"/>
+        <text name="rms_ingame_menu_header_last_inspection" text="Огляд"/>
+        <text name="rms_ingame_menu_header_last_maintenance" text="Сервіс"/>
+        <text name="rms_ingame_menu_header_leasing_price" text="Лізинг"/>
+        <text name="rms_ingame_menu_header_price" text="Вартість"/>
+        <text name="rms_ingame_menu_header_procedure" text="Процедура"/>
+        <text name="rms_ingame_menu_header_finish_time" text="Час завершення"/>
+        <text name="rms_ingame_menu_header_service_cost" text="Ціна"/>
+        <text name="rms_ingame_menu_empty_other" text="Техніки без підтримки RMS не знайдено"/>
+        <text name="rms_ingame_menu_empty_active" text="Техніки RMS не знайдено"/>
+        <text name="rms_ingame_menu_empty_service" text="Зараз немає техніки на обслуговуванні"/>
+        <text name="rms_sell_dialog_overdue_maintenance_penalty" text="Прострочене ТО"/>
+        <text name="rms_sell_dialog_repair_penalty" text="Ремонт"/>
+        <text name="rms_sell_dialog_washing_penalty" text="Мийка"/>
+        <text name="rms_mobile_workshop_low_maintainability" text="УВАГА: %s недоступний для %s у мобільній майстерні через низьку ремонтопридатність."/>
+        <!-- Tutorial -->
+        <text name="rms_tutorial_fluid_level_title" text="Низький рівень рідини"/>
+        <text name="rms_tutorial_fluid_level_message" text="Одна з рідин цієї машини опустилася нижче позначки на покажчику.&#10;&#10;Моторна олива витрачається з мотогодинами, і втомлений двигун споживає її значно більше. Охолоджувальна рідина, трансмісійна олива та гідравлічна олива зменшуються лише через витік.&#10;&#10;Нижче позначки машина лише просить долити, вона й далі працює нормально. Платити доводиться лише тоді, коли рівень падає справді низько: машина з нестачею охолоджувальної рідини або трансмісійної оливи перегрівається, а машина з нестачею моторної чи гідравлічної оливи зношується значно швидше.&#10;&#10;Купіть каністру в магазині, поставте її біля машини та долийте рівень. У майстерні послуга Долив рідин поповнює те, чого бракує, за ціною самих рідин. Обслуговування та капітальний ремонт змінюють усе, а звичайний ремонт поповнює те, що витекло через усунену несправність. Звичайна каністра захищає гірше і наближає обслуговування, преміальна його віддаляє."/>
+        <text name="rms_tutorial_welcome_dialog_title" text="Ласкаво просимо до Realistic Mechanical Systems"/>
+        <text name="rms_tutorial_welcome_disable_button" text="Вимкнути підказки"/>
+        <text name="rms_tutorial_welcome_enable_button" text="Увімкнути підказки"/>
+        <text name="rms_tutorial_welcome_message" text="Цей мод повністю переробляє системи пошкоджень та обслуговування техніки в грі. Змін багато, тому час від часу з’являтимуться підказки. Вони допоможуть швидше розібратися в механіках, уникнути помилок та вберегти вашу техніку від поломок.&#10;&#10;Якщо бажаєте, ви можете вимкнути їх прямо зараз. Ви завжди зможете увімкнути їх пізніше в налаштуваннях моду в розділі Realistic Mechanical Systems."/>
+        <text name="rms_tutorial_wet_weather_title" text="Ну і погода!"/>
+        <text name="rms_tutorial_wet_weather_message" text="Яка погода сьогодні... Волога шкодить проводці та електрообладнанню, тому знос електросистеми в таких умовах трохи вищий."/>
+        <text name="rms_tutorial_wheel_slip_title" text="Пробуксовування"/>
+        <text name="rms_tutorial_wheel_slip_message" text="Схоже, ваші колеса сильно буксують. Можливо, ви застрягли і вам зараз не до порад, але пам’ятайте: пробуксовування — один із найгірших факторів для трансмісії, що наближає наступний візит до сервісу."/>
+        <text name="rms_tutorial_service_due_soon_title" text="Періодичне ТО"/>
+        <text name="rms_tutorial_service_due_soon_message" text="%s скоро потребуватиме технічного обслуговування.&#10;&#10;В RMS техніка вимагає регулярного сервісу. Якщо його затримати, ризик поломок значно зростає.&#10;&#10;Відвідайте найближчу майстерню та оберіть «Обслуговування». Сервісний інтервал можна налаштувати в меню моду."/>
+        <text name="rms_tutorial_service_interval_expired_title" text="Термін ТО вичерпано"/>
+        <text name="rms_tutorial_service_interval_expired_message" text="%s перевищив сервісний інтервал і потребує ТО.&#10;&#10;Якомога швидше вирушайте до майстерні та проведіть процедуру «Обслуговування». Подальша робота на техніці з простроченим інтервалом значно збільшує ризик множинних відмов."/>
+        <text name="rms_tutorial_steering_title" text="Поворот коліс на місці"/>
+        <text name="rms_tutorial_steering_message" text="Краще не крутити кермо, стоючи на місці. Це створює велике навантаження на рульовий механізм та вузли передньої осі, що прискорює їх знос.&#10;&#10;Просто почніть рух хоча б на мінімальній швидкості, і колеса повертатимуться значно легше."/>
+        <text name="rms_tutorial_rad_or_filter_clogged_title" text="Засмічення радіатора та повітряного фільтра"/>
+        <text name="rms_tutorial_rad_or_filter_clogged_message" text="Схоже, радіатор та повітряний фільтр вашої техніки сильно забиті.&#10;&#10;Брудний радіатор не може ефективно відводити тепло, а засмічений повітряний фільтр обмежує потік повітря до двигуна. Це знижує потужність та підвищує витрату палива.&#10;&#10;Радіатор можна очистити на мийці або повітродувкою. Повітряний фільтр можна лише продути, і продування ніколи не повертає його до початкового стану: замінити його може лише обслуговування в майстерні.&#10;&#10;Стан обох можна перевірити через огляд: утримуйте клавішу R, дивлячись на техніку."/>
+        <text name="rms_tutorial_needs_lubrication_title" text="Необхідне змащування"/>
+        <text name="rms_tutorial_needs_lubrication_message" text="Ваш %s потребує регулярного змащування.&#10;&#10;В RMS рівень мастила знижується з напрацюванням мотогодин. Після тривалого простою техніку також потрібно змастити перед поверненням до експлуатації. Недостатнє змащування прискорює знос ходової частини.&#10;&#10;Придбайте шприц для змащування в магазині та змастіть машину, коли огляд покаже таку потребу.&#10;&#10;Перевірити рівень мастила можна через огляд: утримуйте клавішу R, дивлячись на техніку."/>
+        <text name="rms_tutorial_needs_repair_title" text="Несправність техніки"/>
+        <text name="rms_tutorial_needs_repair_message" text="Схоже, з вашим %s щось не так. Можливо, один із вузлів вийшов з ладу.&#10;&#10;Обов'язково завітайте до майстерні та проведіть огляд. Не зволікайте: несправність може прогресувати, а вартість ремонту — зростати.&#10;&#10;Якщо огляд підтвердить поломку, усуньте її за допомогою процедури ремонту в майстерні."/>
+        <text name="rms_tutorial_needs_overhaul_title" text="Капітальний ремонт"/>
+        <text name="rms_tutorial_needs_overhaul_message" text="Схоже, ваш %s вже не молодий. Час подумати про заміну або капітальний ремонт. Це довгий і витратний процес, але це найкращий спосіб дати друге життя улюбленій техніці! П.С. Ви можете змінити термін служби в налаштуваннях — його збільшення сповільнить знос техніки."/>
+        <text name="rms_tutorial_needs_preventive_title" text="Загроза поломки"/>
+        <text name="rms_tutorial_needs_preventive_message" text="Схоже, одна із систем %s ось-ось відмовить. Гарна новина — ви можете цьому запобігти! У майстерні тепер доступна послуга: Профілактичне обслуговування. Вона включає повну діагностику та превентивний ремонт компонентів, що починають виходити з ладу."/>
+        <text name="rms_tutorial_age_degradation_title" text="Вікова деградація"/>
+        <text name="rms_tutorial_age_degradation_message" text="Чи знаєте ви, що в RMS техніка з часом втрачає частину своїх характеристик?&#10;&#10;Приблизно після третини терміну служби починається вікова деградація, що поступово знижує потужність, ефективність гальм та інших систем. Чим старіша машина, тим сильніший цей ефект.&#10;&#10;Ви можете вимкнути вікову деградацію в налаштуваннях моду."/>
+        <text name="rms_tutorial_poor_consumables_title" text="Неякісні витратні матеріали"/>
+        <text name="rms_tutorial_poor_consumables_message" text="Маленький секрет: ваш %s став жертвою неякісних розхідників під час ТО. Таке трапляється, якщо ви самі не обрали дешеві аналоги.&#10;&#10;Зараз сервісний інтервал скорочений, а знос деталей трохи підвищений. Повторне якісне ТО виправить проблему. Виявити це можна оглядом: базовий огляд попередить про короткий інтервал, а повна діагностика вкаже на самі неякісні розхідники."/>
+        <text name="rms_tutorial_poor_parts_title" text="Неякісні запчастини"/>
+        <text name="rms_tutorial_poor_parts_message" text="Маленький секрет: ваш %s отримав неякісну деталь під час ремонту. Ця поломка, ймовірно, скоро повернеться.&#10;&#10;Ви можете дочекатися, поки це станеться, або провести повну діагностику вже зараз — вона точно виявить неякісну деталь."/>
+        <text name="rms_tutorial_park_brake_title" text="Стоянкове гальмо"/>
+        <text name="rms_tutorial_park_brake_message" text="Стоянкове гальмо затягнуте. Воно спрацьовує саме, щойно ви залишаєте машину на місці, і відпускається, щойно ви знову даєте газ.&#10;&#10;На схилі саме воно не дає машині скотитися самій."/>
+        <text name="rms_tutorial_park_brake_manual_message" text="Стоянкове гальмо затягнуте. Ви затягуєте й відпускаєте його самі, окремою клавішею: якщо додати газу із затягнутим гальмом, машина не рушить і попередить вас.&#10;&#10;На схилі саме воно не дає машині скотитися."/>
+        <text name="rms_tutorial_preheat_title" text="Передпусковий підігрів дизеля"/>
+        <text name="rms_tutorial_preheat_message" text="За холодного дизельного двигуна одне натискання команди запуску вмикає запалювання й автоматично запускає цикл розжарювання. Контрольні лампи панелі виконують самоперевірку, після чого лампа передпускового підігріву світиться до готовності двигуна. Не повторюйте команду: стартер увімкнеться автоматично після згасання лампи."/>
         <text name="rms_tutorial_pto_engagement_title" text="Цикли ввімкнення ВВП"/>
         <text name="rms_tutorial_pto_engagement_message" text="Повторні ввімкнення ВВП накопичують механічні цикли ввімкнення. Уникайте зайвих вимкнень і повторних ввімкнень."/>
+        <text name="rms_tutorial_idle_and_downtime_title" text="Простій та зберігання"/>
+        <text name="rms_tutorial_idle_and_downtime_message" text="До речі, знос значно нижчий, коли машина заведена, але не працює активно. Коли двигун вимкнений, знос стає мізерним, а якщо техніка стоїть під навісом — він зникає зовсім."/>
+        <text name="rms_tutorial_idle_deposit_title" text="Тривалий холостий хід"/>
+        <text name="rms_tutorial_idle_deposit_message" text="Схоже, машина занадто довго працює на холостих обертах. Це не лише марно витрачене паливо: з часом це сприяє утворенню відкладень у паливній системі та шкодить «здоров'ю» двигуна.&#10;&#10;Якщо техніка зараз не потрібна, краще вимкнути двигун."/>
+        <text name="rms_tutorial_hot_weather_title" text="Спекотна погода"/>
+        <text name="rms_tutorial_hot_weather_message" text="Сьогодні справді спекотно. У таку погоду потрібно особливо пильно стежити за чистотою радіатора та не перевантажувати двигун — інакше перегрів буде лише питанням часу.&#10;&#10;Пам’ятайте: перевірити стан радіатора можна візуально (клавіша R), а очистити його — повітродувкою."/>
+        <text name="rms_tutorial_heavy_trailer_title" text="Важкий причіп"/>
+        <text name="rms_tutorial_heavy_trailer_message" text="Схоже, буксируване навантаження може бути завеликим для цієї техніки. Ви можете продовжувати рух, але трансмісія та привід зазнаватимуть підвищеного навантаження.&#10;&#10;RMS використовує два правила: трактору потрібно щонайменше 10 к.с. на тонну буксируваної маси, а вантажівці — щонайменше 6 к.с. на тонну повної маси автопоїзда. Нижче відповідного значення за високого навантаження двигуна знос трансмісії збільшується."/>
+        <text name="rms_tutorial_hard_start_title" text="Важкий запуск"/>
+        <text name="rms_tutorial_hard_start_message" text="Двигун %s запускається важко. Причиною може бути розряджений акумулятор, мороз, механічні несправності або знос стартера. Щоб завести двигун, утримуйте кнопку запалювання. Примітка: під час запуску електросистема зазнає величезних навантажень!"/>
+        <text name="rms_tutorial_low_fuel_title" text="Мало палива"/>
+        <text name="rms_tutorial_low_fuel_message" text="Схоже, у вас закінчується паливо. На перший погляд це не проблема, але чим менше палива в баку, тим важче працювати паливному насосу. Його навантаження зростає, що точно не сприяє довговічності."/>
+        <text name="rms_tutorial_lugging_title" text="Робота «внатяжку»"/>
+        <text name="rms_tutorial_lugging_message" text="Двигун, а особливо трансмісія, дуже не люблять роботу на низьких обертах під великим навантаженням. Можливо, ви підчепили занадто важке знаряддя або обрали занадто високу передачу (якщо КПП ручна)."/>
+        <text name="rms_tutorial_engine_overheat_title" text="Перегрів двигуна"/>
+        <text name="rms_tutorial_engine_overheat_message" text="Двигун починає перегріватися. Це може статися через велике навантаження, забитий радіатор, спеку або несправність системи охолодження.&#10;&#10;Будьте пильні: перегрів — один із найруйнівніших факторів. Він шкодить не лише двигуну: система охолодження працює на межі, а висока температура під капотом прискорює деградацію проводки та електроніки."/>
+        <text name="rms_tutorial_engine_overload_title" text="Перевантаження двигуна"/>
+        <text name="rms_tutorial_engine_overload_message" text="Двигун працює з надмірним зусиллям. Можливо, поточне завдання занадто важке для цієї машини, і варто використати потужнішу техніку. Або ж просто сповільніться.&#10;&#10;У будь-якому разі пам'ятайте: знос при такому навантаженні зростає в рази."/>
+        <text name="rms_tutorial_exhaust_smoke_title" text="Читати дим"/>
+        <text name="rms_tutorial_exhaust_smoke_message" text="Дим із цієї машини не прикраса, його колір це діагноз.&#10;&#10;Чорний означає більше палива, ніж повітря: перевантаження, забитий повітряний фільтр, втомлена турбіна або зношена паливна апаратура. Синій означає, що втомлений двигун палить власну оливу. Білий означає паливо, яке виходить незгорілим.&#10;&#10;Старі машини димлять набагато сильніше за нові, і це нормально."/>
+        <text name="rms_tutorial_cvt_overheat_title" text="Перегрів варіатора (CVT)"/>
+        <text name="rms_tutorial_cvt_overheat_message" text="Варіатор починає перегріватися. Причини: надмірне навантаження на трансмісію, забитий радіатор сильна спека або несправність системи охолодження трансмісії. Наприклад, ви тягнете занадто важкий плуг або перевантажений причіп.&#10;&#10;Будьте уважні: перегрів — це найгірше, що може статися з трансмісією типу CVT."/>
+        <text name="rms_tutorial_chassis_vibration_title" text="Навантаження на підвіску"/>
+        <text name="rms_tutorial_chassis_vibration_message" text="Гей, легше на поворотах! Швидка їзда бездоріжжям швидко виведе з ладу підвіску вашого %s. Крім того, вібрації шкодять іншим системам — особливо гідравліці та електриці. Їдьте плавніше."/>
+        <text name="rms_tutorial_cranking_title" text="Часті запуски"/>
+        <text name="rms_tutorial_cranking_message" text="Схоже, ви занадто часто запускаєте двигун. Кожен запуск — це сильний удар струму по електросистемі, що прискорює знос проводки, стартера та акумулятора.&#10;&#10;Намагайтеся не глушити двигун кожну хвилину, ніби на машині стоїть система старт-стоп."/>
+        <text name="rms_tutorial_critical_failure_title" text="Критична відмова"/>
+        <text name="rms_tutorial_critical_failure_message" text="Що ж, це невдача. Ваш %s повністю виведений з ладу і не може рухатися самостійно. Ви можете скористатися мобільною майстернею для швидкого ремонту, щоб машина доїхала до бази своїм ходом.&#10;&#10;В іншому випадку доведеться шукати спосіб евакуації."/>
+        <text name="rms_tutorial_cold_engine_title" text="Прогрійте машину"/>
+        <text name="rms_tutorial_cold_engine_message" text="Перед високим навантаженням прогрівайте двигун поступово. Використовуйте помірну подачу пального та середні оберти, доки двигун не досягне робочої температури."/>
+        <text name="rms_tutorial_cold_oil_title" text="Холодна трансмісійна олива"/>
+        <text name="rms_tutorial_cold_oil_message" text="Трансмісійна та гідравлічна олива прогріваються значно повільніше за двигун. Не виконуйте важку роботу, доки олива холодна; прогрівайте її поступово спокійною їздою та легким використанням гідравліки."/>
+        <text name="rms_tutorial_transmission_overheat_title" text="Перегрів трансмісії"/>
+        <text name="rms_tutorial_transmission_overheat_message" text="Трансмісійна олива починає перегріватися. Причиною може бути завелике навантаження, забитий радіатор, дуже спекотна погода або несправність охолодження коробки.&#10;&#10;Трансмісійна олива гріється на будь-якій машині, не лише на варіаторі. Надто гаряча олива зношує коробку та руйнує її сальники."/>
+        <text name="rms_tutorial_overload_indicator_title" text="Попередження про перевантаження"/>
+        <text name="rms_tutorial_overload_indicator_message" text="%s працює під великим навантаженням. Про це сигналізує індикатор, що спалахнув на панелі.&#10;&#10;Машині може бракувати потужності для поточного завдання. Спробуйте зменшити навантаження: обмежте швидкість круїз-контролем або скиньте газ замість роботи «в підлогу»."/>
+        <text name="rms_tutorial_battery_low_title" text="Слабкий акумулятор"/>
+        <text name="rms_tutorial_battery_low_message" text="Ой, схоже, акумулятор скоро сяде. Це трапляється після тривалого простою, через сильний мороз або несправності в електромережі.&#10;&#10;При низькому заряді запуск буде важким або неможливим. Якщо не зможете завестися — скористайтеся пусковими дротами від іншої техніки."/>
+        <text name="rms_tutorial_drivetrain_windup_title" text="Навантаження на трансмісію"/>
+        <text name="rms_tutorial_drivetrain_windup_message" text="Ви повертаєте на поверхні з добрим зчепленням з увімкненим блокуванням диференціала. У повороті внутрішні та зовнішні колеса проходять різні відстані, але блокування диференціала змушує їх обертатися з однаковою швидкістю: трансмісія зазнає навантаження, а зношення коробки передач прискорюється. Вимикайте блокування перед поворотами."/>
+        <text name="rms_tutorial_drivetrain_modes_title" text="Привід і блокування"/>
+        <text name="rms_tutorial_drivetrain_modes_message" text="Ця машина дозволяє обрати привід: 4x2, 4WD або AUTO, який вмикає всі чотири колеса, щойно вони почнуть буксувати.&#10;&#10;Блокування диференціала знаходить зчеплення там, де його вже немає, але дорого коштує в повороті на твердому ґрунті: внутрішні та зовнішні колеса не можуть обертатися з однаковою швидкістю, і навантаження бере на себе трансмісія. Вимикайте його перед поворотом."/>
     </texts>
 </l10n>

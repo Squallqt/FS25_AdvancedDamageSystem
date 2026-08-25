@@ -311,6 +311,11 @@ function RealisticMechanicalSystems:initService(type, workshopType, optionOne, o
         totalTimeMs = C.REPAIR_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.REPAIR_TIME_MULTIPLIERS[key] * #idsToRepair
         repairPrice = self:getServicePrice(type, optionOne, optionTwo, optionThree)
 
+    -- fluid top up
+    elseif type == states.REFILL then
+        totalTimeMs = C.REFILL_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER
+        repairPrice = self:getServicePrice(type, optionOne, optionTwo, optionThree)
+
     -- overhaul
     elseif type == states.OVERHAUL then
         local key = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.OVERHAUL_TYPES, optionOne)
@@ -683,8 +688,21 @@ function RealisticMechanicalSystems:completeService()
         if not isMobileWorkshop then
             self:setDirtAmount(0)
         end
+    end
+
+    -- fluid top up of the repaired leaks
+    if serviceType == states.REPAIR then
+        self:topUpRepairedLeaks()
+    end
+
+    if serviceType == states.MAINTENANCE or serviceType == states.OVERHAUL or serviceType == states.REFILL then
+        self:refillVehicleFluids()
+    end
+
+    if serviceType == states.MAINTENANCE then
         spec.radiatorClogging = 0
-        spec.airIntakeClogging = 0
+        spec.airFilterClogging = 0
+        spec.airFilterResidue = 0
         spec.lubricationLevel = 1.0
         spec.lubricationUsedThisPeriod = true
     end
@@ -1059,7 +1077,7 @@ end
 -- @return float hours operating hours
 function RealisticMechanicalSystems:getHoursSinceLastMaintenance()
     local spec = self.spec_RealisticMechanicalSystems
-    if not spec then return 0 end
+    if not spec or RealisticMechanicalSystems.isMissionVehicle(self) then return 0 end
 
     local gameTimeCoeff = 1.0
     if g_modIsLoaded ~= nil and g_modIsLoaded["FS25_ingameTimeOperatingHours"] then
@@ -1182,6 +1200,10 @@ function RealisticMechanicalSystems:getServicePrice(maintenanceType, optionOne, 
         log_dbg(string.format("Calculated inspection price: %.2f (base price: %.2f, multiplier: %.4f, own workshop discount: %.2f, maintainability: %.2f)", inspectionPrice, price, C.INSPECTION_PRICE_MULTIPLIERS[key] * C.GLOBAL_SERVICE_PRICE_MULTIPLIER * 0.0005, ownWorkshopDiscount, spec.maintainability))
         return inspectionPrice
         
+    elseif maintenanceType == RealisticMechanicalSystems.STATUS.REFILL then
+        local missing = self.getMissingFluidShare ~= nil and self:getMissingFluidShare() or 0
+        return math.ceil(math.max(C.GLOBAL_SERVICE_PRICE_MULTIPLIER * C.REFILL_PRICE_MULTIPLIER * price * 0.01 * ownWorkshopDiscount * missing / 10, 1)) * 10
+
     elseif maintenanceType == RealisticMechanicalSystems.STATUS.MAINTENANCE then
         local key = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.MAINTENANCE_TYPES, optionOne)
         local optionTwoKey = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.PART_TYPES, optionTwo)
@@ -1296,6 +1318,9 @@ function RealisticMechanicalSystems:getServiceDuration(maintenanceType, optionOn
             else
                 totalDurationMs = C.INSPECTION_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.INSPECTION_TIME_MULTIPLIERS[key] / spec.maintainability
             end
+        elseif maintenanceType == RealisticMechanicalSystems.STATUS.REFILL then
+            totalDurationMs = C.REFILL_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER
+
         elseif maintenanceType == RealisticMechanicalSystems.STATUS.MAINTENANCE then
             local key = RMS_Utils.getKeyByValue(RealisticMechanicalSystems.MAINTENANCE_TYPES, optionOne)
             totalDurationMs = C.MAINTENANCE_TIME * C.GLOBAL_SERVICE_TIME_MULTIPLIER * C.MAINTENANCE_TIME_MULTIPLIERS[key] / spec.maintainability

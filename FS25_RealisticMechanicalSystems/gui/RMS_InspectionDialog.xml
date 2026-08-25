@@ -8,46 +8,116 @@
         <ThreePartBitmap profile="fs25_dialogBgBottom" />
 
         <GuiElement profile="fs25_dialogContentContainer">
-            <Text profile="fs25_dialogTitle" id="dialogTitleElement" position="0px -30px" text="$l10n_rms_inspection_dialog_title"/>
+            <!-- Machine identity -->
+            <GuiElement profile="rms_inspectionBlock" position="28px -28px" size="1123px 78px">
+                <RoundCorner profile="rms_inspectionSurface" size="1123px 78px" />
+                <ThreePartBitmap profile="rms_inspectionHeaderEdge" size="1123px 3dp" />
+                <BoxLayout profile="rms_inspectionHeaderLayout" id="headerLayout" size="1123px 78px">
+                    <RoundCorner profile="rms_inspectionHeaderIconPlate" size="58px 58px">
+                        <Bitmap profile="rms_inspectionHeaderIcon" />
+                    </RoundCorner>
+                    <BoxLayout profile="rms_inspectionHeaderTextLayout" id="headerTextLayout" size="0px 58px">
+                        <Text profile="rms_inspectionDialogTitle" id="dialogTitleElement" size="0px 32px" text="$l10n_rms_inspection_dialog_title" />
+                        <Text profile="rms_inspectionIdentity" id="identityElement" size="0px 24px" />
+                    </BoxLayout>
+                </BoxLayout>
+            </GuiElement>
 
-            <Bitmap profile="rms_tableList" id="technicalFluidsHeaderBox" position="20px -90px" size="560px 36px">
-                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_fluids"/>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
-            </Bitmap>
-            <SmoothList profile="rms_tableList" id="technicalFluidsList" position="20px -130px" size="560px 130px">
-                <ListItem profile="rms_tableListItem" name="technicalFluidsRowTemplate" size="560px 30px">
-                    <Text profile="rms_tableRowCellLeft" position="10px 0px" size="260px 30px" name="inspectionTitle" />
-                    <Text profile="rms_tableRowCellRight" position="290px 0px" size="260px 30px" name="inspectionValue" />
-                </ListItem>
-            </SmoothList>
+            <!-- Overall verdict -->
+            <GuiElement profile="rms_inspectionBlock" position="28px -122px" size="1123px 88px">
+                <RoundCorner profile="rms_inspectionSurface" size="1123px 88px" />
+                <Bitmap profile="rms_inspectionVerdictAccent" id="verdictAccent" size="6px 72px" />
+                <BoxLayout profile="rms_inspectionVerdictLayout" position="24px 0px" size="1075px 88px">
+                    <RoundCorner profile="rms_inspectionVerdictBadge" id="verdictBadge" size="40px 40px">
+                        <Text profile="rms_inspectionVerdictBadgeText" id="verdictBadgeText" size="40px 40px" />
+                    </RoundCorner>
+                    <Text profile="rms_inspectionVerdictTitle" id="verdictTitle" size="0px 56px" />
+                    <RoundCorner profile="rms_inspectionVerdictDivider" size="1px 48px" />
+                    <Text profile="rms_inspectionVerdictMessage" id="verdictMessage" size="0px 56px" />
+                </BoxLayout>
+            </GuiElement>
 
-            <Bitmap profile="rms_tableList" id="coolingAndAirHeaderBox" position="20px -270px" size="560px 36px">
-                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_cooling_air"/>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
-            </Bitmap>
-            <SmoothList profile="rms_tableList" id="coolingAndAirList" position="20px -310px" size="560px 100px">
-                <ListItem profile="rms_tableListItem" name="coolingAndAirRowTemplate" size="560px 30px">
-                    <Text profile="rms_tableRowCellLeft" position="10px 0px" size="260px 30px" name="inspectionTitle" />
-                    <Text profile="rms_tableRowCellRight" position="290px 0px" size="260px 30px" name="inspectionValue" />
-                </ListItem>
-            </SmoothList>
+            <!-- Technical fluids -->
+            <GuiElement profile="rms_inspectionBlock" position="28px -228px" size="688px 32px">
+                <RoundCorner profile="rms_inspectionSectionAccent" />
+                <Text profile="rms_inspectionSectionTitle" position="16px 0px" size="656px 32px" text="$l10n_rms_inspection_section_fluids" />
+                <RoundCorner profile="rms_inspectionSectionLine" position="16px 0px" size="672px 1px" />
+            </GuiElement>
+            <GuiElement profile="rms_inspectionBlock" position="28px -270px" size="688px 274px">
+                <RoundCorner profile="rms_inspectionCardSurface" size="688px 274px" />
+                <SmoothList profile="rms_inspectionList" id="technicalFluidsList" position="14px -12px" size="660px 250px">
+                    <ListItem profile="rms_inspectionRow" name="technicalFluidsRowTemplate" size="660px 58px">
+                        <RoundCorner profile="rms_inspectionRowSurface" size="660px 58px" />
+                        <Bitmap profile="rms_inspectionRowAccent" position="0px -9px" size="4px 40px" name="inspectionAccent" />
+                        <Text profile="rms_inspectionRowTitle" position="18px -6px" size="374px 26px" name="inspectionTitle" />
+                        <RoundCorner profile="rms_inspectionValuePill" position="406px -6px" size="236px 26px" name="inspectionValuePill" />
+                        <Text profile="rms_inspectionRowValue" position="418px -6px" size="212px 26px" name="inspectionValue" />
+                        <Bitmap profile="rms_fluidGaugeTrack" position="18px -38px" size="624px 14px" name="inspectionGaugeTrack" />
+                        <Bitmap profile="rms_fluidGaugeFill" position="18px -38px" size="624px 14px" name="inspectionGaugeFill" />
+                        <Bitmap profile="rms_fluidGaugeMark" position="173px -36px" size="2px 18px" name="inspectionGaugeMark">
+                            <Bitmap profile="rms_fluidGaugeGuide" position="-155px -3px" size="624px 1px" />
+                            <Bitmap profile="rms_fluidGaugeGuide" position="156px -4px" size="2px 10px" />
+                            <Bitmap profile="rms_fluidGaugeGuide" position="312px -4px" size="2px 10px" />
+                            <Bitmap profile="rms_fluidGaugeMark" position="-3px 0px" size="8px 3px" />
+                            <Bitmap profile="rms_fluidGaugeMark" position="-3px -15px" size="8px 3px" />
+                        </Bitmap>
+                    </ListItem>
+                </SmoothList>
+            </GuiElement>
 
-            <Bitmap profile="rms_tableList" id="lubricationHeaderBox" position="20px -410px" size="560px 36px">
-                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_lubrication"/>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
-            </Bitmap>
-            <SmoothList profile="rms_tableList" id="lubricationList" position="20px -450px" size="560px 35px">
-                <ListItem profile="rms_tableListItem" name="lubricationRowTemplate" size="560px 30px">
-                    <Text profile="rms_tableRowCellLeft" position="10px 0px" size="260px 30px" name="inspectionTitle" />
-                    <Text profile="rms_tableRowCellRight" position="290px 0px" size="260px 30px" name="inspectionValue" />
-                </ListItem>
-            </SmoothList>
-            
-            <Bitmap profile="rms_tableList" id="additionalHeaderBox" position="20px -490px" size="560px 36px">
-                <Text profile="rms_tableHeaderLeft" position="10px 0px" size="540px 36px" text="$l10n_rms_inspection_section_additional"/>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px 2px" />
-            </Bitmap>
-            <Text profile="rms_inspectionAdditionalText" id="additionalText" position="10px -530px" size="540px 80px" text="$l10n_rms_inspection_no_suspicious_symptoms"/>
+            <!-- Cooling and air filter -->
+            <GuiElement profile="rms_inspectionBlock" position="740px -228px" size="411px 32px">
+                <RoundCorner profile="rms_inspectionSectionAccent" />
+                <Text profile="rms_inspectionSectionTitle" position="16px 0px" size="379px 32px" text="$l10n_rms_inspection_section_cooling_air" />
+                <RoundCorner profile="rms_inspectionSectionLine" position="16px 0px" size="395px 1px" />
+            </GuiElement>
+            <GuiElement profile="rms_inspectionBlock" position="740px -270px" size="411px 122px">
+                <RoundCorner profile="rms_inspectionCardSurface" size="411px 122px" />
+                <SmoothList profile="rms_inspectionList" id="coolingAndAirList" position="14px -12px" size="383px 98px">
+                    <ListItem profile="rms_inspectionRow" name="coolingAndAirRowTemplate" size="383px 46px">
+                        <RoundCorner profile="rms_inspectionRowSurface" size="383px 46px" />
+                        <Bitmap profile="rms_inspectionRowAccent" position="0px -8px" size="4px 30px" name="inspectionAccent" />
+                        <Text profile="rms_inspectionRowTitle" position="18px 0px" size="163px 46px" name="inspectionTitle" />
+                        <RoundCorner profile="rms_inspectionValuePill" position="195px -9px" size="170px 28px" name="inspectionValuePill" />
+                        <Text profile="rms_inspectionRowValue" position="207px -9px" size="146px 28px" name="inspectionValue" />
+                    </ListItem>
+                </SmoothList>
+            </GuiElement>
+
+            <!-- Lubrication -->
+            <GuiElement profile="rms_inspectionBlock" position="740px -410px" size="411px 32px">
+                <RoundCorner profile="rms_inspectionSectionAccent" />
+                <Text profile="rms_inspectionSectionTitle" position="16px 0px" size="379px 32px" text="$l10n_rms_inspection_section_lubrication" />
+                <RoundCorner profile="rms_inspectionSectionLine" position="16px 0px" size="395px 1px" />
+            </GuiElement>
+            <GuiElement profile="rms_inspectionBlock" position="740px -452px" size="411px 70px">
+                <RoundCorner profile="rms_inspectionCardSurface" size="411px 70px" />
+                <SmoothList profile="rms_inspectionList" id="lubricationList" position="14px -12px" size="383px 46px">
+                    <ListItem profile="rms_inspectionRow" name="lubricationRowTemplate" size="383px 46px">
+                        <RoundCorner profile="rms_inspectionRowSurface" size="383px 46px" />
+                        <Bitmap profile="rms_inspectionRowAccent" position="0px -8px" size="4px 30px" name="inspectionAccent" />
+                        <Text profile="rms_inspectionRowTitle" position="18px 0px" size="163px 46px" name="inspectionTitle" />
+                        <RoundCorner profile="rms_inspectionValuePill" position="195px -9px" size="170px 28px" name="inspectionValuePill" />
+                        <Text profile="rms_inspectionRowValue" position="207px -9px" size="146px 28px" name="inspectionValue" />
+                    </ListItem>
+                </SmoothList>
+            </GuiElement>
+
+            <!-- Additional observations -->
+            <GuiElement profile="rms_inspectionBlock" position="28px -562px" size="1123px 32px">
+                <RoundCorner profile="rms_inspectionSectionAccent" />
+                <Text profile="rms_inspectionSectionTitle" position="16px 0px" size="1091px 32px" text="$l10n_rms_inspection_section_additional" />
+                <RoundCorner profile="rms_inspectionSectionLine" position="16px 0px" size="1107px 1px" />
+            </GuiElement>
+            <GuiElement profile="rms_inspectionBlock" position="28px -604px" size="1123px 170px">
+                <RoundCorner profile="rms_inspectionCardSurface" size="1123px 170px" />
+                <ScrollingLayout profile="rms_inspectionObservationsLayout" id="additionalScroll" position="24px -15px" size="1051px 140px">
+                    <Text profile="rms_inspectionAdditionalText" id="additionalText" size="1051px 20px" text="$l10n_rms_inspection_no_suspicious_symptoms" />
+                </ScrollingLayout>
+                <ThreePartBitmap profile="rms_inspectionObservationsSliderBox" position="-24px -15px" size="12px 140px">
+                    <Slider profile="fs25_listSlider" dataElementId="additionalScroll" />
+                </ThreePartBitmap>
+            </GuiElement>
         </GuiElement>
 
         <BoxLayout profile="fs25_dialogButtonBox">

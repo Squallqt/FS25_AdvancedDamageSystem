@@ -170,6 +170,38 @@ function RMS_Hud:drawActiveVehicleHUD()
         })
     end
 
+    ---Cuts a line into as many lines as its width needs, continuations carry a hanging indent
+    -- @param string text line text
+    -- @param float size text size
+    -- @param float maxWidth width available inside the card
+    -- @return table parts one entry per drawn line
+    local function wrapLineToWidth(text, size, maxWidth)
+        if maxWidth <= 0 or getTextWidth(size, text) <= maxWidth then
+            return {text}
+        end
+
+        local parts = {}
+        local indent = ""
+        local current = nil
+
+        for word in string.gmatch(text, "%S+") do
+            local candidate = (current == nil) and (indent .. word) or (current .. " " .. word)
+            if current ~= nil and getTextWidth(size, candidate) > maxWidth then
+                table.insert(parts, current)
+                indent = "  "
+                current = indent .. word
+            else
+                current = candidate
+            end
+        end
+
+        if current ~= nil then
+            table.insert(parts, current)
+        end
+
+        return parts
+    end
+
     ---Returns the colour of a temperature
     -- @param float? temp temperature in degrees
     -- @return table color rgba channels
@@ -451,17 +483,18 @@ function RMS_Hud:drawActiveVehicleHUD()
     local weatherFactor = RMS_Main.currentWeatherFactor
     local dirtLevel = vehicle.getDirtAmount ~= nil and vehicle:getDirtAmount() or 0
     local radiatorClogging = spec.radiatorClogging
-    local airIntakeClogging = spec.airIntakeClogging
+    local airFilterClogging = spec.airFilterClogging
+    local airFilterResidue = spec.airFilterResidue
     local lubricationLevel = spec.lubricationLevel
     local paintState = math.max(1 - (vehicle.getWearTotalAmount ~= nil and vehicle:getWearTotalAmount() or 0), 0)
     local radiatorDbg = debugData.radiator or {}
-    local airIntakeDbg = debugData.airIntake or {}
+    local airFilterDbg = debugData.airFilter or {}
     local radiatorMultiplier = radiatorDbg.totalMultiplier or 0
-    local airIntakeMultiplier = airIntakeDbg.totalMultiplier or 0
-    local cloggingIsOnField = radiatorDbg.isOnField == true or airIntakeDbg.isOnField == true
-    local cloggingHasDust = radiatorDbg.hasDust == true or airIntakeDbg.hasDust == true
-    local cloggingHasDebris = radiatorDbg.hasDebris == true or airIntakeDbg.hasDebris == true
-    local cloggingWetnessFactor = airIntakeDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1
+    local airFilterMultiplier = airFilterDbg.totalMultiplier or 0
+    local cloggingIsOnField = radiatorDbg.isOnField == true or airFilterDbg.isOnField == true
+    local cloggingHasDust = radiatorDbg.hasDust == true or airFilterDbg.hasDust == true
+    local cloggingHasDebris = radiatorDbg.hasDebris == true or airFilterDbg.hasDebris == true
+    local cloggingWetnessFactor = airFilterDbg.baseWetnessFactor or radiatorDbg.baseWetnessFactor or 1
     local factorStatsOperatingHours = 0
     local currentOperatingSeconds = 0
     if vehicle.getOperatingTime ~= nil then
@@ -492,16 +525,28 @@ function RMS_Hud:drawActiveVehicleHUD()
     ), {1, 1, 1, 1}, 0.95)
 
     addLine(overviewLines, string.format(
-        "Clogging: Dirt %.2f%% | Rad: %.2f%% (%s) | AI: %.2f%% (%s) | field: %s, dust: %s, derbis: %s, wtf: %.3f",
+        "Clogging: Dirt %.2f%% | Radiator: %.2f%% (%s) | Filter: %.2f%%, residue: %.2f%% (%s) | field: %s, dust: %s, debris: %s, wetness: %.3f",
         asPercent(dirtLevel),
         asPercent(radiatorClogging),
         formatAppliedMultiplier(radiatorMultiplier),
-        asPercent(airIntakeClogging),
-        formatAppliedMultiplier(airIntakeMultiplier),
+        asPercent(airFilterClogging),
+        asPercent(airFilterResidue),
+        formatAppliedMultiplier(airFilterMultiplier),
         tostring(cloggingIsOnField),
         tostring(cloggingHasDust),
         tostring(cloggingHasDebris),
         cloggingWetnessFactor
+    ), {1, 1, 1, 1}, 0.95)
+
+    addLine(overviewLines, string.format(
+        "Fluids: engine oil %.2f%% | coolant %.2f%% (leak %.3f/h) | transmission %.2f%% (leak %.3f/h) | hydraulic %.2f%% (leak %.3f/h)",
+        asPercent(spec.engineOilLevel or 1),
+        asPercent(spec.coolantLevel or 1),
+        tonumber(spec.coolantLeakRate) or 0,
+        asPercent(spec.transmissionOilLevel or 1),
+        tonumber(spec.transmissionOilLeakRate) or 0,
+        asPercent(spec.hydraulicFluidLevel or 1),
+        tonumber(spec.hydraulicFluidLeakRate) or 0
     ), {1, 1, 1, 1}, 0.95)
 
     do
@@ -576,7 +621,7 @@ function RMS_Hud:drawActiveVehicleHUD()
 
     local engineMaxFactor = math.max(
         engineDbg.motorLoadFactor or 0,
-        engineDbg.airIntakeCloggingFactor or 0,
+        engineDbg.airFilterCloggingFactor or 0,
         engineDbg.expiredServiceFactor or 0,
         engineDbg.coldMotorFactor or 0,
         engineDbg.hotMotorFactor or 0
@@ -588,12 +633,13 @@ function RMS_Hud:drawActiveVehicleHUD()
         transmissionDbg.luggingFactor or 0,
         transmissionDbg.wheelSlipFactor or 0,
         transmissionDbg.drivetrainWindupFactor or 0,
-        transmissionDbg.coldTransFactor or 0,
+        transmissionDbg.coldTransAbuse or 0,
         transmissionDbg.hotTransFactor or 0
     ) * bcw
     local hydraulicsMaxFactor = math.max(
         hydraulicsDbg.expiredServiceFactor or 0,
         hydraulicsDbg.heavyLiftFactor or 0,
+        hydraulicsDbg.vibFactor or 0,
         hydraulicsDbg.operatingFactor or 0,
         hydraulicsDbg.coldOilFactor or 0,
         hydraulicsDbg.hotOilFactor or 0
@@ -703,10 +749,16 @@ function RMS_Hud:drawActiveVehicleHUD()
         for _, entry in ipairs(factorEntries) do
             addLine(
                 lines,
-                formatFactorLine(systemKey, entry.shortName, entry.value, entry.statKey, entry.extraInfo, systemStressMultiplier),
+                formatFactorLine(systemKey, entry.shortName, entry.value, entry.statKey, nil, systemStressMultiplier),
                 {0.92, 0.96, 1.0, 1},
                 0.80
             )
+
+            -- complements go on their own indented line
+            local extraInfo = entry.extraInfo ~= nil and tostring(entry.extraInfo) or ""
+            if extraInfo ~= "" then
+                addLine(lines, "  (" .. extraInfo .. ")", {0.92, 0.96, 1.0, 1}, 0.80)
+            end
         end
 
         return lines
@@ -716,9 +768,10 @@ function RMS_Hud:drawActiveVehicleHUD()
         { shortName = "sf", statKey = "sf", value = engineDbg.expiredServiceFactor or 0 },
         { shortName = "mlf", statKey = "mlf", value = engineDbg.motorLoadFactor or 0, extraInfo = string.format("dml: %.2f", engineDbg.dynamicMotorLoad or 0) },
         { shortName = "lf", statKey = "lf", value = engineDbg.luggingFactor or 0 },
-        { shortName = "aicf", statKey = "aicf", value = engineDbg.airIntakeCloggingFactor or 0 },
+        { shortName = "aicf", statKey = "aicf", value = engineDbg.airFilterCloggingFactor or 0 },
         { shortName = "cmf", statKey = "cmf", value = engineDbg.coldMotorFactor or 0 },
-        { shortName = "hmf", statKey = "hmf", value = engineDbg.hotMotorFactor or 0 }
+        { shortName = "hmf", statKey = "hmf", value = engineDbg.hotMotorFactor or 0 },
+        { shortName = "flf", statKey = "flf", value = engineDbg.lowFluidFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(spec.engineOilLevel or 1)) }
     })
 
     local transmissionLines = buildSystemLines("transmission", transmissionDbg, transmissionMaxFactor, {
@@ -728,16 +781,19 @@ function RMS_Hud:drawActiveVehicleHUD()
         { shortName = "lf", statKey = "lf", value = transmissionDbg.luggingFactor or 0 },
         { shortName = "wsf", statKey = "wsf", value = transmissionDbg.wheelSlipFactor or 0, extraInfo = string.format("c: %.2f", avgTireGroundFrictionCoeff) },
         { shortName = "dwf", statKey = "dwf", value = transmissionDbg.drivetrainWindupFactor or 0, extraInfo = string.format("w: %.1f%% lock: %s", asPercent(drivetrainDbg.windupStress or 0), (drivetrainDbg.diffLockEngaged == true) and "Y" or "N") },
-        { shortName = "ctf", statKey = "ctf", value = transmissionDbg.coldTransFactor or 0 },
-        { shortName = "hotf", statKey = "hotf", value = transmissionDbg.hotTransFactor or 0 }
+        { shortName = "ctf", statKey = "ctf", value = transmissionDbg.coldTransAbuse or 0 },
+        { shortName = "hotf", statKey = "hotf", value = transmissionDbg.hotTransFactor or 0 },
+        { shortName = "flf", statKey = "flf", value = transmissionDbg.lowFluidFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(spec.transmissionOilLevel or 1)) }
     })
 
     local hydraulicsLines = buildSystemLines("hydraulics", hydraulicsDbg, hydraulicsMaxFactor, {
         { shortName = "sf", statKey = "sf", value = hydraulicsDbg.expiredServiceFactor or 0 },
         { shortName = "hlf", statKey = "hlf", value = hydraulicsDbg.heavyLiftFactor or 0, extraInfo = string.format("mr: %.2f", asPercent(hydraulicsDbg.heavyLiftMassRatio or 0)) },
+        { shortName = "vf", statKey = "vf", value = hydraulicsDbg.vibFactor or 0, extraInfo = string.format("s: %.2f", asPercent(hydraulicsDbg.vibSignal or 0)) },
         { shortName = "of", statKey = "of", value = hydraulicsDbg.operatingFactor or 0, extraInfo = string.format("active: %s", tostring(hydraulicsDbg.isHydraulicActive == true)) },
         { shortName = "cof", statKey = "cof", value = hydraulicsDbg.coldOilFactor or 0 },
-        { shortName = "hof", statKey = "hof", value = hydraulicsDbg.hotOilFactor or 0 }
+        { shortName = "hof", statKey = "hof", value = hydraulicsDbg.hotOilFactor or 0 },
+        { shortName = "flf", statKey = "flf", value = hydraulicsDbg.lowFluidFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(spec.hydraulicFluidLevel or 1)) }
     })
 
     local coolingLines = buildSystemLines("cooling", coolingDbg, coolingMaxFactor, {
@@ -760,7 +816,7 @@ function RMS_Hud:drawActiveVehicleHUD()
         { shortName = "sf", statKey = "sf", value = chassisDbg.expiredServiceFactor or 0 },
         { shortName = "lubf", statKey = "lubf", value = chassisDbg.lubricationFactor or 0, extraInfo = string.format("lvl: %.1f%%", asPercent(lubricationLevel)) },
         { shortName = "vf", statKey = "vf", value = chassisDbg.vibFactor or 0, extraInfo = string.format("r/s: %.2f / %.2f", asPercent(chassisDbg.vibRaw or 0), asPercent(chassisDbg.vibSignal or 0)) },
-        { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("ls: %.2f c: %.2f m: %s", chassisDbg.steerLowSpeedFactor or 0, chassisDbg.steerGroundFrictionCoeff or 0, (chassisDbg.steerMoving == true) and "Y" or "N") },
+        { shortName = "slf", statKey = "slf", value = chassisDbg.steerLoadFactor or 0, extraInfo = string.format("ls: %.2f a: %.2f l: %.2f c: %.2f m: %s", chassisDbg.steerLowSpeedFactor or 0, chassisDbg.steerAngleRatio or 0, chassisDbg.steerAxleLoadRatio or 0, chassisDbg.steerGroundFrictionCoeff or 0, (chassisDbg.steerMoving == true) and "Y" or "N") },
         { shortName = "bmf", statKey = "bmf", value = chassisDbg.brakeMassFactor or 0, extraInfo = string.format("hp/%s: %.1f", (chassisDbg.brakeMassBasis == "gcw") and "gcw" or "trl", chassisDbg.brakeMassRatio or 0) }
     })
 
@@ -828,25 +884,24 @@ function RMS_Hud:drawActiveVehicleHUD()
     local transmissionTempLines = {}
     if showTransmissionSection then
         addLine(transmissionTempLines, string.format(
-            "T: %.1fC (raw: %.1fC) | ts: %.3f | k/s/w: %.2f/%.3f/%.3f | h: %.3f(l/s/a/ws: %.2f/%.2f/%.2f/%.2f) | c: %.3f(r/s/c: %.3f/%.3f/%.3f) | cvt: a/l=%d/%d eh=%.3f hh=%.3f",
+            "T: %.1fC (raw: %.1fC) | ts: %.3f | h: %.3f(i/l/hs/a/ws: %.3f/%.2f/%.2f/%.2f/%.2f) | c: %.3f(cl/s/cv: %.3f/%.3f/%.3f) | cvt: a/l=%d/%d eh=%.3f ph=%.3f hh=%.3f",
             spec.transmissionTemperature,
             spec.rawTransmissionTemperature or spec.transmissionTemperature or -99,
             spec.transmissionThermostatState,
-            (debugData.transmissionTemp or {}).kp or 0,
-            (debugData.transmissionTemp or {}).stiction or 0,
-            (debugData.transmissionTemp or {}).waxSpeed or 0,
             (debugData.transmissionTemp or {}).totalHeat or 0,
+            (debugData.transmissionTemp or {}).idleHeat or 0,
             (debugData.transmissionTemp or {}).loadFactor or 0,
-            (debugData.transmissionTemp or {}).slipFactor or 0,
+            (debugData.transmissionTemp or {}).hydrostaticFactor or 0,
             (debugData.transmissionTemp or {}).accFactor or 0,
             (debugData.transmissionTemp or {}).wheelSlipFactor or 0,
             (debugData.transmissionTemp or {}).totalCooling or 0,
-            (debugData.transmissionTemp or {}).radiatorCooling or 0,
+            (debugData.transmissionTemp or {}).coolerCooling or 0,
             (debugData.transmissionTemp or {}).speedCooling or 0,
             (debugData.transmissionTemp or {}).convectionCooling or 0,
             (debugData.transmissionTemp or {}).cvtSlipActive or 0,
             (debugData.transmissionTemp or {}).cvtSlipLocked or 0,
             (debugData.transmissionTemp or {}).extraTransmissionHeat or 0,
+            (debugData.transmissionTemp or {}).ptoHeat or 0,
             (debugData.transmissionTemp or {}).hydraulicHeat or 0
         ), getTempColor(spec.transmissionTemperature), 0.95)
     end
@@ -1195,8 +1250,23 @@ function RMS_Hud:drawActiveVehicleHUD()
     table.insert(sections, {title = "Implements", lines = implementLines, showTitle = false})
 
     local systemColumns = math.min(8, math.max(#systemSections, 1))
-    local systemGapX = 0.00012
+    local systemGapX = 0.002
     local systemGapY = sectionGap * 0.16
+    local systemLineIndent = 0.003
+    local systemCardWidth = ((panel.width - panel.padding * 2) - (systemColumns - 1) * systemGapX) / systemColumns
+
+    setTextBold(false)
+    for _, section in ipairs(systemSections) do
+        local wrappedLines = {}
+        for _, line in ipairs(section.lines) do
+            local lineSize = activeNormalSize * (line.sizeScale or 1.0)
+            for _, part in ipairs(wrapLineToWidth(line.text or "", lineSize, systemCardWidth - systemLineIndent)) do
+                table.insert(wrappedLines, {text = part, color = line.color, sizeScale = line.sizeScale})
+            end
+        end
+        section.lines = wrappedLines
+    end
+
     local systemRows = (#systemSections > 0) and math.ceil(#systemSections / systemColumns) or 0
     local rowHeights = {}
     local totalSystemHeight = 0
@@ -1281,8 +1351,6 @@ function RMS_Hud:drawActiveVehicleHUD()
     if #systemSections > 0 then
         currentY = currentY - sectionGap
         local gridStartX = textStartX
-        local gridAvailableWidth = panel.width - panel.padding * 2
-        local cardWidth = (gridAvailableWidth - (systemColumns - 1) * systemGapX) / systemColumns
         local rowY = currentY
 
         for row = 1, systemRows do
@@ -1291,7 +1359,7 @@ function RMS_Hud:drawActiveVehicleHUD()
                 local index = (row - 1) * systemColumns + col
                 local section = systemSections[index]
                 if section ~= nil then
-                    local cardX = gridStartX + (col - 1) * (cardWidth + systemGapX)
+                    local cardX = gridStartX + (col - 1) * (systemCardWidth + systemGapX)
                     local cardY = rowY
                     queueText(cardX, cardY, activeNormalSize, section.title .. ":", {1, 1, 1, 1}, false)
 
@@ -1300,7 +1368,7 @@ function RMS_Hud:drawActiveVehicleHUD()
                         local lineText = line.text or ""
                         local lineColor = line.color or {1, 1, 1, 1}
                         local lineSize = activeNormalSize * (line.sizeScale or 1.0)
-                        queueText(cardX + 0.003, cardLineY, lineSize, lineText, lineColor, false)
+                        queueText(cardX + systemLineIndent, cardLineY, lineSize, lineText, lineColor, false)
                         cardLineY = cardLineY - activeLineHeight
                     end
                 end
@@ -1475,9 +1543,9 @@ function RMS_Hud:drawFactorStatsVehicleHUD(vehicle, spec, debugData, factorStats
             return string.format("power %.1fkW | utilization %.3f | rpm %.0f", tonumber(dbg.ptoPower) or 0, tonumber(dbg.ptoUtilization) or 0, tonumber(dbg.ptoRpm) or 0)
         elseif debugKey == "ptoEngagementFactor" then
             return string.format("cycles %d | current pulse %.0f", tonumber(dbg.ptoEngagementCount) or 0, tonumber(dbg.ptoEngagementFactor) or 0)
-        elseif debugKey == "airIntakeCloggingFactor" then
-            if dbg.airIntakeClogging ~= nil then
-                return string.format("clog %.1f%%", (tonumber(dbg.airIntakeClogging) or 0) * 100)
+        elseif debugKey == "airFilterCloggingFactor" then
+            if dbg.airFilterClogging ~= nil then
+                return string.format("clog %.1f%%", (tonumber(dbg.airFilterClogging) or 0) * 100)
             end
         elseif debugKey == "coldMotorFactor" then
             local parts = {}

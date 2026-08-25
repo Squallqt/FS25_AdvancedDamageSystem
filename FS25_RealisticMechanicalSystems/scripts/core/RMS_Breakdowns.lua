@@ -622,7 +622,8 @@ function RMS_Breakdowns.updateConsumers(vehicle, dt, accInput)
 
 	for _, consumer in pairs(spec.consumers) do
 		if consumer.permanentConsumption and consumer.usage > 0 then
-			local used = usageFactor * motorFactor * consumer.usage * dt * timeScale
+			local usedThisFrame = usageFactor * motorFactor * consumer.usage * dt * timeScale
+			local used = usedThisFrame
 
 			if used ~= 0 then
 				consumer.fillLevelToChange = consumer.fillLevelToChange + used
@@ -651,7 +652,7 @@ function RMS_Breakdowns.updateConsumers(vehicle, dt, accInput)
 					end
 				end
 
-				local usage = used / dt * 1000 * 60 * 60
+				local usage = usedThisFrame / dt * 1000 * 60 * 60
                 if timeScale ~= 0 then
                     usage = usage / timeScale
                 end
@@ -1048,7 +1049,8 @@ local function setHydraulicErraticTarget(vehicle, targetIndex)
         if childVehicle.spec_cylindered ~= nil then
             for _, tool in ipairs(childVehicle.spec_cylindered.movingTools) do
                 tool.rmsHydraulicErraticTarget = false
-                if RMS_Utils.getIsHydraulicMovingTool(tool) and (tool.rotSpeed ~= nil or tool.transSpeed ~= nil) then
+                if RMS_Utils.getIsHydraulicMovingTool(tool)
+                    and (tool.rotSpeed ~= nil or tool.transSpeed ~= nil or tool.animSpeed ~= nil) then
                     currentIndex = currentIndex + 1
                     tool.rmsHydraulicErraticTarget = currentIndex == targetIndex
                 end
@@ -1081,8 +1083,12 @@ RMS_Breakdowns.EffectApplicators.HYDRAULIC_FUNCTION_ERRATIC_EFFECT = {
         local effectName = handler.getEffectName()
         local activeFunc = function(v, dt)
             local spec = v.spec_RealisticMechanicalSystems
-            local effect = spec.activeEffects[effectName]
-            local breakdown = spec.activeBreakdowns.HYDRAULIC_SPOOL_VALVE_MALFUNCTION
+            local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
+            local breakdown = spec ~= nil and spec.activeBreakdowns ~= nil
+                and spec.activeBreakdowns.HYDRAULIC_SPOOL_VALVE_MALFUNCTION or nil
+            if effect == nil or breakdown == nil then
+                return
+            end
             local childVehicleHash = v:getChildVehicleHash()
 
             if effect.extraData.childVehicleHash ~= childVehicleHash or breakdown.effectTargetIndex == 0 then
@@ -1123,11 +1129,13 @@ RMS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
             end
 
             local rootSpec = v.spec_RealisticMechanicalSystems
-            local activeEffect = rootSpec.activeEffects.HYDRAULIC_HOLD_DRIFT_EFFECT
-            local breakdown = rootSpec.activeBreakdowns.HYDRAULIC_CYLINDER_INTERNAL_LEAK
+            local activeEffect = rootSpec ~= nil and rootSpec.activeEffects ~= nil
+                and rootSpec.activeEffects.HYDRAULIC_HOLD_DRIFT_EFFECT or nil
+            local breakdown = rootSpec ~= nil and rootSpec.activeBreakdowns ~= nil
+                and rootSpec.activeBreakdowns.HYDRAULIC_CYLINDER_INTERNAL_LEAK or nil
             local targetCount = 0
             local attacherSpec = v.spec_attacherJoints
-            if attacherSpec == nil or breakdown == nil then
+            if attacherSpec == nil or activeEffect == nil or breakdown == nil then
                 return
             end
 
@@ -1153,7 +1161,7 @@ RMS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
                         if jointDesc ~= nil and RMS_Utils.getIsHydraulicLiftJoint(jointDesc) then
                             currentTargetIndex = currentTargetIndex + 1
                             local isTarget = currentTargetIndex == breakdown.effectTargetIndex
-                            local liftedMass = rootSpec.hydraulicLiftMassByJoint[jointDesc] or 0
+                            local liftedMass = (rootSpec.hydraulicLiftMassByJoint or {})[jointDesc] or 0
                             local loadMassRatio = getHydraulicMassRatio(v, liftedMass)
                             local canDriftUnderLoad = isTarget and loadMassRatio > 0
                             local driftBlockedByFold = isHydraulicHoldDriftBlockedByFold(implement)
@@ -1211,31 +1219,25 @@ RMS_Breakdowns.EffectApplicators.HYDRAULIC_HOLD_DRIFT_EFFECT = {
 function RMS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
     local rootVehicle = self:getRootVehicle()
     local spec = self.spec_attacherJoints
-
-    local hydraulicEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_SPEED_MODIFIER
-    local hydraulicHoldEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_HOLD_DRIFT_EFFECT
-    local erraticEffect = rootVehicle.spec_RealisticMechanicalSystems and rootVehicle.spec_RealisticMechanicalSystems.activeEffects.HYDRAULIC_FUNCTION_ERRATIC_EFFECT
+    local rootSpec = rootVehicle.spec_RealisticMechanicalSystems
+    local activeEffects = rootSpec ~= nil and rootSpec.activeEffects or nil
+    local hydraulicEffect = activeEffects ~= nil and activeEffects.HYDRAULIC_SPEED_MODIFIER or nil
+    local hydraulicHoldEffect = activeEffects ~= nil and activeEffects.HYDRAULIC_HOLD_DRIFT_EFFECT or nil
+    local erraticEffect = activeEffects ~= nil and activeEffects.HYDRAULIC_FUNCTION_ERRATIC_EFFECT or nil
     local hydraulicModifier = (hydraulicEffect and hydraulicEffect.value) or 0
     local erraticModifier = (erraticEffect and erraticEffect.value) or 0
-    local hydraulicHoldModifier = 0
-    if hydraulicHoldEffect ~= nil then
-        local loadMassRatio = getHydraulicMassRatio(rootVehicle, rootVehicle.spec_RealisticMechanicalSystems.liftedMass)
-        if loadMassRatio > 0 then
-            hydraulicHoldModifier = hydraulicHoldEffect.value * loadMassRatio
-        end
-    end
+    local hydraulicHoldEffectValue = hydraulicHoldEffect ~= nil and (tonumber(hydraulicHoldEffect.value) or 0) or 0
     
-    if hydraulicModifier == 0 and hydraulicHoldModifier == 0 and erraticModifier == 0 then
+    if hydraulicModifier == 0 and hydraulicHoldEffectValue == 0 and erraticModifier == 0 then
         return superFunc(self, dt, ...)
     end
 
     local raisePerformance = math.max(0, 1.0 + hydraulicModifier)
-    local holdDriftPerformance = math.max(tonumber(hydraulicHoldModifier) or 0, 0.01)
     local erraticPerformance = math.max(0.05, 1.0 + erraticModifier)
     local erraticPhaseActive = math.floor(g_currentMission.time / RMS_Config.CORE_UPDATE_DELAY) % 2 == 0
     local originalMoveTimes = {}
 
-    for _, implement in ipairs(spec.attachedImplements) do
+    for _, implement in pairs(spec.attachedImplements) do
         if implement.object ~= nil then
             local jointDesc = spec.attacherJoints[implement.jointDescIndex]
 
@@ -1244,7 +1246,10 @@ function RMS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
             end
 
             if jointDesc ~= nil then
-                originalMoveTimes[jointDesc] = jointDesc.moveDefaultTime
+                originalMoveTimes[jointDesc] = {
+                    moveDefaultTime = jointDesc.moveDefaultTime,
+                    moveTime = jointDesc.moveTime
+                }
             end
 
             -- raising the implement drops the forced hold drift in the same tick
@@ -1252,26 +1257,51 @@ function RMS_Breakdowns.applyHydraulicDamageToAttacher(self, superFunc, dt, ...)
                 jointDesc.rmsHoldDriftForced = false
             end
 
-            if jointDesc ~= nil and jointDesc.rmsHydraulicErraticTarget == true and erraticModifier ~= 0 and not erraticPhaseActive then
-                jointDesc.moveDefaultTime = math.huge
-            elseif jointDesc ~= nil and jointDesc.moveDown == false and hydraulicModifier ~= 0 then
-                jointDesc.moveDefaultTime = raisePerformance > 0 and originalMoveTimes[jointDesc] / raisePerformance or math.huge
-            elseif jointDesc ~= nil and jointDesc.moveDown == true and jointDesc.rmsHoldDriftForced == true and hydraulicHoldModifier > 0 then
-                jointDesc.moveDefaultTime = originalMoveTimes[jointDesc] / holdDriftPerformance
-            elseif jointDesc ~= nil then
-                jointDesc.moveDefaultTime = originalMoveTimes[jointDesc]
+            if jointDesc ~= nil then
+                local performance = 1
+                local shouldAdjust = false
+
+                if jointDesc.moveDown == true and jointDesc.rmsHoldDriftForced == true and hydraulicHoldEffectValue > 0 then
+                    local liftedMass = rootSpec ~= nil
+                        and (rootSpec.hydraulicLiftMassByJoint or {})[jointDesc] or 0
+                    local loadMassRatio = getHydraulicMassRatio(rootVehicle, liftedMass)
+                    if loadMassRatio > 0 then
+                        performance = math.max(hydraulicHoldEffectValue * loadMassRatio, 0.01)
+                        shouldAdjust = true
+                    end
+                else
+                    if jointDesc.moveDown == false and hydraulicModifier ~= 0 then
+                        performance = performance * raisePerformance
+                        shouldAdjust = true
+                    end
+                    if jointDesc.rmsHydraulicErraticTarget == true and erraticModifier ~= 0 then
+                        performance = performance * (erraticPhaseActive and erraticPerformance or 0)
+                        shouldAdjust = true
+                    end
+                end
+
+                if shouldAdjust then
+                    local originalTimes = originalMoveTimes[jointDesc]
+                    jointDesc.moveDefaultTime = performance > 0
+                        and originalTimes.moveDefaultTime / performance or math.huge
+                    if originalTimes.moveTime ~= nil then
+                        jointDesc.moveTime = performance > 0
+                            and originalTimes.moveTime / performance or math.huge
+                    end
+                end
             end
         end
     end
 
     local success, result = pcall(superFunc, self, dt, ...)
 
-    for _, implement in ipairs(spec.attachedImplements) do
+    for _, implement in pairs(spec.attachedImplements) do
         if implement.object ~= nil then
             local jointDesc = spec.attacherJoints[implement.jointDescIndex]
             
             if jointDesc ~= nil and originalMoveTimes[jointDesc] ~= nil then
-                jointDesc.moveDefaultTime = originalMoveTimes[jointDesc]
+                jointDesc.moveDefaultTime = originalMoveTimes[jointDesc].moveDefaultTime
+                jointDesc.moveTime = originalMoveTimes[jointDesc].moveTime
             end
         end
     end
@@ -1331,7 +1361,11 @@ function RMS_Breakdowns.applyHydraulicDamageToCylindered(self, superFunc, dt, ..
             tool.transSpeed = originalSpeeds[tool].transSpeed * toolPerformance
         end
         if RMS_Utils.getIsHydraulicMovingTool(tool) and tool.animSpeed ~= nil then
-            tool.animSpeed = originalSpeeds[tool].animSpeed * performance
+            local toolPerformance = performance
+            if tool.rmsHydraulicErraticTarget == true then
+                toolPerformance = toolPerformance * (erraticPhaseActive and erraticPerformance or 0)
+            end
+            tool.animSpeed = originalSpeeds[tool].animSpeed * toolPerformance
         end
     end
 
@@ -1584,6 +1618,45 @@ RMS_Breakdowns.EffectApplicators.THERMOSTAT_HEALTH_MODIFIER = {
     remove = function(vehicle, handler)
         local spec = vehicle.spec_RealisticMechanicalSystems
         spec.thermostatHealth = 1.0
+    end
+}
+
+-- drains the coolant while the leak is open
+RMS_Breakdowns.EffectApplicators.COOLANT_LEAK_RATE = {
+    apply = function(vehicle, effectData, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        spec.coolantLeakRate = math.max(effectData.value, 0)
+    end,
+
+    remove = function(vehicle, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        spec.coolantLeakRate = 0
+    end
+}
+
+-- drains the transmission oil while the leak is open
+RMS_Breakdowns.EffectApplicators.TRANSMISSION_OIL_LEAK_RATE = {
+    apply = function(vehicle, effectData, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        spec.transmissionOilLeakRate = math.max(effectData.value, 0)
+    end,
+
+    remove = function(vehicle, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        spec.transmissionOilLeakRate = 0
+    end
+}
+
+-- drains the hydraulic fluid while the leak is open
+RMS_Breakdowns.EffectApplicators.HYDRAULIC_FLUID_LEAK_RATE = {
+    apply = function(vehicle, effectData, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        spec.hydraulicFluidLeakRate = math.max(effectData.value, 0)
+    end,
+
+    remove = function(vehicle, handler)
+        local spec = vehicle.spec_RealisticMechanicalSystems
+        spec.hydraulicFluidLeakRate = 0
     end
 }
 
@@ -2129,8 +2202,9 @@ RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
 
         local activeFunc = function(v, dt)
 
-            local effect = v.spec_RealisticMechanicalSystems.activeEffects[effectName]
-            if effect == nil or (tonumber(effect.value) or 0) <= 0 then
+            local spec = v.spec_RealisticMechanicalSystems
+            local effect = spec ~= nil and spec.activeEffects ~= nil and spec.activeEffects[effectName] or nil
+            if effect == nil or (tonumber(effect.value) or 0) <= 0 or (tonumber(spec.year) or 0) < 1990 then
                 return
             end
 
@@ -2157,7 +2231,8 @@ RMS_Breakdowns.EffectApplicators.PTO_AUTO_DISENGAGE_CHANCE = {
                 return
             end
 
-            if effect.extraData.status == "IDLE" and math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, effect.value) then
+            local meanTimeInMinutes = (tonumber(effect.value) or 0) / 60
+            if effect.extraData.status == "IDLE" and math.random() < RMS_Utils.getChancePerFrameFromMeanTime(dt, meanTimeInMinutes) then
                 effect.extraData.status = "DISENGAGED"
                 RMS_EffectSyncEvent.send(v, effectName, "DISENGAGED", 0, 0, 0)
             end
@@ -2371,13 +2446,14 @@ local function applyHardStartModifier(vehicle, effectName)
         end
 
         if effect.extraData.timer <= startFadeMs and effect.extraData.timer >= endFadeMs then
-            local baseVolume = spec.samples.starterCrankingEnd.current.volume or 2.0
-            local t = math.clamp(math.abs(effect.extraData.timer / endFadeMs), 0, 1)
-            local easedT = t * t
-            local offset = math.max(-(baseVolume * easedT), -0.65)
+            local starterCrankingEndSample = spec.samples ~= nil and spec.samples.starterCrankingEnd or nil
 
-            if RMS_SoundManager.getIsSamplePlaying(spec.samples.starterCrankingEnd) then
-                RMS_SoundManager.setSampleVolumeOffset(spec.samples.starterCrankingEnd, offset)
+            if starterCrankingEndSample ~= nil and RMS_SoundManager.getIsSamplePlaying(starterCrankingEndSample) then
+                local baseVolume = starterCrankingEndSample.current.volume or 2.0
+                local t = math.clamp(math.abs(effect.extraData.timer / endFadeMs), 0, 1)
+                local easedT = t * t
+
+                RMS_SoundManager.setSampleVolumeOffset(starterCrankingEndSample, math.max(-(baseVolume * easedT), -0.65))
             end
         end
 

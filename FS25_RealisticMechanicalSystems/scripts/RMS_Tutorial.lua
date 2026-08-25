@@ -136,7 +136,6 @@ function RMS_Tutorial:update(dt)
                 spec.ptoTutorialObservedSequence = ptoEngagementSequence
             end
             local transmissionConfig = RMS_Config.CORE.TRANSMISSION_FACTOR_DATA
-            local hydraulicsConfig = RMS_Config.CORE.HYDRAULICS_FACTOR_DATA
             local chassisBrakeState = spec.chassisBrakeState
             local isTruck = spec.isTruck == true
             local heavyTrailerMass = math.max(chassisBrakeState.trailerMass, 0)
@@ -254,17 +253,17 @@ function RMS_Tutorial:update(dt)
                 messagedData.WET_WEATHER = true
                 self.messageDowntime = downtimeAfterMessage
 
-            elseif not messagedData.RAD_OR_INTAKE_CLOGGED
+            elseif not messagedData.RAD_OR_FILTER_CLOGGED
                 and (engineSystemEnabled or coolingSystemEnabled)
                 and spec.isVehicleNeedBlowOut
-                and (spec.radiatorClogging >= 0.75 or spec.airIntakeClogging >= 0.75) then
+                and (spec.radiatorClogging >= 0.75 or spec.airFilterClogging >= 0.75) then
                 RMS_Hud.showNotification(
-                    g_i18n:getText("rms_tutorial_rad_or_intake_clogged_message"),
+                    g_i18n:getText("rms_tutorial_rad_or_filter_clogged_message"),
                     0,
-                    g_i18n:getText("rms_tutorial_rad_or_intake_clogged_title"),
+                    g_i18n:getText("rms_tutorial_rad_or_filter_clogged_title"),
                     true
                 )
-                messagedData.RAD_OR_INTAKE_CLOGGED = true
+                messagedData.RAD_OR_FILTER_CLOGGED = true
                 self.messageDowntime = downtimeAfterMessage
 
             -- needs lubrication
@@ -344,6 +343,82 @@ function RMS_Tutorial:update(dt)
                 )
                 messagedData.CVT_OVERHEAT = true
                 messagedData.ENGINE_OVERHEAT = true
+                self.messageDowntime = downtimeAfterMessage
+
+            -- transmission overheat outside cvt
+            elseif not messagedData.TRANSMISSION_OVERHEAT and transmissionSystemEnabled and isMotorStarted and spec.transmissionTemperature > 100 and not spec.isElectricVehicle and not (RMS_Utils.hasCVTTransmission(vehicle) or RMS_Utils.hasCVTAddon(vehicle)) then
+                RMS_Hud.showNotification(
+                    g_i18n:getText("rms_tutorial_transmission_overheat_message"),
+                    0,
+                    g_i18n:getText("rms_tutorial_transmission_overheat_title"),
+                    true
+                )
+                messagedData.TRANSMISSION_OVERHEAT = true
+                self.messageDowntime = downtimeAfterMessage
+
+            -- fluid level under its mark
+            elseif not messagedData.FLUID_LEVEL
+                and isMotorStarted
+                and ((engineSystemEnabled and (tonumber(spec.engineOilLevel) or 1) < RMS_Config.FLUIDS.LEVEL_MIN_MARK)
+                    or (coolingSystemEnabled and (tonumber(spec.coolantLevel) or 1) < RMS_Config.FLUIDS.LEVEL_MIN_MARK)
+                    or (transmissionSystemEnabled and (tonumber(spec.transmissionOilLevel) or 1) < RMS_Config.FLUIDS.LEVEL_MIN_MARK)
+                    or (hydraulicsSystemEnabled and (tonumber(spec.hydraulicFluidLevel) or 1) < RMS_Config.FLUIDS.LEVEL_MIN_MARK)) then
+                RMS_Hud.showNotification(
+                    g_i18n:getText("rms_tutorial_fluid_level_message"),
+                    0,
+                    g_i18n:getText("rms_tutorial_fluid_level_title"),
+                    true
+                )
+                messagedData.FLUID_LEVEL = true
+                self.messageDowntime = downtimeAfterMessage
+
+            -- coloured exhaust smoke
+            elseif not messagedData.EXHAUST_SMOKE
+                and engineSystemEnabled
+                and isMotorStarted
+                and spec.exhaustSmoke ~= nil
+                and spec.exhaustSmoke.isActive == true
+                and math.max(tonumber(spec.exhaustSmoke.soot) or 0, tonumber(spec.exhaustSmoke.oil) or 0, tonumber(spec.exhaustSmoke.unburnt) or 0) > 0.25 then
+                RMS_Hud.showNotification(
+                    g_i18n:getText("rms_tutorial_exhaust_smoke_message"),
+                    0,
+                    g_i18n:getText("rms_tutorial_exhaust_smoke_title"),
+                    true
+                )
+                messagedData.EXHAUST_SMOKE = true
+                self.messageDowntime = downtimeAfterMessage
+
+            -- drivetrain modes and diff lock
+            elseif not messagedData.DRIVETRAIN_MODES
+                and isMotorStarted
+                and spec.drivetrain ~= nil
+                and spec.drivetrain.hasControl == true
+                and spec.drivetrain.externallyManaged ~= true then
+                RMS_Hud.showNotification(
+                    g_i18n:getText("rms_tutorial_drivetrain_modes_message"),
+                    0,
+                    g_i18n:getText("rms_tutorial_drivetrain_modes_title"),
+                    true
+                )
+                messagedData.DRIVETRAIN_MODES = true
+                self.messageDowntime = downtimeAfterMessage
+
+            -- park brake engaged
+            elseif not messagedData.PARK_BRAKE
+                and spec.drivetrain ~= nil
+                and spec.drivetrain.parkBrake == true
+                and spec.drivetrain.hasControl == true
+                and spec.drivetrain.parkExternallyManaged ~= true then
+                local parkBrakeMessage = RMS_Config.DRIVETRAIN.PARKBRAKE_AUTO_MODE
+                    and "rms_tutorial_park_brake_message"
+                    or "rms_tutorial_park_brake_manual_message"
+                RMS_Hud.showNotification(
+                    g_i18n:getText(parkBrakeMessage),
+                    0,
+                    g_i18n:getText("rms_tutorial_park_brake_title"),
+                    true
+                )
+                messagedData.PARK_BRAKE = true
                 self.messageDowntime = downtimeAfterMessage
 
             -- wheel slip
@@ -520,8 +595,8 @@ function RMS_Tutorial:update(dt)
             elseif not messagedData.COLD_OIL
                 and (transmissionSystemEnabled or (hydraulicsSystemEnabled and spec.isHydraulicActive))
                 and isMotorStarted
-                and spec.transmissionTemperature < hydraulicsConfig.COLD_OIL_THRESHOLD
-                and spec.dynamicMotorLoad >= transmissionConfig.LUGGING_MOTORLOAD_THRESHOLD then
+                and spec.transmissionTemperature < transmissionConfig.COLD_TRANSMISSION_THRESHOLD
+                and spec.dynamicMotorLoad >= transmissionConfig.COLD_TRANSMISSION_LOAD_THRESHOLD then
                 RMS_Hud.showNotification(
                     g_i18n:getText("rms_tutorial_cold_oil_message"),
                     0,

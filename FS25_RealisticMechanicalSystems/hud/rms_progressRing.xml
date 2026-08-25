@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture>
+   <meta>
+      <filename>rms_progressRing.dds</filename>
+      <size width="512" height="256" />
+   </meta>
+   <slices>
+      <slice id="ring" uvs="0px 0px 256px 256px" />
+      <slice id="dot" uvs="256px 0px 32px 32px" />
+   </slices>
+</texture>

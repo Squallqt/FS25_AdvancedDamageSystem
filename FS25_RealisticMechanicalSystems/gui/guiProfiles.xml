@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <GUIProfiles>
-    <!-- Shared presets -->
-    <Presets>
-        <Preset name="colorWhite" value="1 1 1 1"/>
-        <Preset name="colorListHeaderBackground" value="0 0 0 0.35"/>
-        <Preset name="colorBalanceGreen" value="0.659 0.847 0.286 1"/>
-    </Presets>
-
     <!-- Header icon -->
     <Profile name="rms_menuHeaderIcon" extends="fs25_menuHeaderIcon">
         <imageSliceId value="rms_MenuIcon.menuIcon"/>
@@ -32,7 +25,8 @@
         <size value="600px 670px"/>
     </Profile>
     <Profile name="rms_inspectionDialogBg" extends="fs25_dialogBg">
-        <size value="640px 740px"/>
+        <width value="1200px"/>
+        <height value="900px"/>
     </Profile>
     <Profile name="rms_sellDialogBg" extends="fs25_dialogBg">
         <size value="410px 610px"/>
@@ -80,13 +74,6 @@
         <textAlignment value="center"/>
         <textVerticalAlignment value="middle"/>
     </Profile>
-    <Profile name="rms_inspectionAdditionalText" extends="fs25_dialogText">
-        <textSize value="14px"/>
-        <textAlignment value="left"/>
-        <textVerticalAlignment value="top"/>
-        <textColor value="$preset_colorWhite_50"/>
-    </Profile>
-
     <!-- Shared workshop, report and log tables -->
     <Profile name="rms_tableHeaderLeft" extends="baseReference">
         <imageColor value="0 0 0 0"/>
@@ -122,6 +109,213 @@
         <textAlignment value="right"/>
         <textColor value="$preset_fs25_colorMainLight"/>
         <textDisabledColor value="$preset_colorDisabled"/>
+    </Profile>
+    <!-- Pre-shift inspection dialog -->
+    <Profile name="rms_inspectionBlock" extends="emptyPanel" with="anchorTopLeft"/>
+    <Profile name="rms_inspectionHeaderLayout" extends="emptyPanel" with="anchorTopLeft">
+        <flowDirection value="horizontal"/>
+        <alignmentX value="center"/>
+        <alignmentY value="middle"/>
+        <numFlows value="1"/>
+        <elementSpacing value="20px"/>
+        <autoValidateLayout value="true"/>
+        <wrapAround value="false"/>
+    </Profile>
+    <Profile name="rms_inspectionHeaderTextLayout" extends="emptyPanel" with="anchorTopLeft">
+        <flowDirection value="vertical"/>
+        <fillDirectionY value="topToBottom"/>
+        <alignmentX value="left"/>
+        <alignmentY value="middle"/>
+        <numFlows value="1"/>
+        <elementSpacing value="2px"/>
+        <autoValidateLayout value="true"/>
+        <wrapAround value="false"/>
+    </Profile>
+    <Profile name="rms_inspectionDialogTitle" extends="fs25_dialogTitle" with="anchorTopLeft">
+        <textSize value="28px"/>
+        <textMinSize value="18px"/>
+        <textBold value="true"/>
+        <textUpperCase value="true"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="middle"/>
+        <textLineHeightScale value="1"/>
+        <textMaxNumLines value="1"/>
+        <textMaxWidth value="1030px"/>
+        <textAutoWidth value="true"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorMainLight"/>
+    </Profile>
+    <Profile name="rms_inspectionIdentity" extends="baseReference" with="anchorTopLeft">
+        <textSize value="15px"/>
+        <textMinSize value="12px"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="middle"/>
+        <textMaxNumLines value="1"/>
+        <textMaxWidth value="1030px"/>
+        <textAutoWidth value="true"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorGreyLight"/>
+    </Profile>
+    <Profile name="rms_inspectionSurface" extends="baseReference" with="anchorTopLeft">
+        <color value="$preset_fs25_colorMainDark"/>
+        <cornerSize value="0.35"/>
+    </Profile>
+    <Profile name="rms_inspectionCardSurface" extends="rms_inspectionSurface">
+        <color value="$preset_fs25_colorGreyDark_50"/>
+        <cornerSize value="0.25"/>
+    </Profile>
+    <Profile name="rms_inspectionRowSurface" extends="rms_inspectionSurface">
+        <cornerSize value="0.18"/>
+    </Profile>
+    <Profile name="rms_inspectionValuePill" extends="rms_inspectionCardSurface">
+        <cornerSize value="0.65"/>
+    </Profile>
+    <Profile name="rms_inspectionHeaderIconPlate" extends="rms_inspectionSurface">
+        <color value="$preset_fs25_colorMainHighlight"/>
+        <cornerSize value="0.35"/>
+    </Profile>
+    <Profile name="rms_inspectionHeaderIcon" extends="rms_menuHeaderIcon" with="anchorMiddleCenter">
+        <position value="0px 0px"/>
+        <size value="46px 46px"/>
+        <imageColor value="$preset_fs25_colorMainDark"/>
+    </Profile>
+    <Profile name="rms_inspectionHeaderEdge" extends="fs25_lineSeparatorTopHighlighted" with="anchorTopStretchingX"/>
+    <Profile name="rms_inspectionVerdictAccent" extends="baseReference" with="anchorMiddleLeft">
+        <imageSliceId value="gui.rectangle_center"/>
+        <imageColor value="$preset_fs25_colorMainLight"/>
+    </Profile>
+    <Profile name="rms_inspectionVerdictLayout" extends="emptyPanel" with="anchorTopLeft">
+        <flowDirection value="horizontal"/>
+        <alignmentX value="left"/>
+        <alignmentY value="middle"/>
+        <numFlows value="1"/>
+        <elementSpacing value="24px"/>
+        <autoValidateLayout value="true"/>
+        <wrapAround value="false"/>
+    </Profile>
+    <Profile name="rms_inspectionVerdictBadge" extends="rms_inspectionHeaderIconPlate" with="anchorTopLeft">
+        <cornerSize value="0.5"/>
+    </Profile>
+    <Profile name="rms_inspectionVerdictBadgeText" extends="baseReference" with="anchorTopLeft">
+        <textSize value="16px"/>
+        <textMinSize value="13px"/>
+        <textBold value="true"/>
+        <textUpperCase value="true"/>
+        <textAlignment value="center"/>
+        <textVerticalAlignment value="middle"/>
+        <textMaxNumLines value="1"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorMainDark"/>
+    </Profile>
+    <Profile name="rms_inspectionVerdictTitle" extends="baseReference" with="anchorTopLeft">
+        <textSize value="28px"/>
+        <textMinSize value="18px"/>
+        <textBold value="true"/>
+        <textUpperCase value="true"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="middle"/>
+        <textMaxNumLines value="1"/>
+        <textMaxWidth value="320px"/>
+        <textAutoWidth value="true"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorMainLight"/>
+    </Profile>
+    <Profile name="rms_inspectionVerdictDivider" extends="baseReference" with="anchorTopLeft">
+        <color value="$preset_fs25_colorGreyLight_50"/>
+        <cornerSize value="0"/>
+    </Profile>
+    <Profile name="rms_inspectionVerdictMessage" extends="baseReference" with="anchorTopLeft">
+        <textSize value="16px"/>
+        <textMinSize value="13px"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="middle"/>
+        <textLineHeightScale value="1.15"/>
+        <textMaxNumLines value="2"/>
+        <textMaxWidth value="642px"/>
+        <textAutoWidth value="true"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorMainLight"/>
+    </Profile>
+    <Profile name="rms_inspectionSectionAccent" extends="baseReference" with="anchorMiddleLeft">
+        <size value="4px 22px"/>
+        <color value="$preset_fs25_colorMainHighlight"/>
+        <cornerSize value="0.05"/>
+    </Profile>
+    <Profile name="rms_inspectionSectionLine" extends="baseReference" with="anchorBottomLeft">
+        <color value="$preset_fs25_colorGreyLight_50"/>
+        <cornerSize value="0"/>
+    </Profile>
+    <Profile name="rms_inspectionSectionTitle" extends="baseReference" with="anchorTopLeft">
+        <textSize value="14px"/>
+        <textMinSize value="11px"/>
+        <textBold value="true"/>
+        <textUpperCase value="true"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="middle"/>
+        <textMaxNumLines value="1"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorMainHighlight"/>
+    </Profile>
+    <Profile name="rms_inspectionList" extends="rms_tableList">
+        <listItemSpacing value="6px"/>
+    </Profile>
+    <Profile name="rms_inspectionRow" extends="baseReference" with="anchorTopStretchingX alternating">
+        <imageColor value="$preset_colorTransparent"/>
+        <imageSelectedColor value="$preset_colorTransparent"/>
+        <imageFocusedColor value="$preset_colorTransparent"/>
+        <imageHighlightedColor value="$preset_colorTransparent"/>
+        <alternateBackgroundColor value="$preset_colorTransparent"/>
+    </Profile>
+    <Profile name="rms_inspectionRowTitle" extends="baseReference" with="anchorTopLeft">
+        <textSize value="16px"/>
+        <textMinSize value="11px"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="middle"/>
+        <textMaxNumLines value="1"/>
+        <textLayoutMode value="resize"/>
+        <textColor value="$preset_fs25_colorMainLight"/>
+    </Profile>
+    <Profile name="rms_inspectionRowValue" extends="rms_inspectionRowTitle">
+        <textBold value="true"/>
+        <textAlignment value="right"/>
+    </Profile>
+    <Profile name="rms_inspectionRowAccent" extends="baseReference" with="anchorTopLeft">
+        <imageSliceId value="gui.rectangle_center"/>
+        <imageColor value="$preset_fs25_colorGreyDark_50"/>
+    </Profile>
+    <Profile name="rms_fluidGaugeTrack" extends="baseReference" with="anchorTopLeft">
+        <imageSliceId value="gui.colorPreset"/>
+        <imageColor value="$preset_fs25_colorGrey"/>
+    </Profile>
+    <Profile name="rms_fluidGaugeFill" extends="baseReference" with="anchorTopLeft">
+        <imageSliceId value="gui.colorPreset"/>
+        <imageColor value="$preset_fs25_colorMainLight"/>
+    </Profile>
+    <Profile name="rms_fluidGaugeMark" extends="baseReference" with="anchorTopLeft">
+        <imageSliceId value="gui.rectangle_center"/>
+        <imageColor value="$preset_colorWhite"/>
+    </Profile>
+    <Profile name="rms_fluidGaugeGuide" extends="rms_fluidGaugeMark">
+        <imageColor value="$preset_fs25_colorGreyLight_50"/>
+    </Profile>
+    <Profile name="rms_inspectionObservationsLayout" extends="rms_inspectionBlock">
+        <flowDirection value="vertical"/>
+        <fillDirectionY value="topToBottom"/>
+        <numFlows value="1"/>
+        <autoValidateLayout value="true"/>
+        <useFullVisibility value="false"/>
+        <wrapAround value="false"/>
+    </Profile>
+    <Profile name="rms_inspectionObservationsSliderBox" extends="fs25_listSliderBox" with="anchorTopRight"/>
+    <Profile name="rms_inspectionAdditionalText" extends="fs25_dialogText" with="anchorTopLeft">
+        <textSize value="15px"/>
+        <textAlignment value="left"/>
+        <textVerticalAlignment value="top"/>
+        <textLineHeightScale value="1.15"/>
+        <textMaxNumLines value="2"/>
+        <textLayoutMode value="overflow"/>
+        <textAutoHeight value="true"/>
+        <textColor value="$preset_fs25_colorMainLight"/>
     </Profile>
     <Profile name="rms_tableRowCellLeftUpper" extends="baseReference" with="anchorStretchingYLeft">
         <textBold value="false"/>

@@ -105,7 +105,7 @@ function RealisticMechanicalSystems:updateAiWorkerCruiseControl(dt)
     local spec = self.spec_RealisticMechanicalSystems
     if spec == nil then return end
 
-    if self.propertyState == 4 and not RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION then
+    if RealisticMechanicalSystems.isMissionVehicle(self) and not RMS_Config.CORE.CONTRACT_VEHICLE_PROTECTION then
         self:resetAiWorkerCruiseControlState()
         return
     end

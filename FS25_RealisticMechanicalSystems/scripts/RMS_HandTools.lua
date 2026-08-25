@@ -889,9 +889,10 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
     if vehicle ~= nil and spec.toolKind == "airBlower" then
         local vehicleSpec = vehicle.spec_RealisticMechanicalSystems
         local needsBlowOut = vehicleSpec ~= nil and vehicleSpec.isVehicleNeedBlowOut == true
+        -- blow out floor, the filter residue
         local isAlreadyClean = vehicleSpec ~= nil
             and (tonumber(vehicleSpec.radiatorClogging) or 0) <= 0
-            and (tonumber(vehicleSpec.airIntakeClogging) or 0) <= 0
+            and (tonumber(vehicleSpec.airFilterClogging) or 0) <= (tonumber(vehicleSpec.airFilterResidue) or 0)
 
         if not needsBlowOut and self.isClient then
             g_currentMission:showBlinkingWarning(string.format(g_i18n:getText("rms_air_blower_cleaning_not_require"), vehicle:getFullName()), 2200)
@@ -909,7 +910,7 @@ function rmsHandTools:onActionCallback(actionName, inputValue)
     end
 end
 
----Raycast callback keeping the first vehicle hit
+---Raycast callback keeping the first RMS vehicle hit
 -- @param entityId hitActorId actor hit
 -- @param float x hit x position
 -- @param float y hit y position
@@ -923,20 +924,9 @@ end
 -- @return boolean continueRaycast false to stop the raycast
 function rmsHandTools:handToolRaycastCallback(hitActorId, x, y, z, distance, nx, ny, nz, subShapeIndex, hitShapeId)
     local spec = ensureSpec(self)
-    local vehicle = g_currentMission.nodeToObject[hitActorId] or g_currentMission:getNodeObject(hitActorId)
+    local vehicle = g_currentMission.vehicleSystem:getVehicleByNodeId(hitActorId, hitShapeId)
 
-    if vehicle == nil and hitShapeId ~= nil and hitShapeId ~= 0 then
-        local parentId = hitShapeId
-        while parentId ~= 0 do
-            vehicle = g_currentMission.nodeToObject[parentId] or g_currentMission:getNodeObject(parentId)
-            if vehicle ~= nil then
-                break
-            end
-            parentId = getParent(parentId)
-        end
-    end
-
-    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil and distance < (spec.raycastVehicleDistance or math.huge) then
+    if vehicle ~= nil and vehicle.spec_RealisticMechanicalSystems ~= nil then
         spec.raycastVehicle = vehicle
         spec.raycastVehicleDistance = distance
         spec.raycastHitX = x
@@ -945,7 +935,10 @@ function rmsHandTools:handToolRaycastCallback(hitActorId, x, y, z, distance, nx,
         spec.raycastHitNX = nx
         spec.raycastHitNY = ny
         spec.raycastHitNZ = nz
+        return false
     end
+
+    return true
 end
 
 
@@ -1022,9 +1015,10 @@ function rmsHandTools:onUpdate(dt)
     if spec.toolKind == "airBlower" then
         local vehicleSpec = vehicle.spec_RealisticMechanicalSystems
         local needsBlowOut = vehicleSpec ~= nil and vehicleSpec.isVehicleNeedBlowOut == true
+        -- blow out floor, the filter residue
         local isAlreadyClean = vehicleSpec ~= nil
             and (tonumber(vehicleSpec.radiatorClogging) or 0) <= 0
-            and (tonumber(vehicleSpec.airIntakeClogging) or 0) <= 0
+            and (tonumber(vehicleSpec.airFilterClogging) or 0) <= (tonumber(vehicleSpec.airFilterResidue) or 0)
         local vehicleId = tostring(vehicle.uniqueId or vehicle.id or vehicle.rootNode or vehicle:getFullName())
         local hintKey = nil
 
@@ -1052,15 +1046,16 @@ function rmsHandTools:onUpdate(dt)
         end
 
         if self.isServer and needsBlowOut then
-            vehicle:cleanRadiatorAndAirIntake(dt)
+            vehicle:cleanRadiatorAndAirFilter(dt)
         end
 
         if self.isClient then
-            local currentAirIntakeClogging = vehicleSpec ~= nil and vehicleSpec.airIntakeClogging or 0
+            local currentAirFilterClogging = vehicleSpec ~= nil and vehicleSpec.airFilterClogging or 0
             local currentRadiatorClogging = vehicleSpec ~= nil and vehicleSpec.radiatorClogging or 0
-            local hasCleaningDust = currentAirIntakeClogging > 0 or currentRadiatorClogging > 0
-            local dustScale = math.max((currentAirIntakeClogging + currentRadiatorClogging) / 20, 0.01)
-            local dustLifespan = math.clamp((currentAirIntakeClogging + currentRadiatorClogging) * 1200, 600, 1200)
+            local currentAirFilterResidue = vehicleSpec ~= nil and vehicleSpec.airFilterResidue or 0
+            local hasCleaningDust = currentAirFilterClogging > currentAirFilterResidue or currentRadiatorClogging > 0
+            local dustScale = math.max((currentAirFilterClogging + currentRadiatorClogging) / 20, 0.01)
+            local dustLifespan = math.clamp((currentAirFilterClogging + currentRadiatorClogging) * 1200, 600, 1200)
 
             if spec.dustParticleSystem ~= nil and hasCleaningDust then
                 setDustEmitterDistance(self, targetDistance)
